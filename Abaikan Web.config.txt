@@ -1,0 +1,44 @@
+git update-index --assume-unchanged Web.config
+
++62 882-1274-2812
+
+BUILDERS
+SELECT
+	Order_Header.OrdID,
+	Order_Header.StoreOrderNo,
+	Order_Header.StoreCustomer,
+	Order_Header.CreatedDate,
+	Order_Header.UserLogin,
+	Order_Header.SubmittedDate,
+	Order_Header.LoginName,
+	Order_Header.Status,
+	Order_Header.Active,
+	Builder_Header.DebtorCode,
+	Builder_Header.Estimator,
+	Builder_Header.Supervisor,
+	Builder_Header.Address,
+	Builder_Header.QuotedDate,
+	Builder_Header.CallUpDate,
+	Builder_Header.CMDueDate,
+	Builder_Header.BeInstalledDate,
+	Builder_Header.ApprovedDate,
+	Builder_Header.InvoicedDate,
+	Builder_Header.RepairedDate 
+FROM
+	dbo.Order_Header
+	INNER JOIN dbo.Builder_Header ON Order_Header.OrdID = Builder_Header.OrdID 
+WHERE
+	Order_Header.UserLogin = 'u_builder' 
+	AND Order_Header.Active = 1
+
+
+BUILDER DETAIL
+SELECT
+	Order_Detail.* 
+FROM
+	dbo.Order_Header
+	INNER JOIN dbo.Order_Detail ON Order_Header.OrdID = Order_Detail.FKOrdID 
+WHERE
+	Order_Header.UserLogin = 'u_builder' 
+	AND Order_Header.Active = 1
+	AND Order_Detail.Active = 1
