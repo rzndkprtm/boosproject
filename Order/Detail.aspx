@@ -1689,6 +1689,8 @@
             </div>
         </div>
     </div>
+
+    <asp:HiddenField ID="hiddenHeaderId" runat="server" />
     
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', function () {
@@ -1823,6 +1825,28 @@
             }, 10000);
 
             return true;
+        }
+
+        function hideWaitingModal() {
+            var modalEl = document.getElementById('modalWaiting');
+            if (modalEl) {
+                var modalObj = bootstrap.Modal.getInstance(modalEl);
+                if (modalObj) modalObj.hide();
+            }
+        }
+
+        function showSuccessSwal(orderId) {
+            hideWaitingModal();
+            Swal.fire({
+                icon: 'success',
+                title: 'Order Submitted!',
+                html: 'Your order has been successfully submitted and is now being processed.<br>Thank you!',
+                timer: 5000,
+                timerProgressBar: true,
+                didClose: () => {
+                    window.location = '/order/detail?orderid=' + orderId;
+                }
+            });
         }
 
         window.history.replaceState(null, null, window.location.href);

@@ -10,6 +10,7 @@
     
     <link rel="stylesheet" href="/assets/vendors/choices.js/choices.min.css" />
     <link rel="stylesheet" href="/assets/css/bootstrap.css" />
+    <link rel="stylesheet" href="/assets/vendors/sweetalert2/sweetalert2.min.css" />
     <link rel="stylesheet" href="/assets/vendors/iconly/bold.css" />
     <link rel="stylesheet" href="/assets/vendors/perfect-scrollbar/perfect-scrollbar.css" />
     <link rel="stylesheet" href="/assets/vendors/bootstrap-icons/bootstrap-icons.css" />
@@ -384,20 +385,28 @@
 
         <script src="/assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
         <script src="/assets/js/bootstrap.bundle.min.js"></script>
+        <script src="/assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
         <script src="/assets/vendors/choices.js/choices.min.js"></script>
         <script src="/assets/js/pages/form-element-select.js"></script>
         <script src="/assets/js/pages/horizontal-layout.js"></script>
 
         <script type="text/javascript">
-            //window.addEventListener('load', function () {
-            //    Toastify({
-            //        text: "This is toast in top center",
-            //        duration: 3000,
-            //        close: true,
-            //        gravity: "top",
-            //        position: "center",
-            //        backgroundColor: "#4fbe87",
-            //    }).showToast();
+            //document.addEventListener("DOMContentLoaded", function () {
+            //    if (!localStorage.getItem("visited_once")) {
+
+            //        Swal.fire({
+            //            icon: 'info',
+            //            title: 'Welcome!',
+            //            html: 'This is your first time visiting this page.<br>Sorry if some actions may feel a bit slow.',
+            //            timer: 5000,
+            //            timerProgressBar: true,
+            //            showConfirmButton: false,
+            //            allowOutsideClick: false,
+            //            allowEscapeKey: false
+            //        });
+
+            //        localStorage.setItem("visited_once", "true");
+            //    }
             //});
         </script>
     </form>

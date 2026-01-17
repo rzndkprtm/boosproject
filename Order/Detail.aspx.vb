@@ -95,6 +95,7 @@ Partial Class Order_Detail
         End If
 
         headerId = Request.QueryString("orderid").ToString()
+        hiddenHeaderId.Value = Request.QueryString("orderid").ToString()
         If Not IsPostBack Then
             AllMessageError(False, String.Empty)
             BindDataOrder(headerId)
@@ -350,8 +351,11 @@ Partial Class Order_Detail
                 mailingClass.SubmitOrder_PrintingFabric(headerId, finalFilePath, zipPath)
             End If
 
-            url = String.Format("~/order/detail?orderid={0}", headerId)
-            Response.Redirect(url, False)
+            Dim berhasil As String = String.Format("showSuccessSwal('{0}')", headerId)
+            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "swalSuccess", berhasil, True)
+
+            'url = String.Format("~/order/detail?orderid={0}", headerId)
+            'Response.Redirect(url, False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
