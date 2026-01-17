@@ -240,17 +240,17 @@
                             <div class="card-content">
                                 <div class="card-body">
                                     <div class="row mb-3">
-                                        <div class="col-4">
+                                        <div class="col-6 col-sm-6 col-lg-4">
                                             <asp:Label runat="server" ID="lblPriceOrderTitle"></asp:Label>
                                             <br />
                                             <asp:Label runat="server" ID="lblPriceOrder" CssClass="font-bold"></asp:Label>
                                         </div>
-                                        <div class="col-4">
+                                        <div class="col-6 col-sm-6 col-lg-4">
                                             <asp:Label runat="server" ID="lblGstTitle"></asp:Label>
                                             <br />
                                             <asp:Label runat="server" ID="lblGst" CssClass="font-bold"></asp:Label>
                                         </div>
-                                        <div class="col-4">
+                                        <div class="col-12 col-sm-12 col-lg-4">
                                             <asp:Label runat="server" ID="lblFinalPriceOrderTitle"></asp:Label>
                                             <br />
                                             <asp:Label runat="server" ID="lblFinalPriceOrder" CssClass="font-bold"></asp:Label>

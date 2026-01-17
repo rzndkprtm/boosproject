@@ -810,11 +810,6 @@ Partial Class Order_Default
             divActive.Visible = PageAction("Active")
             divCompany.Visible = PageAction("Filter Company")
 
-            Dim authorizationQuery As String = "SELECT COUNT(OrderHeaders.Id) FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Status='New Order' OR OrderHeaders.Status='Payment Received'"
-            If Session("RoleName") = "Customer Service" Then
-                authorizationQuery = "SELECT COUNT(OrderHeaders.Id) FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE Customers.CompanyId='" & Session("CompanyId") & "' AND OrderHeaders.Active=1 AND (OrderHeaders.Status='New Order' OR OrderHeaders.Status='Payment Received')"
-            End If
-
             If Session("RoleName") = "Customer" Then
                 Dim onStop As Boolean = orderClass.GetCustomerOnStop(Session("CustomerId").ToString())
                 If onStop = True Then btnAdd.Visible = True
