@@ -391,43 +391,7 @@
         <script src="/assets/js/pages/horizontal-layout.js"></script>
 
         <script type="text/javascript">
-            if ('serviceWorker' in navigator) {
-
-                // Tampilkan info loading
-                Swal.fire({
-                    title: "Preparing resources...",
-                    text: "Some files are being downloaded. This may take a moment.",
-                    allowOutsideClick: false,
-                    allowEscapeKey: false,
-                    showConfirmButton: false,
-                    didOpen: () => Swal.showLoading()
-                });
-
-                navigator.serviceWorker.register('/service-worker.js').then(reg => {
-
-                    navigator.serviceWorker.addEventListener("message", event => {
-                        const data = event.data;
-
-                        // optional: tampilkan progress nama file kecil
-                        if (data.type === "preload-progress") {
-                            console.log("Downloading:", data.asset);
-                        }
-
-                        // critical selesai → web sudah usable
-                        if (data.type === "preload-critical-complete") {
-                            console.log("Critical preload done.");
-                            // kalau mau: ganti UI jadi status "still optimizing"
-                        }
-
-                        // semua selesai → close swal
-                        if (data.type === "preload-complete") {
-                            console.log("All assets cached.");
-                            Swal.close();
-                        }
-                    });
-
-                }).catch(err => console.error("SW registration failed", err));
-            }
+            
             //document.addEventListener("DOMContentLoaded", function () {
             //    if (!localStorage.getItem("visited_once")) {
 
