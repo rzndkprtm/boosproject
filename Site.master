@@ -391,31 +391,31 @@
         <script src="/assets/js/pages/horizontal-layout.js"></script>
 
         <script type="text/javascript">
-            if ('serviceWorker' in navigator) {
-                Swal.fire({
-                    title: "Preparing resources...",
-                    text: "Some files are being downloaded. This may take a moment.",
-                    allowOutsideClick: false,
-                    allowEscapeKey: false,
-                    showConfirmButton: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
-                });
+            //if ('serviceWorker' in navigator) {
+            //    Swal.fire({
+            //        title: "Preparing resources...",
+            //        text: "Some files are being downloaded. This may take a moment.",
+            //        allowOutsideClick: false,
+            //        allowEscapeKey: false,
+            //        showConfirmButton: false,
+            //        didOpen: () => {
+            //            Swal.showLoading();
+            //        }
+            //    });
 
-                navigator.serviceWorker.register('/service-worker.js')
-                    .then(reg => {
-                        navigator.serviceWorker.addEventListener("message", event => {
-                            if (event.data.type === "preload-progress") {
-                            }
+            //    navigator.serviceWorker.register('/service-worker.js')
+            //        .then(reg => {
+            //            navigator.serviceWorker.addEventListener("message", event => {
+            //                if (event.data.type === "preload-progress") {
+            //                }
 
-                            if (event.data.type === "preload-complete") {
-                                Swal.close();
-                                console.log("Preload complete.");
-                            }
-                        });
-                    });
-            }
+            //                if (event.data.type === "preload-complete") {
+            //                    Swal.close();
+            //                    console.log("Preload complete.");
+            //                }
+            //            });
+            //        });
+            //}
             //document.addEventListener("DOMContentLoaded", function () {
             //    if (!localStorage.getItem("visited_once")) {
 

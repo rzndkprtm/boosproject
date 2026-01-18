@@ -1,6 +1,5 @@
 ﻿const CACHE_NAME = "preload-cache-v1";
 
-// Preload manifest
 async function preloadAssets() {
     try {
         const response = await fetch("/assets/manifest.json?ts=" + Date.now());
@@ -34,18 +33,15 @@ async function preloadAssets() {
     }
 }
 
-// Install event = preload blocking
 self.addEventListener("install", event => {
     event.waitUntil(preloadAssets());
     self.skipWaiting();
 });
 
-// Activate
 self.addEventListener("activate", event => {
     clients.claim();
 });
 
-// Fetch handler (SWR)
 self.addEventListener("fetch", event => {
     event.respondWith(
         caches.match(event.request).then(cached => {
