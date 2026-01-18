@@ -8,14 +8,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%: Page.Title %> - <%: Session("CompanyName") %></title>
     
-    <link rel="stylesheet" href="/assets/vendors/choices.js/choices.min.css" />
-    <link rel="stylesheet" href="/assets/css/bootstrap.css" />
-    <link rel="stylesheet" href="/assets/vendors/sweetalert2/sweetalert2.min.css" />
-    <link rel="stylesheet" href="/assets/vendors/iconly/bold.css" />
-    <link rel="stylesheet" href="/assets/vendors/perfect-scrollbar/perfect-scrollbar.css" />
-    <link rel="stylesheet" href="/assets/vendors/bootstrap-icons/bootstrap-icons.css" />
-    <link rel="stylesheet" href="/assets/css/app.css" />
-    <link rel="icon" type="image/x-icon" href="/assets/images/logo/boos.ico" />
+    <link rel="preload" href="/assets/vendors/choices.js/choices.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="/assets/vendors/choices.js/choices.min.css"></noscript>
+
+    <link rel="preload" href="/assets/css/bootstrap.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="/assets/css/bootstrap.css"></noscript>
+
+    <link rel="preload" href="/assets/vendors/sweetalert2/sweetalert2.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="/assets/vendors/sweetalert2/sweetalert2.min.css"></noscript>
+
+    <link rel="preload" href="/assets/vendors/iconly/bold.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="/assets/vendors/iconly/bold.css"></noscript>
+
+    <link rel="preload" href="/assets/vendors/perfect-scrollbar/perfect-scrollbar.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="/assets/vendors/perfect-scrollbar/perfect-scrollbar.css"></noscript>
+
+    <link rel="preload" href="/assets/vendors/bootstrap-icons/bootstrap-icons.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="/assets/vendors/bootstrap-icons/bootstrap-icons.css"></noscript>
+
+    <link rel="preload" href="/assets/css/app.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="/assets/css/app.css"></noscript>
+
+    <link rel="preload" href="/assets/images/logo/boos.ico" as="image" type="image/x-icon">
+    <link rel="icon" href="/assets/images/logo/boos.ico" type="image/x-icon">
+
     <style>
         .hiddencol { display:none; }
     </style>
@@ -383,12 +399,24 @@
             });
         </script>
 
-        <script src="/assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
-        <script src="/assets/js/bootstrap.bundle.min.js"></script>
-        <script src="/assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
-        <script src="/assets/vendors/choices.js/choices.min.js"></script>
-        <script src="/assets/js/pages/form-element-select.js"></script>
-        <script src="/assets/js/pages/horizontal-layout.js"></script>
+        <link rel="preload" href="/assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js" as="script">
+        <script src="/assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js" defer></script>
+
+        <link rel="preload" href="/assets/js/bootstrap.bundle.min.js" as="script">
+        <script src="/assets/js/bootstrap.bundle.min.js" defer></script>
+
+        <link rel="preload" href="/assets/vendors/sweetalert2/sweetalert2.all.min.js" as="script">
+        <script src="/assets/vendors/sweetalert2/sweetalert2.all.min.js" defer></script>
+
+        <link rel="preload" href="/assets/vendors/choices.js/choices.min.js" as="script">
+        <script src="/assets/vendors/choices.js/choices.min.js" defer></script>
+
+        <link rel="preload" href="/assets/js/pages/form-element-select.js" as="script">
+        <script src="/assets/js/pages/form-element-select.js" defer></script>
+
+        <link rel="preload" href="/assets/js/pages/horizontal-layout.js" as="script">
+        <script src="/assets/js/pages/horizontal-layout.js" defer></script>
+
 
         <script type="text/javascript">
             
