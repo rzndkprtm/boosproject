@@ -382,12 +382,14 @@
                 document.title = newTitle;
             });
         </script>
-        <script src="/assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
-        <script src="/assets/js/bootstrap.bundle.min.js"></script>
-        <script src="/assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
-        <script src="/assets/vendors/choices.js/choices.min.js"></script>
-        <script src="/assets/js/pages/form-element-select.js"></script>
-        <script src="/assets/js/pages/horizontal-layout.js"></script>
+        <script src="/assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js" defer></script>
+        <script src="/assets/js/bootstrap.bundle.min.js" defer></script>
+        <script src="/assets/vendors/sweetalert2/sweetalert2.all.min.js" defer></script>
+        <script src="/assets/vendors/choices.js/choices.min.js" defer></script>
+        <script src="/assets/js/pages/form-element-select.js" defer></script>
+        <script src="/assets/js/pages/horizontal-layout.js" defer></script>
+
+
         <script type="text/javascript">
             
             //document.addEventListener("DOMContentLoaded", function () {
