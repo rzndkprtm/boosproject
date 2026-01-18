@@ -1,0 +1,23 @@
+{
+  "scripts": [
+    "/assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js",
+    "/assets/js/bootstrap.bundle.min.js",
+    "/assets/vendors/sweetalert2/sweetalert2.all.min.js",
+    "/assets/vendors/choices.js/choices.min.js",
+    "/assets/js/pages/form-element-select.js",
+    "/assets/js/pages/horizontal-layout.js"
+  ],
+  "styles": [
+    "/assets/vendors/choices.js/choices.min.css",
+    "/assets/css/bootstrap.css",
+    "/assets/vendors/sweetalert2/sweetalert2.min.css",
+    "/assets/vendors/iconly/bold.css",
+    "/assets/vendors/perfect-scrollbar/perfect-scrollbar.css",
+    "/assets/vendors/bootstrap-icons/bootstrap-icons.css",
+    "/assets/css/app.css"
+  ],
+  "images": [
+    "/assets/images/logo/boos.ico",
+    "/assets/images/avatars.png"
+  ]
+}
