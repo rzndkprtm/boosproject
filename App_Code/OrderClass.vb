@@ -33,6 +33,17 @@ Public Class OrderClass
         End Using
     End Function
 
+    Public Function GetDataTable_Orders(thisCmd As SqlCommand) As DataTable
+        Using thisConn As New SqlConnection(myConn)
+            thisCmd.Connection = thisConn
+            Using da As New SqlDataAdapter(thisCmd)
+                Dim dt As New DataTable()
+                da.Fill(dt)
+                Return dt
+            End Using
+        End Using
+    End Function
+
     Public Function GetListData(thisString As String) As DataSet
         Dim thisCmd As New SqlCommand(thisString)
         Using thisConn As New SqlConnection(myConn)

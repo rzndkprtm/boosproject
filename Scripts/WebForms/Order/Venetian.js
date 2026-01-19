@@ -9,80 +9,62 @@ let loginId;
 let roleAccess;
 let priceAccess;
 
-document.getElementById("modalSuccess").addEventListener("hide.bs.modal", function () {
-    document.activeElement.blur();
-    document.body.focus();
+initVenetian();
+
+$("#submit").on("click", process);
+$("#cancel").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
+$("#vieworder").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
+
+$("#blindtype").on("change", function () {
+    bindMounting($(this).val());
+    bindColourType($(this).val());
+    bindValanceType($(this).val());
+    bindValancePosition($(this).val());
 });
 
-document.getElementById("modalError").addEventListener("hide.bs.modal", function () {
-    document.activeElement.blur();
-    document.body.focus();
+$("#colourtype").on("change", function () {
+    const blindtype = document.getElementById("blindtype").value;
+    bindSubType(blindtype, $(this).val());
 });
 
-document.getElementById("modalInfo").addEventListener("hide.bs.modal", function () {
-    document.activeElement.blur();
-    document.body.focus();
+$("#subtype").on("change", function () {
+    const blindtype = document.getElementById("blindtype").value;
+    const drop = document.getElementById("drop").value;
+
+    bindComponentForm(blindtype, $(this).val());
+
+    otomatisDrop($(this).val(), 1, drop);
+
+    document.getElementById("controllength").value = "";
+    document.getElementById("controllengthb").value = "";
+    document.getElementById("valancesize").value = "";
+    document.getElementById("returnlength").value = "";
 });
 
-document.getElementById("modalLayout").addEventListener("hide.bs.modal", function () {
-    document.activeElement.blur();
-    document.body.focus();
+$("#drop").on("input", function () {
+    const subtype = document.getElementById("subtype").value;
+    otomatisDrop(subtype, 1, $(this).val());
 });
 
-$(document).ready(function () {
-    checkSession();
+$("#dropb").on("input", function () {
+    const subtype = document.getElementById("subtype").value;
+    otomatisDrop(subtype, 2, $(this).val());
+});
 
-    $("#submit").on("click", process);
-    $("#cancel").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
-    $("#vieworder").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
+$("#controllength").on("change", function () {
+    visibleCustom("CordLength", $(this).val(), "1");
+});
 
-    $("#blindtype").on("change", function () {
-        bindMounting($(this).val());
-        bindColourType($(this).val());
-        bindValanceType($(this).val());
-        bindValancePosition($(this).val());
-    });
+$("#controllengthb").on("change", function () {
+    visibleCustom("CordLength", $(this).val(), "2");
+});
 
-    $("#colourtype").on("change", function () {
-        const blindtype = document.getElementById("blindtype").value;
-        bindSubType(blindtype, $(this).val());
-    });
+$("#valancesize").on("change", function () {
+    visibleCustom("ValanceSize", $(this).val(), "");
+});
 
-    $("#subtype").on("change", function () {
-        const blindtype = document.getElementById("blindtype").value;
-        const drop = document.getElementById("drop").value;
-
-        bindComponentForm(blindtype, $(this).val());
-
-        otomatisDrop($(this).val(), 1, drop);
-
-        document.getElementById("controllength").value = "";
-        document.getElementById("controllengthb").value = "";
-        document.getElementById("valancesize").value = "";
-        document.getElementById("returnlength").value = "";
-    });
-
-    $("#drop").on("input", function () {
-        const subtype = document.getElementById("subtype").value;
-        otomatisDrop(subtype, 1, $(this).val());
-    });
-    $("#dropb").on("input", function () {
-        const subtype = document.getElementById("subtype").value;
-        otomatisDrop(subtype, 2, $(this).val());
-    });
-
-    $("#controllength").on("change", function () {
-        visibleCustom("CordLength", $(this).val(), "1");
-    });
-    $("#controllengthb").on("change", function () {
-        visibleCustom("CordLength", $(this).val(), "2");
-    });
-    $("#valancesize").on("change", function () {
-        visibleCustom("ValanceSize", $(this).val(), "");
-    });
-    $("#returnlength").on("change", function () {
-        visibleCustom("ValanceLength", $(this).val(), "");
-    });
+$("#returnlength").on("change", function () {
+    visibleCustom("ValanceLength", $(this).val(), "");
 });
 
 function loader(itemAction) {
@@ -98,6 +80,27 @@ function loader(itemAction) {
 function isError(msg) {
     $("#modalError").modal("show");
     document.getElementById("errorMsg").innerHTML = msg;
+}
+
+function getOrderHeader(headerId) {
+    return new Promise((resolve, reject) => {
+        if (!headerId) return resolve();
+
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/GetOrderHeader",
+            data: JSON.stringify({ headerId }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: ({ d }) => {
+                document.getElementById("orderid").innerText = d.OrderId || "-";
+                document.getElementById("ordernumber").innerText = d.OrderNumber || "-";
+                document.getElementById("ordername").innerText = d.OrderName || "-";
+                resolve(d);
+            },
+            error: reject
+        });
+    });
 }
 
 function getCompanyOrder(headerId) {
@@ -613,7 +616,7 @@ function bindComponentForm(blindType, subType) {
             "divcontrolposition", "divtilterposition",
             "divcordlength", "divcordlengthb",
             "divcordlengthvalue", "divcordlengthvalueb",
-            "divsize", "divsizeb",            
+            "divsize", "divsizeb",
             "divwandlength",
             "divvalancesection",
             "divvalancesizevalue", "divvalancelengthvalue"
@@ -865,7 +868,7 @@ function process() {
     });
 }
 
-async function checkSession() {
+async function initVenetian() {
     const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get("boos");
     if (!sessionId) return redirectOrder();
@@ -894,6 +897,7 @@ async function checkSession() {
     }
 
     await Promise.all([
+        getOrderHeader(headerId),
         getDesignName(designId),
         getFormAction(itemAction),
         getCompanyOrder(headerId),
@@ -966,7 +970,6 @@ function otomatisDrop(subType, number, drop) {
                 document.getElementById("drop").value = drop;
             }
         }
-
         resolve();
     });
 }
@@ -1046,3 +1049,23 @@ function showInfo(type) {
 function redirectOrder() {
     window.location.replace("/order");
 }
+
+document.getElementById("modalSuccess").addEventListener("hide.bs.modal", function () {
+    document.activeElement.blur();
+    document.body.focus();
+});
+
+document.getElementById("modalError").addEventListener("hide.bs.modal", function () {
+    document.activeElement.blur();
+    document.body.focus();
+});
+
+document.getElementById("modalInfo").addEventListener("hide.bs.modal", function () {
+    document.activeElement.blur();
+    document.body.focus();
+});
+
+document.getElementById("modalLayout").addEventListener("hide.bs.modal", function () {
+    document.activeElement.blur();
+    document.body.focus();
+});

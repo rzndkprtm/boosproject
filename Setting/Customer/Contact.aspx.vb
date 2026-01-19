@@ -64,21 +64,22 @@ Partial Class Setting_Customer_Contact
                     lblAction.Text = "Edit"
                     titleProcess.InnerText = "Edit Contact"
 
-                    Dim thisData As DataSet = settingClass.GetListData("SELECT * FROM CustomerContacts WHERE Id='" & dataId & "'")
+                    Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerContacts WHERE Id='" & dataId & "'")
+                    If thisData Is Nothing Then Exit Sub
 
                     BindDataCustomer()
 
-                    ddlCustomer.SelectedValue = thisData.Tables(0).Rows(0).Item("CustomerId").ToString()
-                    txtName.Text = thisData.Tables(0).Rows(0).Item("Name").ToString()
-                    ddlSalutation.SelectedValue = thisData.Tables(0).Rows(0).Item("Salutation").ToString()
-                    txtRole.Text = thisData.Tables(0).Rows(0).Item("Role").ToString()
-                    txtEmail.Text = thisData.Tables(0).Rows(0).Item("Email").ToString()
-                    txtPhone.Text = thisData.Tables(0).Rows(0).Item("Phone").ToString()
-                    txtMobile.Text = thisData.Tables(0).Rows(0).Item("Mobile").ToString()
-                    txtFax.Text = thisData.Tables(0).Rows(0).Item("Fax").ToString()
-                    txtNote.Text = thisData.Tables(0).Rows(0).Item("Note").ToString()
+                    ddlCustomer.SelectedValue = thisData("CustomerId").ToString()
+                    txtName.Text = thisData("Name").ToString()
+                    ddlSalutation.SelectedValue = thisData("Salutation").ToString()
+                    txtRole.Text = thisData("Role").ToString()
+                    txtEmail.Text = thisData("Email").ToString()
+                    txtPhone.Text = thisData("Phone").ToString()
+                    txtMobile.Text = thisData("Mobile").ToString()
+                    txtFax.Text = thisData("Fax").ToString()
+                    txtNote.Text = thisData("Note").ToString()
 
-                    Dim tagsArray() As String = thisData.Tables(0).Rows(0).Item("Tags").ToString().Split(",")
+                    Dim tagsArray() As String = thisData("Tags").ToString().Split(",")
                     Dim tagsList As List(Of String) = tagsArray.ToList()
 
                     For Each i In tagsArray
@@ -96,7 +97,7 @@ Partial Class Setting_Customer_Contact
                 MessageError_Log(False, String.Empty)
                 Dim thisScript As String = "window.onload = function() { showLog(); };"
                 Try
-                    gvListLogs.DataSource = settingClass.GetListData("SELECT * FROM Logs WHERE Type='CustomerContacts' AND DataId='" & dataId & "'  ORDER BY ActionDate DESC")
+                    gvListLogs.DataSource = settingClass.GetDataTable("SELECT * FROM Logs WHERE Type='CustomerContacts' AND DataId='" & dataId & "'  ORDER BY ActionDate DESC")
                     gvListLogs.DataBind()
                     ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
                 Catch ex As Exception
@@ -232,9 +233,8 @@ Partial Class Setting_Customer_Contact
 
             Dim thisQuery As String = String.Format("SELECT CustomerContacts.*, Customers.Name AS CustomerName, CONVERT(VARCHAR, CustomerContacts.Salutation) + ' ' + CONVERT(VARCHAR, CustomerContacts.Name) AS ContactName, CASE WHEN CustomerContacts.[Primary]=1 THEN 'Yes' WHEN CustomerContacts.[Primary]=0 THEN 'No' ELSE 'Error' END AS DataPrimary FROM CustomerContacts LEFT JOIN Customers ON CustomerContacts.CustomerId=Customers.Id {0} ORDER BY Customers.Id, CustomerContacts.Id ASC", search)
 
-            gvList.DataSource = settingClass.GetListData(thisQuery)
+            gvList.DataSource = settingClass.GetDataTable(thisQuery)
             gvList.DataBind()
-
             gvList.Columns(1).Visible = PageAction("Visible ID") ' ID
 
             btnAdd.Visible = PageAction("Add")
@@ -246,7 +246,7 @@ Partial Class Setting_Customer_Contact
     Protected Sub BindDataCustomer()
         ddlCustomer.Items.Clear()
         Try
-            ddlCustomer.DataSource = settingClass.GetListData("SELECT * FROM Customers WHERE Active=1 ORDER BY Name ASC")
+            ddlCustomer.DataSource = settingClass.GetDataTable("SELECT * FROM Customers WHERE Active=1 ORDER BY Name ASC")
             ddlCustomer.DataTextField = "Name"
             ddlCustomer.DataValueField = "Id"
             ddlCustomer.DataBind()

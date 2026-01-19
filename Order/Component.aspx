@@ -36,46 +36,75 @@
             </div>
         </section>
 
-        <section class="row" id="divorder" >
-            <div class="col-12 col-sm-12 col-lg-7">
-                <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title" id="cardtitle"></h4>
-                    </div>
-                    <div class="card-content">
-                        <div class="card-body">
-
+        <div id="divorder" style="display:none;">
+            <section class="row">
+                <div class="col-12 col-sm-12 col-lg-7">
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-12 col-sm-12 col-lg-3">
+                                        <label>Order #</label>
+                                        <br />
+                                        <label id="orderid" class="font-bold"></label>
+                                    </div>
+                                    <div class="col-12 col-sm-12 col-lg-4">
+                                        <label>Order Number</label>
+                                        <br />
+                                        <label id="ordernumber" class="font-bold"></label>
+                                    </div>
+                                    <div class="col-6 col-sm-6 col-lg-5">
+                                        <label>Order Name</label>
+                                        <br />
+                                        <label id="ordername" class="font-bold"></label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="card-footer text-center">
-                        <a href="javascript:void(0);" id="submit" class="btn btn-primary">Submit</a>
-                        <a href="javascript:void(0);" id="cancel" class="btn btn-danger">Cancel</a>
+                </div>
+            </section>
+            <section class="row">
+                <div class="col-12 col-sm-12 col-lg-7">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title" id="cardtitle"></h4>
+                        </div>
+                        <div class="card-content">
+                            <div class="card-body">
+
+                            </div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <a href="javascript:void(0);" id="submit" class="btn btn-primary">Submit</a>
+                            <a href="javascript:void(0);" id="cancel" class="btn btn-danger">Cancel</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-12 col-sm-12 col-lg-5">
-                <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title text-center">Information</h4>
-                    </div>
-                    <div class="card-content">
-                        <div class="card-body">
-                            <div class="form form-horizontal">
-                                <div class="form-body">
-                                    <div class="row">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Venetian Type</label>
+                <div class="col-12 col-sm-12 col-lg-5">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title text-center">Information</h4>
+                        </div>
+                        <div class="card-content">
+                            <div class="card-body">
+                                <div class="form form-horizontal">
+                                    <div class="form-body">
+                                        <div class="row">
+                                            <div class="col-12 col-sm-12 col-lg-3">
+                                                <label>Venetian Type</label>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-lg-5 form-group">
+                                                <select id="blindtype" class="form-select"></select>
+                                            </div>
                                         </div>
-                                        <div class="col-12 col-sm-12 col-lg-5 form-group">
-                                            <select id="blindtype" class="form-select"></select>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Venetian Type</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-5 form-group">
-                                            <select id="tubetype" class="form-select"></select>
+                                        <div class="row">
+                                            <div class="col-12 col-sm-12 col-lg-3">
+                                                <label>Venetian Type</label>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-lg-5 form-group">
+                                                <select id="tubetype" class="form-select"></select>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -83,8 +112,8 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
+        </div>
     </div>
 
     <div class="modal fade text-left" id="modalSuccess" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
@@ -136,4 +165,6 @@
             </div>
         </div>
     </div>
+
+    <script src='<%: ResolveUrl("~/Scripts/WebForms/Order/Component.js?v=1.0.0") %>'></script>
 </asp:Content>

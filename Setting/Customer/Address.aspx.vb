@@ -64,22 +64,21 @@ Partial Class Setting_Customer_Address
                     lblAction.Text = "Edit"
                     titleProcess.InnerText = "Edit Address"
 
-                    Dim thisData As DataSet = settingClass.GetListData("SELECT * FROM CustomerAddress WHERE Id='" & dataId & "'")
+                    Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerAddress WHERE Id='" & dataId & "'")
 
                     BindDataCustomer()
 
-                    ddlCustomer.SelectedValue = thisData.Tables(0).Rows(0).Item("CustomerId").ToString()
+                    ddlCustomer.SelectedValue = thisData("CustomerId").ToString()
 
-                    txtDescription.Text = thisData.Tables(0).Rows(0).Item("Description").ToString()
-                    txtAddress.Text = thisData.Tables(0).Rows(0).Item("Address").ToString()
-                    txtSuburb.Text = thisData.Tables(0).Rows(0).Item("Suburb").ToString()
-                    txtState.Text = thisData.Tables(0).Rows(0).Item("State").ToString()
-                    txtPostCode.Text = thisData.Tables(0).Rows(0).Item("PostCode").ToString()
-                    ddlCountry.SelectedValue = thisData.Tables(0).Rows(0).Item("Country").ToString()
+                    txtDescription.Text = thisData("Description").ToString()
+                    txtAddress.Text = thisData("Address").ToString()
+                    txtSuburb.Text = thisData("Suburb").ToString()
+                    txtState.Text = thisData("State").ToString()
+                    txtPostCode.Text = thisData("PostCode").ToString()
+                    ddlCountry.SelectedValue = thisData("Country").ToString()
+                    txtNote.Text = thisData("Note").ToString()
 
-                    txtNote.Text = thisData.Tables(0).Rows(0).Item("Note").ToString()
-
-                    Dim tagsArray() As String = thisData.Tables(0).Rows(0).Item("Tags").ToString().Split(",")
+                    Dim tagsArray() As String = thisData("Tags").ToString().Split(",")
                     Dim tagsList As List(Of String) = tagsArray.ToList()
 
                     For Each i In tagsArray
@@ -97,8 +96,9 @@ Partial Class Setting_Customer_Address
                 MessageError_Log(False, String.Empty)
                 Dim thisScript As String = "window.onload = function() { showLog(); };"
                 Try
-                    gvListLogs.DataSource = settingClass.GetListData("SELECT * FROM Logs WHERE Type='CustomerAddress' AND DataId='" & dataId & "'  ORDER BY ActionDate DESC")
+                    gvListLogs.DataSource = settingClass.GetDataTable("SELECT * FROM Logs WHERE Type='CustomerAddress' AND DataId='" & dataId & "'  ORDER BY ActionDate DESC")
                     gvListLogs.DataBind()
+
                     ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
                 Catch ex As Exception
                     MessageError_Log(True, ex.ToString())
@@ -250,7 +250,6 @@ Partial Class Setting_Customer_Address
             If Not String.IsNullOrEmpty(searchText) Then
                 search = "WHERE Customers.Name LIKE '%" & searchText & "%'"
             End If
-
             Dim thisQuery As String = String.Format("SELECT CustomerAddress.*, Customers.Name AS CustomerName, CASE WHEN CustomerAddress.[Primary]=1 THEN 'Yes' WHEN CustomerAddress.[Primary]=0 THEN 'No' ELSE 'Error' END AS DataPrimary FROM CustomerAddress LEFT JOIN Customers ON CustomerAddress.CustomerId=Customers.Id {0} ORDER BY Customers.Name, CustomerAddress.Id ASC", search)
 
             gvList.DataSource = settingClass.GetListData(thisQuery)
@@ -263,7 +262,7 @@ Partial Class Setting_Customer_Address
     Private Sub BindDataCustomer()
         ddlCustomer.Items.Clear()
         Try
-            ddlCustomer.DataSource = settingClass.GetListData("SELECT * FROM Customers WHERE Active=1 ORDER BY Name ASC")
+            ddlCustomer.DataSource = settingClass.GetDataTable("SELECT * FROM Customers WHERE Active=1 ORDER BY Name ASC")
             ddlCustomer.DataTextField = "Name"
             ddlCustomer.DataValueField = "Id"
             ddlCustomer.DataBind()
@@ -288,15 +287,17 @@ Partial Class Setting_Customer_Address
         divErrorProcess.Visible = visible : msgErrorProcess.InnerText = message
     End Sub
 
-    Protected Function BindDetailAddress(Id As String) As String
+    Protected Function BindDetailAddress(addressId As String) As String
         Dim result As String = String.Empty
-        If Not Id = "" Then
-            Dim thisData As DataSet = settingClass.GetListData("SELECT * FROM CustomerAddress WHERE Id='" & Id & "'")
-            If thisData.Tables(0).Rows.Count > 0 Then
-                Dim address As String = thisData.Tables(0).Rows(0).Item("Address").ToString()
-                Dim suburb As String = thisData.Tables(0).Rows(0).Item("Suburb").ToString()
-                Dim state As String = thisData.Tables(0).Rows(0).Item("State").ToString()
-                Dim postCode As String = thisData.Tables(0).Rows(0).Item("PostCode").ToString()
+
+        If Not String.IsNullOrEmpty(addressId) Then
+            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerAddress WHERE Id='" & addressId & "'")
+
+            If thisData IsNot Nothing Then
+                Dim address As String = thisData("Address").ToString()
+                Dim suburb As String = thisData("Suburb").ToString()
+                Dim state As String = thisData("State").ToString()
+                Dim postCode As String = thisData("PostCode").ToString()
 
                 result = address & ", " & suburb & ", " & state & " " & postCode
             End If

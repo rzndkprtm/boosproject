@@ -1690,7 +1690,13 @@
         </div>
     </div>
 
-    <asp:HiddenField ID="hiddenHeaderId" runat="server" />
+    <asp:HiddenField ID="headerId" runat="server" />
+    <asp:HiddenField ID="itemId" runat="server" />
+    <asp:HiddenField ID="customerId" runat="server" />
+    <asp:HiddenField ID="companyId" runat="server" />
+    <asp:HiddenField ID="companyDetailId" runat="server" />
+    <asp:HiddenField ID="priceGroupId" runat="server" />
+    <asp:HiddenField ID="createdRole" runat="server" />
     
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', function () {

@@ -23,14 +23,31 @@ Public Module BundleConfig
         bundles.Add(New ScriptBundle("~/bundles/modernizr").Include(
             "~/Scripts/modernizr-*"))
 
+        'bundles.Add(New StyleBundle("~/bundles/booscss").Include(
+        '    "~/Assets/vendors/choices.js/choices.min.css",
+        '    "~/Assets/css/bootstrap.css",
+        '    "~/Assets/vendors/sweetalert2/sweetalert2.min.css",
+        '    "~/Assets/vendors/iconly/bold.css",
+        '    "~/Assets/vendors/perfect-scrollbar/perfect-scrollbar.css",
+        '    "~/Assets/vendors/bootstrap-icons/bootstrap-icons.css",
+        '    "~/Assets/css/app.css"))
+
+        'bundles.Add(New ScriptBundle("~/bundles/boosjs").Include(
+        '    "~/Assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js",
+        '    "~/Assets/js/bootstrap.bundle.min.js",
+        '    "~/Assets/vendors/sweetalert2/sweetalert2.all.min.js",
+        '    "~/Assets/vendors/choices.js/choices.min.js",
+        '    "~/Assets/js/pages/form-element-select.js",
+        '    "~/Assets/js/pages/horizontal-layout.js"))
+
         RegisterJQueryScriptManager()
     End Sub
 
     Public Sub RegisterJQueryScriptManager()
         Dim jQueryScriptResourceDefinition As New ScriptResourceDefinition
         With jQueryScriptResourceDefinition
-            .Path = "~/scripts/jquery-3.7.1.min.js"
-            .DebugPath = "~/scripts/jquery-3.7.1.js"
+            .Path = "~/Scripts/jquery-3.7.1.min.js"
+            .DebugPath = "~/Scripts/jquery-3.7.1.js"
             .CdnPath = "http://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.7.1.min.js"
             .CdnDebugPath = "http://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.7.1.js"
         End With

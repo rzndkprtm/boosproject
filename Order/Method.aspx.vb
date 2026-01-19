@@ -29,6 +29,26 @@ Partial Class Order_Method
         Return resultName
     End Function
 
+    <WebMethod>
+    Public Shared Function GetOrderHeader(headerId As String) As Object
+        Dim orderClass As New OrderClass
+        Dim dataHeader As New Dictionary(Of String, String) From {
+            {
+                "OrderId",
+                orderClass.GetItemData("SELECT OrderId FROM OrderHeaders WHERE Id='" & headerId & "'")
+            },
+            {
+                "OrderNumber",
+                orderClass.GetItemData("SELECT OrderNumber FROM OrderHeaders WHERE Id='" & headerId & "'")
+            },
+            {
+                "OrderName",
+                orderClass.GetItemData("SELECT OrderName FROM OrderHeaders WHERE Id='" & headerId & "'")
+            }
+        }
+        Return dataHeader
+    End Function
+
     <WebMethod()>
     Public Shared Function ListData(data As JSONList) As List(Of Object)
         Dim orderClass As New OrderClass

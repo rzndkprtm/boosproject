@@ -175,7 +175,7 @@ Partial Class Ticket_Default
         If Not String.IsNullOrEmpty(e.CommandArgument) Then
             Dim dataId As String = e.CommandArgument.ToString()
             If e.CommandName = "Detail" Then
-                Dim ticketCode As String = settingClass.GetItemData("Select TicketCode FROM Tickets WHERE Id='" & dataId & "'")
+                Dim ticketCode As String = settingClass.GetItemData("SELECT TicketCode FROM Tickets WHERE Id='" & dataId & "'")
                 url = String.Format("~/ticket/detail?id={0}&ticketcode={1}", dataId, ticketCode)
                 Response.Redirect(url, False)
             End If
@@ -217,9 +217,8 @@ Partial Class Ticket_Default
 
             Dim thisQuery As String = String.Format("SELECT Tickets.*, CASE WHEN Tickets.Status=1 THEN 'Open' WHEN Tickets.Status=0 THEN 'Closed' ELSE 'Error' END AS TicketStatus, CustomerLogins.FullName AS FullName, Customers.Name AS CustomerName FROM Tickets LEFT JOIN CustomerLogins ON Tickets.CreatedBy=CustomerLogins.Id LEFT JOIN Customers ON CustomerLogins.CustomerId=Customers.Id {0} {1} ORDER BY Tickets.CreatedDate DESC", byRole, bySearch)
 
-            gvList.DataSource = settingClass.GetListData(thisQuery)
+            gvList.DataSource = settingClass.GetDataTable(thisQuery)
             gvList.DataBind()
-
             gvList.Columns(1).Visible = PageAction("Visible ID")
 
             btnAdd.Visible = PageAction("Add")

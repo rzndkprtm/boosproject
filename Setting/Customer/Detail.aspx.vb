@@ -201,14 +201,12 @@ Partial Class Setting_Customer_Detail
         MessageError(False, String.Empty)
         Try
             Using thisConn As New SqlConnection(myConn)
-                thisConn.Open()
-
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE Customers SET Active=0 WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", lblId.Text)
+
+                    thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
-
-                thisConn.Close()
             End Using
 
             Response.Redirect("~/setting/customer/", False)
@@ -417,6 +415,7 @@ Partial Class Setting_Customer_Detail
                 Try
                     gvListLogs.DataSource = settingClass.GetDataTable("SELECT * FROM Logs WHERE Type='CustomerContacts' AND DataId='" & dataId & "'  ORDER BY ActionDate DESC")
                     gvListLogs.DataBind()
+
                     ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
                 Catch ex As Exception
                     MessageError_Log(True, ex.ToString())
@@ -594,7 +593,6 @@ Partial Class Setting_Customer_Detail
         Try
             gvListContact.DataSource = settingClass.GetDataTable("SELECT *, CONVERT(VARCHAR, Salutation) + ' ' + CONVERT(VARCHAR, Name) AS ContactName FROM CustomerContacts WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
             gvListContact.DataBind()
-
             gvListContact.Columns(1).Visible = PageAction("Visible ID Contact")
 
             btnAddContact.Visible = PageAction("Add Contact")
@@ -705,6 +703,7 @@ Partial Class Setting_Customer_Detail
                 Try
                     gvListLogs.DataSource = settingClass.GetDataTable("SELECT * FROM Logs WHERE Type='CustomerAddress' AND DataId='" & dataId & "'  ORDER BY ActionDate DESC")
                     gvListLogs.DataBind()
+
                     ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
                 Catch ex As Exception
                     MessageError_Log(True, ex.ToString())
@@ -905,12 +904,10 @@ Partial Class Setting_Customer_Detail
         lblIdAddress.Text = String.Empty
         lblActionAddress.Text = String.Empty
         Try
-            Dim thisQuery As String = "SELECT * FROM CustomerAddress WHERE CustomerId='" & customerId & "' ORDER BY Id ASC"
-
-            gvListAddress.DataSource = settingClass.GetDataTable(thisQuery)
+            gvListAddress.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerAddress WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
             gvListAddress.DataBind()
-
             gvListAddress.Columns(1).Visible = PageAction("Visible ID Address")
+
             btnAddAddress.Visible = PageAction("Add Address")
         Catch ex As Exception
             MessageError_Address(True, ex.ToString())
@@ -978,7 +975,6 @@ Partial Class Setting_Customer_Detail
                     titleBusiness.InnerText = "Edit Customer Business"
 
                     Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerBusiness WHERE Id='" & dataId & "'")
-
                     If thisData Is Nothing Then Exit Sub
 
                     txtBusinessNumber.Text = thisData("ABNNumber").ToString()
@@ -1191,12 +1187,10 @@ Partial Class Setting_Customer_Detail
         lblIdBusiness.Text = String.Empty
         lblActionBusiness.Text = String.Empty
         Try
-            Dim thisQuery As String = "SELECT * FROM CustomerBusiness WHERE CustomerId='" & customerId & "' ORDER BY Id ASC"
-
-            gvListBusiness.DataSource = settingClass.GetDataTable(thisQuery)
+            gvListBusiness.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerBusiness WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
             gvListBusiness.DataBind()
-
             gvListBusiness.Columns(1).Visible = PageAction("Visible ID Business")
+
             btnAddBusiness.Visible = PageAction("Add Business")
         Catch ex As Exception
             MessageError_Business(True, ex.ToString())
@@ -1256,18 +1250,20 @@ Partial Class Setting_Customer_Detail
                         divPassword.Visible = True
                     End If
 
+                    Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerLogins WHERE Id='" & lblIdLogin.Text & "'")
+                    If myData Is Nothing Then Exit Sub
+
                     BindDataLoginRole()
                     BindDataLoginLevel()
 
-                    Dim myData As DataSet = settingClass.GetListData("SELECT * FROM CustomerLogins WHERE Id='" & lblIdLogin.Text & "'")
-                    ddlLoginRole.SelectedValue = myData.Tables(0).Rows(0).Item("RoleId").ToString()
-                    ddlLoginLevel.SelectedValue = myData.Tables(0).Rows(0).Item("LevelId").ToString()
-                    txtLoginUserName.Text = myData.Tables(0).Rows(0).Item("UserName").ToString()
-                    lblLoginUserNameOld.Text = myData.Tables(0).Rows(0).Item("UserName").ToString()
-                    txtLoginFullName.Text = myData.Tables(0).Rows(0).Item("FullName").ToString()
-                    txtLoginEmail.Text = myData.Tables(0).Rows(0).Item("Email").ToString()
-                    ddlPricing.SelectedValue = Convert.ToInt32(myData.Tables(0).Rows(0).Item("Pricing"))
-                    Dim password As String = myData.Tables(0).Rows(0).Item("Password").ToString()
+                    ddlLoginRole.SelectedValue = myData("RoleId").ToString()
+                    ddlLoginLevel.SelectedValue = myData("LevelId").ToString()
+                    txtLoginUserName.Text = myData("UserName").ToString()
+                    lblLoginUserNameOld.Text = myData("UserName").ToString()
+                    txtLoginFullName.Text = myData("FullName").ToString()
+                    txtLoginEmail.Text = myData("Email").ToString()
+                    ddlPricing.SelectedValue = Convert.ToInt32(myData("Pricing"))
+                    Dim password As String = myData("Password").ToString()
                     txtLoginPassword.Text = settingClass.Decrypt(password)
 
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcessLogin", thisScript, True)
@@ -1311,7 +1307,7 @@ Partial Class Setting_Customer_Detail
                 MessageError_Log(False, String.Empty)
                 Dim thisScript As String = "window.onload = function() { showLog(); };"
                 Try
-                    gvListLogs.DataSource = settingClass.GetListData("SELECT * FROM Logs WHERE Type='CustomerLogins' AND DataId='" & dataId & "'  ORDER BY ActionDate DESC")
+                    gvListLogs.DataSource = settingClass.GetDataTable("SELECT * FROM Logs WHERE Type='CustomerLogins' AND DataId='" & dataId & "'  ORDER BY ActionDate DESC")
                     gvListLogs.DataBind()
 
                     ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
@@ -1419,9 +1415,7 @@ Partial Class Setting_Customer_Detail
 
             If msgErrorProcessLogin.InnerText = "" Then
                 If txtLoginPassword.Text = "" Then txtLoginPassword.Text = txtLoginUserName.Text
-
                 If txtLoginFullName.Text = "" Then txtLoginFullName.Text = txtLoginUserName.Text
-
                 Dim password As String = settingClass.Encrypt(txtLoginPassword.Text)
 
                 If lblActionLogin.Text = "Add" Then
@@ -1645,10 +1639,11 @@ Partial Class Setting_Customer_Detail
         Try
             Dim thisQuery As String = "SELECT CustomerLogins.*, CustomerLoginRoles.Name AS RoleName, CustomerLoginLevels.Name AS LevelName FROM CustomerLogins LEFT JOIN CustomerLoginRoles ON CustomerLogins.RoleId=CustomerLoginRoles.Id LEFT JOIN CustomerLoginLevels ON CustomerLogins.LevelId=CustomerLoginLevels.Id WHERE CustomerLogins.CustomerId='" & customerId & "' ORDER BY CustomerLogins.RoleId, CustomerLogins.Id ASC"
 
-            gvListLogin.DataSource = settingClass.GetListData(thisQuery)
+            gvListLogin.DataSource = settingClass.GetDataTable(thisQuery)
             gvListLogin.DataBind()
-
             gvListLogin.Columns(1).Visible = PageAction("Visible ID Login")
+            gvListLogin.Columns(5).Visible = PageAction("Visible Email Login")
+
             btnAddLogin.Visible = PageAction("Add Login")
         Catch ex As Exception
             MessageError_Login(True, ex.ToString())
@@ -1677,7 +1672,7 @@ Partial Class Setting_Customer_Detail
                 End If
             End If
 
-            ddlLoginRole.DataSource = settingClass.GetListData(thisQuery)
+            ddlLoginRole.DataSource = settingClass.GetDataTable(thisQuery)
             ddlLoginRole.DataTextField = "Name"
             ddlLoginRole.DataValueField = "Id"
             ddlLoginRole.DataBind()
@@ -1693,7 +1688,7 @@ Partial Class Setting_Customer_Detail
     Protected Sub BindDataLoginLevel()
         ddlLoginLevel.Items.Clear()
         Try
-            ddlLoginLevel.DataSource = settingClass.GetListData("SELECT * FROM CustomerLoginLevels ORDER BY Name ASC")
+            ddlLoginLevel.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerLoginLevels ORDER BY Name ASC")
             ddlLoginLevel.DataTextField = "Name"
             ddlLoginLevel.DataValueField = "Id"
             ddlLoginLevel.DataBind()
@@ -2368,13 +2363,13 @@ Partial Class Setting_Customer_Detail
                 Dim thisScript As String = "window.onload = function() { showProcessProduct(); };"
                 Try
                     lblIdProduct.Text = dataId
+                    Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerProductAccess WHERE Id='" & lblIdProduct.Text & "'")
+                    If myData Is Nothing Then Exit Sub
 
                     BindDesignProduct()
 
-                    Dim myData As DataSet = settingClass.GetListData("SELECT * FROM CustomerProductAccess WHERE Id='" & lblIdProduct.Text & "'")
-                    Dim tagsArray() As String = myData.Tables(0).Rows(0).Item("DesignId").ToString().Split(",")
+                    Dim tagsArray() As String = myData("DesignId").ToString().Split(",")
                     Dim tagsList As List(Of String) = tagsArray.ToList()
-
                     For Each i In tagsArray
                         If Not (i.Equals(String.Empty)) Then
                             lbProductTags.Items.FindByValue(i).Selected = True
@@ -2486,7 +2481,7 @@ Partial Class Setting_Customer_Detail
     Protected Sub BindDataProduct(customerId As String)
         MessageError_Product(False, String.Empty)
         Try
-            gvListProduct.DataSource = settingClass.GetListData("SELECT * FROM CustomerProductAccess WHERE Id='" + customerId + "'")
+            gvListProduct.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerProductAccess WHERE Id='" + customerId + "'")
             gvListProduct.DataBind()
 
             aResetProduct.Visible = PageAction("Reset Product Access")
@@ -2503,7 +2498,7 @@ Partial Class Setting_Customer_Detail
     Protected Sub BindDesignProduct()
         lbProductTags.Items.Clear()
         Try
-            lbProductTags.DataSource = settingClass.GetListData("SELECT * FROM Designs ORDER BY Name ASC")
+            lbProductTags.DataSource = settingClass.GetDataTable("SELECT * FROM Designs ORDER BY Name ASC")
             lbProductTags.DataTextField = "Name"
             lbProductTags.DataValueField = "Id"
             lbProductTags.DataBind()
@@ -2521,11 +2516,10 @@ Partial Class Setting_Customer_Detail
         Dim result As String = String.Empty
         Try
             Dim hasil As String = String.Empty
-
-            Dim myData As DataSet = settingClass.GetListData("SELECT Designs.Name AS DesignName FROM CustomerProductAccess CROSS APPLY STRING_SPLIT(CustomerProductAccess.DesignId, ',') AS designArray LEFT JOIN Designs ON designArray.VALUE=Designs.Id WHERE CustomerProductAccess.Id='" & customerId & "' ORDER BY Designs.Name ASC ")
-            If Not myData.Tables(0).Rows.Count = 0 Then
-                For i As Integer = 0 To myData.Tables(0).Rows.Count - 1
-                    Dim designName As String = myData.Tables(0).Rows(i).Item("DesignName").ToString()
+            Dim myData As DataTable = settingClass.GetDataTable("SELECT Designs.Name AS DesignName FROM CustomerProductAccess CROSS APPLY STRING_SPLIT(CustomerProductAccess.DesignId, ',') AS designArray LEFT JOIN Designs ON designArray.VALUE=Designs.Id WHERE CustomerProductAccess.Id='" & customerId & "' ORDER BY Designs.Name ASC ")
+            If Not myData.Rows.Count = 0 Then
+                For i As Integer = 0 To myData.Rows.Count - 1
+                    Dim designName As String = myData.Rows(i)("DesignName").ToString()
                     hasil += designName & ", "
                 Next
             End If
@@ -2555,9 +2549,8 @@ Partial Class Setting_Customer_Detail
     Protected Sub BindDataQuote(customerId As String)
         MessageError_Quote(False, String.Empty)
         Try
-            gvListQuote.DataSource = settingClass.GetListData("SELECT * FROM CustomerQuotes WHERE Id='" & customerId & "'")
+            gvListQuote.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerQuotes WHERE Id='" & customerId & "'")
             gvListQuote.DataBind()
-
         Catch ex As Exception
             MessageError_Quote(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then

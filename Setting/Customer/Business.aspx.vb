@@ -64,19 +64,20 @@ Partial Class Setting_Customer_Business
                     lblAction.Text = "Edit"
                     titleProcess.InnerText = "Edit Business"
 
-                    Dim thisData As DataSet = settingClass.GetListData("SELECT * FROM CustomerBusiness WHERE Id='" & dataId & "'")
+                    Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerBusiness WHERE Id='" & dataId & "'")
+                    If thisData Is Nothing Then Exit Sub
 
                     BindDataCustomer()
 
-                    ddlCustomer.SelectedValue = thisData.Tables(0).Rows(0).Item("CustomerId").ToString()
-                    txtNumber.Text = thisData.Tables(0).Rows(0).Item("ABNNumber").ToString()
-                    txtName.Text = thisData.Tables(0).Rows(0).Item("RegisteredName").ToString()
-                    If Not String.IsNullOrEmpty(thisData.Tables(0).Rows(0).Item("RegisteredDate").ToString()) Then
-                        txtRegistered.Text = Convert.ToDateTime(thisData.Tables(0).Rows(0).Item("RegisteredDate")).ToString("dd MMM yyyy")
+                    ddlCustomer.SelectedValue = thisData("CustomerId").ToString()
+                    txtNumber.Text = thisData("ABNNumber").ToString()
+                    txtName.Text = thisData("RegisteredName").ToString()
+                    If Not String.IsNullOrEmpty(thisData("RegisteredDate").ToString()) Then
+                        txtRegistered.Text = Convert.ToDateTime(thisData("RegisteredDate")).ToString("dd MMM yyyy")
                     End If
 
-                    If Not String.IsNullOrEmpty(thisData.Tables(0).Rows(0).Item("ExpiryDate").ToString()) Then
-                        txtExpiry.Text = Convert.ToDateTime(thisData.Tables(0).Rows(0).Item("ExpiryDate")).ToString("dd MMM yyyy")
+                    If Not String.IsNullOrEmpty(thisData("ExpiryDate").ToString()) Then
+                        txtExpiry.Text = Convert.ToDateTime(thisData("ExpiryDate")).ToString("dd MMM yyyy")
                     End If
 
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
@@ -88,7 +89,7 @@ Partial Class Setting_Customer_Business
                 MessageError_Log(False, String.Empty)
                 Dim thisScript As String = "window.onload = function() { showLog(); };"
                 Try
-                    gvListLogs.DataSource = settingClass.GetListData("SELECT * FROM Logs WHERE Type='CustomerBusiness' AND DataId='" & dataId & "'  ORDER BY ActionDate DESC")
+                    gvListLogs.DataSource = settingClass.GetDataTable("SELECT * FROM Logs WHERE Type='CustomerBusiness' AND DataId='" & dataId & "'  ORDER BY ActionDate DESC")
                     gvListLogs.DataBind()
 
                     ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
@@ -211,7 +212,7 @@ Partial Class Setting_Customer_Business
 
             Dim thisQuery As String = String.Format("SELECT CustomerBusiness.*, Customers.Name AS CustomerName, CASE WHEN CustomerBusiness.[Primary]=1 THEN 'Yes' WHEN CustomerBusiness.[Primary]=0 THEN 'No' ELSE 'Error' END AS DataPrimary FROM CustomerBusiness LEFT JOIN Customers ON CustomerBusiness.CustomerId=Customers.Id {0} ORDER BY Customers.Id, CustomerBusiness.Id ASC", search)
 
-            gvList.DataSource = settingClass.GetListData(thisQuery)
+            gvList.DataSource = settingClass.GetDataTable(thisQuery)
             gvList.DataBind()
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -221,7 +222,7 @@ Partial Class Setting_Customer_Business
     Private Sub BindDataCustomer()
         ddlCustomer.Items.Clear()
         Try
-            ddlCustomer.DataSource = settingClass.GetListData("SELECT * FROM Customers WHERE Active=1 ORDER BY Name ASC")
+            ddlCustomer.DataSource = settingClass.GetDataTable("SELECT * FROM Customers WHERE Active=1 ORDER BY Name ASC")
             ddlCustomer.DataTextField = "Name"
             ddlCustomer.DataValueField = "Id"
             ddlCustomer.DataBind()

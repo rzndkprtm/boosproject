@@ -396,9 +396,9 @@
                                                                 <%# If(IsDBNull(Eval("RoleName")) OrElse IsDBNull(Eval("LevelName")) OrElse String.IsNullOrEmpty(Eval("RoleName") & "") OrElse String.IsNullOrEmpty(Eval("LevelName") & ""), "Requires correction", Eval("RoleName") & " - " & Eval("LevelName")) %>
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
-
                                                         <asp:BoundField DataField="UserName" HeaderText="User" />
                                                         <asp:BoundField DataField="FullName" HeaderText="Full Name" />
+                                                        <asp:BoundField DataField="Email" HeaderText="Email" />
                                                         <asp:BoundField DataField="LastLogin" HeaderText="Last Login" DataFormatString="{0:dd MMM yyyy HH:mm:ss}" />
                                                         <asp:TemplateField ItemStyle-Width="120px">
                                                             <ItemTemplate>

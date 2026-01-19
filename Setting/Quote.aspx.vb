@@ -64,13 +64,14 @@ Partial Class Setting_Quote
         MessageError_Address(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showAddress(); };"
         Try
-            Dim myData As DataSet = settingClass.GetListData("SELECT * FROM CustomerQuotes WHERE Id='" & customerId & "'")
+            Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerQuotes WHERE Id='" & customerId & "'")
+            If myData Is Nothing Then Exit Sub
 
-            txtAddress.Text = myData.Tables(0).Rows(0).Item("Address").ToString
-            txtSuburb.Text = myData.Tables(0).Rows(0).Item("Suburb").ToString
-            txtState.Text = myData.Tables(0).Rows(0).Item("State").ToString
-            txtPostCode.Text = myData.Tables(0).Rows(0).Item("PostCode").ToString
-            ddlCountry.SelectedValue = myData.Tables(0).Rows(0).Item("Country").ToString
+            txtAddress.Text = myData("Address").ToString
+            txtSuburb.Text = myData("Suburb").ToString
+            txtState.Text = myData("State").ToString
+            txtPostCode.Text = myData("PostCode").ToString
+            ddlCountry.SelectedValue = myData("Country").ToString
 
             ClientScript.RegisterStartupScript(Me.GetType(), "showAddress", thisScript, True)
         Catch ex As Exception
@@ -86,10 +87,11 @@ Partial Class Setting_Quote
         MessageError_Contact(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showContact(); };"
         Try
-            Dim myData As DataSet = settingClass.GetListData("SELECT * FROM CustomerQuotes WHERE Id='" & customerId & "'")
+            Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerQuotes WHERE Id='" & customerId & "'")
+            If myData Is Nothing Then Exit Sub
 
-            txtEmail.Text = myData.Tables(0).Rows(0).Item("Email").ToString
-            txtPhone.Text = myData.Tables(0).Rows(0).Item("Phone").ToString
+            txtEmail.Text = myData("Email").ToString
+            txtPhone.Text = myData("Phone").ToString
 
             ClientScript.RegisterStartupScript(Me.GetType(), "showContact", thisScript, True)
         Catch ex As Exception
@@ -105,12 +107,12 @@ Partial Class Setting_Quote
         MessageError_Terms(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showTerms(); };"
         Try
-            Dim myData As DataSet = settingClass.GetListData("SELECT * FROM CustomerQuotes WHERE Id='" & customerId & "'")
+            Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerQuotes WHERE Id='" & customerId & "'")
+            If myData Is Nothing Then Exit Sub
 
-            Dim termText As String = myData.Tables(0).Rows(0).Item("Terms").ToString()
+            Dim termText As String = myData("Terms").ToString()
             termText = termText.Replace(vbCrLf, "<br>").Replace(vbLf, "<br>")
-
-            txtTerms.Text = myData.Tables(0).Rows(0).Item("Terms").ToString() 'termText
+            txtTerms.Text = myData("Terms").ToString()
 
             ClientScript.RegisterStartupScript(Me.GetType(), "showTerms", thisScript, True)
         Catch ex As Exception
@@ -289,31 +291,31 @@ Partial Class Setting_Quote
 
     Protected Sub BindData(customerId As String)
         Try
-            Dim thisData As DataSet = settingClass.GetListData("SELECT * FROM CustomerQuotes WHERE Id='" & customerId & "'")
-            If thisData.Tables(0).Rows.Count = 0 Then
+            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerQuotes WHERE Id='" & customerId & "'")
+            If thisData Is Nothing Then
                 Response.Redirect("~/", False)
                 Exit Sub
             End If
 
-            imgQuote.ImageUrl = String.Format("~/assets/images/logo/customers/{0}", thisData.Tables(0).Rows(0).Item("Logo").ToString())
-            oldLogo = thisData.Tables(0).Rows(0).Item("Logo").ToString()
+            imgQuote.ImageUrl = String.Format("~/assets/images/logo/customers/{0}", thisData("Logo").ToString())
+            oldLogo = thisData("Logo").ToString()
 
             Dim companyId As String = settingClass.GetItemData("SELECT CompanyId FROM Customers WHERE Id='" & customerId & "'")
 
             Dim address As String = String.Empty
 
-            address &= String.Format("- Address : {0}", thisData.Tables(0).Rows(0).Item("Address").ToString())
+            address &= String.Format("- Address : {0}", thisData("Address").ToString())
             address &= "<br />"
-            address &= String.Format("- Suburb : {0}", thisData.Tables(0).Rows(0).Item("Suburb").ToString())
+            address &= String.Format("- Suburb : {0}", thisData("Suburb").ToString())
             address &= "<br />"
-            address &= String.Format("- State : {0}", thisData.Tables(0).Rows(0).Item("State").ToString())
+            address &= String.Format("- State : {0}", thisData("State").ToString())
             address &= "<br />"
-            address &= String.Format("- Post Code : {0}", thisData.Tables(0).Rows(0).Item("PostCode").ToString())
+            address &= String.Format("- Post Code : {0}", thisData("PostCode").ToString())
             address &= "<br />"
-            address &= String.Format("- Country : {0}", thisData.Tables(0).Rows(0).Item("Country").ToString())
+            address &= String.Format("- Country : {0}", thisData("Country").ToString())
 
-            Dim email As String = thisData.Tables(0).Rows(0).Item("Email").ToString()
-            Dim phone As String = thisData.Tables(0).Rows(0).Item("Phone").ToString()
+            Dim email As String = thisData("Email").ToString()
+            Dim phone As String = thisData("Phone").ToString()
 
             Dim contact As String = String.Empty
             If Not String.IsNullOrEmpty(email) Then
@@ -324,7 +326,7 @@ Partial Class Setting_Quote
                 contact &= String.Format("- Phone : {0}", phone)
             End If
 
-            Dim termText As String = thisData.Tables(0).Rows(0).Item("Terms").ToString()
+            Dim termText As String = thisData("Terms").ToString()
             termText = termText.Replace(vbCrLf, "<br>").Replace(vbLf, "<br>")
 
             pAddress.InnerHtml = address

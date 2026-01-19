@@ -1,4 +1,4 @@
-﻿let designIdOri = "15";
+﻿let designIdOri = "14";
 let itemAction;
 let headerId;
 let itemId;
@@ -9,252 +9,226 @@ let loginId;
 let roleAccess;
 let priceAccess;
 
-document.getElementById("modalSuccess").addEventListener("hide.bs.modal", function () {
-    document.activeElement.blur();
-    document.body.focus();
+initSkylineExpress();
+
+$("#submit").on("click", process);
+$("#cancel").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
+$("#vieworder").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
+
+$("#blindtype").on("change", function () {
+    const blindtype = $(this).val();
+    const midrailheight1 = parseFloat(document.getElementById("midrailheight1").value) || 0;
+
+    bindMounting(blindtype);
+    bindColourType(blindtype);
+    bindLayoutCode(blindtype);
+    bindTiltrodSplit(midrailheight1);
 });
 
-document.getElementById("modalError").addEventListener("hide.bs.modal", function () {
-    document.activeElement.blur();
-    document.body.focus();
+$("#colourtype").on("change", function () {
+    const blindtype = document.getElementById("blindtype").value;
+    bindComponentForm(blindtype, $(this).val());
 });
 
-document.getElementById("modalInfo").addEventListener("hide.bs.modal", function () {
-    document.activeElement.blur();
-    document.body.focus();
+$("#mounting").on("change", function () {
+    const mounting = $(this).val();
+    const blindtype = document.getElementById("blindtype").value;
+    const louvreposition = document.getElementById("louvreposition").value;
+    const louvresize = document.getElementById("louvresize").value;
+
+    bindFrameType(blindtype, mounting, louvresize, louvreposition);
+    visibleSemiInside(blindtype, mounting);
 });
 
-$(document).ready(function () {
-    checkSession();
+$("#louvresize").on("change", function () {
+    const blindtype = document.getElementById("blindtype").value;
+    const mounting = document.getElementById("mounting").value;
+    const louvresize = $(this).val();
+    const louvreposition = document.getElementById("louvreposition").value;
 
-    $("#submit").on("click", process);
-    $("#cancel").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
-    $("#vieworder").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
+    bindFrameType(blindtype, mounting, louvresize, louvreposition);
 
-    $("#blindtype").on("change", function () {
-        const blindtype = $(this).val();
-        const midrailheight1 = parseFloat(document.getElementById("midrailheight1").value) || 0;
-        const louvreposition = document.getElementById("louvreposition").value;
-        const louvresize = document.getElementById("louvresize").value;
+    getBlindName(blindtype).then((blindName) => {
+        if (blindName === "Panel Only") {
+            const dropInput = document.getElementById("drop").value;
+            const drop = parseFloat(dropInput) || 0;
 
-        bindMounting(blindtype);
-        bindColourType(blindtype);
-        bindLayoutCode(blindtype);
-        bindFrameType(blindtype, mounting, louvresize, louvreposition);
-        bindTiltrodSplit(midrailheight1);
-    });
-
-    $("#colourtype").on("change", function () {
-        const blindtype = document.getElementById("blindtype").value;
-        bindComponentForm(blindtype, $(this).val());
-    });
-
-    $("#mounting").on("change", function () {
-        const mounting = $(this).val();
-        const blindtype = document.getElementById("blindtype").value;
-        const louvreposition = document.getElementById("louvreposition").value;
-        const louvresize = document.getElementById("louvresize").value;
-
-        bindFrameType(blindtype, mounting, louvresize, louvreposition);
-        visibleSemiInside(blindtype, mounting);
-    });
-
-    $("#louvresize").on("change", function () {
-        const blindtype = document.getElementById("blindtype").value;
-        const mounting = document.getElementById("mounting").value;
-        const louvresize = $(this).val();
-        const louvreposition = document.getElementById("louvreposition").value;
-
-        bindFrameType(blindtype, mounting, louvresize, louvreposition);
-
-        getBlindName(blindtype).then((blindName) => {
-            if (blindName === "Panel Only") {
-                const dropInput = document.getElementById("drop").value;
-                const drop = parseFloat(dropInput) || 0;
-
-                if (dropInput.length < 4) return;
-                if (drop.length < 4) return;
-                if (louvresize === "63" && drop < 282) {
-                    isError("MINIMUM PANEL HEIGHT IS 282MM !");
-                } else if (louvresize === "89" && drop < 333) {
-                    isError("MINIMUM PANEL HEIGHT IS 333MM !");
-                } else if (louvresize === "114" && drop < 384) {
-                    isError("MINIMUM PANEL HEIGHT IS 384MM !");
-                } else if (drop > 2500) {
-                    isError("MAXIMUM PANEL HEIGHT IS 2500MM !");
-                }
+            if (dropInput.length < 4) return;
+            if (drop.length < 4) return;
+            if (louvresize === "63" && drop < 282) {
+                isError("MINIMUM PANEL HEIGHT IS 282MM !");
+            } else if (louvresize === "89" && drop < 333) {
+                isError("MINIMUM PANEL HEIGHT IS 333MM !");
+            } else if (louvresize === "114" && drop < 384) {
+                isError("MINIMUM PANEL HEIGHT IS 384MM !");
+            } else if (drop > 2500) {
+                isError("MAXIMUM PANEL HEIGHT IS 2500MM !");
             }
-        }).catch((error) => {
-            reject(error);
-        });
-    });
-
-    $("#louvreposition").on("change", function () {
-        const blindtype = document.getElementById("blindtype").value;
-        const mounting = document.getElementById("mounting").value;
-        const louvresize = document.getElementById("louvresize").value;
-        const louvreposition = $(this).val();
-
-        bindFrameType(blindtype, mounting, louvresize, louvreposition);
-    });
-
-    $("#midrailheight1").on("input", function () {
-        const midrailheight1 = parseFloat(document.getElementById("midrailheight1").value) || 0;
-        const midrailheight2 = parseFloat(document.getElementById("midrailheight2").value) || 0;
-
-        bindMidrailCritical(midrailheight1, midrailheight2);
-        bindTiltrodSplit(midrailheight1);
-    });
-
-    $("#midrailheight2").on("input", function () {
-        const midrailheight1 = document.getElementById("midrailheight1").value || 0;
-        const midrailheight2 = document.getElementById("midrailheight2").value || 0;
-
-        bindMidrailCritical(midrailheight1, midrailheight2);
-    });
-
-    $("#joinedpanels").on("change", function () {
-        const blindtype = document.getElementById("blindtype").value;
-        const hingecolour = document.getElementById("hingecolour").value;
-
-        visibleHingeColour(blindtype, $(this).val());
-        visibleHingesLoose(blindtype, hingecolour, $(this).val());
-    });
-
-    $("#hingecolour").on("change", function () {
-        const blindtype = document.getElementById("blindtype").value;
-        const joinedPanels = document.getElementById("joinedpanels").value;
-
-        visibleHingesLoose(blindtype, $(this).val(), joinedPanels);
-    });
-
-    $("#layoutcode").on("change", function () {
-        $("#layoutcodecustom").val("");
-        $("#samesizepanel").val("");
-        const blindtype = document.getElementById("blindtype").value;
-        let layoutcode = $(this).val();
-
-        visibleLayoutCustom(layoutcode);
-
-        if (layoutcode === "Other") {
-            layoutcode = document.getElementById("layoutcodecustom").value;
         }
-        visibleSameSize(blindtype, layoutcode);
-        visibleGap(blindtype, "", layoutcode);
+    }).catch((error) => {
+        reject(error);
     });
+});
 
-    $("#layoutcodecustom").on("input", function () {
-        $("#samesizepanel").val("");
-        const blindtype = document.getElementById("blindtype").value;
-        const layoutcode = $(this).val();
+$("#louvreposition").on("change", function () {
+    const blindtype = document.getElementById("blindtype").value;
+    const mounting = document.getElementById("mounting").value;
+    const louvresize = document.getElementById("louvresize").value;
+    const louvreposition = $(this).val();
 
-        visibleSameSize(blindtype, layoutcode);
-        visibleGap(blindtype, "", layoutcode);
+    bindFrameType(blindtype, mounting, louvresize, louvreposition);
+});
+
+$("#midrailheight1").on("input", function () {
+    const midrailheight1 = parseFloat(document.getElementById("midrailheight1").value) || 0;
+    const midrailheight2 = parseFloat(document.getElementById("midrailheight2").value) || 0;
+
+    bindMidrailCritical(midrailheight1, midrailheight2);
+    bindTiltrodSplit(midrailheight1);
+});
+
+$("#midrailheight2").on("input", function () {
+    const midrailheight1 = document.getElementById("midrailheight1").value || 0;
+    const midrailheight2 = document.getElementById("midrailheight2").value || 0;
+
+    bindMidrailCritical(midrailheight1, midrailheight2);
+});
+
+$("#joinedpanels").on("change", function () {
+    const blindtype = document.getElementById("blindtype").value;
+    const hingecolour = document.getElementById("hingecolour").value;
+
+    visibleHingeColour(blindtype, $(this).val());
+    visibleHingesLoose(blindtype, hingecolour, $(this).val());
+});
+
+$("#hingecolour").on("change", function () {
+    const blindtype = document.getElementById("blindtype").value;
+    const joinedPanels = document.getElementById("joinedpanels").value;
+
+    visibleHingesLoose(blindtype, $(this).val(), joinedPanels);
+});
+
+$("#layoutcode").on("change", function () {
+    $("#layoutcodecustom").val("");
+    $("#samesizepanel").val("");
+    const blindtype = document.getElementById("blindtype").value;
+    let layoutcode = $(this).val();
+    if (layoutcode === "Other") {
+        layoutcode = document.getElementById("layoutcodecustom").value;
+    }
+
+    visibleLayoutCustom(layoutcode);
+    visibleSameSize(blindtype, layoutcode);
+    visibleGap(blindtype, "", layoutcode);
+});
+
+$("#layoutcodecustom").on("input", function () {
+    $("#samesizepanel").val("");
+    const blindtype = document.getElementById("blindtype").value;
+    const layoutcode = $(this).val();
+
+    visibleSameSize(blindtype, layoutcode);
+    visibleGap(blindtype, "", layoutcode);
+});
+
+$("#samesizepanel").on("change", function () {
+    const blindtype = document.getElementById("blindtype").value;
+    const layout = document.getElementById("layoutcode").value;
+    const layoutcustom = document.getElementById("layoutcodecustom").value;
+
+    let layoutcode = layout;
+    if (layout === "Other") layoutcode = layoutcustom;
+
+    visibleGap(blindtype, $(this).val(), layoutcode);
+});
+
+$("#frametype").on("change", function () {
+    const blindtype = document.getElementById("blindtype").value;
+    const frametype = $(this).val();
+    const buildout = document.getElementById("buildout").value;
+
+    bindLeftFrame(frametype);
+    bindRightFrame(frametype);
+    bindTopFrame(frametype);
+    bindBottomFrame(frametype);
+    visibleFrameDetail(frametype);
+    visibleBuildout(blindtype, frametype);
+    visibleBuildoutPosition(blindtype, frametype, buildout);
+});
+
+$("#framebottom").on("change", function () {
+    const blindtype = document.getElementById("blindtype").value;
+    const framebottom = $(this).val();
+
+    bindBottomTrack(blindtype, framebottom);
+});
+
+$("#buildout").on("change", function () {
+    const blindtype = document.getElementById("blindtype").value;
+    const frametype = document.getElementById("frametype").value;
+
+    visibleBuildoutPosition(blindtype, frametype, $(this).val());
+});
+
+$("#bottomtracktype").on("change", function () {
+    visibleBottomTrackReccess($(this).val());
+});
+
+$("#horizontaltpostheight").on("input", function () {
+    const value = parseFloat($(this).val()) || 0;
+
+    visibleHorizontalRequired(value);
+});
+
+$("#tiltrodsplit").on("change", function () {
+    visibleSplitHeight($(this).val());
+});
+
+$("#width").on("input", function () {
+    const blindtype = document.getElementById("blindtype").value;
+
+    getBlindName(blindtype).then((blindName) => {
+        if (blindName !== "Panel Only") return;
+        const widthInput = $(this).val();
+        const width = parseFloat(widthInput) || 0;
+
+        if (widthInput.length < 3) return;
+        if (width < 200 || width > 900) {
+            isError("PANEL WIDTH MUST BE BETWEEN 200MM & 900MM !");
+            $(this).val("");
+        }
+    }).catch((error) => {
+        reject(error);
     });
+});
 
-    $("#samesizepanel").on("change", function () {
-        const blindtype = document.getElementById("blindtype").value;
-        const layout = document.getElementById("layoutcode").value;
-        const layoutcustom = document.getElementById("layoutcodecustom").value;
+$("#drop").on("input", function () {
+    const blindtype = document.getElementById("blindtype").value;
 
-        let layoutcode = layout;
-        if (layout === "Other") layoutcode = layoutcustom;
+    getBlindName(blindtype).then((blindName) => {
+        if (blindName === "Panel Only") {
+            const drop = parseFloat($(this).val()) || 0;
+            const louvresize = document.getElementById("louvresize").value;
 
-        visibleGap(blindtype, $(this).val(), layoutcode);
-    });
+            if ($(this).val().length < 4) return;
 
-    $("#frametype").on("change", function () {
-        const blindtype = document.getElementById("blindtype").value;
-        const frametype = $(this).val();
-        const mounting = document.getElementById("mounting").value;
-        const buildout = document.getElementById("buildout").value;
-
-        bindLeftFrame(frametype, mounting);
-        bindRightFrame(frametype, mounting);
-        bindTopFrame(frametype, mounting);
-        bindBottomFrame(frametype, mounting);
-        visibleFrameDetail(frametype);
-        visibleBuildout(blindtype, frametype);
-        visibleBuildoutPosition(blindtype, frametype, buildout);
-    });
-
-    $("#framebottom").on("change", function () {
-        const blindtype = document.getElementById("blindtype").value;
-        const framebottom = $(this).val();
-
-        bindBottomTrack(blindtype, framebottom);
-    });
-
-    $("#buildout").on("change", function () {
-        const blindtype = document.getElementById("blindtype").value;
-        const frametype = document.getElementById("frametype").value;
-
-        visibleBuildoutPosition(blindtype, frametype, $(this).val());
-    });
-
-    $("#bottomtracktype").on("change", function () {
-        visibleBottomTrackReccess($(this).val());
-    });
-
-    $("#horizontaltpostheight").on("input", function () {
-        const value = parseFloat($(this).val()) || 0;
-
-        visibleHorizontalRequired(value);
-    });
-
-    $("#tiltrodsplit").on("change", function () {
-        visibleSplitHeight($(this).val());
-    });
-
-    $("#specialshape").on("change", function () {
-        visibleTemplateProvided($(this).val());
-    });
-
-    $("#width").on("input", function () {
-        const blindtype = document.getElementById("blindtype").value;
-
-        getBlindName(blindtype).then((blindName) => {
-            if (blindName !== "Panel Only") return;
-            const widthInput = $(this).val();
-            const width = parseFloat(widthInput) || 0;
-
-            if (widthInput.length < 3) return;
-            if (width < 200 || width > 900) {
-                isError("PANEL WIDTH MUST BE BETWEEN 200MM & 900MM !");
+            if (louvresize === "63" && drop < 282) {
+                isError("MINIMUM PANEL HEIGHT IS 282MM !");
+                $(this).val("");
+            } else if (louvresize === "89" && drop < 333) {
+                isError("MINIMUM PANEL HEIGHT IS 333MM !");
+                $(this).val("");
+            } else if (louvresize === "114" && drop < 384) {
+                isError("MINIMUM PANEL HEIGHT IS 384MM !");
+                $(this).val("");
+            } else if (drop > 2500) {
+                isError("MAXIMUM PANEL HEIGHT IS 2500MM !");
                 $(this).val("");
             }
-        }).catch((error) => {
-            reject(error);
-        });
-    });
-
-    $("#drop").on("input", function () {
-        const blindtype = document.getElementById("blindtype").value;
-
-        getBlindName(blindtype).then((blindName) => {
-            if (blindName === "Panel Only") {
-                const drop = parseFloat($(this).val()) || 0;
-                const louvresize = document.getElementById("louvresize").value;
-
-                if ($(this).val().length < 4) return;
-
-                if (louvresize === "63" && drop < 282) {
-                    isError("MINIMUM PANEL HEIGHT IS 282MM !");
-                    $(this).val("");
-                } else if (louvresize === "89" && drop < 333) {
-                    isError("MINIMUM PANEL HEIGHT IS 333MM !");
-                    $(this).val("");
-                } else if (louvresize === "114" && drop < 384) {
-                    isError("MINIMUM PANEL HEIGHT IS 384MM !");
-                    $(this).val("");
-                } else if (drop > 2500) {
-                    isError("MAXIMUM PANEL HEIGHT IS 2500MM !");
-                    $(this).val("");
-                }
-            }
-        }).catch((error) => {
-            reject(error);
-        });
+        }
+    }).catch((error) => {
+        reject(error);
     });
 });
 
@@ -271,6 +245,27 @@ function loader(itemAction) {
 function isError(msg) {
     $("#modalError").modal("show");
     document.getElementById("errorMsg").innerHTML = msg;
+}
+
+function getOrderHeader(headerId) {
+    return new Promise((resolve, reject) => {
+        if (!headerId) return resolve();
+
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/GetOrderHeader",
+            data: JSON.stringify({ headerId }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: ({ d }) => {
+                document.getElementById("orderid").innerText = d.OrderId || "-";
+                document.getElementById("ordernumber").innerText = d.OrderNumber || "-";
+                document.getElementById("ordername").innerText = d.OrderName || "-";
+                resolve(d);
+            },
+            error: reject
+        });
+    });
 }
 
 function getCompanyOrder(headerId) {
@@ -803,7 +798,8 @@ function bindFrameType(blindType, mounting, louvreSize, louvrePosition) {
                     { value: "", text: "" },
                     { value: "Beaded L 48mm", text: "Beaded L 48mm" },
                     { value: "Insert L 50mm", text: "Insert L 50mm" },
-                    { value: "Insert L 63mm", text: "Insert L 63mm" }
+                    { value: "Insert L 63mm", text: "Insert L 63mm" },
+                    { value: "No Frame", text: "No Frame" },
                 ];
                 if (mounting === "Inside") {
                     options = [
@@ -837,7 +833,7 @@ function bindFrameType(blindType, mounting, louvreSize, louvrePosition) {
                         { value: "200mm", text: "200mm" },
                     ];
                 }
-                if (louvrePosition === "Open" &&  (louvreSize === "89" || louvreSize === "114")) {
+                if (louvrePosition === "Open" && (louvreSize === "89" || louvreSize === "114")) {
                     options = [
                         { value: "", text: "" },
                         { value: "100mm", text: "100mm" },
@@ -845,9 +841,7 @@ function bindFrameType(blindType, mounting, louvreSize, louvrePosition) {
                     ];
                 }
             } else if (blindName === "Track Sliding Single Track") {
-                options = [
-                    { value: "100mm", text: "100mm" }
-                ];
+                options = [{ value: "100mm", text: "100mm" }];
             } else if (blindName === "Fixed") {
                 options = [
                     { value: "", text: "" },
@@ -864,10 +858,10 @@ function bindFrameType(blindType, mounting, louvreSize, louvrePosition) {
             });
 
             if (frametype.options.length === 1) {
-                bindLeftFrame(frametype.value, mounting);
-                bindRightFrame(frametype.value, mounting);
-                bindTopFrame(frametype.value, mounting);
-                bindBottomFrame(frametype.value, mounting);
+                bindLeftFrame(frametype.value);
+                bindRightFrame(frametype.value);
+                bindTopFrame(frametype.value);
+                bindBottomFrame(frametype.value);
 
                 visibleFrameDetail(frametype.value);
                 visibleBuildout(blindType, frametype.value);
@@ -895,11 +889,9 @@ function bindLeftFrame(frameType) {
 
         if (frameType === "Beaded L 48mm" || frameType === "Insert L 50mm" || frameType === "Insert L 63mm" || frameType === "Flat L 48mm") {
             options = [
-                { value: "", text: "" },
-                { value: "Yes", text: "Yes" },
-                { value: "No", text: "No" },
+                { value: "", text: "" }, { value: "Yes", text: "Yes" }, { value: "No", text: "No" },
                 { value: "Light Block", text: "Light Block" },
-                { value: "Sill Plate (9.5mm)", text: "Sill Plate (9.5mm)" },
+                { value: "9.5mm Sill Plate", text: "9.5mm Sill Plate" }
             ];
         } else if (frameType === "Small Bullnose Z Frame") {
             options = [
@@ -907,8 +899,8 @@ function bindLeftFrame(frameType) {
                 { value: "Yes", text: "Yes" },
                 { value: "No", text: "No" },
                 { value: "Light Block", text: "Light Block" },
-                { value: "Sill Plate (9.5mm)", text: "Sill Plate (9.5mm)" },
-                { value: "Sill Plate (Bullnose Z)", text: "Sill Plate (Bullnose Z)" },
+                { value: "9.5mm Sill Plate", text: "9.5mm Sill Plate" },
+                { value: "Small Bullnose Z Sill Plate", text: "Small Bullnose Z Sill Plate" },
             ];
         } else if (frameType === "Large Bullnose Z Frame") {
             options = [
@@ -916,8 +908,8 @@ function bindLeftFrame(frameType) {
                 { value: "Yes", text: "Yes" },
                 { value: "No", text: "No" },
                 { value: "Light Block", text: "Light Block" },
-                { value: "Sill Plate (9.5mm)", text: "Sill Plate (9.5mm)" },
-                { value: "Sill Plate (Bullnose Z)", text: "Sill Plate (Bullnose Z)" },
+                { value: "9.5mm Sill Plate", text: "9.5mm Sill Plate" },
+                { value: "Large Bullnose Z Sill Plate", text: "Large Bullnose Z SILL Plate" },
             ];
         } else if (frameType === "Colonial Z Frame") {
             options = [
@@ -925,13 +917,11 @@ function bindLeftFrame(frameType) {
                 { value: "Yes", text: "YES" },
                 { value: "No", text: "NO" },
                 { value: "Light Block", text: "Light Block" },
-                { value: "Sill Plate (9.5mm)", text: "Sill Plate (9.5mm)" },
-                { value: "Sill Plate (Colonial Z)", text: "Sill Plate (Colonial Z)" },
+                { value: "9.5mm Sill Plate", text: "9.5mm Sill Plate" },
+                { value: "Colonial Z Sill Plate", text: "Colonial Z Sill Plate" },
             ];
         } else if (frameType === "No Frame") {
-            options = [
-                { value: "Light Block", text: "Light Block" }
-            ];
+            options = [{ value: "Light Block", text: "Light Block" }];
         } else if (frameType === "100mm" || frameType === "160mm" || frameType === "200mm") {
             options = [
                 { value: "", text: "" },
@@ -973,11 +963,9 @@ function bindRightFrame(frameType) {
 
         if (frameType === "Beaded L 48mm" || frameType === "Insert L 50mm" || frameType === "Insert L 63mm" || frameType === "Flat L 48mm") {
             options = [
-                { value: "", text: "" },
-                { value: "Yes", text: "Yes" },
-                { value: "No", text: "No" },
+                { value: "", text: "" }, { value: "Yes", text: "Yes" }, { value: "No", text: "No" },
                 { value: "Light Block", text: "Light Block" },
-                { value: "Sill Plate (9.5mm)", text: "Sill Plate (9.5mm)" }
+                { value: "9.5mm Sill Plate", text: "9.5mm Sill Plate" }
             ];
         } else if (frameType === "Small Bullnose Z Frame") {
             options = [
@@ -985,8 +973,8 @@ function bindRightFrame(frameType) {
                 { value: "Yes", text: "Yes" },
                 { value: "No", text: "No" },
                 { value: "Light Block", text: "Light Block" },
-                { value: "Sill Plate (9.5mm)", text: "Sill Plate (9.5mm)" },
-                { value: "Sill Plate (Bullnose Z)", text: "Sill Plate (Bullnose Z)" },
+                { value: "9.5mm Sill Plate", text: "9.5mm Sill Plate" },
+                { value: "Small Bullnose Z Sill Plate", text: "Small Bullnose Z Sill Plate" },
             ];
         } else if (frameType === "Large Bullnose Z Frame") {
             options = [
@@ -994,8 +982,8 @@ function bindRightFrame(frameType) {
                 { value: "Yes", text: "Yes" },
                 { value: "No", text: "No" },
                 { value: "Light Block", text: "Light Block" },
-                { value: "Sill Plate (9.5mm)", text: "Sill Plate (9.5mm)" },
-                { value: "Sill Plate (Bullnose Z)", text: "Sill Plate (Bullnose Z)" },
+                { value: "9.5mm Sill Plate", text: "9.5mm Sill Plate" },
+                { value: "Large Bullnose Z Sill Plate", text: "Large Bullnose Z SILL Plate" },
             ];
         } else if (frameType === "Colonial Z Frame") {
             options = [
@@ -1003,8 +991,8 @@ function bindRightFrame(frameType) {
                 { value: "Yes", text: "YES" },
                 { value: "No", text: "NO" },
                 { value: "Light Block", text: "Light Block" },
-                { value: "Sill Plate (9.5mm)", text: "Sill Plate (9.5mm)" },
-                { value: "Sill Plate (Colonial Z)", text: "Sill Plate (Colonial Z)" },
+                { value: "9.5mm Sill Plate", text: "9.5mm Sill Plate" },
+                { value: "Colonial Z Sill Plate", text: "Colonial Z Sill Plate" },
             ];
         } else if (frameType === "No Frame") {
             options = [{ value: "Light Block", text: "Light Block" }];
@@ -1021,9 +1009,7 @@ function bindRightFrame(frameType) {
                 { value: "L Strip", text: "L Strip" },
             ];
         } else if (frameType === "19x19 Light Block") {
-            options = [
-                { value: "No", text: "No" }
-            ];
+            options = [{ value: "No", text: "No" }];
         }
 
         options.forEach((opt) => {
@@ -1055,7 +1041,7 @@ function bindTopFrame(frameType) {
                 { value: "Yes", text: "Yes" },
                 { value: "No", text: "No" },
                 { value: "Light Block", text: "Light Block" },
-                { value: "Sill Plate (9.5mm)", text: "Sill Plate (9.5mm)" },
+                { value: "9.5mm Sill Plate", text: "9.5mm Sill Plate" },
                 { value: "Flat L 48mm", text: "Flat L 48mm" },
                 { value: "L Striker Plate", text: "L Striker Plate" }
             ];
@@ -1065,7 +1051,7 @@ function bindTopFrame(frameType) {
                 { value: "Yes", text: "Yes" },
                 { value: "No", text: "No" },
                 { value: "Light Block", text: "Light Block" },
-                { value: "Sill Plate (9.5mm)", text: "Sill Plate (9.5mm)" },
+                { value: "9.5mm Sill Plate", text: "9.5mm Sill Plate" },
                 { value: "L Striker Plate", text: "L Striker Plate" }
             ];
         } else if (frameType === "Small Bullnose Z Frame") {
@@ -1074,8 +1060,8 @@ function bindTopFrame(frameType) {
                 { value: "Yes", text: "Yes" },
                 { value: "No", text: "No" },
                 { value: "Light Block", text: "Light Block" },
-                { value: "Sill Plate (9.5mm)", text: "Sill Plate (9.5mm)" },
-                { value: "Sill Plate (Bullnose Z)", text: "Sill Plate (Bullnose Z)" },
+                { value: "9.5mm Sill Plate", text: "9.5mm Sill Plate" },
+                { value: "Small Bullnose Z Sill Plate", text: "Small Bullnose Z Sill Plate" },
                 { value: "L Striker Plate", text: "L Striker Plate" }
             ];
         } else if (frameType === "Large Bullnose Z Frame") {
@@ -1084,8 +1070,8 @@ function bindTopFrame(frameType) {
                 { value: "Yes", text: "Yes" },
                 { value: "No", text: "No" },
                 { value: "Light Block", text: "Light Block" },
-                { value: "Sill Plate (9.5mm)", text: "Sill Plate (9.5mm)" },
-                { value: "Sill Plate (Bullnose Z)", text: "Sill Plate (Bullnose Z)" },
+                { value: "9.5mm Sill Plate", text: "9.5mm Sill Plate" },
+                { value: "Large Bullnose Z Sill Plate", text: "Large Bullnose Z Sill Plate" },
                 { value: "L Striker Plate", text: "L Striker Plate" }
             ];
         } else if (frameType === "Colonial Z Frame") {
@@ -1094,31 +1080,22 @@ function bindTopFrame(frameType) {
                 { value: "Yes", text: "Yes" },
                 { value: "No", text: "No" },
                 { value: "Light Block", text: "Light Block" },
-                { value: "Sill Plate (9.5mm)", text: "Sill Plate (9.5mm)" },
-                { value: "Sill Plate (Colonial Z)", text: "Sill Plate (Colonial Z)" },
+                { value: "9.5mm Sill Plate", text: "9.5mm Sill Plate" },
+                { value: "Colonial Z Sill Plate", text: "Colonial Z Sill Plate" },
                 { value: "L Striker Plate", text: "L Striker Plate" }
             ];
         }
         else if (frameType === "No Frame") {
             options = [
-                { value: "", text: "" },
                 { value: "Light Block", text: "Light Block" },
                 { value: "L Striker Plate", text: "L Striker Plate" },
             ];
         } else if (frameType === "100mm" || frameType === "160mm" || frameType === "200mm") {
-            options = [
-                { value: "", text: "" },
-                { value: "Yes", text: "Yes" },
-                { value: "No", text: "No" }
-            ];
+            options = [{ value: "", text: "" }, { value: "Yes", text: "Yes" }, { value: "No", text: "No" },];
         } else if (frameType === "U Channel") {
-            options = [
-                { value: "Yes", text: "Yes" }
-            ];
+            options = [{ value: "Yes", text: "Yes" }];
         } else if (frameType === "19x19 Light Block") {
-            options = [
-                { value: "No", text: "No" }
-            ];
+            options = [{ value: "No", text: "No" }];
         }
 
         options.forEach((opt) => {
@@ -1149,7 +1126,7 @@ function bindBottomFrame(frameType) {
                 { value: "Yes", text: "Yes" },
                 { value: "No", text: "No" },
                 { value: "Light Block", text: "Light Block" },
-                { value: "Sill Plate (9.5mm)", text: "Sill Plate (9.5mm)" },
+                { value: "9.5mm Sill Plate", text: "9.5mm Sill Plate" },
                 { value: "Flat L 48mm", text: "Flat L 48mm" },
                 { value: "L Striker Plate", text: "L Striker Plate" }
             ];
@@ -1159,7 +1136,7 @@ function bindBottomFrame(frameType) {
                 { value: "Yes", text: "Yes" },
                 { value: "No", text: "No" },
                 { value: "Light Block", text: "Light Block" },
-                { value: "Sill Plate (9.5mm)", text: "Sill Plate (9.5mm)" },
+                { value: "9.5mm Sill Plate", text: "9.5mm Sill Plate" },
                 { value: "L Striker Plate", text: "L Striker Plate" }
             ];
         } else if (frameType === "Small Bullnose Z Frame") {
@@ -1168,8 +1145,8 @@ function bindBottomFrame(frameType) {
                 { value: "Yes", text: "Yes" },
                 { value: "No", text: "No" },
                 { value: "Light Block", text: "Light Block" },
-                { value: "Sill Plate (9.5mm)", text: "Sill Plate (9.5mm)" },
-                { value: "Sill Plate (Bullnose Z)", text: "Sill Plate (Bullnose Z)" },
+                { value: "9.5mm Sill Plate", text: "9.5mm Sill Plate" },
+                { value: "Small Bullnose Z Sill Plate", text: "Small Bullnose Z Sill Plate" },
                 { value: "L Striker Plate", text: "L Striker Plate" }
             ];
         } else if (frameType === "Large Bullnose Z Frame") {
@@ -1178,8 +1155,8 @@ function bindBottomFrame(frameType) {
                 { value: "Yes", text: "Yes" },
                 { value: "No", text: "No" },
                 { value: "Light Block", text: "Light Block" },
-                { value: "Sill Plate (9.5mm)", text: "Sill Plate (9.5mm)" },
-                { value: "Sill Plate (Bullnose Z)", text: "Sill Plate (Bullnose Z)" },
+                { value: "9.5mm Sill Plate", text: "9.5mm Sill Plate" },
+                { value: "Large Bullnose Z Sill Plate", text: "Large Bullnose Z Sill Plate" },
                 { value: "L Striker Plate", text: "L Striker Plate" }
             ];
         } else if (frameType === "Colonial Z Frame") {
@@ -1188,31 +1165,22 @@ function bindBottomFrame(frameType) {
                 { value: "Yes", text: "Yes" },
                 { value: "No", text: "No" },
                 { value: "Light Block", text: "Light Block" },
-                { value: "Sill Plate (9.5mm)", text: "Sill Plate (9.5mm)" },
-                { value: "Sill Plate (Colonial Z)", text: "Sill Plate (Colonial Z)" },
+                { value: "9.5mm Sill Plate", text: "9.5mm Sill Plate" },
+                { value: "Colonial Z Sill Plate", text: "Colonial Z Sill Plate" },
                 { value: "L Striker Plate", text: "L Striker Plate" }
             ];
         }
         else if (frameType === "No Frame") {
             options = [
-                { value: "Yes", text: "Yes" },
                 { value: "Light Block", text: "Light Block" },
                 { value: "L Striker Plate", text: "L Striker Plate" },
             ];
         } else if (frameType === "100mm" || frameType === "160mm" || frameType === "200mm") {
-            options = [
-                { value: "", text: "" },
-                { value: "Yes", text: "Yes" },
-                { value: "No", text: "No" }
-            ];
+            options = [{ value: "", text: "" }, { value: "Yes", text: "Yes" }, { value: "No", text: "No" },];
         } else if (frameType === "U Channel") {
-            options = [
-                { value: "Yes", text: "Yes" }
-            ];
+            options = [{ value: "Yes", text: "Yes" }];
         } else if (frameType === "19x19 Light Block") {
-            options = [
-                { value: "No", text: "No" }
-            ];
+            options = [{ value: "No", text: "No" }];
         }
 
         options.forEach((opt) => {
@@ -1271,7 +1239,7 @@ function bindBottomTrack(blindType, bottomFrame) {
 }
 
 function bindTiltrodSplit(height1) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         const tiltrodsplit = document.getElementById("tiltrodsplit");
         tiltrodsplit.innerHTML = "";
 
@@ -1348,10 +1316,7 @@ function bindComponentForm(blindType, colourType) {
             "divreversehinged",
             "divpelmetflat",
             "divextrafascia",
-            "divhingesloose",
-            "divcutout",
-            "divspecialshape",
-            "divtemplateprovided"
+            "divhingesloose"
         ].map(id => document.getElementById(id));
 
 
@@ -1373,7 +1338,7 @@ function bindComponentForm(blindType, colourType) {
             if (blindName === "Panel Only") {
                 divShow.push("divpanelqty", "divtiltrodtype", "divtiltrodsplit");
             } else if (blindName === "Hinged" || blindName === "Hinged Bi-fold") {
-                divShow.push("divhingecolour", "divlayoutcode", "divframetype", "divtiltrodtype", "divtiltrodsplit", "divcutout", "divspecialshape", "divhorizontaltpost");
+                divShow.push("divhingecolour", "divlayoutcode", "divframetype", "divtiltrodtype", "divtiltrodsplit", "divhorizontaltpost");
             } else if (blindName === "Track Bi-fold") {
                 divShow.push("divhingecolour", "divlayoutcode", "divframetype", "divtiltrodtype", "divtiltrodsplit", "divbottomtracktype", "divreversehinged", "divpelmetflat", "divextrafascia");
             } else if (blindName === "Track Sliding") {
@@ -1381,7 +1346,7 @@ function bindComponentForm(blindType, colourType) {
             } else if (blindName === "Track Sliding Single Track") {
                 divShow.push("divjoinedpanels", "divcustomheaderlength", "divlayoutcode", "divframetype", "divtiltrodtype", "divtiltrodsplit", "divbottomtracktype", "divpelmetflat", "divextrafascia");
             } else if (blindName === "Fixed") {
-                divShow.push("divlayoutcode", "divframetype", "divtiltrodtype", "divtiltrodsplit", "divspecialshape");
+                divShow.push("divlayoutcode", "divframetype", "divtiltrodtype", "divtiltrodsplit");
             }
 
             divShow.forEach(id => {
@@ -1519,7 +1484,7 @@ function visibleSameSize(blindType, layoutCode) {
         if (!blindType && !layoutCode) return resolve();
 
         getBlindName(blindType).then((blindName) => {
-            if ((blindName === "Hinged" || blindName === "Hinged Bi-fold" || blindName === "Track Bi-fold") && cekSameSizePanels(layoutCode)) {
+            if ((blindName === "Hinged" || blindName === "Hinged Bi-fold") && cekSameSizePanels(layoutCode)) {
                 divSameSize.style.display = "";
             }
             resolve();
@@ -1664,19 +1629,6 @@ function visibleSplitHeight(tiltrodSplit) {
     });
 }
 
-function visibleTemplateProvided(spesialShape) {
-    return new Promise((resolve) => {
-        const divTemplateProvided = document.getElementById("divtemplateprovided");
-        divTemplateProvided.style.display = "none";
-
-        if (!specialshape) return resolve();
-
-        if (spesialShape === "Yes") divTemplateProvided.style.display = "";
-
-        resolve();
-    });
-}
-
 function visibleHorizontalRequired(horizontalHeigth) {
     return new Promise((resolve) => {
         const thisDiv = document.getElementById("divhorizontaltpostrequired");
@@ -1730,7 +1682,6 @@ function controlForm(status, isEditItem, isCopyItem) {
         "qty",
         "room",
         "mounting",
-        "semiinside",
         "width",
         "drop",
         "louvresize",
@@ -1741,7 +1692,7 @@ function controlForm(status, isEditItem, isCopyItem) {
         "panelqty",
         "joinedpanels",
         "hingecolour",
-        "hingesloose",
+        "semiinside",
         "customheaderlength",
         "layoutcode",
         "layoutcodecustom",
@@ -1766,12 +1717,10 @@ function controlForm(status, isEditItem, isCopyItem) {
         "tiltrodsplit",
         "splitheight1",
         "splitheight2",
+        "reversehinged",
         "pelmetflat",
-        "reversehinged",        
-        "extrafascia",        
-        "cutout",
-        "specialshape",
-        "templateprovided",
+        "extrafascia",
+        "hingesloose",
         "markup",
         "notes",
     ];
@@ -1797,7 +1746,6 @@ function setFormValues(itemData) {
         qty: "Qty",
         room: "Room",
         mounting: "Mounting",
-        semiinside: "SemiInsideMount",
         width: "Width",
         drop: "Drop",
         louvresize: "LouvreSize",
@@ -1808,7 +1756,7 @@ function setFormValues(itemData) {
         panelqty: "PanelQty",
         joinedpanels: "JoinedPanels",
         hingecolour: "HingeColour",
-        hingesloose: "HingesLoose",
+        semiinside: "SemiInsideMount",
         customheaderlength: "CustomHeaderLength",
         layoutcode: "LayoutCode",
         layoutcodecustom: "LayoutCodeCustom",
@@ -1835,10 +1783,8 @@ function setFormValues(itemData) {
         splitheight2: "SplitHeight2",
         reversehinged: "ReverseHinged",
         pelmetflat: "PelmetFlat",
-        extrafascia: "ExtraFascia",        
-        cutout: "DoorCutOut",
-        specialshape: "SpecialShape",
-        templateprovided: "TemplateProvided",
+        extrafascia: "ExtraFascia",
+        hingesloose: "HingesLoose",
         notes: "Notes",
         markup: "MarkUp",
     };
@@ -1951,7 +1897,6 @@ function process() {
         "qty",
         "room",
         "mounting",
-        "semiinside",
         "width",
         "drop",
         "louvresize",
@@ -1962,7 +1907,7 @@ function process() {
         "panelqty",
         "joinedpanels",
         "hingecolour",
-        "hingesloose",
+        "semiinside",
         "customheaderlength",
         "layoutcode",
         "layoutcodecustom",
@@ -1989,10 +1934,8 @@ function process() {
         "splitheight2",
         "reversehinged",
         "pelmetflat",
-        "extrafascia",        
-        "cutout",
-        "specialshape",
-        "templateprovided",
+        "extrafascia",
+        "hingesloose",
         "markup",
         "notes",
     ];
@@ -2003,6 +1946,9 @@ function process() {
         itemid: itemId,
         designid: designId,
         loginid: loginId,
+        cutout: "",
+        specialshape: "",
+        templateprovided: ""
     };
 
     fields.forEach((id) => {
@@ -2033,7 +1979,7 @@ function process() {
     });
 }
 
-async function checkSession() {
+async function initSkylineExpress() {
     const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get("boos");
     if (!sessionId) return redirectOrder();
@@ -2062,6 +2008,7 @@ async function checkSession() {
     }
 
     await Promise.all([
+        getOrderHeader(headerId),
         getDesignName(designId),
         getFormAction(itemAction),
         getCompanyOrder(headerId),
@@ -2120,7 +2067,7 @@ async function bindItemOrder(itemId, companyDetailId) {
         document.getElementById("divorder").style.display = "";
 
         let layoutCodeFinal = data.ItemData.LayoutCode;
-        if (data.ItemData.LayoutCode === "Other") {
+        if (layoutCodeFinal === "Other") {
             layoutCodeFinal = data.ItemData.LayoutCodeCustom
         }
 
@@ -2137,12 +2084,10 @@ async function bindItemOrder(itemId, companyDetailId) {
             visibleHingesLoose(data.ItemData.BlindType, data.ItemData.HingeColour, data.ItemData.JoinedPanels),
             visibleSemiInside(data.ItemData.BlindType, data.ItemData.Mounting),
             visibleBottomTrackReccess(data.ItemData.BottomTrackType),
-            visibleSplitHeight(data.ItemData.TiltrodSplit),
+            visibleSplitHeight(data.ItemData.TiltrodType),
             visibleHorizontalRequired(data.ItemData.HorizontalTPostHeight),
-            visibleTemplateProvided(data.ItemData.SpecialShape)
         ]);
     } catch (error) {
-        alert(error);
         document.getElementById("divloader").style.display = "none";
     }
 }
@@ -2150,3 +2095,18 @@ async function bindItemOrder(itemId, companyDetailId) {
 function redirectOrder() {
     window.location.replace("/order");
 }
+
+document.getElementById("modalSuccess").addEventListener("hide.bs.modal", function () {
+    document.activeElement.blur();
+    document.body.focus();
+});
+
+document.getElementById("modalError").addEventListener("hide.bs.modal", function () {
+    document.activeElement.blur();
+    document.body.focus();
+});
+
+document.getElementById("modalInfo").addEventListener("hide.bs.modal", function () {
+    document.activeElement.blur();
+    document.body.focus();
+});

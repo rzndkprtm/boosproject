@@ -36,82 +36,112 @@
             </div>
         </section>
 
-        <section class="row" id="divorder" style="display:none;">
-            <div class="col-lg-8 col-md-12 col-sm-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title" id="cardtitle"></h4>
+        <div id="divorder" style="display:none;">
+            <section class="row">
+                <div class="col-12 col-sm-12 col-lg-7">
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-12 col-sm-12 col-lg-3">
+                                        <label>Order #</label>
+                                        <br />
+                                        <label id="orderid" class="font-bold"></label>
+                                    </div>
+                                    <div class="col-12 col-sm-12 col-lg-4">
+                                        <label>Order Number</label>
+                                        <br />
+                                        <label id="ordernumber" class="font-bold"></label>
+                                    </div>
+                                    <div class="col-6 col-sm-6 col-lg-5">
+                                        <label>Order Name</label>
+                                        <br />
+                                        <label id="ordername" class="font-bold"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                </div>
+            </section>
 
-                    <div class="card-content">
-                        <div class="card-body">
-                            <div class="form form-horizontal">
-                                <div class="form-body">
-                                    <div class="row">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Sample Type</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                            <select id="blindtype" class="form-select"></select>
-                                        </div>
-                                    </div>
+            <section class="row">
+                <div class="col-lg-8 col-md-12 col-sm-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title" id="cardtitle"></h4>
+                        </div>
 
-                                    <div class="row" style="display:none;">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Sample Type</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                            <select id="colourtype" class="form-select"></select>
-                                        </div>
-                                    </div>
-
-                                    <div id="divdetail">
-                                        <hr />
-
+                        <div class="card-content">
+                            <div class="card-body">
+                                <div class="form form-horizontal">
+                                    <div class="form-body">
                                         <div class="row">
                                             <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Quantity</label>
-                                            </div>
-                                            <div class="col-12 col-sm-12 col-lg-2 form-group">
-                                                <input type="number" id="qty" class="form-control" autocomplete="off" placeholder="Quantity" value="1" />
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Fabric Type</label>
-                                            </div>
-                                            <div class="col-12 col-sm-12 col-lg-5 form-group">
-                                                <select id="fabrictype" class="form-select"></select>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Fabric Colour</label>
-                                            </div>
-                                            <div class="col-12 col-sm-12 col-lg-5 form-group">
-                                                <select id="fabriccolour" class="form-select"></select>
-                                            </div>
-                                        </div>
-
-                                        <div class="row mt-3">
-                                            <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Special Information</label>
-                                            </div>
-                                            <div class="col-12 col-sm-12 col-lg-9 form-group">
-                                                <textarea class="form-control" id="notes" rows="4" placeholder="Your notes ..." style="resize:none;"></textarea>
-                                            </div>
-                                        </div>
-
-                                        <div class="row" id="divmarkup">
-                                            <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Mark Up</label>
+                                                <label>Sample Type</label>
                                             </div>
                                             <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                <div class="input-group">
-                                                    <input type="number" id="markup" class="form-control" autocomplete="off" placeholder="Mark Up ..." />
-                                                    <span class="input-group-text">%</span>
+                                                <select id="blindtype" class="form-select"></select>
+                                            </div>
+                                        </div>
+
+                                        <div class="row" style="display:none;">
+                                            <div class="col-12 col-sm-12 col-lg-3">
+                                                <label>Sample Type</label>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                <select id="colourtype" class="form-select"></select>
+                                            </div>
+                                        </div>
+
+                                        <div id="divdetail">
+                                            <hr />
+
+                                            <div class="row">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Quantity</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-2 form-group">
+                                                    <input type="number" id="qty" class="form-control" autocomplete="off" placeholder="Quantity" value="1" />
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Fabric Type</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-5 form-group">
+                                                    <select id="fabrictype" class="form-select"></select>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Fabric Colour</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-5 form-group">
+                                                    <select id="fabriccolour" class="form-select"></select>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mt-3">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Special Information</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-9 form-group">
+                                                    <textarea class="form-control" id="notes" rows="4" placeholder="Your notes ..." style="resize:none;"></textarea>
+                                                </div>
+                                            </div>
+
+                                            <div class="row" id="divmarkup">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Mark Up</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                    <div class="input-group">
+                                                        <input type="number" id="markup" class="form-control" autocomplete="off" placeholder="Mark Up ..." />
+                                                        <span class="input-group-text">%</span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -119,15 +149,15 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="card-footer text-center">
-                        <a href="javascript:void(0);" id="submit" class="btn btn-primary">Submit</a>
-                        <a href="javascript:void(0);" id="cancel" class="btn btn-danger">Cancel</a>
+                        <div class="card-footer text-center">
+                            <a href="javascript:void(0);" id="submit" class="btn btn-primary">Submit</a>
+                            <a href="javascript:void(0);" id="cancel" class="btn btn-danger">Cancel</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
+        </div>
     </div>
 
     <div class="modal fade text-left" id="modalSuccess" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
@@ -179,5 +209,6 @@
             </div>
         </div>
     </div>
-    <script src="../Scripts/Order/Sample.js?v=2.0.0"></script>
+    
+    <script src='<%: ResolveUrl("~/Scripts/WebForms/Order/Sample.js?v=1.0.0") %>'></script>
 </asp:Content>

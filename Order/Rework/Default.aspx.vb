@@ -74,7 +74,7 @@
                 MessageError_Log(False, String.Empty)
                 Dim thisScript As String = "window.onload = function() { showLog(); };"
                 Try
-                    gvListLogs.DataSource = orderClass.GetListData("SELECT * FROM Logs WHERE Type='OrderReworks' AND DataId='" & dataId & "' ORDER BY ActionDate ASC")
+                    gvListLogs.DataSource = orderClass.GetDataTable("SELECT * FROM Logs WHERE Type='OrderReworks' AND DataId='" & dataId & "' ORDER BY ActionDate ASC")
                     gvListLogs.DataBind()
 
                     ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
@@ -148,9 +148,8 @@
 
             Dim thisQuery As String = String.Format("SELECT OrderReworks.*, OrderHeaders.OrderNumber AS OrderNumber, OrderHeaders.OrderName AS OrderName, Customers.Name AS CustomerName FROM OrderReworks LEFT JOIN OrderHeaders ON OrderReworks.HeaderId=OrderHeaders.Id LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id {0} {1} {2} {3} {4}", byActive, byRole, byStatus, byText, byOrder)
 
-            gvList.DataSource = orderClass.GetListData(thisQuery)
+            gvList.DataSource = orderClass.GetDataTable(thisQuery)
             gvList.DataBind()
-
             gvList.Columns(1).Visible = PageAction("Visible ID")
 
             divActive.Visible = PageAction("Active")

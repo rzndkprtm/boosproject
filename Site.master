@@ -7,36 +7,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%: Page.Title %> - <%: Session("CompanyName") %></title>
-    <link rel="stylesheet" href="<%: ResolveUrl("~/assets/vendors/choices.js/choices.min.css") %>" />
-    <link rel="stylesheet" href="<%: ResolveUrl("~/assets/css/bootstrap.css") %>" />
-    <link rel="stylesheet" href="<%: ResolveUrl("~/assets/vendors/sweetalert2/sweetalert2.min.css") %>" />
-    <link rel="stylesheet" href="<%: ResolveUrl("~/assets/vendors/iconly/bold.css") %>" />
-    <link rel="stylesheet" href="<%: ResolveUrl("~/assets/vendors/perfect-scrollbar/perfect-scrollbar.css") %>" />
-    <link rel="stylesheet" href="<%: ResolveUrl("~/assets/vendors/bootstrap-icons/bootstrap-icons.css") %>" />
-    <link rel="stylesheet" href="<%: ResolveUrl("~/assets/css/app.css") %>" />
-    <link rel="icon" type="image/x-icon" href="<%: ResolveUrl("~/assets/images/logo/boos.ico") %>" />
 
-    <%--<link rel="preload" href="/assets/vendors/choices.js/choices.min.css" as="style" />
     <link rel="stylesheet" href="/assets/vendors/choices.js/choices.min.css" />
-
-    <link rel="preload" href="/assets/css/bootstrap.css" as="style" />
     <link rel="stylesheet" href="/assets/css/bootstrap.css" />
-
-    <link rel="preload" href="/assets/vendors/sweetalert2/sweetalert2.min.css" as="style" />
     <link rel="stylesheet" href="/assets/vendors/sweetalert2/sweetalert2.min.css" />
-
-    <link rel="preload" href="/assets/vendors/iconly/bold.css" as="style" />
     <link rel="stylesheet" href="/assets/vendors/iconly/bold.css" />
-
-    <link rel="preload" href="/assets/vendors/perfect-scrollbar/perfect-scrollbar.css" as="style" />
     <link rel="stylesheet" href="/assets/vendors/perfect-scrollbar/perfect-scrollbar.css" />
-
-    <link rel="preload" href="/assets/vendors/bootstrap-icons/bootstrap-icons.css" as="style" />
     <link rel="stylesheet" href="/assets/vendors/bootstrap-icons/bootstrap-icons.css" />
+    <link rel="stylesheet" href="/assets/css/app.css" />   
 
-    <link rel="preload" href="/assets/css/app.css" as="style" />
-    <link rel="stylesheet" href="/assets/css/app.css" />--%>
-
+    <link rel="icon" type="image/x-icon" href="<%: ResolveUrl("~/assets/images/logo/boos.ico") %>" />
+    
     <style>
         .hiddencol { display:none; }
     </style>
@@ -404,14 +385,13 @@
             });
         </script>
         
-        <script src="<%: ResolveUrl("~/assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js") %>"></script>
-        <script src="<%: ResolveUrl("~/assets/js/bootstrap.bundle.min.js") %>"></script>
-        <script src="<%: ResolveUrl("~/assets/vendors/sweetalert2/sweetalert2.all.min.js") %>"></script>
-        <script src="<%: ResolveUrl("~/assets/vendors/choices.js/choices.min.js") %>"></script>
-        <script src="<%: ResolveUrl("~/assets/js/pages/form-element-select.js") %>"></script>
-        <script src="<%: ResolveUrl("~/assets/js/pages/horizontal-layout.js") %>"></script>
-
-
+        <script src="/assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+        <script src="/assets/js/bootstrap.bundle.min.js"></script>
+        <script src="/assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
+        <script src="/assets/vendors/choices.js/choices.min.js"></script>
+        <script src="/assets/js/pages/form-element-select.js"></script>
+        <script src="/assets/js/pages/horizontal-layout.js"></script>
+        
         <script type="text/javascript">
             
             //document.addEventListener("DOMContentLoaded", function () {

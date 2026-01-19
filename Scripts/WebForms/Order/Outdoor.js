@@ -9,61 +9,44 @@ let loginId;
 let roleAccess;
 let priceAccess;
 
-document.getElementById("modalSuccess").addEventListener("hide.bs.modal", function () {
-    document.activeElement.blur();
-    document.body.focus();
+initOutdoor();
+
+$("#submit").on("click", process);
+$("#cancel").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
+$("#vieworder").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
+
+$("#blindtype").on("change", function () {
+    const blindtype = $(this).val();
+    bindControlType(blindtype);
+    bindMounting(blindtype);
+
+    document.getElementById("controllength").value = "";
 });
 
-document.getElementById("modalError").addEventListener("hide.bs.modal", function () {
-    document.activeElement.blur();
-    document.body.focus();
+$("#controltype").on("change", function () {
+    const blindtype = document.getElementById("blindtype").value;
+    const controltype = $(this).val();
+
+    bindColourType(blindtype, controltype);
+
+    document.getElementById("controllength").value = "";
 });
 
-document.getElementById("modalInfo").addEventListener("hide.bs.modal", function () {
-    document.activeElement.blur();
-    document.body.focus();
+$("#colourtype").on("change", function () {
+    const blindtype = document.getElementById("blindtype").value;
+    const controltype = document.getElementById("controltype").value;
+
+    bindComponentForm(blindtype, controltype, $(this).val());
+
+    document.getElementById("controllength").value = "";
 });
 
-$(document).ready(function () {
-    checkSession();
+$("#fabrictype").on("change", function () {
+    bindFabricColour($(this).val());
+});
 
-    $("#submit").on("click", process);
-    $("#cancel").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
-    $("#vieworder").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
-
-    $("#blindtype").on("change", function () {
-        const blindtype = $(this).val();
-        bindControlType(blindtype);
-        bindMounting(blindtype);
-
-        document.getElementById("controllength").value = "";
-    });
-
-    $("#controltype").on("change", function () {
-        const blindtype = document.getElementById("blindtype").value;
-        const controltype = $(this).val();
-
-        bindColourType(blindtype, controltype);
-
-        document.getElementById("controllength").value = "";
-    });
-
-    $("#colourtype").on("change", function () {
-        const blindtype = document.getElementById("blindtype").value;
-        const controltype = document.getElementById("controltype").value;
-
-        bindComponentForm(blindtype, controltype, $(this).val());
-
-        document.getElementById("controllength").value = "";
-    });
-
-    $("#fabrictype").on("change", function () {
-        bindFabricColour($(this).val());
-    });
-
-    $("#controllength").on("change", function () {
-        visibleCustom($(this).val());
-    });
+$("#controllength").on("change", function () {
+    visibleCustom($(this).val());
 });
 
 function loader(itemAction) {
@@ -79,6 +62,27 @@ function loader(itemAction) {
 function isError(msg) {
     $("#modalError").modal("show");
     document.getElementById("errorMsg").innerHTML = msg;
+}
+
+function getOrderHeader(headerId) {
+    return new Promise((resolve, reject) => {
+        if (!headerId) return resolve();
+
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/GetOrderHeader",
+            data: JSON.stringify({ headerId }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: ({ d }) => {
+                document.getElementById("orderid").innerText = d.OrderId || "-";
+                document.getElementById("ordernumber").innerText = d.OrderNumber || "-";
+                document.getElementById("ordername").innerText = d.OrderName || "-";
+                resolve(d);
+            },
+            error: reject
+        });
+    });
 }
 
 function getFormAction(itemAction) {
@@ -526,7 +530,7 @@ function bindFabricType(designType) {
             return;
         }
 
-        const listData = { type: "FabricTypeByDesign", designtype: designType, companydetail: companyDetail};
+        const listData = { type: "FabricTypeByDesign", designtype: designType, companydetail: companyDetail };
 
         $.ajax({
             type: "POST",
@@ -832,7 +836,7 @@ function process() {
     });
 }
 
-async function checkSession() {
+async function initOutdoor() {
     const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get("boos");
 
@@ -862,6 +866,7 @@ async function checkSession() {
     }
 
     await Promise.all([
+        getOrderHeader(headerId),
         getDesignName(designId),
         getFormAction(itemAction),
         getCompanyOrder(headerId),
@@ -920,3 +925,18 @@ async function bindItemOrder(itemId, companyDetailId) {
 function redirectOrder() {
     window.location.replace("/order");
 }
+
+document.getElementById("modalSuccess").addEventListener("hide.bs.modal", function () {
+    document.activeElement.blur();
+    document.body.focus();
+});
+
+document.getElementById("modalError").addEventListener("hide.bs.modal", function () {
+    document.activeElement.blur();
+    document.body.focus();
+});
+
+document.getElementById("modalInfo").addEventListener("hide.bs.modal", function () {
+    document.activeElement.blur();
+    document.body.focus();
+});

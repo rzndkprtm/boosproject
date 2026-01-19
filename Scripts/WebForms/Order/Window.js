@@ -1,4 +1,4 @@
-﻿let designIdOri = "21";
+﻿let designIdOri = "20";
 let itemAction;
 let headerId;
 let itemId;
@@ -9,52 +9,26 @@ let loginId;
 let roleAccess;
 let priceAccess;
 
-document.getElementById("modalSuccess").addEventListener("hide.bs.modal", function () {
-    document.activeElement.blur();
-    document.body.focus();
+initWindow();
+
+$("#submit").on("click", process);
+$("#cancel").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
+$("#vieworder").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
+
+$("#blindtype").on("change", function () {
+    const blindtype = $(this).val();
+
+    bindMounting(blindtype);
+    bindMeshType(blindtype);
+    bindFrameColour(blindtype);
+
+    bindColourType(blindtype);
 });
 
-document.getElementById("modalError").addEventListener("hide.bs.modal", function () {
-    document.activeElement.blur();
-    document.body.focus();
-});
+$("#colourtype").on("change", function () {
+    const colourtype = $(this).val();
 
-document.getElementById("modalInfo").addEventListener("hide.bs.modal", function () {
-    document.activeElement.blur();
-    document.body.focus();
-});
-
-$(document).ready(function () {
-    checkSession();
-
-    $("#submit").on("click", process);
-    $("#cancel").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
-    $("#vieworder").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
-
-    $("#blindtype").on("change", function () {
-        const blindtype = $(this).val();
-
-        bindTubeType(blindtype);
-
-        bindMounting(blindtype);
-        bindMeshType(blindtype);
-        bindFrameColour(blindtype);
-    });
-
-    $("#tubetype").on("change", function () {
-        const blindtype = document.getElementById("blindtype").value;
-
-        bindColourType(blindtype, $(this).val());
-        bindLayoutCode($(this).val());
-        bindInterlock($(this).val());
-    });
-
-    $("#colourtype").on("change", function () {
-        const blindtype = document.getElementById("blindtype").value;
-        const tubetype = document.getElementById("tubetype").value;
-
-        bindComponentForm(blindtype, tubetype, $(this).val());
-    });
+    bindComponentForm(colourtype);
 });
 
 function loader(itemAction) {
@@ -70,6 +44,27 @@ function loader(itemAction) {
 function isError(msg) {
     $("#modalError").modal("show");
     document.getElementById("errorMsg").innerHTML = msg;
+}
+
+function getOrderHeader(headerId) {
+    return new Promise((resolve, reject) => {
+        if (!headerId) return resolve();
+
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/GetOrderHeader",
+            data: JSON.stringify({ headerId }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: ({ d }) => {
+                document.getElementById("orderid").innerText = d.OrderId || "-";
+                document.getElementById("ordernumber").innerText = d.OrderNumber || "-";
+                document.getElementById("ordername").innerText = d.OrderName || "-";
+                resolve(d);
+            },
+            error: reject
+        });
+    });
 }
 
 function getCompanyOrder(headerId) {
@@ -230,27 +225,6 @@ function getBlindName(blindType) {
     });
 }
 
-function getTubeName(tubeType) {
-    if (!tubeType) return;
-
-    const type = "TubeName";
-    return new Promise((resolve, reject) => {
-        $.ajax({
-            type: "POST",
-            url: "Method.aspx/StringData",
-            data: JSON.stringify({ type: type, dataId: tubeType }),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (response) {
-                resolve(response.d);
-            },
-            error: function (error) {
-                reject(error);
-            }
-        });
-    });
-}
-
 function getFormAction(itemAction) {
     return new Promise((resolve) => {
         const pageAction = document.getElementById("pageaction");
@@ -278,10 +252,10 @@ function bindBlindType(designType) {
         if (!designType) {
             const selectedValue = blindtype.value || "";
             Promise.all([
-                bindTubeType(selectedValue),
                 bindMounting(selectedValue),
                 bindMeshType(selectedValue),
-                bindFrameColour(selectedValue)
+                bindFrameColour(selectedValue),
+                bindColourType(selectedValue)
             ]).then(resolve).catch(reject);
             return;
         }
@@ -318,18 +292,18 @@ function bindBlindType(designType) {
 
                     const selectedValue = blindtype.value || "";
                     Promise.all([
-                        bindTubeType(selectedValue),
                         bindMounting(selectedValue),
                         bindMeshType(selectedValue),
-                        bindFrameColour(selectedValue)
+                        bindFrameColour(selectedValue),
+                        bindColourType(selectedValue)
                     ]).then(resolve).catch(reject);
                 } else {
                     const selectedValue = blindtype.value || "";
                     Promise.all([
-                        bindTubeType(selectedValue),
                         bindMounting(selectedValue),
                         bindMeshType(selectedValue),
-                        bindFrameColour(selectedValue)
+                        bindFrameColour(selectedValue),
+                        bindColourType(selectedValue)
                     ]).then(resolve).catch(reject);
                 }
             },
@@ -340,87 +314,20 @@ function bindBlindType(designType) {
     });
 }
 
-function bindTubeType(blindType) {
-    return new Promise((resolve, reject) => {
-        const tubetype = document.getElementById("tubetype");
-        tubetype.innerHTML = "";
-
-        if (!blindType) {
-            const selectedValue = tubetype.value || "";
-            Promise.all([
-                bindColourType(selectedValue),
-                bindLayoutCode(selectedValue),
-                bindInterlock(selectedValue)
-            ]).then(resolve).catch(reject);
-            return;
-        }
-
-        let listData = { type: "TubeType", companydetail: companyDetail, blindtype: blindType };
-
-        $.ajax({
-            type: "POST",
-            url: "Method.aspx/ListData",
-            data: JSON.stringify({ data: listData }),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (response) {
-                if (Array.isArray(response.d)) {
-                    tubetype.innerHTML = "";
-
-                    if (response.d.length > 1) {
-                        const defaultOption = document.createElement("option");
-                        defaultOption.text = "";
-                        defaultOption.value = "";
-                        tubetype.add(defaultOption);
-                    }
-
-                    response.d.forEach(function (item) {
-                        const option = document.createElement("option");
-                        option.value = item.Value;
-                        option.text = item.Text;
-                        tubetype.add(option);
-                    });
-
-                    if (response.d.length === 1) {
-                        tubetype.selectedIndex = 0;
-                    }
-
-                    const selectedValue = tubetype.value || "";
-                    Promise.all([
-                        bindColourType(selectedValue),
-                        bindLayoutCode(selectedValue),
-                        bindInterlock(selectedValue)
-                    ]).then(resolve).catch(reject);
-                } else {
-                    const selectedValue = tubetype.value || "";
-                    Promise.all([
-                        bindColourType(selectedValue),
-                        bindLayoutCode(selectedValue),
-                        bindInterlock(selectedValue)
-                    ]).then(resolve).catch(reject);
-                }
-            },
-            error: function (error) {
-                reject(error);
-            }
-        });
-    });
-}
-
-function bindColourType(blindType, tubeType) {
+function bindColourType(blindType) {
     return new Promise((resolve, reject) => {
         const colourtype = document.getElementById("colourtype");
         colourtype.innerHTML = "";
 
-        if (!blindType || !tubeType) {
+        if (!blindType) {
             const selectedValue = colourtype.value || "";
             Promise.all([
-                bindComponentForm(blindType, tubeType, selectedValue)
+                bindComponentForm(blindType, selectedValue)
             ]).then(resolve).catch(reject);
             return;
         }
 
-        const listData = { type: "ColourType", companydetail: companyDetail, blindtype: blindType, tubetype: tubeType, controltype: "0" };
+        const listData = { type: "ColourType", blindtype: blindType, companydetail: companyDetail, tubetype: "0", controltype: "0" };
 
         $.ajax({
             type: "POST",
@@ -446,18 +353,19 @@ function bindColourType(blindType, tubeType) {
                         colourtype.add(option);
                     });
 
+
                     if (response.d.length === 1) {
                         colourtype.selectedIndex = 0;
                     }
 
                     const selectedValue = colourtype.value || "";
                     Promise.all([
-                        bindComponentForm(blindType, tubeType, selectedValue)
+                        bindComponentForm(blindType, selectedValue)
                     ]).then(resolve).catch(reject);
                 } else {
                     const selectedValue = colourtype.value || "";
                     Promise.all([
-                        bindComponentForm(blindType, tubeType, selectedValue)
+                        bindComponentForm(blindType, selectedValue)
                     ]).then(resolve).catch(reject);
                 }
             },
@@ -512,65 +420,6 @@ function bindMounting(blindType) {
             error: function (error) {
                 reject(error);
             }
-        });
-    });
-}
-
-function bindLayoutCode(tubeType) {
-    return new Promise((resolve, reject) => {
-        const layoutcode = document.getElementById("layoutcode");
-        layoutcode.innerHTML = "";
-
-        if (!tubeType) {
-            resolve();
-            return;
-        }
-
-        getTubeName(tubeType).then((tubeName) => {
-            let options = [{ value: "", text: "" }];
-
-            if (tubeName === "Hinged Single") {
-                options = [
-                    { value: "", text: "" },
-                    { value: "L", text: "L" },
-                    { value: "R", text: "R" }
-                ];
-            } else if (tubeName === "Hinged Double") {
-                options = [
-                    { value: "", text: "" },
-                    { value: "L-RA", text: "L-RA" },
-                    { value: "AL-R", text: "AL-R" }
-                ];
-            } else if (tubeName === "Sliding Single") {
-                options = [
-                    { value: "", text: "" },
-                    { value: "AL", text: "AL" },
-                    { value: "RA", text: "RA" }
-                ];
-            } else if (tubeName === "Sliding Double") {
-                options = [
-                    { value: "", text: "" },
-                    { value: "AL", text: "AL" },
-                    { value: "RA", text: "RA" }
-                ];
-            } else if (tubeName === "Sliding Stacker") {
-                options = [
-                    { value: "", text: "" },
-                    { value: "AL", text: "AL" },
-                    { value: "RA", text: "RA" }
-                ];
-            }
-
-            options.forEach((opt) => {
-                let optionElement = document.createElement("option");
-                optionElement.value = opt.value;
-                optionElement.textContent = opt.text;
-                layoutcode.appendChild(optionElement);
-            });
-
-            resolve();
-        }).catch((error) => {
-            reject(error);
         });
     });
 }
@@ -718,61 +567,13 @@ function bindFrameColour(blindType) {
     });
 }
 
-function bindInterlock(tubeType) {
-    return new Promise((resolve, reject) => {
-        const interlocktype = document.getElementById("interlocktype");
-        interlocktype.innerHTML = "";
-
-        if (!tubeType) {
-            resolve();
-            return;
-        }
-
-        getTubeName(tubeType).then((tubeName) => {
-            let options = [{ value: "", text: "" }];
-
-            if (tubeName === "Sliding Single") {
-                options = [
-                    { value: "", text: "" },
-                    { value: "HD3 Offset (5mm)", text: "HD3 Offset (5mm)" },
-                    { value: "HD2 Flat (1.5mm)", text: "HD2 Flat (1.5mm)" },
-                    { value: "HD10 Large Offset", text: "HD10 Large Offset" },
-                    { value: "HD9 F Interlock", text: "HD9 F Interlock" },
-                ];
-            } else if (tubeName === "Sliding Double") {
-                options = [
-                    { value: "", text: "" },
-                    { value: "HD9 F Interlock", text: "HD9 F Interlock" },
-                ];
-            } else if (tubeName === "Sliding Stacker") {
-                options = [
-                    { value: "", text: "" },
-                    { value: "HD3 Offset (5 mm) with HD9 F Interlock", text: "HD3 Offset (5 mm) with HD9 F Interlock" },
-                    { value: "HD2 Flat (1.5 mm) with HD9 F Interlock", text: "HD2 Flat (1.5 mm) with HD9 F Interlock" },
-                    { value: "HD10 Large Offset with HD9 F Interlock", text: "HD10 Large Offset with HD9 F Interlock" }
-                ];
-            }
-
-            options.forEach((opt) => {
-                let optionElement = document.createElement("option");
-                optionElement.value = opt.value;
-                optionElement.textContent = opt.text;
-                interlocktype.appendChild(optionElement);
-            });
-
-            resolve();
-        }).catch((error) => {
-            reject(error);
-        });
-    });
-}
-
-function bindComponentForm(blindType, tubeType, colourType) {
+function bindComponentForm(blindType, colourType) {
     return new Promise((resolve) => {
         const detail = document.getElementById("divdetail");
         const markup = document.getElementById("divmarkup");
         const divsToHide = [
-            "divlayoutcode", "divhandletype", "divhandlelength", "divtriplelock", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divflushbold", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty"
+            "divbrace", "divporthole", "divplungerpin", "divswivelcolour", "divswivelqty", "divspringqty",
+            "divtopplasticqty"
         ].map(id => document.getElementById(id));
 
         const toggleDisplay = (el, show) => {
@@ -783,75 +584,34 @@ function bindComponentForm(blindType, tubeType, colourType) {
         toggleDisplay(markup, false);
         divsToHide.forEach(el => toggleDisplay(el, false));
 
-        if (!blindType || !tubeType || !colourType) return resolve();
+        if (!blindType || !colourType) return resolve();
 
         toggleDisplay(detail, true);
 
-        Promise.all([
-            getBlindName(blindType),
-            getTubeName(tubeType),
-        ]).then(([blindName, tubeName]) => {
-            const divShow = [];
+        const divShow = [];
 
+        getBlindName(blindType).then((blindName) => {
             if (blindName === "Safety") {
-                if (tubeName === "Hinged Single") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor");
-                } else if (tubeName === "Hinged Double") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divflushbold");
-                } else if (tubeName === "Sliding Single") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty");
-                } else if (tubeName === "Sliding Double") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty");
-                } else if (tubeName === "Sliding Stacker") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty");
-                }
-            } else if (blindName === "Flyscreen") {
-                if (tubeName === "Hinged Single") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divtriplelock");
-                } else if (tubeName === "Hinged Double") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divflushbold", "divtriplelock");
-                } else if (tubeName === "Sliding Single") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty", "divhandletype", "divtriplelock");
-                } else if (tubeName === "Sliding Double") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty", "divhandletype", "divtriplelock");
-                } else if (tubeName === "Sliding Stacker") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty", "divhandletype", "divtriplelock");
-                }
-            } else if (blindName === "Security") {
-                if (tubeName === "Hinged Single") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor");
-                } else if (tubeName === "Hinged Double") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divflushbold");
-                } else if (tubeName === "Sliding Single") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty");
-                } else if (tubeName === "Sliding Double") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty");
-                } else if (tubeName === "Sliding Stacker") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty");
-                }
+                divShow.push("divbrace");
             } else if (blindName === "Standard") {
-                if (tubeName === "Hinged Single") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor");
-                } else if (tubeName === "Hinged Double") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divflushbold");
-                } else if (tubeName === "Sliding Single") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty");
-                } else if (tubeName === "Sliding Double") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty");
-                } else if (tubeName === "Sliding Stacker") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty");
-                }
+                divShow.push("divbrace");
+            } else if (blindName === "Flyscreen") {
+                divShow.push("divbrace", "divporthole", "divplungerpin", "divswivelcolour", "divswivelqty", "divspringqty", "divtopplasticqty");
             }
 
-            divShow.forEach(id => toggleDisplay(document.getElementById(id), true));
+            divShow.forEach(id => {
+                const el = document.getElementById(id);
+                toggleDisplay(el, true);
+            });
 
             if (typeof priceAccess !== "undefined" && priceAccess) {
                 toggleDisplay(markup, true);
             }
 
             resolve();
-        }).catch(error => {
-            resolve();
+
+        }).catch((error) => {
+            reject(error);
         });
     });
 }
@@ -893,9 +653,9 @@ function controlForm(status, isEditItem, isCopyItem) {
     document.getElementById("submit").style.display = status ? "none" : "";
 
     const inputs = [
-        "blindtype", "tubetype", "colourtype", "qty", "room", "mounting", "width", "widthb", "widthc", "drop",
-        "meshtype", "framecolour", "layoutcode", "midrailposition", "handletype", "handlelength", "triplelock", "bugseal", "pettype", "petposition", "doorcloser", "angletype", "anglelength", "beading", "jambtype", "jambposition",
-        "flushbold", "interlocktype", "toptrack", "toptracklength", "bottomtrack", "bottomtracklength", "receivertype", "receiverlength", "slidingqty",
+        "blindtype", "colourtype", "qty", "room", "mounting",
+        "meshtype", "framecolour", "brace", "angletype", "anglelength", "angleqty", "porthole", "plungerpin",
+        "swivelcolour", "swivelqty", "swivelqtyb", "springqty", "topplasticqty",
         "notes", "markup"
     ];
 
@@ -916,40 +676,25 @@ function controlForm(status, isEditItem, isCopyItem) {
 function setFormValues(itemData) {
     const mapping = {
         blindtype: "BlindType",
-        tubetype: "TubeType",
-        colourtype: "ProductId",
+        colourtype: "ColourType",
         qty: "Qty",
         room: "Room",
         mounting: "Mounting",
         width: "Width",
-        widthb: "WidthB",
-        widthc: "WidthC",
         drop: "Drop",
         meshtype: "MeshType",
         framecolour: "FrameColour",
-        layoutcode: "LayoutCode",
-        midrailposition: "MidrailPosition",
-        handletype: "HandleType",
-        handlelength: "HandleLength",
-        triplelock: "TripleLock",
-        bugseal: "BugSeal",
-        pettype: "PetType",
-        petposition: "PetPosition",
-        doorcloser: "DoorCloser",
+        brace: "Brace",
         angletype: "AngleType",
         anglelength: "AngleLength",
-        beading: "Beading",
-        jambtype: "JambType",
-        jambposition: "JambPosition",
-        flushbold: "FlushBold",
-        interlocktype: "InterlockType",
-        toptrack: "TopTrack",
-        toptracklength: "TopTrackLength",
-        bottomtrack: "BottomTrack",
-        bottomtracklength: "BottomTrackLength",
-        receivertype: "Receiver",
-        receiverlength: "ReceiverLength",
-        slidingqty: "SlidingQty",
+        angleqty: "AngleQty",
+        porthole: "PortHole",
+        plungerpin: "PlungerPin",
+        swivelcolour: "SwivelColour",
+        swivelqty: "SwivelQty",
+        swivelqtyb: "SwivelQtyB",
+        springqty: "SpringQty",
+        topplasticqty: "TopPlasticQty",
         notes: "Notes",
         markup: "MarkUp"
     };
@@ -972,25 +717,13 @@ function setFormValues(itemData) {
     }
 }
 
-function fillSelect(selector, list, selected = null) {
-    const el = document.querySelector(selector);
-    el.innerHTML = "<option value=''></option>";
-    list.forEach(item => {
-        const opt = document.createElement("option");
-        opt.value = item.Value;
-        opt.textContent = item.Text;
-        if (selected != null && selected == item.Value) opt.selected = true;
-        el.appendChild(opt);
-    });
-}
-
 function process() {
     toggleButtonState(true, "Processing...");
 
     const fields = [
-        "blindtype", "tubetype", "colourtype", "qty", "room", "mounting", "width", "widthb", "widthc", "drop",
-        "meshtype", "framecolour", "layoutcode", "midrailposition", "handletype", "handlelength", "triplelock", "bugseal", "pettype", "petposition", "doorcloser", "angletype", "anglelength", "beading", "jambtype", "jambposition",
-        "flushbold", "interlocktype", "toptrack", "toptracklength", "bottomtrack", "bottomtracklength", "receivertype", "receiverlength", "slidingqty",
+        "blindtype", "colourtype", "qty", "room", "mounting", "width", "drop",
+        "meshtype", "framecolour", "brace", "angletype", "anglelength", "angleqty", "porthole", "plungerpin",
+        "swivelcolour", "swivelqty", "swivelqtyb", "springqty", "topplasticqty",
         "notes", "markup"
     ];
 
@@ -1008,7 +741,7 @@ function process() {
 
     $.ajax({
         type: "POST",
-        url: "Method.aspx/DoorProcess",
+        url: "Method.aspx/WindowProcess",
         data: JSON.stringify({ data: formData }),
         contentType: "application/json; charset=utf-8",
         dataType: "json",
@@ -1030,10 +763,9 @@ function process() {
     });
 }
 
-async function checkSession() {
+async function initWindow() {
     const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get("boos");
-
     if (!sessionId) return redirectOrder();
 
     const response = await fetch("Method.aspx/StringData", {
@@ -1060,6 +792,7 @@ async function checkSession() {
     }
 
     await Promise.all([
+        getOrderHeader(headerId),
         getDesignName(designId),
         getFormAction(itemAction),
         getCompanyOrder(headerId),
@@ -1069,7 +802,7 @@ async function checkSession() {
     ]);
 
     if (itemAction === "create") {
-        bindComponentForm("", "", "");
+        bindComponentForm("");
         controlForm(false);
         bindBlindType(designId);
         loader(itemAction);
@@ -1087,7 +820,7 @@ async function bindItemOrder(itemId, companyDetailId) {
     try {
         const response = await $.ajax({
             type: "POST",
-            url: "Method.aspx/DoorDetail",
+            url: "Method.aspx/WindowDetail",
             data: JSON.stringify({ itemId, companyDetailId }),
             contentType: "application/json; charset=utf-8",
             dataType: "json"
@@ -1096,14 +829,11 @@ async function bindItemOrder(itemId, companyDetailId) {
         const data = response.d;
 
         fillSelect("#blindtype", data.BlindTypes);
-        fillSelect("#tubetype", data.TubeTypes);
         fillSelect("#colourtype", data.ColourTypes);
         fillSelect("#mounting", data.Mountings);
 
         let manual = [
-            bindLayoutCode(data.ItemData.TubeType),
             bindMeshType(data.ItemData.BlindType),
-            bindInterlock(data.ItemData.TubeType),
             bindFrameColour(data.ItemData.BlindType)
         ];
         await Promise.all(manual);
@@ -1113,7 +843,7 @@ async function bindItemOrder(itemId, companyDetailId) {
         document.getElementById("divloader").style.display = "none";
         document.getElementById("divorder").style.display = "";
 
-        bindComponentForm(data.ItemData.BlindType, data.ItemData.TubeType, data.ItemData.ProductId);
+        bindComponentForm(data.ItemData.BlindType, data.ItemData.ProductId);
     } catch (error) {
         document.getElementById("divloader").style.display = "none";
     }
@@ -1122,3 +852,18 @@ async function bindItemOrder(itemId, companyDetailId) {
 function redirectOrder() {
     window.location.replace("/order");
 }
+
+document.getElementById("modalSuccess").addEventListener("hide.bs.modal", function () {
+    document.activeElement.blur();
+    document.body.focus();
+});
+
+document.getElementById("modalError").addEventListener("hide.bs.modal", function () {
+    document.activeElement.blur();
+    document.body.focus();
+});
+
+document.getElementById("modalInfo").addEventListener("hide.bs.modal", function () {
+    document.activeElement.blur();
+    document.body.focus();
+});

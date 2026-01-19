@@ -36,373 +36,402 @@
             </div>
         </section>
 
-        <section class="row" id="divorder" style="display:none;">
-            <div class="col-12 col-sm-12 col-lg-7">
-                <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title" id="cardtitle"></h4>
+        <div id="divorder" style="display:none;">
+            <section class="row">
+                <div class="col-12 col-sm-12 col-lg-7">
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-12 col-sm-12 col-lg-3">
+                                        <label>Order #</label>
+                                        <br />
+                                        <label id="orderid" class="font-bold"></label>
+                                    </div>
+                                    <div class="col-12 col-sm-12 col-lg-4">
+                                        <label>Order Number</label>
+                                        <br />
+                                        <label id="ordernumber" class="font-bold"></label>
+                                    </div>
+                                    <div class="col-6 col-sm-6 col-lg-5">
+                                        <label>Order Name</label>
+                                        <br />
+                                        <label id="ordername" class="font-bold"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-content">
-                        <div class="card-body">
-                            <div class="form form-horizontal">
-                                <div class="form-body">
-                                    <div class="row">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Venetian Type</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-5 form-group">
-                                            <select id="blindtype" class="form-select"></select>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Colour Type</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                            <select id="colourtype" class="form-select"></select>
-                                        </div>
-                                    </div>
-
-                                    <div class="row" id="divsubtype">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Sub Type</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
-                                            <div class="input-group">
-                                                <select id="subtype" class="form-select"></select>
-                                                <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalLayout"> ? </a>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div id="divdetail">
-                                        <hr />
+                </div>
+            </section>
+            <section class="row">
+                <div class="col-12 col-sm-12 col-lg-7">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title" id="cardtitle"></h4>
+                        </div>
+                        <div class="card-content">
+                            <div class="card-body">
+                                <div class="form form-horizontal">
+                                    <div class="form-body">
                                         <div class="row">
                                             <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Quantity</label>
-                                            </div>
-                                            <div class="col-12 col-sm-12 col-lg-2 form-group">
-                                                <input type="number" id="qty" class="form-control" autocomplete="off" placeholder="Quantity" value="1" />
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Room / Location</label>
-                                            </div>
-                                            <div class="col-12 col-sm-12 col-lg-9 form-group">
-                                                <input type="text" id="room" class="form-control" autocomplete="off" placeholder="Room / Location" />
-                                            </div>
-                                        </div>
-
-                                        <div class="row mb-3">
-                                            <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Mounting</label>
+                                                <label>Venetian Type</label>
                                             </div>
                                             <div class="col-12 col-sm-12 col-lg-5 form-group">
-                                                <select id="mounting" class="form-select"></select>
+                                                <select id="blindtype" class="form-select"></select>
                                             </div>
                                         </div>
 
-                                        <div class="row mb-2" id="divtassel">
+                                        <div class="row">
                                             <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Tassel Option</label>
+                                                <label>Colour Type</label>
                                             </div>
                                             <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                                <select id="tassel" class="form-select">
-                                                    <option value=""></option>
-                                                    <option value="Plastic">Plastic</option>
-                                                    <option value="Antique Brass">Antique Brass</option>
-                                                    <option value="Gold">Gold</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="row" id="divfirstblind">
-                                            <div class="col-12">
-                                                <div class="divider divider-left-center">
-                                                    <div class="divider-text">First Blind / Blind A</div>
-                                                </div>
+                                                <select id="colourtype" class="form-select"></select>
                                             </div>
                                         </div>
 
-                                        <div id="divsize">
-                                            <div class="row">
-                                                <div class="col-12 col-sm-12 col-lg-3">
-                                                    <label>Width</label>
-                                                </div>
-                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                                    <div class="input-group">
-                                                        <input type="number" id="width" class="form-control" autocomplete="off" placeholder="Width ...." />
-                                                        <span class="input-group-text">mm</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-12 col-sm-12 col-lg-3">
-                                                    <label>Drop</label>
-                                                </div>
-                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                                    <div class="input-group">
-                                                        <input type="number" id="drop" class="form-control" autocomplete="off" placeholder="Drop ...." />
-                                                        <span class="input-group-text">mm</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="row mt-3" id="divcontrolposition">
+                                        <div class="row" id="divsubtype">
                                             <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Control Position</label>
+                                                <label>Sub Type</label>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                <select id="controlposition" class="form-select">
-                                                    <option value=""></option>
-                                                    <option value="Left">Left</option>
-                                                    <option value="Right">Right</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div class="row" id="divtilterposition">
-                                            <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Tilter Position</label>
-                                            </div>
-                                            <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                <select id="tilterposition" class="form-select">
-                                                    <option value=""></option>
-                                                    <option value="Left">Left</option>
-                                                    <option value="Right">Right</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div class="row mt-3" id="divwandlength">
-                                            <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Wand Length</label>
-                                            </div>
-                                            <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                            <div class="col-12 col-sm-12 col-lg-6 form-group">
                                                 <div class="input-group">
-                                                    <select id="wandlengthvalue" class="form-select">
+                                                    <select id="subtype" class="form-select"></select>
+                                                    <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalLayout"> ? </a>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div id="divdetail">
+                                            <hr />
+                                            <div class="row">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Quantity</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-2 form-group">
+                                                    <input type="number" id="qty" class="form-control" autocomplete="off" placeholder="Quantity" value="1" />
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Room / Location</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-9 form-group">
+                                                    <input type="text" id="room" class="form-control" autocomplete="off" placeholder="Room / Location" />
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-3">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Mounting</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-5 form-group">
+                                                    <select id="mounting" class="form-select"></select>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-2" id="divtassel">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Tassel Option</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                    <select id="tassel" class="form-select">
                                                         <option value=""></option>
-                                                        <option value="610">610</option>
-                                                        <option value="1000">1000</option>
+                                                        <option value="Plastic">Plastic</option>
+                                                        <option value="Antique Brass">Antique Brass</option>
+                                                        <option value="Gold">Gold</option>
                                                     </select>
-                                                    <span class="input-group-text">mm</span>
                                                 </div>
                                             </div>
-                                        </div>
-
-                                        <div class="row mt-3" id="divcordlength">
-                                            <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Cord Length</label>
-                                            </div>
-                                            <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                <div class="input-group">
-                                                    <select id="controllength" class="form-select">
-                                                        <option value=""></option>
-                                                        <option value="Standard">Standard</option>
-                                                        <option value="Custom">Custom</option>
-                                                    </select>
-                                                    <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Cord Length');">?</a>
-                                                </div>
-                                            </div>
-                                            <div class="col-12 col-sm-12 col-lg-4 form-group" id="divcordlengthvalue">
-                                                <div class="input-group">
-                                                    <input type="number" id="controllengthvalue" class="form-control" autocomplete="off" placeholder="Length ...." />
-                                                    <span class="input-group-text">mm</span>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row" id="divfirstend">
-                                            <div class="col-12">
-                                                <div class="divider divider-left-center">
-                                                    <div class="divider-text">
-                                                        <a class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('First');">Open Layout (First Blind)</a>
-                                                    </div>
-                                                    
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="row" id="divsecondblind">
-                                            <div class="col-12">
-                                                <div class="divider divider-left-center">
-                                                    <div class="divider-text">Second Blind / Blind B</div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div id="divsizeb">
-                                            <div class="row">
-                                                <div class="col-12 col-sm-12 col-lg-3">
-                                                    <label>Width</label>
-                                                </div>
-                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                                    <div class="input-group">
-                                                        <input type="number" id="widthb" class="form-control" autocomplete="off" placeholder="Width ..." />
-                                                        <span class="input-group-text">mm</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-12 col-sm-12 col-lg-3">
-                                                    <label>Drop</label>
-                                                </div>
-                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                                    <div class="input-group">
-                                                        <input type="number" id="dropb" class="form-control" autocomplete="off" placeholder="Drop ...." />
-                                                        <span class="input-group-text">mm</span>
-                                                    </div>
-                                                </div>
-                                                <div class="col-12 col-sm-12 col-lg-2">
-                                                    <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Second Size');">Info</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="row" id="divcordlengthb">
-                                            <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Cord Length</label>
-                                            </div>
-                                            <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                <div class="input-group">
-                                                    <select id="controllengthb" class="form-select">
-                                                        <option value=""></option>
-                                                        <option value="Standard">Standard</option>
-                                                        <option value="Custom">Custom</option>
-                                                    </select>
-                                                    <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Cord Length');"> ? </a>
-                                                </div>
-                                            </div>
-                                            <div class="col-12 col-sm-12 col-lg-4 form-group" id="divcordlengthvalueb">
-                                                <div class="input-group">
-                                                    <input type="number" id="controllengthvalueb" class="form-control" autocomplete="off" placeholder="Length ...." />
-                                                    <span class="input-group-text">mm</span>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row" id="divsecondend">
-                                            <div class="col-12">
-                                                <div class="divider divider-left-center">
-                                                    <div class="divider-text">
-                                                        <a class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Second');">Open Layout (Second Blind)</a>
-                                                    </div>
-            
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div id="divvalancesection">
-                                            <div class="row">
+                                
+                                            <div class="row" id="divfirstblind">
                                                 <div class="col-12">
                                                     <div class="divider divider-left-center">
-                                                        <div class="divider-text">Valance Section</div>
+                                                        <div class="divider-text">First Blind / Blind A</div>
                                                     </div>
                                                 </div>
                                             </div>
 
-                                            <div class="row">
+                                            <div id="divsize">
+                                                <div class="row">
+                                                    <div class="col-12 col-sm-12 col-lg-3">
+                                                        <label>Width</label>
+                                                    </div>
+                                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                        <div class="input-group">
+                                                            <input type="number" id="width" class="form-control" autocomplete="off" placeholder="Width ...." />
+                                                            <span class="input-group-text">mm</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-12 col-sm-12 col-lg-3">
+                                                        <label>Drop</label>
+                                                    </div>
+                                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                        <div class="input-group">
+                                                            <input type="number" id="drop" class="form-control" autocomplete="off" placeholder="Drop ...." />
+                                                            <span class="input-group-text">mm</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                
+                                            <div class="row mt-3" id="divcontrolposition">
                                                 <div class="col-12 col-sm-12 col-lg-3">
-                                                    <label>Type</label>
+                                                    <label>Control Position</label>
                                                 </div>
                                                 <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                    <select id="valancetype" class="form-select"></select>
+                                                    <select id="controlposition" class="form-select">
+                                                        <option value=""></option>
+                                                        <option value="Left">Left</option>
+                                                        <option value="Right">Right</option>
+                                                    </select>
                                                 </div>
                                             </div>
 
-                                            <div class="row">
+                                            <div class="row" id="divtilterposition">
                                                 <div class="col-12 col-sm-12 col-lg-3">
-                                                    <label>Size</label>
+                                                    <label>Tilter Position</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                    <select id="tilterposition" class="form-select">
+                                                        <option value=""></option>
+                                                        <option value="Left">Left</option>
+                                                        <option value="Right">Right</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mt-3" id="divwandlength">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Wand Length</label>
                                                 </div>
                                                 <div class="col-12 col-sm-12 col-lg-3 form-group">
                                                     <div class="input-group">
-                                                        <select id="valancesize" class="form-select">
+                                                        <select id="wandlengthvalue" class="form-select">
                                                             <option value=""></option>
-                                                            <option value="Standard">Standard</option>
-                                                            <option value="Custom">Custom</option>
+                                                            <option value="610">610</option>
+                                                            <option value="1000">1000</option>
                                                         </select>
-                                                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Valance Size');"> ? </a>
-                                                    </div>
-                                                </div>
-                                                <div class="col-12 col-sm-12 col-lg-4 form-group" id="divvalancesizevalue">
-                                                    <div class="input-group">
-                                                        <input type="number" id="valancesizevalue" class="form-control" autocomplete="off" placeholder="Valance Size ...." />
                                                         <span class="input-group-text">mm</span>
                                                     </div>
                                                 </div>
                                             </div>
 
-                                            <div class="row">
+                                            <div class="row mt-3" id="divcordlength">
                                                 <div class="col-12 col-sm-12 col-lg-3">
-                                                    <label>Return Position</label>
-                                                </div>
-                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                    <select id="returnposition" class="form-select"></select>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-12 col-sm-12 col-lg-3">
-                                                    <label>Return Length</label>
+                                                    <label>Cord Length</label>
                                                 </div>
                                                 <div class="col-12 col-sm-12 col-lg-3 form-group">
                                                     <div class="input-group">
-                                                        <select id="returnlength" class="form-select">
+                                                        <select id="controllength" class="form-select">
                                                             <option value=""></option>
                                                             <option value="Standard">Standard</option>
                                                             <option value="Custom">Custom</option>
                                                         </select>
-                                                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Return Length');"> ? </a>
+                                                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Cord Length');">?</a>
                                                     </div>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-4 form-group" id="divvalancelengthvalue">
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group" id="divcordlengthvalue">
                                                     <div class="input-group">
-                                                        <input type="number" id="returnlengthvalue" class="form-control" autocomplete="off" placeholder="Length ...." />
+                                                        <input type="number" id="controllengthvalue" class="form-control" autocomplete="off" placeholder="Length ...." />
                                                         <span class="input-group-text">mm</span>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
 
-                                        <div class="row">
-                                            <div class="col-12"><hr /></div>
-                                        </div>
-                                        
-                                        <div class="row mt-4 mb-2">
-                                            <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Hold Down Clip</label>
+                                            <div class="row" id="divfirstend">
+                                                <div class="col-12">
+                                                    <div class="divider divider-left-center">
+                                                        <div class="divider-text">
+                                                            <a class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('First');">Open Layout (First Blind)</a>
+                                                        </div>
+                                            
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-2 form-group">
-                                                <select id="supply" class="form-select">
-                                                    <option value=""></option>
-                                                    <option value="Yes">Yes</option>
-                                                </select>
+                                
+                                            <div class="row" id="divsecondblind">
+                                                <div class="col-12">
+                                                    <div class="divider divider-left-center">
+                                                        <div class="divider-text">Second Blind / Blind B</div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <div class="row">
-                                            <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Special Information</label>
-                                            </div>
-                                            <div class="col-12 col-sm-12 col-lg-9 form-group">
-                                                <textarea class="form-control" id="notes" rows="4" placeholder="Your notes ..." style="resize:none;"></textarea>
-                                            </div>
-                                        </div>
+                                            <div id="divsizeb">
+                                                <div class="row">
+                                                    <div class="col-12 col-sm-12 col-lg-3">
+                                                        <label>Width</label>
+                                                    </div>
+                                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                        <div class="input-group">
+                                                            <input type="number" id="widthb" class="form-control" autocomplete="off" placeholder="Width ..." />
+                                                            <span class="input-group-text">mm</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
 
-                                        <div class="row" id="divmarkup">
-                                            <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Mark Up</label>
+                                                <div class="row">
+                                                    <div class="col-12 col-sm-12 col-lg-3">
+                                                        <label>Drop</label>
+                                                    </div>
+                                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                        <div class="input-group">
+                                                            <input type="number" id="dropb" class="form-control" autocomplete="off" placeholder="Drop ...." />
+                                                            <span class="input-group-text">mm</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12 col-sm-12 col-lg-2">
+                                                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Second Size');">Info</a>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                <div class="input-group">
-                                                    <input type="number" id="markup" class="form-control" autocomplete="off" placeholder="Mark Up ..." />
-                                                    <span class="input-group-text">%</span>
+                                
+                                            <div class="row" id="divcordlengthb">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Cord Length</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                    <div class="input-group">
+                                                        <select id="controllengthb" class="form-select">
+                                                            <option value=""></option>
+                                                            <option value="Standard">Standard</option>
+                                                            <option value="Custom">Custom</option>
+                                                        </select>
+                                                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Cord Length');"> ? </a>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group" id="divcordlengthvalueb">
+                                                    <div class="input-group">
+                                                        <input type="number" id="controllengthvalueb" class="form-control" autocomplete="off" placeholder="Length ...." />
+                                                        <span class="input-group-text">mm</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row" id="divsecondend">
+                                                <div class="col-12">
+                                                    <div class="divider divider-left-center">
+                                                        <div class="divider-text">
+                                                            <a class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Second');">Open Layout (Second Blind)</a>
+                                                        </div>
+    
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div id="divvalancesection">
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="divider divider-left-center">
+                                                            <div class="divider-text">Valance Section</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-12 col-sm-12 col-lg-3">
+                                                        <label>Type</label>
+                                                    </div>
+                                                    <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                        <select id="valancetype" class="form-select"></select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-12 col-sm-12 col-lg-3">
+                                                        <label>Size</label>
+                                                    </div>
+                                                    <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                        <div class="input-group">
+                                                            <select id="valancesize" class="form-select">
+                                                                <option value=""></option>
+                                                                <option value="Standard">Standard</option>
+                                                                <option value="Custom">Custom</option>
+                                                            </select>
+                                                            <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Valance Size');"> ? </a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12 col-sm-12 col-lg-4 form-group" id="divvalancesizevalue">
+                                                        <div class="input-group">
+                                                            <input type="number" id="valancesizevalue" class="form-control" autocomplete="off" placeholder="Valance Size ...." />
+                                                            <span class="input-group-text">mm</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-12 col-sm-12 col-lg-3">
+                                                        <label>Return Position</label>
+                                                    </div>
+                                                    <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                        <select id="returnposition" class="form-select"></select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-12 col-sm-12 col-lg-3">
+                                                        <label>Return Length</label>
+                                                    </div>
+                                                    <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                        <div class="input-group">
+                                                            <select id="returnlength" class="form-select">
+                                                                <option value=""></option>
+                                                                <option value="Standard">Standard</option>
+                                                                <option value="Custom">Custom</option>
+                                                            </select>
+                                                            <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Return Length');"> ? </a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12 col-sm-12 col-lg-4 form-group" id="divvalancelengthvalue">
+                                                        <div class="input-group">
+                                                            <input type="number" id="returnlengthvalue" class="form-control" autocomplete="off" placeholder="Length ...." />
+                                                            <span class="input-group-text">mm</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-12"><hr /></div>
+                                            </div>
+                                
+                                            <div class="row mt-4 mb-2">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Hold Down Clip</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-2 form-group">
+                                                    <select id="supply" class="form-select">
+                                                        <option value=""></option>
+                                                        <option value="Yes">Yes</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Special Information</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-9 form-group">
+                                                    <textarea class="form-control" id="notes" rows="4" placeholder="Your notes ..." style="resize:none;"></textarea>
+                                                </div>
+                                            </div>
+
+                                            <div class="row" id="divmarkup">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Mark Up</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                    <div class="input-group">
+                                                        <input type="number" id="markup" class="form-control" autocomplete="off" placeholder="Mark Up ..." />
+                                                        <span class="input-group-text">%</span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -410,27 +439,27 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="card-footer text-center">
-                        <a href="javascript:void(0);" id="submit" class="btn btn-primary">Submit</a>
-                        <a href="javascript:void(0);" id="cancel" class="btn btn-danger">Cancel</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-12 col-lg-5">
-                <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title text-center">Information</h4>
-                    </div>
-                    <div class="card-content">
-                        <div class="card-body">
-
+                        <div class="card-footer text-center">
+                            <a href="javascript:void(0);" id="submit" class="btn btn-primary">Submit</a>
+                            <a href="javascript:void(0);" id="cancel" class="btn btn-danger">Cancel</a>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+                <div class="col-12 col-sm-12 col-lg-5">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title text-center">Information</h4>
+                        </div>
+                        <div class="card-content">
+                            <div class="card-body">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
     </div>
 
     <div class="modal fade text-left" id="modalSuccess" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
@@ -514,5 +543,6 @@
             </div>
         </div>
     </div>
-    <script src="../Scripts/Order/Venetian.js?v=2.0.1"></script>
+    
+    <script src="<%: ResolveUrl("~/Scripts/WebForms/Order/Venetian.js?v=1.0.0") %>"></script>
 </asp:Content>

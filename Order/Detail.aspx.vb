@@ -14,64 +14,8 @@ Partial Class Order_Detail
     Dim orderClass As New OrderClass
     Dim mailingClass As New MailingClass
 
-    Dim headerId As String = String.Empty
-
     Dim enUS As CultureInfo = New CultureInfo("en-US")
     Dim idIDR As New CultureInfo("id-ID")
-
-    Private Property customerId As String
-        Get
-            Return If(ViewState("customerId"), String.Empty)
-        End Get
-        Set(value As String)
-            ViewState("customerId") = value
-        End Set
-    End Property
-
-    Private Property companyId As String
-        Get
-            Return If(ViewState("companyId"), String.Empty)
-        End Get
-        Set(value As String)
-            ViewState("companyId") = value
-        End Set
-    End Property
-
-    Private Property priceGroupId As String
-        Get
-            Return If(ViewState("priceGroupId"), String.Empty)
-        End Get
-        Set(value As String)
-            ViewState("priceGroupId") = value
-        End Set
-    End Property
-
-    Private Property companyDetailId As String
-        Get
-            Return If(ViewState("companyDetailId"), String.Empty)
-        End Get
-        Set(value As String)
-            ViewState("companyDetailId") = value
-        End Set
-    End Property
-
-    Private Property createdRole As String
-        Get
-            Return If(ViewState("createdRole"), String.Empty)
-        End Get
-        Set(value As String)
-            ViewState("createdRole") = value
-        End Set
-    End Property
-
-    Private Property itemId As String
-        Get
-            Return If(ViewState("itemId"), String.Empty)
-        End Get
-        Set(value As String)
-            ViewState("itemId") = value
-        End Set
-    End Property
 
     Private Property orderPaid As Boolean
         Get
@@ -94,11 +38,10 @@ Partial Class Order_Detail
             Exit Sub
         End If
 
-        headerId = Request.QueryString("orderid").ToString()
-        hiddenHeaderId.Value = Request.QueryString("orderid").ToString()
+        headerId.Value = Request.QueryString("orderid").ToString()
         If Not IsPostBack Then
             AllMessageError(False, String.Empty)
-            BindDataOrder(headerId)
+            BindDataOrder(headerId.Value)
             BindBlindTypeService()
         End If
     End Sub
@@ -107,7 +50,7 @@ Partial Class Order_Detail
         MessageError_Log(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showLog(); };"
         Try
-            gvListLogs.DataSource = orderClass.GetListLog("OrderHeaders", headerId)
+            gvListLogs.DataSource = orderClass.GetListLog("OrderHeaders", headerId.Value)
             gvListLogs.DataBind()
 
             ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
@@ -140,7 +83,7 @@ Partial Class Order_Detail
             Dim fileName As String = String.Format("{0}_{1}.pdf", lblOrderId.Text, todayString)
 
             Dim finalFilePath As String = Server.MapPath(filePath & fileName)
-            previewClass.BindContent(headerId, finalFilePath)
+            previewClass.BindContent(headerId.Value, finalFilePath)
 
             Dim documentFile As String = "~/File/Order/" & fileName
             framePreview.Attributes("src") = "../Handler/PDF.ashx?document=" & documentFile
@@ -161,14 +104,14 @@ Partial Class Order_Detail
     End Sub
 
     Protected Sub btnEditHeader_Click(sender As Object, e As EventArgs)
-        url = String.Format("~/order/edit?orderidedit={0}", headerId)
+        url = String.Format("~/order/edit?orderidedit={0}", headerId.Value)
         Response.Redirect(url, False)
     End Sub
 
     Protected Sub btnDeleteOrder_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim thisId As String = headerId
+            Dim thisId As String = headerId.Value
 
             dataLog = {"OrderHeaders", thisId, Session("LoginId").ToString(), "Order Deleted"}
             orderClass.Logs(dataLog)
@@ -176,9 +119,9 @@ Partial Class Order_Detail
             Dim detailData As DataTable = orderClass.GetDataTable("SELECT * FROM OrderDetails WHERE HeaderId='" & thisId & "' AND Active=1 ORDER BY Id ASC")
             If detailData.Rows.Count > 0 Then
                 For i As Integer = 0 To detailData.Rows.Count - 1
-                    Dim itemId As String = detailData.Rows(i).Item("Id").ToString()
+                    Dim detailId As String = detailData.Rows(i)("Id").ToString()
 
-                    dataLog = {"OrderDetails", thisId, Session("LoginId").ToString(), "Order Item Deleted | Order Header Deleted"}
+                    dataLog = {"OrderDetails", detailId, Session("LoginId").ToString(), "Order Item Deleted | Order Header Deleted"}
                     orderClass.Logs(dataLog)
                 Next
             End If
@@ -199,7 +142,7 @@ Partial Class Order_Detail
                 thisConn.Close()
             End Using
 
-            url = String.Format("~/order/detail?orderid={0}", headerId)
+            url = String.Format("~/order/detail?orderid={0}", headerId.Value)
             Response.Redirect(url, False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -222,10 +165,11 @@ Partial Class Order_Detail
                 Exit Sub
             End If
 
-            If companyDetailId = "3" Then
-                Dim estimator As String = orderClass.GetItemData("SELECT Estimator FROM OrderBuilders WHERE Id='" & headerId & "'")
-                Dim supervisor As String = orderClass.GetItemData("SELECT Supervisor FROM OrderBuilders WHERE Id='" & headerId & "'")
-                Dim address As String = orderClass.GetItemData("SELECT Address FROM OrderBuilders WHERE Id='" & headerId & "'")
+            If companyDetailId.Value = "3" Then
+                Dim thisData As DataRow = orderClass.GetDataRow("SELECT Est*imator FROM OrderBuilders WHERE Id='" & headerId.Value & "'")
+                Dim estimator As String = thisData("Estimator").ToString()
+                Dim supervisor As String = thisData("Supervisor").ToString()
+                Dim address As String = thisData("Address").ToString()
 
                 If String.IsNullOrEmpty(estimator) Then
                     MessageError(True, "ESTIMATOR IS REQUIRED !")
@@ -244,18 +188,17 @@ Partial Class Order_Detail
 
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET QuotedDate=GETDATE(), Status='Quoted' WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", headerId)
+                        myCmd.Parameters.AddWithValue("@Id", headerId.Value)
 
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
                     End Using
                 End Using
 
-                dataLog = {"OrderHeaders", headerId, Session("LoginId"), "Quote Order"}
+                dataLog = {"OrderHeaders", headerId.Value, Session("LoginId"), "Quote Order"}
                 orderClass.Logs(dataLog)
 
-                url = String.Format("~/order/detail?orderid={0}", headerId)
-
+                url = String.Format("~/order/detail?orderid={0}", headerId.Value)
                 Response.Redirect(url, False)
             End If
         Catch ex As Exception
@@ -279,7 +222,7 @@ Partial Class Order_Detail
                 Exit Sub
             End If
 
-            Dim cashSale As Boolean = orderClass.GetCustomerCashSale(customerId)
+            Dim cashSale As Boolean = orderClass.GetCustomerCashSale(customerId.Value)
 
             Dim orderStatus As String = "New Order"
             If cashSale = True Then orderStatus = "Waiting Proforma"
@@ -288,7 +231,7 @@ Partial Class Order_Detail
 
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET SubmittedDate=GETDATE(), Status=@Status WHERE Id=@Id; INSERT OrderInvoices(Id, InvoiceNumber, Payment, Amount) VALUES (@Id, @InvoiceNumber, @Payment, 0)", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", headerId)
+                    myCmd.Parameters.AddWithValue("@Id", headerId.Value)
                     myCmd.Parameters.AddWithValue("@Status", orderStatus)
                     myCmd.Parameters.AddWithValue("@InvoiceNumber", invoiceNumber)
                     myCmd.Parameters.AddWithValue("@Payment", False)
@@ -298,13 +241,13 @@ Partial Class Order_Detail
                 End Using
             End Using
 
-            Dim totalItems As Integer = orderClass.GetTotalItemOrder(headerId)
-            If companyId = "2" AndAlso totalItems <= 3 Then
+            Dim totalItems As Integer = orderClass.GetTotalItemOrder(headerId.Value)
+            If companyId.Value = "2" AndAlso totalItems <= 3 Then
                 Dim thisId As String = orderClass.GetNewOrderItemId()
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, 2986, 112, 1, 0, 0, 1, 0, 1)", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
-                        myCmd.Parameters.AddWithValue("@HeaderId", headerId)
+                        myCmd.Parameters.AddWithValue("@HeaderId", headerId.Value)
 
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
@@ -314,12 +257,12 @@ Partial Class Order_Detail
                 dataLog = {"OrderDetails", thisId, "2", "Order Item Added"}
                 orderClass.Logs(dataLog)
 
-                orderClass.ResetPriceDetail(headerId, thisId)
-                orderClass.CalculatePrice(headerId, thisId)
-                orderClass.FinalCostItem(headerId, thisId)
+                orderClass.ResetPriceDetail(headerId.Value, thisId)
+                orderClass.CalculatePrice(headerId.Value, thisId)
+                orderClass.FinalCostItem(headerId.Value, thisId)
             End If
 
-            dataLog = {"OrderHeaders", headerId, Session("LoginId"), "Order Submitted"}
+            dataLog = {"OrderHeaders", headerId.Value, Session("LoginId"), "Order Submitted"}
             orderClass.Logs(dataLog)
 
             Dim previewClass As New PreviewClass
@@ -328,34 +271,31 @@ Partial Class Order_Detail
             Dim fileName As String = String.Format("{0}_{1}.pdf", lblOrderId.Text, todayString)
 
             Dim finalFilePath As String = Server.MapPath(filePath & fileName)
-            previewClass.BindContent(headerId, finalFilePath)
+            previewClass.BindContent(headerId.Value, finalFilePath)
 
-            Dim checkPrinting As Integer = orderClass.GetItemData_Integer("SELECT COUNT(*) FROM OrderDetails WHERE HeaderId='" & headerId & "' AND (NULLIF(LTRIM(RTRIM(Printing)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingB)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingC)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingD)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingE)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingF)),'') IS NOT NULL)")
+            Dim checkPrinting As Integer = orderClass.GetItemData_Integer("SELECT COUNT(*) FROM OrderDetails WHERE HeaderId='" & headerId.Value & "' AND (NULLIF(LTRIM(RTRIM(Printing)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingB)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingC)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingD)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingE)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingF)),'') IS NOT NULL)")
 
             If cashSale = False Then
-                mailingClass.NewOrder(headerId, finalFilePath)
+                mailingClass.NewOrder(headerId.Value, finalFilePath)
             End If
 
             If cashSale = True Then
-                mailingClass.NewOrder_Proforma(headerId, finalFilePath)
+                mailingClass.NewOrder_Proforma(headerId.Value, finalFilePath)
             End If
 
             If checkPrinting > 0 Then
-                Dim sourceFolder As String = Server.MapPath(String.Format("~/File/Printing/{0}", headerId))
+                Dim sourceFolder As String = Server.MapPath(String.Format("~/File/Printing/{0}", headerId.Value))
                 Dim zipPath As String = Server.MapPath(String.Format("~/File/Printing/{0}.zip", lblOrderId.Text))
 
                 If IO.File.Exists(zipPath) Then IO.File.Delete(zipPath)
 
                 ZipFile.CreateFromDirectory(sourceFolder, zipPath, CompressionLevel.Fastest, True)
 
-                mailingClass.SubmitOrder_PrintingFabric(headerId, finalFilePath, zipPath)
+                mailingClass.SubmitOrder_PrintingFabric(headerId.Value, finalFilePath, zipPath)
             End If
 
-            Dim berhasil As String = String.Format("showSuccessSwal('{0}')", headerId)
+            Dim berhasil As String = String.Format("showSuccessSwal('{0}')", headerId.Value)
             ScriptManager.RegisterStartupScript(Me, Me.GetType(), "swalSuccess", berhasil, True)
-
-            'url = String.Format("~/order/detail?orderid={0}", headerId)
-            'Response.Redirect(url, False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -376,19 +316,19 @@ Partial Class Order_Detail
                 thisConn.Open()
 
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET SubmittedDate=NULL, Status='Unsubmitted' WHERE Id=@Id; DELETE FROM OrderInvoices WHERE Id=@Id;", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", headerId)
+                    myCmd.Parameters.AddWithValue("@Id", headerId.Value)
 
                     myCmd.ExecuteNonQuery()
                 End Using
 
-                Dim serviceData As DataTable = orderClass.GetDataTable("SELECT OrderDetails.* FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Products.DesignId='16'")
+                Dim serviceData As DataTable = orderClass.GetDataTable("SELECT OrderDetails.* FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.HeaderId='" & headerId.Value & "' AND Products.DesignId='16'")
                 If serviceData.Rows.Count > 0 Then
                     For i As Integer = 0 To serviceData.Rows.Count - 1
                         Dim serviceId As String = serviceData.Rows(i).Item("Id").ToString()
 
                         Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET Active=0 WHERE Id=@ItemId; DELETE FROM OrderCostings WHERE HeaderId=@HeaderId AND ItemId=@ItemId", thisConn)
                             myCmd.Parameters.AddWithValue("@ItemId", serviceId)
-                            myCmd.Parameters.AddWithValue("@HeaderId", headerId)
+                            myCmd.Parameters.AddWithValue("@HeaderId", headerId.Value)
 
                             myCmd.ExecuteNonQuery()
                         End Using
@@ -398,12 +338,12 @@ Partial Class Order_Detail
                 thisConn.Close()
             End Using
 
-            orderClass.CalculatePriceByOrder(headerId)
+            orderClass.CalculatePriceByOrder(headerId.Value)
 
-            dataLog = {"OrderHeaders", headerId, Session("LoginId"), "Order Unsubmitted"}
+            dataLog = {"OrderHeaders", headerId.Value, Session("LoginId"), "Order Unsubmitted"}
             orderClass.Logs(dataLog)
 
-            url = String.Format("~/order/detail?orderid={0}", headerId)
+            url = String.Format("~/order/detail?orderid={0}", headerId.Value)
             Response.Redirect(url, False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -431,7 +371,7 @@ Partial Class Order_Detail
             If msgErrorCancelOrder.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Canceled', CanceledDate=GETDATE(), ProductionDate=NULL, OnHoldDate=NULL, DownloadBOE=0 WHERE Id=@Id; UPDATE OrderShipments SET ShipmentNumber=NULL, ShipmentDate=NULL, ContainerNumber=NULL, Courier=NULL WHERE Id=@Id; UPDATE OrderInvoices SET InvoiceNumber=NULL, Collector=NULL, InvoiceDate=NULL, DueDate=NULL, Payment=0, PaymentDate=NULL, Amount=0 WHERE Id=@Id;", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", headerId)
+                        myCmd.Parameters.AddWithValue("@Id", headerId.Value)
                         myCmd.Parameters.AddWithValue("@StatusDescription", txtCancelDescription.Text.Trim())
 
                         thisConn.Open()
@@ -439,15 +379,15 @@ Partial Class Order_Detail
                     End Using
                 End Using
 
-                If companyId = "2" Then
+                If companyId.Value = "2" Then
                     Dim salesClass As New SalesClass
                     salesClass.RefreshData()
                 End If
 
-                dataLog = {"OrderHeaders", headerId, Session("LoginId"), "Order Canceled"}
+                dataLog = {"OrderHeaders", headerId.Value, Session("LoginId"), "Order Canceled"}
                 orderClass.Logs(dataLog)
 
-                url = String.Format("~/order/detail?orderid={0}", headerId)
+                url = String.Format("~/order/detail?orderid={0}", headerId.Value)
                 Response.Redirect(url, False)
             End If
         Catch ex As Exception
@@ -466,23 +406,23 @@ Partial Class Order_Detail
         Try
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='In Production', ProductionDate=GETDATE(), DownloadBOE=1 WHERE Id=@Id; INSERT INTO OrderShipments(Id) VALUES (@Id)", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", headerId)
+                    myCmd.Parameters.AddWithValue("@Id", headerId.Value)
 
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
             End Using
 
-            dataLog = {"OrderHeaders", headerId, Session("LoginId"), "Order In Production"}
+            dataLog = {"OrderHeaders", headerId.Value, Session("LoginId"), "Order In Production"}
             orderClass.Logs(dataLog)
 
             ' SALES
-            If companyId = "2" Then
+            If companyId.Value = "2" Then
                 Dim salesClass As New SalesClass
                 salesClass.RefreshData()
             End If
 
-            url = String.Format("~/order/detail?orderid={0}", headerId)
+            url = String.Format("~/order/detail?orderid={0}", headerId.Value)
             Response.Redirect(url, False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -502,17 +442,17 @@ Partial Class Order_Detail
         Try
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='On Hold', OnHoldDate=GETDATE() WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", headerId)
+                    myCmd.Parameters.AddWithValue("@Id", headerId.Value)
 
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
             End Using
 
-            dataLog = {"OrderHeaders", headerId, Session("LoginId"), "Order On Hold"}
+            dataLog = {"OrderHeaders", headerId.Value, Session("LoginId"), "Order On Hold"}
             orderClass.Logs(dataLog)
 
-            url = String.Format("~/order/detail?orderid={0}", headerId)
+            url = String.Format("~/order/detail?orderid={0}", headerId.Value)
             Response.Redirect(url, False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -532,17 +472,17 @@ Partial Class Order_Detail
         Try
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='In Production', OnHoldDate=NULL, ProductionDate=GETDATE() WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", headerId)
+                    myCmd.Parameters.AddWithValue("@Id", headerId.Value)
 
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
             End Using
 
-            dataLog = {"OrderHeaders", headerId, Session("LoginId"), "Order In Production (Unhold Order)"}
+            dataLog = {"OrderHeaders", headerId.Value, Session("LoginId"), "Order In Production (Unhold Order)"}
             orderClass.Logs(dataLog)
 
-            url = String.Format("~/order/detail?orderid={0}", headerId)
+            url = String.Format("~/order/detail?orderid={0}", headerId.Value)
             Response.Redirect(url, False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -588,7 +528,7 @@ Partial Class Order_Detail
             If msgErrorShippedOrder.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Shipped Out' WHERE Id=@Id; UPDATE OrderShipments SET ShipmentNumber=@ShipmentNumber, ShipmentDate=@ShipmentDate, ContainerNumber=@ContainerNumber, Courier=@Courier WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", headerId)
+                        myCmd.Parameters.AddWithValue("@Id", headerId.Value)
                         myCmd.Parameters.AddWithValue("@ShipmentNumber", txtShipmentNumber.Text.Trim())
                         myCmd.Parameters.AddWithValue("@ShipmentDate", txtShipmentDate.Text)
                         myCmd.Parameters.AddWithValue("@ContainerNumber", txtContainerNumber.Text.Trim())
@@ -599,10 +539,10 @@ Partial Class Order_Detail
                     End Using
                 End Using
 
-                dataLog = {"OrderHeaders", headerId, Session("LoginId"), "Order Shipped"}
+                dataLog = {"OrderHeaders", headerId.Value, Session("LoginId"), "Order Shipped"}
                 orderClass.Logs(dataLog)
 
-                url = String.Format("~/order/detail?orderid={0}", headerId)
+                url = String.Format("~/order/detail?orderid={0}", headerId.Value)
                 Response.Redirect(url, False)
             End If
         Catch ex As Exception
@@ -621,17 +561,17 @@ Partial Class Order_Detail
         Try
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Completed', CompletedDate=GETDATE() WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", headerId)
+                    myCmd.Parameters.AddWithValue("@Id", headerId.Value)
 
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
             End Using
 
-            dataLog = {"OrderHeaders", headerId, Session("LoginId"), "Order Completed"}
+            dataLog = {"OrderHeaders", headerId.Value, Session("LoginId"), "Order Completed"}
             orderClass.Logs(dataLog)
 
-            url = String.Format("~/order/detail?orderid={0}", headerId)
+            url = String.Format("~/order/detail?orderid={0}", headerId.Value)
             Response.Redirect(url, False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -670,7 +610,7 @@ Partial Class Order_Detail
             Dim action As String = "Add"
             Dim reworkId As String = orderClass.GetNewOrderReworkId()
 
-            Dim getReworkId As String = orderClass.GetItemData("SELECT Id FROM OrderReworks WHERE HeaderId='" & headerId & "' AND Status='Unsubmitted'")
+            Dim getReworkId As String = orderClass.GetItemData("SELECT Id FROM OrderReworks WHERE HeaderId='" & headerId.Value & "' AND Status='Unsubmitted'")
             If Not String.IsNullOrEmpty(getReworkId) Then
                 action = "Update" : reworkId = getReworkId
             End If
@@ -680,7 +620,7 @@ Partial Class Order_Detail
                     Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderReworks VALUES (@Id, @HeaderId, NULL, 'Unsubmitted', @CreatedBy, GETDATE(), NULL, 1)", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", reworkId)
                         myCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
-                        myCmd.Parameters.AddWithValue("@HeaderId", headerId)
+                        myCmd.Parameters.AddWithValue("@HeaderId", headerId.Value)
 
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
@@ -802,7 +742,7 @@ Partial Class Order_Detail
 
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderQuotes SET Email=@Email, Phone=@Phone, Address=@Address, Suburb=@Suburb, City=@City, State=@State, PostCode=@PostCode, Country=@Country, Discount=@Discount, Installation=@Installation, CheckMeasure=@CheckMeasure, Freight=@Freight WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", headerId)
+                        myCmd.Parameters.AddWithValue("@Id", headerId.Value)
                         myCmd.Parameters.AddWithValue("@Email", txtQuoteEmail.Text)
                         myCmd.Parameters.AddWithValue("@Phone", txtQuotePhone.Text.Trim())
                         myCmd.Parameters.AddWithValue("@Address", address)
@@ -821,10 +761,10 @@ Partial Class Order_Detail
                     End Using
                 End Using
 
-                dataLog = {"OrderHeaders", headerId, Session("LoginId"), "Quote Details Updated"}
+                dataLog = {"OrderHeaders", headerId.Value, Session("LoginId"), "Quote Details Updated"}
                 orderClass.Logs(dataLog)
 
-                url = String.Format("~/order/detail?orderid={0}", headerId)
+                url = String.Format("~/order/detail?orderid={0}", headerId.Value)
                 Response.Redirect(url, False)
             End If
         Catch ex As Exception
@@ -854,7 +794,7 @@ Partial Class Order_Detail
             Dim fileName As String = String.Format("Quote_{0}_{1}.pdf", lblOrderId.Text, todayString)
             Dim pdfFilePath As String = Server.MapPath("~/File/Quote/" & fileName)
 
-            quoteClass.BindContentCustomer(headerId, pdfFilePath)
+            quoteClass.BindContentCustomer(headerId.Value, pdfFilePath)
 
             Response.ContentType = "application/pdf"
             Response.AddHeader("Content-Disposition", "attachment; filename=""" & fileName & """")
@@ -910,13 +850,13 @@ Partial Class Order_Detail
 
                     If lblOrderStatus.Text = "Waiting Proforma" Then
                         Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Proforma Sent' WHERE Id=@Id;", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", headerId)
+                            myCmd.Parameters.AddWithValue("@Id", headerId.Value)
                             myCmd.ExecuteNonQuery()
                         End Using
                     End If
 
                     Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderInvoices SET Collector=@Collector, InvoiceDate=GETDATE(), DueDate=DATEADD(DAY, 14, GETDATE()) WHERE Id=@Id;", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", headerId)
+                        myCmd.Parameters.AddWithValue("@Id", headerId.Value)
                         myCmd.Parameters.AddWithValue("@Collector", Session("LoginId").ToString())
                         myCmd.ExecuteNonQuery()
                     End Using
@@ -931,20 +871,20 @@ Partial Class Order_Detail
                 Dim namePreview As String = String.Format("{0}_{1}.pdf", lblOrderId.Text, todayString)
 
                 Dim pdfPreview As String = Server.MapPath(pathPreview & namePreview)
-                previewClass.BindContent(headerId, pdfPreview)
+                previewClass.BindContent(headerId.Value, pdfPreview)
 
                 Dim invoiceClass As New InvoiceClass
                 Dim nameInvoice As String = String.Format("{0}_{1}.pdf", lblInvoiceNumber.Text, todayString)
 
                 Dim pdfInvoice As String = Server.MapPath(String.Format("~/File/Invoice/{0}", nameInvoice))
-                invoiceClass.BindContent(headerId, pdfInvoice)
+                invoiceClass.BindContent(headerId.Value, pdfInvoice)
 
-                mailingClass.SendInvoice(headerId, pdfPreview, pdfInvoice, Session("LoginId").ToString(), txtSendInvoiceTo.Text, ccCustomer, txtSendInvoiceCCStaff.Text)
+                mailingClass.SendInvoice(headerId.Value, pdfPreview, pdfInvoice, Session("LoginId").ToString(), txtSendInvoiceTo.Text, ccCustomer, txtSendInvoiceCCStaff.Text)
 
-                dataLog = {"OrderHeaders", headerId, Session("LoginId"), "Send Invoice"}
+                dataLog = {"OrderHeaders", headerId.Value, Session("LoginId"), "Send Invoice"}
                 orderClass.Logs(dataLog)
 
-                url = String.Format("~/order/detail?orderid={0}", headerId)
+                url = String.Format("~/order/detail?orderid={0}", headerId.Value)
                 Response.Redirect(url, False)
             End If
         Catch ex As Exception
@@ -966,15 +906,15 @@ Partial Class Order_Detail
 
                 If lblOrderStatus.Text = "Proforma Sent" Then
                     Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Payment Received' WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", headerId)
+                        myCmd.Parameters.AddWithValue("@Id", headerId.Value)
                         myCmd.ExecuteNonQuery()
                     End Using
                 End If
 
-                Dim amount As Decimal = orderClass.GetItemData_Decimal("SELECT (SUM(SellPrice) * 1.10) AS SumPrice FROM OrderCostings WHERE HeaderId='" & headerId & "' AND Type='Final'")
+                Dim amount As Decimal = orderClass.GetItemData_Decimal("SELECT (SUM(SellPrice) * 1.10) AS SumPrice FROM OrderCostings WHERE HeaderId='" & headerId.Value & "' AND Type='Final'")
 
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderInvoices SET PaymentDate=GETDATE(), Payment=1, Amount=@Amount WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", headerId)
+                    myCmd.Parameters.AddWithValue("@Id", headerId.Value)
                     myCmd.Parameters.AddWithValue("@Amount", amount)
                     myCmd.ExecuteNonQuery()
                 End Using
@@ -982,15 +922,15 @@ Partial Class Order_Detail
                 thisConn.Close()
             End Using
 
-            dataLog = {"OrderHeaders", headerId, Session("LoginId"), "Confirm Payment Received"}
+            dataLog = {"OrderHeaders", headerId.Value, Session("LoginId"), "Confirm Payment Received"}
             orderClass.Logs(dataLog)
 
-            If companyId = "2" Then
+            If companyId.Value = "2" Then
                 Dim salesClass As New SalesClass
                 salesClass.RefreshData()
             End If
 
-            url = String.Format("~/order/detail?orderid={0}", headerId)
+            url = String.Format("~/order/detail?orderid={0}", headerId.Value)
             Response.Redirect(url, False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -1011,7 +951,7 @@ Partial Class Order_Detail
             Dim fileName As String = String.Format("{0}_{1}.pdf", lblInvoiceNumber.Text, todayString)
             Dim pdfFilePath As String = Server.MapPath("~/File/Invoice/" & fileName)
 
-            invoiceClass.BindContent(headerId, pdfFilePath)
+            invoiceClass.BindContent(headerId.Value, pdfFilePath)
 
             Response.ContentType = "application/pdf"
             Response.AddHeader("Content-Disposition", "attachment; filename=""" & fileName & """")
@@ -1043,7 +983,7 @@ Partial Class Order_Detail
 
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderInvoices SET InvoiceNumber=@InvoiceNumber WHERE Id=@Id;", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", headerId)
+                    myCmd.Parameters.AddWithValue("@Id", headerId.Value)
                     myCmd.Parameters.AddWithValue("@InvoiceNumber", txtUpdateInvoiceNumber.Text.Trim())
 
                     thisConn.Open()
@@ -1051,10 +991,10 @@ Partial Class Order_Detail
                 End Using
             End Using
 
-            dataLog = {"OrderHeaders", headerId, Session("LoginId"), "Update Invoice Number"}
+            dataLog = {"OrderHeaders", headerId.Value, Session("LoginId"), "Update Invoice Number"}
             orderClass.Logs(dataLog)
 
-            url = String.Format("~/order/detail?orderid={0}", headerId)
+            url = String.Format("~/order/detail?orderid={0}", headerId.Value)
             Response.Redirect(url, False)
         Catch ex As Exception
             MessageError_InvoiceNumber(True, ex.ToString())
@@ -1073,11 +1013,11 @@ Partial Class Order_Detail
         Try
             Dim amount As Decimal = 0D
             If ddlPayment.SelectedValue = "1" Then
-                amount = orderClass.GetItemData_Decimal("SELECT (SUM(SellPrice) * 1.10) AS SumPrice FROM OrderCostings WHERE HeaderId='" & headerId & "' AND Type='Final'")
+                amount = orderClass.GetItemData_Decimal("SELECT (SUM(SellPrice) * 1.10) AS SumPrice FROM OrderCostings WHERE HeaderId='" & headerId.Value & "' AND Type='Final'")
             End If
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderInvoices SET InvoiceNumber=@InvoiceNumber, Collector=@Collector, InvoiceDate=@InvoiceDate, PaymentDate=@PaymentDate, Payment=@Payment, Amount=@Amount WHERE Id=@Id;", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", headerId)
+                    myCmd.Parameters.AddWithValue("@Id", headerId.Value)
                     myCmd.Parameters.AddWithValue("@InvoiceNumber", txtInvoiceNumber.Text.Trim())
                     myCmd.Parameters.AddWithValue("@Collector", ddlCollector.SelectedValue)
                     myCmd.Parameters.AddWithValue("@InvoiceDate", If(String.IsNullOrEmpty(txtInvoiceDate.Text), CType(DBNull.Value, Object), txtInvoiceDate.Text))
@@ -1090,15 +1030,15 @@ Partial Class Order_Detail
                 End Using
             End Using
 
-            dataLog = {"OrderHeaders", headerId, Session("LoginId"), "Update Invoice Data"}
+            dataLog = {"OrderHeaders", headerId.Value, Session("LoginId"), "Update Invoice Data"}
             orderClass.Logs(dataLog)
 
-            If companyId = "2" Then
+            If companyId.Value = "2" Then
                 Dim salesClass As New SalesClass
                 salesClass.RefreshData()
             End If
 
-            url = String.Format("~/order/detail?orderid={0}", headerId)
+            url = String.Format("~/order/detail?orderid={0}", headerId.Value)
             Response.Redirect(url, False)
         Catch ex As Exception
             MessageError_InvoiceData(True, ex.ToString())
@@ -1193,20 +1133,20 @@ Partial Class Order_Detail
 
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand("UPDATE OrderBuilders SET Estimator=@Estimator, Supervisor=@Supervisor, Address=@Address, CallUpDate=@CallUp, CheckMeasureDate=@CheckMeasure, InstallationDate=@Installation WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", headerId.Value)
                     thisCmd.Parameters.AddWithValue("@Estimator", estimatorValue)
                     thisCmd.Parameters.AddWithValue("@Supervisor", supervisorValue)
                     thisCmd.Parameters.AddWithValue("@Address", addressValue)
                     thisCmd.Parameters.AddWithValue("@CallUp", callUpValue)
                     thisCmd.Parameters.AddWithValue("@CheckMeasure", measureValue)
                     thisCmd.Parameters.AddWithValue("@Installation", installationValue)
-                    thisCmd.Parameters.AddWithValue("@Id", headerId)
 
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
-            url = String.Format("~/order/detail?orderid={0}", headerId)
+            url = String.Format("~/order/detail?orderid={0}", headerId.Value)
             Response.Redirect(url, False)
         Catch ex As Exception
             MessageError_BuilderDetail(True, ex.ToString())
@@ -1232,7 +1172,7 @@ Partial Class Order_Detail
             Dim fileName As String = IO.Path.GetFileName(fuBuilderFile.FileName)
             fuBuilderFile.SaveAs(IO.Path.Combine(folderPath, fileName))
 
-            url = String.Format("~/order/detail?orderid={0}", headerId)
+            url = String.Format("~/order/detail?orderid={0}", headerId.Value)
             Response.Redirect(url, False)
         Catch ex As Exception
             ClientScript.RegisterStartupScript(Me.GetType(), "showBuilderFile", thisScript, True)
@@ -1252,7 +1192,7 @@ Partial Class Order_Detail
             Dim fileName As String = String.Format("Quote_{0}_{1}.pdf", lblOrderId.Text, todayString)
             Dim pdfFilePath As String = Server.MapPath("~/File/Quote/" & fileName)
 
-            quoteClass.BindContent(headerId, pdfFilePath)
+            quoteClass.BindContent(headerId.Value, pdfFilePath)
 
             Response.ContentType = "application/pdf"
             Response.AddHeader("Content-Disposition", "attachment; filename=""" & fileName & """")
@@ -1306,20 +1246,19 @@ Partial Class Order_Detail
                 Dim namePreview As String = String.Format("{0}_{1}.pdf", lblOrderId.Text, todayString)
 
                 Dim pdfPreview As String = Server.MapPath(pathPreview & namePreview)
-                previewClass.BindContent(headerId, pdfPreview)
+                previewClass.BindContent(headerId.Value, pdfPreview)
 
                 Dim quoteClass As New QuoteClass
                 Dim quoteName As String = String.Format("QUOTE-{0}_{1}.pdf", lblOrderId.Text, todayString)
 
                 Dim pdfQuote As String = Server.MapPath(String.Format("~/File/Invoice/{0}", quoteName))
-                quoteClass.BindContent(headerId, pdfQuote)
+                quoteClass.BindContent(headerId.Value, pdfQuote)
 
-                mailingClass.SentQuote(headerId, pdfPreview, pdfQuote, Session("LoginId").ToString(), txtEmailQuoteTo.Text, ccCustomer, txtEmailQuoteCCStaff.Text)
+                mailingClass.SentQuote(headerId.Value, pdfPreview, pdfQuote, Session("LoginId").ToString(), txtEmailQuoteTo.Text, ccCustomer, txtEmailQuoteCCStaff.Text)
 
-                url = String.Format("~/order/detail?orderid={0}", headerId)
+                url = String.Format("~/order/detail?orderid={0}", headerId.Value)
                 Response.Redirect(url, False)
             End If
-
         Catch ex As Exception
             MessageError_MoreEmailQuote(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -1344,7 +1283,7 @@ Partial Class Order_Detail
             If msgErrorAddNote.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderInternalNotes VALUES (NEWID(), @HeaderId, GETDATE(), @CreatedBy, @Note)", thisConn)
-                        myCmd.Parameters.AddWithValue("@HeaderId", headerId)
+                        myCmd.Parameters.AddWithValue("@HeaderId", headerId.Value)
                         myCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
                         myCmd.Parameters.AddWithValue("@Note", txtAddNote.Text.Trim())
 
@@ -1353,7 +1292,7 @@ Partial Class Order_Detail
                     End Using
                 End Using
 
-                url = String.Format("~/order/detail?orderid={0}", headerId)
+                url = String.Format("~/order/detail?orderid={0}", headerId.Value)
                 Response.Redirect(url, False)
             End If
         Catch ex As Exception
@@ -1371,7 +1310,7 @@ Partial Class Order_Detail
         MessageError_HistoryNote(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showHistoryNote(); };"
         Try
-            gvHistoryNote.DataSource = orderClass.GetDataTable("SELECT OrderInternalNotes.*, CustomerLogins.FullName AS FullName FROM OrderInternalNotes INNER JOIN CustomerLogins ON OrderInternalNotes.CreatedBy=CustomerLogins.Id WHERE OrderInternalNotes.HeaderId='" & headerId & "' ORDER BY OrderInternalNotes.CreatedDate DESC")
+            gvHistoryNote.DataSource = orderClass.GetDataTable("SELECT OrderInternalNotes.*, CustomerLogins.FullName AS FullName FROM OrderInternalNotes INNER JOIN CustomerLogins ON OrderInternalNotes.CreatedBy=CustomerLogins.Id WHERE OrderInternalNotes.HeaderId='" & headerId.Value & "' ORDER BY OrderInternalNotes.CreatedDate DESC")
             gvHistoryNote.DataBind()
 
             ClientScript.RegisterStartupScript(Me.GetType(), "showHistoryNote", thisScript, True)
@@ -1441,7 +1380,7 @@ Partial Class Order_Detail
                         End If
                     End If
 
-                    Dim queryString As String = String.Format("do={0}&orderid={1}&itemid={2}&dtype={3}&uid={4}", itemAction, headerId, dataId, designId, Session("LoginId").ToString())
+                    Dim queryString As String = String.Format("do={0}&orderid={1}&itemid={2}&dtype={3}&uid={4}", itemAction, headerId.Value, dataId, designId, Session("LoginId").ToString())
 
                     Dim contextId As String = InsertContext(queryString)
 
@@ -1467,14 +1406,11 @@ Partial Class Order_Detail
                     Dim designId As String = thisData("DesignId").ToString()
                     Dim page As String = orderClass.GetDesignPage(designId)
 
-                    Dim queryString As String = String.Format("do={0}&orderid={1}&itemid={2}&dtype={3}&uid={4}", "copy", headerId, dataId, designId, Session("LoginId").ToString())
+                    Dim queryString As String = String.Format("do={0}&orderid={1}&itemid={2}&dtype={3}&uid={4}", "copy", headerId.Value, dataId, designId, Session("LoginId").ToString())
 
                     Dim contextId As String = InsertContext(queryString)
 
                     url = String.Format("{0}?boos={1}", page, contextId)
-
-                    Response.Redirect(url, False)
-
                     Response.Redirect(url, False)
                 Catch ex As Exception
                     MessageError(True, ex.ToString())
@@ -1491,7 +1427,7 @@ Partial Class Order_Detail
                 MessageError_Printing(False, String.Empty)
                 Dim thisScript As String = "window.onload = function() { showPrinting(); };"
                 Try
-                    itemId = dataId
+                    itemId.Value = dataId
                     BindPrinting(dataId)
 
                     ClientScript.RegisterStartupScript(Me.GetType(), "showPrinting", thisScript, True)
@@ -1512,7 +1448,7 @@ Partial Class Order_Detail
                 Dim thisScript As String = "window.onload = function() { showCosting(); };"
                 Try
                     Dim queryDetailsPrice As String = "SELECT *, FORMAT(BuyPrice, 'C', 'en-US') AS BuyPricing, FORMAT(SellPrice, 'C', 'en-US') AS SellPricing FROM OrderCostings WHERE ItemId='" & dataId & "' AND Type<>'Final' AND Number<>0 ORDER BY Number, CASE WHEN Type='Base' THEN 1 WHEN Type='Surcharge' THEN 2 ELSE 3 END ASC"
-                    If companyId = "3" OrElse companyId = "5" Then
+                    If companyId.Value = "3" OrElse companyId.Value = "5" Then
                         queryDetailsPrice = "SELECT *, FORMAT(BuyPrice, 'C', 'id-ID') AS BuyPricing, FORMAT(SellPrice, 'C', 'id-ID') AS SellPricing FROM OrderCostings WHERE ItemId='" & dataId & "' AND Type<>'Final' AND Number<>0 ORDER BY Number, CASE WHEN Type='Base' THEN 1 WHEN Type='Surcharge' THEN 2 ELSE 3 END ASC"
                     End If
 
@@ -1542,11 +1478,11 @@ Partial Class Order_Detail
                 Dim thisScript As String = "window.onload = function() { showEditCosting(); };"
                 Try
                     Dim queryDetailsPrice As String = "SELECT *, FORMAT(BuyPrice, 'C', 'en-US') AS BuyPricing, FORMAT(SellPrice, 'C', 'en-US') AS SellPricing FROM OrderCostings WHERE ItemId='" & dataId & "' AND Type<>'Final' AND Number<>0 ORDER BY Number, CASE WHEN Type='Base' THEN 1 WHEN Type='Surcharge' THEN 2 ELSE 3 END ASC"
-                    If companyId = "3" OrElse companyId = "5" Then
+                    If companyId.Value = "3" OrElse companyId.Value = "5" Then
                         queryDetailsPrice = "SELECT *, FORMAT(BuyPrice, 'C', 'id-ID') AS BuyPricing, FORMAT(SellPrice, 'C', 'en-US') AS SellPricing FROM OrderCostings WHERE ItemId='" & dataId & "' AND Type<>'Final' AND Number<>0 ORDER BY Number, CASE WHEN Type='Base' THEN 1 WHEN Type='Surcharge' THEN 2 ELSE 3 END ASC"
                     End If
 
-                    itemId = dataId
+                    itemId.Value = dataId
 
                     gvListEditCosting.DataSource = orderClass.GetDataTable(queryDetailsPrice)
                     gvListEditCosting.DataBind()
@@ -1603,12 +1539,11 @@ Partial Class Order_Detail
 
             Dim page As String = orderClass.GetDesignPage(ddlDesign.SelectedValue)
 
-            Dim queryString As String = String.Format("do={0}&orderid={1}&itemid={2}&dtype={3}&uid={4}", "create", headerId, String.Empty, ddlDesign.SelectedValue, Session("LoginId").ToString())
+            Dim queryString As String = String.Format("do={0}&orderid={1}&itemid={2}&dtype={3}&uid={4}", "create", headerId.Value, String.Empty, ddlDesign.SelectedValue, Session("LoginId").ToString())
 
             Dim contextId As String = InsertContext(queryString)
 
             url = String.Format("{0}?boos={1}", page, contextId)
-
             Response.Redirect(url, False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -1633,7 +1568,7 @@ Partial Class Order_Detail
                 Exit Sub
             End If
 
-            Dim checkData As Integer = orderClass.GetItemData_Integer("SELECT COUNT(*) FROM OrderDetails WHERE HeaderId='" & headerId & "' AND ProductId='" & ddlBlindService.SelectedValue & "' AND Active=1")
+            Dim checkData As Integer = orderClass.GetItemData_Integer("SELECT COUNT(*) FROM OrderDetails WHERE HeaderId='" & headerId.Value & "' AND ProductId='" & ddlBlindService.SelectedValue & "' AND Active=1")
             If checkData > 0 Then
                 MessageError_Service(True, "SERVICE ALREADY EXISTS !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showService", thisScript, True)
@@ -1641,15 +1576,15 @@ Partial Class Order_Detail
             End If
 
             If msgErrorService.InnerText = "" Then
-                Dim thisId As String = orderClass.GetNewOrderItemId()
+                Dim newItemId As String = orderClass.GetNewOrderItemId()
 
                 Dim groupName As String = orderClass.GetItemData("SELECT Name FROM Products WHERE Id='" & ddlBlindService.SelectedValue & "'")
                 Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, "16")
 
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, 1, 0, 0, 1, 0, 1)", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", thisId)
-                        myCmd.Parameters.AddWithValue("@HeaderId", headerId)
+                        myCmd.Parameters.AddWithValue("@Id", newItemId)
+                        myCmd.Parameters.AddWithValue("@HeaderId", headerId.Value)
                         myCmd.Parameters.AddWithValue("@ProductId", ddlBlindService.SelectedValue)
                         myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
 
@@ -1658,16 +1593,16 @@ Partial Class Order_Detail
                     End Using
                 End Using
 
-                orderClass.ResetPriceDetail(headerId, thisId)
-                orderClass.CalculatePrice(headerId, thisId)
-                orderClass.FinalCostItem(headerId, thisId)
+                orderClass.ResetPriceDetail(headerId.Value, newItemId)
+                orderClass.CalculatePrice(headerId.Value, newItemId)
+                orderClass.FinalCostItem(headerId.Value, newItemId)
 
-                If companyId = "2" AndAlso (lblOrderStatus.Text = "In Production" OrElse lblOrderStatus.Text = "On Hold") Then
+                If companyId.Value = "2" AndAlso (lblOrderStatus.Text = "In Production" OrElse lblOrderStatus.Text = "On Hold") Then
                     Dim salesClass As New SalesClass
                     salesClass.RefreshData()
                 End If
 
-                url = String.Format("~/order/detail?orderid={0}", headerId)
+                url = String.Format("~/order/detail?orderid={0}", headerId.Value)
                 Response.Redirect(url, False)
             End If
         Catch ex As Exception
@@ -1695,7 +1630,7 @@ Partial Class Order_Detail
                 End Using
 
                 Using myCmd As SqlCommand = New SqlCommand("DELETE FROM OrderCostings WHERE HeaderId=@HeaderId AND ItemId=@ItemId", thisConn)
-                    myCmd.Parameters.AddWithValue("@HeaderId", headerId)
+                    myCmd.Parameters.AddWithValue("@HeaderId", headerId.Value)
                     myCmd.Parameters.AddWithValue("@ItemId", thisId)
                     myCmd.ExecuteNonQuery()
                 End Using
@@ -1711,12 +1646,12 @@ Partial Class Order_Detail
             Dim dataLog As Object() = {"OrderDetails", thisId, Session("LoginId"), "Delete Order Item"}
             orderClass.Logs(dataLog)
 
-            If companyId = "2" AndAlso (lblOrderStatus.Text = "In Production" OrElse lblOrderStatus.Text = "On Hold") Then
+            If companyId.Value = "2" AndAlso (lblOrderStatus.Text = "In Production" OrElse lblOrderStatus.Text = "On Hold") Then
                 Dim salesClass As New SalesClass
                 salesClass.RefreshData()
             End If
 
-            url = String.Format("~/order/detail?orderid={0}", headerId)
+            url = String.Format("~/order/detail?orderid={0}", headerId.Value)
             Response.Redirect(url, False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -1806,7 +1741,7 @@ Partial Class Order_Detail
                             End Using
                         End Using
 
-                        Dim dataCosting As Object() = {headerId, itemId, 0, "Final", "Final Cost This Item", buyPrice, sellPrice}
+                        Dim dataCosting As Object() = {headerId.Value, itemId, 0, "Final", "Final Cost This Item", buyPrice, sellPrice}
                         orderClass.OrderCostings(dataCosting)
 
                         dataLog = {"OrderDetails", itemId, Session("LoginId"), "Update Price"}
@@ -1825,18 +1760,15 @@ Partial Class Order_Detail
                 salesClass.RefreshData()
             End If
 
-            Response.Redirect(String.Format("~/order/detail?orderid={0}", headerId), False)
+            Response.Redirect(String.Format("~/order/detail?orderid={0}", headerId.Value), False)
             Context.ApplicationInstance.CompleteRequest()
-
         Catch ex As Exception
             MessageError_EditCosting(True, ex.Message)
-
             If Not Session("RoleName") = "Developer" Then
                 MessageError_EditCosting(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
                 dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnEditCosting_Click", ex.ToString()}
                 mailingClass.WebError(dataMailing)
             End If
-
             ClientScript.RegisterStartupScript(Me.GetType(), "showEditCosting", thisScript, True)
         End Try
     End Sub
@@ -1854,7 +1786,7 @@ Partial Class Order_Detail
             Dim printingg As String = String.Empty
             Dim printingh As String = String.Empty
 
-            Dim folderPath As String = Server.MapPath(String.Format("~/File/Printing/{0}/{1}", headerId, itemId))
+            Dim folderPath As String = Server.MapPath(String.Format("~/File/Printing/{0}/{1}", headerId.Value, itemId.Value))
             If Not IO.Directory.Exists(folderPath) Then
                 IO.Directory.CreateDirectory(folderPath)
             End If
@@ -1895,7 +1827,7 @@ Partial Class Order_Detail
                 thisConn.Open()
 
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET Printing=@Printing, PrintingB=@PrintingB, PrintingC=@PrintingC, PrintingD=@PrintingD, PrintingE=@PrintingE, PrintingF=@PrintingF, PrintingG=@PrintingG, PrintingH=@PrintingH WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", itemId)
+                    myCmd.Parameters.AddWithValue("@Id", itemId.Value)
                     myCmd.Parameters.AddWithValue("@Printing", printing)
                     myCmd.Parameters.AddWithValue("@PrintingB", printingb)
                     myCmd.Parameters.AddWithValue("@PrintingC", printingc)
@@ -1911,14 +1843,14 @@ Partial Class Order_Detail
                 thisConn.Close()
             End Using
 
-            orderClass.ResetPriceDetail(headerId, itemId)
-            orderClass.CalculatePrice(headerId, itemId)
-            orderClass.FinalCostItem(headerId, itemId)
+            orderClass.ResetPriceDetail(headerId.Value, itemId.Value)
+            orderClass.CalculatePrice(headerId.Value, itemId.Value)
+            orderClass.FinalCostItem(headerId.Value, itemId.Value)
 
-            Dim dataLog As Object() = {"OrderDetails", itemId, Session("LoginId"), "Update Printing Fabric"}
+            Dim dataLog As Object() = {"OrderDetails", itemId.Value, Session("LoginId"), "Update Printing Fabric"}
             orderClass.Logs(dataLog)
 
-            url = String.Format("~/order/detail?orderid={0}", headerId)
+            url = String.Format("~/order/detail?orderid={0}", headerId.Value)
             Response.Redirect(url, False)
         Catch ex As Exception
             MessageError_Printing(True, ex.ToString())
@@ -1938,27 +1870,27 @@ Partial Class Order_Detail
         MessageError_Printing(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showPrinting(); };"
         Try
-            orderClass.DeleteFilePrinting(headerId, itemId, "1")
+            orderClass.DeleteFilePrinting(headerId.Value, itemId.Value, "1")
 
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
 
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET Printing=NULL WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", itemId)
+                    myCmd.Parameters.AddWithValue("@Id", itemId.Value)
                     myCmd.ExecuteNonQuery()
                 End Using
 
                 thisConn.Close()
             End Using
 
-            orderClass.ResetPriceDetail(headerId, itemId)
-            orderClass.CalculatePrice(headerId, itemId)
-            orderClass.FinalCostItem(headerId, itemId)
+            orderClass.ResetPriceDetail(headerId.Value, itemId.Value)
+            orderClass.CalculatePrice(headerId.Value, itemId.Value)
+            orderClass.FinalCostItem(headerId.Value, itemId.Value)
 
-            Dim dataLog As Object() = {"OrderDetails", itemId, Session("LoginId"), "Delete Printing Fabric"}
+            Dim dataLog As Object() = {"OrderDetails", itemId.Value, Session("LoginId"), "Delete Printing Fabric"}
             orderClass.Logs(dataLog)
 
-            url = String.Format("~/order/detail?orderid={0}", headerId)
+            url = String.Format("~/order/detail?orderid={0}", headerId.Value)
             Response.Redirect(url, False)
         Catch ex As Exception
             MessageError_Printing(True, ex.ToString())
@@ -1978,27 +1910,27 @@ Partial Class Order_Detail
         MessageError_Printing(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showPrinting(); };"
         Try
-            orderClass.DeleteFilePrinting(headerId, itemId, "2")
+            orderClass.DeleteFilePrinting(headerId.Value, itemId.Value, "2")
 
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
 
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET PrintingB=NULL WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", itemId)
+                    myCmd.Parameters.AddWithValue("@Id", itemId.Value)
                     myCmd.ExecuteNonQuery()
                 End Using
 
                 thisConn.Close()
             End Using
 
-            orderClass.ResetPriceDetail(headerId, itemId)
-            orderClass.CalculatePrice(headerId, itemId)
-            orderClass.FinalCostItem(headerId, itemId)
+            orderClass.ResetPriceDetail(headerId.Value, itemId.Value)
+            orderClass.CalculatePrice(headerId.Value, itemId.Value)
+            orderClass.FinalCostItem(headerId.Value, itemId.Value)
 
-            Dim dataLog As Object() = {"OrderDetails", itemId, Session("LoginId"), "Delete Printing Fabric #2"}
+            Dim dataLog As Object() = {"OrderDetails", itemId.Value, Session("LoginId"), "Delete Printing Fabric #2"}
             orderClass.Logs(dataLog)
 
-            url = String.Format("~/order/detail?orderid={0}", headerId)
+            url = String.Format("~/order/detail?orderid={0}", headerId.Value)
             Response.Redirect(url, False)
         Catch ex As Exception
             MessageError_Printing(True, ex.ToString())
@@ -2018,27 +1950,27 @@ Partial Class Order_Detail
         MessageError_Printing(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showPrinting(); };"
         Try
-            orderClass.DeleteFilePrinting(headerId, itemId, "3")
+            orderClass.DeleteFilePrinting(headerId.Value, itemId.Value, "3")
 
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
 
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET PrintingC=NULL WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", itemId)
+                    myCmd.Parameters.AddWithValue("@Id", itemId.Value)
                     myCmd.ExecuteNonQuery()
                 End Using
 
                 thisConn.Close()
             End Using
 
-            orderClass.ResetPriceDetail(headerId, itemId)
-            orderClass.CalculatePrice(headerId, itemId)
-            orderClass.FinalCostItem(headerId, itemId)
+            orderClass.ResetPriceDetail(headerId.Value, itemId.Value)
+            orderClass.CalculatePrice(headerId.Value, itemId.Value)
+            orderClass.FinalCostItem(headerId.Value, itemId.Value)
 
-            Dim dataLog As Object() = {"OrderDetails", itemId, Session("LoginId"), "Delete Printing Fabric #3"}
+            Dim dataLog As Object() = {"OrderDetails", itemId.Value, Session("LoginId"), "Delete Printing Fabric #3"}
             orderClass.Logs(dataLog)
 
-            url = String.Format("~/order/detail?orderid={0}", headerId)
+            url = String.Format("~/order/detail?orderid={0}", headerId.Value)
             Response.Redirect(url, False)
         Catch ex As Exception
             MessageError_Printing(True, ex.ToString())
@@ -2058,27 +1990,27 @@ Partial Class Order_Detail
         MessageError_Printing(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showPrinting(); };"
         Try
-            orderClass.DeleteFilePrinting(headerId, itemId, "4")
+            orderClass.DeleteFilePrinting(headerId.Value, itemId.Value, "4")
 
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
 
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET PrintingD=NULL WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", itemId)
+                    myCmd.Parameters.AddWithValue("@Id", itemId.Value)
                     myCmd.ExecuteNonQuery()
                 End Using
 
                 thisConn.Close()
             End Using
 
-            orderClass.ResetPriceDetail(headerId, itemId)
-            orderClass.CalculatePrice(headerId, itemId)
-            orderClass.FinalCostItem(headerId, itemId)
+            orderClass.ResetPriceDetail(headerId.Value, itemId.Value)
+            orderClass.CalculatePrice(headerId.Value, itemId.Value)
+            orderClass.FinalCostItem(headerId.Value, itemId.Value)
 
-            Dim dataLog As Object() = {"OrderDetails", itemId, Session("LoginId"), "Delete Printing Fabric #4"}
+            Dim dataLog As Object() = {"OrderDetails", itemId.Value, Session("LoginId"), "Delete Printing Fabric #4"}
             orderClass.Logs(dataLog)
 
-            url = String.Format("~/order/detail?orderid={0}", headerId)
+            url = String.Format("~/order/detail?orderid={0}", headerId.Value)
             Response.Redirect(url, False)
         Catch ex As Exception
             MessageError_Printing(True, ex.ToString())
@@ -2135,10 +2067,10 @@ Partial Class Order_Detail
                 Exit Sub
             End If
 
-            customerId = headerData("CustomerId").ToString()
-            companyId = headerData("CompanyId").ToString()
-            companyDetailId = headerData("CompanyDetailId").ToString()
-            priceGroupId = headerData("PriceGroupId").ToString()
+            customerId.Value = headerData("CustomerId").ToString()
+            companyId.Value = headerData("CompanyId").ToString()
+            companyDetailId.Value = headerData("CompanyDetailId").ToString()
+            priceGroupId.Value = headerData("PriceGroupId").ToString()
 
             lblCustomerName.Text = headerData("CustomerName").ToString()
             lblOrderId.Text = headerData("OrderId").ToString()
@@ -2152,7 +2084,7 @@ Partial Class Order_Detail
             If lblInternalNote.Text = "" Then lblInternalNote.Text = "-"
             lblCreatedBy.Text = headerData("CreatedBy").ToString()
             lblCreatedName.Text = headerData("CreatedFullName").ToString()
-            createdRole = headerData("CreatedRole").ToString()
+            createdRole.Value = headerData("CreatedRole").ToString()
 
             lblCreatedDate.Text = "-"
             If Not String.IsNullOrEmpty(headerData("CreatedDate").ToString()) Then
@@ -2939,7 +2871,7 @@ Partial Class Order_Detail
     Protected Sub BindDesignType()
         ddlDesign.Items.Clear()
         Try
-            Dim thisQuery As String = "SELECT Designs.Id, Designs.Name AS NameText FROM CustomerProductAccess CROSS APPLY STRING_SPLIT(CustomerProductAccess.DesignId, ',') AS designArray INNER JOIN Designs ON designArray.VALUE=Designs.Id WHERE CustomerProductAccess.Id='" & customerId & "' AND Designs.Type<>'Additional' AND Designs.Active=1 ORDER BY Designs.Name ASC"
+            Dim thisQuery As String = "SELECT Designs.Id, Designs.Name AS NameText FROM CustomerProductAccess CROSS APPLY STRING_SPLIT(CustomerProductAccess.DesignId, ',') AS designArray INNER JOIN Designs ON designArray.VALUE=Designs.Id WHERE CustomerProductAccess.Id='" & customerId.Value & "' AND Designs.Type<>'Additional' AND Designs.Active=1 ORDER BY Designs.Name ASC"
 
             ddlDesign.DataSource = orderClass.GetDataTable(thisQuery)
             ddlDesign.DataTextField = "NameText"
@@ -3002,7 +2934,7 @@ Partial Class Order_Detail
     Protected Sub BindDataItem(status As String)
         divMinimumOrderSurcharge.Visible = False
         Try
-            gvListItem.DataSource = orderClass.GetDataTable("SELECT OrderDetails.* FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 ORDER BY CASE WHEN Designs.Type='Blinds' OR Designs.Type='Shutters' OR Designs.Type='Component' THEN 1 ELSE 2 END, OrderDetails.Id ASC")
+            gvListItem.DataSource = orderClass.GetDataTable("SELECT OrderDetails.* FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id WHERE OrderDetails.HeaderId='" & headerId.Value & "' AND OrderDetails.Active=1 ORDER BY CASE WHEN Designs.Type='Blinds' OR Designs.Type='Shutters' OR Designs.Type='Component' THEN 1 ELSE 2 END, OrderDetails.Id ASC")
             gvListItem.DataBind()
 
             gvListItem.Columns(1).Visible = PageAction("Visible ID")
@@ -3015,8 +2947,8 @@ Partial Class Order_Detail
             gvListItem.Columns(7).Visible = False
             If Session("PriceAccess") = "Yes" Then gvListItem.Columns(7).Visible = True
 
-            Dim totalItems As Integer = orderClass.GetTotalItemOrder(headerId)
-            If status = "Unsubmitted" AndAlso priceGroupId = "1" AndAlso totalItems > 0 AndAlso totalItems <= 3 Then
+            Dim totalItems As Integer = orderClass.GetTotalItemOrder(headerId.Value)
+            If status = "Unsubmitted" AndAlso priceGroupId.Value = "1" AndAlso totalItems > 0 AndAlso totalItems <= 3 Then
                 divMinimumOrderSurcharge.Visible = True
             End If
         Catch ex As Exception
@@ -3033,12 +2965,12 @@ Partial Class Order_Detail
     End Sub
 
     Protected Sub BindDataQuote()
-        Dim quoteData As DataRow = orderClass.GetDataRow("SELECT * FROM OrderQuotes WHERE Id='" & headerId & "'")
+        Dim quoteData As DataRow = orderClass.GetDataRow("SELECT * FROM OrderQuotes WHERE Id='" & headerId.Value & "'")
 
         If quoteData Is Nothing Then
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderQuotes VALUES(@Id, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00)", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", headerId)
+                    myCmd.Parameters.AddWithValue("@Id", headerId.Value)
 
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
@@ -3049,7 +2981,7 @@ Partial Class Order_Detail
         End If
 
         imgDetailQuote.ImageUrl = "~/assets/images/quotation/quotefordetail.jpg"
-        If companyId = "3" OrElse companyId = "5" Then imgDetailQuote.ImageUrl = "~/assets/images/quotation/quotefordetail_local.jpg"
+        If companyId.Value = "3" OrElse companyId.Value = "5" Then imgDetailQuote.ImageUrl = "~/assets/images/quotation/quotefordetail_local.jpg"
 
         divQuoteCity.Visible = False
 
@@ -3058,7 +2990,7 @@ Partial Class Order_Detail
         spanInstall.InnerText = "$"
         spanFreight.InnerText = "$"
 
-        If companyId = "3" OrElse companyId = "5" Then
+        If companyId.Value = "3" OrElse companyId.Value = "5" Then
             divQuoteCity.Visible = True
 
             spanDiscount.InnerText = "Rp"
@@ -3069,10 +3001,10 @@ Partial Class Order_Detail
 
         ddlQuoteCountry.Items.Clear()
         ddlQuoteCountry.Items.Add(New ListItem("", ""))
-        If companyId = "2" OrElse companyId = "4" Then
+        If companyId.Value = "2" OrElse companyId.Value = "4" Then
             ddlQuoteCountry.Items.Add(New ListItem("Australia", "Australia"))
         End If
-        If companyId = "3" OrElse companyId = "5" Then
+        If companyId.Value = "3" OrElse companyId.Value = "5" Then
             ddlQuoteCountry.Items.Add(New ListItem("Indonesia", "Indonesia"))
         End If
 
@@ -3101,16 +3033,16 @@ Partial Class Order_Detail
         lblPriceOrderTitle.Text = "Total excl. GST"
         lblGstTitle.Text = "GST 10%"
         lblFinalPriceOrderTitle.Text = "TOTAL incl. GST"
-        If companyId = "3" OrElse companyId = "5" Then
+        If companyId.Value = "3" OrElse companyId.Value = "5" Then
             lblPriceOrderTitle.Text = "Total excl. PPN"
             lblGstTitle.Text = "PPN 11%"
             lblFinalPriceOrderTitle.Text = "TOTAL incl. PPN"
         End If
 
         If itemCount > 0 Then
-            Dim sumPrice As Decimal = orderClass.GetItemData_Decimal("SELECT SUM(SellPrice) AS SumPrice FROM OrderCostings WHERE HeaderId='" & headerId & "' AND Type='Final'")
+            Dim sumPrice As Decimal = orderClass.GetItemData_Decimal("SELECT SUM(SellPrice) AS SumPrice FROM OrderCostings WHERE HeaderId='" & headerId.Value & "' AND Type='Final'")
             Dim gst As Decimal = sumPrice * 10 / 100
-            If companyId = "3" OrElse companyId = "5" Then
+            If companyId.Value = "3" OrElse companyId.Value = "5" Then
                 gst = sumPrice * 11 / 100
             End If
             Dim finaltotal As Decimal = sumPrice + gst
@@ -3119,7 +3051,7 @@ Partial Class Order_Detail
             lblGst.Text = "$ " & gst.ToString("N2", enUS)
             lblFinalPriceOrder.Text = "$ " & finaltotal.ToString("N2", enUS)
 
-            If companyId = "3" OrElse companyId = "5" Then
+            If companyId.Value = "3" OrElse companyId.Value = "5" Then
                 lblPriceOrder.Text = "Rp " & sumPrice.ToString("N2", idIDR)
                 lblGst.Text = "Rp " & gst.ToString("N2", idIDR)
                 lblFinalPriceOrder.Text = "Rp " & finaltotal.ToString("N2", idIDR)
@@ -3128,7 +3060,7 @@ Partial Class Order_Detail
     End Sub
 
     Protected Sub BindDataInvoice()
-        Dim invoiceData As DataRow = orderClass.GetDataRow("SELECT OrderInvoices.*, CustomerLogins.FullName AS CollectorName FROM OrderInvoices LEFT JOIN CustomerLogins ON CustomerLogins.Id=OrderInvoices.Collector WHERE OrderInvoices.Id='" & headerId & "'")
+        Dim invoiceData As DataRow = orderClass.GetDataRow("SELECT OrderInvoices.*, CustomerLogins.FullName AS CollectorName FROM OrderInvoices LEFT JOIN CustomerLogins ON CustomerLogins.Id=OrderInvoices.Collector WHERE OrderInvoices.Id='" & headerId.Value & "'")
 
         lblInvoiceNumber.Text = "-"
         lblInvoiceDate.Text = "-"
@@ -3159,7 +3091,7 @@ Partial Class Order_Detail
     End Sub
 
     Protected Sub BindDataShipment()
-        Dim shipmentData As DataRow = orderClass.GetDataRow("SELECT * FROM OrderShipments WHERE Id='" & headerId & "'")
+        Dim shipmentData As DataRow = orderClass.GetDataRow("SELECT * FROM OrderShipments WHERE Id='" & headerId.Value & "'")
 
         lblShipmentNumber.Text = "-"
         lblShipmentDate.Text = "-"
@@ -3188,29 +3120,27 @@ Partial Class Order_Detail
 
     Protected Sub BindDataBuilder()
         Try
-            Dim dtSource As DataSet = orderClass.GetListData("SELECT * FROM OrderBuilders WHERE Id='" & headerId & "'")
+            Dim dataBuilder As DataRow = orderClass.GetDataRow("SELECT * FROM OrderBuilders WHERE Id='" & headerId.Value & "'")
 
-            If dtSource IsNot Nothing AndAlso dtSource.Tables.Count > 0 AndAlso dtSource.Tables(0).Rows.Count > 0 Then
-                Dim row As DataRow = dtSource.Tables(0).Rows(0)
-
-                lblEstimator.Text = row("Estimator").ToString()
-                lblSupervisor.Text = row("Supervisor").ToString()
-                lblAddress.Text = row("Address").ToString()
+            If dataBuilder IsNot Nothing Then
+                lblEstimator.Text = dataBuilder("Estimator").ToString()
+                lblSupervisor.Text = dataBuilder("Supervisor").ToString()
+                lblAddress.Text = dataBuilder("Address").ToString()
 
                 Dim dtDisplay As New DataTable()
                 dtDisplay.Columns.Add("Label", GetType(String))
                 dtDisplay.Columns.Add("EditValue", GetType(String))
                 dtDisplay.Columns.Add("FieldType", GetType(String))
 
-                dtDisplay.Rows.Add("Estimator", row("Estimator").ToString(), "text")
-                dtDisplay.Rows.Add("Supervisor", row("Supervisor").ToString(), "text")
-                dtDisplay.Rows.Add("Address", row("Address").ToString(), "text")
+                dtDisplay.Rows.Add("Estimator", dataBuilder("Estimator").ToString(), "text")
+                dtDisplay.Rows.Add("Supervisor", dataBuilder("Supervisor").ToString(), "text")
+                dtDisplay.Rows.Add("Address", dataBuilder("Address").ToString(), "text")
 
                 Dim callUpEdit As String = ""
                 lblCallUpDate.Text = String.Empty
-                If Not IsDBNull(row("CallUpDate")) AndAlso Not String.IsNullOrEmpty(row("CallUpDate").ToString()) Then
+                If Not IsDBNull(dataBuilder("CallUpDate")) AndAlso Not String.IsNullOrEmpty(dataBuilder("CallUpDate").ToString()) Then
                     Dim tmp As DateTime
-                    If DateTime.TryParse(row("CallUpDate").ToString(), tmp) Then
+                    If DateTime.TryParse(dataBuilder("CallUpDate").ToString(), tmp) Then
                         callUpEdit = tmp.ToString("yyyy-MM-dd")
                         lblCallUpDate.Text = tmp.ToString("dd MMM yyyy")
                     End If
@@ -3219,9 +3149,9 @@ Partial Class Order_Detail
 
                 Dim measureEdit As String = ""
                 lblMeasure.Text = String.Empty
-                If Not IsDBNull(row("CheckMeasureDate")) AndAlso Not String.IsNullOrEmpty(row("CheckMeasureDate").ToString()) Then
+                If Not IsDBNull(dataBuilder("CheckMeasureDate")) AndAlso Not String.IsNullOrEmpty(dataBuilder("CheckMeasureDate").ToString()) Then
                     Dim tmp As DateTime
-                    If DateTime.TryParse(row("CheckMeasureDate").ToString(), tmp) Then
+                    If DateTime.TryParse(dataBuilder("CheckMeasureDate").ToString(), tmp) Then
                         measureEdit = tmp.ToString("yyyy-MM-dd")
                         lblMeasure.Text = tmp.ToString("dd MMM yyyy")
                     End If
@@ -3230,9 +3160,9 @@ Partial Class Order_Detail
 
                 Dim installationEdit As String = ""
                 lblInstallation.Text = String.Empty
-                If Not IsDBNull(row("InstallationDate")) AndAlso Not String.IsNullOrEmpty(row("InstallationDate").ToString()) Then
+                If Not IsDBNull(dataBuilder("InstallationDate")) AndAlso Not String.IsNullOrEmpty(dataBuilder("InstallationDate").ToString()) Then
                     Dim tmp As DateTime
-                    If DateTime.TryParse(row("InstallationDate").ToString(), tmp) Then
+                    If DateTime.TryParse(dataBuilder("InstallationDate").ToString(), tmp) Then
                         installationEdit = tmp.ToString("yyyy-MM-dd")
                         lblInstallation.Text = tmp.ToString("dd MMM yyyy")
                     End If
@@ -3330,7 +3260,7 @@ Partial Class Order_Detail
                         End If
 
                         If Not String.IsNullOrEmpty(printing) Then
-                            imgPrinting.ImageUrl = String.Format("~/file/printing/{0}/{1}/{2}", headerId, dataId, printing)
+                            imgPrinting.ImageUrl = String.Format("~/file/printing/{0}/{1}/{2}", headerId.Value, dataId, printing)
                             If lblOrderStatus.Text = "Unsubmitted" Then btnDeletePrinting.Visible = True
                         End If
                     End If
@@ -3350,11 +3280,11 @@ Partial Class Order_Detail
                         End If
 
                         If Not String.IsNullOrEmpty(printing) Then
-                            imgPrinting.ImageUrl = String.Format("~/file/printing/{0}/{1}/{2}", headerId, dataId, printing)
+                            imgPrinting.ImageUrl = String.Format("~/file/printing/{0}/{1}/{2}", headerId.Value, dataId, printing)
                             If lblOrderStatus.Text = "Unsubmitted" Then btnDeletePrinting.Visible = True
                         End If
                         If Not String.IsNullOrEmpty(printingb) Then
-                            imgPrintingB.ImageUrl = String.Format("~/file/printing/{0}/{1}/{2}", headerId, dataId, printingb)
+                            imgPrintingB.ImageUrl = String.Format("~/file/printing/{0}/{1}/{2}", headerId.Value, dataId, printingb)
                             If lblOrderStatus.Text = "Unsubmitted" Then btnDeletePrintingB.Visible = True
                         End If
                     End If
@@ -3365,14 +3295,14 @@ Partial Class Order_Detail
                     If width <= 1510 Then
                         aPrinting.Visible = True : divPrinting.Visible = True
                         If Not String.IsNullOrEmpty(printing) Then
-                            imgPrinting.ImageUrl = String.Format("~/file/printing/{0}/{1}/{2}", headerId, dataId, printing)
+                            imgPrinting.ImageUrl = String.Format("~/file/printing/{0}/{1}/{2}", headerId.Value, dataId, printing)
                             If lblOrderStatus.Text = "Unsubmitted" Then btnDeletePrinting.Visible = True
                         End If
                     End If
                     If widthb <= 1510 Then
                         aPrintingB.Visible = True : divPrintingB.Visible = True
                         If Not String.IsNullOrEmpty(printingb) Then
-                            imgPrintingB.ImageUrl = String.Format("~/file/printing/{0}/{1}/{2}", headerId, dataId, printingb)
+                            imgPrintingB.ImageUrl = String.Format("~/file/printing/{0}/{1}/{2}", headerId.Value, dataId, printingb)
                             If lblOrderStatus.Text = "Unsubmitted" Then btnDeletePrintingB.Visible = True
                         End If
                     End If
@@ -3464,7 +3394,7 @@ Partial Class Order_Detail
                     aPrinting.Attributes("class") = aPrinting.Attributes("class") & " active"
                     divPrinting.Attributes("class") = divPrinting.Attributes("class") & " show active"
 
-                    If Not String.IsNullOrEmpty(printing) Then imgPrinting.ImageUrl = String.Format("~/file/printing/{0}/{1}", headerId, printing)
+                    If Not String.IsNullOrEmpty(printing) Then imgPrinting.ImageUrl = String.Format("~/file/printing/{0}/{1}", headerId.Value, printing)
                 End If
             End If
         Catch ex As Exception
@@ -3473,13 +3403,13 @@ Partial Class Order_Detail
 
     Protected Sub BindEmailQuote()
         Try
-            txtEmailQuoteTo.Text = orderClass.GetCustomerPrimaryEmail(customerId)
+            txtEmailQuoteTo.Text = orderClass.GetCustomerPrimaryEmail(customerId.Value)
 
-            Dim dataEmailCustomer As DataSet = orderClass.GetListData("SELECT Email FROM CustomerContacts CROSS APPLY STRING_SPLIT(Tags, ',') AS thisArray WHERE CustomerId='" & customerId & "' AND LTRIM(RTRIM(Email)) <> '' AND Email IS NOT NULL AND thisArray.VALUE='Quoting' AND [Primary]=0")
-            If dataEmailCustomer.Tables(0).Rows.Count > 0 Then
+            Dim dataEmailCustomer As DataTable = orderClass.GetDataTable("SELECT Email FROM CustomerContacts CROSS APPLY STRING_SPLIT(Tags, ',') AS thisArray WHERE CustomerId='" & customerId.Value & "' AND LTRIM(RTRIM(Email)) <> '' AND Email IS NOT NULL AND thisArray.VALUE='Quoting' AND [Primary]=0")
+            If dataEmailCustomer.Rows.Count > 0 Then
                 Dim listEmail As New List(Of String)
 
-                For Each row As DataRow In dataEmailCustomer.Tables(0).Rows
+                For Each row As DataRow In dataEmailCustomer.Rows
                     listEmail.Add(row("Email").ToString())
                 Next
 
@@ -3492,13 +3422,13 @@ Partial Class Order_Detail
 
     Protected Sub BindEmailInvoice()
         Try
-            txtSendInvoiceTo.Text = orderClass.GetCustomerPrimaryEmail(customerId)
+            txtSendInvoiceTo.Text = orderClass.GetCustomerPrimaryEmail(customerId.Value)
 
-            Dim dataEmailCustomer As DataSet = orderClass.GetListData("SELECT Email FROM CustomerContacts CROSS APPLY STRING_SPLIT(Tags, ',') AS thisArray WHERE CustomerId='" & customerId & "' AND LTRIM(RTRIM(Email)) <> '' AND Email IS NOT NULL AND thisArray.VALUE='Invoicing' AND [Primary]=0")
-            If dataEmailCustomer.Tables(0).Rows.Count > 0 Then
+            Dim dataEmailCustomer As DataTable = orderClass.GetDataTable("SELECT Email FROM CustomerContacts CROSS APPLY STRING_SPLIT(Tags, ',') AS thisArray WHERE CustomerId='" & customerId.Value & "' AND LTRIM(RTRIM(Email)) <> '' AND Email IS NOT NULL AND thisArray.VALUE='Invoicing' AND [Primary]=0")
+            If dataEmailCustomer.Rows.Count > 0 Then
                 Dim listEmail As New List(Of String)
 
-                For Each row As DataRow In dataEmailCustomer.Tables(0).Rows
+                For Each row As DataRow In dataEmailCustomer.Rows
                     listEmail.Add(row("Email").ToString())
                 Next
 
@@ -3512,50 +3442,50 @@ Partial Class Order_Detail
     Protected Function BindProductDescription(itemId As String) As String
         Dim result As String = String.Empty
 
-        Dim thisData As DataSet = orderClass.GetListData("SELECT OrderDetails.*, Products.Name AS ProductName, Designs.Name AS DesignName, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.Id='" & itemId & "'")
+        Dim thisData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Products.Name AS ProductName, Designs.Name AS DesignName, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.Id='" & itemId & "'")
 
-        Dim productId As String = thisData.Tables(0).Rows(0).Item("ProductId").ToString()
-        Dim productName As String = thisData.Tables(0).Rows(0).Item("ProductName").ToString()
-        Dim designName As String = thisData.Tables(0).Rows(0).Item("DesignName").ToString()
-        Dim blindName As String = thisData.Tables(0).Rows(0).Item("BlindName").ToString()
+        Dim productId As String = thisData("ProductId").ToString()
+        Dim productName As String = thisData("ProductName").ToString()
+        Dim designName As String = thisData("DesignName").ToString()
+        Dim blindName As String = thisData("BlindName").ToString()
 
-        Dim subType As String = thisData.Tables(0).Rows(0).Item("SubType").ToString()
-        Dim heading As String = thisData.Tables(0).Rows(0).Item("Heading").ToString()
-        Dim headingB As String = thisData.Tables(0).Rows(0).Item("HeadingB").ToString()
+        Dim subType As String = thisData("SubType").ToString()
+        Dim heading As String = thisData("Heading").ToString()
+        Dim headingB As String = thisData("HeadingB").ToString()
 
-        Dim trackType As String = thisData.Tables(0).Rows(0).Item("TrackType").ToString()
-        Dim trackTypeB As String = thisData.Tables(0).Rows(0).Item("TrackTypeB").ToString()
+        Dim trackType As String = thisData("TrackType").ToString()
+        Dim trackTypeB As String = thisData("TrackTypeB").ToString()
 
-        Dim fabricColourId As String = thisData.Tables(0).Rows(0).Item("FabricColourId").ToString()
-        Dim fabricColourIdB As String = thisData.Tables(0).Rows(0).Item("FabricColourIdB").ToString()
-        Dim fabricColourIdC As String = thisData.Tables(0).Rows(0).Item("FabricColourIdC").ToString()
-        Dim fabricColourIdD As String = thisData.Tables(0).Rows(0).Item("FabricColourIdD").ToString()
-        Dim fabricColourIdE As String = thisData.Tables(0).Rows(0).Item("FabricColourIdE").ToString()
-        Dim fabricColourIdF As String = thisData.Tables(0).Rows(0).Item("FabricColourIdF").ToString()
+        Dim fabricColourId As String = thisData("FabricColourId").ToString()
+        Dim fabricColourIdB As String = thisData("FabricColourIdB").ToString()
+        Dim fabricColourIdC As String = thisData("FabricColourIdC").ToString()
+        Dim fabricColourIdD As String = thisData("FabricColourIdD").ToString()
+        Dim fabricColourIdE As String = thisData("FabricColourIdE").ToString()
+        Dim fabricColourIdF As String = thisData("FabricColourIdF").ToString()
 
-        Dim width As String = thisData.Tables(0).Rows(0).Item("Width").ToString()
-        Dim widthB As String = thisData.Tables(0).Rows(0).Item("WidthB").ToString()
-        Dim widthC As String = thisData.Tables(0).Rows(0).Item("WidthC").ToString()
-        Dim widthD As String = thisData.Tables(0).Rows(0).Item("WidthD").ToString()
-        Dim widthE As String = thisData.Tables(0).Rows(0).Item("WidthE").ToString()
-        Dim widthF As String = thisData.Tables(0).Rows(0).Item("WidthF").ToString()
+        Dim width As String = thisData("Width").ToString()
+        Dim widthB As String = thisData("WidthB").ToString()
+        Dim widthC As String = thisData("WidthC").ToString()
+        Dim widthD As String = thisData("WidthD").ToString()
+        Dim widthE As String = thisData("WidthE").ToString()
+        Dim widthF As String = thisData("WidthF").ToString()
 
-        Dim drop As String = thisData.Tables(0).Rows(0).Item("Drop").ToString()
-        Dim dropB As String = thisData.Tables(0).Rows(0).Item("DropB").ToString()
-        Dim dropC As String = thisData.Tables(0).Rows(0).Item("DropC").ToString()
-        Dim dropD As String = thisData.Tables(0).Rows(0).Item("DropD").ToString()
-        Dim dropE As String = thisData.Tables(0).Rows(0).Item("DropE").ToString()
-        Dim dropF As String = thisData.Tables(0).Rows(0).Item("DropF").ToString()
+        Dim drop As String = thisData("Drop").ToString()
+        Dim dropB As String = thisData("DropB").ToString()
+        Dim dropC As String = thisData("DropC").ToString()
+        Dim dropD As String = thisData("DropD").ToString()
+        Dim dropE As String = thisData("DropE").ToString()
+        Dim dropF As String = thisData("DropF").ToString()
 
-        Dim printing As String = thisData.Tables(0).Rows(0).Item("Printing").ToString()
-        Dim printingB As String = thisData.Tables(0).Rows(0).Item("PrintingB").ToString()
-        Dim printingC As String = thisData.Tables(0).Rows(0).Item("PrintingC").ToString()
-        Dim printingD As String = thisData.Tables(0).Rows(0).Item("PrintingD").ToString()
-        Dim printingE As String = thisData.Tables(0).Rows(0).Item("PrintingE").ToString()
-        Dim printingF As String = thisData.Tables(0).Rows(0).Item("PrintingF").ToString()
+        Dim printing As String = thisData("Printing").ToString()
+        Dim printingB As String = thisData("PrintingB").ToString()
+        Dim printingC As String = thisData("PrintingC").ToString()
+        Dim printingD As String = thisData("PrintingD").ToString()
+        Dim printingE As String = thisData("PrintingE").ToString()
+        Dim printingF As String = thisData("PrintingF").ToString()
 
-        Dim layoutCode As String = thisData.Tables(0).Rows(0).Item("LayoutCode").ToString()
-        Dim frameColour As String = thisData.Tables(0).Rows(0).Item("FrameColour").ToString()
+        Dim layoutCode As String = thisData("LayoutCode").ToString()
+        Dim frameColour As String = thisData("FrameColour").ToString()
 
         Dim size As String = String.Format("({0}x{1})", width, drop)
         Dim sizeB As String = String.Format("({0}x{1})", widthB, dropB)
@@ -3578,23 +3508,23 @@ Partial Class Order_Detail
         Dim squareMetreE As Decimal = 0D
         Dim squareMetreF As Decimal = 0D
 
-        If Not IsDBNull(thisData.Tables(0).Rows(0)("SquareMetre")) Then
-            squareMetre = Math.Round(Convert.ToDecimal(thisData.Tables(0).Rows(0)("SquareMetre")), 2)
+        If Not IsDBNull(thisData("SquareMetre")) Then
+            squareMetre = Math.Round(Convert.ToDecimal(thisData("SquareMetre")), 2)
         End If
-        If Not IsDBNull(thisData.Tables(0).Rows(0)("SquareMetreB")) Then
-            squareMetreB = Math.Round(Convert.ToDecimal(thisData.Tables(0).Rows(0)("SquareMetreB")), 2)
+        If Not IsDBNull(thisData("SquareMetreB")) Then
+            squareMetreB = Math.Round(Convert.ToDecimal(thisData("SquareMetreB")), 2)
         End If
-        If Not IsDBNull(thisData.Tables(0).Rows(0)("SquareMetreC")) Then
-            squareMetreC = Math.Round(Convert.ToDecimal(thisData.Tables(0).Rows(0)("SquareMetreC")), 2)
+        If Not IsDBNull(thisData("SquareMetreC")) Then
+            squareMetreC = Math.Round(Convert.ToDecimal(thisData("SquareMetreC")), 2)
         End If
-        If Not IsDBNull(thisData.Tables(0).Rows(0)("SquareMetreD")) Then
-            squareMetreD = Math.Round(Convert.ToDecimal(thisData.Tables(0).Rows(0)("SquareMetreD")), 2)
+        If Not IsDBNull(thisData("SquareMetreD")) Then
+            squareMetreD = Math.Round(Convert.ToDecimal(thisData("SquareMetreD")), 2)
         End If
-        If Not IsDBNull(thisData.Tables(0).Rows(0)("SquareMetreE")) Then
-            squareMetreE = Math.Round(Convert.ToDecimal(thisData.Tables(0).Rows(0)("SquareMetreE")), 2)
+        If Not IsDBNull(thisData("SquareMetreE")) Then
+            squareMetreE = Math.Round(Convert.ToDecimal(thisData("SquareMetreE")), 2)
         End If
-        If Not IsDBNull(thisData.Tables(0).Rows(0)("SquareMetreF")) Then
-            squareMetreF = Math.Round(Convert.ToDecimal(thisData.Tables(0).Rows(0)("SquareMetreF")), 2)
+        If Not IsDBNull(thisData("SquareMetreF")) Then
+            squareMetreF = Math.Round(Convert.ToDecimal(thisData("SquareMetreF")), 2)
         End If
 
         Dim squareMetreText As String = String.Format("{0}sqm", squareMetre.ToString("0.##", enUS))
@@ -3608,21 +3538,21 @@ Partial Class Order_Detail
         Dim linearMetreB As Decimal = 0D
         Dim linearMetreC As Decimal = 0D
 
-        If Not IsDBNull(thisData.Tables(0).Rows(0)("LinearMetre")) Then
-            linearMetre = Math.Round(Convert.ToDecimal(thisData.Tables(0).Rows(0)("LinearMetre")), 2)
+        If Not IsDBNull(thisData("LinearMetre")) Then
+            linearMetre = Math.Round(Convert.ToDecimal(thisData("LinearMetre")), 2)
         End If
-        If Not IsDBNull(thisData.Tables(0).Rows(0)("LinearMetreB")) Then
-            linearMetreB = Math.Round(Convert.ToDecimal(thisData.Tables(0).Rows(0)("LinearMetreB")), 2)
+        If Not IsDBNull(thisData("LinearMetreB")) Then
+            linearMetreB = Math.Round(Convert.ToDecimal(thisData("LinearMetreB")), 2)
         End If
-        If Not IsDBNull(thisData.Tables(0).Rows(0)("LinearMetreC")) Then
-            linearMetreC = Math.Round(Convert.ToDecimal(thisData.Tables(0).Rows(0)("LinearMetreC")), 2)
+        If Not IsDBNull(thisData("LinearMetreC")) Then
+            linearMetreC = Math.Round(Convert.ToDecimal(thisData("LinearMetreC")), 2)
         End If
 
         Dim linearMetreText As String = String.Format("{0}lm", linearMetre.ToString("0.##", enUS))
         Dim linearMetreTextB As String = String.Format("{0}lm", linearMetreB.ToString("0.##", enUS))
         Dim linearMetreTextC As String = String.Format("{0}lm", linearMetreC.ToString("0.##", enUS))
 
-        Dim room As String = thisData.Tables(0).Rows(0).Item("Room").ToString()
+        Dim room As String = thisData("Room").ToString()
         Dim itemDescription As String = String.Format("<b>{0}</b>, {1}", room, productName)
 
         If designName = "Aluminium Blind" Then
@@ -3956,7 +3886,7 @@ Partial Class Order_Detail
                 Dim thisPrice As Decimal = orderClass.GetItemData_Decimal(thisQuery)
 
                 result = String.Format("${0}", thisPrice.ToString("N2", enUS))
-                If companyId = "3" OrElse companyId = "5" Then
+                If companyId.Value = "3" OrElse companyId.Value = "5" Then
                     result = String.Format("Rp{0}", thisPrice.ToString("N2", idIDR))
                 End If
             End If
@@ -3992,7 +3922,6 @@ Partial Class Order_Detail
             Return String.Empty
         End Try
     End Function
-
 
     Protected Sub AllMessageError(visible As Boolean, message As String)
         MessageError(visible, message)
@@ -4220,31 +4149,31 @@ Partial Class Order_Detail
         Try
             If Session("RoleName") = "Installer" Then Return False
 
-            Dim thisData As DataSet = orderClass.GetListData("SELECT OrderDetails.*, Designs.Name AS DesignName, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.Id='" & itemId & "'")
+            Dim thisData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Designs.Name AS DesignName, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.Id='" & itemId & "'")
 
-            Dim designname As String = thisData.Tables(0).Rows(0).Item("DesignName").ToString()
-            Dim blindname As String = thisData.Tables(0).Rows(0).Item("BlindName").ToString()
-            Dim width As Integer = thisData.Tables(0).Rows(0).Item("Width")
-            Dim drop As Integer = thisData.Tables(0).Rows(0).Item("Drop")
+            Dim designname As String = thisData("DesignName").ToString()
+            Dim blindname As String = thisData("BlindName").ToString()
+            Dim width As Integer = thisData("Width")
+            Dim drop As Integer = thisData("Drop")
 
             If designname = "Roller Blind" Then
                 If blindname = "Single Blind" OrElse blindname = "Dual Blinds" Then
                     If width <= 1510 OrElse drop <= 1510 Then Return True
                 End If
                 If blindname = "Link 2 Blinds Dependent" OrElse blindname = "Link 2 Blinds Independent" Then
-                    Dim widthb As Integer = thisData.Tables(0).Rows(0).Item("WidthB")
+                    Dim widthb As Integer = thisData("WidthB")
                     If width <= 1510 OrElse widthb <= 1510 Then Return True
                 End If
                 If blindname = "Link 3 Blinds Dependent" OrElse blindname = "Link 3 Blinds Independent with Dependent" Then
-                    Dim widthb As Integer = thisData.Tables(0).Rows(0).Item("WidthB")
-                    Dim widthc As Integer = thisData.Tables(0).Rows(0).Item("WidthC")
+                    Dim widthb As Integer = thisData("WidthB")
+                    Dim widthc As Integer = thisData("WidthC")
 
                     If width <= 1510 OrElse widthb <= 1510 OrElse widthc <= 1510 Then Return True
                 End If
                 If blindname = "Link 4 Blinds Independent with Dependent" OrElse blindname = "DB Link 2 Blinds Dependent" OrElse blindname = "DB Link 2 Blinds Independent" Then
-                    Dim widthb As Integer = thisData.Tables(0).Rows(0).Item("WidthB")
-                    Dim widthc As Integer = thisData.Tables(0).Rows(0).Item("WidthC")
-                    Dim widthd As Integer = thisData.Tables(0).Rows(0).Item("WidthD")
+                    Dim widthb As Integer = thisData("WidthB")
+                    Dim widthc As Integer = thisData("WidthC")
+                    Dim widthd As Integer = thisData("WidthD")
 
                     If width <= 1510 OrElse widthb <= 1510 OrElse widthc <= 1510 OrElse widthd <= 1510 Then Return True
                 End If

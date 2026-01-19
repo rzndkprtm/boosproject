@@ -9,216 +9,215 @@ let loginId;
 let roleAccess;
 let priceAccess;
 
-document.getElementById("modalSuccess").addEventListener("hide.bs.modal", function () {
-    document.activeElement.blur();
-    document.body.focus();
+initRoller();
+
+$("#submit").on("click", process);
+$("#cancel").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
+$("#vieworder").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
+
+$("#blindtype").on("change", function () {
+    bindTubeType($(this).val());
+    bindMounting($(this).val());
 });
 
-document.getElementById("modalError").addEventListener("hide.bs.modal", function () {
-    document.activeElement.blur();
-    document.body.focus();
+$("#tubetype").on("change", function () {
+    const blindtype = document.getElementById("blindtype").value;
+    bindControlType(blindtype, $(this).val());
+    bindFabricType(designId);
 });
 
-document.getElementById("modalInfo").addEventListener("hide.bs.modal", function () {
-    document.activeElement.blur();
-    document.body.focus();
+$("#controltype").on("change", function () {
+    const blindtype = document.getElementById("blindtype").value;
+    const tubetype = document.getElementById("tubetype").value;
+
+    bindColourType(blindtype, tubetype, $(this).val());
+    bindChainRemote(designId, blindtype, $(this).val());
 });
 
-$(document).ready(function () {
-    checkSession();
+$("#colourtype").on("change", function () {
+    const blindtype = document.getElementById("blindtype").value;
+    const tubetype = document.getElementById("tubetype").value;
+    const controltype = document.getElementById("controltype").value;
 
-    $("#submit").on("click", process);
-    $("#cancel").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
-    $("#vieworder").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
+    visibleDetail(blindtype, tubetype, controltype, $(this).val());
+});
 
-    $("#blindtype").on("change", function () {
-        bindTubeType($(this).val());
-        bindMounting($(this).val());
-    });
+$("#fabrictype").on("change", function () {
+    bindFabricColour($(this).val());
+});
 
-    $("#tubetype").on("change", function () {
-        const blindtype = document.getElementById("blindtype").value;
-        bindControlType(blindtype, $(this).val());
-        bindFabricType(designId);
-    });
+$("#fabrictypeb").on("change", function () {
+    bindFabricColourB($(this).val());
+});
 
-    $("#controltype").on("change", function () {
-        const blindtype = document.getElementById("blindtype").value;
-        const tubetype = document.getElementById("tubetype").value;
+$("#fabrictypec").on("change", function () {
+    bindFabricColourC($(this).val());
+});
 
-        bindColourType(blindtype, tubetype, $(this).val());
-        bindChainRemote(designId, blindtype, $(this).val());
-    });
+$("#fabrictyped").on("change", function () {
+    bindFabricColourD($(this).val());
+});
 
-    $("#colourtype").on("change", function () {
-        const blindtype = document.getElementById("blindtype").value;
-        const tubetype = document.getElementById("tubetype").value;
-        const controltype = document.getElementById("controltype").value;
+$("#fabrictypee").on("change", function () {
+    bindFabricColourE($(this).val());
+});
 
-        visibleDetail(blindtype, tubetype, controltype, $(this).val());
-    });
+$("#fabrictypef").on("change", function () {
+    bindFabricColourF($(this).val());
+});
 
-    $("#fabrictype").on("change", function () {
-        bindFabricColour($(this).val());
-    });
+$("#bottomtype").on("change", function () {
+    bindBottomColour($(this).val());
 
-    $("#fabrictypeb").on("change", function () {
-        bindFabricColourB($(this).val());
-    });
+    visibleBottomColour(1, $(this).val());
+    visibleFlatBottom($(this).val(), 1);
+});
 
-    $("#fabrictypec").on("change", function () {
-        bindFabricColourC($(this).val());
-    });
+$("#bottomtypeb").on("change", function () {
+    bindBottomColourB($(this).val());
 
-    $("#fabrictyped").on("change", function () {
-        bindFabricColourD($(this).val());
-    });
+    visibleBottomColour(2, $(this).val());
+    visibleFlatBottom($(this).val(), 2);
+});
 
-    $("#fabrictypee").on("change", function () {
-        bindFabricColourE($(this).val());
-    });
+$("#bottomtypec").on("change", function () {
+    bindBottomColourC($(this).val());
 
-    $("#fabrictypef").on("change", function () {
-        bindFabricColourF($(this).val());
-    });
+    visibleBottomColour(3, $(this).val());
+    visibleFlatBottom($(this).val(), 3);
+});
 
-    $("#bottomtype").on("change", function () {
-        bindBottomColour($(this).val());
+$("#bottomtyped").on("change", function () {
+    bindBottomColourD($(this).val());
 
-        visibleBottomColour(1, $(this).val());
-        visibleFlatBottom($(this).val(), 1);
-    });
+    visibleBottomColour(4, $(this).val());
+    visibleFlatBottom($(this).val(), 4);
+});
 
-    $("#bottomtypeb").on("change", function () {
-        bindBottomColourB($(this).val());
+$("#bottomtypee").on("change", function () {
+    bindBottomColourE(designId, $(this).val());
+    visibleFlatBottom($(this).val(), 5);
+});
 
-        visibleBottomColour(2, $(this).val());
-        visibleFlatBottom($(this).val(), 2);
-    });
+$("#bottomtypef").on("change", function () {
+    bindBottomColourF(designId, $(this).val());
+    visibleFlatBottom($(this).val(), 6);
+});
 
-    $("#bottomtypec").on("change", function () {
-        bindBottomColourC($(this).val());
+$("#chaincolour").on("change", function () {
+    const controltype = document.getElementById("controltype").value;
+    const controllength = document.getElementById("controllength").value;
 
-        visibleBottomColour(3, $(this).val());
-        visibleFlatBottom($(this).val(), 3);
-    });
+    bindChainStopper($(this).val());
+    visibleChainStopperLength(controltype, $(this).val(), 1);
+    visibleCustomChainLength($(this).val(), controllength, 1);
+});
 
-    $("#bottomtyped").on("change", function () {
-        bindBottomColourD($(this).val());
+$("#chaincolourb").on("change", function () {
+    const controltype = document.getElementById("controltype").value;
+    const controllength = document.getElementById("controllengthb").value;
 
-        visibleBottomColour(4, $(this).val());
-        visibleFlatBottom($(this).val(), 4);
-    });
+    bindChainStopperB($(this).val());
+    visibleChainStopperLength(controltype, $(this).val(), 2);
+    visibleCustomChainLength($(this).val(), controllength, 2);
+});
 
-    $("#bottomtypee").on("change", function () {
-        bindBottomColourE(designId, $(this).val());
-        visibleFlatBottom($(this).val(), 5);
-    });
+$("#chaincolourc").on("change", function () {
+    const controltype = document.getElementById("controltype").value;
+    const controllength = document.getElementById("controllengthc").value;
 
-    $("#bottomtypef").on("change", function () {
-        bindBottomColourF(designId, $(this).val());
-        visibleFlatBottom($(this).val(), 6);
-    });
+    bindChainStopperC($(this).val());
+    visibleChainStopperLength(controltype, $(this).val(), 3);
+    visibleCustomChainLength($(this).val(), controllength, 3);
+});
 
-    $("#chaincolour").on("change", function () {
-        const controltype = document.getElementById("controltype").value;
-        const controllength = document.getElementById("controllength").value;
+$("#chaincolourd").on("change", function () {
+    const controltype = document.getElementById("controltype").value;
+    const controllength = document.getElementById("controllengthd").value;
 
-        bindChainStopper($(this).val());
-        visibleChainStopperLength(controltype, $(this).val(), 1);
-        visibleCustomChainLength($(this).val(), controllength, 1);
-    });
-    $("#chaincolourb").on("change", function () {
-        const controltype = document.getElementById("controltype").value;
-        const controllength = document.getElementById("controllengthb").value;
+    bindChainStopperD($(this).val());
+    visibleChainStopperLength(controltype, $(this).val(), 4);
+    visibleCustomChainLength($(this).val(), controllength, 4);
+});
 
-        bindChainStopperB($(this).val());
-        visibleChainStopperLength(controltype, $(this).val(), 2);
-        visibleCustomChainLength($(this).val(), controllength, 2);
-    });
-    $("#chaincolourc").on("change", function () {
-        const controltype = document.getElementById("controltype").value;
-        const controllength = document.getElementById("controllengthc").value;
+$("#controllength").on("change", function () {
+    const chaincolour = document.getElementById("chaincolour").value;
+    visibleCustomChainLength(chaincolour, $(this).val(), 1);
+});
 
-        bindChainStopperC($(this).val());
-        visibleChainStopperLength(controltype, $(this).val(), 3);
-        visibleCustomChainLength($(this).val(), controllength, 3);
-    });
-    $("#chaincolourd").on("change", function () {
-        const controltype = document.getElementById("controltype").value;
-        const controllength = document.getElementById("controllengthd").value;
+$("#controllengthb").on("change", function () {
+    const chaincolour = document.getElementById("chaincolourb").value;
+    visibleCustomChainLength(chaincolour, $(this).val(), 2);
+});
 
-        bindChainStopperD($(this).val());
-        visibleChainStopperLength(controltype, $(this).val(), 4);
-        visibleCustomChainLength($(this).val(), controllength, 4);
-    });
+$("#controllengthc").on("change", function () {
+    const chaincolour = document.getElementById("chaincolourc").value;
+    visibleCustomChainLength(chaincolour, $(this).val(), 3);
+});
 
-    $("#controllength").on("change", function () {
-        const chaincolour = document.getElementById("chaincolour").value;
-        visibleCustomChainLength(chaincolour, $(this).val(), 1);
-    });
-    $("#controllengthb").on("change", function () {
-        const chaincolour = document.getElementById("chaincolourb").value;
-        visibleCustomChainLength(chaincolour, $(this).val(), 2);
-    });
-    $("#controllengthc").on("change", function () {
-        const chaincolour = document.getElementById("chaincolourc").value;
-        visibleCustomChainLength(chaincolour, $(this).val(), 3);
-    });
-    $("#controllengthd").on("change", function () {
-        const chaincolour = document.getElementById("chaincolourd").value;
-        visibleCustomChainLength(chaincolour, $(this).val(), 4);
-    });
+$("#controllengthd").on("change", function () {
+    const chaincolour = document.getElementById("chaincolourd").value;
+    visibleCustomChainLength(chaincolour, $(this).val(), 4);
+});
 
-    $("#width").on("input", function () {
-        const blindtype = document.getElementById("blindtype").value;
-        otomatisWidth(blindtype, 1, $(this).val());
-    });
-    $("#widthb").on("input", function () {
-        const blindtype = document.getElementById("blindtype").value;
-        otomatisWidth(blindtype, 2, $(this).val());
-    });
-    $("#widthc").on("input", function () {
-        const blindtype = document.getElementById("blindtype").value;
-        otomatisWidth(blindtype, 3, $(this).val());
-    });
-    $("#widthd").on("input", function () {
-        const blindtype = document.getElementById("blindtype").value;
-        otomatisWidth(blindtype, 4, $(this).val());
-    });
-    $("#widthe").on("input", function () {
-        const blindtype = document.getElementById("blindtype").value;
-        otomatisWidth(blindtype, 5, $(this).val());
-    });
-    $("#widthf").on("input", function () {
-        const blindtype = document.getElementById("blindtype").value;
-        otomatisWidth(blindtype, 6, $(this).val());
-    });
+$("#width").on("input", function () {
+    const blindtype = document.getElementById("blindtype").value;
+    otomatisWidth(blindtype, 1, $(this).val());
+});
 
-    $("#drop").on("input", function () {
-        const blindtype = document.getElementById("blindtype").value;
-        otomatisDrop(blindtype, 1, $(this).val());
-    });
-    $("#dropb").on("input", function () {
-        const blindtype = document.getElementById("blindtype").value;
-        otomatisDrop(blindtype, 2, $(this).val());
-    });
-    $("#dropc").on("input", function () {
-        const blindtype = document.getElementById("blindtype").value;
-        otomatisDrop(blindtype, 3, $(this).val());
-    });
-    $("#dropd").on("input", function () {
-        const blindtype = document.getElementById("blindtype").value;
-        otomatisDrop(blindtype, 4, $(this).val());
-    });
-    $("#drope").on("input", function () {
-        const blindtype = document.getElementById("blindtype").value;
-        otomatisDrop(blindtype, 5, $(this).val());
-    });
-    $("#dropf").on("input", function () {
-        const blindtype = document.getElementById("blindtype").value;
-        otomatisDrop(blindtype, 6, $(this).val());
-    });
+$("#widthb").on("input", function () {
+    const blindtype = document.getElementById("blindtype").value;
+    otomatisWidth(blindtype, 2, $(this).val());
+});
+
+$("#widthc").on("input", function () {
+    const blindtype = document.getElementById("blindtype").value;
+    otomatisWidth(blindtype, 3, $(this).val());
+});
+
+$("#widthd").on("input", function () {
+    const blindtype = document.getElementById("blindtype").value;
+    otomatisWidth(blindtype, 4, $(this).val());
+});
+
+$("#widthe").on("input", function () {
+    const blindtype = document.getElementById("blindtype").value;
+    otomatisWidth(blindtype, 5, $(this).val());
+});
+
+$("#widthf").on("input", function () {
+    const blindtype = document.getElementById("blindtype").value;
+    otomatisWidth(blindtype, 6, $(this).val());
+});
+
+$("#drop").on("input", function () {
+    const blindtype = document.getElementById("blindtype").value;
+    otomatisDrop(blindtype, 1, $(this).val());
+});
+
+$("#dropb").on("input", function () {
+    const blindtype = document.getElementById("blindtype").value;
+    otomatisDrop(blindtype, 2, $(this).val());
+});
+
+$("#dropc").on("input", function () {
+    const blindtype = document.getElementById("blindtype").value;
+    otomatisDrop(blindtype, 3, $(this).val());
+});
+
+$("#dropd").on("input", function () {
+    const blindtype = document.getElementById("blindtype").value;
+    otomatisDrop(blindtype, 4, $(this).val());
+});
+
+$("#drope").on("input", function () {
+    const blindtype = document.getElementById("blindtype").value;
+    otomatisDrop(blindtype, 5, $(this).val());
+});
+
+$("#dropf").on("input", function () {
+    const blindtype = document.getElementById("blindtype").value;
+    otomatisDrop(blindtype, 6, $(this).val());
 });
 
 function loader(itemAction) {
@@ -234,6 +233,27 @@ function loader(itemAction) {
 function isError(msg) {
     $("#modalError").modal("show");
     document.getElementById("errorMsg").innerHTML = msg;
+}
+
+function getOrderHeader(headerId) {
+    return new Promise((resolve, reject) => {
+        if (!headerId) return resolve();
+
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/GetOrderHeader",
+            data: JSON.stringify({ headerId }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: ({ d }) => {
+                document.getElementById("orderid").innerText = d.OrderId || "-";
+                document.getElementById("ordernumber").innerText = d.OrderNumber || "-";
+                document.getElementById("ordername").innerText = d.OrderName || "-";
+                resolve(d);
+            },
+            error: reject
+        });
+    });
 }
 
 function getFormAction(itemAction) {
@@ -2011,7 +2031,7 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                 divShow.push("divfabric", "divroll", "divcontrolposition", "divbottomtype", "divsize");
                 if (companyDetailName === "ACCENT") {
                     divShow.push("divtoptrack");
-                }                
+                }
                 if (["Gear Reduction 38mm", "Gear Reduction 45mm", "Gear Reduction 49mm"].includes(tubeName)) {
                     divShow.push("divbracketextension");
                 }
@@ -2777,7 +2797,7 @@ function process() {
     });
 }
 
-async function checkSession() {
+async function initRoller() {
     const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get("boos");
     if (!sessionId) return redirectOrder();
@@ -2806,6 +2826,7 @@ async function checkSession() {
     }
 
     await Promise.all([
+        getOrderHeader(headerId),
         getDesignName(designId),
         getFormAction(itemAction),
         getCompanyOrder(headerId),
@@ -2820,7 +2841,7 @@ async function checkSession() {
         bindBlindType(designId);
         bindBottomType(designId);
         loader(itemAction)
-    } else if (["edit", "view", "copy"].includes(itemAction)) {        
+    } else if (["edit", "view", "copy"].includes(itemAction)) {
         controlForm(
             itemAction === "view",
             itemAction === "edit",
@@ -3098,3 +3119,18 @@ function showInfo(type) {
 function redirectOrder() {
     window.location.replace("/order");
 }
+
+document.getElementById("modalSuccess").addEventListener("hide.bs.modal", function () {
+    document.activeElement.blur();
+    document.body.focus();
+});
+
+document.getElementById("modalError").addEventListener("hide.bs.modal", function () {
+    document.activeElement.blur();
+    document.body.focus();
+});
+
+document.getElementById("modalInfo").addEventListener("hide.bs.modal", function () {
+    document.activeElement.blur();
+    document.body.focus();
+});

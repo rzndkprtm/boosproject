@@ -36,255 +36,284 @@
             </div>
         </section>
 
-        <section class="row" id="divorder" style="display:none;">
-            <div class="col-12 col-sm-12 col-lg-7">
-                <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title" id="cardtitle"></h4>
+        <div id="divorder" style="display:none;">
+            <section class="row">
+                <div class="col-12 col-sm-12 col-lg-7">
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-12 col-sm-12 col-lg-3">
+                                        <label>Order #</label>
+                                        <br />
+                                        <label id="orderid" class="font-bold"></label>
+                                    </div>
+                                    <div class="col-12 col-sm-12 col-lg-4">
+                                        <label>Order Number</label>
+                                        <br />
+                                        <label id="ordernumber" class="font-bold"></label>
+                                    </div>
+                                    <div class="col-6 col-sm-6 col-lg-5">
+                                        <label>Order Name</label>
+                                        <br />
+                                        <label id="ordername" class="font-bold"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                </div>
+            </section>
+            <section class="row">
+                <div class="col-12 col-sm-12 col-lg-7">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title" id="cardtitle"></h4>
+                        </div>
 
-                    <div class="card-content">
-                        <div class="card-body">
-                            <div class="form form-horizontal">
-                                <div class="form-body">
-                                    <div class="row">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Type</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                            <select id="blindtype" class="form-select"></select>
-                                        </div>
-                                    </div>
-
-                                    <div class="row" style="display:none;">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Blade Type</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                            <select id="tubetype" class="form-select"></select>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Control Type</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                            <select id="controltype" class="form-select"></select>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Headrail Colour</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                            <select id="colourtype" class="form-select"></select>
-                                        </div>
-                                    </div>
-
-                                    <div id="divdetail">
-                                        <hr />
-
+                        <div class="card-content">
+                            <div class="card-body">
+                                <div class="form form-horizontal">
+                                    <div class="form-body">
                                         <div class="row">
                                             <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Quantity</label>
-                                            </div>
-                                            <div class="col-12 col-sm-12 col-lg-2 form-group">
-                                                <input type="number" id="qty" class="form-control" autocomplete="off" placeholder="Quantity" value="1" />
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Room / Location</label>
-                                            </div>
-                                            <div class="col-12 col-sm-12 col-lg-9 form-group">
-                                                <input type="text" id="room" class="form-control" autocomplete="off" placeholder="Room / Location" />
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Mounting</label>
-                                            </div>
-                                            <div class="col-12 col-sm-12 col-lg-5 form-group">
-                                                <select id="mounting" class="form-select"></select>
-                                            </div>
-                                        </div>
-
-                                        <div class="row mt-3">
-                                            <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Fabric Type</label>
+                                                <label>Type</label>
                                             </div>
                                             <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                                <select id="fabrictype" class="form-select"></select>
+                                                <select id="blindtype" class="form-select"></select>
+                                            </div>
+                                        </div>
+
+                                        <div class="row" style="display:none;">
+                                            <div class="col-12 col-sm-12 col-lg-3">
+                                                <label>Blade Type</label>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                <select id="tubetype" class="form-select"></select>
                                             </div>
                                         </div>
 
                                         <div class="row">
                                             <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Fabric Colour</label>
+                                                <label>Control Type</label>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                                <select id="fabriccolour" class="form-select"></select>
+                                            <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                <select id="controltype" class="form-select"></select>
                                             </div>
                                         </div>
 
-                                        <div class="row mt-3">
+                                        <div class="row">
                                             <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Width</label>
+                                                <label>Headrail Colour</label>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                                <div class="input-group">
-                                                    <input type="number" id="width" class="form-control" autocomplete="off" placeholder="Width ...." />
-                                                    <span class="input-group-text">mm</span>
+                                            <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                <select id="colourtype" class="form-select"></select>
+                                            </div>
+                                        </div>
+
+                                        <div id="divdetail">
+                                            <hr />
+
+                                            <div class="row">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Quantity</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-2 form-group">
+                                                    <input type="number" id="qty" class="form-control" autocomplete="off" placeholder="Quantity" value="1" />
                                                 </div>
                                             </div>
-                                        </div>
 
-                                        <div class="row">
-                                            <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Drop</label>
-                                            </div>
-                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                                <div class="input-group">
-                                                    <input type="number" id="drop" class="form-control" autocomplete="off" placeholder="Drop  ...." />
-                                                    <span class="input-group-text">mm</span>
+                                            <div class="row">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Room / Location</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-9 form-group">
+                                                    <input type="text" id="room" class="form-control" autocomplete="off" placeholder="Room / Location" />
                                                 </div>
                                             </div>
-                                        </div>
 
-                                        <div class="row mt-3 mb-3">
-                                            <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Stack Position</label>
+                                            <div class="row">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Mounting</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-5 form-group">
+                                                    <select id="mounting" class="form-select"></select>
+                                                </div>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                <select id="stackposition" class="form-select">
-                                                    <option value=""></option>
-                                                    <option value="Stack Left">Stack Left</option>
-                                                    <option value="Stack Right">Stack Right</option>
-                                                    <option value="Stack Centre">Stack Centre</option>
-                                                    <option value="Stack Split">Stack Split</option>
-                                                </select>
-                                            </div>
-                                        </div>
 
-                                        <div class="row mt-3" id="divcontrolposition">
-                                            <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Control Position</label>
+                                            <div class="row mt-3">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Fabric Type</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                    <select id="fabrictype" class="form-select"></select>
+                                                </div>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                <select id="controlposition" class="form-select">
-                                                    <option value=""></option>
-                                                    <option value="Left">Left</option>
-                                                    <option value="Right">Right</option>
-                                                </select>
-                                            </div>
-                                        </div>
 
-                                        <div class="row" id="divchaincolour">
-                                            <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Chain Colour</label>
+                                            <div class="row">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Fabric Colour</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                    <select id="fabriccolour" class="form-select"></select>
+                                                </div>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                                <select id="chaincolour" class="form-select"></select>
-                                            </div>
-                                        </div>
 
-                                        <div class="row" id="divwandcolour">
-                                            <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Wand Colour</label>
+                                            <div class="row mt-3">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Width</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                    <div class="input-group">
+                                                        <input type="number" id="width" class="form-control" autocomplete="off" placeholder="Width ...." />
+                                                        <span class="input-group-text">mm</span>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                <select id="wandcolour" class="form-select">
-                                                    <option value=""></option>
-                                                    <option value="Beige">Beige</option>
-                                                    <option value="Black">Black</option>
-                                                    <option value="Grey">Grey</option>
-                                                    <option value="Ivory">Ivory</option>
-                                                    <option value="White">White</option>
-                                                </select>
-                                            </div>
-                                        </div>
 
-                                        <div class="row" id="divcontrollength">
-                                            <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Control Length</label>
+                                            <div class="row">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Drop</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                    <div class="input-group">
+                                                        <input type="number" id="drop" class="form-control" autocomplete="off" placeholder="Drop  ...." />
+                                                        <span class="input-group-text">mm</span>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                <div class="input-group">
-                                                    <select id="controllength" class="form-select">
+
+                                            <div class="row mt-3 mb-3">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Stack Position</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                    <select id="stackposition" class="form-select">
                                                         <option value=""></option>
-                                                        <option value="Standard">Standard</option>
-                                                        <option value="Custom">Custom</option>
+                                                        <option value="Stack Left">Stack Left</option>
+                                                        <option value="Stack Right">Stack Right</option>
+                                                        <option value="Stack Centre">Stack Centre</option>
+                                                        <option value="Stack Split">Stack Split</option>
                                                     </select>
-                                                    <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Cord Length');"> ? </a>
                                                 </div>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-4 form-group" id="divcontrollengthvalue">
-                                                <div class="input-group">
-                                                    <input type="number" id="controllengthvalue" class="form-control" autocomplete="off" placeholder="Length ...." />
-                                                    <span class="input-group-text">mm</span>
+
+                                            <div class="row mt-3" id="divcontrolposition">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Control Position</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                    <select id="controlposition" class="form-select">
+                                                        <option value=""></option>
+                                                        <option value="Left">Left</option>
+                                                        <option value="Right">Right</option>
+                                                    </select>
                                                 </div>
                                             </div>
-                                        </div>
 
-                                        <div class="row mt-3">
-                                            <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Bottom Joining</label>
+                                            <div class="row" id="divchaincolour">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Chain Colour</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                    <select id="chaincolour" class="form-select"></select>
+                                                </div>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                <select id="bottomjoining" class="form-select">
-                                                    <option value=""></option>
-                                                    <option value="Chainless">Chainless</option>
-                                                    <option value="With Chain">With Chain</option>
-                                                    <option value="Sewn In">Sewn In</option>
-                                                </select>
-                                            </div>
-                                        </div>
 
-                                        <div class="row">
-                                            <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Extension Bracket</label>
+                                            <div class="row" id="divwandcolour">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Wand Colour</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                    <select id="wandcolour" class="form-select">
+                                                        <option value=""></option>
+                                                        <option value="Beige">Beige</option>
+                                                        <option value="Black">Black</option>
+                                                        <option value="Grey">Grey</option>
+                                                        <option value="Ivory">Ivory</option>
+                                                        <option value="White">White</option>
+                                                    </select>
+                                                </div>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-2 form-group">
-                                                <select id="bracketextension" class="form-select">
-                                                    <option value=""></option>
-                                                    <option value="Yes">Yes</option>
-                                                </select>
-                                            </div>
-                                        </div>
 
-                                        <div class="row">
-                                            <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Sloping</label>
+                                            <div class="row" id="divcontrollength">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Control Length</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                    <div class="input-group">
+                                                        <select id="controllength" class="form-select">
+                                                            <option value=""></option>
+                                                            <option value="Standard">Standard</option>
+                                                            <option value="Custom">Custom</option>
+                                                        </select>
+                                                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Cord Length');"> ? </a>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group" id="divcontrollengthvalue">
+                                                    <div class="input-group">
+                                                        <input type="number" id="controllengthvalue" class="form-control" autocomplete="off" placeholder="Length ...." />
+                                                        <span class="input-group-text">mm</span>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-2 form-group">
-                                                <select id="sloping" class="form-select">
-                                                    <option value=""></option>
-                                                    <option value="Yes">Yes</option>
-                                                </select>
-                                            </div>
-                                        </div>
 
-                                        <div class="row mt-3">
-                                            <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Special Information</label>
+                                            <div class="row mt-3">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Bottom Joining</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                    <select id="bottomjoining" class="form-select">
+                                                        <option value=""></option>
+                                                        <option value="Chainless">Chainless</option>
+                                                        <option value="With Chain">With Chain</option>
+                                                        <option value="Sewn In">Sewn In</option>
+                                                    </select>
+                                                </div>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-9 form-group">
-                                                <textarea class="form-control" id="notes" rows="4" placeholder="Your notes ..." style="resize:none;"></textarea>
-                                            </div>
-                                        </div>
 
-                                        <div class="row" id="divmarkup">
-                                            <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Mark Up</label>
+                                            <div class="row">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Extension Bracket</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-2 form-group">
+                                                    <select id="bracketextension" class="form-select">
+                                                        <option value=""></option>
+                                                        <option value="Yes">Yes</option>
+                                                    </select>
+                                                </div>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                <div class="input-group">
-                                                    <input type="number" id="markup" class="form-control" autocomplete="off" placeholder="Mark Up ..." />
-                                                    <span class="input-group-text">%</span>
+
+                                            <div class="row">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Sloping</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-2 form-group">
+                                                    <select id="sloping" class="form-select">
+                                                        <option value=""></option>
+                                                        <option value="Yes">Yes</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mt-3">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Special Information</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-9 form-group">
+                                                    <textarea class="form-control" id="notes" rows="4" placeholder="Your notes ..." style="resize:none;"></textarea>
+                                                </div>
+                                            </div>
+
+                                            <div class="row" id="divmarkup">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Mark Up</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                    <div class="input-group">
+                                                        <input type="number" id="markup" class="form-control" autocomplete="off" placeholder="Mark Up ..." />
+                                                        <span class="input-group-text">%</span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -292,27 +321,27 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="card-footer text-center">
-                        <a href="javascript:void(0);" id="submit" class="btn btn-primary">Submit</a>
-                        <a href="javascript:void(0);" id="cancel" class="btn btn-danger">Cancel</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-12 col-lg-5">
-                <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title text-center">Information</h4>
-                    </div>
-                    <div class="card-content">
-                        <div class="card-body">
-
+                        <div class="card-footer text-center">
+                            <a href="javascript:void(0);" id="submit" class="btn btn-primary">Submit</a>
+                            <a href="javascript:void(0);" id="cancel" class="btn btn-danger">Cancel</a>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+                <div class="col-12 col-sm-12 col-lg-5">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title text-center">Information</h4>
+                        </div>
+                        <div class="card-content">
+                            <div class="card-body">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
     </div>
 
     <div class="modal fade text-left" id="modalSuccess" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
@@ -364,5 +393,5 @@
         </div>
     </div>
 
-    <script src="../Scripts/Order/Saphora.js?v=2.0.0"></script>
+    <script src='<%: ResolveUrl("~/Scripts/WebForms/Order/Saphora.js?v=1.0.0") %>'></script>
 </asp:Content>
