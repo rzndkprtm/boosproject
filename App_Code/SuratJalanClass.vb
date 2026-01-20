@@ -249,7 +249,7 @@ Public Class SuratJalanClass
             rightTable.AddCell(CreateCell(":", alignV:=Element.ALIGN_TOP))
             rightTable.AddCell(CreateCell(fullAddress, alignV:=Element.ALIGN_TOP))
 
-            rightTable.AddCell(CreateCell("Order #", alignV:=Element.ALIGN_TOP))
+            rightTable.AddCell(CreateCell("Order Number", alignV:=Element.ALIGN_TOP))
             rightTable.AddCell(CreateCell(":", alignV:=Element.ALIGN_TOP))
             rightTable.AddCell(CreateCell(orderNumber, alignV:=Element.ALIGN_TOP))
 
