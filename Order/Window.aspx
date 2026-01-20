@@ -331,9 +331,7 @@
                             <h4 class="card-title text-center">Information</h4>
                         </div>
                         <div class="card-content">
-                            <div class="card-body">
-
-                            </div>
+                            <div class="card-body"></div>
                         </div>
                     </div>
                 </div>
@@ -385,7 +383,7 @@
                     <span id="spanInfo"></span>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
                 </div>
             </div>
         </div>

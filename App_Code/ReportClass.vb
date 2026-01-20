@@ -45,17 +45,19 @@ Public Class ReportClass
         End Try
     End Function
 
-    Public Function GetReportData(myCmd As SqlCommand) As DataSet
-        Using thisConn As New SqlConnection(myConn)
-            Using thisAdapter As New SqlDataAdapter()
-                myCmd.Connection = thisConn
-                thisAdapter.SelectCommand = myCmd
-
-                Dim thisDataSet As New DataSet()
-                thisAdapter.Fill(thisDataSet)
-                Return thisDataSet
+    Public Function GetReportData(thisCmd As SqlCommand) As DataTable
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                thisCmd.Connection = thisConn
+                Using da As New SqlDataAdapter(thisCmd)
+                    Dim dt As New DataTable()
+                    da.Fill(dt)
+                    Return dt
+                End Using
             End Using
-        End Using
+        Catch ex As Exception
+            Return Nothing
+        End Try
     End Function
 
     Public Function GetItemData(thisString As String) As String

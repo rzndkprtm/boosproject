@@ -92,8 +92,7 @@ Partial Class Report
                             myCmd.Parameters.AddWithValue("@CompanyDetailId", ddlSubCompany.SelectedValue)
                         End If
 
-                        Dim ds As DataSet = reportClass.GetReportData(myCmd)
-                        gvList.DataSource = ds
+                        gvList.DataSource = reportClass.GetReportData(myCmd)
                         gvList.DataBind()
                     End If
                 End If
@@ -199,7 +198,6 @@ Partial Class Report
                     End If
                 Next
             End If
-
         End If
     End Sub
 End Class

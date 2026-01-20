@@ -3134,3 +3134,8 @@ document.getElementById("modalInfo").addEventListener("hide.bs.modal", function 
     document.activeElement.blur();
     document.body.focus();
 });
+
+document.getElementById("modalInfoTube").addEventListener("hide.bs.modal", function () {
+    document.activeElement.blur();
+    document.body.focus();
+});

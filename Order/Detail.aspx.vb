@@ -422,6 +422,8 @@ Partial Class Order_Detail
                 salesClass.RefreshData()
             End If
 
+            mailingClass.ProductionOrder(headerId.Value)
+
             url = String.Format("~/order/detail?orderid={0}", headerId.Value)
             Response.Redirect(url, False)
         Catch ex As Exception

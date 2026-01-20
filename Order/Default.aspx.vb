@@ -291,6 +291,8 @@ Partial Class Order_Default
                     salesClass.RefreshData()
                 End If
 
+                mailingClass.ProductionOrder(thisId)
+
                 Session("OrderStatus") = ddlStatus.SelectedValue
                 Session("OrderCompany") = ddlCompany.SelectedValue
                 Session("OrderSearch") = txtSearch.Text

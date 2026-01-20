@@ -92,11 +92,10 @@
                                             <div class="col-12 col-sm-12 col-lg-3">
                                                 <label>Tube Type</label>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-8 form-group">
+                                            <div class="col-12 col-sm-12 col-lg-6 form-group">
                                                 <div class="input-group">
                                                     <select id="tubetype" class="form-select"></select>
-                                                    <a class="btn btn-primary me-1" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Tube');">Info</a>
-                                                    <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Tube');">Recommendation</a>
+                                                    <a class="btn btn-primary me-1" data-bs-toggle="modal" data-bs-target="#modalInfoTube">Info</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -1469,7 +1468,21 @@
                     <span id="spanInfo"></span>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal modal-blur fade" id="modalInfoTube" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <h5 class="modal-title white">Tube Information</h5>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
                 </div>
             </div>
         </div>
