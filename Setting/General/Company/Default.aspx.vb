@@ -195,7 +195,7 @@ Partial Class Setting_General_Company_Default
             If Not searchText = "" Then
                 searchString = "WHERE Id LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%' OR Alias LIKE '%" & searchText & "%' OR Description LIKE '%" & searchText & "%'"
             End If
-            Dim thisString As String = String.Format("SELECT *, CASE WHEN IsActive=1 THEN 'Yes' WHEN IsActive=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Companys {0} ORDER BY Id ASC", searchString)
+            Dim thisString As String = String.Format("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Companys {0} ORDER BY Id ASC", searchString)
 
             gvList.DataSource = settingClass.GetDataTable(thisString)
             gvList.DataBind()
