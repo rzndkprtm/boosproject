@@ -57,11 +57,11 @@ Partial Class Setting_Customer_Promo
                     lblAction.Text = "Edit"
                     titleProcess.InnerText = "Edit Contact"
 
-                    Dim thisData As DataSet = settingClass.GetListData("SELECT * FROM CustomerContacts WHERE Id='" & dataId & "'")
+                    Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerContacts WHERE Id='" & dataId & "'")
 
                     BindDataCustomer()
 
-                    ddlCustomer.SelectedValue = thisData.Tables(0).Rows(0).Item("CustomerId").ToString()
+                    ddlCustomer.SelectedValue = thisData("CustomerId").ToString()
 
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Catch ex As Exception
@@ -72,8 +72,9 @@ Partial Class Setting_Customer_Promo
                 MessageError_Log(False, String.Empty)
                 Dim thisScript As String = "window.onload = function() { showLog(); };"
                 Try
-                    gvListLogs.DataSource = settingClass.GetListData("SELECT * FROM Logs WHERE Type='CustomerContacts' AND DataId='" & dataId & "'  ORDER BY ActionDate DESC")
+                    gvListLogs.DataSource = settingClass.GetDataTable("SELECT * FROM Logs WHERE Type='CustomerContacts' AND DataId='" & dataId & "'  ORDER BY ActionDate DESC")
                     gvListLogs.DataBind()
+
                     ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
                 Catch ex As Exception
                     MessageError_Log(True, ex.ToString())
@@ -106,14 +107,12 @@ Partial Class Setting_Customer_Promo
     Protected Sub BindData(searchText As String)
         Try
             Dim search As String = String.Empty
-
             If Not String.IsNullOrEmpty(searchText) Then
                 search = "WHERE Customers.Name LIKE '%" & searchText & "%' OR Promos.Name LIKE '%" & searchText & "%'"
             End If
-
             Dim thisQuery As String = String.Format("SELECT CustomerPromos.*, Customers.Name AS CustomerName, Promos.Name AS PromoName FROM CustomerPromos LEFT JOIN Customers ON CustomerPromos.CustomerId=Customers.Id LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id {0} ORDER BY Customers.Id, CustomerPromos.Id ASC", search)
 
-            gvList.DataSource = settingClass.GetListData(thisQuery)
+            gvList.DataSource = settingClass.GetDataTable(thisQuery)
             gvList.DataBind()
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -123,7 +122,7 @@ Partial Class Setting_Customer_Promo
     Protected Sub BindDataCustomer()
         ddlCustomer.Items.Clear()
         Try
-            ddlCustomer.DataSource = settingClass.GetListData("SELECT * FROM Customers WHERE Active=1 ORDER BY Name ASC")
+            ddlCustomer.DataSource = settingClass.GetDataTable("SELECT * FROM Customers WHERE Active=1 ORDER BY Name ASC")
             ddlCustomer.DataTextField = "Name"
             ddlCustomer.DataValueField = "Id"
             ddlCustomer.DataBind()

@@ -5,11 +5,13 @@ Public Class OrderClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Public Function GetDataRow(thisString As String) As DataRow
-        Using thisConn As New SqlConnection(myConn)
-            Using thisCmd As New SqlCommand(thisString, thisConn)
-                Using thisAdapter As New SqlDataAdapter(thisCmd)
-                    Using dt As New DataTable()
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using thisAdapter As New SqlDataAdapter(thisCmd)
+                        Dim dt As New DataTable()
                         thisAdapter.Fill(dt)
+
                         If dt.Rows.Count > 0 Then
                             Return dt.Rows(0)
                         Else
@@ -18,59 +20,59 @@ Public Class OrderClass
                     End Using
                 End Using
             End Using
-        End Using
+        Catch ex As Exception
+            Return Nothing
+        End Try
     End Function
 
     Public Function GetDataTable(thisString As String) As DataTable
-        Using thisConn As New SqlConnection(myConn)
-            Using thisCmd As New SqlCommand(thisString, thisConn)
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using da As New SqlDataAdapter(thisCmd)
+                        Dim dt As New DataTable()
+                        da.Fill(dt)
+                        Return dt
+                    End Using
+                End Using
+            End Using
+        Catch ex As Exception
+            Return Nothing
+        End Try
+    End Function
+
+    Public Function GetDataTable_Orders(thisCmd As SqlCommand) As DataTable
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                thisCmd.Connection = thisConn
                 Using da As New SqlDataAdapter(thisCmd)
                     Dim dt As New DataTable()
                     da.Fill(dt)
                     Return dt
                 End Using
             End Using
-        End Using
-    End Function
-
-    Public Function GetDataTable_Orders(thisCmd As SqlCommand) As DataTable
-        Using thisConn As New SqlConnection(myConn)
-            thisCmd.Connection = thisConn
-            Using da As New SqlDataAdapter(thisCmd)
-                Dim dt As New DataTable()
-                da.Fill(dt)
-                Return dt
-            End Using
-        End Using
-    End Function
-
-    Public Function GetListData(thisString As String) As DataSet
-        Dim thisCmd As New SqlCommand(thisString)
-        Using thisConn As New SqlConnection(myConn)
-            Using thisAdapter As New SqlDataAdapter()
-                thisCmd.Connection = thisConn
-                thisAdapter.SelectCommand = thisCmd
-                Using thisDataSet As New DataSet()
-                    thisAdapter.Fill(thisDataSet)
-                    Return thisDataSet
-                End Using
-            End Using
-        End Using
+        Catch ex As Exception
+            Return Nothing
+        End Try
     End Function
 
     Public Function GetItemData(thisString As String) As String
         Dim result As String = String.Empty
-        Using thisConn As New SqlConnection(myConn)
-            thisConn.Open()
-            Using myCmd As New SqlCommand(thisString, thisConn)
-                Using rdResult = myCmd.ExecuteReader
-                    While rdResult.Read
-                        result = rdResult.Item(0).ToString()
-                    End While
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                thisConn.Open()
+                Using myCmd As New SqlCommand(thisString, thisConn)
+                    Using rdResult = myCmd.ExecuteReader
+                        While rdResult.Read
+                            result = rdResult.Item(0).ToString()
+                        End While
+                    End Using
                 End Using
+                thisConn.Close()
             End Using
-            thisConn.Close()
-        End Using
+        Catch ex As Exception
+            result = String.Empty
+        End Try
         Return result
     End Function
 
@@ -95,7 +97,7 @@ Public Class OrderClass
     End Function
 
     Public Function GetItemData_Decimal(thisString As String) As Decimal
-        Dim result As Double = 0.00
+        Dim result As Double = 0D
         Try
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
@@ -109,7 +111,7 @@ Public Class OrderClass
                 thisConn.Close()
             End Using
         Catch ex As Exception
-            result = 0.00
+            result = 0D
         End Try
         Return result
     End Function
@@ -1202,10 +1204,10 @@ Public Class OrderClass
 
     Public Sub CalculatePriceByOrder(headerId As String)
         Try
-            Dim thisData As DataSet = GetListData("SELECT * FROM OrderDetails WHERE HeaderId='" & headerId & "' AND Active=1")
-            If Not thisData.Tables(0).Rows.Count = 0 Then
-                For i As Integer = 0 To thisData.Tables(0).Rows.Count - 1
-                    Dim itemId As String = thisData.Tables(0).Rows(i).Item("Id").ToString()
+            Dim thisData As DataTable = GetDataTable("SELECT * FROM OrderDetails WHERE HeaderId='" & headerId & "' AND Active=1")
+            If Not thisData.Rows.Count = 0 Then
+                For i As Integer = 0 To thisData.Rows.Count - 1
+                    Dim itemId As String = thisData.Rows(i)("Id").ToString()
 
                     ResetPriceDetail(headerId, itemId)
                     CalculatePrice(headerId, itemId)
@@ -1218,8 +1220,8 @@ Public Class OrderClass
 
     Public Sub CalculatePrice(headerId As String, itemId As String)
         Try
-            Dim thisData As DataSet = GetListData("SELECT * FROM OrderDetails WHERE Id='" & itemId & "' AND Active=1")
-            If Not thisData.Tables(0).Rows.Count = 0 Then
+            Dim thisData As DataRow = GetDataRow("SELECT * FROM OrderDetails WHERE Id='" & itemId & "' AND Active=1")
+            If thisData IsNot Nothing Then
                 Dim customerId As String = GetCustomerIdByOrder(headerId)
 
                 Dim companyId As String = GetCompanyIdByOrder(headerId)
@@ -1229,7 +1231,7 @@ Public Class OrderClass
                 Dim shutterPriceGroup As String = GetItemData("SELECT ShutterPriceGroupId FROM Customers WHERE Id='" & customerId & "'")
                 Dim doorPriceGroup As String = GetItemData("SELECT DoorPriceGroupId FROM Customers WHERE Id='" & customerId & "'")
 
-                Dim productId As String = thisData.Tables(0).Rows(0).Item("ProductId").ToString()
+                Dim productId As String = thisData("ProductId").ToString()
                 Dim designId As String = GetDesignId(productId)
                 Dim blindId As String = GetBlindId(productId)
                 Dim tubeId As String = GetTubeId(productId)
@@ -1239,13 +1241,13 @@ Public Class OrderClass
                 Dim productName As String = GetProductName(productId)
                 Dim tubeName As String = GetTubeName(tubeId)
 
-                Dim priceProductGroupId As String = thisData.Tables(0).Rows(0).Item("PriceProductGroupId").ToString()
-                Dim priceProductGroupIdB As String = thisData.Tables(0).Rows(0).Item("PriceProductGroupIdB").ToString()
-                Dim priceProductGroupIdC As String = thisData.Tables(0).Rows(0).Item("PriceProductGroupIdC").ToString()
-                Dim priceProductGroupIdD As String = thisData.Tables(0).Rows(0).Item("PriceProductGroupIdD").ToString()
-                Dim priceProductGroupIdE As String = thisData.Tables(0).Rows(0).Item("PriceProductGroupIdE").ToString()
-                Dim priceProductGroupIdF As String = thisData.Tables(0).Rows(0).Item("PriceProductGroupIdF").ToString()
-                Dim priceProductGroupIdG As String = thisData.Tables(0).Rows(0).Item("PriceProductGroupIdG").ToString()
+                Dim priceProductGroupId As String = thisData("PriceProductGroupId").ToString()
+                Dim priceProductGroupIdB As String = thisData("PriceProductGroupIdB").ToString()
+                Dim priceProductGroupIdC As String = thisData("PriceProductGroupIdC").ToString()
+                Dim priceProductGroupIdD As String = thisData("PriceProductGroupIdD").ToString()
+                Dim priceProductGroupIdE As String = thisData("PriceProductGroupIdE").ToString()
+                Dim priceProductGroupIdF As String = thisData("PriceProductGroupIdF").ToString()
+                Dim priceProductGroupIdG As String = thisData("PriceProductGroupIdG").ToString()
 
                 Dim priceProductGroupName As String = GetPriceProductGroupName(priceProductGroupId)
                 Dim priceProductGroupNameB As String = GetPriceProductGroupName(priceProductGroupIdB)
@@ -1255,83 +1257,83 @@ Public Class OrderClass
                 Dim priceProductGroupNameF As String = GetPriceProductGroupName(priceProductGroupIdF)
                 Dim priceProductGroupNameG As String = GetPriceProductGroupName(priceProductGroupIdG)
 
-                Dim priceAdditional As String = thisData.Tables(0).Rows(0).Item("PriceAdditional").ToString()
-                Dim priceAdditionalB As String = thisData.Tables(0).Rows(0).Item("PriceAdditionalB").ToString()
+                Dim priceAdditional As String = thisData("PriceAdditional").ToString()
+                Dim priceAdditionalB As String = thisData("PriceAdditionalB").ToString()
 
-                Dim width As String = thisData.Tables(0).Rows(0).Item("Width").ToString()
-                Dim widthB As String = thisData.Tables(0).Rows(0).Item("WidthB").ToString()
-                Dim widthC As String = thisData.Tables(0).Rows(0).Item("widthC").ToString()
-                Dim widthD As String = thisData.Tables(0).Rows(0).Item("WidthD").ToString()
-                Dim widthE As String = thisData.Tables(0).Rows(0).Item("WidthE").ToString()
-                Dim widthF As String = thisData.Tables(0).Rows(0).Item("WidthF").ToString()
-                Dim widthG As String = thisData.Tables(0).Rows(0).Item("WidthG").ToString()
-                Dim widthH As String = thisData.Tables(0).Rows(0).Item("WidthH").ToString()
+                Dim width As String = thisData("Width").ToString()
+                Dim widthB As String = thisData("WidthB").ToString()
+                Dim widthC As String = thisData("widthC").ToString()
+                Dim widthD As String = thisData("WidthD").ToString()
+                Dim widthE As String = thisData("WidthE").ToString()
+                Dim widthF As String = thisData("WidthF").ToString()
+                Dim widthG As String = thisData("WidthG").ToString()
+                Dim widthH As String = thisData("WidthH").ToString()
 
-                Dim drop As String = thisData.Tables(0).Rows(0).Item("Drop").ToString()
-                Dim dropB As String = thisData.Tables(0).Rows(0).Item("DropB").ToString()
-                Dim dropC As String = thisData.Tables(0).Rows(0).Item("DropC").ToString()
-                Dim dropD As String = thisData.Tables(0).Rows(0).Item("DropD").ToString()
-                Dim dropE As String = thisData.Tables(0).Rows(0).Item("DropE").ToString()
-                Dim dropF As String = thisData.Tables(0).Rows(0).Item("DropF").ToString()
-                Dim dropG As String = thisData.Tables(0).Rows(0).Item("DropG").ToString()
-                Dim dropH As String = thisData.Tables(0).Rows(0).Item("DropH").ToString()
+                Dim drop As String = thisData("Drop").ToString()
+                Dim dropB As String = thisData("DropB").ToString()
+                Dim dropC As String = thisData("DropC").ToString()
+                Dim dropD As String = thisData("DropD").ToString()
+                Dim dropE As String = thisData("DropE").ToString()
+                Dim dropF As String = thisData("DropF").ToString()
+                Dim dropG As String = thisData("DropG").ToString()
+                Dim dropH As String = thisData("DropH").ToString()
 
-                Dim trackType As String = thisData.Tables(0).Rows(0).Item("TrackType").ToString()
-                Dim trackTypeb As String = thisData.Tables(0).Rows(0).Item("TrackTypeB").ToString()
+                Dim trackType As String = thisData("TrackType").ToString()
+                Dim trackTypeb As String = thisData("TrackTypeB").ToString()
 
-                Dim subType As String = thisData.Tables(0).Rows(0).Item("SubType").ToString()
-                Dim layoutCode As String = thisData.Tables(0).Rows(0).Item("LayoutCode").ToString()
+                Dim subType As String = thisData("SubType").ToString()
+                Dim layoutCode As String = thisData("LayoutCode").ToString()
 
-                Dim totalItems As Integer = thisData.Tables(0).Rows(0).Item("TotalItems")
+                Dim totalItems As Integer = thisData("TotalItems")
 
                 Dim linearMetre As Decimal = 0
-                If Not IsDBNull(thisData.Tables(0).Rows(0)("LinearMetre")) Then
-                    linearMetre = Convert.ToDecimal(thisData.Tables(0).Rows(0)("LinearMetre"))
+                If Not IsDBNull(thisData("LinearMetre")) Then
+                    linearMetre = Convert.ToDecimal(thisData("LinearMetre"))
                 End If
                 Dim linearMetreB As Decimal = 0
-                If Not IsDBNull(thisData.Tables(0).Rows(0)("LinearMetreB")) Then
-                    linearMetreB = Convert.ToDecimal(thisData.Tables(0).Rows(0)("LinearMetreB"))
+                If Not IsDBNull(thisData("LinearMetreB")) Then
+                    linearMetreB = Convert.ToDecimal(thisData("LinearMetreB"))
                 End If
                 Dim linearMetreC As Decimal = 0
-                If Not IsDBNull(thisData.Tables(0).Rows(0)("LinearMetreC")) Then
-                    linearMetreC = Convert.ToDecimal(thisData.Tables(0).Rows(0)("LinearMetreC"))
+                If Not IsDBNull(thisData("LinearMetreC")) Then
+                    linearMetreC = Convert.ToDecimal(thisData("LinearMetreC"))
                 End If
                 Dim linearMetreD As Decimal = 0
-                If Not IsDBNull(thisData.Tables(0).Rows(0)("LinearMetreD")) Then
-                    linearMetreD = Convert.ToDecimal(thisData.Tables(0).Rows(0)("LinearMetreD"))
+                If Not IsDBNull(thisData("LinearMetreD")) Then
+                    linearMetreD = Convert.ToDecimal(thisData("LinearMetreD"))
                 End If
                 Dim linearMetreE As Decimal = 0
-                If Not IsDBNull(thisData.Tables(0).Rows(0)("LinearMetreE")) Then
-                    linearMetreE = Convert.ToDecimal(thisData.Tables(0).Rows(0)("LinearMetreE"))
+                If Not IsDBNull(thisData("LinearMetreE")) Then
+                    linearMetreE = Convert.ToDecimal(thisData("LinearMetreE"))
                 End If
                 Dim linearMetreF As Decimal = 0
-                If Not IsDBNull(thisData.Tables(0).Rows(0)("LinearMetreF")) Then
-                    linearMetreF = Convert.ToDecimal(thisData.Tables(0).Rows(0)("LinearMetreF"))
+                If Not IsDBNull(thisData("LinearMetreF")) Then
+                    linearMetreF = Convert.ToDecimal(thisData("LinearMetreF"))
                 End If
 
                 Dim squareMetre As Decimal = 0
-                If Not IsDBNull(thisData.Tables(0).Rows(0)("SquareMetre")) Then
-                    squareMetre = Convert.ToDecimal(thisData.Tables(0).Rows(0)("SquareMetre"))
+                If Not IsDBNull(thisData("SquareMetre")) Then
+                    squareMetre = Convert.ToDecimal(thisData("SquareMetre"))
                 End If
                 Dim squareMetreB As Decimal = 0
-                If Not IsDBNull(thisData.Tables(0).Rows(0)("SquareMetreB")) Then
-                    squareMetreB = Convert.ToDecimal(thisData.Tables(0).Rows(0)("SquareMetreB"))
+                If Not IsDBNull(thisData("SquareMetreB")) Then
+                    squareMetreB = Convert.ToDecimal(thisData("SquareMetreB"))
                 End If
                 Dim squareMetreC As Decimal = 0
-                If Not IsDBNull(thisData.Tables(0).Rows(0)("SquareMetreC")) Then
-                    squareMetreC = Convert.ToDecimal(thisData.Tables(0).Rows(0)("SquareMetreC"))
+                If Not IsDBNull(thisData("SquareMetreC")) Then
+                    squareMetreC = Convert.ToDecimal(thisData("SquareMetreC"))
                 End If
                 Dim squareMetreD As Decimal = 0
-                If Not IsDBNull(thisData.Tables(0).Rows(0)("SquareMetreD")) Then
-                    squareMetreD = Convert.ToDecimal(thisData.Tables(0).Rows(0)("SquareMetreD"))
+                If Not IsDBNull(thisData("SquareMetreD")) Then
+                    squareMetreD = Convert.ToDecimal(thisData("SquareMetreD"))
                 End If
                 Dim squareMetreE As Decimal = 0
-                If Not IsDBNull(thisData.Tables(0).Rows(0)("SquareMetreE")) Then
-                    squareMetreE = Convert.ToDecimal(thisData.Tables(0).Rows(0)("SquareMetreE"))
+                If Not IsDBNull(thisData("SquareMetreE")) Then
+                    squareMetreE = Convert.ToDecimal(thisData("SquareMetreE"))
                 End If
                 Dim squareMetreF As Decimal = 0
-                If Not IsDBNull(thisData.Tables(0).Rows(0)("SquareMetreF")) Then
-                    squareMetreF = Convert.ToDecimal(thisData.Tables(0).Rows(0)("SquareMetreF"))
+                If Not IsDBNull(thisData("SquareMetreF")) Then
+                    squareMetreF = Convert.ToDecimal(thisData("SquareMetreF"))
                 End If
 
                 Dim objectArray As Object() = Nothing
@@ -1391,12 +1393,12 @@ Public Class OrderClass
                     thisBuy = costBuy
                     thisBuyAdditional = costBuyAdditional
 
-                    Dim discountData As DataSet = GetListData("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
-                    If discountData.Tables(0).Rows.Count > 0 Then
-                        For i As Integer = 0 To discountData.Tables(0).Rows.Count - 1
-                            Dim discountType As String = discountData.Tables(0).Rows(i).Item("Type").ToString()
-                            Dim dataId As String = discountData.Tables(0).Rows(i).Item("DataId").ToString()
-                            Dim discountValue As Decimal = discountData.Tables(0).Rows(i).Item("Discount")
+                    Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
+                    If discountData.Rows.Count > 0 Then
+                        For i As Integer = 0 To discountData.Rows.Count - 1
+                            Dim discountType As String = discountData.Rows(i)("Type").ToString()
+                            Dim dataId As String = discountData.Rows(i)("DataId").ToString()
+                            Dim discountValue As Decimal = discountData.Rows(i)("Discount")
 
                             If discountType = "Designs" Then
                                 If dataId = designId Then
@@ -1413,17 +1415,17 @@ Public Class OrderClass
                         Next
                     End If
 
-                    Dim promoData As DataSet = GetListData("SELECT CustomerPromos.* FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Active=1 AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
-                    If promoData.Tables(0).Rows.Count > 0 Then
-                        For i As Integer = 0 To promoData.Tables(0).Rows.Count - 1
-                            Dim promoId As String = promoData.Tables(0).Rows(i).Item("PromoId").ToString()
+                    Dim promoData As DataTable = GetDataTable("SELECT CustomerPromos.* FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Active=1 AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    If promoData.Rows.Count > 0 Then
+                        For i As Integer = 0 To promoData.Rows.Count - 1
+                            Dim promoId As String = promoData.Rows(i)("PromoId").ToString()
 
-                            Dim promoDetailData As DataSet = GetListData("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
-                            If promoDetailData.Tables(0).Rows.Count > 0 Then
-                                For iDetail As Integer = 0 To promoDetailData.Tables(0).Rows.Count - 1
-                                    Dim promoType As String = promoDetailData.Tables(0).Rows(iDetail).Item("Type").ToString()
-                                    Dim dataId As String = promoDetailData.Tables(0).Rows(iDetail).Item("DataId").ToString()
-                                    Dim promoValue As Decimal = promoDetailData.Tables(0).Rows(iDetail).Item("Discount")
+                            Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
+                            If promoDetailData.Rows.Count > 0 Then
+                                For iDetail As Integer = 0 To promoDetailData.Rows.Count - 1
+                                    Dim promoType As String = promoDetailData.Rows(iDetail)("Type").ToString()
+                                    Dim dataId As String = promoDetailData.Rows(iDetail)("DataId").ToString()
+                                    Dim promoValue As Decimal = promoDetailData.Rows(iDetail)("Discount")
 
                                     If promoType = "Designs" Then
                                         If dataId = designId Then
@@ -1546,12 +1548,12 @@ Public Class OrderClass
                     thisBuy = costBuy
                     thisBuyAdditional = costBuyAdditional
 
-                    Dim discountData As DataSet = GetListData("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
-                    If discountData.Tables(0).Rows.Count > 0 Then
-                        For i As Integer = 0 To discountData.Tables(0).Rows.Count - 1
-                            Dim discountType As String = discountData.Tables(0).Rows(i).Item("Type").ToString()
-                            Dim dataId As String = discountData.Tables(0).Rows(i).Item("DataId").ToString()
-                            Dim discountValue As Decimal = discountData.Tables(0).Rows(i).Item("Discount")
+                    Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
+                    If discountData.Rows.Count > 0 Then
+                        For i As Integer = 0 To discountData.Rows.Count - 1
+                            Dim discountType As String = discountData.Rows(i)("Type").ToString()
+                            Dim dataId As String = discountData.Rows(i)("DataId").ToString()
+                            Dim discountValue As Decimal = discountData.Rows(i)("Discount")
 
                             If discountType = "Product" Then
                                 If dataId = designId Then
@@ -1568,17 +1570,17 @@ Public Class OrderClass
                         Next
                     End If
 
-                    Dim promoData As DataSet = GetListData("SELECT CustomerPromos.* FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Active=1 AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
-                    If promoData.Tables(0).Rows.Count > 0 Then
-                        For i As Integer = 0 To promoData.Tables(0).Rows.Count - 1
-                            Dim promoId As String = promoData.Tables(0).Rows(i).Item("PromoId").ToString()
+                    Dim promoData As DataTable = GetDataTable("SELECT CustomerPromos.* FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Active=1 AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    If promoData.Rows.Count > 0 Then
+                        For i As Integer = 0 To promoData.Rows.Count - 1
+                            Dim promoId As String = promoData.Rows(i)("PromoId").ToString()
 
-                            Dim promoDetailData As DataSet = GetListData("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
-                            If promoDetailData.Tables(0).Rows.Count > 0 Then
-                                For iDetail As Integer = 0 To promoDetailData.Tables(0).Rows.Count - 1
-                                    Dim promoType As String = promoDetailData.Tables(0).Rows(iDetail).Item("Type").ToString()
-                                    Dim dataId As String = promoDetailData.Tables(0).Rows(iDetail).Item("DataId").ToString()
-                                    Dim promoValue As Decimal = promoDetailData.Tables(0).Rows(iDetail).Item("Discount")
+                            Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
+                            If promoDetailData.Rows.Count > 0 Then
+                                For iDetail As Integer = 0 To promoDetailData.Rows.Count - 1
+                                    Dim promoType As String = promoDetailData.Rows(iDetail)("Type").ToString()
+                                    Dim dataId As String = promoDetailData.Rows(iDetail)("DataId").ToString()
+                                    Dim promoValue As Decimal = promoDetailData.Rows(iDetail)("Discount")
 
                                     If promoType = "Designs" Then
                                         If dataId = designId Then
@@ -1658,12 +1660,12 @@ Public Class OrderClass
                     thisSell = costSell
                     thisBuy = costBuy
 
-                    Dim discountData As DataSet = GetListData("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
-                    If discountData.Tables(0).Rows.Count > 0 Then
-                        For i As Integer = 0 To discountData.Tables(0).Rows.Count - 1
-                            Dim discountType As String = discountData.Tables(0).Rows(i).Item("Type").ToString()
-                            Dim dataId As String = discountData.Tables(0).Rows(i).Item("DataId").ToString()
-                            Dim discountValue As Decimal = discountData.Tables(0).Rows(i).Item("Discount")
+                    Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
+                    If discountData.Rows.Count > 0 Then
+                        For i As Integer = 0 To discountData.Rows.Count - 1
+                            Dim discountType As String = discountData.Rows(i)("Type").ToString()
+                            Dim dataId As String = discountData.Rows(i)("DataId").ToString()
+                            Dim discountValue As Decimal = discountData.Rows(i)("Discount")
 
                             If discountType = "Product" Then
                                 If dataId = designId Then
@@ -1676,17 +1678,17 @@ Public Class OrderClass
                         Next
                     End If
 
-                    Dim promoData As DataSet = GetListData("SELECT CustomerPromos.* FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Active=1 AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
-                    If promoData.Tables(0).Rows.Count > 0 Then
-                        For i As Integer = 0 To promoData.Tables(0).Rows.Count - 1
-                            Dim promoId As String = promoData.Tables(0).Rows(i).Item("PromoId").ToString()
+                    Dim promoData As DataTable = GetDataTable("SELECT CustomerPromos.* FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Active=1 AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    If promoData.Rows.Count > 0 Then
+                        For i As Integer = 0 To promoData.Rows.Count - 1
+                            Dim promoId As String = promoData.Rows(i).Item("PromoId").ToString()
 
-                            Dim promoDetailData As DataSet = GetListData("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
-                            If promoDetailData.Tables(0).Rows.Count > 0 Then
-                                For iDetail As Integer = 0 To promoDetailData.Tables(0).Rows.Count - 1
-                                    Dim promoType As String = promoDetailData.Tables(0).Rows(iDetail).Item("Type").ToString()
-                                    Dim dataId As String = promoDetailData.Tables(0).Rows(iDetail).Item("DataId").ToString()
-                                    Dim promoValue As Decimal = promoDetailData.Tables(0).Rows(iDetail).Item("Discount")
+                            Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
+                            If promoDetailData.Rows.Count > 0 Then
+                                For iDetail As Integer = 0 To promoDetailData.Rows.Count - 1
+                                    Dim promoType As String = promoDetailData.Rows(iDetail)("Type").ToString()
+                                    Dim dataId As String = promoDetailData.Rows(iDetail)("DataId").ToString()
+                                    Dim promoValue As Decimal = promoDetailData.Rows(iDetail)("Discount")
 
                                     If promoType = "Designs" Then
                                         If dataId = designId Then
@@ -1757,12 +1759,12 @@ Public Class OrderClass
                     thisSell = costSell
                     thisBuy = costBuy
 
-                    Dim discountData As DataSet = GetListData("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
-                    If discountData.Tables(0).Rows.Count > 0 Then
-                        For i As Integer = 0 To discountData.Tables(0).Rows.Count - 1
-                            Dim discountType As String = discountData.Tables(0).Rows(i).Item("Type").ToString()
-                            Dim dataId As String = discountData.Tables(0).Rows(i).Item("DataId").ToString()
-                            Dim discountValue As Decimal = discountData.Tables(0).Rows(i).Item("Discount")
+                    Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
+                    If discountData.Rows.Count > 0 Then
+                        For i As Integer = 0 To discountData.Rows.Count - 1
+                            Dim discountType As String = discountData.Rows(i)("Type").ToString()
+                            Dim dataId As String = discountData.Rows(i)("DataId").ToString()
+                            Dim discountValue As Decimal = discountData.Rows(i)("Discount")
 
                             If discountType = "Product" Then
                                 If dataId = designId Then
@@ -1775,17 +1777,17 @@ Public Class OrderClass
                         Next
                     End If
 
-                    Dim promoData As DataSet = GetListData("SELECT CustomerPromos.* FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Active=1 AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
-                    If promoData.Tables(0).Rows.Count > 0 Then
-                        For i As Integer = 0 To promoData.Tables(0).Rows.Count - 1
-                            Dim promoId As String = promoData.Tables(0).Rows(i).Item("PromoId").ToString()
+                    Dim promoData As DataTable = GetDataTable("SELECT CustomerPromos.* FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Active=1 AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    If promoData.Rows.Count > 0 Then
+                        For i As Integer = 0 To promoData.Rows.Count - 1
+                            Dim promoId As String = promoData.Rows(i)("PromoId").ToString()
 
-                            Dim promoDetailData As DataSet = GetListData("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
-                            If promoDetailData.Tables(0).Rows.Count > 0 Then
-                                For iDetail As Integer = 0 To promoDetailData.Tables(0).Rows.Count - 1
-                                    Dim promoType As String = promoDetailData.Tables(0).Rows(iDetail).Item("Type").ToString()
-                                    Dim dataId As String = promoDetailData.Tables(0).Rows(iDetail).Item("DataId").ToString()
-                                    Dim promoValue As Decimal = promoDetailData.Tables(0).Rows(iDetail).Item("Discount")
+                            Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
+                            If promoDetailData.Rows.Count > 0 Then
+                                For iDetail As Integer = 0 To promoDetailData.Rows.Count - 1
+                                    Dim promoType As String = promoDetailData.Rows(iDetail)("Type").ToString()
+                                    Dim dataId As String = promoDetailData.Rows(iDetail)("DataId").ToString()
+                                    Dim promoValue As Decimal = promoDetailData.Rows(iDetail)("Discount")
 
                                     If promoType = "Designs" Then
                                         If dataId = designId Then
@@ -1856,12 +1858,12 @@ Public Class OrderClass
                     thisSell = costSell
                     thisBuy = costBuy
 
-                    Dim discountData As DataSet = GetListData("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
-                    If discountData.Tables(0).Rows.Count > 0 Then
-                        For i As Integer = 0 To discountData.Tables(0).Rows.Count - 1
-                            Dim discountType As String = discountData.Tables(0).Rows(i).Item("Type").ToString()
-                            Dim dataId As String = discountData.Tables(0).Rows(i).Item("DataId").ToString()
-                            Dim discountValue As Decimal = discountData.Tables(0).Rows(i).Item("Discount")
+                    Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
+                    If discountData.Rows.Count > 0 Then
+                        For i As Integer = 0 To discountData.Rows.Count - 1
+                            Dim discountType As String = discountData.Rows(i)("Type").ToString()
+                            Dim dataId As String = discountData.Rows(i)("DataId").ToString()
+                            Dim discountValue As Decimal = discountData.Rows(i)("Discount")
 
                             If discountType = "Product" Then
                                 If dataId = designId Then
@@ -1874,17 +1876,17 @@ Public Class OrderClass
                         Next
                     End If
 
-                    Dim promoData As DataSet = GetListData("SELECT CustomerPromos.* FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Active=1 AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
-                    If promoData.Tables(0).Rows.Count > 0 Then
-                        For i As Integer = 0 To promoData.Tables(0).Rows.Count - 1
-                            Dim promoId As String = promoData.Tables(0).Rows(i).Item("PromoId").ToString()
+                    Dim promoData As DataTable = GetDataTable("SELECT CustomerPromos.* FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Active=1 AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    If promoData.Rows.Count > 0 Then
+                        For i As Integer = 0 To promoData.Rows.Count - 1
+                            Dim promoId As String = promoData.Rows(i)("PromoId").ToString()
 
-                            Dim promoDetailData As DataSet = GetListData("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
-                            If promoDetailData.Tables(0).Rows.Count > 0 Then
-                                For iDetail As Integer = 0 To promoDetailData.Tables(0).Rows.Count - 1
-                                    Dim promoType As String = promoDetailData.Tables(0).Rows(iDetail).Item("Type").ToString()
-                                    Dim dataId As String = promoDetailData.Tables(0).Rows(iDetail).Item("DataId").ToString()
-                                    Dim promoValue As Decimal = promoDetailData.Tables(0).Rows(iDetail).Item("Discount")
+                            Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
+                            If promoDetailData.Rows.Count > 0 Then
+                                For iDetail As Integer = 0 To promoDetailData.Rows.Count - 1
+                                    Dim promoType As String = promoDetailData.Rows(iDetail)("Type").ToString()
+                                    Dim dataId As String = promoDetailData.Rows(iDetail)("DataId").ToString()
+                                    Dim promoValue As Decimal = promoDetailData.Rows(iDetail)("Discount")
 
                                     If promoType = "Designs" Then
                                         If dataId = designId Then
@@ -1943,12 +1945,12 @@ Public Class OrderClass
                     thisSell = costSell
                     thisBuy = costBuy
 
-                    Dim discountData As DataSet = GetListData("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
-                    If discountData.Tables(0).Rows.Count > 0 Then
-                        For i As Integer = 0 To discountData.Tables(0).Rows.Count - 1
-                            Dim discountType As String = discountData.Tables(0).Rows(i).Item("Type").ToString()
-                            Dim dataId As String = discountData.Tables(0).Rows(i).Item("DataId").ToString()
-                            Dim discountValue As Decimal = discountData.Tables(0).Rows(i).Item("Discount")
+                    Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
+                    If discountData.Rows.Count > 0 Then
+                        For i As Integer = 0 To discountData.Rows.Count - 1
+                            Dim discountType As String = discountData.Rows(i)("Type").ToString()
+                            Dim dataId As String = discountData.Rows(i)("DataId").ToString()
+                            Dim discountValue As Decimal = discountData.Rows(i)("Discount")
 
                             If discountType = "Product" Then
                                 If dataId = designId Then
@@ -1961,17 +1963,17 @@ Public Class OrderClass
                         Next
                     End If
 
-                    Dim promoData As DataSet = GetListData("SELECT CustomerPromos.* FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Active=1 AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
-                    If promoData.Tables(0).Rows.Count > 0 Then
-                        For i As Integer = 0 To promoData.Tables(0).Rows.Count - 1
-                            Dim promoId As String = promoData.Tables(0).Rows(i).Item("PromoId").ToString()
+                    Dim promoData As DataTable = GetDataTable("SELECT CustomerPromos.* FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Active=1 AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    If promoData.Rows.Count > 0 Then
+                        For i As Integer = 0 To promoData.Rows.Count - 1
+                            Dim promoId As String = promoData.Rows(i)("PromoId").ToString()
 
-                            Dim promoDetailData As DataSet = GetListData("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
-                            If promoDetailData.Tables(0).Rows.Count > 0 Then
-                                For iDetail As Integer = 0 To promoDetailData.Tables(0).Rows.Count - 1
-                                    Dim promoType As String = promoDetailData.Tables(0).Rows(iDetail).Item("Type").ToString()
-                                    Dim dataId As String = promoDetailData.Tables(0).Rows(iDetail).Item("DataId").ToString()
-                                    Dim promoValue As Decimal = promoDetailData.Tables(0).Rows(iDetail).Item("Discount")
+                            Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
+                            If promoDetailData.Rows.Count > 0 Then
+                                For iDetail As Integer = 0 To promoDetailData.Rows.Count - 1
+                                    Dim promoType As String = promoDetailData.Rows(iDetail).Item("Type").ToString()
+                                    Dim dataId As String = promoDetailData.Rows(iDetail).Item("DataId").ToString()
+                                    Dim promoValue As Decimal = promoDetailData.Rows(iDetail).Item("Discount")
 
                                     If promoType = "Designs" Then
                                         If dataId = designId Then
@@ -2024,22 +2026,22 @@ Public Class OrderClass
             Dim blindNumber As String = Convert.ToString(data(2))
             Dim priceGroup As String = Convert.ToString(data(3))
 
-            Dim thisData As DataSet = GetListData("SELECT * FROM OrderDetails WHERE Id='" & itemId & "' AND Active=1 ORDER BY Id ASC")
-            If thisData.Tables(0).Rows.Count > 0 Then
-                Dim productId As String = thisData.Tables(0).Rows(0).Item("ProductId").ToString()
+            Dim thisData As DataRow = GetDataRow("SELECT * FROM OrderDetails WHERE Id='" & itemId & "' AND Active=1 ORDER BY Id ASC")
+            If thisData IsNot Nothing Then
+                Dim productId As String = thisData("ProductId").ToString()
                 Dim designId As String = GetDesignId(productId)
                 Dim blindId As String = GetBlindId(productId)
 
-                Dim surchargeData As DataSet = GetListData("SELECT * FROM PriceSurcharges WHERE DesignId='" & designId & "' AND BlindId='" + blindId + "' AND BlindNumber='" & blindNumber & "' AND PriceGroupId='" & priceGroup & "' AND Active=1 ORDER BY Id ASC")
-                If surchargeData.Tables(0).Rows.Count > 0 Then
-                    For i As Integer = 0 To surchargeData.Tables(0).Rows.Count - 1
-                        Dim id As String = surchargeData.Tables(0).Rows(i).Item("Id").ToString()
-                        Dim name As String = surchargeData.Tables(0).Rows(i).Item("Name").ToString()
-                        Dim fieldName As String = surchargeData.Tables(0).Rows(i).Item("FieldName").ToString()
-                        Dim formula As String = surchargeData.Tables(0).Rows(i).Item("Formula").ToString()
-                        Dim buyCharge As String = surchargeData.Tables(0).Rows(i).Item("BuyCharge").ToString()
-                        Dim sellCharge As String = surchargeData.Tables(0).Rows(i).Item("SellCharge").ToString()
-                        Dim description As String = surchargeData.Tables(0).Rows(i).Item("Description").ToString()
+                Dim surchargeData As DataTable = GetDataTable("SELECT * FROM PriceSurcharges WHERE DesignId='" & designId & "' AND BlindId='" + blindId + "' AND BlindNumber='" & blindNumber & "' AND PriceGroupId='" & priceGroup & "' AND Active=1 ORDER BY Id ASC")
+                If surchargeData.Rows.Count > 0 Then
+                    For i As Integer = 0 To surchargeData.Rows.Count - 1
+                        Dim id As String = surchargeData.Rows(i)("Id").ToString()
+                        Dim name As String = surchargeData.Rows(i)("Name").ToString()
+                        Dim fieldName As String = surchargeData.Rows(i)("FieldName").ToString()
+                        Dim formula As String = surchargeData.Rows(i).Item("Formula").ToString()
+                        Dim buyCharge As String = surchargeData.Rows(i)("BuyCharge").ToString()
+                        Dim sellCharge As String = surchargeData.Rows(i)("SellCharge").ToString()
+                        Dim description As String = surchargeData.Rows(i)("Description").ToString()
 
                         Dim thisBuy As Decimal = 0.00
                         Dim thisSell As Decimal = 0.00
@@ -2118,10 +2120,10 @@ Public Class OrderClass
 
     Public Sub DeleteFilePrinting(headerId As String, itemId As String, items As String)
         If Not String.IsNullOrEmpty(headerId) AndAlso Not String.IsNullOrEmpty(itemId) AndAlso Not String.IsNullOrEmpty(items) Then
-            Dim thisData As DataSet = GetListData("SELECT * FROM OrderDetails WHERE Id='" & itemId & "' AND Active=1")
-            If Not thisData.Tables(0).Rows.Count = 0 Then
-                Dim printing As String = thisData.Tables(0).Rows(0).Item("Printing").ToString()
-                Dim printingB As String = thisData.Tables(0).Rows(0).Item("PrintingB").ToString()
+            Dim thisData As DataRow = GetDataRow("SELECT * FROM OrderDetails WHERE Id='" & itemId & "' AND Active=1")
+            If thisData IsNot Nothing Then
+                Dim printing As String = thisData("Printing").ToString()
+                Dim printingB As String = thisData("PrintingB").ToString()
 
                 If items = "1" Then
                     Dim folderPath As String = HttpContext.Current.Server.MapPath(String.Format("~/File/Printing/{0}/{1}", headerId, itemId))

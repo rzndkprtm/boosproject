@@ -98,7 +98,7 @@ Partial Class Sales_Product
     Protected Sub BindDesign()
         lbDesign.Items.Clear()
         Try
-            lbDesign.DataSource = salesClass.GetListData("SELECT * FROM Designs ORDER BY Name ASC")
+            lbDesign.DataSource = salesClass.GetDataTable("SELECT * FROM Designs ORDER BY Name ASC")
             lbDesign.DataTextField = "Name"
             lbDesign.DataValueField = "Id"
             lbDesign.DataBind()

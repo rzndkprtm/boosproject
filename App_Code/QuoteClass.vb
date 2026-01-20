@@ -11,49 +11,79 @@ Public Class QuoteClass
     Dim enUS As CultureInfo = New CultureInfo("en-US")
     Dim idIDR As New CultureInfo("id-ID")
 
-    Protected Function GetListData(thisString As String) As DataSet
-        Dim thisCmd As New SqlCommand(thisString)
-        Using thisConn As New SqlConnection(myConn)
-            Using thisAdapter As New SqlDataAdapter()
-                thisCmd.Connection = thisConn
-                thisAdapter.SelectCommand = thisCmd
-                Using thisDataSet As New DataSet()
-                    thisAdapter.Fill(thisDataSet)
-                    Return thisDataSet
+    Public Function GetDataRow(thisString As String) As DataRow
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using thisAdapter As New SqlDataAdapter(thisCmd)
+                        Dim dt As New DataTable()
+                        thisAdapter.Fill(dt)
+                        If dt.Rows.Count > 0 Then
+                            Return dt.Rows(0)
+                        Else
+                            Return Nothing
+                        End If
+                    End Using
                 End Using
             End Using
-        End Using
+        Catch ex As Exception
+            Return Nothing
+        End Try
+    End Function
+
+    Public Function GetDataTable(thisString As String) As DataTable
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using da As New SqlDataAdapter(thisCmd)
+                        Dim dt As New DataTable()
+                        da.Fill(dt)
+                        Return dt
+                    End Using
+                End Using
+            End Using
+        Catch ex As Exception
+            Return Nothing
+        End Try
     End Function
 
     Protected Function GetItemData(thisString As String) As String
         Dim result As String = String.Empty
-        Using thisConn As New SqlConnection(myConn)
-            thisConn.Open()
-            Using myCmd As New SqlCommand(thisString, thisConn)
-                Using rdResult = myCmd.ExecuteReader
-                    While rdResult.Read
-                        result = rdResult.Item(0).ToString()
-                    End While
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                thisConn.Open()
+                Using myCmd As New SqlCommand(thisString, thisConn)
+                    Using rdResult = myCmd.ExecuteReader
+                        While rdResult.Read
+                            result = rdResult.Item(0).ToString()
+                        End While
+                    End Using
                 End Using
+                thisConn.Close()
             End Using
-            thisConn.Close()
-        End Using
+        Catch ex As Exception
+            result = String.Empty
+        End Try
         Return result
     End Function
 
     Protected Function GetItemData_Decimal(thisString As String) As Decimal
-        Dim result As Decimal = 0
-        Using thisConn As New SqlConnection(myConn)
-            thisConn.Open()
-            Using myCmd As New SqlCommand(thisString, thisConn)
-                Using rdResult = myCmd.ExecuteReader
-                    While rdResult.Read
-                        result = rdResult.Item(0)
-                    End While
+        Dim result As Decimal = 0D
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                thisConn.Open()
+                Using myCmd As New SqlCommand(thisString, thisConn)
+                    Using rdResult = myCmd.ExecuteReader
+                        While rdResult.Read
+                            result = rdResult.Item(0)
+                        End While
+                    End Using
                 End Using
+                thisConn.Close()
             End Using
-            thisConn.Close()
-        End Using
+        Catch ex As Exception
+            result = 0D
+        End Try
         Return result
     End Function
 
@@ -136,17 +166,17 @@ Public Class QuoteClass
             Dim doc As New Document(PageSize.A4, 36, 36, 110, 180)
             Dim writer As PdfWriter = PdfWriter.GetInstance(doc, fs)
 
-            Dim headerData As DataSet = GetListData("SELECT OrderHeaders.*, OrderInvoices.InvoiceNumber AS InvoiceNumber, OrderInvoices.InvoiceDate AS InvoiceDate, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, Customers.CompanyDetailId AS CompanyDetailId FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id LEFT JOIN OrderInvoices ON OrderHeaders.Id=OrderInvoices.Id WHERE OrderHeaders.Id='" & headerId & "'")
+            Dim headerData As DataRow = GetDataRow("SELECT OrderHeaders.*, OrderInvoices.InvoiceNumber AS InvoiceNumber, OrderInvoices.InvoiceDate AS InvoiceDate, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, Customers.CompanyDetailId AS CompanyDetailId FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id LEFT JOIN OrderInvoices ON OrderHeaders.Id=OrderInvoices.Id WHERE OrderHeaders.Id='" & headerId & "'")
 
-            Dim orderId As String = headerData.Tables(0).Rows(0).Item("OrderId").ToString()
-            Dim customerId As String = headerData.Tables(0).Rows(0).Item("CustomerId").ToString()
-            Dim customerName As String = headerData.Tables(0).Rows(0).Item("CustomerName").ToString()
-            Dim orderNumber As String = headerData.Tables(0).Rows(0).Item("OrderNumber").ToString()
-            Dim orderName As String = headerData.Tables(0).Rows(0).Item("OrderName").ToString()
-            Dim companyId As String = headerData.Tables(0).Rows(0).Item("CompanyId").ToString()
-            Dim companyDetailId As String = headerData.Tables(0).Rows(0).Item("CompanyDetailId").ToString()
+            Dim orderId As String = headerData("OrderId").ToString()
+            Dim customerId As String = headerData("CustomerId").ToString()
+            Dim customerName As String = headerData("CustomerName").ToString()
+            Dim orderNumber As String = headerData("OrderNumber").ToString()
+            Dim orderName As String = headerData("OrderName").ToString()
+            Dim companyId As String = headerData("CompanyId").ToString()
+            Dim companyDetailId As String = headerData("CompanyDetailId").ToString()
 
-            Dim invoiceNumber As String = headerData.Tables(0).Rows(0).Item("InvoiceNumber").ToString()
+            Dim invoiceNumber As String = headerData("InvoiceNumber").ToString()
 
             Dim issueDate As String = Now.ToString("dd MMM yyyy")
             Dim dueDate As String = String.Empty
@@ -154,13 +184,13 @@ Public Class QuoteClass
             Dim daysRemaining As Integer = 0
 
             Dim fullAddress As String = String.Empty
-            Dim customerAddress As DataSet = GetListData("SELECT * FROM CustomerAddress WHERE CustomerId='" & customerId & "' AND [Primary]=1")
-            If customerAddress.Tables(0).Rows.Count > 0 Then
-                Dim address As String = customerAddress.Tables(0).Rows(0)("Address").ToString()
-                Dim suburb As String = customerAddress.Tables(0).Rows(0)("Suburb").ToString()
-                Dim state As String = customerAddress.Tables(0).Rows(0)("State").ToString()
-                Dim postCode As String = customerAddress.Tables(0).Rows(0)("PostCode").ToString()
-                Dim country As String = customerAddress.Tables(0).Rows(0)("Country").ToString()
+            Dim customerAddress As DataRow = GetDataRow("SELECT * FROM CustomerAddress WHERE CustomerId='" & customerId & "' AND [Primary]=1")
+            If customerAddress IsNot Nothing Then
+                Dim address As String = customerAddress("Address").ToString()
+                Dim suburb As String = customerAddress("Suburb").ToString()
+                Dim state As String = customerAddress("State").ToString()
+                Dim postCode As String = customerAddress("PostCode").ToString()
+                Dim country As String = customerAddress("Country").ToString()
 
                 fullAddress = address
                 fullAddress &= vbCrLf
@@ -313,38 +343,39 @@ Public Class QuoteClass
             table.AddCell(CreateCellDetail("Qty", True, Element.ALIGN_CENTER))
             table.AddCell(CreateCellDetail("Unit Price", True, Element.ALIGN_RIGHT))
 
-            Dim detailData As DataSet = GetListData("SELECT OrderDetails.Id, OrderDetails.Qty, Designs.Name AS DesignName, Blinds.Name AS BlindName, OrderDetails.FabricColourId AS FabricColour, OrderDetails.TrackType AS TrackType, OrderDetails.TrackColour AS TrackColour, OrderDetails.Width AS Width, OrderDetails.[Drop] AS Height, OrderDetails.FrameColour AS FrameColour, OrderDetails.DoorCutOut AS DoorCutOut, OrderDetails.SquareMetre AS SQM, OrderDetails.LinearMetre AS LM, Products.Name AS ProductName, Products.InvoiceName AS InvoiceName, 1 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 UNION ALL SELECT OrderDetails.Id, OrderDetails.Qty, Designs.Name AS DesignName, Blinds.Name AS BlindName, OrderDetails.FabricColourIdB AS FabricColour, OrderDetails.TrackTypeB AS TrackType, OrderDetails.TrackColourB AS TrackColour, OrderDetails.WidthB AS Width, OrderDetails.DropB AS Height, OrderDetails.FrameColour AS FrameColour, OrderDetails.DoorCutOut AS DoorCutOut, OrderDetails.SquareMetreB AS SQM, OrderDetails.LinearMetreB AS LM, Products.Name AS ProductName, Products.InvoiceName AS InvoiceName, 2 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND (((Designs.Name='Aluminium Blind' OR Designs.Name='Venetian Blind') AND (OrderDetails.SubType LIKE '%2 on 1%' OR OrderDetails.SubType LIKE '%3 on 1%')) OR (Designs.Name='Roller Blind' AND (Blinds.Name='Dual Blinds' OR Blinds.Name='Link 2 Blinds Dependent' OR Blinds.Name='Link 2 Blinds Independent' OR Blinds.Name='Link 3 Blinds Dependent' OR Blinds.Name='Link 3 Blinds Independent with Dependent' OR Blinds.Name='DB Link 2 Blinds Dependent' OR Blinds.Name='DB Link 2 Blinds Independent' OR Blinds.Name='DB Link 3 Blinds Dependent' OR Blinds.Name='DB Link 3 Blinds Independent with Dependent')) OR (Designs.Name='Cellular Shades' AND Blinds.Name='Day & Night') OR (Designs.Name='Curtain' AND Blinds.Name='Double Curtain & Track')) UNION ALL SELECT OrderDetails.Id, OrderDetails.Qty, Designs.Name AS DesignName, Blinds.Name AS BlindName, OrderDetails.FabricColourIdC AS FabricColour, NULL AS TrackType, NULL AS TrackColour, OrderDetails.WidthC AS Width, OrderDetails.DropC AS Height, OrderDetails.FrameColour AS FrameColour, OrderDetails.DoorCutOut AS DoorCutOut, OrderDetails.SquareMetreC AS SQM, OrderDetails.LinearMetreC AS LM, Products.Name AS ProductName, Products.InvoiceName AS InvoiceName, 3 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND (Designs.Name='Roller Blind' AND (Blinds.Name='Link 3 Blinds Dependent' OR Blinds.Name='Link 3 Blinds Independent with Dependent' OR Blinds.Name='DB Link 2 Blinds Dependent' OR Blinds.Name='DB Link 2 Blinds Independent' OR Blinds.Name='DB Link 3 Blinds Independent' OR Blinds.Name='DB Link 3 Blinds Independent with Dependent')) UNION ALL SELECT OrderDetails.Id, OrderDetails.Qty, Designs.Name AS DesignName, Blinds.Name AS BlindName, OrderDetails.FabricColourIdD AS FabricColour, NULL AS TrackType, NULL AS TrackColour, OrderDetails.WidthD AS Width, OrderDetails.DropD AS Height, OrderDetails.FrameColour AS FrameColour, OrderDetails.DoorCutOut AS DoorCutOut, OrderDetails.SquareMetreD AS SQM, OrderDetails.LinearMetreD AS LM, Products.Name AS ProductName, Products.InvoiceName AS InvoiceName, 4 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND (Designs.Name='Roller Blind' AND (Blinds.Name='DB Link 2 Blinds Dependent' OR Blinds.Name='DB Link 2 Blinds Independent' OR Blinds.Name='DB Link 3 Blinds Independent' OR Blinds.Name='DB Link 3 Blinds Independent with Dependent')) UNION ALL SELECT OrderDetails.Id, OrderDetails.Qty, Designs.Name AS DesignName, Blinds.Name AS BlindName, OrderDetails.FabricColourIdE AS FabricColour, NULL AS TrackType, NULL AS TrackColour, OrderDetails.WidthE AS Width, OrderDetails.DropE AS Height, OrderDetails.FrameColour AS FrameColour, OrderDetails.DoorCutOut AS DoorCutOut, OrderDetails.SquareMetreE AS SQM, OrderDetails.LinearMetreE AS LM, Products.Name AS ProductName, Products.InvoiceName AS InvoiceName, 5 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND (Designs.Name='Roller Blind' AND (Blinds.Name='DB Link 3 Blinds Independent' OR Blinds.Name='DB Link 3 Blinds Independent with Dependent')) UNION ALL SELECT OrderDetails.Id, OrderDetails.Qty, Designs.Name AS DesignName, Blinds.Name AS BlindName, OrderDetails.FabricColourIdF AS FabricColour, NULL AS TrackType, NULL AS TrackColour, OrderDetails.WidthF AS Width, OrderDetails.DropF AS Height, OrderDetails.FrameColour AS FrameColour, OrderDetails.DoorCutOut AS DoorCutOut, OrderDetails.SquareMetreF AS SQM, OrderDetails.LinearMetreF AS LM, Products.Name AS ProductName, Products.InvoiceName AS InvoiceName, 6 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND (Designs.Name='Roller Blind' AND (Blinds.Name='DB Link 3 Blinds Independent' OR Blinds.Name='DB Link 3 Blinds Independent with Dependent')) ORDER BY OrderDetails.Id, Item ASC;")
-            For i As Integer = 0 To detailData.Tables(0).Rows.Count - 1
-                Dim itemId As String = detailData.Tables(0).Rows(i)("Id").ToString()
-                Dim itemNumber As String = detailData.Tables(0).Rows(i)("Item").ToString()
+            Dim detailData As DataTable = GetDataTable("SELECT OrderDetails.Id, OrderDetails.Qty, Designs.Name AS DesignName, Blinds.Name AS BlindName, OrderDetails.FabricColourId AS FabricColour, OrderDetails.TrackType AS TrackType, OrderDetails.TrackColour AS TrackColour, OrderDetails.Width AS Width, OrderDetails.[Drop] AS Height, OrderDetails.FrameColour AS FrameColour, OrderDetails.DoorCutOut AS DoorCutOut, OrderDetails.SquareMetre AS SQM, OrderDetails.LinearMetre AS LM, Products.Name AS ProductName, Products.InvoiceName AS InvoiceName, 1 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 UNION ALL SELECT OrderDetails.Id, OrderDetails.Qty, Designs.Name AS DesignName, Blinds.Name AS BlindName, OrderDetails.FabricColourIdB AS FabricColour, OrderDetails.TrackTypeB AS TrackType, OrderDetails.TrackColourB AS TrackColour, OrderDetails.WidthB AS Width, OrderDetails.DropB AS Height, OrderDetails.FrameColour AS FrameColour, OrderDetails.DoorCutOut AS DoorCutOut, OrderDetails.SquareMetreB AS SQM, OrderDetails.LinearMetreB AS LM, Products.Name AS ProductName, Products.InvoiceName AS InvoiceName, 2 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND (((Designs.Name='Aluminium Blind' OR Designs.Name='Venetian Blind') AND (OrderDetails.SubType LIKE '%2 on 1%' OR OrderDetails.SubType LIKE '%3 on 1%')) OR (Designs.Name='Roller Blind' AND (Blinds.Name='Dual Blinds' OR Blinds.Name='Link 2 Blinds Dependent' OR Blinds.Name='Link 2 Blinds Independent' OR Blinds.Name='Link 3 Blinds Dependent' OR Blinds.Name='Link 3 Blinds Independent with Dependent' OR Blinds.Name='DB Link 2 Blinds Dependent' OR Blinds.Name='DB Link 2 Blinds Independent' OR Blinds.Name='DB Link 3 Blinds Dependent' OR Blinds.Name='DB Link 3 Blinds Independent with Dependent')) OR (Designs.Name='Cellular Shades' AND Blinds.Name='Day & Night') OR (Designs.Name='Curtain' AND Blinds.Name='Double Curtain & Track')) UNION ALL SELECT OrderDetails.Id, OrderDetails.Qty, Designs.Name AS DesignName, Blinds.Name AS BlindName, OrderDetails.FabricColourIdC AS FabricColour, NULL AS TrackType, NULL AS TrackColour, OrderDetails.WidthC AS Width, OrderDetails.DropC AS Height, OrderDetails.FrameColour AS FrameColour, OrderDetails.DoorCutOut AS DoorCutOut, OrderDetails.SquareMetreC AS SQM, OrderDetails.LinearMetreC AS LM, Products.Name AS ProductName, Products.InvoiceName AS InvoiceName, 3 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND (Designs.Name='Roller Blind' AND (Blinds.Name='Link 3 Blinds Dependent' OR Blinds.Name='Link 3 Blinds Independent with Dependent' OR Blinds.Name='DB Link 2 Blinds Dependent' OR Blinds.Name='DB Link 2 Blinds Independent' OR Blinds.Name='DB Link 3 Blinds Independent' OR Blinds.Name='DB Link 3 Blinds Independent with Dependent')) UNION ALL SELECT OrderDetails.Id, OrderDetails.Qty, Designs.Name AS DesignName, Blinds.Name AS BlindName, OrderDetails.FabricColourIdD AS FabricColour, NULL AS TrackType, NULL AS TrackColour, OrderDetails.WidthD AS Width, OrderDetails.DropD AS Height, OrderDetails.FrameColour AS FrameColour, OrderDetails.DoorCutOut AS DoorCutOut, OrderDetails.SquareMetreD AS SQM, OrderDetails.LinearMetreD AS LM, Products.Name AS ProductName, Products.InvoiceName AS InvoiceName, 4 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND (Designs.Name='Roller Blind' AND (Blinds.Name='DB Link 2 Blinds Dependent' OR Blinds.Name='DB Link 2 Blinds Independent' OR Blinds.Name='DB Link 3 Blinds Independent' OR Blinds.Name='DB Link 3 Blinds Independent with Dependent')) UNION ALL SELECT OrderDetails.Id, OrderDetails.Qty, Designs.Name AS DesignName, Blinds.Name AS BlindName, OrderDetails.FabricColourIdE AS FabricColour, NULL AS TrackType, NULL AS TrackColour, OrderDetails.WidthE AS Width, OrderDetails.DropE AS Height, OrderDetails.FrameColour AS FrameColour, OrderDetails.DoorCutOut AS DoorCutOut, OrderDetails.SquareMetreE AS SQM, OrderDetails.LinearMetreE AS LM, Products.Name AS ProductName, Products.InvoiceName AS InvoiceName, 5 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND (Designs.Name='Roller Blind' AND (Blinds.Name='DB Link 3 Blinds Independent' OR Blinds.Name='DB Link 3 Blinds Independent with Dependent')) UNION ALL SELECT OrderDetails.Id, OrderDetails.Qty, Designs.Name AS DesignName, Blinds.Name AS BlindName, OrderDetails.FabricColourIdF AS FabricColour, NULL AS TrackType, NULL AS TrackColour, OrderDetails.WidthF AS Width, OrderDetails.DropF AS Height, OrderDetails.FrameColour AS FrameColour, OrderDetails.DoorCutOut AS DoorCutOut, OrderDetails.SquareMetreF AS SQM, OrderDetails.LinearMetreF AS LM, Products.Name AS ProductName, Products.InvoiceName AS InvoiceName, 6 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND (Designs.Name='Roller Blind' AND (Blinds.Name='DB Link 3 Blinds Independent' OR Blinds.Name='DB Link 3 Blinds Independent with Dependent')) ORDER BY OrderDetails.Id, Item ASC;")
 
-                Dim designName As String = detailData.Tables(0).Rows(i)("DesignName").ToString()
-                Dim blindName As String = detailData.Tables(0).Rows(i)("BlindName").ToString()
-                Dim fabricColourId As String = detailData.Tables(0).Rows(i)("FabricColour").ToString()
-                Dim width As String = detailData.Tables(0).Rows(i)("Width").ToString()
-                Dim drop As String = detailData.Tables(0).Rows(i)("Height").ToString()
-                Dim frameColour As String = detailData.Tables(0).Rows(i)("FrameColour").ToString()
-                Dim doorCutOut As String = detailData.Tables(0).Rows(i)("DoorCutOut").ToString()
+            For i As Integer = 0 To detailData.Rows.Count - 1
+                Dim itemId As String = detailData.Rows(i)("Id").ToString()
+                Dim itemNumber As String = detailData.Rows(i)("Item").ToString()
+
+                Dim designName As String = detailData.Rows(i)("DesignName").ToString()
+                Dim blindName As String = detailData.Rows(i)("BlindName").ToString()
+                Dim fabricColourId As String = detailData.Rows(i)("FabricColour").ToString()
+                Dim width As String = detailData.Rows(i)("Width").ToString()
+                Dim drop As String = detailData.Rows(i)("Height").ToString()
+                Dim frameColour As String = detailData.Rows(i)("FrameColour").ToString()
+                Dim doorCutOut As String = detailData.Rows(i)("DoorCutOut").ToString()
 
                 Dim size As String = String.Format("({0}x{1})", width, drop)
 
-                Dim trackType As String = detailData.Tables(0).Rows(i)("TrackType").ToString()
-                Dim trackColour As String = detailData.Tables(0).Rows(i)("TrackColour").ToString()
+                Dim trackType As String = detailData.Rows(i)("TrackType").ToString()
+                Dim trackColour As String = detailData.Rows(i)("TrackColour").ToString()
 
                 Dim linearMetre As Decimal = 0D
                 Dim squareMetre As Decimal = 0D
 
-                If Not IsDBNull(detailData.Tables(0).Rows(i)("LM")) Then
-                    linearMetre = Math.Round(Convert.ToDecimal(detailData.Tables(0).Rows(i)("LM")), 2)
+                If Not IsDBNull(detailData.Rows(i)("LM")) Then
+                    linearMetre = Math.Round(Convert.ToDecimal(detailData.Rows(i)("LM")), 2)
                 End If
-                If Not IsDBNull(detailData.Tables(0).Rows(i)("SQM")) Then
-                    squareMetre = Math.Round(Convert.ToDecimal(detailData.Tables(0).Rows(i)("SQM")), 2)
+                If Not IsDBNull(detailData.Rows(i)("SQM")) Then
+                    squareMetre = Math.Round(Convert.ToDecimal(detailData.Rows(i)("SQM")), 2)
                 End If
 
                 Dim linearMetreText As String = String.Format("{0}lm", linearMetre.ToString("0.##", enUS))
                 Dim squareMetreText As String = String.Format("{0}sqm", squareMetre.ToString("0.##", enUS))
 
-                Dim invoiceName As String = detailData.Tables(0).Rows(i)("InvoiceName").ToString()
+                Dim invoiceName As String = detailData.Rows(i)("InvoiceName").ToString()
                 Dim itemDescription As String = invoiceName
 
                 If designName = "Aluminium Blind" OrElse designName = "Privacy Venetian" OrElse designName = "Venetian Blind" OrElse designName = "Skyline Shutter Express" Then
@@ -430,10 +461,10 @@ Public Class QuoteClass
                 End If
 
                 If Not (designName = "Door") AndAlso Not (designName = "Window") Then
-                    Dim pricingData As DataSet = GetListData("SELECT * FROM OrderCostings WHERE HeaderId='" & headerId & "' AND ItemId='" & itemId & "' AND Number='" & itemNumber & "' AND Type='Surcharge'")
-                    If pricingData.Tables(0).Rows.Count > 0 Then
-                        For iPricing As Integer = 0 To pricingData.Tables(0).Rows.Count - 1
-                            Dim pricingDesc As String = pricingData.Tables(0).Rows(iPricing)("Description").ToString()
+                    Dim pricingData As DataTable = GetDataTable("SELECT * FROM OrderCostings WHERE HeaderId='" & headerId & "' AND ItemId='" & itemId & "' AND Number='" & itemNumber & "' AND Type='Surcharge'")
+                    If pricingData.Rows.Count > 0 Then
+                        For iPricing As Integer = 0 To pricingData.Rows.Count - 1
+                            Dim pricingDesc As String = pricingData.Rows(iPricing)("Description").ToString()
                             If itemNumber = "1" Then pricingDesc = pricingDesc.Replace("#1 ", "")
                             If itemNumber = "2" Then pricingDesc = pricingDesc.Replace("#2 ", "")
                             If itemNumber = "3" Then pricingDesc = pricingDesc.Replace("#3 ", "")
@@ -455,7 +486,7 @@ Public Class QuoteClass
                 End If
 
                 table.AddCell(CreateCellDetail(itemDescription))
-                table.AddCell(CreateCellDetail(detailData.Tables(0).Rows(i)("Qty").ToString(), False, Element.ALIGN_CENTER))
+                table.AddCell(CreateCellDetail(detailData.Rows(i)("Qty").ToString(), False, Element.ALIGN_CENTER))
                 table.AddCell(CreateCellDetail(finalCostText, True, Element.ALIGN_RIGHT))
             Next
 
@@ -489,14 +520,14 @@ Public Class QuoteClass
             Dim doc As New Document(PageSize.A4, 36, 36, 110, 180)
             Dim writer As PdfWriter = PdfWriter.GetInstance(doc, fs)
 
-            Dim headerData As DataSet = GetListData("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id='" & headerId & "'")
+            Dim headerData As DataRow = GetDataRow("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id='" & headerId & "'")
 
-            Dim orderId As String = headerData.Tables(0).Rows(0).Item("OrderId").ToString()
-            Dim customerId As String = headerData.Tables(0).Rows(0).Item("CustomerId").ToString()
-            Dim customerName As String = headerData.Tables(0).Rows(0).Item("CustomerName").ToString()
-            Dim orderNumber As String = headerData.Tables(0).Rows(0).Item("OrderNumber").ToString()
-            Dim orderName As String = headerData.Tables(0).Rows(0).Item("OrderName").ToString()
-            Dim companyId As String = headerData.Tables(0).Rows(0).Item("CompanyId").ToString()
+            Dim orderId As String = headerData("OrderId").ToString()
+            Dim customerId As String = headerData("CustomerId").ToString()
+            Dim customerName As String = headerData("CustomerName").ToString()
+            Dim orderNumber As String = headerData("OrderNumber").ToString()
+            Dim orderName As String = headerData("OrderName").ToString()
+            Dim companyId As String = headerData("CompanyId").ToString()
 
             Dim reference As String = String.Format("{0} - {1}", orderNumber, orderName)
 
@@ -511,31 +542,29 @@ Public Class QuoteClass
             Dim quoteInstallation As Decimal = 0D
             Dim quoteFreight As Decimal = 0D
 
-            Dim orderQuote As DataSet = GetListData("SELECT * FROM OrderQuotes WHERE Id='" & headerId & "'")
-            If orderQuote.Tables(0).Rows.Count > 0 Then
-                Dim row = orderQuote.Tables(0).Rows(0)
+            Dim orderQuote As DataRow = GetDataRow("SELECT * FROM OrderQuotes WHERE Id='" & headerId & "'")
+            If orderQuote IsNot Nothing Then
+                Dim address As String = orderQuote("Address").ToString().Trim()
+                Dim suburb As String = orderQuote("Suburb").ToString().Trim()
+                Dim city As String = orderQuote("City").ToString().Trim()
+                Dim state As String = orderQuote("State").ToString().Trim()
+                Dim postCode As String = orderQuote("PostCode").ToString().Trim()
+                Dim country As String = orderQuote("Country").ToString().Trim()
 
-                Dim address As String = row("Address").ToString().Trim()
-                Dim suburb As String = row("Suburb").ToString().Trim()
-                Dim city As String = row("City").ToString().Trim()
-                Dim state As String = row("State").ToString().Trim()
-                Dim postCode As String = row("PostCode").ToString().Trim()
-                Dim country As String = row("Country").ToString().Trim()
+                quoteEmail = orderQuote("Email").ToString()
+                quotePhone = orderQuote("Phone").ToString()
 
-                quoteEmail = row("Email").ToString()
-                quotePhone = row("Phone").ToString()
-
-                If Not IsDBNull(row("Discount")) Then
-                    quoteDiscount = Math.Round(Convert.ToDecimal(row("Discount")), 2)
+                If Not IsDBNull(orderQuote("Discount")) Then
+                    quoteDiscount = Math.Round(Convert.ToDecimal(orderQuote("Discount")), 2)
                 End If
-                If Not IsDBNull(row("CheckMeasure")) Then
-                    quoteCheckMeasure = Math.Round(Convert.ToDecimal(row("CheckMeasure")), 2)
+                If Not IsDBNull(orderQuote("CheckMeasure")) Then
+                    quoteCheckMeasure = Math.Round(Convert.ToDecimal(orderQuote("CheckMeasure")), 2)
                 End If
-                If Not IsDBNull(row("Installation")) Then
-                    quoteInstallation = Math.Round(Convert.ToDecimal(row("Installation")), 2)
+                If Not IsDBNull(orderQuote("Installation")) Then
+                    quoteInstallation = Math.Round(Convert.ToDecimal(orderQuote("Installation")), 2)
                 End If
-                If Not IsDBNull(row("Freight")) Then
-                    quoteFreight = Math.Round(Convert.ToDecimal(row("Freight")), 2)
+                If Not IsDBNull(orderQuote("Freight")) Then
+                    quoteFreight = Math.Round(Convert.ToDecimal(orderQuote("Freight")), 2)
                 End If
 
                 If Not String.IsNullOrWhiteSpace(address & suburb & city & state & postCode & country) Then
@@ -566,20 +595,18 @@ Public Class QuoteClass
             Dim customerLogo As String = String.Empty
             Dim customerTerms As String = String.Empty
 
-            Dim quoteData As DataSet = GetListData("SELECT * FROM CustomerQuotes WHERE Id='" & customerId & "'")
-            If quoteData.Tables(0).Rows.Count > 0 Then
-                Dim row = quoteData.Tables(0).Rows(0)
+            Dim quoteData As DataRow = GetDataRow("SELECT * FROM CustomerQuotes WHERE Id='" & customerId & "'")
+            If quoteData IsNot Nothing Then
+                Dim address As String = quoteData("Address").ToString().Trim()
+                Dim suburb As String = quoteData("Suburb").ToString().Trim()
+                Dim state As String = quoteData("State").ToString().Trim()
+                Dim postCode As String = quoteData("PostCode").ToString().Trim()
+                Dim country As String = quoteData("Country").ToString().Trim()
 
-                Dim address As String = row("Address").ToString().Trim()
-                Dim suburb As String = row("Suburb").ToString().Trim()
-                Dim state As String = row("State").ToString().Trim()
-                Dim postCode As String = row("PostCode").ToString().Trim()
-                Dim country As String = row("Country").ToString().Trim()
-
-                customerLogo = row("Logo").ToString()
-                customerTerms = row("Terms").ToString()
-                quoteFrom_Email = row("Email").ToString()
-                quoteFrom_Phone = row("Phone").ToString()
+                customerLogo = quoteData("Logo").ToString()
+                customerTerms = quoteData("Terms").ToString()
+                quoteFrom_Email = quoteData("Email").ToString()
+                quoteFrom_Phone = quoteData("Phone").ToString()
 
                 If Not String.IsNullOrWhiteSpace(address & suburb & state & postCode & country) Then
                     Dim lines As New List(Of String)
@@ -687,46 +714,46 @@ Public Class QuoteClass
 
             Dim sumItemPrice As Decimal = 0D
 
-            Dim detailData As DataSet = GetListData("SELECT OrderDetails.*, Products.Name AS ProductName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND Products.DesignId<>'16' ORDER BY CASE WHEN Designs.Type='Blinds' OR Designs.Type='Shutters' THEN 1 ELSE 2 END, OrderDetails.Id ASC")
-            For i As Integer = 0 To detailData.Tables(0).Rows.Count - 1
-                Dim itemId As String = detailData.Tables(0).Rows(i)("Id").ToString()
-                Dim room As String = detailData.Tables(0).Rows(i)("Room").ToString()
+            Dim detailData As DataTable = GetDataTable("SELECT OrderDetails.*, Products.Name AS ProductName, Designs.Name AS DesignName, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND Products.DesignId<>'16' ORDER BY CASE WHEN Designs.Type='Blinds' OR Designs.Type='Shutters' THEN 1 ELSE 2 END, OrderDetails.Id ASC")
+            For i As Integer = 0 To detailData.Rows.Count - 1
+                Dim itemId As String = detailData.Rows(i)("Id").ToString()
+                Dim room As String = detailData.Rows(i)("Room").ToString()
 
-                Dim markUp As Integer = detailData.Tables(0).Rows(i)("MarkUp")
+                Dim markUp As Integer = detailData.Rows(i)("MarkUp")
 
-                Dim productId As String = detailData.Tables(0).Rows(i)("ProductId").ToString()
+                Dim productId As String = detailData.Rows(i)("ProductId").ToString()
 
-                Dim fabricColourId As String = detailData.Tables(0).Rows(i)("FabricColourId").ToString()
-                Dim fabricColourIdB As String = detailData.Tables(0).Rows(i)("FabricColourIdB").ToString()
-                Dim fabricColourIdC As String = detailData.Tables(0).Rows(i)("FabricColourIdC").ToString()
-                Dim fabricColourIdD As String = detailData.Tables(0).Rows(i)("FabricColourIdD").ToString()
-                Dim fabricColourIdE As String = detailData.Tables(0).Rows(i)("FabricColourIdE").ToString()
-                Dim fabricColourIdF As String = detailData.Tables(0).Rows(i)("FabricColourIdF").ToString()
+                Dim fabricColourId As String = detailData.Rows(i)("FabricColourId").ToString()
+                Dim fabricColourIdB As String = detailData.Rows(i)("FabricColourIdB").ToString()
+                Dim fabricColourIdC As String = detailData.Rows(i)("FabricColourIdC").ToString()
+                Dim fabricColourIdD As String = detailData.Rows(i)("FabricColourIdD").ToString()
+                Dim fabricColourIdE As String = detailData.Rows(i)("FabricColourIdE").ToString()
+                Dim fabricColourIdF As String = detailData.Rows(i)("FabricColourIdF").ToString()
 
-                Dim printing As String = detailData.Tables(0).Rows(i)("Printing").ToString()
-                Dim printingB As String = detailData.Tables(0).Rows(i)("PrintingB").ToString()
-                Dim printingC As String = detailData.Tables(0).Rows(i)("PrintingC").ToString()
-                Dim printingD As String = detailData.Tables(0).Rows(i)("PrintingD").ToString()
-                Dim printingE As String = detailData.Tables(0).Rows(i)("PrintingE").ToString()
-                Dim printingF As String = detailData.Tables(0).Rows(i)("PrintingF").ToString()
+                Dim printing As String = detailData.Rows(i)("Printing").ToString()
+                Dim printingB As String = detailData.Rows(i)("PrintingB").ToString()
+                Dim printingC As String = detailData.Rows(i)("PrintingC").ToString()
+                Dim printingD As String = detailData.Rows(i)("PrintingD").ToString()
+                Dim printingE As String = detailData.Rows(i)("PrintingE").ToString()
+                Dim printingF As String = detailData.Rows(i)("PrintingF").ToString()
 
-                Dim width As String = detailData.Tables(0).Rows(i)("Width").ToString()
-                Dim widthB As String = detailData.Tables(0).Rows(i)("WidthB").ToString()
-                Dim widthC As String = detailData.Tables(0).Rows(i)("WidthC").ToString()
-                Dim widthD As String = detailData.Tables(0).Rows(i)("WidthD").ToString()
-                Dim widthE As String = detailData.Tables(0).Rows(i)("WidthE").ToString()
-                Dim widthF As String = detailData.Tables(0).Rows(i)("WidthF").ToString()
+                Dim width As String = detailData.Rows(i)("Width").ToString()
+                Dim widthB As String = detailData.Rows(i)("WidthB").ToString()
+                Dim widthC As String = detailData.Rows(i)("WidthC").ToString()
+                Dim widthD As String = detailData.Rows(i)("WidthD").ToString()
+                Dim widthE As String = detailData.Rows(i)("WidthE").ToString()
+                Dim widthF As String = detailData.Rows(i)("WidthF").ToString()
 
-                Dim drop As String = detailData.Tables(0).Rows(i)("Drop").ToString()
-                Dim dropB As String = detailData.Tables(0).Rows(i)("DropB").ToString()
-                Dim dropC As String = detailData.Tables(0).Rows(i)("DropC").ToString()
-                Dim dropD As String = detailData.Tables(0).Rows(i)("DropD").ToString()
-                Dim dropE As String = detailData.Tables(0).Rows(i)("DropE").ToString()
-                Dim dropF As String = detailData.Tables(0).Rows(i)("DropF").ToString()
+                Dim drop As String = detailData.Rows(i)("Drop").ToString()
+                Dim dropB As String = detailData.Rows(i)("DropB").ToString()
+                Dim dropC As String = detailData.Rows(i)("DropC").ToString()
+                Dim dropD As String = detailData.Rows(i)("DropD").ToString()
+                Dim dropE As String = detailData.Rows(i)("DropE").ToString()
+                Dim dropF As String = detailData.Rows(i)("DropF").ToString()
 
-                Dim layoutCode As String = detailData.Tables(0).Rows(i)("LayoutCode").ToString()
-                Dim frameColour As String = detailData.Tables(0).Rows(i)("FrameColour").ToString()
-                Dim doorCutOut As String = detailData.Tables(0).Rows(i)("DoorCutOut").ToString()
+                Dim layoutCode As String = detailData.Rows(i)("LayoutCode").ToString()
+                Dim frameColour As String = detailData.Rows(i)("FrameColour").ToString()
+                Dim doorCutOut As String = detailData.Rows(i)("DoorCutOut").ToString()
 
                 Dim size As String = String.Format("({0}x{1})", width, drop)
                 Dim sizeB As String = String.Format("({0}x{1})", widthB, dropB)
@@ -742,23 +769,23 @@ Public Class QuoteClass
                 Dim linearMetreE As Decimal = 0D
                 Dim linearMetreF As Decimal = 0D
 
-                If Not IsDBNull(detailData.Tables(0).Rows(i)("LinearMetre")) Then
-                    linearMetre = Math.Round(Convert.ToDecimal(detailData.Tables(0).Rows(i)("LinearMetre")), 2)
+                If Not IsDBNull(detailData.Rows(i)("LinearMetre")) Then
+                    linearMetre = Math.Round(Convert.ToDecimal(detailData.Rows(i)("LinearMetre")), 2)
                 End If
-                If Not IsDBNull(detailData.Tables(0).Rows(i)("LinearMetreB")) Then
-                    linearMetreB = Math.Round(Convert.ToDecimal(detailData.Tables(0).Rows(i)("LinearMetreB")), 2)
+                If Not IsDBNull(detailData.Rows(i)("LinearMetreB")) Then
+                    linearMetreB = Math.Round(Convert.ToDecimal(detailData.Rows(i)("LinearMetreB")), 2)
                 End If
-                If Not IsDBNull(detailData.Tables(0).Rows(i)("LinearMetreC")) Then
-                    linearMetreC = Math.Round(Convert.ToDecimal(detailData.Tables(0).Rows(i)("LinearMetreC")), 2)
+                If Not IsDBNull(detailData.Rows(i)("LinearMetreC")) Then
+                    linearMetreC = Math.Round(Convert.ToDecimal(detailData.Rows(i)("LinearMetreC")), 2)
                 End If
-                If Not IsDBNull(detailData.Tables(0).Rows(i)("LinearMetreD")) Then
-                    linearMetreD = Math.Round(Convert.ToDecimal(detailData.Tables(0).Rows(i)("LinearMetreD")), 2)
+                If Not IsDBNull(detailData.Rows(i)("LinearMetreD")) Then
+                    linearMetreD = Math.Round(Convert.ToDecimal(detailData.Rows(i)("LinearMetreD")), 2)
                 End If
-                If Not IsDBNull(detailData.Tables(0).Rows(i)("LinearMetreE")) Then
-                    linearMetreE = Math.Round(Convert.ToDecimal(detailData.Tables(0).Rows(i)("LinearMetreE")), 2)
+                If Not IsDBNull(detailData.Rows(i)("LinearMetreE")) Then
+                    linearMetreE = Math.Round(Convert.ToDecimal(detailData.Rows(i)("LinearMetreE")), 2)
                 End If
-                If Not IsDBNull(detailData.Tables(0).Rows(i)("LinearMetreF")) Then
-                    linearMetreF = Math.Round(Convert.ToDecimal(detailData.Tables(0).Rows(i)("LinearMetreF")), 2)
+                If Not IsDBNull(detailData.Rows(i)("LinearMetreF")) Then
+                    linearMetreF = Math.Round(Convert.ToDecimal(detailData.Rows(i)("LinearMetreF")), 2)
                 End If
 
                 Dim squareMetre As Decimal = 0D
@@ -768,23 +795,23 @@ Public Class QuoteClass
                 Dim squareMetreE As Decimal = 0D
                 Dim squareMetreF As Decimal = 0D
 
-                If Not IsDBNull(detailData.Tables(0).Rows(i)("SquareMetre")) Then
-                    squareMetre = Math.Round(Convert.ToDecimal(detailData.Tables(0).Rows(i)("SquareMetre")), 2)
+                If Not IsDBNull(detailData.Rows(i)("SquareMetre")) Then
+                    squareMetre = Math.Round(Convert.ToDecimal(detailData.Rows(i)("SquareMetre")), 2)
                 End If
-                If Not IsDBNull(detailData.Tables(0).Rows(i)("SquareMetreB")) Then
-                    squareMetreB = Math.Round(Convert.ToDecimal(detailData.Tables(0).Rows(i)("SquareMetreB")), 2)
+                If Not IsDBNull(detailData.Rows(i)("SquareMetreB")) Then
+                    squareMetreB = Math.Round(Convert.ToDecimal(detailData.Rows(i)("SquareMetreB")), 2)
                 End If
-                If Not IsDBNull(detailData.Tables(0).Rows(i)("SquareMetreC")) Then
-                    squareMetreC = Math.Round(Convert.ToDecimal(detailData.Tables(0).Rows(i)("SquareMetreC")), 2)
+                If Not IsDBNull(detailData.Rows(i)("SquareMetreC")) Then
+                    squareMetreC = Math.Round(Convert.ToDecimal(detailData.Rows(i)("SquareMetreC")), 2)
                 End If
-                If Not IsDBNull(detailData.Tables(0).Rows(i)("SquareMetreD")) Then
-                    squareMetreD = Math.Round(Convert.ToDecimal(detailData.Tables(0).Rows(i)("SquareMetreD")), 2)
+                If Not IsDBNull(detailData.Rows(i)("SquareMetreD")) Then
+                    squareMetreD = Math.Round(Convert.ToDecimal(detailData.Rows(i)("SquareMetreD")), 2)
                 End If
-                If Not IsDBNull(detailData.Tables(0).Rows(i)("SquareMetreE")) Then
-                    squareMetreE = Math.Round(Convert.ToDecimal(detailData.Tables(0).Rows(i)("SquareMetreE")), 2)
+                If Not IsDBNull(detailData.Rows(i)("SquareMetreE")) Then
+                    squareMetreE = Math.Round(Convert.ToDecimal(detailData.Rows(i)("SquareMetreE")), 2)
                 End If
-                If Not IsDBNull(detailData.Tables(0).Rows(i)("SquareMetreF")) Then
-                    squareMetreF = Math.Round(Convert.ToDecimal(detailData.Tables(0).Rows(i)("SquareMetreF")), 2)
+                If Not IsDBNull(detailData.Rows(i)("SquareMetreF")) Then
+                    squareMetreF = Math.Round(Convert.ToDecimal(detailData.Rows(i)("SquareMetreF")), 2)
                 End If
 
                 Dim linearMetreText As String = String.Format("{0}lm", linearMetre.ToString("0.##", enUS))
@@ -801,20 +828,16 @@ Public Class QuoteClass
                 Dim squareMetreTextE As String = String.Format("{0}sqm", squareMetreE.ToString("0.##", enUS))
                 Dim squareMetreTextF As String = String.Format("{0}sqm", squareMetreF.ToString("0.##", enUS))
 
-                Dim subType As String = detailData.Tables(0).Rows(i)("SubType").ToString()
-                Dim totalItem As String = detailData.Tables(0).Rows(i)("TotalItems").ToString()
+                Dim subType As String = detailData.Rows(i)("SubType").ToString()
+                Dim totalItem As String = detailData.Rows(i)("TotalItems").ToString()
 
-                Dim trackType As String = detailData.Tables(0).Rows(i)("TrackType").ToString()
-                Dim trackTypeB As String = detailData.Tables(0).Rows(i)("TrackTypeB").ToString()
+                Dim trackType As String = detailData.Rows(i)("TrackType").ToString()
+                Dim trackTypeB As String = detailData.Rows(i)("TrackTypeB").ToString()
 
-                Dim productName As String = detailData.Tables(0).Rows(i)("ProductName").ToString()
+                Dim productName As String = detailData.Rows(i)("ProductName").ToString()
+                Dim designName As String = detailData.Rows(i)("DesignName").ToString()
+                Dim blindName As String = detailData.Rows(i)("BlindName").ToString()
                 Dim itemDescription As String = productName
-
-                Dim designId As String = GetItemData("SELECT DesignId FROM Products WHERE Id='" & productId & "'")
-                Dim blindId As String = GetItemData("SELECT BlindId FROM Products WHERE Id='" & productId & "'")
-
-                Dim designName As String = GetItemData("SELECT Name FROM Designs WHERE Id='" & designId & "'")
-                Dim blindName As String = GetItemData("SELECT Name FROM Blinds WHERE Id='" & blindId & "'")
 
                 If designName = "Aluminium Blind" Then
                     itemDescription = productName
@@ -1064,7 +1087,7 @@ Public Class QuoteClass
 
                 table.AddCell(CreateCellDetail(room))
                 table.AddCell(CreateCellDetail(itemDescription))
-                table.AddCell(CreateCellDetail(detailData.Tables(0).Rows(i)("Qty").ToString(), alignH:=Element.ALIGN_CENTER))
+                table.AddCell(CreateCellDetail(detailData.Rows(i)("Qty").ToString(), alignH:=Element.ALIGN_CENTER))
                 table.AddCell(CreateCellDetail(unitPriceText, isBold:=True, alignH:=Element.ALIGN_RIGHT))
             Next
 

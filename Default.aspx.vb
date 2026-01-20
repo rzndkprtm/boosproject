@@ -27,12 +27,12 @@ Partial Class _Default
                 Exit Sub
             End If
 
-            Dim thisData As DataSet = settingClass.GetListData("SELECT * FROM Newsletters WHERE CompanyId='" & Session("CompanyId") & "' Active=1")
-            If thisData.Tables(0).Rows.Count = 0 Then
+            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM Newsletters WHERE CompanyId='" & Session("CompanyId") & "' Active=1")
+            If thisData Is Nothing Then
                 Exit Sub
             End If
 
-            imgNewsletter.ImageUrl = thisData.Tables(0).Rows(0).Item("Link").ToString()
+            imgNewsletter.ImageUrl = thisData("Link").ToString()
         Catch ex As Exception
         End Try
     End Sub

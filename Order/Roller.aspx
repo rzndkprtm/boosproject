@@ -38,7 +38,7 @@
 
         <div id="divorder" style="display:none;">
             <section class="row">
-                <div class="col-12 col-sm-12 col-lg-7">
+                <div class="col-12 col-sm-12 col-lg-8">
                     <div class="card">
                         <div class="card-content">
                             <div class="card-body">
@@ -92,10 +92,11 @@
                                             <div class="col-12 col-sm-12 col-lg-3">
                                                 <label>Tube Type</label>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-5 form-group">
+                                            <div class="col-12 col-sm-12 col-lg-8 form-group">
                                                 <div class="input-group">
                                                     <select id="tubetype" class="form-select"></select>
-                                                    <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Tube');">Info</a>
+                                                    <a class="btn btn-primary me-1" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Tube');">Info</a>
+                                                    <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Tube');">Recommendation</a>
                                                 </div>
                                             </div>
                                         </div>

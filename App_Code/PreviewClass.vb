@@ -9,11 +9,13 @@ Public Class PreviewClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Public Function GetDataRow(thisString As String) As DataRow
-        Using thisConn As New SqlConnection(myConn)
-            Using thisCmd As New SqlCommand(thisString, thisConn)
-                Using thisAdapter As New SqlDataAdapter(thisCmd)
-                    Using dt As New DataTable()
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using thisAdapter As New SqlDataAdapter(thisCmd)
+                        Dim dt As New DataTable()
                         thisAdapter.Fill(dt)
+
                         If dt.Rows.Count > 0 Then
                             Return dt.Rows(0)
                         Else
@@ -22,33 +24,25 @@ Public Class PreviewClass
                     End Using
                 End Using
             End Using
-        End Using
+        Catch ex As Exception
+            Return Nothing
+        End Try
     End Function
 
     Public Function GetDataTable(thisString As String) As DataTable
-        Using thisConn As New SqlConnection(myConn)
-            Using thisCmd As New SqlCommand(thisString, thisConn)
-                Using da As New SqlDataAdapter(thisCmd)
-                    Dim dt As New DataTable()
-                    da.Fill(dt)
-                    Return dt
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using da As New SqlDataAdapter(thisCmd)
+                        Dim dt As New DataTable()
+                        da.Fill(dt)
+                        Return dt
+                    End Using
                 End Using
             End Using
-        End Using
-    End Function
-
-    Public Function GetListData(thisString As String) As DataSet
-        Dim thisCmd As New SqlCommand(thisString)
-        Using thisConn As New SqlConnection(myConn)
-            Using thisAdapter As New SqlDataAdapter()
-                thisCmd.Connection = thisConn
-                thisAdapter.SelectCommand = thisCmd
-                Using thisDataSet As New DataSet()
-                    thisAdapter.Fill(thisDataSet)
-                    Return thisDataSet
-                End Using
-            End Using
-        End Using
+        Catch ex As Exception
+            Return Nothing
+        End Try
     End Function
 
     Public Function GetItemData(thisString As String) As String
@@ -177,60 +171,57 @@ Public Class PreviewClass
 
             ' START ALUMINIUM BLIND
             Try
-                Dim aluminiumData As DataSet = GetListData("SELECT OrderDetails.Id, OrderDetails.Room, OrderDetails.Mounting, OrderDetails.Width AS Width, OrderDetails.[Drop] AS Height, OrderDetails.ControlPosition AS CtrlPosition, OrderDetails.TilterPosition AS TiltPosition, OrderDetails.ControlLength AS CL, OrderDetails.ControlLengthValue AS CLValue, OrderDetails.WandLength AS WL, OrderDetails.WandLengthValue AS WLValue, OrderDetails.Supply, OrderDetails.Notes, OrderDetails.SubType, OrderDetails.TotalItems AS TotalItems, Blinds.Name AS BlindName, Blinds.Alias AS BlindAlias, ProductColours.Name AS ColourName, 1 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND Designs.Name='Aluminium Blind' UNION ALL SELECT OrderDetails.Id, OrderDetails.Room, OrderDetails.Mounting, OrderDetails.WidthB AS Width, OrderDetails.DropB AS Height, OrderDetails.ControlPositionB AS CtrlPosition, OrderDetails.TilterPositionB AS TiltPosition, OrderDetails.ControlLengthB AS CL, OrderDetails.ControlLengthValueB AS CLValue, OrderDetails.WandLengthB AS WL, OrderDetails.WandLengthValueB AS WLValue, OrderDetails.Supply, OrderDetails.Notes, OrderDetails.SubType, OrderDetails.TotalItems AS TotalItems, Blinds.Name AS BlindName, Blinds.Alias AS BlindAlias, ProductColours.Name AS ColourName, 2 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.SubType LIKE '%2 on 1%' AND OrderDetails.Active=1 AND Designs.Name='Aluminium Blind' ORDER BY OrderDetails.Id, Item ASC")
+                Dim aluminiumData As DataTable = GetDataTable("SELECT OrderDetails.Id, OrderDetails.Room, OrderDetails.Mounting, OrderDetails.Width AS Width, OrderDetails.[Drop] AS Height, OrderDetails.ControlPosition AS CtrlPosition, OrderDetails.TilterPosition AS TiltPosition, OrderDetails.ControlLength AS CL, OrderDetails.ControlLengthValue AS CLValue, OrderDetails.WandLength AS WL, OrderDetails.WandLengthValue AS WLValue, OrderDetails.Supply, OrderDetails.Notes, OrderDetails.SubType, OrderDetails.TotalItems AS TotalItems, Blinds.Name AS BlindName, Blinds.Alias AS BlindAlias, ProductColours.Name AS ColourName, 1 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND Designs.Name='Aluminium Blind' UNION ALL SELECT OrderDetails.Id, OrderDetails.Room, OrderDetails.Mounting, OrderDetails.WidthB AS Width, OrderDetails.DropB AS Height, OrderDetails.ControlPositionB AS CtrlPosition, OrderDetails.TilterPositionB AS TiltPosition, OrderDetails.ControlLengthB AS CL, OrderDetails.ControlLengthValueB AS CLValue, OrderDetails.WandLengthB AS WL, OrderDetails.WandLengthValueB AS WLValue, OrderDetails.Supply, OrderDetails.Notes, OrderDetails.SubType, OrderDetails.TotalItems AS TotalItems, Blinds.Name AS BlindName, Blinds.Alias AS BlindAlias, ProductColours.Name AS ColourName, 2 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.SubType LIKE '%2 on 1%' AND OrderDetails.Active=1 AND Designs.Name='Aluminium Blind' ORDER BY OrderDetails.Id, Item ASC")
 
-                If Not aluminiumData.Tables(0).Rows.Count = 0 Then
+                If aluminiumData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Aluminium"
                     pageEvent.PageTitle2 = "Blind"
                     Dim table As New PdfPTable(7)
                     table.WidthPercentage = 100
 
-                    Dim dt As DataTable = aluminiumData.Tables(0)
-                    Dim items(14, dt.Rows.Count - 1) As String
+                    Dim items(14, aluminiumData.Rows.Count - 1) As String
 
-                    For i As Integer = 0 To dt.Rows.Count - 1
+                    For i As Integer = 0 To aluminiumData.Rows.Count - 1
                         Dim number As Integer = i + 1
 
-                        Dim cordLength As String = dt.Rows(i)("CL").ToString()
-                        Dim cordLengthValue As String = dt.Rows(i)("CLValue").ToString()
+                        Dim cordLength As String = aluminiumData.Rows(i)("CL").ToString()
+                        Dim cordLengthValue As String = aluminiumData.Rows(i)("CLValue").ToString()
 
                         Dim cordLengthText As String = cordLength
                         If cordLength = "Custom" Then
                             cordLengthText = String.Format("{0} : {1}mm", cordLength, cordLengthValue)
                         End If
 
-                        Dim wandLength As String = dt.Rows(i)("WL").ToString()
-                        Dim wandLengthValue As String = dt.Rows(i)("WLValue").ToString()
+                        Dim wandLength As String = aluminiumData.Rows(i)("WL").ToString()
+                        Dim wandLengthValue As String = aluminiumData.Rows(i)("WLValue").ToString()
 
                         Dim wandLengthText As String = wandLength
                         If wandLength = "Custom" Then
                             wandLengthText = String.Format("{0} : {1}mm", wandLength, wandLengthValue)
                         End If
 
-                        Dim totalBlinds As Integer = dt.Rows(i)("TotalItems")
+                        Dim totalBlinds As Integer = aluminiumData.Rows(i)("TotalItems")
                         Dim subType As String = "Single"
                         If totalBlinds > 1 Then subType = "2 on 1"
 
                         items(0, i) = "Item : " & number
-                        items(1, i) = dt.Rows(i)("Room").ToString()
-                        items(2, i) = dt.Rows(i)("Mounting").ToString()
-                        items(3, i) = dt.Rows(i)("BlindAlias").ToString()
-                        items(4, i) = dt.Rows(i)("ColourName").ToString()
+                        items(1, i) = aluminiumData.Rows(i)("Room").ToString()
+                        items(2, i) = aluminiumData.Rows(i)("Mounting").ToString()
+                        items(3, i) = aluminiumData.Rows(i)("BlindAlias").ToString()
+                        items(4, i) = aluminiumData.Rows(i)("ColourName").ToString()
                         items(5, i) = subType
-                        items(6, i) = dt.Rows(i)("Width").ToString()
-                        items(7, i) = dt.Rows(i)("Height").ToString()
-                        items(8, i) = dt.Rows(i)("CtrlPosition").ToString()
-                        items(9, i) = dt.Rows(i)("TiltPosition").ToString()
+                        items(6, i) = aluminiumData.Rows(i)("Width").ToString()
+                        items(7, i) = aluminiumData.Rows(i)("Height").ToString()
+                        items(8, i) = aluminiumData.Rows(i)("CtrlPosition").ToString()
+                        items(9, i) = aluminiumData.Rows(i)("TiltPosition").ToString()
                         items(10, i) = cordLengthText
                         items(11, i) = wandLengthText
-                        items(12, i) = dt.Rows(i)("Supply").ToString()
-                        items(13, i) = dt.Rows(i)("Notes").ToString()
+                        items(12, i) = aluminiumData.Rows(i)("Supply").ToString()
+                        items(13, i) = aluminiumData.Rows(i)("Notes").ToString()
                     Next
 
                     For i As Integer = 0 To items.GetLength(1) - 1 Step 6
-                        If i > 0 Then
-                            doc.NewPage()
-                        End If
+                        If i > 0 Then doc.NewPage()
 
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
@@ -272,22 +263,21 @@ Public Class PreviewClass
 
             ' START CELLULAR SHADES
             Try
-                Dim cellularData As DataSet = GetListData("SELECT OrderDetails.*, Blinds.Name AS BlindName, Blinds.Alias AS BlindAlias, ProductControls.Name AS ControlName, Fab.Name AS FabricName, FabB.Name AS FabricNameB, FabColour.Colour AS FabricColour, FabColourB.Colour AS FabricColourB FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductControls ON Products.ControlType=ProductControls.Id LEFT JOIN Fabrics AS Fab ON OrderDetails.FabricId=Fab.Id LEFT JOIN Fabrics AS FabB ON OrderDetails.FabricIdB=FabB.Id LEFT JOIN FabricColours AS FabColour ON OrderDetails.FabricColourId=FabColour.Id LEFT JOIN FabricColours AS FabColourB ON OrderDetails.FabricColourIdB=FabColourB.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Cellular Shades' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
+                Dim cellularData As DataTable = GetDataTable("SELECT OrderDetails.*, Blinds.Name AS BlindName, Blinds.Alias AS BlindAlias, ProductControls.Name AS ControlName, Fab.Name AS FabricName, FabB.Name AS FabricNameB, FabColour.Colour AS FabricColour, FabColourB.Colour AS FabricColourB FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductControls ON Products.ControlType=ProductControls.Id LEFT JOIN Fabrics AS Fab ON OrderDetails.FabricId=Fab.Id LEFT JOIN Fabrics AS FabB ON OrderDetails.FabricIdB=FabB.Id LEFT JOIN FabricColours AS FabColour ON OrderDetails.FabricColourId=FabColour.Id LEFT JOIN FabricColours AS FabColourB ON OrderDetails.FabricColourIdB=FabColourB.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Cellular Shades' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
 
-                If Not cellularData.Tables(0).Rows.Count = 0 Then
+                If cellularData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Cellular"
                     pageEvent.PageTitle2 = "Shades"
                     Dim table As New PdfPTable(7)
                     table.WidthPercentage = 100
 
-                    Dim dt As DataTable = cellularData.Tables(0)
-                    Dim items(15, dt.Rows.Count - 1) As String
+                    Dim items(15, cellularData.Rows.Count - 1) As String
 
-                    For i As Integer = 0 To dt.Rows.Count - 1
+                    For i As Integer = 0 To cellularData.Rows.Count - 1
                         Dim number As Integer = i + 1
 
-                        Dim cordLength As String = dt.Rows(i)("ControlLength").ToString()
-                        Dim cordLengthValue As String = dt.Rows(i)("ControlLengthValue").ToString()
+                        Dim cordLength As String = cellularData.Rows(i)("ControlLength").ToString()
+                        Dim cordLengthValue As String = cellularData.Rows(i)("ControlLengthValue").ToString()
 
                         Dim cordLengthText As String = cordLength
                         If cordLength = "Custom" Then
@@ -295,26 +285,24 @@ Public Class PreviewClass
                         End If
 
                         items(0, i) = "Item : " & number
-                        items(1, i) = dt.Rows(i)("Room").ToString()
-                        items(2, i) = dt.Rows(i)("Mounting").ToString()
-                        items(3, i) = dt.Rows(i)("BlindAlias").ToString()
-                        items(4, i) = dt.Rows(i)("ControlName").ToString()
-                        items(5, i) = dt.Rows(i)("Width").ToString()
-                        items(6, i) = dt.Rows(i)("Drop").ToString()
-                        items(7, i) = dt.Rows(i)("FabricName").ToString()
-                        items(8, i) = dt.Rows(i)("FabricColour").ToString()
-                        items(9, i) = dt.Rows(i)("FabricNameB").ToString()
-                        items(10, i) = dt.Rows(i)("FabricColourB").ToString()
-                        items(11, i) = dt.Rows(i)("ControlPosition").ToString()
+                        items(1, i) = cellularData.Rows(i)("Room").ToString()
+                        items(2, i) = cellularData.Rows(i)("Mounting").ToString()
+                        items(3, i) = cellularData.Rows(i)("BlindAlias").ToString()
+                        items(4, i) = cellularData.Rows(i)("ControlName").ToString()
+                        items(5, i) = cellularData.Rows(i)("Width").ToString()
+                        items(6, i) = cellularData.Rows(i)("Drop").ToString()
+                        items(7, i) = cellularData.Rows(i)("FabricName").ToString()
+                        items(8, i) = cellularData.Rows(i)("FabricColour").ToString()
+                        items(9, i) = cellularData.Rows(i)("FabricNameB").ToString()
+                        items(10, i) = cellularData.Rows(i)("FabricColourB").ToString()
+                        items(11, i) = cellularData.Rows(i)("ControlPosition").ToString()
                         items(12, i) = cordLengthText
-                        items(13, i) = dt.Rows(i)("Supply").ToString()
-                        items(14, i) = dt.Rows(i)("Notes").ToString()
+                        items(13, i) = cellularData.Rows(i)("Supply").ToString()
+                        items(14, i) = cellularData.Rows(i)("Notes").ToString()
                     Next
 
                     For i As Integer = 0 To items.GetLength(1) - 1 Step 6
-                        If i > 0 Then
-                            doc.NewPage()
-                        End If
+                        If i > 0 Then doc.NewPage()
 
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
@@ -356,57 +344,54 @@ Public Class PreviewClass
 
             ' START CURTAIN
             Try
-                Dim curtainData As DataSet = GetListData("SELECT OrderDetails.Id, OrderDetails.Room, OrderDetails.Mounting, OrderDetails.Width AS Width, OrderDetails.[Drop] AS Height, OrderDetails.FabricId AS FabricId, OrderDetails.FabricColourId AS FabricColourId, OrderDetails.Heading AS Heading, OrderDetails.TrackType AS TrackType, OrderDetails.TrackColour AS TrackColour, OrderDetails.TrackDraw AS TrackDraw, OrderDetails.StackPosition AS StackPosition, OrderDetails.ControlColour AS ControlColour, OrderDetails.ControlLengthValue AS CL, OrderDetails.ReturnLengthValue AS RetLengthValue, OrderDetails.BottomHem, OrderDetails.Supply AS Supply, OrderDetails.Notes, Blinds.Name AS BlindName, Blinds.Alias AS BlindAlias, 1 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND Designs.Name='Curtain' UNION ALL SELECT OrderDetails.Id, OrderDetails.Room, OrderDetails.Mounting, OrderDetails.WidthB AS Width, OrderDetails.DropB AS Height, OrderDetails.FabricIdB AS FabricId, OrderDetails.FabricColourIdB AS FabricColourId, OrderDetails.HeadingB AS Heading, OrderDetails.TrackTypeB AS TrackType, OrderDetails.TrackColourB AS TrackColour, OrderDetails.TrackDrawB AS TrackDraw, OrderDetails.StackPositionB AS StackPosition, OrderDetails.ControlColourB AS ControlColour, OrderDetails.ControlLengthValueB AS CL, OrderDetails.ReturnLengthValueB AS RetLengthValue, OrderDetails.BottomHem, OrderDetails.Supply AS Supply, OrderDetails.Notes, Blinds.Name AS BlindName, Blinds.Alias AS BlindAlias, 2 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND Designs.Name='Curtain' AND Blinds.Name='Double Curtain & Track' ORDER BY OrderDetails.Id, Item ASC")
+                Dim curtainData As DataTable = GetDataTable("SELECT OrderDetails.Id, OrderDetails.Room, OrderDetails.Mounting, OrderDetails.Width AS Width, OrderDetails.[Drop] AS Height, OrderDetails.FabricId AS FabricId, OrderDetails.FabricColourId AS FabricColourId, OrderDetails.Heading AS Heading, OrderDetails.TrackType AS TrackType, OrderDetails.TrackColour AS TrackColour, OrderDetails.TrackDraw AS TrackDraw, OrderDetails.StackPosition AS StackPosition, OrderDetails.ControlColour AS ControlColour, OrderDetails.ControlLengthValue AS CL, OrderDetails.ReturnLengthValue AS RetLengthValue, OrderDetails.BottomHem, OrderDetails.Supply AS Supply, OrderDetails.Notes, Blinds.Name AS BlindName, Blinds.Alias AS BlindAlias, 1 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND Designs.Name='Curtain' UNION ALL SELECT OrderDetails.Id, OrderDetails.Room, OrderDetails.Mounting, OrderDetails.WidthB AS Width, OrderDetails.DropB AS Height, OrderDetails.FabricIdB AS FabricId, OrderDetails.FabricColourIdB AS FabricColourId, OrderDetails.HeadingB AS Heading, OrderDetails.TrackTypeB AS TrackType, OrderDetails.TrackColourB AS TrackColour, OrderDetails.TrackDrawB AS TrackDraw, OrderDetails.StackPositionB AS StackPosition, OrderDetails.ControlColourB AS ControlColour, OrderDetails.ControlLengthValueB AS CL, OrderDetails.ReturnLengthValueB AS RetLengthValue, OrderDetails.BottomHem, OrderDetails.Supply AS Supply, OrderDetails.Notes, Blinds.Name AS BlindName, Blinds.Alias AS BlindAlias, 2 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND Designs.Name='Curtain' AND Blinds.Name='Double Curtain & Track' ORDER BY OrderDetails.Id, Item ASC")
 
-                If Not curtainData.Tables(0).Rows.Count = 0 Then
+                If curtainData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Curtain"
                     pageEvent.PageTitle2 = ""
                     Dim table As New PdfPTable(7)
                     table.WidthPercentage = 100
 
-                    Dim dt As DataTable = curtainData.Tables(0)
-                    Dim items(19, dt.Rows.Count - 1) As String
+                    Dim items(19, curtainData.Rows.Count - 1) As String
 
-                    For i As Integer = 0 To dt.Rows.Count - 1
-                        Dim fabricId As String = dt.Rows(i)("FabricId").ToString()
+                    For i As Integer = 0 To curtainData.Rows.Count - 1
+                        Dim fabricId As String = curtainData.Rows(i)("FabricId").ToString()
                         Dim fabricName As String = GetFabricName(fabricId)
 
-                        Dim fabricColourId As String = dt.Rows(i)("FabricColourId").ToString()
+                        Dim fabricColourId As String = curtainData.Rows(i)("FabricColourId").ToString()
                         Dim fabricColourName As String = GetFabricColourName(fabricColourId)
 
-                        Dim controlLength As String = dt.Rows(i)("CL").ToString()
+                        Dim controlLength As String = curtainData.Rows(i)("CL").ToString()
                         If controlLength = "0" Then controlLength = String.Empty
 
-                        Dim returnLength As String = dt.Rows(i)("RetLengthValue").ToString()
+                        Dim returnLength As String = curtainData.Rows(i)("RetLengthValue").ToString()
                         If returnLength = "0" Then returnLength = String.Empty
 
                         Dim number As Integer = i + 1
 
                         items(0, i) = "Item : " & number
-                        items(1, i) = dt.Rows(i)("Room").ToString()
-                        items(2, i) = dt.Rows(i)("Mounting").ToString()
-                        items(3, i) = dt.Rows(i)("BlindAlias").ToString()
-                        items(4, i) = dt.Rows(i)("Heading").ToString()
+                        items(1, i) = curtainData.Rows(i)("Room").ToString()
+                        items(2, i) = curtainData.Rows(i)("Mounting").ToString()
+                        items(3, i) = curtainData.Rows(i)("BlindAlias").ToString()
+                        items(4, i) = curtainData.Rows(i)("Heading").ToString()
                         items(5, i) = fabricName
                         items(6, i) = fabricColourName
-                        items(7, i) = dt.Rows(i)("Width").ToString()
-                        items(8, i) = dt.Rows(i)("Height").ToString()
-                        items(9, i) = dt.Rows(i)("TrackType").ToString()
-                        items(10, i) = dt.Rows(i)("TrackColour").ToString()
-                        items(11, i) = dt.Rows(i)("TrackDraw").ToString()
-                        items(12, i) = dt.Rows(i)("StackPosition").ToString()
-                        items(13, i) = dt.Rows(i)("ControlColour").ToString()
+                        items(7, i) = curtainData.Rows(i)("Width").ToString()
+                        items(8, i) = curtainData.Rows(i)("Height").ToString()
+                        items(9, i) = curtainData.Rows(i)("TrackType").ToString()
+                        items(10, i) = curtainData.Rows(i)("TrackColour").ToString()
+                        items(11, i) = curtainData.Rows(i)("TrackDraw").ToString()
+                        items(12, i) = curtainData.Rows(i)("StackPosition").ToString()
+                        items(13, i) = curtainData.Rows(i)("ControlColour").ToString()
                         items(14, i) = controlLength
                         items(15, i) = returnLength
-                        items(16, i) = dt.Rows(i)("BottomHem").ToString()
-                        items(17, i) = dt.Rows(i)("Supply").ToString()
-                        items(18, i) = dt.Rows(i)("Notes").ToString()
+                        items(16, i) = curtainData.Rows(i)("BottomHem").ToString()
+                        items(17, i) = curtainData.Rows(i)("Supply").ToString()
+                        items(18, i) = curtainData.Rows(i)("Notes").ToString()
                     Next
 
                     For i As Integer = 0 To items.GetLength(1) - 1 Step 6
-                        If i > 0 Then
-                            doc.NewPage()
-                        End If
+                        If i > 0 Then doc.NewPage()
 
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
@@ -448,31 +433,30 @@ Public Class PreviewClass
 
             ' START DESIGN SHADES
             Try
-                Dim designData As DataSet = GetListData("SELECT OrderDetails.*, Chains.Name AS ChainName, Fabrics.Name AS FabricName, FabricColours.Colour AS FabricColour, ProductControls.Name AS ControlName, ProductColours.Name AS ColourName FROM OrderDetails LEFT JOIN FabricColours ON OrderDetails.FabricColourId=FabricColours.Id LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN ProductControls ON Products.ControlType=ProductControls.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id LEFT JOIN Fabrics ON OrderDetails.FabricId=Fabrics.Id LEFT JOIN Chains ON OrderDetails.ChainId=Chains.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Design Shades' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
+                Dim designData As DataTable = GetDataTable("SELECT OrderDetails.*, Chains.Name AS ChainName, Fabrics.Name AS FabricName, FabricColours.Colour AS FabricColour, ProductControls.Name AS ControlName, ProductColours.Name AS ColourName FROM OrderDetails LEFT JOIN FabricColours ON OrderDetails.FabricColourId=FabricColours.Id LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN ProductControls ON Products.ControlType=ProductControls.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id LEFT JOIN Fabrics ON OrderDetails.FabricId=Fabrics.Id LEFT JOIN Chains ON OrderDetails.ChainId=Chains.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Design Shades' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
 
-                If Not designData.Tables(0).Rows.Count = 0 Then
+                If designData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Design"
                     pageEvent.PageTitle2 = "Shades"
                     Dim table As New PdfPTable(7)
                     table.WidthPercentage = 100
 
-                    Dim dt As DataTable = designData.Tables(0)
-                    Dim items(14, dt.Rows.Count - 1) As String
+                    Dim items(14, designData.Rows.Count - 1) As String
 
-                    For i As Integer = 0 To dt.Rows.Count - 1
+                    For i As Integer = 0 To designData.Rows.Count - 1
                         Dim number As Integer = i + 1
 
-                        Dim controlName As String = dt.Rows(i)("ControlName").ToString()
+                        Dim controlName As String = designData.Rows(i)("ControlName").ToString()
                         Dim controlColour As String = String.Empty
                         If controlName = "Chain" Then
-                            controlColour = dt.Rows(i)("ChainName").ToString()
+                            controlColour = designData.Rows(i)("ChainName").ToString()
                         End If
                         If controlName = "Wand" Then
-                            controlColour = dt.Rows(i)("WandColour").ToString()
+                            controlColour = designData.Rows(i)("WandColour").ToString()
                         End If
 
-                        Dim controlLength As String = dt.Rows(i)("ControlLength").ToString()
-                        Dim controlLengthValue As String = dt.Rows(i)("ControlLengthValue").ToString()
+                        Dim controlLength As String = designData.Rows(i)("ControlLength").ToString()
+                        Dim controlLengthValue As String = designData.Rows(i)("ControlLengthValue").ToString()
 
                         Dim controlLengthText As String = controlLength
                         If controlLength = "Custom" Then
@@ -480,25 +464,23 @@ Public Class PreviewClass
                         End If
 
                         items(0, i) = "Item : " & number
-                        items(1, i) = dt.Rows(i)("Room").ToString()
-                        items(2, i) = dt.Rows(i)("Mounting").ToString()
-                        items(3, i) = dt.Rows(i)("Width").ToString()
-                        items(4, i) = dt.Rows(i)("Drop").ToString()
-                        items(5, i) = dt.Rows(i)("FabricName").ToString()
-                        items(6, i) = dt.Rows(i)("FabricColour").ToString()
-                        items(7, i) = dt.Rows(i)("ColourName").ToString()
-                        items(8, i) = dt.Rows(i)("StackPosition").ToString()
-                        items(9, i) = dt.Rows(i)("ControlPosition").ToString()
+                        items(1, i) = designData.Rows(i)("Room").ToString()
+                        items(2, i) = designData.Rows(i)("Mounting").ToString()
+                        items(3, i) = designData.Rows(i)("Width").ToString()
+                        items(4, i) = designData.Rows(i)("Drop").ToString()
+                        items(5, i) = designData.Rows(i)("FabricName").ToString()
+                        items(6, i) = designData.Rows(i)("FabricColour").ToString()
+                        items(7, i) = designData.Rows(i)("ColourName").ToString()
+                        items(8, i) = designData.Rows(i)("StackPosition").ToString()
+                        items(9, i) = designData.Rows(i)("ControlPosition").ToString()
                         items(10, i) = controlName
                         items(11, i) = controlColour
                         items(12, i) = controlLengthText
-                        items(13, i) = dt.Rows(i)("Notes").ToString()
+                        items(13, i) = designData.Rows(i)("Notes").ToString()
                     Next
 
                     For i As Integer = 0 To items.GetLength(1) - 1 Step 6
-                        If i > 0 Then
-                            doc.NewPage()
-                        End If
+                        If i > 0 Then doc.NewPage()
 
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
@@ -540,22 +522,21 @@ Public Class PreviewClass
 
             ' START LINEA VALANCE
             Try
-                Dim lineaData As DataSet = GetListData("SELECT OrderDetails.*, ProductTubes.Name AS TubeName, ProductColours.Name AS ColourName, Fabrics.Name AS FabricName, FabricColours.Colour AS FabricColour FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN ProductTubes ON Products.TubeType=ProductTubes.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id LEFT JOIN Fabrics ON OrderDetails.FabricId=Fabrics.Id LEFT JOIN FabricColours ON OrderDetails.FabricColourId=FabricColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Linea Valance' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
+                Dim lineaData As DataTable = GetDataTable("SELECT OrderDetails.*, ProductTubes.Name AS TubeName, ProductColours.Name AS ColourName, Fabrics.Name AS FabricName, FabricColours.Colour AS FabricColour FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN ProductTubes ON Products.TubeType=ProductTubes.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id LEFT JOIN Fabrics ON OrderDetails.FabricId=Fabrics.Id LEFT JOIN FabricColours ON OrderDetails.FabricColourId=FabricColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Linea Valance' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
 
-                If Not lineaData.Tables(0).Rows.Count = 0 Then
+                If lineaData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Linea"
                     pageEvent.PageTitle2 = "Valance"
                     Dim table As New PdfPTable(7)
                     table.WidthPercentage = 100
 
-                    Dim dt As DataTable = lineaData.Tables(0)
-                    Dim items(14, dt.Rows.Count - 1) As String
+                    Dim items(14, lineaData.Rows.Count - 1) As String
 
-                    For i As Integer = 0 To dt.Rows.Count - 1
+                    For i As Integer = 0 To lineaData.Rows.Count - 1
                         Dim number As Integer = i + 1
 
-                        Dim returnLength As String = dt.Rows(i)("ReturnLength").ToString()
-                        Dim returnLengthValue As String = dt.Rows(i)("ReturnLengthValue").ToString()
+                        Dim returnLength As String = lineaData.Rows(i)("ReturnLength").ToString()
+                        Dim returnLengthValue As String = lineaData.Rows(i)("ReturnLengthValue").ToString()
 
                         Dim returnLengthText As String = returnLength
                         If returnLength = "Custom" Then
@@ -563,25 +544,23 @@ Public Class PreviewClass
                         End If
 
                         items(0, i) = "Item : " & number
-                        items(1, i) = dt.Rows(i)("Room").ToString()
-                        items(2, i) = dt.Rows(i)("Mounting").ToString()
-                        items(3, i) = dt.Rows(i)("Width").ToString()
-                        items(4, i) = dt.Rows(i)("TubeName").ToString()
-                        items(5, i) = dt.Rows(i)("ColourName").ToString()
-                        items(6, i) = dt.Rows(i)("FabricInsert").ToString()
-                        items(7, i) = dt.Rows(i)("FabricName").ToString()
-                        items(8, i) = dt.Rows(i)("FabricColour").ToString()
-                        items(9, i) = dt.Rows(i)("BracketType").ToString()
-                        items(10, i) = dt.Rows(i)("IsBlindIn").ToString()
-                        items(11, i) = dt.Rows(i)("ReturnPosition").ToString()
+                        items(1, i) = lineaData.Rows(i)("Room").ToString()
+                        items(2, i) = lineaData.Rows(i)("Mounting").ToString()
+                        items(3, i) = lineaData.Rows(i)("Width").ToString()
+                        items(4, i) = lineaData.Rows(i)("TubeName").ToString()
+                        items(5, i) = lineaData.Rows(i)("ColourName").ToString()
+                        items(6, i) = lineaData.Rows(i)("FabricInsert").ToString()
+                        items(7, i) = lineaData.Rows(i)("FabricName").ToString()
+                        items(8, i) = lineaData.Rows(i)("FabricColour").ToString()
+                        items(9, i) = lineaData.Rows(i)("BracketType").ToString()
+                        items(10, i) = lineaData.Rows(i)("IsBlindIn").ToString()
+                        items(11, i) = lineaData.Rows(i)("ReturnPosition").ToString()
                         items(12, i) = returnLengthText
-                        items(13, i) = dt.Rows(i)("Notes").ToString()
+                        items(13, i) = lineaData.Rows(i)("Notes").ToString()
                     Next
 
                     For i As Integer = 0 To items.GetLength(1) - 1 Step 6
-                        If i > 0 Then
-                            doc.NewPage()
-                        End If
+                        If i > 0 Then doc.NewPage()
 
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
@@ -623,27 +602,26 @@ Public Class PreviewClass
 
             ' START PANEL GLIDE
             Try
-                Dim panelData As DataSet = GetListData("SELECT OrderDetails.*, Blinds.Name AS BlindName, ProductTubes.Name AS TubeName, ProductColours.Name AS ColourName, Fabrics.Name AS FabricName, FabricColours.Colour AS FabricColour FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductTubes ON Products.TubeType=ProductTubes.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id LEFT JOIN Fabrics ON OrderDetails.FabricId=Fabrics.Id LEFT JOIN FabricColours ON OrderDetails.FabricColourId=FabricColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Panel Glide' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
+                Dim panelData As DataTable = GetDataTable("SELECT OrderDetails.*, Blinds.Name AS BlindName, ProductTubes.Name AS TubeName, ProductColours.Name AS ColourName, Fabrics.Name AS FabricName, FabricColours.Colour AS FabricColour FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductTubes ON Products.TubeType=ProductTubes.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id LEFT JOIN Fabrics ON OrderDetails.FabricId=Fabrics.Id LEFT JOIN FabricColours ON OrderDetails.FabricColourId=FabricColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Panel Glide' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
 
-                If Not panelData.Tables(0).Rows.Count = 0 Then
+                If panelData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Panel"
                     pageEvent.PageTitle2 = "Glide"
                     Dim table As New PdfPTable(7)
                     table.WidthPercentage = 100
 
-                    Dim dt As DataTable = panelData.Tables(0)
-                    Dim items(17, dt.Rows.Count - 1) As String
+                    Dim items(17, panelData.Rows.Count - 1) As String
 
-                    For i As Integer = 0 To dt.Rows.Count - 1
+                    For i As Integer = 0 To panelData.Rows.Count - 1
                         Dim number As Integer = i + 1
 
-                        Dim layoutCode As String = dt.Rows(i)("LayoutCode").ToString()
-                        If dt.Rows(i)("LayoutCode") = "Custom" Then
-                            layoutCode = dt.Rows(i)("LayoutCodeCustom").ToString()
+                        Dim layoutCode As String = panelData.Rows(i)("LayoutCode").ToString()
+                        If panelData.Rows(i)("LayoutCode") = "Custom" Then
+                            layoutCode = panelData.Rows(i)("LayoutCodeCustom").ToString()
                         End If
 
-                        Dim wandLength As String = dt.Rows(i)("WandLength").ToString()
-                        Dim wandLengthValue As String = dt.Rows(i)("WandLengthValue").ToString()
+                        Dim wandLength As String = panelData.Rows(i)("WandLength").ToString()
+                        Dim wandLengthValue As String = panelData.Rows(i)("WandLengthValue").ToString()
 
                         Dim wandLengthText As String = wandLength
                         If wandLength = "Custom" Then
@@ -651,28 +629,26 @@ Public Class PreviewClass
                         End If
 
                         items(0, i) = "Item : " & number
-                        items(1, i) = dt.Rows(i)("Room").ToString()
-                        items(2, i) = dt.Rows(i)("Mounting").ToString()
-                        items(3, i) = dt.Rows(i)("BlindName").ToString()
-                        items(4, i) = dt.Rows(i)("TubeName").ToString()
-                        items(5, i) = dt.Rows(i)("ColourName").ToString()
-                        items(6, i) = dt.Rows(i)("FabricName").ToString()
-                        items(7, i) = dt.Rows(i)("FabricColour").ToString()
-                        items(8, i) = dt.Rows(i)("Width").ToString()
-                        items(9, i) = If(dt.Rows(i)("Drop").ToString() <> "" AndAlso dt.Rows(i)("Drop").ToString() <> "0", dt.Rows(i)("Drop").ToString(), "")
-                        items(10, i) = dt.Rows(i)("WandColour").ToString()
+                        items(1, i) = panelData.Rows(i)("Room").ToString()
+                        items(2, i) = panelData.Rows(i)("Mounting").ToString()
+                        items(3, i) = panelData.Rows(i)("BlindName").ToString()
+                        items(4, i) = panelData.Rows(i)("TubeName").ToString()
+                        items(5, i) = panelData.Rows(i)("ColourName").ToString()
+                        items(6, i) = panelData.Rows(i)("FabricName").ToString()
+                        items(7, i) = panelData.Rows(i)("FabricColour").ToString()
+                        items(8, i) = panelData.Rows(i)("Width").ToString()
+                        items(9, i) = If(panelData.Rows(i)("Drop").ToString() <> "" AndAlso panelData.Rows(i)("Drop").ToString() <> "0", panelData.Rows(i)("Drop").ToString(), "")
+                        items(10, i) = panelData.Rows(i)("WandColour").ToString()
                         items(11, i) = wandLengthText
-                        items(12, i) = If(dt.Rows(i)("PanelQty").ToString() <> "" AndAlso dt.Rows(i)("PanelQty").ToString() <> "0", dt.Rows(i)("PanelQty").ToString(), "")
-                        items(13, i) = dt.Rows(i)("TrackType").ToString()
+                        items(12, i) = If(panelData.Rows(i)("PanelQty").ToString() <> "" AndAlso panelData.Rows(i)("PanelQty").ToString() <> "0", panelData.Rows(i)("PanelQty").ToString(), "")
+                        items(13, i) = panelData.Rows(i)("TrackType").ToString()
                         items(14, i) = layoutCode
-                        items(15, i) = dt.Rows(i)("Batten").ToString()
-                        items(16, i) = dt.Rows(i)("Notes").ToString()
+                        items(15, i) = panelData.Rows(i)("Batten").ToString()
+                        items(16, i) = panelData.Rows(i)("Notes").ToString()
                     Next
 
                     For i As Integer = 0 To items.GetLength(1) - 1 Step 6
-                        If i > 0 Then
-                            doc.NewPage()
-                        End If
+                        If i > 0 Then doc.NewPage()
 
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
@@ -714,41 +690,38 @@ Public Class PreviewClass
 
             ' START PELMET
             Try
-                Dim pelmetData As DataSet = GetListData("SELECT OrderDetails.*, ProductTubes.Name AS TubeName, Fabrics.Name AS FabricName, FabricColours.Colour AS FabricColour FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN ProductTubes ON Products.TubeType=ProductTubes.Id LEFT JOIN Fabrics ON OrderDetails.FabricId=Fabrics.Id LEFT JOIN FabricColours ON OrderDetails.FabricColourId=FabricColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Pelmet' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
+                Dim pelmetData As DataTable = GetDataTable("SELECT OrderDetails.*, ProductTubes.Name AS TubeName, Fabrics.Name AS FabricName, FabricColours.Colour AS FabricColour FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN ProductTubes ON Products.TubeType=ProductTubes.Id LEFT JOIN Fabrics ON OrderDetails.FabricId=Fabrics.Id LEFT JOIN FabricColours ON OrderDetails.FabricColourId=FabricColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Pelmet' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
 
-                If Not pelmetData.Tables(0).Rows.Count = 0 Then
+                If pelmetData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Pelmet"
                     pageEvent.PageTitle2 = ""
                     Dim table As New PdfPTable(7)
                     table.WidthPercentage = 100
 
-                    Dim dt As DataTable = pelmetData.Tables(0)
-                    Dim items(15, dt.Rows.Count - 1) As String
+                    Dim items(15, pelmetData.Rows.Count - 1) As String
 
-                    For i As Integer = 0 To dt.Rows.Count - 1
+                    For i As Integer = 0 To pelmetData.Rows.Count - 1
                         Dim number As Integer = i + 1
 
                         items(0, i) = "Item : " & number
-                        items(1, i) = dt.Rows(i)("Room").ToString()
-                        items(2, i) = dt.Rows(i)("Mounting").ToString()
-                        items(3, i) = dt.Rows(i)("TubeName").ToString()
-                        items(4, i) = dt.Rows(i)("FabricName").ToString()
-                        items(5, i) = dt.Rows(i)("FabricColour").ToString()
-                        items(6, i) = dt.Rows(i)("Batten").ToString()
-                        items(7, i) = dt.Rows(i)("LayoutCode").ToString()
-                        items(8, i) = dt.Rows(i)("Width").ToString()
-                        items(9, i) = If(dt.Rows(i)("WidthB").ToString() <> "" AndAlso dt.Rows(i)("WidthB").ToString() <> "0", dt.Rows(i)("WidthB").ToString(), "")
-                        items(10, i) = If(dt.Rows(i)("WidthC").ToString() <> "" AndAlso dt.Rows(i)("WidthC").ToString() <> "0", dt.Rows(i)("WidthC").ToString(), "")
-                        items(11, i) = dt.Rows(i)("ReturnPosition").ToString()
-                        items(12, i) = dt.Rows(i)("ReturnLengthValue").ToString()
-                        items(13, i) = dt.Rows(i)("ReturnLengthValueB").ToString()
-                        items(14, i) = dt.Rows(i)("Notes").ToString()
+                        items(1, i) = pelmetData.Rows(i)("Room").ToString()
+                        items(2, i) = pelmetData.Rows(i)("Mounting").ToString()
+                        items(3, i) = pelmetData.Rows(i)("TubeName").ToString()
+                        items(4, i) = pelmetData.Rows(i)("FabricName").ToString()
+                        items(5, i) = pelmetData.Rows(i)("FabricColour").ToString()
+                        items(6, i) = pelmetData.Rows(i)("Batten").ToString()
+                        items(7, i) = pelmetData.Rows(i)("LayoutCode").ToString()
+                        items(8, i) = pelmetData.Rows(i)("Width").ToString()
+                        items(9, i) = If(pelmetData.Rows(i)("WidthB").ToString() <> "" AndAlso pelmetData.Rows(i)("WidthB").ToString() <> "0", pelmetData.Rows(i)("WidthB").ToString(), "")
+                        items(10, i) = If(pelmetData.Rows(i)("WidthC").ToString() <> "" AndAlso pelmetData.Rows(i)("WidthC").ToString() <> "0", pelmetData.Rows(i)("WidthC").ToString(), "")
+                        items(11, i) = pelmetData.Rows(i)("ReturnPosition").ToString()
+                        items(12, i) = pelmetData.Rows(i)("ReturnLengthValue").ToString()
+                        items(13, i) = pelmetData.Rows(i)("ReturnLengthValueB").ToString()
+                        items(14, i) = pelmetData.Rows(i)("Notes").ToString()
                     Next
 
                     For i As Integer = 0 To items.GetLength(1) - 1 Step 6
-                        If i > 0 Then
-                            doc.NewPage()
-                        End If
+                        If i > 0 Then doc.NewPage()
 
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
@@ -790,22 +763,21 @@ Public Class PreviewClass
 
             ' START PRIVACY VENETIAN
             Try
-                Dim privacyData As DataSet = GetListData("SELECT OrderDetails.*, Blinds.Name AS BlindName, ProductColours.Name AS ColourName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Privacy Venetian' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
+                Dim privacyData As DataTable = GetDataTable("SELECT OrderDetails.*, Blinds.Name AS BlindName, ProductColours.Name AS ColourName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Privacy Venetian' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
 
-                If Not privacyData.Tables(0).Rows.Count = 0 Then
+                If privacyData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Privacy"
                     pageEvent.PageTitle2 = "Venetian"
                     Dim table As New PdfPTable(7)
                     table.WidthPercentage = 100
 
-                    Dim dt As DataTable = privacyData.Tables(0)
-                    Dim items(12, dt.Rows.Count - 1) As String
+                    Dim items(12, privacyData.Rows.Count - 1) As String
 
-                    For i As Integer = 0 To dt.Rows.Count - 1
+                    For i As Integer = 0 To privacyData.Rows.Count - 1
                         Dim number As Integer = i + 1
 
-                        Dim controlLength As String = dt.Rows(i)("ControlLength").ToString()
-                        Dim controlLengthValue As String = dt.Rows(i)("ControlLengthValue").ToString()
+                        Dim controlLength As String = privacyData.Rows(i)("ControlLength").ToString()
+                        Dim controlLengthValue As String = privacyData.Rows(i)("ControlLengthValue").ToString()
 
                         Dim controlLengthText As String = controlLength
                         If controlLength = "Custom" Then
@@ -813,23 +785,21 @@ Public Class PreviewClass
                         End If
 
                         items(0, i) = "Item : " & number
-                        items(1, i) = dt.Rows(i)("Room").ToString()
-                        items(2, i) = dt.Rows(i)("Mounting").ToString()
-                        items(3, i) = dt.Rows(i)("BlindName").ToString()
-                        items(4, i) = dt.Rows(i)("ColourName").ToString()
-                        items(5, i) = dt.Rows(i)("ControlPosition").ToString()
-                        items(6, i) = dt.Rows(i)("TilterPosition").ToString()
-                        items(7, i) = dt.Rows(i)("Width").ToString()
-                        items(8, i) = dt.Rows(i)("Drop").ToString()
+                        items(1, i) = privacyData.Rows(i)("Room").ToString()
+                        items(2, i) = privacyData.Rows(i)("Mounting").ToString()
+                        items(3, i) = privacyData.Rows(i)("BlindName").ToString()
+                        items(4, i) = privacyData.Rows(i)("ColourName").ToString()
+                        items(5, i) = privacyData.Rows(i)("ControlPosition").ToString()
+                        items(6, i) = privacyData.Rows(i)("TilterPosition").ToString()
+                        items(7, i) = privacyData.Rows(i)("Width").ToString()
+                        items(8, i) = privacyData.Rows(i)("Drop").ToString()
                         items(9, i) = controlLengthText
-                        items(10, i) = dt.Rows(i)("Supply").ToString()
-                        items(11, i) = dt.Rows(i)("Notes").ToString()
+                        items(10, i) = privacyData.Rows(i)("Supply").ToString()
+                        items(11, i) = privacyData.Rows(i)("Notes").ToString()
                     Next
 
                     For i As Integer = 0 To items.GetLength(1) - 1 Step 6
-                        If i > 0 Then
-                            doc.NewPage()
-                        End If
+                        If i > 0 Then doc.NewPage()
 
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
@@ -871,41 +841,40 @@ Public Class PreviewClass
 
             ' START ROLLER BLIND
             Try
-                Dim rollerData As DataSet = GetListData("SELECT OrderDetails.Id, OrderDetails.Room, OrderDetails.Mounting, OrderDetails.Width AS Width, OrderDetails.[Drop] AS Height, Blinds.Name AS BlindName, Blinds.Alias AS BlindAlias, Products.TubeType AS TubeType, Products.ControlType, Products.ColourType, OrderDetails.FabricId AS Fabric, OrderDetails.FabricColourId AS FabricColour, OrderDetails.Roll, OrderDetails.ControlPosition, OrderDetails.Charger AS Charger, OrderDetails.ExtensionCable AS ExtensionCable, OrderDetails.Supply AS NeoBox, OrderDetails.Adjusting AS Adjusting, OrderDetails.ChainId AS Chain, OrderDetails.ChainStopper AS ChainStopper, OrderDetails.ControlLengthValue AS ChainLength, OrderDetails.BottomId AS BottomType, OrderDetails.BottomColourId AS BottomColour, OrderDetails.FlatOption AS FlatOption, OrderDetails.SpringAssist, OrderDetails.BracketSize, OrderDetails.BracketExtension AS BracketExtension, OrderDetails.Printing AS PrintingImage, OrderDetails.Notes, 1 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Roller Blind' AND (Blinds.Name='Single Blind' OR Blinds.Name='Full Cassette' OR Blinds.Name='Semi Cassette' OR Blinds.Name='Wire Guide' OR Blinds.Name='Dual Blinds' OR Blinds.Name='Link 2 Blinds Dependent' OR Blinds.Name='Link 2 Blinds Independent' OR Blinds.Name='Link 3 Blinds Dependent' OR Blinds.Name='Link 3 Blinds Independent with Dependent' OR Blinds.Name='DB Link 2 Blinds Dependent' OR Blinds.Name='DB Link 2 Blinds Independent' OR Blinds.Name='DB Link 3 Blinds Dependent' OR Blinds.Name='DB Link 3 Blinds Independent with Dependent') AND OrderDetails.Active=1 UNION ALL SELECT OrderDetails.Id, OrderDetails.Room, OrderDetails.Mounting, OrderDetails.WidthB AS Width, OrderDetails.DropB AS Height, Blinds.Name AS BlindName, Blinds.Alias AS BlindAlias, Products.TubeType AS TubeType, Products.ControlType, Products.ColourType, OrderDetails.FabricIdB AS Fabric, OrderDetails.FabricColourIdB AS FabricColour, OrderDetails.RollB, OrderDetails.ControlPositionB, OrderDetails.Charger AS Charger, OrderDetails.ExtensionCable AS ExtensionCable, OrderDetails.Supply AS NeoBox, OrderDetails.Adjusting AS Adjusting, OrderDetails.ChainIdB AS Chain, OrderDetails.ChainStopperB AS ChainStopper, OrderDetails.ControlLengthValueB AS ChainLength, OrderDetails.BottomIdB AS BottomType, OrderDetails.BottomColourIdB AS BottomColour, OrderDetails.FlatOptionB AS FlatOption, OrderDetails.SpringAssist, OrderDetails.BracketSize, OrderDetails.BracketExtension AS BracketExtension, OrderDetails.PrintingB AS PrintingImage, OrderDetails.Notes, 2 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Roller Blind' AND (Blinds.Name='Dual Blinds' OR Blinds.Name='Link 2 Blinds Dependent' OR Blinds.Name='Link 2 Blinds Independent' OR Blinds.Name='Link 3 Blinds Dependent' OR Blinds.Name='Link 3 Blinds Independent with Dependent' OR Blinds.Name='DB Link 2 Blinds Dependent' OR Blinds.Name='DB Link 2 Blinds Independent' OR Blinds.Name='DB Link 3 Blinds Dependent' OR Blinds.Name='DB Link 3 Blinds Independent with Dependent') AND OrderDetails.Active=1 UNION ALL SELECT OrderDetails.Id, OrderDetails.Room, OrderDetails.Mounting, OrderDetails.WidthC AS Width, OrderDetails.DropC AS Height, Blinds.Name AS BlindName, Blinds.Alias AS BlindAlias, Products.TubeType AS TubeType, Products.ControlType, Products.ColourType, OrderDetails.FabricIdC AS Fabric, OrderDetails.FabricColourIdC AS FabricColour, OrderDetails.RollC, OrderDetails.ControlPositionC, OrderDetails.Charger AS Charger, OrderDetails.ExtensionCable AS ExtensionCable, OrderDetails.Supply AS NeoBox, OrderDetails.Adjusting AS Adjusting, OrderDetails.ChainIdC AS Chain, OrderDetails.ChainStopperC AS ChainStopper, OrderDetails.ControlLengthValueC AS ChainLength, OrderDetails.BottomIdC AS BottomType, OrderDetails.BottomColourIdC AS BottomColour, OrderDetails.FlatOptionC AS FlatOption, OrderDetails.SpringAssist, OrderDetails.BracketSize, OrderDetails.BracketExtension AS BracketExtension, OrderDetails.PrintingC AS PrintingImage, OrderDetails.Notes, 3 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Roller Blind' AND (Blinds.Name='Link 3 Blinds Dependent' OR Blinds.Name='Link 3 Blinds Independent with Dependent' OR Blinds.Name='DB Link 2 Blinds Dependent' OR Blinds.Name='DB Link 2 Blinds Independent' OR Blinds.Name='DB Link 3 Blinds Dependent' OR Blinds.Name='DB Link 3 Blinds Independent with Dependent') AND OrderDetails.Active=1 UNION ALL SELECT OrderDetails.Id, OrderDetails.Room, OrderDetails.Mounting, OrderDetails.WidthD AS Width, OrderDetails.DropD AS Height, Blinds.Name AS BlindName, Blinds.Alias AS BlindAlias, Products.TubeType AS TubeType, Products.ControlType, Products.ColourType, OrderDetails.FabricIdC AS Fabric, OrderDetails.FabricColourIdD AS FabricColour, OrderDetails.RollD, OrderDetails.ControlPositionD, OrderDetails.Charger AS Charger, OrderDetails.ExtensionCable AS ExtensionCable, OrderDetails.Supply AS NeoBox, OrderDetails.Adjusting AS Adjusting, OrderDetails.ChainIdD AS Chain, OrderDetails.ChainStopperD AS ChainStopper, OrderDetails.ControlLengthValueD AS ChainLength, OrderDetails.BottomIdD AS BottomType, OrderDetails.BottomColourIdD AS BottomColour, OrderDetails.FlatOptionD AS FlatOption, OrderDetails.SpringAssist, OrderDetails.BracketSize, OrderDetails.BracketExtension AS BracketExtension, OrderDetails.PrintingD AS PrintingImage, OrderDetails.Notes, 4 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Roller Blind' AND (Blinds.Name='DB Link 2 Blinds Dependent' OR Blinds.Name='DB Link 2 Blinds Independent' OR Blinds.Name='DB Link 3 Blinds Dependent' OR Blinds.Name='DB Link 3 Blinds Independent with Dependent') AND OrderDetails.Active=1 UNION ALL SELECT OrderDetails.Id, OrderDetails.Room, OrderDetails.Mounting, OrderDetails.WidthE AS Width, OrderDetails.DropE AS Height, Blinds.Name AS BlindName, Blinds.Alias AS BlindAlias, Products.TubeType AS TubeType, Products.ControlType, Products.ColourType, OrderDetails.FabricIdE AS Fabric, OrderDetails.FabricColourIdE AS FabricColour, OrderDetails.RollE, OrderDetails.ControlPositionE, OrderDetails.Charger AS Charger, OrderDetails.ExtensionCable AS ExtensionCable, OrderDetails.Supply AS NeoBox, OrderDetails.Adjusting AS Adjusting, OrderDetails.ChainIdE AS Chain, OrderDetails.ChainStopperE AS ChainStopper, OrderDetails.ControlLengthValueE AS ChainLength, OrderDetails.BottomIdE AS BottomType, OrderDetails.BottomColourIdE AS BottomColour, OrderDetails.FlatOptionE AS FlatOption, OrderDetails.SpringAssist, OrderDetails.BracketSize, OrderDetails.BracketExtension AS BracketExtension, OrderDetails.PrintingE AS PrintingImage, OrderDetails.Notes, 5 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId =Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Roller Blind' AND (Blinds.Name='DB Link 3 Blinds Dependent' OR Blinds.Name='DB Link 3 Blinds Independent with Dependent') AND OrderDetails.Active=1 UNION ALL SELECT OrderDetails.Id, OrderDetails.Room, OrderDetails.Mounting, OrderDetails.WidthF AS Width, OrderDetails.DropF AS Height, Blinds.Name AS BlindName, Blinds.Alias AS BlindAlias, Products.TubeType AS TubeType, Products.ControlType, Products.ColourType, OrderDetails.FabricIdF AS Fabric, OrderDetails.FabricColourIdF AS FabricColour, OrderDetails.RollF, OrderDetails.ControlPositionF, OrderDetails.Charger AS Charger, OrderDetails.ExtensionCable AS ExtensionCable, OrderDetails.Supply AS NeoBox, OrderDetails.Adjusting AS Adjusting, OrderDetails.ChainIdF AS Chain, OrderDetails.ChainStopperF AS ChainStopper, OrderDetails.ControlLengthValueF AS ChainLength, OrderDetails.BottomIdF AS BottomType, OrderDetails.BottomColourIdF AS BottomColour, OrderDetails.FlatOptionF AS FlatOption, OrderDetails.SpringAssist, OrderDetails.BracketSize, OrderDetails.BracketExtension AS BracketExtension, OrderDetails.PrintingF AS PrintingImage, OrderDetails.Notes, 6 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Roller Blind' AND (Blinds.Name='DB Link 3 Blinds Dependent' OR Blinds.Name='DB Link 3 Blinds Independent with Dependent') AND OrderDetails.Active=1 ORDER BY OrderDetails.Id, Item ASC")
+                Dim rollerData As DataTable = GetDataTable("SELECT OrderDetails.Id, OrderDetails.Room, OrderDetails.Mounting, OrderDetails.Width AS Width, OrderDetails.[Drop] AS Height, Blinds.Name AS BlindName, Blinds.Alias AS BlindAlias, Products.TubeType AS TubeType, Products.ControlType, Products.ColourType, OrderDetails.FabricId AS Fabric, OrderDetails.FabricColourId AS FabricColour, OrderDetails.Roll, OrderDetails.ControlPosition, OrderDetails.Charger AS Charger, OrderDetails.ExtensionCable AS ExtensionCable, OrderDetails.Supply AS NeoBox, OrderDetails.Adjusting AS Adjusting, OrderDetails.ChainId AS Chain, OrderDetails.ChainStopper AS ChainStopper, OrderDetails.ControlLengthValue AS ChainLength, OrderDetails.BottomId AS BottomType, OrderDetails.BottomColourId AS BottomColour, OrderDetails.FlatOption AS FlatOption, OrderDetails.TopTrack AS TopTrack, OrderDetails.SpringAssist, OrderDetails.BracketSize, OrderDetails.BracketExtension AS BracketExtension, OrderDetails.Printing AS PrintingImage, OrderDetails.Notes, 1 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Roller Blind' AND (Blinds.Name='Single Blind' OR Blinds.Name='Full Cassette' OR Blinds.Name='Semi Cassette' OR Blinds.Name='Wire Guide' OR Blinds.Name='Dual Blinds' OR Blinds.Name='Link 2 Blinds Dependent' OR Blinds.Name='Link 2 Blinds Independent' OR Blinds.Name='Link 3 Blinds Dependent' OR Blinds.Name='Link 3 Blinds Independent with Dependent' OR Blinds.Name='DB Link 2 Blinds Dependent' OR Blinds.Name='DB Link 2 Blinds Independent' OR Blinds.Name='DB Link 3 Blinds Dependent' OR Blinds.Name='DB Link 3 Blinds Independent with Dependent') AND OrderDetails.Active=1 UNION ALL SELECT OrderDetails.Id, OrderDetails.Room, OrderDetails.Mounting, OrderDetails.WidthB AS Width, OrderDetails.DropB AS Height, Blinds.Name AS BlindName, Blinds.Alias AS BlindAlias, Products.TubeType AS TubeType, Products.ControlType, Products.ColourType, OrderDetails.FabricIdB AS Fabric, OrderDetails.FabricColourIdB AS FabricColour, OrderDetails.RollB, OrderDetails.ControlPositionB, OrderDetails.Charger AS Charger, OrderDetails.ExtensionCable AS ExtensionCable, OrderDetails.Supply AS NeoBox, OrderDetails.Adjusting AS Adjusting, OrderDetails.ChainIdB AS Chain, OrderDetails.ChainStopperB AS ChainStopper, OrderDetails.ControlLengthValueB AS ChainLength, OrderDetails.BottomIdB AS BottomType, OrderDetails.BottomColourIdB AS BottomColour, OrderDetails.FlatOptionB AS FlatOption, NULL, OrderDetails.SpringAssist, OrderDetails.BracketSize, OrderDetails.BracketExtension AS BracketExtension, OrderDetails.PrintingB AS PrintingImage, OrderDetails.Notes, 2 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Roller Blind' AND (Blinds.Name='Dual Blinds' OR Blinds.Name='Link 2 Blinds Dependent' OR Blinds.Name='Link 2 Blinds Independent' OR Blinds.Name='Link 3 Blinds Dependent' OR Blinds.Name='Link 3 Blinds Independent with Dependent' OR Blinds.Name='DB Link 2 Blinds Dependent' OR Blinds.Name='DB Link 2 Blinds Independent' OR Blinds.Name='DB Link 3 Blinds Dependent' OR Blinds.Name='DB Link 3 Blinds Independent with Dependent') AND OrderDetails.Active=1 UNION ALL SELECT OrderDetails.Id, OrderDetails.Room, OrderDetails.Mounting, OrderDetails.WidthC AS Width, OrderDetails.DropC AS Height, Blinds.Name AS BlindName, Blinds.Alias AS BlindAlias, Products.TubeType AS TubeType, Products.ControlType, Products.ColourType, OrderDetails.FabricIdC AS Fabric, OrderDetails.FabricColourIdC AS FabricColour, OrderDetails.RollC, OrderDetails.ControlPositionC, OrderDetails.Charger AS Charger, OrderDetails.ExtensionCable AS ExtensionCable, OrderDetails.Supply AS NeoBox, OrderDetails.Adjusting AS Adjusting, OrderDetails.ChainIdC AS Chain, OrderDetails.ChainStopperC AS ChainStopper, OrderDetails.ControlLengthValueC AS ChainLength, OrderDetails.BottomIdC AS BottomType, OrderDetails.BottomColourIdC AS BottomColour, OrderDetails.FlatOptionC AS FlatOption, NULL, OrderDetails.SpringAssist, OrderDetails.BracketSize, OrderDetails.BracketExtension AS BracketExtension, OrderDetails.PrintingC AS PrintingImage, OrderDetails.Notes, 3 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Roller Blind' AND (Blinds.Name='Link 3 Blinds Dependent' OR Blinds.Name='Link 3 Blinds Independent with Dependent' OR Blinds.Name='DB Link 2 Blinds Dependent' OR Blinds.Name='DB Link 2 Blinds Independent' OR Blinds.Name='DB Link 3 Blinds Dependent' OR Blinds.Name='DB Link 3 Blinds Independent with Dependent') AND OrderDetails.Active=1 UNION ALL SELECT OrderDetails.Id, OrderDetails.Room, OrderDetails.Mounting, OrderDetails.WidthD AS Width, OrderDetails.DropD AS Height, Blinds.Name AS BlindName, Blinds.Alias AS BlindAlias, Products.TubeType AS TubeType, Products.ControlType, Products.ColourType, OrderDetails.FabricIdC AS Fabric, OrderDetails.FabricColourIdD AS FabricColour, OrderDetails.RollD, OrderDetails.ControlPositionD, OrderDetails.Charger AS Charger, OrderDetails.ExtensionCable AS ExtensionCable, OrderDetails.Supply AS NeoBox, OrderDetails.Adjusting AS Adjusting, OrderDetails.ChainIdD AS Chain, OrderDetails.ChainStopperD AS ChainStopper, OrderDetails.ControlLengthValueD AS ChainLength, OrderDetails.BottomIdD AS BottomType, OrderDetails.BottomColourIdD AS BottomColour, OrderDetails.FlatOptionD AS FlatOption, NULL, OrderDetails.SpringAssist, OrderDetails.BracketSize, OrderDetails.BracketExtension AS BracketExtension, OrderDetails.PrintingD AS PrintingImage, OrderDetails.Notes, 4 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Roller Blind' AND (Blinds.Name='DB Link 2 Blinds Dependent' OR Blinds.Name='DB Link 2 Blinds Independent' OR Blinds.Name='DB Link 3 Blinds Dependent' OR Blinds.Name='DB Link 3 Blinds Independent with Dependent') AND OrderDetails.Active=1 UNION ALL SELECT OrderDetails.Id, OrderDetails.Room, OrderDetails.Mounting, OrderDetails.WidthE AS Width, OrderDetails.DropE AS Height, Blinds.Name AS BlindName, Blinds.Alias AS BlindAlias, Products.TubeType AS TubeType, Products.ControlType, Products.ColourType, OrderDetails.FabricIdE AS Fabric, OrderDetails.FabricColourIdE AS FabricColour, OrderDetails.RollE, OrderDetails.ControlPositionE, OrderDetails.Charger AS Charger, OrderDetails.ExtensionCable AS ExtensionCable, OrderDetails.Supply AS NeoBox, OrderDetails.Adjusting AS Adjusting, OrderDetails.ChainIdE AS Chain, OrderDetails.ChainStopperE AS ChainStopper, OrderDetails.ControlLengthValueE AS ChainLength, OrderDetails.BottomIdE AS BottomType, OrderDetails.BottomColourIdE AS BottomColour, OrderDetails.FlatOptionE AS FlatOption, NULL, OrderDetails.SpringAssist, OrderDetails.BracketSize, OrderDetails.BracketExtension AS BracketExtension, OrderDetails.PrintingE AS PrintingImage, OrderDetails.Notes, 5 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId =Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Roller Blind' AND (Blinds.Name='DB Link 3 Blinds Dependent' OR Blinds.Name='DB Link 3 Blinds Independent with Dependent') AND OrderDetails.Active=1 UNION ALL SELECT OrderDetails.Id, OrderDetails.Room, OrderDetails.Mounting, OrderDetails.WidthF AS Width, OrderDetails.DropF AS Height, Blinds.Name AS BlindName, Blinds.Alias AS BlindAlias, Products.TubeType AS TubeType, Products.ControlType, Products.ColourType, OrderDetails.FabricIdF AS Fabric, OrderDetails.FabricColourIdF AS FabricColour, OrderDetails.RollF, OrderDetails.ControlPositionF, OrderDetails.Charger AS Charger, OrderDetails.ExtensionCable AS ExtensionCable, OrderDetails.Supply AS NeoBox, OrderDetails.Adjusting AS Adjusting, OrderDetails.ChainIdF AS Chain, OrderDetails.ChainStopperF AS ChainStopper, OrderDetails.ControlLengthValueF AS ChainLength, OrderDetails.BottomIdF AS BottomType, OrderDetails.BottomColourIdF AS BottomColour, OrderDetails.FlatOptionF AS FlatOption, NULL, OrderDetails.SpringAssist, OrderDetails.BracketSize, OrderDetails.BracketExtension AS BracketExtension, OrderDetails.PrintingF AS PrintingImage, OrderDetails.Notes, 6 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Roller Blind' AND (Blinds.Name='DB Link 3 Blinds Dependent' OR Blinds.Name='DB Link 3 Blinds Independent with Dependent') AND OrderDetails.Active=1 ORDER BY OrderDetails.Id, Item ASC")
 
-                If Not rollerData.Tables(0).Rows.Count = 0 Then
+                If rollerData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Roller"
                     pageEvent.PageTitle2 = "Blind"
                     Dim table As New PdfPTable(7)
                     table.WidthPercentage = 100
 
-                    Dim dt As DataTable = rollerData.Tables(0)
-                    Dim items(29, dt.Rows.Count - 1) As String
+                    Dim items(30, rollerData.Rows.Count - 1) As String
 
-                    For i As Integer = 0 To dt.Rows.Count - 1
+                    For i As Integer = 0 To rollerData.Rows.Count - 1
                         Dim number As Integer = i + 1
 
-                        Dim itemBlind As String = dt.Rows(i)("Item").ToString()
+                        Dim itemBlind As String = rollerData.Rows(i)("Item").ToString()
 
-                        Dim blindName As String = dt.Rows(i)("BlindName").ToString()
-                        Dim blindAlias As String = dt.Rows(i)("BlindAlias").ToString()
+                        Dim blindName As String = rollerData.Rows(i)("BlindName").ToString()
+                        Dim blindAlias As String = rollerData.Rows(i)("BlindAlias").ToString()
 
-                        Dim tubeType As String = dt.Rows(i)("TubeType").ToString()
+                        Dim tubeType As String = rollerData.Rows(i)("TubeType").ToString()
 
-                        Dim tubeName As String = GetItemData("SELECT Name FROM ProductTubes WHERE Id='" & dt.Rows(i)("TubeType").ToString() & "'")
-                        Dim tubeAlias As String = GetItemData("SELECT Alias FROM ProductTubes WHERE Id='" & dt.Rows(i)("TubeType").ToString() & "'")
-                        Dim controlName As String = GetItemData("SELECT Name FROM ProductControls WHERE Id='" & dt.Rows(i)("ControlType").ToString() & "'")
-                        Dim controlAlias As String = GetItemData("SELECT Name FROM ProductControls WHERE Id='" & dt.Rows(i)("ControlType").ToString() & "'")
-                        Dim colourName As String = GetItemData("SELECT Name FROM ProductColours WHERE Id='" & dt.Rows(i)("ColourType").ToString() & "'")
+                        Dim tubeName As String = GetItemData("SELECT Name FROM ProductTubes WHERE Id='" & rollerData.Rows(i)("TubeType").ToString() & "'")
+                        Dim tubeAlias As String = GetItemData("SELECT Alias FROM ProductTubes WHERE Id='" & rollerData.Rows(i)("TubeType").ToString() & "'")
+                        Dim controlName As String = GetItemData("SELECT Name FROM ProductControls WHERE Id='" & rollerData.Rows(i)("ControlType").ToString() & "'")
+                        Dim controlAlias As String = GetItemData("SELECT Name FROM ProductControls WHERE Id='" & rollerData.Rows(i)("ControlType").ToString() & "'")
+                        Dim colourName As String = GetItemData("SELECT Name FROM ProductColours WHERE Id='" & rollerData.Rows(i)("ColourType").ToString() & "'")
 
                         If tubeType = "Standard" Then
 
                         End If
 
-                        Dim fabricType As String = GetItemData("SELECT Name FROM Fabrics WHERE Id='" & dt.Rows(i)("Fabric").ToString() & "'")
-                        Dim fabricColour As String = GetItemData("SELECT Colour FROM FabricColours WHERE Id='" & dt.Rows(i)("FabricColour").ToString() & "'")
+                        Dim fabricType As String = GetItemData("SELECT Name FROM Fabrics WHERE Id='" & rollerData.Rows(i)("Fabric").ToString() & "'")
+                        Dim fabricColour As String = GetItemData("SELECT Colour FROM FabricColours WHERE Id='" & rollerData.Rows(i)("FabricColour").ToString() & "'")
 
-                        Dim chainName As String = GetItemData("SELECT Name FROM Chains WHERE Id='" & dt.Rows(i)("Chain").ToString() & "'")
+                        Dim chainName As String = GetItemData("SELECT Name FROM Chains WHERE Id='" & rollerData.Rows(i)("Chain").ToString() & "'")
 
                         Dim chainColour As String = String.Empty
                         Dim remoteType As String = chainName
@@ -915,13 +884,13 @@ Public Class PreviewClass
                         End If
 
                         Dim chainLength As String = String.Empty
-                        Dim chainLengthValue As Integer = dt.Rows(i)("ChainLength")
+                        Dim chainLengthValue As Integer = rollerData.Rows(i)("ChainLength")
                         If chainLengthValue > 0 Then
-                            chainLength = dt.Rows(i)("ChainLength").ToString()
+                            chainLength = rollerData.Rows(i)("ChainLength").ToString()
                         End If
 
-                        Dim bottomType As String = GetItemData("SELECT Name FROM Bottoms WHERE Id='" & dt.Rows(i)("BottomType").ToString() & "'")
-                        Dim bottomColour As String = GetItemData("SELECT Colour FROM BottomColours WHERE Id='" & dt.Rows(i)("BottomColour").ToString() & "'")
+                        Dim bottomType As String = GetItemData("SELECT Name FROM Bottoms WHERE Id='" & rollerData.Rows(i)("BottomType").ToString() & "'")
+                        Dim bottomColour As String = GetItemData("SELECT Colour FROM BottomColours WHERE Id='" & rollerData.Rows(i)("BottomColour").ToString() & "'")
                         If blindName = "Full Cassette" Then
                             bottomType = "Cassette" : bottomColour = "White"
                         End If
@@ -945,45 +914,44 @@ Public Class PreviewClass
                         End If
 
                         items(0, i) = "Item : " & number
-                        items(1, i) = dt.Rows(i)("Room").ToString()
-                        items(2, i) = dt.Rows(i)("Mounting").ToString()
+                        items(1, i) = rollerData.Rows(i)("Room").ToString()
+                        items(2, i) = rollerData.Rows(i)("Mounting").ToString()
                         items(3, i) = rollerType
                         items(4, i) = tubeAlias
                         items(5, i) = controlName
                         items(6, i) = colourName
                         items(7, i) = fabricType
                         items(8, i) = fabricColour
-                        items(9, i) = dt.Rows(i)("Roll").ToString()
-                        items(10, i) = dt.Rows(i)("Width").ToString()
-                        items(11, i) = dt.Rows(i)("Height").ToString()
-                        items(12, i) = dt.Rows(i)("ControlPosition").ToString()
+                        items(9, i) = rollerData.Rows(i)("Roll").ToString()
+                        items(10, i) = rollerData.Rows(i)("Width").ToString()
+                        items(11, i) = rollerData.Rows(i)("Height").ToString()
+                        items(12, i) = rollerData.Rows(i)("ControlPosition").ToString()
                         items(13, i) = remoteType
-                        items(14, i) = dt.Rows(i)("Charger").ToString()
-                        items(15, i) = dt.Rows(i)("ExtensionCable").ToString()
-                        items(16, i) = dt.Rows(i)("NeoBox").ToString()
+                        items(14, i) = rollerData.Rows(i)("Charger").ToString()
+                        items(15, i) = rollerData.Rows(i)("ExtensionCable").ToString()
+                        items(16, i) = rollerData.Rows(i)("NeoBox").ToString()
                         items(17, i) = chainColour
-                        items(18, i) = dt.Rows(i)("ChainStopper").ToString()
+                        items(18, i) = rollerData.Rows(i)("ChainStopper").ToString()
                         items(19, i) = chainLength
                         items(20, i) = bottomType
                         items(21, i) = bottomColour
-                        items(22, i) = dt.Rows(i)("FlatOption").ToString()
-                        items(23, i) = dt.Rows(i)("BracketExtension").ToString()
-                        items(24, i) = dt.Rows(i)("SpringAssist").ToString()
-                        items(25, i) = dt.Rows(i)("BracketSize").ToString()
-                        items(26, i) = dt.Rows(i)("Adjusting").ToString()
-                        items(27, i) = dt.Rows(i)("PrintingImage").ToString()
-                        items(28, i) = dt.Rows(i)("Notes").ToString()
+                        items(22, i) = rollerData.Rows(i)("FlatOption").ToString()
+                        items(23, i) = rollerData.Rows(i)("BracketExtension").ToString()
+                        items(24, i) = rollerData.Rows(i)("SpringAssist").ToString()
+                        items(25, i) = rollerData.Rows(i)("BracketSize").ToString()
+                        items(26, i) = rollerData.Rows(i)("Adjusting").ToString()
+                        items(27, i) = rollerData.Rows(i)("TopTrack").ToString()
+                        items(28, i) = rollerData.Rows(i)("PrintingImage").ToString()
+                        items(29, i) = rollerData.Rows(i)("Notes").ToString()
                     Next
 
                     For i As Integer = 0 To items.GetLength(1) - 1 Step 6
-                        If i > 0 Then
-                            doc.NewPage()
-                        End If
+                        If i > 0 Then doc.NewPage()
 
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Mounting", "Roller Type", "Tube Type", "Control Type", "Bracket Colour", "Fabric Type", "Fabric Colour", "Roll Direction", "Width (mm)", "Drop (mm)", "Control Position", "Remote Type", "Battery Charger", "Extension Cable", "Neo Box", "Chain Type", "Chain Stopper", "Chain Length", "Bottom Type", "Bottom Colour", "Bottom Option", "Bracket Extension", "Spring Assist", "Bracket Size", "Adjusting Spanner", "Fabric Printing", "Notes"}
+                        Dim headers As String() = {"", "Location", "Mounting", "Roller Type", "Tube Type", "Control Type", "Bracket Colour", "Fabric Type", "Fabric Colour", "Roll Direction", "Width (mm)", "Drop (mm)", "Control Position", "Remote Type", "Battery Charger", "Extension Cable", "Neo Box", "Chain Type", "Chain Stopper", "Chain Length", "Bottom Type", "Bottom Colour", "Bottom Option", "Bracket Extension", "Spring Assist", "Bracket Size", "Adjusting Spanner", "Top Track", "Fabric Printing", "Notes"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
@@ -1020,23 +988,22 @@ Public Class PreviewClass
 
             ' START ROMAN BLIND
             Try
-                Dim romanData As DataSet = GetListData("SELECT OrderDetails.*, ProductTubes.Name AS TubeName, ProductControls.Name AS ControlName, Fabrics.Name AS FabricName, FabricColours.Colour AS FabricColour, Chains.Name AS ChainName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN ProductTubes ON Products.TubeType = ProductTubes.Id LEFT JOIN ProductControls ON Products.ControlType=ProductControls.Id LEFT JOIN Fabrics ON OrderDetails.FabricId=Fabrics.Id LEFT JOIN FabricColours ON OrderDetails.FabricColourId=FabricColours.Id LEFT JOIN Chains ON OrderDetails.ChainId=Chains.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Roman Blind' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
+                Dim romanData As DataTable = GetDataTable("SELECT OrderDetails.*, ProductTubes.Name AS TubeName, ProductControls.Name AS ControlName, Fabrics.Name AS FabricName, FabricColours.Colour AS FabricColour, Chains.Name AS ChainName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN ProductTubes ON Products.TubeType = ProductTubes.Id LEFT JOIN ProductControls ON Products.ControlType=ProductControls.Id LEFT JOIN Fabrics ON OrderDetails.FabricId=Fabrics.Id LEFT JOIN FabricColours ON OrderDetails.FabricColourId=FabricColours.Id LEFT JOIN Chains ON OrderDetails.ChainId=Chains.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Roman Blind' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
 
-                If Not romanData.Tables(0).Rows.Count = 0 Then
+                If romanData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Roman"
                     pageEvent.PageTitle2 = "Blind"
                     Dim table As New PdfPTable(7)
                     table.WidthPercentage = 100
 
-                    Dim dt As DataTable = romanData.Tables(0)
-                    Dim items(19, dt.Rows.Count - 1) As String
+                    Dim items(19, romanData.Rows.Count - 1) As String
 
-                    For i As Integer = 0 To dt.Rows.Count - 1
+                    For i As Integer = 0 To romanData.Rows.Count - 1
                         Dim number As Integer = i + 1
 
-                        Dim controlName As String = dt.Rows(i)("ControlName").ToString()
+                        Dim controlName As String = romanData.Rows(i)("ControlName").ToString()
 
-                        Dim chainName As String = GetItemData("SELECT Name FROM Chains WHERE Id='" & dt.Rows(i)("ChainId").ToString() & "'")
+                        Dim chainName As String = GetItemData("SELECT Name FROM Chains WHERE Id='" & romanData.Rows(i)("ChainId").ToString() & "'")
 
                         Dim chainColour As String = String.Empty
                         Dim remoteType As String = String.Empty
@@ -1049,9 +1016,9 @@ Public Class PreviewClass
                             remoteType = chainName
                         End If
 
-                        Dim controlLength As String = dt.Rows(i)("ControlLength").ToString()
+                        Dim controlLength As String = romanData.Rows(i)("ControlLength").ToString()
 
-                        Dim controlLengthValue As String = dt.Rows(i)("ControlLengthValue").ToString()
+                        Dim controlLengthValue As String = romanData.Rows(i)("ControlLengthValue").ToString()
 
                         Dim controlLengthText As String = controlLength
                         If controlLength = "Custom" Then
@@ -1059,30 +1026,28 @@ Public Class PreviewClass
                         End If
 
                         items(0, i) = "Item : " & number
-                        items(1, i) = dt.Rows(i)("Room").ToString()
-                        items(2, i) = dt.Rows(i)("Mounting").ToString()
-                        items(3, i) = dt.Rows(i)("Width").ToString()
-                        items(4, i) = dt.Rows(i)("FabricName").ToString()
-                        items(5, i) = dt.Rows(i)("FabricColour").ToString()
-                        items(6, i) = dt.Rows(i)("Drop").ToString()
-                        items(7, i) = dt.Rows(i)("TubeName").ToString()
-                        items(8, i) = dt.Rows(i)("ControlName").ToString()
-                        items(9, i) = dt.Rows(i)("ControlPosition").ToString()
+                        items(1, i) = romanData.Rows(i)("Room").ToString()
+                        items(2, i) = romanData.Rows(i)("Mounting").ToString()
+                        items(3, i) = romanData.Rows(i)("Width").ToString()
+                        items(4, i) = romanData.Rows(i)("FabricName").ToString()
+                        items(5, i) = romanData.Rows(i)("FabricColour").ToString()
+                        items(6, i) = romanData.Rows(i)("Drop").ToString()
+                        items(7, i) = romanData.Rows(i)("TubeName").ToString()
+                        items(8, i) = romanData.Rows(i)("ControlName").ToString()
+                        items(9, i) = romanData.Rows(i)("ControlPosition").ToString()
                         items(10, i) = chainColour
                         items(11, i) = controlLengthText
                         items(12, i) = remoteType
-                        items(13, i) = dt.Rows(i)("Charger").ToString()
-                        items(14, i) = dt.Rows(i)("ExtensionCable").ToString()
-                        items(15, i) = dt.Rows(i)("Supply").ToString()
-                        items(16, i) = dt.Rows(i)("ValanceOption").ToString()
-                        items(17, i) = dt.Rows(i)("Batten").ToString()
-                        items(18, i) = dt.Rows(i)("Notes").ToString()
+                        items(13, i) = romanData.Rows(i)("Charger").ToString()
+                        items(14, i) = romanData.Rows(i)("ExtensionCable").ToString()
+                        items(15, i) = romanData.Rows(i)("Supply").ToString()
+                        items(16, i) = romanData.Rows(i)("ValanceOption").ToString()
+                        items(17, i) = romanData.Rows(i)("Batten").ToString()
+                        items(18, i) = romanData.Rows(i)("Notes").ToString()
                     Next
 
                     For i As Integer = 0 To items.GetLength(1) - 1 Step 6
-                        If i > 0 Then
-                            doc.NewPage()
-                        End If
+                        If i > 0 Then doc.NewPage()
 
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
@@ -1124,38 +1089,37 @@ Public Class PreviewClass
 
             ' START VENETIAN BLIND
             Try
-                Dim venetianData As DataSet = GetListData("SELECT OrderDetails.Id, OrderDetails.Room, OrderDetails.Mounting, OrderDetails.Width AS Width, OrderDetails.[Drop] AS Height, OrderDetails.ControlPosition AS CtrlPosition, OrderDetails.TilterPosition AS TiltPosition, OrderDetails.ControlLength AS CL, OrderDetails.ControlLengthValue AS CLValue, OrderDetails.Supply, OrderDetails.Tassel, OrderDetails.ValanceType, OrderDetails.ValanceSize, OrderDetails.ValanceSizeValue, OrderDetails.ReturnPosition, OrderDetails.ReturnLength, OrderDetails.ReturnLengthValue, OrderDetails.Notes, OrderDetails.SubType, Blinds.Name AS BlindName, ProductColours.Name AS ColourName, 1 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND Designs.Name='Venetian Blind' UNION ALL SELECT OrderDetails.Id, OrderDetails.Room, OrderDetails.Mounting, OrderDetails.WidthB AS Width, OrderDetails.DropB AS Height, OrderDetails.ControlPositionB AS CtrlPosition, OrderDetails.TilterPositionB AS TiltPosition, OrderDetails.ControlLengthB AS CL, OrderDetails.ControlLengthValueB AS CLValue, OrderDetails.Supply, OrderDetails.Tassel, OrderDetails.ValanceType, OrderDetails.ValanceSize, OrderDetails.ValanceSizeValue, OrderDetails.ReturnPosition, OrderDetails.ReturnLength, OrderDetails.ReturnLengthValue, OrderDetails.Notes, OrderDetails.SubType, Blinds.Name AS BlindName, ProductColours.Name AS ColourName, 2 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.SubType LIKE '%2 on 1%' AND OrderDetails.Active=1 AND Designs.Name='Venetian Blind' UNION ALL SELECT OrderDetails.Id, OrderDetails.Room, OrderDetails.Mounting, OrderDetails.WidthC AS Width, OrderDetails.DropC AS Height, OrderDetails.ControlPositionC AS CtrlPosition, OrderDetails.TilterPositionC AS TiltPosition, OrderDetails.ControlLengthC AS CL, OrderDetails.ControlLengthValueC AS CLValue, OrderDetails.Supply, OrderDetails.Tassel, OrderDetails.ValanceType, OrderDetails.ValanceSize, OrderDetails.ValanceSizeValue, OrderDetails.ReturnPosition, OrderDetails.ReturnLength, OrderDetails.ReturnLengthValue, OrderDetails.Notes, OrderDetails.SubType, Blinds.Name AS BlindName, ProductColours.Name AS ColourName, 3 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType = ProductColours.Id WHERE OrderDetails.HeaderId='" + headerId + "' AND OrderDetails.SubType LIKE '%3 on 1%' AND OrderDetails.Active=1 AND Designs.Name='Venetian Blind' ORDER BY OrderDetails.Id, Item ASC")
+                Dim venetianData As DataTable = GetDataTable("SELECT OrderDetails.Id, OrderDetails.Room, OrderDetails.Mounting, OrderDetails.Width AS Width, OrderDetails.[Drop] AS Height, OrderDetails.ControlPosition AS CtrlPosition, OrderDetails.TilterPosition AS TiltPosition, OrderDetails.ControlLength AS CL, OrderDetails.ControlLengthValue AS CLValue, OrderDetails.Supply, OrderDetails.Tassel, OrderDetails.ValanceType, OrderDetails.ValanceSize, OrderDetails.ValanceSizeValue, OrderDetails.ReturnPosition, OrderDetails.ReturnLength, OrderDetails.ReturnLengthValue, OrderDetails.Notes, OrderDetails.SubType, Blinds.Name AS BlindName, ProductColours.Name AS ColourName, 1 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND Designs.Name='Venetian Blind' UNION ALL SELECT OrderDetails.Id, OrderDetails.Room, OrderDetails.Mounting, OrderDetails.WidthB AS Width, OrderDetails.DropB AS Height, OrderDetails.ControlPositionB AS CtrlPosition, OrderDetails.TilterPositionB AS TiltPosition, OrderDetails.ControlLengthB AS CL, OrderDetails.ControlLengthValueB AS CLValue, OrderDetails.Supply, OrderDetails.Tassel, OrderDetails.ValanceType, OrderDetails.ValanceSize, OrderDetails.ValanceSizeValue, OrderDetails.ReturnPosition, OrderDetails.ReturnLength, OrderDetails.ReturnLengthValue, OrderDetails.Notes, OrderDetails.SubType, Blinds.Name AS BlindName, ProductColours.Name AS ColourName, 2 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.SubType LIKE '%2 on 1%' AND OrderDetails.Active=1 AND Designs.Name='Venetian Blind' UNION ALL SELECT OrderDetails.Id, OrderDetails.Room, OrderDetails.Mounting, OrderDetails.WidthC AS Width, OrderDetails.DropC AS Height, OrderDetails.ControlPositionC AS CtrlPosition, OrderDetails.TilterPositionC AS TiltPosition, OrderDetails.ControlLengthC AS CL, OrderDetails.ControlLengthValueC AS CLValue, OrderDetails.Supply, OrderDetails.Tassel, OrderDetails.ValanceType, OrderDetails.ValanceSize, OrderDetails.ValanceSizeValue, OrderDetails.ReturnPosition, OrderDetails.ReturnLength, OrderDetails.ReturnLengthValue, OrderDetails.Notes, OrderDetails.SubType, Blinds.Name AS BlindName, ProductColours.Name AS ColourName, 3 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType = ProductColours.Id WHERE OrderDetails.HeaderId='" + headerId + "' AND OrderDetails.SubType LIKE '%3 on 1%' AND OrderDetails.Active=1 AND Designs.Name='Venetian Blind' ORDER BY OrderDetails.Id, Item ASC")
 
-                If Not venetianData.Tables(0).Rows.Count = 0 Then
+                If venetianData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Venetian"
                     pageEvent.PageTitle2 = "Blind"
                     Dim table As New PdfPTable(7)
                     table.WidthPercentage = 100
 
-                    Dim dt As DataTable = venetianData.Tables(0)
-                    Dim items(18, dt.Rows.Count - 1) As String
+                    Dim items(18, venetianData.Rows.Count - 1) As String
 
-                    For i As Integer = 0 To dt.Rows.Count - 1
+                    For i As Integer = 0 To venetianData.Rows.Count - 1
                         Dim number As Integer = i + 1
 
-                        Dim controlLength As String = dt.Rows(i)("CL").ToString()
-                        Dim controlLengthValue As String = dt.Rows(i)("CLValue").ToString()
+                        Dim controlLength As String = venetianData.Rows(i)("CL").ToString()
+                        Dim controlLengthValue As String = venetianData.Rows(i)("CLValue").ToString()
 
                         Dim controlLengthText As String = controlLength
                         If controlLength = "Custom" Then
                             controlLengthText = String.Format("{0} : {1}mm", controlLength, controlLengthValue)
                         End If
 
-                        Dim valancesize As String = dt.Rows(i)("ValanceSize").ToString()
-                        Dim valancesizeValue As String = dt.Rows(i)("ValanceSizeValue").ToString()
+                        Dim valancesize As String = venetianData.Rows(i)("ValanceSize").ToString()
+                        Dim valancesizeValue As String = venetianData.Rows(i)("ValanceSizeValue").ToString()
 
                         Dim valancesizeText As String = valancesize
                         If valancesize = "Custom" Then
                             valancesizeText = String.Format("{0} : {1}mm", valancesize, valancesizeValue)
                         End If
 
-                        Dim returnLength As String = dt.Rows(i)("ReturnLength").ToString()
-                        Dim returnLengthValue As String = dt.Rows(i)("ReturnLengthValue").ToString()
+                        Dim returnLength As String = venetianData.Rows(i)("ReturnLength").ToString()
+                        Dim returnLengthValue As String = venetianData.Rows(i)("ReturnLengthValue").ToString()
 
                         Dim returnLengthText As String = returnLength
                         If returnLength = "Custom" Then
@@ -1163,29 +1127,27 @@ Public Class PreviewClass
                         End If
 
                         items(0, i) = "Item : " & number
-                        items(1, i) = dt.Rows(i)("Room").ToString()
-                        items(2, i) = dt.Rows(i)("Mounting").ToString()
-                        items(3, i) = dt.Rows(i)("BlindName").ToString()
-                        items(4, i) = dt.Rows(i)("ColourName").ToString()
-                        items(5, i) = dt.Rows(i)("SubType").ToString()
-                        items(6, i) = dt.Rows(i)("Width").ToString()
-                        items(7, i) = dt.Rows(i)("Height").ToString()
-                        items(8, i) = dt.Rows(i)("Tassel").ToString()
-                        items(9, i) = dt.Rows(i)("CtrlPosition").ToString()
-                        items(10, i) = dt.Rows(i)("TiltPosition").ToString()
+                        items(1, i) = venetianData.Rows(i)("Room").ToString()
+                        items(2, i) = venetianData.Rows(i)("Mounting").ToString()
+                        items(3, i) = venetianData.Rows(i)("BlindName").ToString()
+                        items(4, i) = venetianData.Rows(i)("ColourName").ToString()
+                        items(5, i) = venetianData.Rows(i)("SubType").ToString()
+                        items(6, i) = venetianData.Rows(i)("Width").ToString()
+                        items(7, i) = venetianData.Rows(i)("Height").ToString()
+                        items(8, i) = venetianData.Rows(i)("Tassel").ToString()
+                        items(9, i) = venetianData.Rows(i)("CtrlPosition").ToString()
+                        items(10, i) = venetianData.Rows(i)("TiltPosition").ToString()
                         items(11, i) = controlLengthText
-                        items(12, i) = dt.Rows(i)("ValanceType").ToString()
+                        items(12, i) = venetianData.Rows(i)("ValanceType").ToString()
                         items(13, i) = valancesizeText
-                        items(14, i) = dt.Rows(i)("ReturnPosition").ToString()
+                        items(14, i) = venetianData.Rows(i)("ReturnPosition").ToString()
                         items(15, i) = returnLengthText
-                        items(16, i) = dt.Rows(i)("Supply").ToString()
-                        items(17, i) = dt.Rows(i)("Notes").ToString()
+                        items(16, i) = venetianData.Rows(i)("Supply").ToString()
+                        items(17, i) = venetianData.Rows(i)("Notes").ToString()
                     Next
 
                     For i As Integer = 0 To items.GetLength(1) - 1 Step 6
-                        If i > 0 Then
-                            doc.NewPage()
-                        End If
+                        If i > 0 Then doc.NewPage()
 
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
@@ -1227,28 +1189,27 @@ Public Class PreviewClass
 
             ' START VERTICAL
             Try
-                Dim verticalData As DataSet = GetListData("SELECT OrderDetails.*, Blinds.Name AS BlindName, ProductTubes.Name AS TubeName, ProductControls.Name AS ControlName, ProductColours.Name AS ColourName, Fabrics.Name AS FabricName, FabricColours.Colour AS FabricColour, Chains.Name AS ChainName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductTubes ON Products.TubeType=ProductTubes.Id LEFT JOIN ProductControls ON Products.ControlType=ProductControls.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id LEFT JOIN Fabrics ON OrderDetails.FabricId=Fabrics.Id LEFT JOIN FabricColours ON OrderDetails.FabricColourId=FabricColours.Id LEFT JOIN Chains ON OrderDetails.ChainId=Chains.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Vertical' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
+                Dim verticalData As DataTable = GetDataTable("SELECT OrderDetails.*, Blinds.Name AS BlindName, ProductTubes.Name AS TubeName, ProductControls.Name AS ControlName, ProductColours.Name AS ColourName, Fabrics.Name AS FabricName, FabricColours.Colour AS FabricColour, Chains.Name AS ChainName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductTubes ON Products.TubeType=ProductTubes.Id LEFT JOIN ProductControls ON Products.ControlType=ProductControls.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id LEFT JOIN Fabrics ON OrderDetails.FabricId=Fabrics.Id LEFT JOIN FabricColours ON OrderDetails.FabricColourId=FabricColours.Id LEFT JOIN Chains ON OrderDetails.ChainId=Chains.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Vertical' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
 
-                If Not verticalData.Tables(0).Rows.Count = 0 Then
+                If verticalData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Vertical"
                     pageEvent.PageTitle2 = ""
                     Dim table As New PdfPTable(7)
                     table.WidthPercentage = 100
 
-                    Dim dt As DataTable = verticalData.Tables(0)
-                    Dim items(21, dt.Rows.Count - 1) As String
+                    Dim items(21, verticalData.Rows.Count - 1) As String
 
-                    For i As Integer = 0 To dt.Rows.Count - 1
+                    For i As Integer = 0 To verticalData.Rows.Count - 1
                         Dim number As Integer = i + 1
 
-                        Dim controlName As String = dt.Rows(i)("ControlName").ToString()
+                        Dim controlName As String = verticalData.Rows(i)("ControlName").ToString()
                         Dim controlColour As String = String.Empty
 
-                        If controlName = "Chain" Then controlColour = dt.Rows(i)("ChainName").ToString()
-                        If controlName = "Wand" Then controlColour = dt.Rows(i)("WandColour").ToString()
+                        If controlName = "Chain" Then controlColour = verticalData.Rows(i)("ChainName").ToString()
+                        If controlName = "Wand" Then controlColour = verticalData.Rows(i)("WandColour").ToString()
 
-                        Dim controlLength As String = dt.Rows(i)("ControlLength").ToString()
-                        Dim controlLengthValue As String = dt.Rows(i)("ControlLengthValue").ToString()
+                        Dim controlLength As String = verticalData.Rows(i)("ControlLength").ToString()
+                        Dim controlLengthValue As String = verticalData.Rows(i)("ControlLengthValue").ToString()
 
                         Dim controlLengthText As String = controlLength
                         If controlLength = "Custom" Then
@@ -1256,32 +1217,30 @@ Public Class PreviewClass
                         End If
 
                         items(0, i) = "Item : " & number
-                        items(1, i) = dt.Rows(i)("Room").ToString()
-                        items(2, i) = dt.Rows(i)("Mounting").ToString()
-                        items(3, i) = dt.Rows(i)("BlindName").ToString()
-                        items(4, i) = dt.Rows(i)("TubeName").ToString()
-                        items(5, i) = If(dt.Rows(i)("QtyBlade").ToString() <> "" AndAlso dt.Rows(i)("QtyBlade").ToString() <> "0", dt.Rows(i)("QtyBlade").ToString(), "")
-                        items(6, i) = dt.Rows(i)("FabricInsert").ToString()
-                        items(7, i) = dt.Rows(i)("FabricName").ToString()
-                        items(8, i) = dt.Rows(i)("FabricColour").ToString()
-                        items(9, i) = dt.Rows(i)("Width").ToString()
-                        items(10, i) = If(dt.Rows(i)("Drop").ToString() <> "" AndAlso dt.Rows(i)("Drop").ToString() <> "0", dt.Rows(i)("Drop").ToString(), "")
-                        items(11, i) = dt.Rows(i)("StackPosition").ToString()
-                        items(12, i) = dt.Rows(i)("ControlPosition").ToString()
+                        items(1, i) = verticalData.Rows(i)("Room").ToString()
+                        items(2, i) = verticalData.Rows(i)("Mounting").ToString()
+                        items(3, i) = verticalData.Rows(i)("BlindName").ToString()
+                        items(4, i) = verticalData.Rows(i)("TubeName").ToString()
+                        items(5, i) = If(verticalData.Rows(i)("QtyBlade").ToString() <> "" AndAlso verticalData.Rows(i)("QtyBlade").ToString() <> "0", verticalData.Rows(i)("QtyBlade").ToString(), "")
+                        items(6, i) = verticalData.Rows(i)("FabricInsert").ToString()
+                        items(7, i) = verticalData.Rows(i)("FabricName").ToString()
+                        items(8, i) = verticalData.Rows(i)("FabricColour").ToString()
+                        items(9, i) = verticalData.Rows(i)("Width").ToString()
+                        items(10, i) = If(verticalData.Rows(i)("Drop").ToString() <> "" AndAlso verticalData.Rows(i)("Drop").ToString() <> "0", verticalData.Rows(i)("Drop").ToString(), "")
+                        items(11, i) = verticalData.Rows(i)("StackPosition").ToString()
+                        items(12, i) = verticalData.Rows(i)("ControlPosition").ToString()
                         items(13, i) = controlName
-                        items(14, i) = dt.Rows(i)("ColourName").ToString()
+                        items(14, i) = verticalData.Rows(i)("ColourName").ToString()
                         items(15, i) = controlColour
                         items(16, i) = controlLengthText
-                        items(17, i) = dt.Rows(i)("BottomJoining").ToString()
-                        items(18, i) = dt.Rows(i)("BracketExtension").ToString()
-                        items(19, i) = dt.Rows(i)("Sloping").ToString()
-                        items(20, i) = dt.Rows(i)("Notes").ToString()
+                        items(17, i) = verticalData.Rows(i)("BottomJoining").ToString()
+                        items(18, i) = verticalData.Rows(i)("BracketExtension").ToString()
+                        items(19, i) = verticalData.Rows(i)("Sloping").ToString()
+                        items(20, i) = verticalData.Rows(i)("Notes").ToString()
                     Next
 
                     For i As Integer = 0 To items.GetLength(1) - 1 Step 6
-                        If i > 0 Then
-                            doc.NewPage()
-                        End If
+                        If i > 0 Then doc.NewPage()
 
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
@@ -1323,27 +1282,26 @@ Public Class PreviewClass
 
             ' START SAPHORA DRAPE
             Try
-                Dim saphoraData As DataSet = GetListData("SELECT OrderDetails.*, Blinds.Name AS BlindName, ProductTubes.Name AS TubeName, ProductControls.Name AS ControlName, ProductColours.Name AS ColourName, Fabrics.Name AS FabricName, FabricColours.Colour AS FabricColour, Chains.Name AS ChainName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductTubes ON Products.TubeType=ProductTubes.Id LEFT JOIN ProductControls ON Products.ControlType=ProductControls.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id LEFT JOIN Fabrics ON OrderDetails.FabricId=Fabrics.Id LEFT JOIN FabricColours ON OrderDetails.FabricColourId=FabricColours.Id LEFT JOIN Chains ON OrderDetails.ChainId=Chains.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Saphora Drape' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
+                Dim saphoraData As DataTable = GetDataTable("SELECT OrderDetails.*, Blinds.Name AS BlindName, ProductTubes.Name AS TubeName, ProductControls.Name AS ControlName, ProductColours.Name AS ColourName, Fabrics.Name AS FabricName, FabricColours.Colour AS FabricColour, Chains.Name AS ChainName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductTubes ON Products.TubeType=ProductTubes.Id LEFT JOIN ProductControls ON Products.ControlType=ProductControls.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id LEFT JOIN Fabrics ON OrderDetails.FabricId=Fabrics.Id LEFT JOIN FabricColours ON OrderDetails.FabricColourId=FabricColours.Id LEFT JOIN Chains ON OrderDetails.ChainId=Chains.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Saphora Drape' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
 
-                If Not saphoraData.Tables(0).Rows.Count = 0 Then
+                If saphoraData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Saphora"
                     pageEvent.PageTitle2 = "Drape"
                     Dim table As New PdfPTable(7)
                     table.WidthPercentage = 100
 
-                    Dim dt As DataTable = saphoraData.Tables(0)
-                    Dim items(19, dt.Rows.Count - 1) As String
+                    Dim items(19, saphoraData.Rows.Count - 1) As String
 
-                    For i As Integer = 0 To dt.Rows.Count - 1
+                    For i As Integer = 0 To saphoraData.Rows.Count - 1
                         Dim number As Integer = i + 1
 
-                        Dim controlName As String = dt.Rows(i)("ControlName").ToString()
+                        Dim controlName As String = saphoraData.Rows(i)("ControlName").ToString()
                         Dim controlColour As String = String.Empty
-                        If controlName = "Chain" Then controlColour = dt.Rows(i)("ChainName").ToString()
-                        If controlName = "Wand" Then controlColour = dt.Rows(i)("WandColour").ToString()
+                        If controlName = "Chain" Then controlColour = saphoraData.Rows(i)("ChainName").ToString()
+                        If controlName = "Wand" Then controlColour = saphoraData.Rows(i)("WandColour").ToString()
 
-                        Dim controlLength As String = dt.Rows(i)("ControlLength").ToString()
-                        Dim controlLengthValue As String = dt.Rows(i)("ControlLengthValue").ToString()
+                        Dim controlLength As String = saphoraData.Rows(i)("ControlLength").ToString()
+                        Dim controlLengthValue As String = saphoraData.Rows(i)("ControlLengthValue").ToString()
 
                         Dim controlLengthText As String = controlLength
                         If controlLength = "Custom" Then
@@ -1351,30 +1309,28 @@ Public Class PreviewClass
                         End If
 
                         items(0, i) = "Item : " & number
-                        items(1, i) = dt.Rows(i)("Room").ToString()
-                        items(2, i) = dt.Rows(i)("Mounting").ToString()
-                        items(3, i) = dt.Rows(i)("BlindName").ToString()
-                        items(4, i) = dt.Rows(i)("TubeName").ToString()
-                        items(5, i) = dt.Rows(i)("FabricName").ToString()
-                        items(6, i) = dt.Rows(i)("FabricColour").ToString()
-                        items(7, i) = dt.Rows(i)("Width").ToString()
-                        items(8, i) = dt.Rows(i)("Drop").ToString()
-                        items(9, i) = dt.Rows(i)("ColourName").ToString()
-                        items(10, i) = dt.Rows(i)("StackPosition").ToString()
-                        items(11, i) = dt.Rows(i)("ControlPosition").ToString()
+                        items(1, i) = saphoraData.Rows(i)("Room").ToString()
+                        items(2, i) = saphoraData.Rows(i)("Mounting").ToString()
+                        items(3, i) = saphoraData.Rows(i)("BlindName").ToString()
+                        items(4, i) = saphoraData.Rows(i)("TubeName").ToString()
+                        items(5, i) = saphoraData.Rows(i)("FabricName").ToString()
+                        items(6, i) = saphoraData.Rows(i)("FabricColour").ToString()
+                        items(7, i) = saphoraData.Rows(i)("Width").ToString()
+                        items(8, i) = saphoraData.Rows(i)("Drop").ToString()
+                        items(9, i) = saphoraData.Rows(i)("ColourName").ToString()
+                        items(10, i) = saphoraData.Rows(i)("StackPosition").ToString()
+                        items(11, i) = saphoraData.Rows(i)("ControlPosition").ToString()
                         items(12, i) = controlName
                         items(13, i) = controlColour
                         items(14, i) = controlLengthText
-                        items(15, i) = dt.Rows(i)("BottomJoining").ToString()
-                        items(16, i) = dt.Rows(i)("BracketExtension").ToString()
-                        items(17, i) = dt.Rows(i)("Sloping").ToString()
-                        items(18, i) = dt.Rows(i)("Notes").ToString()
+                        items(15, i) = saphoraData.Rows(i)("BottomJoining").ToString()
+                        items(16, i) = saphoraData.Rows(i)("BracketExtension").ToString()
+                        items(17, i) = saphoraData.Rows(i)("Sloping").ToString()
+                        items(18, i) = saphoraData.Rows(i)("Notes").ToString()
                     Next
 
                     For i As Integer = 0 To items.GetLength(1) - 1 Step 6
-                        If i > 0 Then
-                            doc.NewPage()
-                        End If
+                        If i > 0 Then doc.NewPage()
 
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
@@ -1416,20 +1372,19 @@ Public Class PreviewClass
 
             ' START SKYLINE SHUTTER EXPRESS
             Try
-                Dim shutterExpressData As DataSet = GetListData("SELECT OrderDetails.*, ProductColours.Name AS ColourType, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId = Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Skyline Shutter Express' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
+                Dim shutterData As DataTable = GetDataTable("SELECT OrderDetails.*, ProductColours.Name AS ColourType, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId = Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Skyline Shutter Express' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
 
-                If Not shutterExpressData.Tables(0).Rows.Count = 0 Then
+                If shutterData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "EXPRESS"
                     pageEvent.PageTitle2 = "Skyline Shutter"
 
                     Dim table As New PdfPTable(5)
                     table.WidthPercentage = 100
 
-                    Dim dt As DataTable = shutterExpressData.Tables(0)
-                    Dim items(38, dt.Rows.Count - 1) As String
+                    Dim items(38, shutterData.Rows.Count - 1) As String
 
-                    For i As Integer = 0 To dt.Rows.Count - 1
-                        Dim layoutCode As String = If(dt.Rows(i)("LayoutCode").ToString() = "Other", dt.Rows(i)("LayoutCodeCustom").ToString(), dt.Rows(i)("LayoutCode").ToString())
+                    For i As Integer = 0 To shutterData.Rows.Count - 1
+                        Dim layoutCode As String = If(shutterData.Rows(i)("LayoutCode").ToString() = "Other", shutterData.Rows(i)("LayoutCodeCustom").ToString(), shutterData.Rows(i)("LayoutCode").ToString())
 
                         Dim gapList As New List(Of String)
 
@@ -1438,11 +1393,11 @@ Public Class PreviewClass
                         Dim midrailHeight1 As Integer = 0
                         Dim midrailHeight2 As Integer = 0
 
-                        If Not IsDBNull(dt.Rows(i)("MidrailHeight1")) Then
-                            midrailHeight1 = dt.Rows(i)("MidrailHeight1")
+                        If Not IsDBNull(shutterData.Rows(i)("MidrailHeight1")) Then
+                            midrailHeight1 = shutterData.Rows(i)("MidrailHeight1")
                         End If
-                        If Not IsDBNull(dt.Rows(i)("MidrailHeight2")) Then
-                            midrailHeight2 = dt.Rows(i)("MidrailHeight2")
+                        If Not IsDBNull(shutterData.Rows(i)("MidrailHeight2")) Then
+                            midrailHeight2 = shutterData.Rows(i)("MidrailHeight2")
                         End If
 
                         If midrailHeight1 > 0 Then midrailList.Add(String.Format("1 : {0}", midrailHeight1))
@@ -1452,8 +1407,8 @@ Public Class PreviewClass
 
                         Dim headerLengthValue As Integer = 0
                         Dim headerLengthText As String = String.Empty
-                        If Not IsDBNull(dt.Rows(i)("CustomHeaderLength")) Then
-                            headerLengthValue = dt.Rows(i)("CustomHeaderLength")
+                        If Not IsDBNull(shutterData.Rows(i)("CustomHeaderLength")) Then
+                            headerLengthValue = shutterData.Rows(i)("CustomHeaderLength")
                         End If
                         If headerLengthValue > 0 Then
                             headerLengthText = headerLengthValue.ToString()
@@ -1465,20 +1420,20 @@ Public Class PreviewClass
                         Dim gap4 As Integer = 0
                         Dim gap5 As Integer = 0
 
-                        If Not IsDBNull(dt.Rows(i)("Gap1")) Then
-                            gap1 = dt.Rows(i)("Gap1")
+                        If Not IsDBNull(shutterData.Rows(i)("Gap1")) Then
+                            gap1 = shutterData.Rows(i)("Gap1")
                         End If
-                        If Not IsDBNull(dt.Rows(i)("Gap2")) Then
-                            gap2 = dt.Rows(i)("Gap2")
+                        If Not IsDBNull(shutterData.Rows(i)("Gap2")) Then
+                            gap2 = shutterData.Rows(i)("Gap2")
                         End If
-                        If Not IsDBNull(dt.Rows(i)("Gap3")) Then
-                            gap3 = dt.Rows(i)("Gap3")
+                        If Not IsDBNull(shutterData.Rows(i)("Gap3")) Then
+                            gap3 = shutterData.Rows(i)("Gap3")
                         End If
-                        If Not IsDBNull(dt.Rows(i)("Gap4")) Then
-                            gap4 = dt.Rows(i)("Gap4")
+                        If Not IsDBNull(shutterData.Rows(i)("Gap4")) Then
+                            gap4 = shutterData.Rows(i)("Gap4")
                         End If
-                        If Not IsDBNull(dt.Rows(i)("Gap5")) Then
-                            gap5 = dt.Rows(i)("Gap5")
+                        If Not IsDBNull(shutterData.Rows(i)("Gap5")) Then
+                            gap5 = shutterData.Rows(i)("Gap5")
                         End If
 
                         If gap1 > 0 Then gapList.Add("Gap 1 : " & gap1)
@@ -1492,69 +1447,69 @@ Public Class PreviewClass
                         Dim split1 As Integer = 0
                         Dim split2 As Integer = 0
 
-                        If Not IsDBNull(dt.Rows(i)("SplitHeight1")) Then
-                            split1 = dt.Rows(i)("SplitHeight1")
+                        If Not IsDBNull(shutterData.Rows(i)("SplitHeight1")) Then
+                            split1 = shutterData.Rows(i)("SplitHeight1")
                         End If
-                        If Not IsDBNull(dt.Rows(i)("SplitHeight2")) Then
-                            split2 = dt.Rows(i)("SplitHeight2")
+                        If Not IsDBNull(shutterData.Rows(i)("SplitHeight2")) Then
+                            split2 = shutterData.Rows(i)("SplitHeight2")
                         End If
 
                         Dim splitHeigth As String = String.Format("1st : {0}, 2nd : {1}", split1, split2)
 
                         Dim horizontalHeight As String = String.Empty
                         Dim horizontalTPostHeight As Integer = 0
-                        If Not IsDBNull(dt.Rows(i)("HorizontalTPostHeight")) Then
-                            horizontalTPostHeight = dt.Rows(i)("HorizontalTPostHeight")
+                        If Not IsDBNull(shutterData.Rows(i)("HorizontalTPostHeight")) Then
+                            horizontalTPostHeight = shutterData.Rows(i)("HorizontalTPostHeight")
                         End If
 
                         If horizontalTPostHeight > 0 Then
-                            horizontalHeight = dt.Rows(i)("HorizontalTPostHeight").ToString()
+                            horizontalHeight = shutterData.Rows(i)("HorizontalTPostHeight").ToString()
                         End If
 
-                        Dim bottomTrack As String = dt.Rows(i)("BottomTrackType").ToString()
-                        If dt.Rows(i)("BottomTrackRecess").ToString() = "Yes" Then
-                            bottomTrack = String.Format("{0} | Recess: Yes", dt.Rows(i)("BottomTrackType").ToString())
+                        Dim bottomTrack As String = shutterData.Rows(i)("BottomTrackType").ToString()
+                        If shutterData.Rows(i)("BottomTrackRecess").ToString() = "Yes" Then
+                            bottomTrack = String.Format("{0} | Recess: Yes", shutterData.Rows(i)("BottomTrackType").ToString())
                         End If
                         Dim number As Integer = i + 1
 
                         items(0, i) = "Item : " & number
-                        items(1, i) = dt.Rows(i)("Room").ToString()
-                        items(2, i) = dt.Rows(i)("Width").ToString()
-                        items(3, i) = dt.Rows(i)("Drop").ToString()
-                        items(4, i) = dt.Rows(i)("Mounting").ToString()
-                        items(5, i) = dt.Rows(i)("ColourType").ToString()
-                        items(6, i) = dt.Rows(i)("LouvreSize").ToString()
-                        items(7, i) = dt.Rows(i)("LouvrePosition").ToString()
+                        items(1, i) = shutterData.Rows(i)("Room").ToString()
+                        items(2, i) = shutterData.Rows(i)("Width").ToString()
+                        items(3, i) = shutterData.Rows(i)("Drop").ToString()
+                        items(4, i) = shutterData.Rows(i)("Mounting").ToString()
+                        items(5, i) = shutterData.Rows(i)("ColourType").ToString()
+                        items(6, i) = shutterData.Rows(i)("LouvreSize").ToString()
+                        items(7, i) = shutterData.Rows(i)("LouvrePosition").ToString()
                         items(8, i) = midrailHeight
-                        items(9, i) = dt.Rows(i)("MidrailCritical").ToString()
-                        items(10, i) = dt.Rows(i)("HingeColour").ToString()
-                        items(11, i) = dt.Rows(i)("BlindName").ToString()
-                        items(12, i) = dt.Rows(i)("SemiInsideMount").ToString()
-                        items(13, i) = dt.Rows(i)("PanelQty").ToString()
+                        items(9, i) = shutterData.Rows(i)("MidrailCritical").ToString()
+                        items(10, i) = shutterData.Rows(i)("HingeColour").ToString()
+                        items(11, i) = shutterData.Rows(i)("BlindName").ToString()
+                        items(12, i) = shutterData.Rows(i)("SemiInsideMount").ToString()
+                        items(13, i) = shutterData.Rows(i)("PanelQty").ToString()
                         items(14, i) = headerLengthText
-                        items(15, i) = dt.Rows(i)("JoinedPanels").ToString()
+                        items(15, i) = shutterData.Rows(i)("JoinedPanels").ToString()
                         items(16, i) = layoutCode
-                        items(17, i) = dt.Rows(i)("FrameType").ToString()
-                        items(18, i) = dt.Rows(i)("FrameLeft").ToString()
-                        items(19, i) = dt.Rows(i)("FrameRight").ToString()
-                        items(20, i) = dt.Rows(i)("FrameTop").ToString()
-                        items(21, i) = dt.Rows(i)("FrameBottom").ToString()
+                        items(17, i) = shutterData.Rows(i)("FrameType").ToString()
+                        items(18, i) = shutterData.Rows(i)("FrameLeft").ToString()
+                        items(19, i) = shutterData.Rows(i)("FrameRight").ToString()
+                        items(20, i) = shutterData.Rows(i)("FrameTop").ToString()
+                        items(21, i) = shutterData.Rows(i)("FrameBottom").ToString()
                         items(22, i) = bottomTrack
-                        items(23, i) = dt.Rows(i)("Buildout").ToString()
-                        items(24, i) = dt.Rows(i)("BuildoutPosition").ToString()
-                        items(25, i) = dt.Rows(i)("SameSizePanel").ToString()
+                        items(23, i) = shutterData.Rows(i)("Buildout").ToString()
+                        items(24, i) = shutterData.Rows(i)("BuildoutPosition").ToString()
+                        items(25, i) = shutterData.Rows(i)("SameSizePanel").ToString()
                         items(26, i) = gapPosition
                         items(27, i) = horizontalHeight
-                        items(28, i) = dt.Rows(i)("HorizontalTPost").ToString()
-                        items(29, i) = dt.Rows(i)("TiltrodType").ToString()
-                        items(30, i) = dt.Rows(i)("TiltrodSplit").ToString()
+                        items(28, i) = shutterData.Rows(i)("HorizontalTPost").ToString()
+                        items(29, i) = shutterData.Rows(i)("TiltrodType").ToString()
+                        items(30, i) = shutterData.Rows(i)("TiltrodSplit").ToString()
                         items(31, i) = splitHeigth
-                        items(32, i) = dt.Rows(i)("ReverseHinged").ToString()
-                        items(33, i) = dt.Rows(i)("PelmetFlat").ToString()
-                        items(34, i) = dt.Rows(i)("ExtraFascia").ToString()
-                        items(35, i) = dt.Rows(i)("HingesLoose").ToString()
-                        items(36, i) = FormatNumber(dt.Rows(i)("SquareMetre"), 2)
-                        items(37, i) = dt.Rows(i)("Notes").ToString()
+                        items(32, i) = shutterData.Rows(i)("ReverseHinged").ToString()
+                        items(33, i) = shutterData.Rows(i)("PelmetFlat").ToString()
+                        items(34, i) = shutterData.Rows(i)("ExtraFascia").ToString()
+                        items(35, i) = shutterData.Rows(i)("HingesLoose").ToString()
+                        items(36, i) = FormatNumber(shutterData.Rows(i)("SquareMetre"), 2)
+                        items(37, i) = shutterData.Rows(i)("Notes").ToString()
                     Next
 
                     For i As Integer = 0 To items.GetLength(1) - 1 Step 4
@@ -1600,20 +1555,19 @@ Public Class PreviewClass
 
             ' START SKYLINE SHUTTER OCEAN
             Try
-                Dim shutterOceanData As DataSet = GetListData("SELECT OrderDetails.*, ProductColours.Name AS ColourType, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Skyline Shutter Ocean' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
+                Dim shutterData As DataTable = GetDataTable("SELECT OrderDetails.*, ProductColours.Name AS ColourType, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Skyline Shutter Ocean' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
 
-                If Not shutterOceanData.Tables(0).Rows.Count = 0 Then
+                If shutterData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "OCEAN"
                     pageEvent.PageTitle2 = "Skyline Shutter"
 
                     Dim table As New PdfPTable(5)
                     table.WidthPercentage = 100
 
-                    Dim dt As DataTable = shutterOceanData.Tables(0)
-                    Dim items(41, dt.Rows.Count - 1) As String
+                    Dim items(41, shutterData.Rows.Count - 1) As String
 
-                    For i As Integer = 0 To dt.Rows.Count - 1
-                        Dim layoutCode As String = If(dt.Rows(i)("LayoutCode").ToString() = "Other", dt.Rows(i)("LayoutCodeCustom").ToString(), dt.Rows(i)("LayoutCode").ToString())
+                    For i As Integer = 0 To shutterData.Rows.Count - 1
+                        Dim layoutCode As String = If(shutterData.Rows(i)("LayoutCode").ToString() = "Other", shutterData.Rows(i)("LayoutCodeCustom").ToString(), shutterData.Rows(i)("LayoutCode").ToString())
 
                         Dim gapList As New List(Of String)
 
@@ -1622,11 +1576,11 @@ Public Class PreviewClass
                         Dim midrailHeight1 As Integer = 0
                         Dim midrailHeight2 As Integer = 0
 
-                        If Not IsDBNull(dt.Rows(i)("MidrailHeight1")) Then
-                            midrailHeight1 = dt.Rows(i)("MidrailHeight1")
+                        If Not IsDBNull(shutterData.Rows(i)("MidrailHeight1")) Then
+                            midrailHeight1 = shutterData.Rows(i)("MidrailHeight1")
                         End If
-                        If Not IsDBNull(dt.Rows(i)("MidrailHeight2")) Then
-                            midrailHeight2 = dt.Rows(i)("MidrailHeight2")
+                        If Not IsDBNull(shutterData.Rows(i)("MidrailHeight2")) Then
+                            midrailHeight2 = shutterData.Rows(i)("MidrailHeight2")
                         End If
 
                         If midrailHeight1 > 0 Then midrailList.Add(String.Format("1 : {0}", midrailHeight1))
@@ -1636,8 +1590,8 @@ Public Class PreviewClass
 
                         Dim headerLengthValue As Integer = 0
                         Dim headerLengthText As String = String.Empty
-                        If Not IsDBNull(dt.Rows(i)("CustomHeaderLength")) Then
-                            headerLengthValue = dt.Rows(i)("CustomHeaderLength")
+                        If Not IsDBNull(shutterData.Rows(i)("CustomHeaderLength")) Then
+                            headerLengthValue = shutterData.Rows(i)("CustomHeaderLength")
                         End If
                         If headerLengthValue > 0 Then
                             headerLengthText = headerLengthValue.ToString()
@@ -1649,20 +1603,20 @@ Public Class PreviewClass
                         Dim gap4 As Integer = 0
                         Dim gap5 As Integer = 0
 
-                        If Not IsDBNull(dt.Rows(i)("Gap1")) Then
-                            gap1 = dt.Rows(i)("Gap1")
+                        If Not IsDBNull(shutterData.Rows(i)("Gap1")) Then
+                            gap1 = shutterData.Rows(i)("Gap1")
                         End If
-                        If Not IsDBNull(dt.Rows(i)("Gap2")) Then
-                            gap2 = dt.Rows(i)("Gap2")
+                        If Not IsDBNull(shutterData.Rows(i)("Gap2")) Then
+                            gap2 = shutterData.Rows(i)("Gap2")
                         End If
-                        If Not IsDBNull(dt.Rows(i)("Gap3")) Then
-                            gap3 = dt.Rows(i)("Gap3")
+                        If Not IsDBNull(shutterData.Rows(i)("Gap3")) Then
+                            gap3 = shutterData.Rows(i)("Gap3")
                         End If
-                        If Not IsDBNull(dt.Rows(i)("Gap4")) Then
-                            gap4 = dt.Rows(i)("Gap4")
+                        If Not IsDBNull(shutterData.Rows(i)("Gap4")) Then
+                            gap4 = shutterData.Rows(i)("Gap4")
                         End If
-                        If Not IsDBNull(dt.Rows(i)("Gap5")) Then
-                            gap5 = dt.Rows(i)("Gap5")
+                        If Not IsDBNull(shutterData.Rows(i)("Gap5")) Then
+                            gap5 = shutterData.Rows(i)("Gap5")
                         End If
 
                         If gap1 > 0 Then gapList.Add("Gap 1 : " & gap1)
@@ -1676,72 +1630,72 @@ Public Class PreviewClass
                         Dim split1 As Integer = 0
                         Dim split2 As Integer = 0
 
-                        If Not IsDBNull(dt.Rows(i)("SplitHeight1")) Then
-                            split1 = dt.Rows(i)("SplitHeight1")
+                        If Not IsDBNull(shutterData.Rows(i)("SplitHeight1")) Then
+                            split1 = shutterData.Rows(i)("SplitHeight1")
                         End If
-                        If Not IsDBNull(dt.Rows(i)("SplitHeight2")) Then
-                            split2 = dt.Rows(i)("SplitHeight2")
+                        If Not IsDBNull(shutterData.Rows(i)("SplitHeight2")) Then
+                            split2 = shutterData.Rows(i)("SplitHeight2")
                         End If
 
                         Dim splitHeigth As String = String.Format("1st : {0}, 2nd : {1}", split1, split2)
 
                         Dim horizontalHeight As String = String.Empty
                         Dim horizontalTPostHeight As Integer = 0
-                        If Not IsDBNull(dt.Rows(i)("HorizontalTPostHeight")) Then
-                            horizontalTPostHeight = dt.Rows(i)("HorizontalTPostHeight")
+                        If Not IsDBNull(shutterData.Rows(i)("HorizontalTPostHeight")) Then
+                            horizontalTPostHeight = shutterData.Rows(i)("HorizontalTPostHeight")
                         End If
 
                         If horizontalTPostHeight > 0 Then
-                            horizontalHeight = dt.Rows(i)("HorizontalTPostHeight").ToString()
+                            horizontalHeight = shutterData.Rows(i)("HorizontalTPostHeight").ToString()
                         End If
 
-                        Dim bottomTrack As String = dt.Rows(i)("BottomTrackType").ToString()
-                        If dt.Rows(i)("BottomTrackRecess").ToString() = "Yes" Then
-                            bottomTrack = String.Format("{0} | Recess: Yes", dt.Rows(i)("BottomTrackType").ToString())
+                        Dim bottomTrack As String = shutterData.Rows(i)("BottomTrackType").ToString()
+                        If shutterData.Rows(i)("BottomTrackRecess").ToString() = "Yes" Then
+                            bottomTrack = String.Format("{0} | Recess: Yes", shutterData.Rows(i)("BottomTrackType").ToString())
                         End If
                         Dim number As Integer = i + 1
 
                         items(0, i) = "Item : " & number
-                        items(1, i) = dt.Rows(i)("Room").ToString()
-                        items(2, i) = dt.Rows(i)("Width").ToString()
-                        items(3, i) = dt.Rows(i)("Drop").ToString()
-                        items(4, i) = dt.Rows(i)("Mounting").ToString()
-                        items(5, i) = dt.Rows(i)("ColourType").ToString()
-                        items(6, i) = dt.Rows(i)("LouvreSize").ToString()
-                        items(7, i) = dt.Rows(i)("LouvrePosition").ToString()
+                        items(1, i) = shutterData.Rows(i)("Room").ToString()
+                        items(2, i) = shutterData.Rows(i)("Width").ToString()
+                        items(3, i) = shutterData.Rows(i)("Drop").ToString()
+                        items(4, i) = shutterData.Rows(i)("Mounting").ToString()
+                        items(5, i) = shutterData.Rows(i)("ColourType").ToString()
+                        items(6, i) = shutterData.Rows(i)("LouvreSize").ToString()
+                        items(7, i) = shutterData.Rows(i)("LouvrePosition").ToString()
                         items(8, i) = midrailHeight
-                        items(9, i) = dt.Rows(i)("MidrailCritical").ToString()
-                        items(10, i) = dt.Rows(i)("HingeColour").ToString()
-                        items(11, i) = dt.Rows(i)("BlindName").ToString()
-                        items(12, i) = dt.Rows(i)("SemiInsideMount").ToString()
-                        items(13, i) = dt.Rows(i)("PanelQty").ToString()
+                        items(9, i) = shutterData.Rows(i)("MidrailCritical").ToString()
+                        items(10, i) = shutterData.Rows(i)("HingeColour").ToString()
+                        items(11, i) = shutterData.Rows(i)("BlindName").ToString()
+                        items(12, i) = shutterData.Rows(i)("SemiInsideMount").ToString()
+                        items(13, i) = shutterData.Rows(i)("PanelQty").ToString()
                         items(14, i) = headerLengthText
-                        items(15, i) = dt.Rows(i)("JoinedPanels").ToString()
+                        items(15, i) = shutterData.Rows(i)("JoinedPanels").ToString()
                         items(16, i) = layoutCode
-                        items(17, i) = dt.Rows(i)("FrameType").ToString()
-                        items(18, i) = dt.Rows(i)("FrameLeft").ToString()
-                        items(19, i) = dt.Rows(i)("FrameRight").ToString()
-                        items(20, i) = dt.Rows(i)("FrameTop").ToString()
-                        items(21, i) = dt.Rows(i)("FrameBottom").ToString()
+                        items(17, i) = shutterData.Rows(i)("FrameType").ToString()
+                        items(18, i) = shutterData.Rows(i)("FrameLeft").ToString()
+                        items(19, i) = shutterData.Rows(i)("FrameRight").ToString()
+                        items(20, i) = shutterData.Rows(i)("FrameTop").ToString()
+                        items(21, i) = shutterData.Rows(i)("FrameBottom").ToString()
                         items(22, i) = bottomTrack
-                        items(23, i) = dt.Rows(i)("Buildout").ToString()
-                        items(24, i) = dt.Rows(i)("BuildoutPosition").ToString()
-                        items(25, i) = dt.Rows(i)("SameSizePanel").ToString()
+                        items(23, i) = shutterData.Rows(i)("Buildout").ToString()
+                        items(24, i) = shutterData.Rows(i)("BuildoutPosition").ToString()
+                        items(25, i) = shutterData.Rows(i)("SameSizePanel").ToString()
                         items(26, i) = gapPosition
                         items(27, i) = horizontalHeight
-                        items(28, i) = dt.Rows(i)("HorizontalTPost").ToString()
-                        items(29, i) = dt.Rows(i)("TiltrodType").ToString()
-                        items(30, i) = dt.Rows(i)("TiltrodSplit").ToString()
+                        items(28, i) = shutterData.Rows(i)("HorizontalTPost").ToString()
+                        items(29, i) = shutterData.Rows(i)("TiltrodType").ToString()
+                        items(30, i) = shutterData.Rows(i)("TiltrodSplit").ToString()
                         items(31, i) = splitHeigth
-                        items(32, i) = dt.Rows(i)("ReverseHinged").ToString()
-                        items(33, i) = dt.Rows(i)("PelmetFlat").ToString()
-                        items(34, i) = dt.Rows(i)("ExtraFascia").ToString()
-                        items(35, i) = dt.Rows(i)("HingesLoose").ToString()
-                        items(36, i) = dt.Rows(i)("DoorCutOut").ToString()
-                        items(37, i) = dt.Rows(i)("SpecialShape").ToString()
-                        items(38, i) = dt.Rows(i)("TemplateProvided").ToString()
-                        items(39, i) = FormatNumber(dt.Rows(i)("SquareMetre"), 2)
-                        items(40, i) = dt.Rows(i)("Notes").ToString()
+                        items(32, i) = shutterData.Rows(i)("ReverseHinged").ToString()
+                        items(33, i) = shutterData.Rows(i)("PelmetFlat").ToString()
+                        items(34, i) = shutterData.Rows(i)("ExtraFascia").ToString()
+                        items(35, i) = shutterData.Rows(i)("HingesLoose").ToString()
+                        items(36, i) = shutterData.Rows(i)("DoorCutOut").ToString()
+                        items(37, i) = shutterData.Rows(i)("SpecialShape").ToString()
+                        items(38, i) = shutterData.Rows(i)("TemplateProvided").ToString()
+                        items(39, i) = FormatNumber(shutterData.Rows(i)("SquareMetre"), 2)
+                        items(40, i) = shutterData.Rows(i)("Notes").ToString()
                     Next
 
                     For i As Integer = 0 To items.GetLength(1) - 1 Step 4
@@ -1787,20 +1741,19 @@ Public Class PreviewClass
 
             ' START EVOLVE SHUTTER OCEAN
             Try
-                Dim evolveOceanData As DataSet = GetListData("SELECT OrderDetails.*, ProductColours.Name AS ColourType, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Evolve Shutter Ocean' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
+                Dim evolveData As DataTable = GetDataTable("SELECT OrderDetails.*, ProductColours.Name AS ColourType, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Evolve Shutter Ocean' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
 
-                If Not evolveOceanData.Tables(0).Rows.Count = 0 Then
+                If evolveData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "OCEAN"
                     pageEvent.PageTitle2 = "Evolve Shutter"
 
                     Dim table As New PdfPTable(5)
                     table.WidthPercentage = 100
 
-                    Dim dt As DataTable = evolveOceanData.Tables(0)
-                    Dim items(37, dt.Rows.Count - 1) As String
+                    Dim items(37, evolveData.Rows.Count - 1) As String
 
-                    For i As Integer = 0 To dt.Rows.Count - 1
-                        Dim layoutCode As String = If(dt.Rows(i)("LayoutCode").ToString() = "Other", dt.Rows(i)("LayoutCodeCustom").ToString(), dt.Rows(i)("LayoutCode").ToString())
+                    For i As Integer = 0 To evolveData.Rows.Count - 1
+                        Dim layoutCode As String = If(evolveData.Rows(i)("LayoutCode").ToString() = "Other", evolveData.Rows(i)("LayoutCodeCustom").ToString(), evolveData.Rows(i)("LayoutCode").ToString())
 
                         Dim gapList As New List(Of String)
 
@@ -1809,11 +1762,11 @@ Public Class PreviewClass
                         Dim midrailHeight1 As Integer = 0
                         Dim midrailHeight2 As Integer = 0
 
-                        If Not IsDBNull(dt.Rows(i)("MidrailHeight1")) Then
-                            midrailHeight1 = dt.Rows(i)("MidrailHeight1")
+                        If Not IsDBNull(evolveData.Rows(i)("MidrailHeight1")) Then
+                            midrailHeight1 = evolveData.Rows(i)("MidrailHeight1")
                         End If
-                        If Not IsDBNull(dt.Rows(i)("MidrailHeight2")) Then
-                            midrailHeight2 = dt.Rows(i)("MidrailHeight2")
+                        If Not IsDBNull(evolveData.Rows(i)("MidrailHeight2")) Then
+                            midrailHeight2 = evolveData.Rows(i)("MidrailHeight2")
                         End If
 
                         If midrailHeight1 > 0 Then midrailList.Add(String.Format("1 : {0}", midrailHeight1))
@@ -1823,8 +1776,8 @@ Public Class PreviewClass
 
                         Dim headerLengthValue As Integer = 0
                         Dim headerLengthText As String = String.Empty
-                        If Not IsDBNull(dt.Rows(i)("CustomHeaderLength")) Then
-                            headerLengthValue = dt.Rows(i)("CustomHeaderLength")
+                        If Not IsDBNull(evolveData.Rows(i)("CustomHeaderLength")) Then
+                            headerLengthValue = evolveData.Rows(i)("CustomHeaderLength")
                         End If
                         If headerLengthValue > 0 Then
                             headerLengthText = headerLengthValue.ToString()
@@ -1836,20 +1789,20 @@ Public Class PreviewClass
                         Dim gap4 As Integer = 0
                         Dim gap5 As Integer = 0
 
-                        If Not IsDBNull(dt.Rows(i)("Gap1")) Then
-                            gap1 = dt.Rows(i)("Gap1")
+                        If Not IsDBNull(evolveData.Rows(i)("Gap1")) Then
+                            gap1 = evolveData.Rows(i)("Gap1")
                         End If
-                        If Not IsDBNull(dt.Rows(i)("Gap2")) Then
-                            gap2 = dt.Rows(i)("Gap2")
+                        If Not IsDBNull(evolveData.Rows(i)("Gap2")) Then
+                            gap2 = evolveData.Rows(i)("Gap2")
                         End If
-                        If Not IsDBNull(dt.Rows(i)("Gap3")) Then
-                            gap3 = dt.Rows(i)("Gap3")
+                        If Not IsDBNull(evolveData.Rows(i)("Gap3")) Then
+                            gap3 = evolveData.Rows(i)("Gap3")
                         End If
-                        If Not IsDBNull(dt.Rows(i)("Gap4")) Then
-                            gap4 = dt.Rows(i)("Gap4")
+                        If Not IsDBNull(evolveData.Rows(i)("Gap4")) Then
+                            gap4 = evolveData.Rows(i)("Gap4")
                         End If
-                        If Not IsDBNull(dt.Rows(i)("Gap5")) Then
-                            gap5 = dt.Rows(i)("Gap5")
+                        If Not IsDBNull(evolveData.Rows(i)("Gap5")) Then
+                            gap5 = evolveData.Rows(i)("Gap5")
                         End If
 
                         If gap1 > 0 Then gapList.Add("Gap 1 : " & gap1)
@@ -1863,68 +1816,68 @@ Public Class PreviewClass
                         Dim split1 As Integer = 0
                         Dim split2 As Integer = 0
 
-                        If Not IsDBNull(dt.Rows(i)("SplitHeight1")) Then
-                            split1 = dt.Rows(i)("SplitHeight1")
+                        If Not IsDBNull(evolveData.Rows(i)("SplitHeight1")) Then
+                            split1 = evolveData.Rows(i)("SplitHeight1")
                         End If
-                        If Not IsDBNull(dt.Rows(i)("SplitHeight2")) Then
-                            split2 = dt.Rows(i)("SplitHeight2")
+                        If Not IsDBNull(evolveData.Rows(i)("SplitHeight2")) Then
+                            split2 = evolveData.Rows(i)("SplitHeight2")
                         End If
 
                         Dim splitHeigth As String = String.Format("1st : {0}, 2nd : {1}", split1, split2)
 
                         Dim horizontalHeight As String = String.Empty
                         Dim horizontalTPostHeight As Integer = 0
-                        If Not IsDBNull(dt.Rows(i)("HorizontalTPostHeight")) Then
-                            horizontalTPostHeight = dt.Rows(i)("HorizontalTPostHeight")
+                        If Not IsDBNull(evolveData.Rows(i)("HorizontalTPostHeight")) Then
+                            horizontalTPostHeight = evolveData.Rows(i)("HorizontalTPostHeight")
                         End If
 
                         If horizontalTPostHeight > 0 Then
-                            horizontalHeight = dt.Rows(i)("HorizontalTPostHeight").ToString()
+                            horizontalHeight = evolveData.Rows(i)("HorizontalTPostHeight").ToString()
                         End If
 
-                        Dim bottomTrack As String = dt.Rows(i)("BottomTrackType").ToString()
-                        If dt.Rows(i)("BottomTrackRecess").ToString() = "Yes" Then
-                            bottomTrack = String.Format("{0} | Recess: Yes", dt.Rows(i)("BottomTrackType").ToString())
+                        Dim bottomTrack As String = evolveData.Rows(i)("BottomTrackType").ToString()
+                        If evolveData.Rows(i)("BottomTrackRecess").ToString() = "Yes" Then
+                            bottomTrack = String.Format("{0} | Recess: Yes", evolveData.Rows(i)("BottomTrackType").ToString())
                         End If
                         Dim number As Integer = i + 1
 
                         items(0, i) = "Item : " & number
-                        items(1, i) = dt.Rows(i)("Room").ToString()
-                        items(2, i) = dt.Rows(i)("Width").ToString()
-                        items(3, i) = dt.Rows(i)("Drop").ToString()
-                        items(4, i) = dt.Rows(i)("Mounting").ToString()
-                        items(5, i) = dt.Rows(i)("ColourType").ToString()
-                        items(6, i) = dt.Rows(i)("LouvreSize").ToString()
-                        items(7, i) = dt.Rows(i)("LouvrePosition").ToString()
+                        items(1, i) = evolveData.Rows(i)("Room").ToString()
+                        items(2, i) = evolveData.Rows(i)("Width").ToString()
+                        items(3, i) = evolveData.Rows(i)("Drop").ToString()
+                        items(4, i) = evolveData.Rows(i)("Mounting").ToString()
+                        items(5, i) = evolveData.Rows(i)("ColourType").ToString()
+                        items(6, i) = evolveData.Rows(i)("LouvreSize").ToString()
+                        items(7, i) = evolveData.Rows(i)("LouvrePosition").ToString()
                         items(8, i) = midrailHeight
-                        items(9, i) = dt.Rows(i)("MidrailCritical").ToString()
-                        items(10, i) = dt.Rows(i)("HingeColour").ToString()
-                        items(11, i) = dt.Rows(i)("BlindName").ToString()
-                        items(12, i) = dt.Rows(i)("SemiInsideMount").ToString()
-                        items(13, i) = dt.Rows(i)("PanelQty").ToString()
+                        items(9, i) = evolveData.Rows(i)("MidrailCritical").ToString()
+                        items(10, i) = evolveData.Rows(i)("HingeColour").ToString()
+                        items(11, i) = evolveData.Rows(i)("BlindName").ToString()
+                        items(12, i) = evolveData.Rows(i)("SemiInsideMount").ToString()
+                        items(13, i) = evolveData.Rows(i)("PanelQty").ToString()
                         items(14, i) = headerLengthText
-                        items(15, i) = dt.Rows(i)("JoinedPanels").ToString()
+                        items(15, i) = evolveData.Rows(i)("JoinedPanels").ToString()
                         items(16, i) = layoutCode
-                        items(17, i) = dt.Rows(i)("FrameType").ToString()
-                        items(18, i) = dt.Rows(i)("FrameLeft").ToString()
-                        items(19, i) = dt.Rows(i)("FrameRight").ToString()
-                        items(20, i) = dt.Rows(i)("FrameTop").ToString()
-                        items(21, i) = dt.Rows(i)("FrameBottom").ToString()
+                        items(17, i) = evolveData.Rows(i)("FrameType").ToString()
+                        items(18, i) = evolveData.Rows(i)("FrameLeft").ToString()
+                        items(19, i) = evolveData.Rows(i)("FrameRight").ToString()
+                        items(20, i) = evolveData.Rows(i)("FrameTop").ToString()
+                        items(21, i) = evolveData.Rows(i)("FrameBottom").ToString()
                         items(22, i) = bottomTrack
-                        items(23, i) = dt.Rows(i)("Buildout").ToString()
-                        items(24, i) = dt.Rows(i)("SameSizePanel").ToString()
+                        items(23, i) = evolveData.Rows(i)("Buildout").ToString()
+                        items(24, i) = evolveData.Rows(i)("SameSizePanel").ToString()
                         items(25, i) = gapPosition
                         items(26, i) = horizontalHeight
-                        items(27, i) = dt.Rows(i)("HorizontalTPost").ToString()
-                        items(28, i) = dt.Rows(i)("TiltrodType").ToString()
-                        items(29, i) = dt.Rows(i)("TiltrodSplit").ToString()
+                        items(27, i) = evolveData.Rows(i)("HorizontalTPost").ToString()
+                        items(28, i) = evolveData.Rows(i)("TiltrodType").ToString()
+                        items(29, i) = evolveData.Rows(i)("TiltrodSplit").ToString()
                         items(30, i) = splitHeigth
-                        items(31, i) = dt.Rows(i)("ReverseHinged").ToString()
-                        items(32, i) = dt.Rows(i)("PelmetFlat").ToString()
-                        items(33, i) = dt.Rows(i)("ExtraFascia").ToString()
-                        items(34, i) = dt.Rows(i)("HingesLoose").ToString()
-                        items(35, i) = FormatNumber(dt.Rows(i)("SquareMetre"), 2)
-                        items(36, i) = dt.Rows(i)("Notes").ToString()
+                        items(31, i) = evolveData.Rows(i)("ReverseHinged").ToString()
+                        items(32, i) = evolveData.Rows(i)("PelmetFlat").ToString()
+                        items(33, i) = evolveData.Rows(i)("ExtraFascia").ToString()
+                        items(34, i) = evolveData.Rows(i)("HingesLoose").ToString()
+                        items(35, i) = FormatNumber(evolveData.Rows(i)("SquareMetre"), 2)
+                        items(36, i) = evolveData.Rows(i)("Notes").ToString()
                     Next
 
                     For i As Integer = 0 To items.GetLength(1) - 1 Step 4
@@ -1970,58 +1923,55 @@ Public Class PreviewClass
 
             ' START WINDOW
             Try
-                Dim windowData As DataSet = GetListData("SELECT OrderDetails.*, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Window' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
+                Dim windowData As DataTable = GetDataTable("SELECT OrderDetails.*, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Window' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
 
-                If Not windowData.Tables(0).Rows.Count = 0 Then
+                If windowData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Aluminium"
                     pageEvent.PageTitle2 = "Window"
                     Dim table As New PdfPTable(7)
                     table.WidthPercentage = 100
 
-                    Dim dt As DataTable = windowData.Tables(0)
-                    Dim items(20, dt.Rows.Count - 1) As String
+                    Dim items(20, windowData.Rows.Count - 1) As String
 
-                    For i As Integer = 0 To dt.Rows.Count - 1
+                    For i As Integer = 0 To windowData.Rows.Count - 1
                         Dim number As Integer = i + 1
 
-                        Dim swivelQty As String = dt.Rows(i)("SwivelQty").ToString()
+                        Dim swivelQty As String = windowData.Rows(i)("SwivelQty").ToString()
                         If swivelQty = "0" Then swivelQty = String.Empty
 
-                        Dim swivelQtyB As String = dt.Rows(i)("SwivelQtyB").ToString()
+                        Dim swivelQtyB As String = windowData.Rows(i)("SwivelQtyB").ToString()
                         If swivelQtyB = "0" Then swivelQtyB = String.Empty
 
-                        Dim springQty As String = dt.Rows(i)("SpringQty").ToString()
+                        Dim springQty As String = windowData.Rows(i)("SpringQty").ToString()
                         If springQty = "0" Then springQty = String.Empty
 
-                        Dim topPlascticQty As String = dt.Rows(i)("TopPlasticQty").ToString()
+                        Dim topPlascticQty As String = windowData.Rows(i)("TopPlasticQty").ToString()
                         If topPlascticQty = "0" Then topPlascticQty = String.Empty
 
                         items(0, i) = "Item : " & number
-                        items(1, i) = dt.Rows(i)("Room").ToString()
-                        items(2, i) = dt.Rows(i)("Mounting").ToString()
-                        items(3, i) = dt.Rows(i)("Width").ToString()
-                        items(4, i) = dt.Rows(i)("Drop").ToString()
-                        items(5, i) = dt.Rows(i)("BlindName").ToString()
-                        items(6, i) = dt.Rows(i)("FrameColour").ToString()
-                        items(7, i) = dt.Rows(i)("MeshType").ToString()
-                        items(8, i) = dt.Rows(i)("Brace").ToString()
-                        items(9, i) = dt.Rows(i)("AngleType").ToString()
-                        items(10, i) = dt.Rows(i)("AngleLength").ToString()
-                        items(11, i) = dt.Rows(i)("AngleQty").ToString()
-                        items(12, i) = dt.Rows(i)("PortHole").ToString()
-                        items(13, i) = dt.Rows(i)("PlungerPin").ToString()
-                        items(14, i) = dt.Rows(i)("SwivelColour").ToString()
+                        items(1, i) = windowData.Rows(i)("Room").ToString()
+                        items(2, i) = windowData.Rows(i)("Mounting").ToString()
+                        items(3, i) = windowData.Rows(i)("Width").ToString()
+                        items(4, i) = windowData.Rows(i)("Drop").ToString()
+                        items(5, i) = windowData.Rows(i)("BlindName").ToString()
+                        items(6, i) = windowData.Rows(i)("FrameColour").ToString()
+                        items(7, i) = windowData.Rows(i)("MeshType").ToString()
+                        items(8, i) = windowData.Rows(i)("Brace").ToString()
+                        items(9, i) = windowData.Rows(i)("AngleType").ToString()
+                        items(10, i) = windowData.Rows(i)("AngleLength").ToString()
+                        items(11, i) = windowData.Rows(i)("AngleQty").ToString()
+                        items(12, i) = windowData.Rows(i)("PortHole").ToString()
+                        items(13, i) = windowData.Rows(i)("PlungerPin").ToString()
+                        items(14, i) = windowData.Rows(i)("SwivelColour").ToString()
                         items(15, i) = swivelQty
                         items(16, i) = swivelQtyB
                         items(17, i) = springQty
                         items(18, i) = topPlascticQty
-                        items(19, i) = dt.Rows(i)("Notes").ToString()
+                        items(19, i) = windowData.Rows(i)("Notes").ToString()
                     Next
 
                     For i As Integer = 0 To items.GetLength(1) - 1 Step 6
-                        If i > 0 Then
-                            doc.NewPage()
-                        End If
+                        If i > 0 Then doc.NewPage()
 
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
@@ -2063,81 +2013,78 @@ Public Class PreviewClass
 
             ' START DOOR
             Try
-                Dim doorData As DataSet = GetListData("SELECT OrderDetails.*, Blinds.Name AS BlindName, ProductTubes.Name AS TubeName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductTubes ON Products.TubeType=ProductTubes.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Door' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
+                Dim doorData As DataTable = GetDataTable("SELECT OrderDetails.*, Blinds.Name AS BlindName, ProductTubes.Name AS TubeName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductTubes ON Products.TubeType=ProductTubes.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Door' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
 
-                If Not doorData.Tables(0).Rows.Count = 0 Then
+                If doorData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Aluminium"
                     pageEvent.PageTitle2 = "Door"
                     Dim table As New PdfPTable(5)
                     table.WidthPercentage = 100
 
-                    Dim dt As DataTable = doorData.Tables(0)
-                    Dim items(33, dt.Rows.Count - 1) As String
+                    Dim items(33, doorData.Rows.Count - 1) As String
 
-                    For i As Integer = 0 To dt.Rows.Count - 1
+                    For i As Integer = 0 To doorData.Rows.Count - 1
                         Dim number As Integer = i + 1
 
-                        Dim width As String = String.Format("{0} - {1} - {2}", dt.Rows(i)("Width").ToString(), dt.Rows(i)("WidthB").ToString(), dt.Rows(i)("WidthC").ToString())
+                        Dim width As String = String.Format("{0} - {1} - {2}", doorData.Rows(i)("Width").ToString(), doorData.Rows(i)("WidthB").ToString(), doorData.Rows(i)("WidthC").ToString())
 
                         Dim handleLength As String = String.Empty
-                        Dim handleLengthValue As Integer = dt.Rows(i)("HandleLength")
+                        Dim handleLengthValue As Integer = doorData.Rows(i)("HandleLength")
                         If handleLengthValue > 0 Then
-                            handleLength = dt.Rows(i)("HandleLength").ToString()
+                            handleLength = doorData.Rows(i)("HandleLength").ToString()
                         End If
 
                         Dim topTrackLength As String = String.Empty
-                        Dim topTrackValue As Integer = dt.Rows(i)("TopTrackLength")
+                        Dim topTrackValue As Integer = doorData.Rows(i)("TopTrackLength")
                         If topTrackValue > 0 Then
-                            topTrackLength = dt.Rows(i)("TopTrackLength").ToString()
+                            topTrackLength = doorData.Rows(i)("TopTrackLength").ToString()
                         End If
 
                         Dim bottomTrackLength As String = String.Empty
-                        Dim bottomTrackValue As Integer = dt.Rows(i)("BottomTrackLength")
-                        If bottomTrackValue > 0 Then bottomTrackLength = dt.Rows(i)("BottomTrackLength").ToString()
+                        Dim bottomTrackValue As Integer = doorData.Rows(i)("BottomTrackLength")
+                        If bottomTrackValue > 0 Then bottomTrackLength = doorData.Rows(i)("BottomTrackLength").ToString()
 
                         Dim receiverLength As String = String.Empty
-                        Dim receiverValue As Integer = dt.Rows(i)("ReceiverLength")
-                        If receiverValue > 0 Then receiverLength = dt.Rows(i)("ReceiverLength").ToString()
+                        Dim receiverValue As Integer = doorData.Rows(i)("ReceiverLength")
+                        If receiverValue > 0 Then receiverLength = doorData.Rows(i)("ReceiverLength").ToString()
 
                         items(0, i) = "Item : " & number
-                        items(1, i) = dt.Rows(i)("Room").ToString()
-                        items(2, i) = dt.Rows(i)("Mounting").ToString()
+                        items(1, i) = doorData.Rows(i)("Room").ToString()
+                        items(2, i) = doorData.Rows(i)("Mounting").ToString()
                         items(3, i) = width
-                        items(4, i) = dt.Rows(i)("Drop").ToString()
-                        items(5, i) = dt.Rows(i)("BlindName").ToString()
-                        items(6, i) = dt.Rows(i)("TubeName").ToString()
-                        items(7, i) = dt.Rows(i)("FrameColour").ToString()
-                        items(8, i) = dt.Rows(i)("MeshType").ToString()
-                        items(9, i) = dt.Rows(i)("LayoutCode").ToString()
-                        items(10, i) = dt.Rows(i)("MidrailPosition").ToString()
-                        items(11, i) = dt.Rows(i)("HandleType").ToString()
+                        items(4, i) = doorData.Rows(i)("Drop").ToString()
+                        items(5, i) = doorData.Rows(i)("BlindName").ToString()
+                        items(6, i) = doorData.Rows(i)("TubeName").ToString()
+                        items(7, i) = doorData.Rows(i)("FrameColour").ToString()
+                        items(8, i) = doorData.Rows(i)("MeshType").ToString()
+                        items(9, i) = doorData.Rows(i)("LayoutCode").ToString()
+                        items(10, i) = doorData.Rows(i)("MidrailPosition").ToString()
+                        items(11, i) = doorData.Rows(i)("HandleType").ToString()
                         items(12, i) = handleLength
-                        items(13, i) = dt.Rows(i)("TripleLock").ToString()
-                        items(14, i) = dt.Rows(i)("BugSeal").ToString()
-                        items(15, i) = dt.Rows(i)("PetType").ToString()
-                        items(16, i) = dt.Rows(i)("PetPosition").ToString()
-                        items(17, i) = dt.Rows(i)("DoorCloser").ToString()
-                        items(18, i) = dt.Rows(i)("AngleType").ToString()
-                        items(19, i) = dt.Rows(i)("AngleLength").ToString()
-                        items(20, i) = dt.Rows(i)("Beading").ToString()
-                        items(21, i) = dt.Rows(i)("JambType").ToString()
-                        items(22, i) = dt.Rows(i)("JambPosition").ToString()
-                        items(23, i) = dt.Rows(i)("FlushBold").ToString()
-                        items(24, i) = dt.Rows(i)("InterlockType").ToString()
-                        items(25, i) = dt.Rows(i)("TopTrack").ToString()
+                        items(13, i) = doorData.Rows(i)("TripleLock").ToString()
+                        items(14, i) = doorData.Rows(i)("BugSeal").ToString()
+                        items(15, i) = doorData.Rows(i)("PetType").ToString()
+                        items(16, i) = doorData.Rows(i)("PetPosition").ToString()
+                        items(17, i) = doorData.Rows(i)("DoorCloser").ToString()
+                        items(18, i) = doorData.Rows(i)("AngleType").ToString()
+                        items(19, i) = doorData.Rows(i)("AngleLength").ToString()
+                        items(20, i) = doorData.Rows(i)("Beading").ToString()
+                        items(21, i) = doorData.Rows(i)("JambType").ToString()
+                        items(22, i) = doorData.Rows(i)("JambPosition").ToString()
+                        items(23, i) = doorData.Rows(i)("FlushBold").ToString()
+                        items(24, i) = doorData.Rows(i)("InterlockType").ToString()
+                        items(25, i) = doorData.Rows(i)("TopTrack").ToString()
                         items(26, i) = topTrackLength
-                        items(27, i) = dt.Rows(i)("BottomTrack").ToString()
+                        items(27, i) = doorData.Rows(i)("BottomTrack").ToString()
                         items(28, i) = bottomTrackLength
-                        items(29, i) = dt.Rows(i)("Receiver").ToString()
+                        items(29, i) = doorData.Rows(i)("Receiver").ToString()
                         items(30, i) = receiverLength
-                        items(31, i) = dt.Rows(i)("SlidingQty").ToString()
-                        items(32, i) = dt.Rows(i)("Notes").ToString()
+                        items(31, i) = doorData.Rows(i)("SlidingQty").ToString()
+                        items(32, i) = doorData.Rows(i)("Notes").ToString()
                     Next
 
                     For i As Integer = 0 To items.GetLength(1) - 1 Step 4
-                        If i > 0 Then
-                            doc.NewPage()
-                        End If
+                        If i > 0 Then doc.NewPage()
 
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
@@ -2179,31 +2126,28 @@ Public Class PreviewClass
 
             ' START SAMPLE
             Try
-                Dim sampleData As DataSet = GetListData("SELECT OrderDetails.*, Blinds.Name AS BlindName, Fabrics.Name AS FabricName, FabricColours.Colour AS FabricColour FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN Fabrics ON OrderDetails.FabricId=Fabrics.Id LEFT JOIN FabricColours ON OrderDetails.FabricColourId=FabricColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Sample' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
+                Dim sampleData As DataTable = GetDataTable("SELECT OrderDetails.*, Blinds.Name AS BlindName, Fabrics.Name AS FabricName, FabricColours.Colour AS FabricColour FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN Fabrics ON OrderDetails.FabricId=Fabrics.Id LEFT JOIN FabricColours ON OrderDetails.FabricColourId=FabricColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Sample' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
 
-                If Not sampleData.Tables(0).Rows.Count = 0 Then
+                If sampleData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Sample"
                     pageEvent.PageTitle2 = ""
                     Dim table As New PdfPTable(7)
                     table.WidthPercentage = 100
 
-                    Dim dt As DataTable = sampleData.Tables(0)
-                    Dim items(5, dt.Rows.Count - 1) As String
+                    Dim items(5, sampleData.Rows.Count - 1) As String
 
-                    For i As Integer = 0 To dt.Rows.Count - 1
+                    For i As Integer = 0 To sampleData.Rows.Count - 1
                         Dim number As Integer = i + 1
 
                         items(0, i) = "Item : " & number
-                        items(1, i) = dt.Rows(i)("BlindName").ToString()
-                        items(2, i) = dt.Rows(i)("FabricName").ToString()
-                        items(3, i) = dt.Rows(i)("FabricColour").ToString()
-                        items(4, i) = dt.Rows(i)("Notes").ToString()
+                        items(1, i) = sampleData.Rows(i)("BlindName").ToString()
+                        items(2, i) = sampleData.Rows(i)("FabricName").ToString()
+                        items(3, i) = sampleData.Rows(i)("FabricColour").ToString()
+                        items(4, i) = sampleData.Rows(i)("Notes").ToString()
                     Next
 
                     For i As Integer = 0 To items.GetLength(1) - 1 Step 6
-                        If i > 0 Then
-                            doc.NewPage()
-                        End If
+                        If i > 0 Then doc.NewPage()
 
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
@@ -2245,22 +2189,21 @@ Public Class PreviewClass
 
             ' START OUTDOOR
             Try
-                Dim outdoorData As DataSet = GetListData("SELECT OrderDetails.*, Blinds.Name AS BlindName, Fabrics.Name AS FabricName, FabricColours.Colour AS FabricColour, ProductControls.Name AS ControlName FROM OrderDetails LEFT JOIN FabricColours ON OrderDetails.FabricColourId=FabricColours.Id LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductControls ON Products.ControlType=ProductControls.Id LEFT JOIN Fabrics ON OrderDetails.FabricId=Fabrics.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Outdoor' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
+                Dim outdoorData As DataTable = GetDataTable("SELECT OrderDetails.*, Blinds.Name AS BlindName, Fabrics.Name AS FabricName, FabricColours.Colour AS FabricColour, ProductControls.Name AS ControlName FROM OrderDetails LEFT JOIN FabricColours ON OrderDetails.FabricColourId=FabricColours.Id LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductControls ON Products.ControlType=ProductControls.Id LEFT JOIN Fabrics ON OrderDetails.FabricId=Fabrics.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Outdoor' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
 
-                If Not outdoorData.Tables(0).Rows.Count = 0 Then
+                If outdoorData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Outdoor"
                     pageEvent.PageTitle2 = ""
                     Dim table As New PdfPTable(7)
                     table.WidthPercentage = 100
 
-                    Dim dt As DataTable = outdoorData.Tables(0)
-                    Dim items(12, dt.Rows.Count - 1) As String
+                    Dim items(12, outdoorData.Rows.Count - 1) As String
 
-                    For i As Integer = 0 To dt.Rows.Count - 1
+                    For i As Integer = 0 To outdoorData.Rows.Count - 1
                         Dim number As Integer = i + 1
 
-                        Dim controlLength As String = dt.Rows(i)("ControlLength").ToString()
-                        Dim controlLengthValue As String = dt.Rows(i)("ControlLengthValue").ToString()
+                        Dim controlLength As String = outdoorData.Rows(i)("ControlLength").ToString()
+                        Dim controlLengthValue As String = outdoorData.Rows(i)("ControlLengthValue").ToString()
 
                         Dim controlLengthText As String = controlLength
                         If controlLength = "Custom" Then
@@ -2268,23 +2211,21 @@ Public Class PreviewClass
                         End If
 
                         items(0, i) = "Item : " & number
-                        items(1, i) = dt.Rows(i)("Room").ToString()
-                        items(2, i) = dt.Rows(i)("Mounting").ToString()
-                        items(3, i) = dt.Rows(i)("Width").ToString()
-                        items(4, i) = dt.Rows(i)("Drop").ToString()
-                        items(5, i) = dt.Rows(i)("BlindName").ToString()
-                        items(6, i) = dt.Rows(i)("ControlName").ToString()
-                        items(7, i) = dt.Rows(i)("FabricName").ToString()
-                        items(8, i) = dt.Rows(i)("FabricColour").ToString()
-                        items(9, i) = dt.Rows(i)("ControlPosition").ToString()
+                        items(1, i) = outdoorData.Rows(i)("Room").ToString()
+                        items(2, i) = outdoorData.Rows(i)("Mounting").ToString()
+                        items(3, i) = outdoorData.Rows(i)("Width").ToString()
+                        items(4, i) = outdoorData.Rows(i)("Drop").ToString()
+                        items(5, i) = outdoorData.Rows(i)("BlindName").ToString()
+                        items(6, i) = outdoorData.Rows(i)("ControlName").ToString()
+                        items(7, i) = outdoorData.Rows(i)("FabricName").ToString()
+                        items(8, i) = outdoorData.Rows(i)("FabricColour").ToString()
+                        items(9, i) = outdoorData.Rows(i)("ControlPosition").ToString()
                         items(10, i) = controlLengthText
-                        items(11, i) = dt.Rows(i)("Notes").ToString()
+                        items(11, i) = outdoorData.Rows(i)("Notes").ToString()
                     Next
 
                     For i As Integer = 0 To items.GetLength(1) - 1 Step 6
-                        If i > 0 Then
-                            doc.NewPage()
-                        End If
+                        If i > 0 Then doc.NewPage()
 
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)

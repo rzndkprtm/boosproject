@@ -27,26 +27,26 @@ Partial Class Guide_Detail
 
     Protected Sub BindData(guideId As String)
         Try
-            Dim thisData As DataSet = settingClass.GetListData("SELECT * FROM Tutorials WHERE Id='" & guideId & "'")
-            If thisData.Tables(0).Rows.Count = 0 Then
+            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM Tutorials WHERE Id='" & guideId & "'")
+            If thisData Is Nothing Then
                 Response.Redirect("~/guide", False)
                 Exit Sub
             End If
 
-            hTitle.InnerText = thisData.Tables(0).Rows(0).Item("Title").ToString()
-            spanDescription.InnerHtml = thisData.Tables(0).Rows(0).Item("Description").ToString()
-            If String.IsNullOrEmpty(thisData.Tables(0).Rows(0).Item("Description").ToString()) Then
+            hTitle.InnerText = thisData("Title").ToString()
+            spanDescription.InnerHtml = thisData("Description").ToString()
+            If String.IsNullOrEmpty(thisData("Description").ToString()) Then
                 spanDescription.InnerHtml = "<br /><br /><br /><br />"
             End If
 
-            Dim videoName As String = thisData.Tables(0).Rows(0).Item("Video").ToString()
+            Dim videoName As String = thisData("Video").ToString()
             If Not String.IsNullOrEmpty(videoName) Then
                 frmVideo.Attributes("src") = videoName
             End If
 
-            Dim pdfName As String = thisData.Tables(0).Rows(0).Item("File").ToString()
+            Dim pdfName As String = thisData("File").ToString()
             If Not String.IsNullOrEmpty(pdfName) Then
-                Dim linkFile As String = String.Format("~/Assets/tutorial/{0}", thisData.Tables(0).Rows(0).Item("File").ToString())
+                Dim linkFile As String = String.Format("~/Assets/tutorial/{0}", thisData("File").ToString())
                 frmPdf.Attributes("src") = ResolveUrl("~/Handler/PDF.ashx?document=" & linkFile)
             End If
         Catch ex As Exception

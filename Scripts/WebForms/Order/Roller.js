@@ -2972,18 +2972,18 @@ function showInfo(type) {
             info = "";
         }
         else if (type === "Tube") {
-            title = "Tube Type Information";
+            title = "Tube Information";
             info = "<b>1. Gear Reduction 38mm</b>";
             info += "<br />";
-            info += "Maksimal width adalah 1810mm.";
+            info += "The maximum tube width for this blind is 1810 mm.";
             info += "<br /><br />";
             info += "<b>2. Gear Reduction 45mm</b>";
             info += "<br />";
-            info += "Ukuran dibawah 6 meter persegi";
+            info += "This tube may be used for blind sizes under 6 square meters.";
             info += "<br /><br />";
             info += "<b>2. Gear Reduction 49mm</b>";
             info += "<br />";
-            info += "Untuk ukuran 6 meter persegi dan lebih";
+            info += "The use of this tube is required for blind sizes of 6 square meters and above.";
             info += "<br />";
 
             if (companyDetailName === "ACCENT") {

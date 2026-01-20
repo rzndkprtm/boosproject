@@ -74,14 +74,15 @@ Partial Class Setting_General_Tutorial
                     lblAction.Text = "Edit"
                     titleProcess.InnerText = "Edit Tutorial"
 
-                    Dim myData As DataSet = settingClass.GetListData("SELECT * FROM Tutorials WHERE Id='" & lblId.Text & "'")
+                    Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Tutorials WHERE Id='" & lblId.Text & "'")
+                    If myData Is Nothing Then Exit Sub
 
                     BindCompany()
 
-                    ddlCompanyId.SelectedValue = myData.Tables(0).Rows(0).Item("CompanyId").ToString()
-                    txtTitle.Text = myData.Tables(0).Rows(0).Item("Title").ToString()
-                    txtDescription.Text = myData.Tables(0).Rows(0).Item("Description").ToString()
-                    ddlActive.SelectedValue = Convert.ToInt32(myData.Tables(0).Rows(0).Item("Active"))
+                    ddlCompanyId.SelectedValue = myData("CompanyId").ToString()
+                    txtTitle.Text = myData("Title").ToString()
+                    txtDescription.Text = myData("Description").ToString()
+                    ddlActive.SelectedValue = Convert.ToInt32(myData("Active"))
 
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Catch ex As Exception
@@ -95,7 +96,7 @@ Partial Class Setting_General_Tutorial
                 MessageError_Log(False, String.Empty)
                 Dim thisScript As String = "window.onload = function() { showLog(); };"
                 Try
-                    gvListLog.DataSource = settingClass.GetListData("SELECT * FROM Logs WHERE DataId='" & dataId & "' AND Type='Tutorials' ORDER BY ActionDate DESC")
+                    gvListLog.DataSource = settingClass.GetDataTable("SELECT * FROM Logs WHERE DataId='" & dataId & "' AND Type='Tutorials' ORDER BY ActionDate DESC")
                     gvListLog.DataBind()
 
                     ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
@@ -223,13 +224,12 @@ Partial Class Setting_General_Tutorial
             If Not searchText = "" Then
                 search = "WHERE Tutorials.Title LIKE '%" & searchText.Trim() & "%' OR Companys.Name LIKE '%" & searchText.Trim() & "%'"
             End If
-
             Dim thisQuery As String = String.Format("SELECT Tutorials.*, Companys.Name AS CompanyName, CASE WHEN Tutorials.Active=1 THEN 'Yes' WHEN Tutorials.Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Tutorials LEFT JOIN Companys ON Tutorials.CompanyId=Companys.Id {0} ORDER BY Companys.Id, Tutorials.Title ASC", search)
 
-            gvList.DataSource = settingClass.GetListData(thisQuery)
+            gvList.DataSource = settingClass.GetDataTable(thisQuery)
             gvList.DataBind()
-
             gvList.Columns(1).Visible = PageAction("Visible ID")
+
             btnAdd.Visible = PageAction("Add")
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -242,7 +242,7 @@ Partial Class Setting_General_Tutorial
     Protected Sub BindCompany()
         ddlCompanyId.Items.Clear()
         Try
-            ddlCompanyId.DataSource = settingClass.GetListData("SELECT * FROM Companys ORDER BY Name ASC")
+            ddlCompanyId.DataSource = settingClass.GetDataTable("SELECT * FROM Companys ORDER BY Name ASC")
             ddlCompanyId.DataTextField = "Name"
             ddlCompanyId.DataValueField = "Id"
             ddlCompanyId.DataBind()

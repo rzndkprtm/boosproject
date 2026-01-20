@@ -403,8 +403,8 @@ Public Partial Class SiteMaster
             If isLogged = True Then
                 If Request.Cookies("deviceId") IsNot Nothing Then
                     sessionId = Request.Cookies("deviceId").Value
-                    Dim checkData As DataSet = settingClass.GetListData("SELECT * FROM Sessions WHERE Id='" & UCase(sessionId) & "' AND LoginId='" & Session("LoginId") & "'")
-                    If checkData.Tables(0).Rows.Count = 0 Then
+                    Dim checkData As DataRow = settingClass.GetDataRow("SELECT * FROM Sessions WHERE Id='" & UCase(sessionId) & "' AND LoginId='" & Session("LoginId") & "'")
+                    If checkData Is Nothing Then
                         Response.Redirect("~/account/login", False)
                         Exit Sub
                     End If

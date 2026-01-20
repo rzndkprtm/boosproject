@@ -79,12 +79,12 @@ Partial Class Order_Rework_Detail
         Try
             Dim thisId As String = reworkId
 
-            Dim itemRework As DataSet = orderClass.GetListData("SELECT * FROM OrderReworkDetails WHERE ReworkId='" & thisId & "' AND Active=1 ORDER BY Id ASC")
-            For i As Integer = 0 To itemRework.Tables(0).Rows.Count - 1
-                Dim id As String = itemRework.Tables(0).Rows(i).Item("Id").ToString()
-                Dim itemId As String = itemRework.Tables(0).Rows(i).Item("ItemId").ToString()
-                Dim category As String = itemRework.Tables(0).Rows(i).Item("Category").ToString()
-                Dim description As String = itemRework.Tables(0).Rows(i).Item("Description").ToString()
+            Dim itemRework As DataTable = orderClass.GetDataTable("SELECT * FROM OrderReworkDetails WHERE ReworkId='" & thisId & "' AND Active=1 ORDER BY Id ASC")
+            For i As Integer = 0 To itemRework.Rows.Count - 1
+                Dim id As String = itemRework.Rows(i)("Id").ToString()
+                Dim itemId As String = itemRework.Rows(i)("ItemId").ToString()
+                Dim category As String = itemRework.Rows(i)("Category").ToString()
+                Dim description As String = itemRework.Rows(i)("Description").ToString()
 
                 Dim folderPath As String = Server.MapPath(String.Format("~/File/Rework/{0}", id))
 
@@ -173,9 +173,9 @@ Partial Class Order_Rework_Detail
             dataLog = {"OrderHeaders", newHeaderId, Session("LoginId").ToString(), "Order Created | Rework Approved"}
             orderClass.Logs(dataLog)
 
-            Dim itemRework As DataSet = orderClass.GetListData("SELECT ItemId FROM OrderReworkDetails WHERE ReworkId='" & reworkId & "'")
-            For i As Integer = 0 To itemRework.Tables(0).Rows.Count - 1
-                Dim itemId As String = itemRework.Tables(0).Rows(i).Item("ItemId").ToString()
+            Dim itemRework As DataTable = orderClass.GetDataTable("SELECT ItemId FROM OrderReworkDetails WHERE ReworkId='" & reworkId & "'")
+            For i As Integer = 0 To itemRework.Rows.Count - 1
+                Dim itemId As String = itemRework.Rows(i)("ItemId").ToString()
                 Dim newIdDetail As String = orderClass.GetNewOrderItemId()
 
                 Using thisConn As New SqlConnection(myConn)
@@ -416,28 +416,28 @@ Partial Class Order_Rework_Detail
 
     Protected Sub BindDataRework(reworkId As String)
         Try
-            Dim reworkData As DataSet = orderClass.GetListData("SELECT OrderReworks.*, CustomerLogins.FullName AS CreatedFullName, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, OrderHeaders.OrderNumber AS OrderNumber, OrderHeaders.OrderName AS OrderName, OrderHeaders.CustomerId AS CustomerId, OrderHeaders.OrderId FROM OrderReworks LEFT JOIN OrderHeaders ON OrderReworks.HeaderId=OrderHeaders.Id LEFT JOIN CustomerLogins ON OrderReworks.CreatedBy=CustomerLogins.Id LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderReworks.Id='" & reworkId & "'")
-            If reworkData.Tables(0).Rows.Count = 0 Then
+            Dim reworkData As DataRow = orderClass.GetDataRow("SELECT OrderReworks.*, CustomerLogins.FullName AS CreatedFullName, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, OrderHeaders.OrderNumber AS OrderNumber, OrderHeaders.OrderName AS OrderName, OrderHeaders.CustomerId AS CustomerId, OrderHeaders.OrderId FROM OrderReworks LEFT JOIN OrderHeaders ON OrderReworks.HeaderId=OrderHeaders.Id LEFT JOIN CustomerLogins ON OrderReworks.CreatedBy=CustomerLogins.Id LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderReworks.Id='" & reworkId & "'")
+            If reworkData Is Nothing Then
                 Response.Redirect("~/order/rework", False)
                 Exit Sub
             End If
 
-            headerId = reworkData.Tables(0).Rows(0).Item("HeaderId").ToString()
-            lblCustomerName.Text = reworkData.Tables(0).Rows(0).Item("CustomerName").ToString()
-            lblCustomerId.Text = reworkData.Tables(0).Rows(0).Item("CustomerId").ToString()
-            lblCompanyId.Text = reworkData.Tables(0).Rows(0).Item("CompanyId").ToString()
-            lblOrderId.Text = reworkData.Tables(0).Rows(0).Item("OrderId").ToString()
-            lblOrderNumber.Text = reworkData.Tables(0).Rows(0).Item("OrderNumber").ToString()
-            lblOrderName.Text = reworkData.Tables(0).Rows(0).Item("OrderName").ToString()
-            lblStatus.Text = reworkData.Tables(0).Rows(0).Item("Status").ToString()
+            headerId = reworkData("HeaderId").ToString()
+            lblCustomerName.Text = reworkData("CustomerName").ToString()
+            lblCustomerId.Text = reworkData("CustomerId").ToString()
+            lblCompanyId.Text = reworkData("CompanyId").ToString()
+            lblOrderId.Text = reworkData("OrderId").ToString()
+            lblOrderNumber.Text = reworkData("OrderNumber").ToString()
+            lblOrderName.Text = reworkData("OrderName").ToString()
+            lblStatus.Text = reworkData("Status").ToString()
 
             lblCreatedDate.Text = "-"
-            If Not String.IsNullOrEmpty(reworkData.Tables(0).Rows(0).Item("CreatedDate").ToString()) Then
-                lblCreatedDate.Text = Convert.ToDateTime(reworkData.Tables(0).Rows(0).Item("CreatedDate")).ToString("dd MMM yyyy")
+            If Not String.IsNullOrEmpty(reworkData("CreatedDate").ToString()) Then
+                lblCreatedDate.Text = Convert.ToDateTime(reworkData("CreatedDate")).ToString("dd MMM yyyy")
             End If
-            lblCreatedBy.Text = reworkData.Tables(0).Rows(0).Item("CreatedFullName").ToString()
+            lblCreatedBy.Text = reworkData("CreatedFullName").ToString()
 
-            rptRework.DataSource = orderClass.GetListData("SELECT OrderReworkDetails.*, 'Item ID ' + CONVERT(VARCHAR, OrderDetails.Id) + ' - ' + OrderDetails.Room AS TitleItem FROM OrderReworkDetails LEFT JOIN OrderDetails ON OrderReworkDetails.ItemId=OrderDetails.Id WHERE OrderReworkDetails.ReworkId='" & reworkId & "' AND OrderReworkDetails.Active=1 ORDER BY Id ASC")
+            rptRework.DataSource = orderClass.GetDataTable("SELECT OrderReworkDetails.*, 'Item ID ' + CONVERT(VARCHAR, OrderDetails.Id) + ' - ' + OrderDetails.Room AS TitleItem FROM OrderReworkDetails LEFT JOIN OrderDetails ON OrderReworkDetails.ItemId=OrderDetails.Id WHERE OrderReworkDetails.ReworkId='" & reworkId & "' AND OrderReworkDetails.Active=1 ORDER BY Id ASC")
             rptRework.DataBind()
 
             aCancelRework.Visible = False
@@ -492,8 +492,8 @@ Partial Class Order_Rework_Detail
 
     Protected Function CreateReworkZip(thisId As String) As String
         Try
-            Dim itemRework As DataSet = orderClass.GetListData("SELECT * FROM OrderReworkDetails WHERE ReworkId='" & thisId & "' AND Active=1 ORDER BY Id ASC")
-            If itemRework Is Nothing OrElse itemRework.Tables(0).Rows.Count = 0 Then
+            Dim itemRework As DataTable = orderClass.GetDataTable("SELECT * FROM OrderReworkDetails WHERE ReworkId='" & thisId & "' AND Active=1 ORDER BY Id ASC")
+            If itemRework Is Nothing OrElse itemRework.Rows.Count = 0 Then
                 Return String.Empty
             End If
 
@@ -511,7 +511,7 @@ Partial Class Order_Rework_Detail
             End If
             Directory.CreateDirectory(tempFolder)
 
-            For Each row As DataRow In itemRework.Tables(0).Rows
+            For Each row As DataRow In itemRework.Rows
                 Dim id As String = row("Id").ToString()
                 Dim sourceFolder As String = HttpContext.Current.Server.MapPath(String.Format("~/File/Rework/{0}", id))
                 If Directory.Exists(sourceFolder) Then

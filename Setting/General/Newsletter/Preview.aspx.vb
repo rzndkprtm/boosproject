@@ -28,13 +28,13 @@ Partial Class Setting_General_Newsletter_Preview
 
     Protected Sub BindData(newsletterId As String)
         Try
-            Dim thisData As DataSet = settingClass.GetListData("SELECT * FROM Newsletters WHERE Id='" & newsletterId & "'")
-            If thisData.Tables(0).Rows.Count = 0 Then
+            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM Newsletters WHERE Id='" & newsletterId & "'")
+            If thisData Is Nothing Then
                 Response.Redirect("~/setting/general/newsletter", False)
                 Exit Sub
             End If
 
-            imgNewsletter.ImageUrl = thisData.Tables(0).Rows(0).Item("Link").ToString()
+            imgNewsletter.ImageUrl = thisData("Link").ToString()
         Catch ex As Exception
             MessageError(True, ex.ToString)
             If Not Session("RoleName") = "Developer" Then

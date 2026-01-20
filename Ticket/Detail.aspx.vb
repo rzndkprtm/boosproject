@@ -136,12 +136,12 @@ Partial Class Ticket_Detail
             rawText = rawText.Replace(vbCrLf, "<br>").Replace(vbLf, "<br>")
             desc.InnerHtml = rawText
 
-            Dim attachmentData As DataSet = settingClass.GetListData("SELECT FileName FROM TicketAttachments WHERE TicketDetailId='" & ticketDetailId & "'")
+            Dim attachmentData As DataTable = settingClass.GetDataTable("SELECT FileName FROM TicketAttachments WHERE TicketDetailId='" & ticketDetailId & "'")
 
-
-            If attachmentData IsNot Nothing AndAlso attachmentData.Tables.Count > 0 AndAlso attachmentData.Tables(0).Rows.Count > 0 Then
-                rptAttachments.DataSource = attachmentData.Tables(0)
+            If attachmentData.Rows.Count > 0 Then
+                rptAttachments.DataSource = attachmentData
                 rptAttachments.DataBind()
+
                 titleAttachment.Visible = True
             Else
                 rptAttachments.Visible = False
@@ -198,20 +198,20 @@ Partial Class Ticket_Detail
             If Session("RoleName") = "Customer" Then
                 thisQuery = "SELECT Tickets.*, CustomerLogins.FullName AS CreatedName FROM Tickets LEFT JOIN CustomerLogins ON Tickets.CreatedBy=CustomerLogins.Id WHERE Tickets.Id='" & ticketId & "' AND Tickets.CreatedBy='" & Session("LoginId").ToString() & "'"
             End If
-            Dim thisData As DataSet = settingClass.GetListData(thisQuery)
-            If thisData.Tables(0).Rows.Count = 0 Then
+            Dim thisData As DataRow = settingClass.GetDataRow(thisQuery)
+            If thisData Is Nothing Then
                 Response.Redirect("~/ticket", False)
                 Exit Sub
             End If
 
-            txtIssue.Text = thisData.Tables(0).Rows(0).Item("Issue").ToString()
-            txtSubject.Text = thisData.Tables(0).Rows(0).Item("Subject").ToString()
-            txtCreatedBy.Text = thisData.Tables(0).Rows(0).Item("CreatedName").ToString()
-            txtCreatedDate.Text = Convert.ToDateTime(thisData.Tables(0).Rows(0).Item("CreatedDate")).ToString("dd MMM yyyy")
+            txtIssue.Text = thisData("Issue").ToString()
+            txtSubject.Text = thisData("Subject").ToString()
+            txtCreatedBy.Text = thisData("CreatedName").ToString()
+            txtCreatedDate.Text = Convert.ToDateTime(thisData("CreatedDate")).ToString("dd MMM yyyy")
 
-            Dim status As Boolean = thisData.Tables(0).Rows(0).Item("Status")
+            Dim status As Boolean = thisData("Status")
 
-            rptDetail.DataSource = settingClass.GetListData("SELECT TicketDetails.*, CustomerLogins.FullName AS ReplyName, CustomerLoginRoles.Name AS ReplyRole FROM TicketDetails LEFT JOIN CustomerLogins ON TicketDetails.ReplyBy=CustomerLogins.Id LEFT JOIN CustomerLoginRoles ON CustomerLogins.RoleId=CustomerLoginRoles.Id WHERE TicketDetails.TicketId='" & ticketId & "' ORDER BY CreatedDate DESC")
+            rptDetail.DataSource = settingClass.GetDataTable("SELECT TicketDetails.*, CustomerLogins.FullName AS ReplyName, CustomerLoginRoles.Name AS ReplyRole FROM TicketDetails LEFT JOIN CustomerLogins ON TicketDetails.ReplyBy=CustomerLogins.Id LEFT JOIN CustomerLoginRoles ON CustomerLogins.RoleId=CustomerLoginRoles.Id WHERE TicketDetails.TicketId='" & ticketId & "' ORDER BY CreatedDate DESC")
             rptDetail.DataBind()
 
             aReply.Visible = False : aClose.Visible = False

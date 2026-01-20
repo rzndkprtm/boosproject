@@ -8,11 +8,13 @@ Public Class SettingClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Public Function GetDataRow(thisString As String) As DataRow
-        Using thisConn As New SqlConnection(myConn)
-            Using thisCmd As New SqlCommand(thisString, thisConn)
-                Using thisAdapter As New SqlDataAdapter(thisCmd)
-                    Using dt As New DataTable()
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using thisAdapter As New SqlDataAdapter(thisCmd)
+                        Dim dt As New DataTable()
                         thisAdapter.Fill(dt)
+
                         If dt.Rows.Count > 0 Then
                             Return dt.Rows(0)
                         Else
@@ -21,48 +23,44 @@ Public Class SettingClass
                     End Using
                 End Using
             End Using
-        End Using
+        Catch ex As Exception
+            Return Nothing
+        End Try
     End Function
 
     Public Function GetDataTable(thisString As String) As DataTable
-        Using thisConn As New SqlConnection(myConn)
-            Using thisCmd As New SqlCommand(thisString, thisConn)
-                Using da As New SqlDataAdapter(thisCmd)
-                    Dim dt As New DataTable()
-                    da.Fill(dt)
-                    Return dt
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using da As New SqlDataAdapter(thisCmd)
+                        Dim dt As New DataTable()
+                        da.Fill(dt)
+                        Return dt
+                    End Using
                 End Using
             End Using
-        End Using
-    End Function
-
-    Public Function GetListData(thisString As String) As DataSet
-        Dim thisCmd As New SqlCommand(thisString)
-        Using thisConn As New SqlConnection(myConn)
-            Using thisAdapter As New SqlDataAdapter()
-                thisCmd.Connection = thisConn
-                thisAdapter.SelectCommand = thisCmd
-                Using thisDataSet As New DataSet()
-                    thisAdapter.Fill(thisDataSet)
-                    Return thisDataSet
-                End Using
-            End Using
-        End Using
+        Catch ex As Exception
+            Return Nothing
+        End Try
     End Function
 
     Public Function GetItemData(thisString As String) As String
         Dim result As String = String.Empty
-        Using thisConn As New SqlConnection(myConn)
-            thisConn.Open()
-            Using myCmd As New SqlCommand(thisString, thisConn)
-                Using rdResult = myCmd.ExecuteReader
-                    While rdResult.Read
-                        result = rdResult.Item(0).ToString()
-                    End While
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                thisConn.Open()
+                Using myCmd As New SqlCommand(thisString, thisConn)
+                    Using rdResult = myCmd.ExecuteReader
+                        While rdResult.Read
+                            result = rdResult.Item(0).ToString()
+                        End While
+                    End Using
                 End Using
+                thisConn.Close()
             End Using
-            thisConn.Close()
-        End Using
+        Catch ex As Exception
+            result = String.Empty
+        End Try
         Return result
     End Function
 
@@ -87,7 +85,7 @@ Public Class SettingClass
     End Function
 
     Public Function GetItemData_Decimal(thisString As String) As Decimal
-        Dim result As Double = 0.00
+        Dim result As Double = 0D
         Try
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
@@ -101,7 +99,7 @@ Public Class SettingClass
                 thisConn.Close()
             End Using
         Catch ex As Exception
-            result = 0.00
+            result = 0D
         End Try
         Return result
     End Function
@@ -268,10 +266,10 @@ Public Class SettingClass
             If Not String.IsNullOrEmpty(companyId) Then
                 Dim hasil As String = String.Empty
 
-                Dim cekDesign As DataSet = GetListData("SELECT * FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS companyArray WHERE companyArray.VALUE='" & companyId & "' ORDER BY Name ASC")
-                If Not cekDesign.Tables(0).Rows.Count = 0 Then
-                    For i As Integer = 0 To cekDesign.Tables(0).Rows.Count - 1
-                        Dim id As String = cekDesign.Tables(0).Rows(i).Item("Id").ToString()
+                Dim cekDesign As DataTable = GetDataTable("SELECT * FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS companyArray WHERE companyArray.VALUE='" & companyId & "' ORDER BY Name ASC")
+                If Not cekDesign.Rows.Count = 0 Then
+                    For i As Integer = 0 To cekDesign.Rows.Count - 1
+                        Dim id As String = cekDesign.Rows(i)("Id").ToString()
                         hasil += id.ToString() & ","
                     Next
                 End If

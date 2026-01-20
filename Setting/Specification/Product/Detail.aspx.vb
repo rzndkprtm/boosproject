@@ -208,11 +208,11 @@ Partial Class Setting_Specification_Product_Detail
 
             Dim company As String = thisData("CompanyDetailId").ToString()
             If Not String.IsNullOrEmpty(company) Then
-                Dim myData As DataSet = settingClass.GetListData("SELECT CompanyDetails.Name AS CompanyName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS splitArray LEFT JOIN CompanyDetails ON splitArray.VALUE=CompanyDetails.Id WHERE Products.Id='" & productId & "' ORDER BY CompanyDetails.Id ASC")
+                Dim myData As DataTable = settingClass.GetDataTable("SELECT CompanyDetails.Name AS CompanyName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS splitArray LEFT JOIN CompanyDetails ON splitArray.VALUE=CompanyDetails.Id WHERE Products.Id='" & productId & "' ORDER BY CompanyDetails.Id ASC")
                 Dim hasil As String = String.Empty
-                If Not myData.Tables(0).Rows.Count = 0 Then
-                    For i As Integer = 0 To myData.Tables(0).Rows.Count - 1
-                        Dim designName As String = myData.Tables(0).Rows(i).Item("CompanyName").ToString()
+                If Not myData.Rows.Count = 0 Then
+                    For i As Integer = 0 To myData.Rows.Count - 1
+                        Dim designName As String = myData.Rows(i)("CompanyName").ToString()
                         hasil += designName & ", "
                     Next
                 End If

@@ -68,16 +68,13 @@ Partial Class Sales_Costing
             Dim dateValue As Date
 
             Dim search As String = String.Empty
-
             If Not String.IsNullOrWhiteSpace(searchDate) AndAlso Date.TryParse(searchDate, dateValue) Then
                 search = " WHERE SummaryDate = '" & dateValue.ToString("yyyy-MM-dd") & "'"
             End If
-
             Dim thisQuery As String = String.Format("SELECT * FROM Sales {0} ORDER BY SummaryDate DESC", search)
 
-            gvList.DataSource = salesClass.GetListData(thisQuery)
+            gvList.DataSource = salesClass.GetDataTable(thisQuery)
             gvList.DataBind()
-
             gvList.Columns(1).Visible = PageAction("Visible ID")
             gvList.Columns(8).Visible = PageAction("Visible Action")
         Catch ex As Exception

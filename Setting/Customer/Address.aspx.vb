@@ -246,13 +246,12 @@ Partial Class Setting_Customer_Address
     Private Sub BindData(searchText As String)
         Try
             Dim search As String = String.Empty
-
             If Not String.IsNullOrEmpty(searchText) Then
                 search = "WHERE Customers.Name LIKE '%" & searchText & "%'"
             End If
             Dim thisQuery As String = String.Format("SELECT CustomerAddress.*, Customers.Name AS CustomerName, CASE WHEN CustomerAddress.[Primary]=1 THEN 'Yes' WHEN CustomerAddress.[Primary]=0 THEN 'No' ELSE 'Error' END AS DataPrimary FROM CustomerAddress LEFT JOIN Customers ON CustomerAddress.CustomerId=Customers.Id {0} ORDER BY Customers.Name, CustomerAddress.Id ASC", search)
 
-            gvList.DataSource = settingClass.GetListData(thisQuery)
+            gvList.DataSource = settingClass.GetDataTable(thisQuery)
             gvList.DataBind()
         Catch ex As Exception
             MessageError(True, ex.ToString())

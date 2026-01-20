@@ -448,11 +448,11 @@ Partial Class Setting_Boos
     Protected Sub ResetDataCashSaleOrder()
         Try
             Dim orderClass As New OrderClass
-            Dim thisData As DataSet = orderClass.GetListData("SELECT OrderHeaders.* FROM OrderHeaders LEFT JOIN OrderInvoices ON OrderHeaders.Id=OrderInvoices.Id WHERE OrderHeaders.Status='Proforma Sent' AND OrderInvoices.DueDate=CAST(GETDATE() AS DATE)")
+            Dim thisData As DataTable = orderClass.GetDataTable("SELECT OrderHeaders.* FROM OrderHeaders LEFT JOIN OrderInvoices ON OrderHeaders.Id=OrderInvoices.Id WHERE OrderHeaders.Status='Proforma Sent' AND OrderInvoices.DueDate=CAST(GETDATE() AS DATE)")
 
-            If thisData.Tables(0).Rows.Count > 0 Then
-                For i As Integer = 0 To thisData.Tables(0).Rows.Count - 1
-                    Dim thisId As String = thisData.Tables(0).Rows(i).Item("Id").ToString()
+            If thisData.Rows.Count > 0 Then
+                For i As Integer = 0 To thisData.Rows.Count - 1
+                    Dim thisId As String = thisData.Rows(i)("Id").ToString()
 
                     Using thisConn As New SqlConnection(myConn)
                         thisConn.Open()
@@ -463,10 +463,10 @@ Partial Class Setting_Boos
                             myCmd.ExecuteNonQuery()
                         End Using
 
-                        Dim serviceData As DataSet = orderClass.GetListData("SELECT OrderDetails.* FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.HeaderId='" & thisId & "' AND Products.DesignId='16'")
-                        If serviceData.Tables(0).Rows.Count > 0 Then
-                            For iDetail As Integer = 0 To serviceData.Tables(0).Rows.Count - 1
-                                Dim serviceId As String = serviceData.Tables(0).Rows(iDetail).Item("Id").ToString()
+                        Dim serviceData As DataTable = orderClass.GetDataTable("SELECT OrderDetails.* FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.HeaderId='" & thisId & "' AND Products.DesignId='16'")
+                        If serviceData.Rows.Count > 0 Then
+                            For iDetail As Integer = 0 To serviceData.Rows.Count - 1
+                                Dim serviceId As String = serviceData.Rows(iDetail)("Id").ToString()
 
                                 Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET Active=0 WHERE Id=@ItemId; DELETE FROM OrderCostings WHERE HeaderId=@HeaderId AND ItemId=@ItemId", thisConn)
                                     myCmd.Parameters.AddWithValue("@ItemId", serviceId)
@@ -534,11 +534,11 @@ Partial Class Setting_Boos
     End Sub
 
     Protected Sub ResetPassword()
-        Dim loginData As DataSet = settingClass.GetListData("SELECT * FROM CustomerLogins")
-        If loginData.Tables(0).Rows.Count > 0 Then
-            For iLogin As Integer = 0 To loginData.Tables(0).Rows.Count - 1
-                Dim loginId As String = loginData.Tables(0).Rows(iLogin).Item("Id").ToString()
-                Dim userName As String = loginData.Tables(0).Rows(iLogin).Item("UserName").ToString()
+        Dim loginData As DataTable = settingClass.GetDataTable("SELECT * FROM CustomerLogins")
+        If loginData.Rows.Count > 0 Then
+            For iLogin As Integer = 0 To loginData.Rows.Count - 1
+                Dim loginId As String = loginData.Rows(iLogin)("Id").ToString()
+                Dim userName As String = loginData.Rows(iLogin)("UserName").ToString()
 
                 Dim newPassword As String = settingClass.Encrypt(userName)
 
@@ -557,11 +557,11 @@ Partial Class Setting_Boos
 
     Protected Sub ProductionOrder()
         Try
-            Dim thisData As DataSet = settingClass.GetListData("SELECT * FROM OrderHeaders WHERE ProductionDate=CAST(GETDATE() AS DATE) AND Active=1")
-            If thisData.Tables(0).Rows.Count > 0 Then
+            Dim thisData As DataTable = settingClass.GetDataTable("SELECT * FROM OrderHeaders WHERE ProductionDate=CAST(GETDATE() AS DATE) AND Active=1")
+            If thisData.Rows.Count > 0 Then
                 Dim mailingClass As New MailingClass
-                For i As Integer = 0 To thisData.Tables(0).Rows.Count - 1
-                    Dim headerId As String = thisData.Tables(0).Rows(i).Item("Id").ToString()
+                For i As Integer = 0 To thisData.Rows.Count - 1
+                    Dim headerId As String = thisData.Rows(i)("Id").ToString()
 
                     mailingClass.ProductionOrder(headerId)
                 Next

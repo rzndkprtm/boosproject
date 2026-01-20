@@ -12,11 +12,13 @@ Public Class SuratJalanClass
     Dim enUS As CultureInfo = New CultureInfo("en-US")
 
     Public Function GetDataRow(thisString As String) As DataRow
-        Using thisConn As New SqlConnection(myConn)
-            Using thisCmd As New SqlCommand(thisString, thisConn)
-                Using thisAdapter As New SqlDataAdapter(thisCmd)
-                    Using dt As New DataTable()
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using thisAdapter As New SqlDataAdapter(thisCmd)
+                        Dim dt As New DataTable()
                         thisAdapter.Fill(dt)
+
                         If dt.Rows.Count > 0 Then
                             Return dt.Rows(0)
                         Else
@@ -25,33 +27,25 @@ Public Class SuratJalanClass
                     End Using
                 End Using
             End Using
-        End Using
+        Catch ex As Exception
+            Return Nothing
+        End Try
     End Function
 
     Public Function GetDataTable(thisString As String) As DataTable
-        Using thisConn As New SqlConnection(myConn)
-            Using thisCmd As New SqlCommand(thisString, thisConn)
-                Using da As New SqlDataAdapter(thisCmd)
-                    Dim dt As New DataTable()
-                    da.Fill(dt)
-                    Return dt
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using da As New SqlDataAdapter(thisCmd)
+                        Dim dt As New DataTable()
+                        da.Fill(dt)
+                        Return dt
+                    End Using
                 End Using
             End Using
-        End Using
-    End Function
-
-    Public Function GetListData(thisString As String) As DataSet
-        Dim thisCmd As New SqlCommand(thisString)
-        Using thisConn As New SqlConnection(myConn)
-            Using thisAdapter As New SqlDataAdapter()
-                thisCmd.Connection = thisConn
-                thisAdapter.SelectCommand = thisCmd
-                Using thisDataSet As New DataSet()
-                    thisAdapter.Fill(thisDataSet)
-                    Return thisDataSet
-                End Using
-            End Using
-        End Using
+        Catch ex As Exception
+            Return Nothing
+        End Try
     End Function
 
     Public Function GetItemData(thisString As String) As String
@@ -169,12 +163,13 @@ Public Class SuratJalanClass
             Dim headerData As DataRow = GetDataRow("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id='" & headerId & "'")
 
             Dim orderId As String = headerData("OrderId").ToString()
+            Dim orderNumber As String = headerData("OrderNumber").ToString()
             Dim customerId As String = headerData("CustomerId").ToString()
             Dim customerName As String = headerData("CustomerName").ToString()
 
             Dim fullAddress As String = String.Empty
             Dim customerAddress As DataRow = GetDataRow("SELECT * FROM CustomerAddress WHERE CustomerId='" & customerId & "' AND [Primary]=1")
-            If Not customerAddress IsNot Nothing Then
+            If customerAddress IsNot Nothing Then
                 Dim address As String = customerAddress("Address").ToString()
                 Dim suburb As String = customerAddress("Suburb").ToString()
                 Dim state As String = customerAddress("State").ToString()
@@ -256,7 +251,7 @@ Public Class SuratJalanClass
 
             rightTable.AddCell(CreateCell("Order #", alignV:=Element.ALIGN_TOP))
             rightTable.AddCell(CreateCell(":", alignV:=Element.ALIGN_TOP))
-            rightTable.AddCell(CreateCell(orderId, alignV:=Element.ALIGN_TOP))
+            rightTable.AddCell(CreateCell(orderNumber, alignV:=Element.ALIGN_TOP))
 
             Dim rightCell As New PdfPCell(rightTable)
             rightCell.Border = Rectangle.NO_BORDER

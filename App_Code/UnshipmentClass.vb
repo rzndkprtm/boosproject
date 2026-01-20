@@ -8,42 +8,68 @@ Public Class UnshipmentClass
 
     Dim bigConn As String = ConfigurationManager.ConnectionStrings("WebOrder").ConnectionString
 
-    Public Function GetListData(thisString As String) As DataSet
-        Dim thisCmd As New SqlCommand(thisString)
-        Using thisConn As New SqlConnection(bigConn)
-            Using thisAdapter As New SqlDataAdapter()
-                thisCmd.Connection = thisConn
-                thisAdapter.SelectCommand = thisCmd
-                Using thisDataSet As New DataSet()
-                    thisAdapter.Fill(thisDataSet)
-                    Return thisDataSet
+    Public Function GetDataRow(thisString As String) As DataRow
+        Try
+            Using thisConn As New SqlConnection(bigConn)
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using thisAdapter As New SqlDataAdapter(thisCmd)
+                        Dim dt As New DataTable()
+                        thisAdapter.Fill(dt)
+
+                        If dt.Rows.Count > 0 Then
+                            Return dt.Rows(0)
+                        Else
+                            Return Nothing
+                        End If
+                    End Using
                 End Using
             End Using
-        End Using
+        Catch ex As Exception
+            Return Nothing
+        End Try
+    End Function
+
+    Public Function GetDataTable(thisString As String) As DataTable
+        Try
+            Using thisConn As New SqlConnection(bigConn)
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using da As New SqlDataAdapter(thisCmd)
+                        Dim dt As New DataTable()
+                        da.Fill(dt)
+                        Return dt
+                    End Using
+                End Using
+            End Using
+        Catch ex As Exception
+            Return Nothing
+        End Try
     End Function
 
     Protected Function GetItemData(thisString As String) As String
         Dim result As String = String.Empty
-        Using thisConn As New SqlConnection(bigConn)
-            thisConn.Open()
-            Using myCmd As New SqlCommand(thisString, thisConn)
-                Using rdResult = myCmd.ExecuteReader
-                    While rdResult.Read
-                        result = rdResult.Item(0).ToString()
-                    End While
+        Try
+            Using thisConn As New SqlConnection(bigConn)
+                thisConn.Open()
+                Using myCmd As New SqlCommand(thisString, thisConn)
+                    Using rdResult = myCmd.ExecuteReader
+                        While rdResult.Read
+                            result = rdResult.Item(0).ToString()
+                        End While
+                    End Using
                 End Using
+                thisConn.Close()
             End Using
-            thisConn.Close()
-        End Using
+        Catch ex As Exception
+            result = String.Empty
+        End Try
         Return result
     End Function
 
     Public Sub BindContent(filePath As String)
         If Not String.IsNullOrEmpty(filePath) Then
-            Dim thisQuery As String = "SELECT OrderHeaders.*, Customers.Name AS CustomerName, CustomerLogins.FullName AS CreatedName FROM OrderHeaders INNER JOIN Customers ON OrderHeaders.CustomerId=Customers.Id LEFT JOIN CustomerLogins ON OrderHeaders.CreatedBy=CustomerLogins.Id WHERE OrderHeaders.OrderType='Regular' AND Customers.CompanyId='2' AND OrderHeaders.Status='In Production' AND OrderHeaders.ProductionDate<= DATEADD( DAY, - 10, GETDATE())"
-            Dim thisData As DataSet = GetListData(thisQuery)
+            Dim thisData As DataTable = GetDataTable("SELECT OrderHeaders.*, Customers.Name AS CustomerName, CustomerLogins.FullName AS CreatedName FROM OrderHeaders INNER JOIN Customers ON OrderHeaders.CustomerId=Customers.Id LEFT JOIN CustomerLogins ON OrderHeaders.CreatedBy=CustomerLogins.Id WHERE OrderHeaders.OrderType='Regular' AND Customers.CompanyId='2' AND OrderHeaders.Status='In Production' AND OrderHeaders.ProductionDate<= DATEADD( DAY, - 10, GETDATE())")
 
-            If thisData.Tables(0).Rows.Count > 0 Then
+            If thisData.Rows.Count > 0 Then
                 Dim doc As New Document(PageSize.A4.Rotate(), 36, 36, 80, 72)
                 Dim pdfFilePath As String = filePath
                 Using fs As New FileStream(pdfFilePath, FileMode.Create)
@@ -69,15 +95,15 @@ Public Class UnshipmentClass
                     table.AddCell(HeaderCellOriginal("Submitted Date"))
                     table.AddCell(HeaderCellOriginal("Production Date"))
 
-                    For i As Integer = 0 To thisData.Tables(0).Rows.Count - 1
-                        Dim orderId As String = thisData.Tables(0).Rows(i).Item("OrderId").ToString()
-                        Dim customerName As String = thisData.Tables(0).Rows(i).Item("CustomerName").ToString()
-                        Dim orderNumber As String = thisData.Tables(0).Rows(i).Item("StoreOrderNo").ToString()
-                        Dim orderName As String = thisData.Tables(0).Rows(i).Item("StoreCustomer").ToString()
-                        Dim createdName As String = thisData.Tables(0).Rows(i).Item("CreatedName").ToString()
-                        Dim createdDate As DateTime = Convert.ToDateTime(thisData.Tables(0).Rows(i).Item("CreatedDate"))
-                        Dim submittedDate As DateTime = Convert.ToDateTime(thisData.Tables(0).Rows(i).Item("SubmittedDate"))
-                        Dim productionDate As DateTime = Convert.ToDateTime(thisData.Tables(0).Rows(i).Item("ProductionDate"))
+                    For i As Integer = 0 To thisData.Rows.Count - 1
+                        Dim orderId As String = thisData.Rows(i)("OrderId").ToString()
+                        Dim customerName As String = thisData.Rows(i)("CustomerName").ToString()
+                        Dim orderNumber As String = thisData.Rows(i)("StoreOrderNo").ToString()
+                        Dim orderName As String = thisData.Rows(i)("StoreCustomer").ToString()
+                        Dim createdName As String = thisData.Rows(i)("CreatedName").ToString()
+                        Dim createdDate As DateTime = Convert.ToDateTime(thisData.Rows(i)("CreatedDate"))
+                        Dim submittedDate As DateTime = Convert.ToDateTime(thisData.Rows(i)("SubmittedDate"))
+                        Dim productionDate As DateTime = Convert.ToDateTime(thisData.Rows(i)("ProductionDate"))
 
                         table.AddCell(ContentCell(i + 1))
                         table.AddCell(ContentCell(orderId))
@@ -99,10 +125,9 @@ Public Class UnshipmentClass
 
     Public Sub CreatePDF(Files As String)
         'Try
-        Dim thisQuery As String = "SELECT Order_Header.*, B.Name AS BuilderName FROM Order_Header INNER JOIN Users ON Order_Header.UserLogin=Users.UserName INNER JOIN Stores ON Users.DebtorCode=Stores.Id LEFT JOIN Builder_Header ON Order_Header.OrdID=Builder_Header.OrdID LEFT JOIN Stores B ON Builder_Header.DebtorCode=B.Id WHERE Order_Header.Active=1 AND Order_Header.SubmittedDate>='2025-01-01' AND Order_Header.SubmittedDate<=DATEADD(DAY, -10, GETDATE()) AND Order_Header.Status='In Production' AND Order_Header.UserLogin<> 'u_builder' AND (Order_Header.Shipped IS NULL OR Order_Header.Shipped='') AND (Stores.Type='REGULAR' OR Stores.Type='BUILDER') AND Users.CompanyGroup='JPMD' AND (B.Type<>'PROFORMA' OR B.Type IS NULL);"
-        Dim thisData As DataSet = GetListData(thisQuery)
+        Dim thisData As DataTable = GetDataTable("SELECT Order_Header.*, B.Name AS BuilderName FROM Order_Header INNER JOIN Users ON Order_Header.UserLogin=Users.UserName INNER JOIN Stores ON Users.DebtorCode=Stores.Id LEFT JOIN Builder_Header ON Order_Header.OrdID=Builder_Header.OrdID LEFT JOIN Stores B ON Builder_Header.DebtorCode=B.Id WHERE Order_Header.Active=1 AND Order_Header.SubmittedDate>='2025-01-01' AND Order_Header.SubmittedDate<=DATEADD(DAY, -10, GETDATE()) AND Order_Header.Status='In Production' AND Order_Header.UserLogin<> 'u_builder' AND (Order_Header.Shipped IS NULL OR Order_Header.Shipped='') AND (Stores.Type='REGULAR' OR Stores.Type='BUILDER') AND Users.CompanyGroup='JPMD' AND (B.Type<>'PROFORMA' OR B.Type IS NULL);")
 
-        If thisData.Tables(0).Rows.Count > 0 Then
+        If thisData.Rows.Count > 0 Then
             Dim doc As New Document(PageSize.A4.Rotate(), 36, 36, 80, 72)
             Dim pdfFilePath As String = Files
             Using fs As New FileStream(pdfFilePath, FileMode.Create)
@@ -127,16 +152,16 @@ Public Class UnshipmentClass
                 table.AddCell(HeaderCellOriginal("Created Date"))
                 table.AddCell(HeaderCellOriginal("Submitted Date"))
 
-                For i As Integer = 0 To thisData.Tables(0).Rows.Count - 1
-                    Dim headerId As String = thisData.Tables(0).Rows(i).Item("OrdID").ToString()
-                    Dim orderNumber As String = thisData.Tables(0).Rows(i).Item("StoreOrderNo").ToString()
-                    Dim orderName As String = thisData.Tables(0).Rows(i).Item("StoreCustomer").ToString()
-                    Dim createdBy As String = thisData.Tables(0).Rows(i).Item("UserLogin").ToString()
-                    Dim createdDate As DateTime = Convert.ToDateTime(thisData.Tables(0).Rows(i).Item("CreatedDate"))
-                    Dim submittedDate As DateTime = Convert.ToDateTime(thisData.Tables(0).Rows(i).Item("SubmittedDate"))
+                For i As Integer = 0 To thisData.Rows.Count - 1
+                    Dim headerId As String = thisData.Rows(i)("OrdID").ToString()
+                    Dim orderNumber As String = thisData.Rows(i)("StoreOrderNo").ToString()
+                    Dim orderName As String = thisData.Rows(i)("StoreCustomer").ToString()
+                    Dim createdBy As String = thisData.Rows(i)("UserLogin").ToString()
+                    Dim createdDate As DateTime = Convert.ToDateTime(thisData.Rows(i)("CreatedDate"))
+                    Dim submittedDate As DateTime = Convert.ToDateTime(thisData.Rows(i)("SubmittedDate"))
                     Dim customerName As String = GetItemData("SELECT Stores.Name FROM Stores INNER JOIN Users ON Stores.Id=Users.DebtorCode WHERE Users.UserName = '" + createdBy + "'")
-                    If Not String.IsNullOrEmpty(thisData.Tables(0).Rows(i).Item("BuilderName").ToString()) Then
-                        customerName = String.Format("Builder - {0}", thisData.Tables(0).Rows(i).Item("BuilderName").ToString())
+                    If Not String.IsNullOrEmpty(thisData.Rows(i)("BuilderName").ToString()) Then
+                        customerName = String.Format("Builder - {0}", thisData.Rows(i)("BuilderName").ToString())
                     End If
 
                     table.AddCell(ContentCell(i + 1))

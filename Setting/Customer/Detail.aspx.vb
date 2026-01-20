@@ -1282,9 +1282,9 @@ Partial Class Setting_Customer_Detail
                 Try
                     lblIdLogin.Text = dataId
 
-                    Dim thisData As DataSet = settingClass.GetListData("SELECT * FROM InstallerAccess WHERE Id='" & dataId & "'")
+                    Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM InstallerAccess WHERE Id='" & dataId & "'")
 
-                    Dim areaArray() As String = thisData.Tables(0).Rows(0).Item("Area").ToString().Split(",")
+                    Dim areaArray() As String = thisData("Area").ToString().Split(",")
                     Dim tagsList As List(Of String) = areaArray.ToList()
 
                     For Each i In areaArray
@@ -1754,22 +1754,22 @@ Partial Class Setting_Customer_Detail
                     ddlDiscountType.Enabled = False
                     ddlDiscountDataId.Enabled = False
 
-                    Dim myData As DataSet = settingClass.GetListData("SELECT * FROM CustomerDiscounts WHERE Id='" & lblIdDiscount.Text & "'")
+                    Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerDiscounts WHERE Id='" & lblIdDiscount.Text & "'")
+                    If myData Is Nothing Then Exit Sub
 
                     BindDiscountData()
                     BindDiscountDataB()
 
-                    Dim discountType As String = myData.Tables(0).Rows(0).Item("Type").ToString()
-
-                    ddlDiscountType.SelectedValue = myData.Tables(0).Rows(0).Item("Type").ToString()
+                    Dim discountType As String = myData("Type").ToString()
+                    ddlDiscountType.SelectedValue = myData("Type").ToString()
                     If discountType = "Designs" Then
-                        ddlDiscountDataId.SelectedValue = myData.Tables(0).Rows(0).Item("DataId").ToString()
+                        ddlDiscountDataId.SelectedValue = myData("DataId").ToString()
                     End If
                     If discountType = "PriceProductGroups" Then
-                        ddlDiscountDataIdB.SelectedValue = myData.Tables(0).Rows(0).Item("DataId").ToString()
+                        ddlDiscountDataIdB.SelectedValue = myData("DataId").ToString()
                     End If
 
-                    txtDiscountValue.Text = Convert.ToDecimal(myData.Tables(0).Rows(0).Item("Discount")).ToString("G29", enUS)
+                    txtDiscountValue.Text = Convert.ToDecimal(myData("Discount")).ToString("G29", enUS)
 
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcessDiscount", thisScript, True)
                 Catch ex As Exception
@@ -1785,8 +1785,9 @@ Partial Class Setting_Customer_Detail
                 MessageError_Log(False, String.Empty)
                 Dim thisScript As String = "window.onload = function() { showLog(); };"
                 Try
-                    gvListLogs.DataSource = settingClass.GetListData("SELECT * FROM Logs WHERE Type='CustomerDiscounts' AND DataId='" & dataId & "'  ORDER BY ActionDate DESC")
+                    gvListLogs.DataSource = settingClass.GetDataTable("SELECT * FROM Logs WHERE Type='CustomerDiscounts' AND DataId='" & dataId & "'  ORDER BY ActionDate DESC")
                     gvListLogs.DataBind()
+
                     ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
                 Catch ex As Exception
                     MessageError_Log(True, ex.ToString())
@@ -1857,14 +1858,14 @@ Partial Class Setting_Customer_Detail
         Try
             If msgErrorProcessDiscount.InnerText = "" Then
                 If lblActionDiscount.Text = "Add" Then
-                    Dim designData As DataSet = settingClass.GetListData("SELECT * FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS companyArray WHERE Type='Blinds' AND companyArray.VALUE='" & lblCompanyId.Text & "' AND Active=1 ORDER BY Id ASC")
+                    Dim designData As DataTable = settingClass.GetDataTable("SELECT * FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS companyArray WHERE Type='Blinds' AND companyArray.VALUE='" & lblCompanyId.Text & "' AND Active=1 ORDER BY Id ASC")
 
-                    For i As Integer = 0 To designData.Tables(0).Rows.Count - 1
-                        Dim designId As String = designData.Tables(0).Rows(i).Item("Id").ToString()
+                    For i As Integer = 0 To designData.Rows.Count - 1
+                        Dim designId As String = designData.Rows(i)("Id").ToString()
 
-                        Dim checkData As DataSet = settingClass.GetListData("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & lblId.Text & "' AND Type='" & ddlDiscountType.SelectedValue & "' AND DataId='" & designId & "'")
+                        Dim checkData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & lblId.Text & "' AND Type='" & ddlDiscountType.SelectedValue & "' AND DataId='" & designId & "'")
 
-                        If checkData.Tables(0).Rows.Count = 1 Then
+                        If checkData IsNot Nothing Then
                             UpdateDiscount(checkData)
                         Else
                             InsertDiscount(designId)
@@ -1882,9 +1883,9 @@ Partial Class Setting_Customer_Detail
                     End If
 
                     Dim thisQuery As String = String.Format("SELECT * FROM CustomerDiscounts WHERE CustomerId='{0}' AND Type='{1}' AND DataId='{2}'", lblId.Text, ddlDiscountType.SelectedValue, discounDataId)
-                    Dim checkData As DataSet = settingClass.GetListData(thisQuery)
+                    Dim checkData As DataRow = settingClass.GetDataRow(thisQuery)
 
-                    If checkData.Tables(0).Rows.Count = 1 Then
+                    If checkData IsNot Nothing Then
                         UpdateDiscount(checkData)
                     Else
                         InsertDiscount(discounDataId)
@@ -1967,9 +1968,9 @@ Partial Class Setting_Customer_Detail
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
 
-                Dim discountData As DataSet = settingClass.GetListData("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & lblId.Text & "'")
-                For i As Integer = 0 To discountData.Tables(0).Rows.Count - 1
-                    Dim id As String = discountData.Tables(0).Rows(i).Item("Id").ToString()
+                Dim discountData As DataTable = settingClass.GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & lblId.Text & "'")
+                For i As Integer = 0 To discountData.Rows.Count - 1
+                    Dim id As String = discountData.Rows(i)("Id").ToString()
 
                     Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Logs WHERE Type='CustomerDiscounts' AND DataId=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", id)
@@ -2002,7 +2003,7 @@ Partial Class Setting_Customer_Detail
         Try
             Dim thisQuery As String = "SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END, DataId ASC"
 
-            gvListDiscount.DataSource = settingClass.GetListData(thisQuery)
+            gvListDiscount.DataSource = settingClass.GetDataTable(thisQuery)
             gvListDiscount.DataBind()
 
             gvListDiscount.Columns(1).Visible = PageAction("Visible ID Discount")
@@ -2024,10 +2025,11 @@ Partial Class Setting_Customer_Detail
     Protected Sub BindDiscountData()
         ddlDiscountDataId.Items.Clear()
         Try
-            ddlDiscountDataId.DataSource = settingClass.GetListData("SELECT * FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS companyArray WHERE companyArray.VALUE='" & lblCompanyId.Text & "' AND Active=1 ORDER BY Name ASC")
+            ddlDiscountDataId.DataSource = settingClass.GetDataTable("SELECT * FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS companyArray WHERE companyArray.VALUE='" & lblCompanyId.Text & "' AND Active=1 ORDER BY Name ASC")
             ddlDiscountDataId.DataTextField = "Name"
             ddlDiscountDataId.DataValueField = "Id"
             ddlDiscountDataId.DataBind()
+
             If ddlDiscountDataId.Items.Count > 1 Then
                 ddlDiscountDataId.Items.Insert(0, New ListItem("", ""))
             End If
@@ -2041,10 +2043,11 @@ Partial Class Setting_Customer_Detail
     Protected Sub BindDiscountDataB()
         ddlDiscountDataIdB.Items.Clear()
         Try
-            ddlDiscountDataIdB.DataSource = settingClass.GetListData("SELECT * FROM PriceProductGroups WHERE Active=1 ORDER BY Name ASC")
+            ddlDiscountDataIdB.DataSource = settingClass.GetDataTable("SELECT * FROM PriceProductGroups WHERE Active=1 ORDER BY Name ASC")
             ddlDiscountDataIdB.DataTextField = "Name"
             ddlDiscountDataIdB.DataValueField = "Id"
             ddlDiscountDataIdB.DataBind()
+
             If ddlDiscountDataIdB.Items.Count > 1 Then
                 ddlDiscountDataIdB.Items.Insert(0, New ListItem("", ""))
             End If
@@ -2073,10 +2076,10 @@ Partial Class Setting_Customer_Detail
         settingClass.Logs({"CustomerDiscounts", thisId, Session("LoginId").ToString(), "Customer Discount Created"})
     End Sub
 
-    Protected Sub UpdateDiscount(checkData As DataSet)
-        Dim thisId As String = checkData.Tables(0).Rows(0)("Id").ToString()
-        Dim thisDiscount As Decimal = CDec(checkData.Tables(0).Rows(0)("Discount"))
-        Dim newDisc As Decimal = settingClass.getTotalDiscount(thisDiscount, txtDiscountValue.Text)
+    Protected Sub UpdateDiscount(checkData As DataRow)
+        Dim thisId As String = checkData("Id").ToString()
+        Dim thisDiscount As Decimal = CDec(checkData("Discount"))
+        Dim newDisc As Decimal = settingClass.GetTotalDiscount(thisDiscount, txtDiscountValue.Text)
 
         Using conn As New SqlConnection(myConn)
             Using cmd As New SqlCommand("UPDATE CustomerDiscounts SET Discount=@Discount WHERE Id=@Id", conn)
@@ -2122,7 +2125,7 @@ Partial Class Setting_Customer_Detail
                 MessageError_DetailPromo(False, String.Empty)
                 Dim thisScript As String = "window.onload = function() { showDetailPromo(); };"
                 Try
-                    gvListDetailPromo.DataSource = settingClass.GetListData("SELECT * FROM PromoDetails WHERE PromoId='" & dataId & "'  ORDER BY Id DESC")
+                    gvListDetailPromo.DataSource = settingClass.GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & dataId & "'  ORDER BY Id DESC")
                     gvListDetailPromo.DataBind()
 
                     ClientScript.RegisterStartupScript(Me.GetType(), "showDetailPromo", thisScript, True)
@@ -2139,8 +2142,9 @@ Partial Class Setting_Customer_Detail
                 MessageError_Log(False, String.Empty)
                 Dim thisScript As String = "window.onload = function() { showLog(); };"
                 Try
-                    gvListLogs.DataSource = settingClass.GetListData("SELECT * FROM Logs WHERE Type='CustomerPromos' AND DataId='" & dataId & "'  ORDER BY ActionDate DESC")
+                    gvListLogs.DataSource = settingClass.GetDataTable("SELECT * FROM Logs WHERE Type='CustomerPromos' AND DataId='" & dataId & "'  ORDER BY ActionDate DESC")
                     gvListLogs.DataBind()
+
                     ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
                 Catch ex As Exception
                     MessageError_Log(True, ex.ToString())
@@ -2261,9 +2265,9 @@ Partial Class Setting_Customer_Detail
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
 
-                Dim discountData As DataSet = settingClass.GetListData("SELECT * FROM CustomerPromos WHERE CustomerId='" & lblId.Text & "'")
-                For i As Integer = 0 To discountData.Tables(0).Rows.Count - 1
-                    Dim id As String = discountData.Tables(0).Rows(i).Item("Id").ToString()
+                Dim discountData As DataTable = settingClass.GetDataTable("SELECT * FROM CustomerPromos WHERE CustomerId='" & lblId.Text & "'")
+                For i As Integer = 0 To discountData.Rows.Count - 1
+                    Dim id As String = discountData.Rows(i)("Id").ToString()
 
                     Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Logs WHERE Type='CustomerPromos' AND DataId=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", id)
@@ -2296,9 +2300,8 @@ Partial Class Setting_Customer_Detail
         Try
             Dim thisQuery As String = "SELECT CustomerPromos.*, Promos.Name AS PromoName FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "'"
 
-            gvListPromo.DataSource = settingClass.GetListData(thisQuery)
+            gvListPromo.DataSource = settingClass.GetDataTable(thisQuery)
             gvListPromo.DataBind()
-
             gvListPromo.Columns(1).Visible = PageAction("Visible ID Promo")
 
             btnAddPromo.Visible = PageAction("Add Promo")
@@ -2316,10 +2319,11 @@ Partial Class Setting_Customer_Detail
     Protected Sub BindListPromo()
         ddlListPromo.Items.Clear()
         Try
-            ddlListPromo.DataSource = settingClass.GetListData("SELECT * FROM Promos WHERE Active=1 ORDER BY Name ASC")
+            ddlListPromo.DataSource = settingClass.GetDataTable("SELECT * FROM Promos WHERE Active=1 ORDER BY Name ASC")
             ddlListPromo.DataTextField = "Name"
             ddlListPromo.DataValueField = "Id"
             ddlListPromo.DataBind()
+
             If ddlListPromo.Items.Count > 1 Then
                 ddlListPromo.Items.Insert(0, New ListItem("", ""))
             End If
@@ -2564,13 +2568,13 @@ Partial Class Setting_Customer_Detail
     Protected Function BindQuoteddress(customerId As String) As String
         Dim result As String = String.Empty
         If Not customerId = "" Then
-            Dim thisData As DataSet = settingClass.GetListData("SELECT * FROM CustomerQuotes WHERE Id='" & customerId & "'")
-            If thisData.Tables(0).Rows.Count > 0 Then
-                Dim address As String = thisData.Tables(0).Rows(0).Item("Address").ToString()
-                Dim suburb As String = thisData.Tables(0).Rows(0).Item("Suburb").ToString()
-                Dim state As String = thisData.Tables(0).Rows(0).Item("State").ToString()
-                Dim postCode As String = thisData.Tables(0).Rows(0).Item("PostCode").ToString()
-                Dim country As String = thisData.Tables(0).Rows(0).Item("Country").ToString()
+            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerQuotes WHERE Id='" & customerId & "'")
+            If thisData IsNot Nothing Then
+                Dim address As String = thisData("Address").ToString()
+                Dim suburb As String = thisData("Suburb").ToString()
+                Dim state As String = thisData("State").ToString()
+                Dim postCode As String = thisData("PostCode").ToString()
+                Dim country As String = thisData("Country").ToString()
 
                 result = String.Format("{0}, {1}, {2} {3} {4}", address, suburb, state, country, postCode)
             End If

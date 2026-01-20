@@ -22,7 +22,5 @@
         </div>
     </div>
 
-    <div class="page-content">
-
-    </div>
+    <div class="page-content"></div>
 </asp:Content>

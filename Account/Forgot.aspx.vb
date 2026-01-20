@@ -34,13 +34,13 @@ Partial Class Account_Forgot
                 Exit Sub
             End If
 
-            Dim checkData As DataSet = settingClass.GetListData("SELECT * FROM CustomerLogins WHERE UserName='" & txtUserLogin.Text.Trim() & "' AND Email='" & txtEmail.Text.Trim() & "'")
-            If checkData Is Nothing OrElse checkData.Tables.Count = 0 Then
+            Dim checkData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerLogins WHERE UserName='" & txtUserLogin.Text.Trim() & "' AND Email='" & txtEmail.Text.Trim() & "'")
+            If checkData Is Nothing Then
                 MessageError(True, "SYSTEM ERROR: NO DATA RETURNED.")
                 Exit Sub
             End If
 
-            Dim loginId As String = checkData.Tables(0).Rows(0).Item("Id").ToString()
+            Dim loginId As String = checkData("Id").ToString()
 
             Dim newPassword As String = settingClass.GenerateNewPassword(15)
             Dim encryptPassword As String = settingClass.Encrypt(newPassword)

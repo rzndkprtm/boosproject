@@ -79,15 +79,17 @@ Partial Class Setting_Specification_ChainRemote
                     BindControl()
                     BindCompany()
 
-                    Dim myData As DataSet = settingClass.GetListData("SELECT * FROM Chains WHERE Id='" & lblId.Text & "'")
-                    txtBoeId.Text = myData.Tables(0).Rows(0).Item("BoeId").ToString()
-                    txtName.Text = myData.Tables(0).Rows(0).Item("Name").ToString()
-                    ddlChainType.SelectedValue = myData.Tables(0).Rows(0).Item("ChainType").ToString()
-                    txtDescription.Text = myData.Tables(0).Rows(0).Item("Description").ToString()
-                    ddlActive.SelectedValue = Convert.ToInt32(myData.Tables(0).Rows(0).Item("Active"))
+                    Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Chains WHERE Id='" & lblId.Text & "'")
+                    If myData Is Nothing Then Exit Sub
 
-                    If Not myData.Tables(0).Rows(0).Item("DesignId").ToString() = "" Then
-                        Dim thisArray() As String = myData.Tables(0).Rows(0).Item("DesignId").ToString().Split(",")
+                    txtBoeId.Text = myData("BoeId").ToString()
+                    txtName.Text = myData("Name").ToString()
+                    ddlChainType.SelectedValue = myData("ChainType").ToString()
+                    txtDescription.Text = myData("Description").ToString()
+                    ddlActive.SelectedValue = Convert.ToInt32(myData("Active"))
+
+                    If Not myData("DesignId").ToString() = "" Then
+                        Dim thisArray() As String = myData("DesignId").ToString().Split(",")
                         For Each i In thisArray
                             If Not (i.Equals(String.Empty)) Then
                                 lbDesign.Items.FindByValue(i).Selected = True
@@ -95,8 +97,8 @@ Partial Class Setting_Specification_ChainRemote
                         Next
                     End If
 
-                    If Not myData.Tables(0).Rows(0).Item("ControlTypeId").ToString() = "" Then
-                        Dim thisArray() As String = myData.Tables(0).Rows(0).Item("ControlTypeId").ToString().Split(",")
+                    If Not myData("ControlTypeId").ToString() = "" Then
+                        Dim thisArray() As String = myData("ControlTypeId").ToString().Split(",")
                         For Each i In thisArray
                             If Not (i.Equals(String.Empty)) Then
                                 lbControl.Items.FindByValue(i).Selected = True
@@ -104,8 +106,8 @@ Partial Class Setting_Specification_ChainRemote
                         Next
                     End If
 
-                    If Not myData.Tables(0).Rows(0).Item("CompanyDetailId").ToString() = "" Then
-                        Dim thisArray() As String = myData.Tables(0).Rows(0).Item("CompanyDetailId").ToString().Split(",")
+                    If Not myData("CompanyDetailId").ToString() = "" Then
+                        Dim thisArray() As String = myData("CompanyDetailId").ToString().Split(",")
                         For Each i In thisArray
                             If Not (i.Equals(String.Empty)) Then
                                 lbCompany.Items.FindByValue(i).Selected = True
@@ -125,7 +127,7 @@ Partial Class Setting_Specification_ChainRemote
                 MessageError_Log(False, String.Empty)
                 Dim thisScript As String = "window.onload = function() { showLog(); };"
                 Try
-                    gvListLogs.DataSource = settingClass.GetListData("SELECT * FROM Logs WHERE DataId='" & dataId & "' AND Type='Chains' ORDER BY ActionDate DESC")
+                    gvListLogs.DataSource = settingClass.GetDataTable("SELECT * FROM Logs WHERE DataId='" & dataId & "' AND Type='Chains' ORDER BY ActionDate DESC")
                     gvListLogs.DataBind()
 
                     ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
@@ -305,9 +307,9 @@ Partial Class Setting_Specification_ChainRemote
                 search = " WHERE Id LIKE '%" & searchText & "%' OR BoeId LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%' OR Description LIKE '%" & searchText & "%'"
             End If
             Dim thisString As String = String.Format("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Chains {0} ORDER BY Name ASC", search)
-            gvList.DataSource = settingClass.GetListData(thisString)
-            gvList.DataBind()
 
+            gvList.DataSource = settingClass.GetDataTable(thisString)
+            gvList.DataBind()
             gvList.Columns(1).Visible = PageAction("Visible ID")
 
             btnAdd.Visible = PageAction("Add")
@@ -322,7 +324,7 @@ Partial Class Setting_Specification_ChainRemote
     Protected Sub BindDesign()
         lbDesign.Items.Clear()
         Try
-            lbDesign.DataSource = settingClass.GetListData("SELECT * FROM Designs ORDER BY Name ASC")
+            lbDesign.DataSource = settingClass.GetDataTable("SELECT * FROM Designs ORDER BY Name ASC")
             lbDesign.DataTextField = "Name"
             lbDesign.DataValueField = "Id"
             lbDesign.DataBind()
@@ -341,7 +343,7 @@ Partial Class Setting_Specification_ChainRemote
     Protected Sub BindControl()
         lbControl.Items.Clear()
         Try
-            lbControl.DataSource = settingClass.GetListData("SELECT * FROM ProductControls ORDER BY Name ASC")
+            lbControl.DataSource = settingClass.GetDataTable("SELECT * FROM ProductControls ORDER BY Name ASC")
             lbControl.DataTextField = "Name"
             lbControl.DataValueField = "Id"
             lbControl.DataBind()
@@ -360,7 +362,7 @@ Partial Class Setting_Specification_ChainRemote
     Protected Sub BindCompany()
         lbCompany.Items.Clear()
         Try
-            lbCompany.DataSource = settingClass.GetListData("SELECT * FROM CompanyDetails ORDER BY Name ASC")
+            lbCompany.DataSource = settingClass.GetDataTable("SELECT * FROM CompanyDetails ORDER BY Name ASC")
             lbCompany.DataTextField = "Name"
             lbCompany.DataValueField = "Id"
             lbCompany.DataBind()

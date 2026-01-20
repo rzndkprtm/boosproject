@@ -2057,10 +2057,6 @@ Partial Class Order_Detail
                 End If
             End If
 
-            If Session("RoleName") = "Installer" Then
-
-            End If
-
             Dim headerData As DataRow = orderClass.GetDataRow(thisQuery)
             If headerData Is Nothing Then
                 Response.Redirect("~/order", False)

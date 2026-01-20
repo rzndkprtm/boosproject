@@ -308,30 +308,30 @@ Partial Class Order_Archive_Detail
         Try
             Dim thisQuery As String = "SELECT Order_Header.*, Stores.Name AS CustomerName FROM Order_Header LEFT JOIN Users ON Order_Header.UserLogin=Users.UserName LEFT JOIN Stores ON Users.DebtorCode=Stores.Id WHERE Order_Header.OrdID='" & headerId & "'"
 
-            Dim headerData As DataSet = archiveClass.GetListData(thisQuery)
-            If headerData.Tables(0).Rows.Count = 0 Then
+            Dim headerData As DataRow = archiveClass.GetDataRow(thisQuery)
+            If headerData Is Nothing Then
                 Response.Redirect("~/order/archive", False)
                 Exit Sub
             End If
 
-            lblCustomerName.Text = headerData.Tables(0).Rows(0).Item("CustomerName").ToString()
-            lblOrderNumber.Text = headerData.Tables(0).Rows(0).Item("StoreOrderNo").ToString()
-            lblOrderName.Text = headerData.Tables(0).Rows(0).Item("StoreCustomer").ToString()
+            lblCustomerName.Text = headerData("CustomerName").ToString()
+            lblOrderNumber.Text = headerData("StoreOrderNo").ToString()
+            lblOrderName.Text = headerData("StoreCustomer").ToString()
 
-            Dim status As String = headerData.Tables(0).Rows(0).Item("Status").ToString()
+            Dim status As String = headerData("Status").ToString()
 
-            lblCreatedBy.Text = headerData.Tables(0).Rows(0).Item("UserLogin").ToString()
+            lblCreatedBy.Text = headerData("UserLogin").ToString()
             lblCreatedDate.Text = "-"
-            If Not String.IsNullOrEmpty(headerData.Tables(0).Rows(0).Item("CreatedDate").ToString()) Then
-                lblCreatedDate.Text = Convert.ToDateTime(headerData.Tables(0).Rows(0).Item("CreatedDate")).ToString("dd MMM yyyy")
+            If Not String.IsNullOrEmpty(headerData("CreatedDate").ToString()) Then
+                lblCreatedDate.Text = Convert.ToDateTime(headerData("CreatedDate")).ToString("dd MMM yyyy")
             End If
 
             companyGroup = archiveClass.GetItemData("SELECT CompanyGroup FROM Users WHERE UserName='" & lblCreatedBy.Text & "'")
 
-            lblSubmittedBy.Text = headerData.Tables(0).Rows(0).Item("SubmittedBy").ToString()
+            lblSubmittedBy.Text = headerData("SubmittedBy").ToString()
             lblSubmittedDate.Text = "-"
-            If Not String.IsNullOrEmpty(headerData.Tables(0).Rows(0).Item("SubmittedDate").ToString()) Then
-                lblSubmittedDate.Text = Convert.ToDateTime(headerData.Tables(0).Rows(0).Item("SubmittedDate")).ToString("dd MMM yyyy")
+            If Not String.IsNullOrEmpty(headerData("SubmittedDate").ToString()) Then
+                lblSubmittedDate.Text = Convert.ToDateTime(headerData("SubmittedDate")).ToString("dd MMM yyyy")
             End If
 
             aConvert.Visible = False
@@ -354,21 +354,21 @@ Partial Class Order_Archive_Detail
     End Sub
 
     Protected Sub BindDataItem(headerId As String)
-        gvListItem.DataSource = archiveClass.GetListData("SELECT * FROM Order_Detail WHERE FKOrdID='" & headerId & "' AND Active=1 ORDER BY OrddID ASC")
+        gvListItem.DataSource = archiveClass.GetDataTable("SELECT * FROM Order_Detail WHERE FKOrdID='" & headerId & "' AND Active=1 ORDER BY OrddID ASC")
         gvListItem.DataBind()
     End Sub
 
     Protected Function BindProductDescription(itemId As String) As String
         Dim result As String = String.Empty
 
-        Dim thisData As DataSet = archiveClass.GetListData("SELECT * FROM Order_Detail WHERE OrddID='" & itemId & "'")
+        Dim thisData As DataRow = archiveClass.GetDataRow("SELECT * FROM Order_Detail WHERE OrddID='" & itemId & "'")
 
-        Dim blindType As String = thisData.Tables(0).Rows(0).Item("BlindType").ToString()
-        Dim orderType As String = thisData.Tables(0).Rows(0).Item("OrderType").ToString()
-        Dim subType As String = thisData.Tables(0).Rows(0).Item("SubType").ToString()
-        Dim width As String = thisData.Tables(0).Rows(0).Item("Width").ToString()
-        Dim drop As String = thisData.Tables(0).Rows(0).Item("Drop").ToString()
-        Dim colour As String = thisData.Tables(0).Rows(0).Item("Colour").ToString()
+        Dim blindType As String = thisData("BlindType").ToString()
+        Dim orderType As String = thisData("OrderType").ToString()
+        Dim subType As String = thisData("SubType").ToString()
+        Dim width As String = thisData("Width").ToString()
+        Dim drop As String = thisData("Drop").ToString()
+        Dim colour As String = thisData("Colour").ToString()
 
         Dim size As String = String.Format("({0}x{1})", width, drop)
 

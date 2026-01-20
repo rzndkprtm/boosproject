@@ -49,7 +49,7 @@ Partial Class Setting_Additional_Query
             End If
 
             If ddlAction.SelectedValue = "Read" Then
-                gvList.DataSource = settingClass.GetListData(txtQuery.Text.Trim())
+                gvList.DataSource = settingClass.GetDataTable(txtQuery.Text.Trim())
                 gvList.DataBind()
             End If
         Catch ex As Exception

@@ -90,24 +90,16 @@ Partial Class Account_Default
 
     Protected Sub BindData(loginId As String)
         Try
-            'BIND LOGIN
+            Dim loginData As DataRow = settingClass.GetDataRow("SELECT CustomerLogins.*, Customers.Name AS CustomerName FROM CustomerLogins LEFT JOIN Customers ON CustomerLogins.CustomerId=Customers.Id WHERE CustomerLogins.Id='" & loginId & "'")
 
-            Dim loginData As DataSet = settingClass.GetListData("SELECT * FROM CustomerLogins WHERE Id='" & loginId & "'")
+            lblUserName.Text = loginData("UserName").ToString()
+            lblFullName.Text = loginData("FullName").ToString()
+            txtFullName.Text = loginData("FullName").ToString()
+            lblUserEmail.Text = loginData("Email").ToString()
+            txtUserEmail.Text = loginData("Email").ToString()
+            lblCustomerName.Text = loginData("CustomerName").ToString()
 
-            lblUserName.Text = loginData.Tables(0).Rows(0).Item("UserName").ToString()
-            lblFullName.Text = loginData.Tables(0).Rows(0).Item("FullName").ToString()
-            txtFullName.Text = loginData.Tables(0).Rows(0).Item("FullName").ToString()
-            lblUserEmail.Text = loginData.Tables(0).Rows(0).Item("Email").ToString()
-            txtUserEmail.Text = loginData.Tables(0).Rows(0).Item("Email").ToString()
-
-            Dim customerId As String = loginData.Tables(0).Rows(0).Item("CustomerId").ToString()
-
-            ' BIND CUSTOMER
-            Dim customerData As DataSet = settingClass.GetListData("SELECT * FROM Customers WHERE Id='" & customerId & "'")
-
-            lblCustomerName.Text = customerData.Tables(0).Rows(0).Item("Name").ToString()
-
-            gvContact.DataSource = settingClass.GetListData("SELECT *, CONVERT(VARCHAR, Salutation) + ' ' + CONVERT(VARCHAR, Name) AS ContactName FROM CustomerContacts WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
+            gvContact.DataSource = settingClass.GetDataTable("SELECT *, CONVERT(VARCHAR, Salutation) + ' ' + CONVERT(VARCHAR, Name) AS ContactName FROM CustomerContacts WHERE CustomerId='" & loginData("CustomerId").ToString() & "' ORDER BY Id ASC")
             gvContact.DataBind()
         Catch ex As Exception
             MessageError(True, ex.ToString())

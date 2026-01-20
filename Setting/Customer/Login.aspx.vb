@@ -70,16 +70,18 @@ Partial Class Setting_Customer_Login
                     BindRole()
                     BindLevel()
 
-                    Dim myData As DataSet = settingClass.GetListData("SELECT * FROM CustomerLogins WHERE Id='" & lblId.Text & "'")
+                    Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerLogins WHERE Id='" & lblId.Text & "'")
 
-                    ddlCustomer.SelectedValue = myData.Tables(0).Rows(0).Item("CustomerId").ToString()
-                    ddlRole.SelectedValue = myData.Tables(0).Rows(0).Item("RoleId").ToString()
-                    ddlLevel.SelectedValue = myData.Tables(0).Rows(0).Item("LevelId").ToString()
-                    txtUserName.Text = myData.Tables(0).Rows(0).Item("UserName").ToString()
-                    lblUserName.Text = myData.Tables(0).Rows(0).Item("UserName").ToString()
-                    txtFullName.Text = myData.Tables(0).Rows(0).Item("FullName").ToString()
-                    txtEmail.Text = myData.Tables(0).Rows(0).Item("Email").ToString()
-                    Dim password As String = myData.Tables(0).Rows(0).Item("Password").ToString()
+                    If myData Is Nothing Then Exit Sub
+
+                    ddlCustomer.SelectedValue = myData("CustomerId").ToString()
+                    ddlRole.SelectedValue = myData("RoleId").ToString()
+                    ddlLevel.SelectedValue = myData("LevelId").ToString()
+                    txtUserName.Text = myData("UserName").ToString()
+                    lblUserName.Text = myData("UserName").ToString()
+                    txtFullName.Text = myData("FullName").ToString()
+                    txtEmail.Text = myData("Email").ToString()
+                    Dim password As String = myData("Password").ToString()
                     txtPassword.Text = settingClass.Decrypt(password)
 
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
@@ -91,8 +93,9 @@ Partial Class Setting_Customer_Login
                 MessageError_Log(False, String.Empty)
                 Dim thisScript As String = "window.onload = function() { showLog(); };"
                 Try
-                    gvListLogs.DataSource = settingClass.GetListData("SELECT * FROM Logs WHERE Type='CustomerLogins' AND DataId='" & dataId & "'  ORDER BY ActionDate DESC")
+                    gvListLogs.DataSource = settingClass.GetDataTable("SELECT * FROM Logs WHERE Type='CustomerLogins' AND DataId='" & dataId & "'  ORDER BY ActionDate DESC")
                     gvListLogs.DataBind()
+
                     ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
                 Catch ex As Exception
                     MessageError_Log(True, ex.ToString())
@@ -309,17 +312,15 @@ Partial Class Setting_Customer_Login
     Protected Sub BindData(searchText As String)
         Try
             Dim search As String = String.Empty
-
             If Not String.IsNullOrEmpty(searchText) Then
                 search = "WHERE Customers.Name LIKE '%" & searchText & "%' OR CustomerLogins.UserName LIKE '%" & searchText & "%' OR CustomerLogins.FullName LIKE '%" & searchText & "%'"
             End If
-
             Dim thisQuery As String = String.Format("SELECT CustomerLogins.*, Customers.Name AS CustomerName, CustomerLoginRoles.Name AS RoleName, CustomerLoginLevels.Name AS LevelName FROM CustomerLogins LEFT JOIN Customers ON CustomerLogins.CustomerId=Customers.Id LEFT JOIN CustomerLoginRoles ON CustomerLogins.RoleId=CustomerLoginRoles.Id LEFT JOIN CustomerLoginLevels ON CustomerLogins.LevelId=CustomerLoginLevels.Id {0} ORDER BY CustomerLogins.RoleId, CustomerLogins.Id ASC", search)
 
-            gvList.DataSource = settingClass.GetListData(thisQuery)
+            gvList.DataSource = settingClass.GetDataTable(thisQuery)
             gvList.DataBind()
-
             gvList.Columns(1).Visible = PageAction("Visible ID") ' ID
+
             btnAdd.Visible = PageAction("Add")
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -329,7 +330,7 @@ Partial Class Setting_Customer_Login
     Protected Sub BindDataCustomer()
         ddlCustomer.Items.Clear()
         Try
-            ddlCustomer.DataSource = settingClass.GetListData("SELECT * FROM Customers WHERE Active=1 ORDER BY Name ASC")
+            ddlCustomer.DataSource = settingClass.GetDataTable("SELECT * FROM Customers WHERE Active=1 ORDER BY Name ASC")
             ddlCustomer.DataTextField = "Name"
             ddlCustomer.DataValueField = "Id"
             ddlCustomer.DataBind()
@@ -345,7 +346,7 @@ Partial Class Setting_Customer_Login
     Protected Sub BindRole()
         ddlRole.Items.Clear()
         Try
-            ddlRole.DataSource = settingClass.GetListData("SELECT * FROM CustomerLoginRoles ORDER BY Name ASC")
+            ddlRole.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerLoginRoles ORDER BY Name ASC")
             ddlRole.DataTextField = "Name"
             ddlRole.DataValueField = "Id"
             ddlRole.DataBind()
@@ -359,7 +360,7 @@ Partial Class Setting_Customer_Login
     Protected Sub BindLevel()
         ddlLevel.Items.Clear()
         Try
-            ddlLevel.DataSource = settingClass.GetListData("SELECT * FROM CustomerLoginLevels ORDER BY Name ASC")
+            ddlLevel.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerLoginLevels ORDER BY Name ASC")
             ddlLevel.DataTextField = "Name"
             ddlLevel.DataValueField = "Id"
             ddlLevel.DataBind()

@@ -32,23 +32,18 @@ Partial Class Account_Login
                 Exit Sub
             End If
 
-            Dim myData As DataSet = settingClass.GetListData("SELECT * FROM CustomerLogins WHERE UserName='" & txtUserLogin.Text & "'")
+            Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerLogins WHERE UserName='" & txtUserLogin.Text & "'")
 
-            If myData.Tables(0).Rows.Count = 0 Then
+            If myData Is Nothing Then
                 MessageError(True, "USERNAME NOT FOUND !")
                 Exit Sub
             End If
 
-            If myData.Tables(0).Rows.Count > 1 Then
-                MessageError(True, "USERNAME NOT FOUND !")
-                Exit Sub
-            End If
-
-            Dim loginId As String = myData.Tables(0).Rows(0).Item("Id").ToString()
-            Dim userName As String = myData.Tables(0).Rows(0).Item("UserName").ToString()
-            Dim password As String = myData.Tables(0).Rows(0).Item("Password").ToString()
-            Dim failedCount As Integer = myData.Tables(0).Rows(0).Item("FailedCount")
-            Dim loginActive As Boolean = myData.Tables(0).Rows(0).Item("Active")
+            Dim loginId As String = myData("Id").ToString()
+            Dim userName As String = myData("UserName").ToString()
+            Dim password As String = myData("Password").ToString()
+            Dim failedCount As Integer = myData("FailedCount")
+            Dim loginActive As Boolean = myData("Active")
 
             If loginActive = False Then
                 MessageError(True, "YOUR ACCOUNT (LOGIN) IS BEING BLOCKED !")

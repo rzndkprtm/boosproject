@@ -56,7 +56,7 @@ Partial Class Setting_General_Newsletter_Default
                 MessageError_Log(False, String.Empty)
                 Dim thisScript As String = "window.onload = function() { showLog(); };"
                 Try
-                    gvListLog.DataSource = settingClass.GetListData("SELECT * FROM Logs WHERE DataId='" & dataId & "' AND Type='Newsletters' ORDER BY ActionDate DESC")
+                    gvListLog.DataSource = settingClass.GetDataTable("SELECT * FROM Logs WHERE DataId='" & dataId & "' AND Type='Newsletters' ORDER BY ActionDate DESC")
                     gvListLog.DataBind()
 
                     ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
@@ -109,10 +109,9 @@ Partial Class Setting_General_Newsletter_Default
             If Not searchText = "" Then
                 search = "WHERE Newsletters.Id LIKE '%" & searchText.Trim() & "%' OR Newsletters.Name LIKE '%" & searchText.Trim() & "%' OR Newsletters.Description LIKE '%" & searchText.Trim() & "%'"
             End If
-
             Dim thisString As String = String.Format("SELECT Newsletters.*, Companys.Name AS CompanyName CASE WHEN Newsletters.Active=1 THEN 'Yes' WHEN Newsletters.Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Newsletters LEFT JOIN Companys ON Newsletters.CompanyId=Companys.Id {0} ORDER BY Newsletters.Name ASC", search)
 
-            gvList.DataSource = settingClass.GetListData(thisString)
+            gvList.DataSource = settingClass.GetDataTable(thisString)
             gvList.DataBind()
 
             btnAdd.Visible = PageAction("Add")

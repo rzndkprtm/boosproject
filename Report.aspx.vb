@@ -122,7 +122,7 @@ Partial Class Report
             If Session("RoleName") = "Sales" OrElse Session("RoleName") = "Account" OrElse Session("RoleName") = "Customer Service" Then
                 thisQuery = "SELECT * FROM Companys WHERE Id='" & Session("CompanyId") & "' ORDER BY Id ASC"
             End If
-            ddlCompany.DataSource = reportClass.GetListData(thisQuery)
+            ddlCompany.DataSource = reportClass.GetDataTable(thisQuery)
             ddlCompany.DataTextField = "Name"
             ddlCompany.DataValueField = "Id"
             ddlCompany.DataBind()
@@ -149,7 +149,7 @@ Partial Class Report
         ddlSubCompany.Items.Clear()
         Try
             If Not String.IsNullOrEmpty(companyId) Then
-                ddlSubCompany.DataSource = reportClass.GetListData("SELECT * FROM CompanyDetails WHERE CompanyId='" & companyId & "'")
+                ddlSubCompany.DataSource = reportClass.GetDataTable("SELECT * FROM CompanyDetails WHERE CompanyId='" & companyId & "'")
                 ddlSubCompany.DataTextField = "Name"
                 ddlSubCompany.DataValueField = "Id"
                 ddlSubCompany.DataBind()

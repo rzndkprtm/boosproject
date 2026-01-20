@@ -5,33 +5,60 @@ Imports System.Globalization
 Public Class SalesClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
-    Public Function GetListData(thisString As String) As DataSet
-        Dim thisCmd As New SqlCommand(thisString)
-        Using thisConn As New SqlConnection(myConn)
-            Using thisAdapter As New SqlDataAdapter()
-                thisCmd.Connection = thisConn
-                thisAdapter.SelectCommand = thisCmd
-                Using thisDataSet As New DataSet()
-                    thisAdapter.Fill(thisDataSet)
-                    Return thisDataSet
+    Public Function GetDataRow(thisString As String) As DataRow
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using thisAdapter As New SqlDataAdapter(thisCmd)
+                        Dim dt As New DataTable()
+                        thisAdapter.Fill(dt)
+
+                        If dt.Rows.Count > 0 Then
+                            Return dt.Rows(0)
+                        Else
+                            Return Nothing
+                        End If
+                    End Using
                 End Using
             End Using
-        End Using
+        Catch ex As Exception
+            Return Nothing
+        End Try
+    End Function
+
+    Public Function GetDataTable(thisString As String) As DataTable
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using da As New SqlDataAdapter(thisCmd)
+                        Dim dt As New DataTable()
+                        da.Fill(dt)
+                        Return dt
+                    End Using
+                End Using
+            End Using
+        Catch ex As Exception
+            Return Nothing
+        End Try
     End Function
 
     Public Function GetItemData(thisString As String) As String
         Dim result As String = String.Empty
-        Using thisConn As New SqlConnection(myConn)
-            thisConn.Open()
-            Using myCmd As New SqlCommand(thisString, thisConn)
-                Using rdResult = myCmd.ExecuteReader
-                    While rdResult.Read
-                        result = rdResult.Item(0).ToString()
-                    End While
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                thisConn.Open()
+                Using myCmd As New SqlCommand(thisString, thisConn)
+                    Using rdResult = myCmd.ExecuteReader
+                        While rdResult.Read
+                            result = rdResult.Item(0).ToString()
+                        End While
+                    End Using
                 End Using
+                thisConn.Close()
             End Using
-            thisConn.Close()
-        End Using
+        Catch ex As Exception
+            result = String.Empty
+        End Try
         Return result
     End Function
 
@@ -57,7 +84,6 @@ Public Class SalesClass
 
     Public Function GetItemData_Decimal(thisString As String) As Decimal
         Dim result As Decimal = 0D
-
         Try
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
@@ -76,7 +102,6 @@ Public Class SalesClass
         Catch ex As Exception
             result = 0D
         End Try
-
         Return result
     End Function
 
@@ -119,7 +144,6 @@ Public Class SalesClass
         Catch ex As Exception
             result = Date.MinValue
         End Try
-
         Return result
     End Function
 
@@ -164,21 +188,21 @@ Public Class SalesClass
         If Not String.IsNullOrEmpty(salesId) Then
             thisQuery = "SELECT * FROM SALES WHERE Id='" & salesId & "' ORDER BY SummaryDate DESC"
         End If
-        Dim salesData As DataSet = GetListData("SELECT * FROM SALES ORDER BY SummaryDate DESC")
-        If salesData.Tables(0).Rows.Count > 0 Then
-            For i As Integer = 0 To salesData.Tables(0).Rows.Count - 1
-                Dim dataId As String = salesData.Tables(0).Rows(i).Item("Id").ToString()
-                Dim summaryDate As Date = salesData.Tables(0).Rows(i).Item("SummaryDate")
+        Dim salesData As DataTable = GetDataTable("SELECT * FROM SALES ORDER BY SummaryDate DESC")
+        If salesData.Rows.Count > 0 Then
+            For i As Integer = 0 To salesData.Rows.Count - 1
+                Dim dataId As String = salesData.Rows(i)("Id").ToString()
+                Dim summaryDate As Date = salesData.Rows(i)("SummaryDate")
 
-                Dim orderData As DataSet = GetListData("SELECT OrderHeaders.* FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Active=1 AND Customers.CompanyId='2' AND ProductionDate=CONVERT(DATE, '" & summaryDate.ToString("yyyy-MM-dd") & "')")
-                If orderData.Tables(0).Rows.Count > 0 Then
-                    For iOrder As Integer = 0 To orderData.Tables(0).Rows.Count - 1
-                        Dim headerId As String = orderData.Tables(0).Rows(iOrder).Item("Id").ToString()
+                Dim orderData As DataTable = GetDataTable("SELECT OrderHeaders.* FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Active=1 AND Customers.CompanyId='2' AND ProductionDate=CONVERT(DATE, '" & summaryDate.ToString("yyyy-MM-dd") & "')")
+                If orderData.Rows.Count > 0 Then
+                    For iOrder As Integer = 0 To orderData.Rows.Count - 1
+                        Dim headerId As String = orderData.Rows(iOrder)("Id").ToString()
 
-                        Dim getPricing As DataSet = GetListData("SELECT (SUM(BuyPrice) * 1.10) AS BuyPrice, (SUM(SellPrice) * 1.10) AS SellPrice FROM OrderCostings WHERE Type='Final' AND HeaderId='" & headerId & "'")
+                        Dim getPricing As DataRow = GetDataRow("SELECT (SUM(BuyPrice) * 1.10) AS BuyPrice, (SUM(SellPrice) * 1.10) AS SellPrice FROM OrderCostings WHERE Type='Final' AND HeaderId='" & headerId & "'")
 
-                        Dim totalCostPrice As Decimal = If(IsDBNull(getPricing.Tables(0).Rows(0)("BuyPrice")), 0D, Convert.ToDecimal(getPricing.Tables(0).Rows(0)("BuyPrice")))
-                        Dim totalSellingPrice As Decimal = If(IsDBNull(getPricing.Tables(0).Rows(0)("SellPrice")), 0D, Convert.ToDecimal(getPricing.Tables(0).Rows(0)("SellPrice")))
+                        Dim totalCostPrice As Decimal = If(IsDBNull(getPricing("BuyPrice")), 0D, Convert.ToDecimal(getPricing("BuyPrice")))
+                        Dim totalSellingPrice As Decimal = If(IsDBNull(getPricing("SellPrice")), 0D, Convert.ToDecimal(getPricing("SellPrice")))
 
                         Dim totalPaidAmount As Decimal = GetItemData_Decimal("SELECT Amount FROM OrderInvoices WHERE Id='" & headerId & "' AND Payment=1")
 

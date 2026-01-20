@@ -64,9 +64,9 @@
             End If
 
             Dim thisString = String.Format("SELECT Tutorials.*, Companys.Name AS CompanyName FROM Tutorials LEFT JOIN Companys ON Tutorials.CompanyId=Companys.Id WHERE Tutorials.Active=1 {0} {1} ORDER BY Tutorials.Title ASC", byCompany, bySearch)
-            gvList.DataSource = settingClass.GetListData(thisString)
-            gvList.DataBind()
 
+            gvList.DataSource = settingClass.GetDataTable(thisString)
+            gvList.DataBind()
             gvList.Columns(1).Visible = PageAction("Visible ID") ' ID
             gvList.Columns(2).Visible = PageAction("Visible Company") ' COMPANY
         Catch ex As Exception

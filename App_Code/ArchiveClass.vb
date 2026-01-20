@@ -6,11 +6,13 @@ Public Class ArchiveClass
     Dim shutterOrder As String = ConfigurationManager.ConnectionStrings("ArchiveConnection").ConnectionString
 
     Public Function GetDataRow(thisString As String) As DataRow
-        Using thisConn As New SqlConnection(myConn)
-            Using thisCmd As New SqlCommand(thisString, thisConn)
-                Using thisAdapter As New SqlDataAdapter(thisCmd)
-                    Using dt As New DataTable()
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using thisAdapter As New SqlDataAdapter(thisCmd)
+                        Dim dt As New DataTable()
                         thisAdapter.Fill(dt)
+
                         If dt.Rows.Count > 0 Then
                             Return dt.Rows(0)
                         Else
@@ -19,19 +21,25 @@ Public Class ArchiveClass
                     End Using
                 End Using
             End Using
-        End Using
+        Catch ex As Exception
+            Return Nothing
+        End Try
     End Function
 
     Public Function GetDataTable(thisString As String) As DataTable
-        Using thisConn As New SqlConnection(myConn)
-            Using thisCmd As New SqlCommand(thisString, thisConn)
-                Using da As New SqlDataAdapter(thisCmd)
-                    Dim dt As New DataTable()
-                    da.Fill(dt)
-                    Return dt
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using da As New SqlDataAdapter(thisCmd)
+                        Dim dt As New DataTable()
+                        da.Fill(dt)
+                        Return dt
+                    End Using
                 End Using
             End Using
-        End Using
+        Catch ex As Exception
+            Return Nothing
+        End Try
     End Function
 
     Public Function GetListData(thisString As String) As DataSet

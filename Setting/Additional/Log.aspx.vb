@@ -70,7 +70,7 @@ Partial Class Setting_Additional_Log
 
             Dim thisString As String = String.Format("SELECT Logs.*, CustomerLogins.UserName AS ActionName FROM Logs LEFT JOIN CustomerLogins ON Logs.ActionBy=CustomerLogins.Id {0}", searchString)
 
-            gvList.DataSource = settingClass.GetListData(thisString)
+            gvList.DataSource = settingClass.GetDataTable(thisString)
             gvList.DataBind()
         Catch ex As Exception
             MessageError(True, ex.ToString())
