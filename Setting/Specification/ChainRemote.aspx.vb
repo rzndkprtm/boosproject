@@ -75,12 +75,12 @@ Partial Class Setting_Specification_ChainRemote
                     lblAction.Text = "Edit"
                     titleProcess.InnerText = "Edit Chain - Remote"
 
+                    Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Chains WHERE Id='" & lblId.Text & "'")
+                    If myData Is Nothing Then Exit Sub
+
                     BindDesign()
                     BindControl()
                     BindCompany()
-
-                    Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Chains WHERE Id='" & lblId.Text & "'")
-                    If myData Is Nothing Then Exit Sub
 
                     txtBoeId.Text = myData("BoeId").ToString()
                     txtName.Text = myData("Name").ToString()
@@ -306,7 +306,7 @@ Partial Class Setting_Specification_ChainRemote
             If Not searchText = "" Then
                 search = " WHERE Id LIKE '%" & searchText & "%' OR BoeId LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%' OR Description LIKE '%" & searchText & "%'"
             End If
-            Dim thisString As String = String.Format("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Chains {0} ORDER BY Name ASC", search)
+            Dim thisString As String = String.Format("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Chains {0} ORDER BY ControlTypeId, Name ASC", search)
 
             gvList.DataSource = settingClass.GetDataTable(thisString)
             gvList.DataBind()
@@ -377,6 +377,42 @@ Partial Class Setting_Specification_ChainRemote
             End If
         End Try
     End Sub
+
+    Protected Function BindDesignDetail(chainId As String) As String
+        If Not String.IsNullOrEmpty(chainId) Then
+            Dim myData As DataTable = settingClass.GetDataTable("SELECT Designs.Name AS DesignName FROM Chains CROSS APPLY STRING_SPLIT(Chains.DesignId, ',') AS thisArray LEFT JOIN Designs ON thisArray.VALUE=Designs.Id WHERE Chains.Id='" & chainId & "' ORDER BY Designs.Name ASC")
+
+            Dim hasil As String = String.Empty
+            If myData.Rows.Count > 0 Then
+                For i As Integer = 0 To myData.Rows.Count - 1
+                    Dim designName As String = myData.Rows(i)("DesignName").ToString()
+                    hasil += designName & ", "
+                Next
+                Return hasil.Remove(hasil.Length - 2).ToString()
+            Else
+                Return String.Empty
+            End If
+        End If
+        Return "Error"
+    End Function
+
+    Protected Function BindControlDetail(chainId As String) As String
+        If Not String.IsNullOrEmpty(chainId) Then
+            Dim myData As DataTable = settingClass.GetDataTable("SELECT ProductControls.Name AS ControlName FROM Chains CROSS APPLY STRING_SPLIT(Chains.ControlTypeId, ',') AS thisArray LEFT JOIN ProductControls ON thisArray.VALUE=ProductControls.Id WHERE Chains.Id='" & chainId & "' ORDER BY ProductControls.Name ASC")
+
+            Dim hasil As String = String.Empty
+            If myData.Rows.Count > 0 Then
+                For i As Integer = 0 To myData.Rows.Count - 1
+                    Dim designName As String = myData.Rows(i)("ControlName").ToString()
+                    hasil += designName & ", "
+                Next
+                Return hasil.Remove(hasil.Length - 2).ToString()
+            Else
+                Return String.Empty
+            End If
+        End If
+        Return "Error"
+    End Function
 
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message

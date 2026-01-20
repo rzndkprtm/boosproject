@@ -41,7 +41,7 @@ Public Partial Class SiteMaster
             If Session("IsLoggedIn") = True Then
                 Dim loginId As String = Session("LoginId")
 
-                Dim thisQuery As String = "SELECT CustomerLogins.*, Customers.CompanyId AS CompanyId, Customers.[Level] AS CustomerLevel, Customers.CompanyDetailId AS CompanyDetailId, Companys.Name AS CompanyName, Companys.Active AS CompanyActive, CASE WHEN Companys.Active=1 THEN 'Yes' ELSE 'No' END AS CompanyActive, Customers.Active AS CustomerActive, CASE WHEN CustomerLogins.Pricing=1 THEN 'Yes' ELSE '' END AS PriceAccess, CustomerLoginRoles.Name AS RoleName, CustomerLoginRoles.Active AS RoleActive, CustomerLoginLevels.Name AS LevelName, CustomerLoginLevels.Active AS LevelActive FROM CustomerLogins INNER JOIN CustomerLoginRoles ON CustomerLogins.RoleId=CustomerLoginRoles.Id INNER JOIN CustomerLoginLevels ON CustomerLogins.LevelId=CustomerLoginLevels.Id INNER JOIN Customers ON CustomerLogins.CustomerId=Customers.Id INNER JOIN Companys ON Customers.CompanyId=Companys.Id WHERE CustomerLogins.Id='" & loginId & "'"
+                Dim thisQuery As String = "SELECT CustomerLogins.*, Customers.CompanyId AS CompanyId, Customers.CompanyDetailId AS CompanyDetailId, Customers.[Level] AS CustomerLevel, Companys.Name AS CompanyName, Companys.Active AS CompanyActive, Customers.Active AS CustomerActive, CASE WHEN CustomerLogins.Pricing=1 THEN 'Yes' ELSE '' END AS PriceAccess, CustomerLoginRoles.Name AS RoleName, CustomerLoginRoles.Active AS RoleActive, CustomerLoginLevels.Name AS LevelName, CustomerLoginLevels.Active AS LevelActive FROM CustomerLogins INNER JOIN CustomerLoginRoles ON CustomerLogins.RoleId=CustomerLoginRoles.Id INNER JOIN CustomerLoginLevels ON CustomerLogins.LevelId=CustomerLoginLevels.Id INNER JOIN Customers ON CustomerLogins.CustomerId=Customers.Id INNER JOIN Companys ON Customers.CompanyId=Companys.Id WHERE CustomerLogins.Id='" & loginId & "'"
 
                 Dim myData As DataRow = settingClass.GetDataRow(thisQuery)
 
@@ -144,15 +144,8 @@ Public Partial Class SiteMaster
             liGeneralTutorial.Visible = False
             liGeneralAccess.Visible = False
 
+            liCustomerDev.Visible = False
             liCustomer.Visible = False
-            liCustomerDivider.Visible = False
-            liCustomerContact.Visible = False
-            liCustomerAddress.Visible = False
-            liCustomerBusiness.Visible = False
-            liCustomerLogin.Visible = False
-            liCustomerDiscount.Visible = False
-            liCustomerPromo.Visible = False
-            liCustomerProductAccess.Visible = False
 
             liSpecification.Visible = False
             liSpecificationDesign.Visible = False
@@ -194,15 +187,7 @@ Public Partial Class SiteMaster
                 liGeneralTutorial.Visible = True
                 liGeneralAccess.Visible = True
 
-                liCustomer.Visible = True
-                liCustomerDivider.Visible = True
-                liCustomerContact.Visible = True
-                liCustomerAddress.Visible = True
-                liCustomerBusiness.Visible = True
-                liCustomerLogin.Visible = True
-                liCustomerDiscount.Visible = True
-                liCustomerPromo.Visible = True
-                liCustomerProductAccess.Visible = True
+                liCustomerDev.Visible = True
 
                 liSpecification.Visible = True
                 liSpecificationDesign.Visible = True

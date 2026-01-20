@@ -938,7 +938,7 @@ Partial Class Order_Default
     End Function
 
     Protected Function VisibleReceivePayment(status As String, active As Boolean) As Boolean
-        If active = True AndAlso status = "Proforma Sent" AndAlso Session("RoleName") = "Developer" Then
+        If active = True AndAlso status = "Proforma Sent" AndAlso (Session("RoleName") = "Developer" OrElse Session("RoleName") = "Representative" OrElse Session("RoleName") = "Account") Then
             Return True
         End If
         Return False

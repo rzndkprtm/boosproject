@@ -7,6 +7,7 @@
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Dim orderClass As New OrderClass
+    Dim mailingClass As New MailingClass
 
     Public Function GetListData(thisString As String) As DataSet
         Dim thisCmd As New SqlCommand(thisString)
@@ -100,6 +101,8 @@
                             Dim salesClass As New SalesClass
                             salesClass.RefreshData()
                         End If
+
+                        mailingClass.ProductionOrder(headerId)
                     Next
                 End If
             End If

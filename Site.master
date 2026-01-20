@@ -73,11 +73,6 @@
                                         <li>
                                             <a class="dropdown-item" href='<%= ResolveUrl("~/account?uid=" & Session("LoginId")) %>'>My Account</a>
                                         </li>
-                                        <%--<li>
-                                            <a class="dropdown-item" runat="server" href="~/account/password">
-                                                Notifications <span class="badge bg-primary">4</span>
-                                            </a>
-                                        </li>--%>
                                         <li>
                                             <a class="dropdown-item" runat="server" href="~/account/password">Change Password</a>
                                         </li>
@@ -208,37 +203,41 @@
                                                     </ul>
                                                 </li>
 
-                                                <li class="submenu-item has-sub" runat="server" id="liCustomer">
+                                                <li class="submenu-item has-sub" runat="server" id="liCustomerDev">
                                                     <a href="javascript:void(0);" class='submenu-link'>Master Customer</a>
                                                     <ul class="subsubmenu">
                                                         <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/customer" class="subsubmenu-link">Customer</a>
                                                         </li>
-                                                        <li class="subsubmenu-item" runat="server" id="liCustomerDivider">
+                                                        <li class="subsubmenu-item">
                                                             <hr class="dropdown-divider">
                                                         </li>
-                                                        <li class="subsubmenu-item" runat="server" id="liCustomerContact">
+                                                        <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/customer/contact" class="subsubmenu-link">Customer Contact</a>
                                                         </li>
-                                                        <li class="subsubmenu-item" runat="server" id="liCustomerAddress">
+                                                        <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/customer/address" class="subsubmenu-link">Customer Address</a>
                                                         </li>
-                                                        <li class="subsubmenu-item" runat="server" id="liCustomerBusiness">
+                                                        <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/customer/business" class="subsubmenu-link">Customer Business</a>
                                                         </li>
-                                                        <li class="subsubmenu-item" runat="server" id="liCustomerLogin">
+                                                        <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/customer/login" class="subsubmenu-link">Customer Login</a>
                                                         </li>
-                                                        <li class="subsubmenu-item" runat="server" id="liCustomerDiscount">
+                                                        <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/customer/discount" class="subsubmenu-link">Customer Discount</a>
                                                         </li>
-                                                        <li class="subsubmenu-item" runat="server" id="liCustomerPromo">
+                                                        <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/customer/promo" class="subsubmenu-link">Customer Promo</a>
                                                         </li>
-                                                        <li class="subsubmenu-item" runat="server" id="liCustomerProductAccess">
+                                                        <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/customer/productaccess" class="subsubmenu-link">Customer Product Access</a>
                                                         </li>
                                                     </ul>
+                                                </li>
+
+                                                <li class="submenu-item" runat="server" id="liCustomer">
+                                                    <a runat="server" href="~/setting/customer" class='submenu-link'>Master Customer</a>
                                                 </li>
 
                                                 <li class="submenu-item has-sub" runat="server" id="liSpecification">

@@ -58,14 +58,24 @@
                                         <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="True" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom" OnPageIndexChanging="gvList_PageIndexChanging" OnRowCommand="gvList_RowCommand">
                                             <RowStyle />
                                             <Columns>
-                                                <asp:TemplateField ItemStyle-HorizontalAlign="Center">
+                                                <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="80px">
                                                     <ItemTemplate>
                                                         <%# Container.DataItemIndex + 1 %>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-                                                <asp:BoundField DataField="Id" HeaderText="ID" />
-                                                <asp:BoundField DataField="BoeId" HeaderText="BOE ID" />
-                                                <asp:BoundField DataField="Name" HeaderText="Name" />
+                                                <asp:BoundField DataField="Id" HeaderText="ID" HeaderStyle-Width="80px" />
+                                                <asp:BoundField DataField="BoeId" HeaderText="BOE ID" HeaderStyle-Width="80px" />
+                                                <asp:BoundField DataField="Name" HeaderText="Name" HeaderStyle-Width="230px" />
+                                                <asp:TemplateField HeaderText="Product" HeaderStyle-Width="200px">
+                                                    <ItemTemplate>
+                                                        <%# BindDesignDetail(Eval("Id").ToString()) %>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:TemplateField HeaderText="Control Type" HeaderStyle-Width="200px">
+                                                    <ItemTemplate>
+                                                        <%# BindControlDetail(Eval("Id").ToString()) %>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
                                                 <asp:BoundField DataField="DataActive" HeaderText="Active" />
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="150px">
                                                     <ItemTemplate>

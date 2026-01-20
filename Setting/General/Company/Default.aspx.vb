@@ -137,7 +137,7 @@ Partial Class Setting_General_Company_Default
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Companys ORDER BY Id DESC")
 
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Companys VALUES (@Id, @Name, @Alias, NULL, @Description, @Active)", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Companys VALUES (@Id, @Name, @Alias, NULL, @Description, @Active, 0)", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", thisId)
                             myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Alias", txtAlias.Text.Trim())
@@ -160,7 +160,7 @@ Partial Class Setting_General_Company_Default
 
                 If lblAction.Text = "Edit" Then
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE Companys SET Name=@Name, Alias=@Alias, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("UPDATE Companys SET Name=@Name, Alias=@Alias, Description=@Description WHERE Id=@Id", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", lblId.Text)
                             myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Alias", txtAlias.Text.Trim())
@@ -188,30 +188,6 @@ Partial Class Setting_General_Company_Default
         End Try
     End Sub
 
-    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        Try
-            'Dim thisId As String = txtIdDelete.Text
-
-            'Using thisConn As New SqlConnection(myConn)
-            '    Using myCmd As SqlCommand = New SqlCommand("UPDATE Companys SET Active=0 WHERE Id=@Id; UPDATE Customers SET CompanyId=NULL WHERE CompanyId=@Id; UPDATE Mailings SET CompanyId=NULL WHERE CompanyId=@Id; UPDATE Newsletters SET CompanyId=NULL WHERE CompanyId=@Id; UPDATE Tutorials SET CompanyId=NULL WHERE CompanyId=@Id; UPDATE PriceGroups SET CompanyId=NULL WHERE CompanyId=@Id;", thisConn)
-            '        myCmd.Parameters.AddWithValue("@Id", thisId)
-
-            '        thisConn.Open()
-            '        myCmd.ExecuteNonQuery()
-            '    End Using
-            'End Using
-
-            'dataLog = {"Companys", lblId.Text, Session("LoginId").ToString(), "Deleted"}
-            'settingClass.Logs(dataLog)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
     Protected Sub BindData(searchText As String)
         Session("SearchCompany") = String.Empty
         Try
@@ -219,7 +195,7 @@ Partial Class Setting_General_Company_Default
             If Not searchText = "" Then
                 searchString = "WHERE Id LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%' OR Alias LIKE '%" & searchText & "%' OR Description LIKE '%" & searchText & "%'"
             End If
-            Dim thisString As String = String.Format("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Companys {0} ORDER BY Id ASC", searchString)
+            Dim thisString As String = String.Format("SELECT *, CASE WHEN IsActive=1 THEN 'Yes' WHEN IsActive=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Companys {0} ORDER BY Id ASC", searchString)
 
             gvList.DataSource = settingClass.GetDataTable(thisString)
             gvList.DataBind()
