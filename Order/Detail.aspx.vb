@@ -273,8 +273,6 @@ Partial Class Order_Detail
             Dim finalFilePath As String = Server.MapPath(filePath & fileName)
             previewClass.BindContent(headerId.Value, finalFilePath)
 
-            Dim checkPrinting As Integer = orderClass.GetItemData_Integer("SELECT COUNT(*) FROM OrderDetails WHERE HeaderId='" & headerId.Value & "' AND (NULLIF(LTRIM(RTRIM(Printing)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingB)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingC)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingD)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingE)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingF)),'') IS NOT NULL)")
-
             If cashSale = False Then
                 mailingClass.NewOrder(headerId.Value, finalFilePath)
             End If
@@ -283,12 +281,13 @@ Partial Class Order_Detail
                 mailingClass.NewOrder_Proforma(headerId.Value, finalFilePath)
             End If
 
+            Dim checkPrinting As Integer = orderClass.GetItemData_Integer("SELECT COUNT(*) FROM OrderDetails WHERE HeaderId='" & headerId.Value & "' AND (NULLIF(LTRIM(RTRIM(Printing)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingB)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingC)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingD)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingE)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingF)),'') IS NOT NULL)")
+
             If checkPrinting > 0 Then
                 Dim sourceFolder As String = Server.MapPath(String.Format("~/File/Printing/{0}", headerId.Value))
                 Dim zipPath As String = Server.MapPath(String.Format("~/File/Printing/{0}.zip", lblOrderId.Text))
 
                 If IO.File.Exists(zipPath) Then IO.File.Delete(zipPath)
-
                 ZipFile.CreateFromDirectory(sourceFolder, zipPath, CompressionLevel.Fastest, True)
 
                 mailingClass.SubmitOrder_PrintingFabric(headerId.Value, finalFilePath, zipPath)

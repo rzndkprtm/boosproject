@@ -1,6 +1,7 @@
 ﻿<%@ Import Namespace="System.Xml" %>
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
+<%@ Import Namespace="System.IO.Compression" %>
 <%@ Page Language="VB" Title="Export BOE Result" ContentType="text/xml" Debug="true" %>
 
 <script runat="server">
@@ -79,6 +80,7 @@
                 If thisData.Tables(0).Rows.Count > 0 Then
                     For i As Integer = 0 To thisData.Tables(0).Rows.Count - 1
                         Dim headerId As String = thisData.Tables(0).Rows(i).Item("Id").ToString()
+                        Dim orderId As String = thisData.Tables(0).Rows(i).Item("OrderId").ToString()
                         Dim debtorCode As String = thisData.Tables(0).Rows(i).Item("DebtorCode").ToString()
 
                         If String.IsNullOrEmpty(debtorCode) Then
@@ -102,6 +104,17 @@
                             salesClass.RefreshData()
                         End If
 
+                        'Dim checkPrinting As Integer = orderClass.GetItemData_Integer("SELECT COUNT(*) FROM OrderDetails WHERE HeaderId='" & headerId & "' AND (NULLIF(LTRIM(RTRIM(Printing)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingB)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingC)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingD)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingE)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingF)),'') IS NOT NULL)")
+
+                        'If checkPrinting > 0 Then
+                        '    Dim sourceFolder As String = Server.MapPath(String.Format("~/File/Printing/{0}", headerId))
+                        '    Dim zipPath As String = Server.MapPath(String.Format("~/File/Printing/{0}.zip", orderId))
+
+                        '    If IO.File.Exists(zipPath) Then IO.File.Delete(zipPath)
+                        '    ZipFile.CreateFromDirectory(sourceFolder, zipPath, CompressionLevel.Fastest, True)
+
+                        '    mailingClass.SubmitOrder_PrintingFabric(headerId, finalFilePath, zipPath)
+                        'End If
                         mailingClass.ProductionOrder(headerId)
                     Next
                 End If
