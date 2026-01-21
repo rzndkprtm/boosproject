@@ -472,6 +472,7 @@
         function showRestore(id) {
             document.getElementById("<%=txtIdRestore.ClientID %>").value = id;
         }
+
         function showLog() {
             $("#modalLog").modal("show");
         }

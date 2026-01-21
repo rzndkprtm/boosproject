@@ -9,9 +9,9 @@ Partial Class Account_Login
     Dim settingClass As New SettingClass
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        Session.Clear()
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-            CheckSessionStates()
         End If
     End Sub
 
@@ -57,6 +57,7 @@ Partial Class Account_Login
             End If
 
             If msgError.InnerText = "" Then
+                CheckSessionStates()
                 settingClass.UpdateSession(lblDeviceId.Text, loginId)
                 settingClass.UpdateFailedCount(loginId)
                 Session.Add("IsLoggedIn", True)
@@ -99,39 +100,13 @@ Partial Class Account_Login
 
     Protected Sub CheckSessionStates()
         If Request.Cookies("deviceId") IsNot Nothing Then
-            lblDeviceId.Text = Request.Cookies("deviceId").Value
-            Dim checkSession As Integer = settingClass.GetItemData_Integer("SELECT COUNT(*) FROM Sessions WHERE Id='" & lblDeviceId.Text & "'")
-            If checkSession = 1 Then
-                Dim loginId As String = settingClass.GetItemData("SELECT LoginId FROM Sessions WHERE Id='" & UCase(lblDeviceId.Text) & "'")
-                If Not loginId = "" Then
-                    Dim userName As String = settingClass.GetItemData("SELECT UserName FROM CustomerLogins WHERE Id='" & loginId & "'")
-
-                    Session("IsLoggedIn") = True
-                    Session("LoginId") = loginId
-                    Session("UserName") = userName
-
-                    Response.Redirect("~/", False)
-                    HttpContext.Current.ApplicationInstance.CompleteRequest()
-                    Exit Sub
-                Else
-                    lblDeviceId.Text = settingClass.InsertSession()
-                    Dim deviceCookie As New HttpCookie("deviceId", lblDeviceId.Text)
-                    deviceCookie.Expires = Now.AddMonths(1)
-                    Response.Cookies.Add(deviceCookie)
-                    Exit Sub
-                End If
-            Else
-                lblDeviceId.Text = settingClass.InsertSession()
-                Dim deviceCookie As New HttpCookie("deviceId", lblDeviceId.Text)
-                deviceCookie.Expires = Now.AddMonths(1)
-                Response.Cookies.Add(deviceCookie)
-                Exit Sub
-            End If
-        Else
             lblDeviceId.Text = settingClass.InsertSession()
             Dim deviceCookie As New HttpCookie("deviceId", lblDeviceId.Text)
             deviceCookie.Expires = Now.AddMonths(1)
             Response.Cookies.Add(deviceCookie)
+            Exit Sub
+        Else
+            lblDeviceId.Text = Request.Cookies("deviceId").Value
             Exit Sub
         End If
     End Sub

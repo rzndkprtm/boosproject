@@ -336,6 +336,7 @@
                 </header>
 
                 <div class="content-wrapper container">
+                    <asp:Label runat="server" ID="lblTest"></asp:Label>
                     <asp:ContentPlaceHolder ID="MainContent" runat="server"></asp:ContentPlaceHolder>
                 </div>
 

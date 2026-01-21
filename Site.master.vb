@@ -15,7 +15,7 @@ Public Partial Class SiteMaster
     End Sub
 
     Protected Sub master_Page_PreLoad(sender As Object, e As EventArgs)
-        CheckSessions(Session("IsLoggedIn"))
+        CheckSessions()
         MyLoad()
         BindListNavigation()
     End Sub
@@ -27,9 +27,8 @@ Public Partial Class SiteMaster
             sessionId = Request.Cookies("deviceId").Value
             settingClass.DeleteSession(sessionId)
         End If
-
         Session.Clear()
-        Response.Redirect("~/account/login", False)
+        Response.Redirect("~/account/login", True)
     End Sub
 
     Private Sub MyLoad()
@@ -378,19 +377,20 @@ Public Partial Class SiteMaster
         End Try
     End Sub
 
-    Private Sub CheckSessions(isLogged As Boolean)
+    Private Sub CheckSessions()
         Try
             Dim sessionId As String = String.Empty
-            If isLogged = True Then
+            If Session("IsLoggedIn") = True Then
                 If Request.Cookies("deviceId") IsNot Nothing Then
                     sessionId = Request.Cookies("deviceId").Value
                     Dim checkData As DataRow = settingClass.GetDataRow("SELECT * FROM Sessions WHERE Id='" & UCase(sessionId) & "' AND LoginId='" & Session("LoginId") & "'")
+
                     If checkData Is Nothing Then
-                        Response.Redirect("~/account/login", False)
+                        Response.Redirect("~/account/login", True)
                         Exit Sub
                     End If
                 Else
-                    Response.Redirect("~/account/login", False)
+                    Response.Redirect("~/account/login", True)
                     Exit Sub
                 End If
             Else
@@ -404,19 +404,19 @@ Public Partial Class SiteMaster
                         Session.Add("LoginId", loginId)
                         Session.Add("UserName", userName)
 
-                        Response.Redirect("~/", False)
+                        Response.Redirect("~/", True)
                         Exit Sub
                     Else
-                        Response.Redirect("~/account/login", False)
+                        Response.Redirect("~/account/login", True)
                         Exit Sub
                     End If
                 Else
-                    Response.Redirect("~/account/login", False)
+                    Response.Redirect("~/account/login", True)
                     Exit Sub
                 End If
             End If
         Catch ex As Exception
-            Response.Redirect("~/account/login", False)
+            Response.Redirect("~/account/login", True)
             Exit Sub
         End Try
     End Sub
