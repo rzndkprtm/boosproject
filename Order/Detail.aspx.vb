@@ -1796,51 +1796,79 @@ Partial Class Order_Detail
             If fuPrinting.HasFile Then
                 Dim ext As String = IO.Path.GetExtension(fuPrinting.FileName)
                 printing = String.Format("{0}{1}", Now.ToString("yyyyMMddHHmmssfff"), ext)
-
-                Dim savePath As String = IO.Path.Combine(folderPath, printing)
-                fuPrinting.SaveAs(savePath)
+                fuPrinting.SaveAs(IO.Path.Combine(folderPath, printing))
             End If
 
             If fuPrintingB.HasFile Then
                 Dim ext As String = IO.Path.GetExtension(fuPrintingB.FileName)
                 printingb = String.Format("{0}{1}", Now.ToString("yyyyMMddHHmmssfff"), ext)
-
-                Dim savePath As String = IO.Path.Combine(folderPath, printingb)
-                fuPrintingB.SaveAs(savePath)
+                fuPrintingB.SaveAs(IO.Path.Combine(folderPath, printingb))
             End If
 
             If fuPrintingC.HasFile Then
                 Dim ext As String = IO.Path.GetExtension(fuPrintingC.FileName)
                 printingc = String.Format("{0}{1}", Now.ToString("yyyyMMddHHmmssfff"), ext)
-
-                Dim savePath As String = IO.Path.Combine(folderPath, printingc)
-                fuPrintingC.SaveAs(savePath)
+                fuPrintingC.SaveAs(IO.Path.Combine(folderPath, printingc))
             End If
 
             If fuPrintingD.HasFile Then
                 Dim ext As String = IO.Path.GetExtension(fuPrintingD.FileName)
                 printingd = String.Format("{0}{1}", Now.ToString("yyyyMMddHHmmssfff"), ext)
-
-                Dim savePath As String = IO.Path.Combine(folderPath, printingd)
-                fuPrintingD.SaveAs(savePath)
+                fuPrintingD.SaveAs(IO.Path.Combine(folderPath, printingd))
             End If
 
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
 
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET Printing=@Printing, PrintingB=@PrintingB, PrintingC=@PrintingC, PrintingD=@PrintingD, PrintingE=@PrintingE, PrintingF=@PrintingF, PrintingG=@PrintingG, PrintingH=@PrintingH WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", itemId.Value)
-                    myCmd.Parameters.AddWithValue("@Printing", printing)
-                    myCmd.Parameters.AddWithValue("@PrintingB", printingb)
-                    myCmd.Parameters.AddWithValue("@PrintingC", printingc)
-                    myCmd.Parameters.AddWithValue("@PrintingD", printingd)
-                    myCmd.Parameters.AddWithValue("@PrintingE", printinge)
-                    myCmd.Parameters.AddWithValue("@PrintingF", printingf)
-                    myCmd.Parameters.AddWithValue("@PrintingG", printingg)
-                    myCmd.Parameters.AddWithValue("@PrintingH", printingh)
+                Dim updates As New List(Of String)
+                Dim myCmd As New SqlCommand()
+                myCmd.Parameters.AddWithValue("@Id", itemId.Value)
 
+                If Not String.IsNullOrEmpty(printing) Then
+                    updates.Add("Printing=@Printing")
+                    myCmd.Parameters.AddWithValue("@Printing", printing)
+                End If
+
+                If Not String.IsNullOrEmpty(printingb) Then
+                    updates.Add("PrintingB=@PrintingB")
+                    myCmd.Parameters.AddWithValue("@PrintingB", printingb)
+                End If
+
+                If Not String.IsNullOrEmpty(printingc) Then
+                    updates.Add("PrintingC=@PrintingC")
+                    myCmd.Parameters.AddWithValue("@PrintingC", printingc)
+                End If
+
+                If Not String.IsNullOrEmpty(printingd) Then
+                    updates.Add("PrintingD=@PrintingD")
+                    myCmd.Parameters.AddWithValue("@PrintingD", printingd)
+                End If
+
+                If Not String.IsNullOrEmpty(printinge) Then
+                    updates.Add("PrintingE=@PrintingE")
+                    myCmd.Parameters.AddWithValue("@PrintingE", printinge)
+                End If
+
+                If Not String.IsNullOrEmpty(printingf) Then
+                    updates.Add("PrintingF=@PrintingF")
+                    myCmd.Parameters.AddWithValue("@PrintingF", printingf)
+                End If
+
+                If Not String.IsNullOrEmpty(printingg) Then
+                    updates.Add("PrintingG=@PrintingG")
+                    myCmd.Parameters.AddWithValue("@PrintingG", printingg)
+                End If
+
+                If Not String.IsNullOrEmpty(printingh) Then
+                    updates.Add("PrintingH=@PrintingH")
+                    myCmd.Parameters.AddWithValue("@PrintingH", printingh)
+                End If
+
+                If updates.Count > 0 Then
+                    myCmd.CommandText = "UPDATE OrderDetails SET " & String.Join(", ", updates) & " WHERE Id=@Id"
+                    myCmd.Connection = thisConn
                     myCmd.ExecuteNonQuery()
-                End Using
+                End If
 
                 thisConn.Close()
             End Using
@@ -3663,7 +3691,7 @@ Partial Class Order_Detail
             If blindName = "Link 2 Blinds Dependent" Then
                 result = itemDescription
                 result &= "<br />"
-                result &= String.Format("First Blind : {0} {1} {2}", fabricColourName, size, squareMetreText)
+                result &= String.Format("First & Control Blind : {0} {1} {2}", fabricColourName, size, squareMetreText)
                 If Not String.IsNullOrEmpty(printing) Then
                     result &= " (<b><u>Printed Fabric</b></u>)"
                 End If

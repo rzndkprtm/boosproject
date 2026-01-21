@@ -258,7 +258,7 @@
                                                 </div>
                                                 <div class="col-12 col-sm-12 col-lg-3 form-group">
                                                     <select id="controlpositionb" class="form-select">
-                                                        <option value="Left and Right">Left & Right</option>
+                                                        <option value="Both Sides">Both Sides</option>
                                                     </select>
                                                 </div>
                                             </div>

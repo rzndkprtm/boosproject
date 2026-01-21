@@ -91,6 +91,8 @@
                     </li>
                 </ul>
 
+                <a href="#" runat="server" id="a1" class="btn btn-secondary me-1" data-bs-toggle="modal" data-bs-target="#modalReworkOrder">Files</a>
+
                 <button class="btn btn-dark dropdown-toggle me-1" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnMoreAction">More</button>
                 <ul class="dropdown-menu">
                     <li runat="server" id="liMoreDownloadQuote">

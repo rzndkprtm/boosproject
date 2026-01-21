@@ -1,4 +1,5 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data
+Imports System.Data.SqlClient
 Imports System.IO
 Imports OfficeOpenXml
 
@@ -111,7 +112,6 @@ Partial Class Order_Add
 
                         Dim randomCode As String = orderClass.GenerateRandomCode()
                         orderId = companyAlias & randomCode
-
                         Try
                             Using thisConn As New SqlConnection(myConn)
                                 Using myCmd As New SqlCommand("INSERT INTO OrderHeaders (Id, OrderId, CustomerId, OrderNumber, OrderName, OrderNote, OrderType, Status, CreatedBy, CreatedDate, DownloadBOE, Active) VALUES (@Id, @OrderId, @CustomerId, @OrderNumber, @OrderName, @OrderNote, @OrderType, 'Unsubmitted', @CreatedBy, @CreateDate, 0, 1); INSERT INTO OrderQuotes VALUES (@Id, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
@@ -131,7 +131,6 @@ Partial Class Order_Add
                             End Using
 
                             success = True
-
                         Catch exSql As SqlException
                             If exSql.Number = 2601 OrElse exSql.Number = 2627 Then
                                 success = False
@@ -141,10 +140,18 @@ Partial Class Order_Add
                         End Try
                     Loop
 
+                    If ddlOrderType.SelectedValue = "Regular" Then
+                        Dim directoryOrder As String = Server.MapPath(String.Format("~/File/Order/{0}/", orderId))
+                        If Not Directory.Exists(directoryOrder) Then
+                            Directory.CreateDirectory(directoryOrder)
+                        End If
+                    End If
+
                     If ddlOrderType.SelectedValue = "Builder" Then
                         Using thisConn As New SqlConnection(myConn)
                             Using myCmd As New SqlCommand("INSERT INTO OrderBuilders(Id) VALUES (@Id)", thisConn)
                                 myCmd.Parameters.AddWithValue("@Id", thisId)
+
                                 thisConn.Open()
                                 myCmd.ExecuteNonQuery()
                             End Using
@@ -181,7 +188,8 @@ Partial Class Order_Add
             End If
 
             If ddlMethod.SelectedValue = "API" Then
-
+                MessageError(True, "UNDER MAINTENANCE !")
+                Exit Sub
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -204,8 +212,9 @@ Partial Class Order_Add
         Using package As New ExcelPackage(New FileInfo(filePath))
             Dim worksheet As ExcelWorksheet = package.Workbook.Worksheets(0)
 
-            Dim companyAlias As String = orderClass.GetCompanyAliasByCustomer(ddlCustomer.SelectedValue)
-            Dim companyDetailId As String = orderClass.GetCompanyDetailIdByCustomer(ddlCustomer.SelectedValue)
+            Dim customerData As DataRow = orderClass.GetDataRow("SELECT Customers.CompanyDetailId AS CompanyDetailId, Companys.Alias AS CompanyAlias FROM Customers LEFT JOIN Companys ON Customers.CompanyId=Companys.Id WHERE Customers.Id='" & ddlCustomer.SelectedValue & "'")
+            Dim companyAlias As String = customerData("CompanyAlias")
+            Dim companyDetailId As String = customerData("CompanyDetailId")
 
             Dim headerId As String = orderClass.GetNewOrderHeaderId
 
@@ -220,7 +229,7 @@ Partial Class Order_Add
 
             Dim success As Boolean = False
             Dim retry As Integer = 0
-            Dim maxRetry As Integer = 10
+            Dim maxRetry As Integer = 100
             Dim orderId As String = ""
 
             Do While Not success
@@ -231,7 +240,6 @@ Partial Class Order_Add
 
                 Dim randomCode As String = orderClass.GenerateRandomCode()
                 orderId = companyAlias & randomCode
-
                 Try
                     Using thisConn As New SqlConnection(myConn)
                         Using myCmd As New SqlCommand("INSERT INTO OrderHeaders (Id, OrderId, CustomerId, OrderNumber, OrderName, OrderNote, OrderType, Status, CreatedBy, CreatedDate, DownloadBOE, Active) VALUES (@Id, @OrderId, @CustomerId, @OrderNumber, @OrderName, @OrderNote, 'Regular', 'Unsubmitted', @CreatedBy, GETDATE(), 0, 1); INSERT INTO OrderQuotes VALUES (@Id, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
@@ -249,7 +257,6 @@ Partial Class Order_Add
                     End Using
 
                     success = True
-
                 Catch exSql As SqlException
                     If exSql.Number = 2601 OrElse exSql.Number = 2627 Then
                         success = False
@@ -460,7 +467,6 @@ Partial Class Order_Add
                                 orderClass.Logs(dataLog)
                             End If
                         End If
-
                         If blindLower.Contains("basswood") OrElse blindLower.Contains("ultraslat") Then
                             designId = orderClass.GetItemData("SELECT Id FROM Designs WHERE Name='Venetian Blind'")
 
@@ -850,6 +856,15 @@ Partial Class Order_Add
                                 Exit Sub
                             End If
 
+                            Dim validControlPosition As String() = {"Left", "Right"}
+                            If blindType = "Day & Night" OrElse blindType = "TDBU" Then
+                                validControlPosition = {"Both Sides", "Left & Right"}
+                            End If
+
+                            If Not validControlPosition.Contains(controlPosition) Then
+                                MessageError(True, "PLEASE CHECK YOUR CONTROL POSITION")
+                            End If
+
                             controlLength = "Standard"
                             controlLengthValue = Math.Ceiling(drop * 2 / 3)
 
@@ -877,6 +892,15 @@ Partial Class Order_Add
                         Dim groupName As String = String.Format("{0} - {1} - {2} - {3}", blindType, controlType, fabricGroup, factory)
                         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, designId)
                         Dim priceProductGroupB As String = String.Empty
+
+                        If blindType = "Day & Night" OrElse blindType = "TDBU" Then
+                            controlPosition = "Both Sides"
+                        End If
+
+                        If controlType = "Cordless" Then
+                            controlPosition = String.Empty
+                            controlLength = String.Empty : controlLengthValue = 0
+                        End If
 
                         If blindType = "Day & Night" Then
                             linearMetreB = width / 1000
@@ -1422,21 +1446,25 @@ Partial Class Order_Add
                         Dim widthValueB As Integer
                         Dim widthDataB As Integer = If(Integer.TryParse(widthTextB, widthValueB), widthValueB, 0)
 
+                        Dim widthC As Integer = 0
+                        Dim widthTextC As String = (sheetDetail.Cells(row, 10).Text & "").Trim()
+                        Dim widthValueC As Integer
+                        Dim widthDataC As Integer = If(Integer.TryParse(widthTextC, widthValueC), widthValueC, 0)
+
+                        Dim widthd As Integer = 0
+                        Dim widthe As Integer = 0
+                        Dim widthf As Integer = 0
+
                         Dim drop As Integer = 0
+                        Dim dropText As String = (sheetDetail.Cells(row, 11).Text & "").Trim()
+                        Dim dropValue As Integer
+                        Dim dropData As Integer = If(Integer.TryParse(dropText, dropValue), dropValue, 0)
+
                         Dim dropB As Integer = 0
                         Dim dropC As Integer = 0
                         Dim dropD As Integer = 0
                         Dim dropE As Integer = 0
                         Dim dropF As Integer = 0
-
-                        Dim dropText As String = (sheetDetail.Cells(row, 11).Text & "").Trim()
-                        Dim dropValue As Integer
-                        Dim dropData As Integer = If(Integer.TryParse(dropText, dropValue), dropValue, 0)
-
-                        Dim widthc As Integer = If(Integer.TryParse(sheetDetail.Cells(row, 10).Text.Trim(), Nothing), CInt(sheetDetail.Cells(row, 10).Text.Trim()), 0)
-                        Dim widthd As Integer = 0
-                        Dim widthe As Integer = 0
-                        Dim widthf As Integer = 0
 
                         Dim bracketType As String = (sheetDetail.Cells(row, 12).Text & "").Trim()
                         Dim bracketColour As String = (sheetDetail.Cells(row, 13).Text & "").Trim()
@@ -1522,17 +1550,14 @@ Partial Class Order_Add
                         End If
 
                         Dim linearMetre As Decimal = widthData / 1000
-                        Dim linearMetreB As Decimal = 0
+                        Dim linearMetreB As Decimal = widthDataB / 1000
                         Dim linearMetreC As Decimal = 0
                         Dim linearMetreD As Decimal = 0
                         Dim linearMetreE As Decimal = 0
                         Dim linearMetreF As Decimal = 0
 
                         Dim squareMetre As Decimal = widthData * dropData / 1000000
-                        Dim squareMetreB As Decimal = 0
-                        If blindType = "Single: Linked (2 Blinds)" Then
-                            squareMetreB = widthDataB * dropData / 1000000
-                        End If
+                        Dim squareMetreB As Decimal = widthDataB * dropData / 1000000
                         Dim squareMetreC As Decimal = 0
                         Dim squareMetreD As Decimal = 0
                         Dim squareMetreE As Decimal = 0
@@ -1698,7 +1723,7 @@ Partial Class Order_Add
                             tubeType = "Gear Reduction 49mm"
                             If controlType = "Chain" Then
                                 If widthData <= 1810 AndAlso widthDataB <= 1810 Then tubeType = "Gear Reduction 38mm"
-                                If widthData > 1810 Then tubeType = "Gear Reduction 45mm"
+                                If widthData > 1810 OrElse widthDataB > 1810 Then tubeType = "Gear Reduction 45mm"
                                 If squareMetre > 6 OrElse squareMetreB > 6 Then tubeType = "Gear Reduction 49mm"
                             End If
                         End If
@@ -1807,8 +1832,8 @@ Partial Class Order_Add
                             Dim controlLengthE As String = String.Empty : Dim controlLengthValueE As Integer = 0
                             Dim controlLengthF As String = String.Empty : Dim controlLengthValueF As Integer = 0
 
-                            Dim priceProductGroup As String = String.Empty
-                            Dim priceProductGroupB As String = String.Empty
+                            Dim priceProductGroupId As String = String.Empty
+                            Dim priceProductGroupIdB As String = String.Empty
                             Dim priceProductGroupC As String = String.Empty
                             Dim priceProductGroupD As String = String.Empty
                             Dim priceProductGroupE As String = String.Empty
@@ -1821,6 +1846,9 @@ Partial Class Order_Add
                             Dim groupFabric As String = String.Empty
 
                             If blindName = "Single Blind" Then
+                                width = widthData
+                                drop = dropData
+
                                 If bracketType = "Extension" Then bracketextension = "Yes"
 
                                 If roll = "Back Roll" Then roll = "Standard"
@@ -1833,7 +1861,7 @@ Partial Class Order_Add
 
                                 groupFabric = orderClass.GetFabricGroup(fabricId)
                                 Dim groupName As String = String.Format("Roller Blind - Gear Reduction - {0}", groupFabric)
-                                priceProductGroup = orderClass.GetPriceProductGroupId(groupName, designId)
+                                priceProductGroupId = orderClass.GetPriceProductGroupId(groupName, designId)
                             End If
 
                             If blindName = "Dual Blinds" Then
@@ -1843,7 +1871,8 @@ Partial Class Order_Add
                                 Dim groupName As String = String.Format("Roller Blind - Gear Reduction - {0}", groupFabric)
                                 Dim groupNameDB As String = String.Format("Roller Blind - Gear Reduction - {0}", groupFabricDB)
 
-                                widthDataB = widthData
+                                width = widthData
+                                widthB = widthDataB
 
                                 If controlText = "L - L" Then
                                     controlPosition = "Left" : controlPositionB = "Left"
@@ -1863,8 +1892,8 @@ Partial Class Order_Add
                                 linearMetreB = linearMetre
                                 squareMetreB = squareMetre
 
-                                priceProductGroup = orderClass.GetPriceProductGroupId(groupName, designId)
-                                priceProductGroupB = orderClass.GetPriceProductGroupId(groupNameDB, designId)
+                                priceProductGroupId = orderClass.GetPriceProductGroupId(groupName, designId)
+                                priceProductGroupIdB = orderClass.GetPriceProductGroupId(groupNameDB, designId)
 
                                 If controlType = "Chain" Then
                                     chainIdB = chainId
@@ -1876,6 +1905,104 @@ Partial Class Order_Add
                                 bottomIdB = bottomId
                                 bottomColourIdB = bottomColourId
                                 bottomOptionB = bottomOption
+                            End If
+
+                            If blindName = "Link 2 Blinds Dependent" Then
+                                drop = dropData
+                                dropB = dropData
+                                If controlText = "CS" Then
+                                    controlPosition = "Left"
+                                    width = widthData
+                                    widthB = widthDataB
+                                End If
+                                If controlText = "SC" Then
+                                    controlPosition = "Right"
+                                    width = widthDataB
+                                    widthB = widthData
+                                End If
+
+                                If bracketType = "Extension" Then bracketextension = "Yes"
+
+                                If roll = "Back Roll" Then roll = "Standard" : rollB = "Standard"
+                                If roll = "Front Roll" Then roll = "Reverse" : rollB = "Reverse"
+
+                                fabricIdB = fabricId
+                                fabricColourIdB = fabricColourId
+
+                                bottomIdB = bottomId
+                                bottomColourIdB = bottomColourId
+                                bottomOptionB = bottomOption
+
+                                If bottomOption = "Front Wrap" Then
+                                    bottomOption = "Fabric on Front"
+                                    bottomOptionB = "Fabric on Front"
+                                End If
+                                If bottomOption = "Back Wrap" Then
+                                    bottomOption = "Fabric on Back"
+                                    bottomOptionB = "Fabric on Back"
+                                End If
+
+                                totalItems = 2
+
+                                linearMetre = width / 1000
+                                linearMetreB = widthB / 1000
+
+                                squareMetre = width * drop / 1000000
+                                squareMetreB = widthB * drop / 1000000
+
+                                groupFabric = orderClass.GetFabricGroup(fabricId)
+                                Dim groupName As String = String.Format("Roller Blind - Gear Reduction - {0}", groupFabric)
+
+                                priceProductGroupId = orderClass.GetPriceProductGroupId(groupName, designId)
+                                priceProductGroupIdB = orderClass.GetPriceProductGroupId(groupName, designId)
+                            End If
+
+                            If blindName = "Link 2 Blinds Independent" Then
+                                controlPosition = "Left" : controlPositionB = "Right"
+                                width = widthData : widthB = widthDataB
+                                drop = dropData : dropB = dropData
+
+                                If bracketType = "Extension" Then bracketextension = "Yes"
+
+                                If roll = "Back Roll" Then roll = "Standard" : rollB = "Standard"
+                                If roll = "Front Roll" Then roll = "Reverse" : rollB = "Reverse"
+
+                                fabricIdB = fabricId
+                                fabricColourIdB = fabricColourId
+
+                                If controlType = "Chain" Then
+                                    chainIdB = chainId
+                                    chainStopperB = chainStopper
+                                    controlLengthB = controlLength
+                                    controlLengthValueB = controlLengthValue
+                                End If
+
+                                bottomIdB = bottomId
+                                bottomColourIdB = bottomColourId
+                                bottomOptionB = bottomOption
+
+                                If bottomOption = "Front Wrap" Then
+                                    bottomOption = "Fabric on Front"
+                                    bottomOptionB = "Fabric on Front"
+                                End If
+                                If bottomOption = "Back Wrap" Then
+                                    bottomOption = "Fabric on Back"
+                                    bottomOptionB = "Fabric on Back"
+                                End If
+
+                                totalItems = 2
+
+                                linearMetre = width / 1000
+                                linearMetreB = widthB / 1000
+
+                                squareMetre = width * drop / 1000000
+                                squareMetreB = widthB * drop / 1000000
+
+                                groupFabric = orderClass.GetFabricGroup(fabricId)
+                                Dim groupName As String = String.Format("Roller Blind - Gear Reduction - {0}", groupFabric)
+
+                                priceProductGroupId = orderClass.GetPriceProductGroupId(groupName, designId)
+                                priceProductGroupIdB = orderClass.GetPriceProductGroupId(groupName, designId)
                             End If
 
                             Dim itemId As String = orderClass.GetNewOrderItemId()
@@ -1915,8 +2042,8 @@ Partial Class Order_Add
                                     myCmd.Parameters.AddWithValue("@BottomColourIdD", If(String.IsNullOrEmpty(bottomColourIdD), CType(DBNull.Value, Object), bottomColourIdD))
                                     myCmd.Parameters.AddWithValue("@BottomColourIdE", If(String.IsNullOrEmpty(bottomColourIdE), CType(DBNull.Value, Object), bottomColourIdE))
                                     myCmd.Parameters.AddWithValue("@BottomColourIdF", If(String.IsNullOrEmpty(bottomColourIdF), CType(DBNull.Value, Object), bottomColourIdF))
-                                    myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
-                                    myCmd.Parameters.AddWithValue("@PriceProductGroupIdB", If(String.IsNullOrEmpty(priceProductGroupB), CType(DBNull.Value, Object), priceProductGroupB))
+                                    myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroupId), CType(DBNull.Value, Object), priceProductGroupId))
+                                    myCmd.Parameters.AddWithValue("@PriceProductGroupIdB", If(String.IsNullOrEmpty(priceProductGroupIdB), CType(DBNull.Value, Object), priceProductGroupIdB))
                                     myCmd.Parameters.AddWithValue("@PriceProductGroupIdC", If(String.IsNullOrEmpty(priceProductGroupC), CType(DBNull.Value, Object), priceProductGroupC))
                                     myCmd.Parameters.AddWithValue("@PriceProductGroupIdD", If(String.IsNullOrEmpty(priceProductGroupD), CType(DBNull.Value, Object), priceProductGroupD))
                                     myCmd.Parameters.AddWithValue("@PriceProductGroupIdE", If(String.IsNullOrEmpty(priceProductGroupE), CType(DBNull.Value, Object), priceProductGroupE))
@@ -1924,14 +2051,14 @@ Partial Class Order_Add
                                     myCmd.Parameters.AddWithValue("@Qty", "1")
                                     myCmd.Parameters.AddWithValue("@Room", room)
                                     myCmd.Parameters.AddWithValue("@Mounting", sizeType & " " & mounting)
-                                    myCmd.Parameters.AddWithValue("@Width", widthData)
-                                    myCmd.Parameters.AddWithValue("@WidthB", widthDataB)
+                                    myCmd.Parameters.AddWithValue("@Width", width)
+                                    myCmd.Parameters.AddWithValue("@WidthB", widthB)
                                     myCmd.Parameters.AddWithValue("@WidthC", widthc)
                                     myCmd.Parameters.AddWithValue("@WidthD", widthd)
                                     myCmd.Parameters.AddWithValue("@WidthE", widthe)
                                     myCmd.Parameters.AddWithValue("@WidthF", widthf)
-                                    myCmd.Parameters.AddWithValue("@Drop", dropData)
-                                    myCmd.Parameters.AddWithValue("@DropB", dropData)
+                                    myCmd.Parameters.AddWithValue("@Drop", drop)
+                                    myCmd.Parameters.AddWithValue("@DropB", dropB)
                                     myCmd.Parameters.AddWithValue("@DropC", dropData)
                                     myCmd.Parameters.AddWithValue("@DropD", dropData)
                                     myCmd.Parameters.AddWithValue("@DropE", dropData)

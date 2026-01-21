@@ -238,6 +238,9 @@
                 If String.IsNullOrEmpty(kitId) Then Continue For
                 If String.IsNullOrEmpty(boeFabricId) Then Continue For
 
+                Dim controlPosition As String = thisData.Tables(0).Rows(i).Item("ControlPosition").ToString()
+                If controlPosition = "Both Sides" Then controlPosition = "Left and Right"
+
                 writer.WriteStartElement("OrderDetails")
                 writer.WriteAttributeString("OrddID", thisData.Tables(0).Rows(i).Item("Id").ToString())
                 writer.WriteAttributeString("FKOrdID", thisData.Tables(0).Rows(i).Item("HeaderId").ToString())
@@ -252,7 +255,7 @@
                 writer.WriteAttributeString("FabricID_DoubleBracket", boeFabricIdB)
                 writer.WriteAttributeString("Width", thisData.Tables(0).Rows(i).Item("Width").ToString())
                 writer.WriteAttributeString("Drop", thisData.Tables(0).Rows(i).Item("Drop").ToString())
-                writer.WriteAttributeString("ControlPosition", thisData.Tables(0).Rows(i).Item("ControlPosition").ToString())
+                writer.WriteAttributeString("ControlPosition", controlPosition)
                 writer.WriteAttributeString("ControlLength", thisData.Tables(0).Rows(i).Item("ControlLengthValue").ToString())
                 writer.WriteAttributeString("Supply", thisData.Tables(0).Rows(i).Item("Supply").ToString())
 

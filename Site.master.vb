@@ -20,10 +20,6 @@ Public Partial Class SiteMaster
         BindListNavigation()
     End Sub
 
-    Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        CheckSessions(Session("IsLoggedIn"))
-    End Sub
-
     Protected Sub linkLogout_Click(sender As Object, e As EventArgs)
         Dim sessionId As String = String.Empty
 
