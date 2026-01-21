@@ -958,14 +958,14 @@ Public Class PreviewClass
                             cellHeader.HorizontalAlignment = Element.ALIGN_RIGHT
                             cellHeader.VerticalAlignment = Element.ALIGN_MIDDLE
                             cellHeader.BackgroundColor = New BaseColor(200, 200, 200)
-                            cellHeader.MinimumHeight = 22
+                            cellHeader.MinimumHeight = 20
                             table.AddCell(cellHeader)
 
                             For col As Integer = i To Math.Min(i + 5, items.GetLength(1) - 1)
                                 Dim cellContent As New PdfPCell(New Phrase(items(row, col), fontContent))
                                 cellContent.HorizontalAlignment = Element.ALIGN_CENTER
                                 cellContent.VerticalAlignment = Element.ALIGN_MIDDLE
-                                cellContent.MinimumHeight = 22
+                                cellContent.MinimumHeight = 20
                                 table.AddCell(cellContent)
                             Next
 
@@ -973,7 +973,7 @@ Public Class PreviewClass
                                 Dim emptyCell As New PdfPCell(New Phrase("", fontContent))
                                 emptyCell.HorizontalAlignment = Element.ALIGN_CENTER
                                 emptyCell.VerticalAlignment = Element.ALIGN_MIDDLE
-                                emptyCell.MinimumHeight = 22
+                                emptyCell.MinimumHeight = 20
                                 table.AddCell(emptyCell)
                             Next
                         Next
