@@ -279,7 +279,13 @@
             End If
 
             If designName = "Curtain" Then
+                Dim heading As String = thisData.Tables(0).Rows(i).Item("Heading").ToString()
+
                 Dim kitId As String = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "'")
+                If blindName = "Curtain Only" Then
+                    Dim kitName As String = blindName & " " & heading
+                    kitId = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "'")
+                End If
                 Dim kitIdB As String = String.Empty
 
                 If blindName = "Double Curtain & Track" Then kitIdB = kitId
