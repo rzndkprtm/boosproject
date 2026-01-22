@@ -346,7 +346,7 @@ Partial Class Setting_Specification_Product_Edit
     Protected Sub BindTube()
         ddlTube.Items.Clear()
         Try
-            ddlTube.DataSource = settingClass.GetDataTable("SELECT * FROM ProductTubes ORDER BY Id ASC")
+            ddlTube.DataSource = settingClass.GetDataTable("SELECT * FROM ProductTubes ORDER BY Name ASC")
             ddlTube.DataTextField = "Name"
             ddlTube.DataValueField = "Id"
             ddlTube.DataBind()
@@ -362,7 +362,7 @@ Partial Class Setting_Specification_Product_Edit
     Protected Sub BindControl()
         ddlControl.Items.Clear()
         Try
-            ddlControl.DataSource = settingClass.GetDataTable("SELECT * FROM ProductControls ORDER BY Id ASC")
+            ddlControl.DataSource = settingClass.GetDataTable("SELECT * FROM ProductControls ORDER BY Name ASC")
             ddlControl.DataTextField = "Name"
             ddlControl.DataValueField = "Id"
             ddlControl.DataBind()
@@ -378,7 +378,7 @@ Partial Class Setting_Specification_Product_Edit
     Protected Sub BindColour()
         ddlColour.Items.Clear()
         Try
-            ddlColour.DataSource = settingClass.GetDataTable("SELECT * FROM ProductColours ORDER BY Id ASC")
+            ddlColour.DataSource = settingClass.GetDataTable("SELECT * FROM ProductColours ORDER BY Name ASC")
             ddlColour.DataTextField = "Name"
             ddlColour.DataValueField = "Id"
             ddlColour.DataBind()

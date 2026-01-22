@@ -26,20 +26,6 @@
         End Try
     End Function
 
-    Public Function GetListData(thisString As String) As DataSet
-        Dim thisCmd As New SqlCommand(thisString)
-        Using thisConn As New SqlConnection(myConn)
-            Using thisAdapter As New SqlDataAdapter()
-                thisCmd.Connection = thisConn
-                thisAdapter.SelectCommand = thisCmd
-                Using thisDataSet As New DataSet()
-                    thisAdapter.Fill(thisDataSet)
-                    Return thisDataSet
-                End Using
-            End Using
-        End Using
-    End Function
-
     Public Function GetItemData(thisString As String) As String
         Dim result As String = String.Empty
         Using thisConn As New SqlConnection(myConn)
@@ -296,11 +282,12 @@
 
             If designName = "Curtain" Then
                 Dim heading As String = thisData.Rows(i)("Heading").ToString()
+                Dim headingB As String = thisData.Rows(i)("HeadingB").ToString()
 
-                Dim kitId As String = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "'")
-                If blindName = "Curtain Only" Then
-                    Dim kitName As String = blindName & " " & heading
-                    kitId = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "'")
+                Dim kitName As String = blindName & " " & heading
+                Dim kitId As String = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "'")
+                If blindName = "Track Only" Then
+                    kitId = String.Empty
                 End If
                 Dim kitIdB As String = String.Empty
 
@@ -326,6 +313,11 @@
                 writer.WriteAttributeString("Width", thisData.Rows(i)("Width").ToString())
                 writer.WriteAttributeString("Drop", thisData.Rows(i)("Drop").ToString())
                 writer.WriteAttributeString("StackOption", thisData.Rows(i)("StackPosition").ToString())
+                writer.WriteAttributeString("ControlType", "Hand")
+                writer.WriteAttributeString("BottomRailColour", thisData.Rows(i)("BottomHem").ToString())
+                writer.WriteAttributeString("Additional1", thisData.Rows(i)("Supply").ToString())
+                writer.WriteAttributeString("ControlLength", thisData.Rows(i)("ReturnLengthValue").ToString())
+                writer.WriteAttributeString("ControlLength2", thisData.Rows(i)("ReturnLengthValueB").ToString())
 
                 writer.WriteAttributeString("TotalItems", thisData.Rows(i)("TotalItems").ToString())
                 writer.WriteAttributeString("MarkUp", thisData.Rows(i)("MarkUp").ToString())

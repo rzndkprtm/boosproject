@@ -190,7 +190,7 @@ Partial Class Setting_Specification_Product_Detail
 
     Protected Sub BindData(productId As String)
         Try
-            Dim thisData As DataRow = settingClass.GetDataRow("SELECT Products.*, Designs.Name AS DesignName, Blinds.Name AS BlindName, ProductTubes.Name AS TubeName, ProductControls.Name AS ControlName, ProductColours.Name AS ColourName FROM Products LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductTubes ON Products.TubeType=ProductTubes.Id LEFT JOIN ProductControls ON Products.ControlType=ProductControls.Id LEFT JOIN ProductColours ON Products.ColourType=Products.ColourType WHERE Products.Id='" & productId & "'")
+            Dim thisData As DataRow = settingClass.GetDataRow("SELECT Products.*, Designs.Name AS DesignName, Blinds.Name AS BlindName, ProductTubes.Name AS TubeName, ProductControls.Name AS ControlName, ProductColours.Name AS ColourName FROM Products LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductTubes ON Products.TubeType=ProductTubes.Id LEFT JOIN ProductControls ON Products.ControlType=ProductControls.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE Products.Id='" & productId & "'")
             If thisData Is Nothing Then
                 Response.Redirect("~/setting/specification/product/", False)
                 Exit Sub
