@@ -1490,6 +1490,10 @@ Partial Class Order_Add
                             If controlText = "SC" OrElse controlText = "CS" Then blindName = "Link 2 Blinds Dependent"
                             If controlText = "II" Then blindName = "Link 2 Blinds Independent"
                         End If
+                        If blindType = "Single: Linked (3 Blinds)" Then
+                            If controlText = "ISC" OrElse controlText = "CSI" Then blindName = "Link 3 Blinds Independent with Dependent"
+                            If controlText = "CSS" OrElse controlText = "SCC" Then blindName = "Link 3 Blinds Dependent"
+                        End If
 
                         designId = orderClass.GetItemData("SELECT Id FROM Designs WHERE Name='Roller Blind'")
 
@@ -1530,9 +1534,16 @@ Partial Class Order_Add
                             Exit For
                         End If
 
-                        If blindType = "Single: Linked (2 Blinds)" Then
+                        If blindType = "Single: Linked (2 Blinds)" OrElse blindType = "Single: Linked (3 Blinds)" Then
                             If widthDataB = 0 Then
                                 MessageError(True, "PLEASE CHECK YOUR SECOND WIDTH DATA !")
+                                Exit For
+                            End If
+                        End If
+
+                        If blindType = "Single: Linked (3 Blinds)" Then
+                            If widthDataC = 0 Then
+                                MessageError(True, "PLEASE CHECK YOUR THIRD WIDTH DATA !")
                                 Exit For
                             End If
                         End If
@@ -1544,14 +1555,14 @@ Partial Class Order_Add
 
                         Dim linearMetre As Decimal = widthData / 1000
                         Dim linearMetreB As Decimal = widthDataB / 1000
-                        Dim linearMetreC As Decimal = 0
+                        Dim linearMetreC As Decimal = widthDataC / 1000
                         Dim linearMetreD As Decimal = 0
                         Dim linearMetreE As Decimal = 0
                         Dim linearMetreF As Decimal = 0
 
                         Dim squareMetre As Decimal = widthData * dropData / 1000000
                         Dim squareMetreB As Decimal = widthDataB * dropData / 1000000
-                        Dim squareMetreC As Decimal = 0
+                        Dim squareMetreC As Decimal = widthDataC * dropData / 1000000
                         Dim squareMetreD As Decimal = 0
                         Dim squareMetreE As Decimal = 0
                         Dim squareMetreF As Decimal = 0
@@ -1638,6 +1649,9 @@ Partial Class Order_Add
                         If blindType = "Single: Linked (2 Blinds)" Then
                             validControl = New String() {"II", "CS", "SC"}
                         End If
+                        If blindType = "Single: Linked (2 Blinds)" Then
+                            validControl = New String() {"ISC", "CSI", "CSS", "SSC"}
+                        End If
 
                         If Not validControl.Contains(controlText) Then
                             MessageError(True, "PLEASE CHECK YOUR CONTROL POSITION DATA !")
@@ -1706,7 +1720,7 @@ Partial Class Order_Add
                         If blindType = "Single Blind" OrElse blindType = "Double: (2 Blinds)" Then
                             tubeType = "Gear Reduction 49mm"
                             If controlType = "Chain" Then
-                                If widthData <= 1810 Then tubeType = "Gear Reduction 38mm"
+                                tubeType = "Gear Reduction 38mm"
                                 If widthData > 1810 OrElse widthDataB > 1810 Then tubeType = "Gear Reduction 45mm"
                                 If squareMetre > 6 Then tubeType = "Gear Reduction 49mm"
                             End If
@@ -1715,8 +1729,17 @@ Partial Class Order_Add
                         If blindType = "Single: Linked (2 Blinds)" Then
                             tubeType = "Gear Reduction 49mm"
                             If controlType = "Chain" Then
-                                If widthData <= 1810 AndAlso widthDataB <= 1810 Then tubeType = "Gear Reduction 38mm"
+                                tubeType = "Gear Reduction 38mm"
                                 If widthData > 1810 OrElse widthDataB > 1810 Then tubeType = "Gear Reduction 45mm"
+                                If squareMetre > 6 OrElse squareMetreB > 6 Then tubeType = "Gear Reduction 49mm"
+                            End If
+                        End If
+
+                        If blindType = "Single: Linked (3 Blinds)" Then
+                            tubeType = "Gear Reduction 49mm"
+                            If controlType = "Chain" Then
+                                tubeType = "Gear Reduction 38mm"
+                                If widthData > 1810 OrElse widthDataB > 1810 OrElse widthDataC > 1810 Then tubeType = "Gear Reduction 45mm"
                                 If squareMetre > 6 OrElse squareMetreB > 6 Then tubeType = "Gear Reduction 49mm"
                             End If
                         End If
@@ -1827,7 +1850,7 @@ Partial Class Order_Add
 
                             Dim priceProductGroupId As String = String.Empty
                             Dim priceProductGroupIdB As String = String.Empty
-                            Dim priceProductGroupC As String = String.Empty
+                            Dim priceProductGroupIdC As String = String.Empty
                             Dim priceProductGroupD As String = String.Empty
                             Dim priceProductGroupE As String = String.Empty
                             Dim priceProductGroupF As String = String.Empty
@@ -1901,8 +1924,7 @@ Partial Class Order_Add
                             End If
 
                             If blindName = "Link 2 Blinds Dependent" Then
-                                drop = dropData
-                                dropB = dropData
+                                drop = dropData : dropB = dropData
                                 If controlText = "CS" Then
                                     controlPosition = "Left"
                                     width = widthData
@@ -1998,6 +2020,110 @@ Partial Class Order_Add
                                 priceProductGroupIdB = orderClass.GetPriceProductGroupId(groupName, designId)
                             End If
 
+                            If blindName = "Link 3 Blinds Dependent" Then
+                                drop = dropData : dropB = dropData : dropC = dropData
+                                If controlText = "CSS" Then
+                                    controlPosition = "Left"
+                                    width = widthData
+                                    widthB = widthDataB
+                                    widthC = widthDataC
+                                End If
+                                If controlText = "SSC" Then
+                                    controlPosition = "Right"
+                                    width = widthDataC
+                                    widthB = widthDataB
+                                    widthC = widthData
+                                End If
+
+                                If bracketType = "Extension" Then bracketextension = "Yes"
+
+                                If roll = "Back Roll" Then roll = "Standard" : rollB = "Standard" : rollC = "Standard"
+                                If roll = "Front Roll" Then roll = "Reverse" : rollB = "Reverse" : rollC = "Standard"
+
+                                fabricIdB = fabricId : fabricIdC = fabricId
+                                fabricColourIdB = fabricColourId : fabricColourIdC = fabricColourId
+
+                                bottomIdB = bottomId
+                                bottomColourIdB = bottomColourId
+                                bottomOptionB = bottomOption
+
+                                bottomIdC = bottomId
+                                bottomColourIdC = bottomColourId
+                                bottomOptionC = bottomOption
+
+                                totalItems = 3
+
+                                linearMetre = width / 1000
+                                linearMetreB = widthB / 1000
+                                linearMetreC = widthC / 1000
+
+                                squareMetre = width * drop / 1000000
+                                squareMetreB = widthB * drop / 1000000
+                                squareMetreC = widthC * dropC / 1000000
+
+                                groupFabric = orderClass.GetFabricGroup(fabricId)
+                                Dim groupName As String = String.Format("Roller Blind - Gear Reduction - {0}", groupFabric)
+
+                                priceProductGroupId = orderClass.GetPriceProductGroupId(groupName, designId)
+                                priceProductGroupIdB = orderClass.GetPriceProductGroupId(groupName, designId)
+                                priceProductGroupIdC = orderClass.GetPriceProductGroupId(groupName, designId)
+                            End If
+
+                            If blindName = "Link 3 Blinds Independent with Dependent" Then
+                                controlPosition = "Left" : controlPosition = "" : controlPositionC = "Right"
+                                If controlText = "ISC" Then
+                                    width = widthData : widthB = widthDataB : widthC = widthDataC
+                                End If
+                                If controlText = "CSI" Then
+                                    width = widthDataC : widthB = widthDataB : widthC = widthData
+                                End If
+
+                                drop = dropData : dropB = dropData : dropC = dropData
+
+                                If bracketType = "Extension" Then bracketextension = "Yes"
+
+                                If roll = "Back Roll" Then roll = "Standard" : rollB = "Standard" : rollC = "Standard"
+                                If roll = "Front Roll" Then roll = "Reverse" : rollB = "Reverse" : rollC = "Standard"
+
+                                fabricIdB = fabricId
+                                fabricIdC = fabricId
+
+                                fabricColourIdB = fabricColourId
+                                fabricColourIdC = fabricColourId
+
+                                If controlType = "Chain" Then
+                                    chainIdC = chainId
+                                    chainStopperC = chainStopper
+                                    controlLengthC = controlLength
+                                    controlLengthValueC = controlLengthValue
+                                End If
+
+                                bottomIdB = bottomId
+                                bottomColourIdB = bottomColourId
+                                bottomOptionB = bottomOption
+
+                                bottomIdC = bottomId
+                                bottomColourIdC = bottomColourId
+                                bottomOptionC = bottomOption
+
+                                totalItems = 3
+
+                                linearMetre = width / 1000
+                                linearMetreB = widthB / 1000
+                                linearMetreC = widthC / 1000
+
+                                squareMetre = width * drop / 1000000
+                                squareMetreB = widthB * drop / 1000000
+                                squareMetreC = widthC * dropC / 1000000
+
+                                groupFabric = orderClass.GetFabricGroup(fabricId)
+                                Dim groupName As String = String.Format("Roller Blind - Gear Reduction - {0}", groupFabric)
+
+                                priceProductGroupId = orderClass.GetPriceProductGroupId(groupName, designId)
+                                priceProductGroupIdB = orderClass.GetPriceProductGroupId(groupName, designId)
+                                priceProductGroupIdC = orderClass.GetPriceProductGroupId(groupName, designId)
+                            End If
+
                             Dim itemId As String = orderClass.GetNewOrderItemId()
 
                             Using thisConn As SqlConnection = New SqlConnection(myConn)
@@ -2037,7 +2163,7 @@ Partial Class Order_Add
                                     myCmd.Parameters.AddWithValue("@BottomColourIdF", If(String.IsNullOrEmpty(bottomColourIdF), CType(DBNull.Value, Object), bottomColourIdF))
                                     myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroupId), CType(DBNull.Value, Object), priceProductGroupId))
                                     myCmd.Parameters.AddWithValue("@PriceProductGroupIdB", If(String.IsNullOrEmpty(priceProductGroupIdB), CType(DBNull.Value, Object), priceProductGroupIdB))
-                                    myCmd.Parameters.AddWithValue("@PriceProductGroupIdC", If(String.IsNullOrEmpty(priceProductGroupC), CType(DBNull.Value, Object), priceProductGroupC))
+                                    myCmd.Parameters.AddWithValue("@PriceProductGroupIdC", If(String.IsNullOrEmpty(priceProductGroupIdC), CType(DBNull.Value, Object), priceProductGroupIdC))
                                     myCmd.Parameters.AddWithValue("@PriceProductGroupIdD", If(String.IsNullOrEmpty(priceProductGroupD), CType(DBNull.Value, Object), priceProductGroupD))
                                     myCmd.Parameters.AddWithValue("@PriceProductGroupIdE", If(String.IsNullOrEmpty(priceProductGroupE), CType(DBNull.Value, Object), priceProductGroupE))
                                     myCmd.Parameters.AddWithValue("@PriceProductGroupIdF", If(String.IsNullOrEmpty(priceProductGroupF), CType(DBNull.Value, Object), priceProductGroupF))
