@@ -149,11 +149,11 @@ Partial Class Order_Add
                                 myCmd.ExecuteNonQuery()
                             End Using
                         End Using
+                    End If
 
-                        Dim directoryOrder As String = Server.MapPath(String.Format("~/File/Builder/{0}/", orderId))
-                        If Not Directory.Exists(directoryOrder) Then
-                            Directory.CreateDirectory(directoryOrder)
-                        End If
+                    Dim directoryOrder As String = Server.MapPath(String.Format("~/File/Order/{0}/", orderId))
+                    If Not Directory.Exists(directoryOrder) Then
+                        Directory.CreateDirectory(directoryOrder)
                     End If
 
                     Dim dataLog As Object() = {"OrderHeaders", thisId, Session("LoginId").ToString(), "Order Created"}
