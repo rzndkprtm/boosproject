@@ -982,7 +982,7 @@ Partial Class Order_Method
             data.trackdraw = String.Empty : data.trackdrawb = String.Empty
             data.controlcolour = String.Empty : controllength = 0
             data.controlcolourb = String.Empty : controllengthb = 0
-            data.stackposition = String.Empty : data.stackpositionb = String.Empty
+            data.stackpositionb = String.Empty
             widthb = 0 : dropb = 0
 
             linearmetre = width / 1000

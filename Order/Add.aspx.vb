@@ -1492,7 +1492,7 @@ Partial Class Order_Add
                         End If
                         If blindType = "Single: Linked (3 Blinds)" Then
                             If controlText = "ISC" OrElse controlText = "CSI" Then blindName = "Link 3 Blinds Independent with Dependent"
-                            If controlText = "CSS" OrElse controlText = "SCC" Then blindName = "Link 3 Blinds Dependent"
+                            If controlText = "CSS" OrElse controlText = "SSC" Then blindName = "Link 3 Blinds Dependent"
                         End If
 
                         designId = orderClass.GetItemData("SELECT Id FROM Designs WHERE Name='Roller Blind'")
@@ -1649,7 +1649,7 @@ Partial Class Order_Add
                         If blindType = "Single: Linked (2 Blinds)" Then
                             validControl = New String() {"II", "CS", "SC"}
                         End If
-                        If blindType = "Single: Linked (2 Blinds)" Then
+                        If blindType = "Single: Linked (3 Blinds)" Then
                             validControl = New String() {"ISC", "CSI", "CSS", "SSC"}
                         End If
 
