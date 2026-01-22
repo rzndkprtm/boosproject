@@ -78,14 +78,14 @@ Partial Class Order_Detail
             End If
 
             Dim previewClass As New PreviewClass
-            Dim filePath As String = "~/File/Order/"
+            Dim filePath As String = "~/File/Preview/"
             Dim todayString As String = DateTime.Now.ToString("ddMMyyyyHHmmss")
             Dim fileName As String = String.Format("{0}_{1}.pdf", lblOrderId.Text, todayString)
 
             Dim finalFilePath As String = Server.MapPath(filePath & fileName)
             previewClass.BindContent(headerId.Value, finalFilePath)
 
-            Dim documentFile As String = "~/File/Order/" & fileName
+            Dim documentFile As String = "~/File/Preview/" & fileName
             framePreview.Attributes("src") = "../Handler/PDF.ashx?document=" & documentFile
 
             ClientScript.RegisterStartupScript(Me.GetType(), "showPreview", thisScript, True)
@@ -266,7 +266,7 @@ Partial Class Order_Detail
             orderClass.Logs(dataLog)
 
             Dim previewClass As New PreviewClass
-            Dim filePath As String = "~/File/Order/"
+            Dim filePath As String = "~/File/Preview/"
             Dim todayString As String = DateTime.Now.ToString("ddMMyyyyHHmmss")
             Dim fileName As String = String.Format("{0}_{1}.pdf", lblOrderId.Text, todayString)
 
@@ -868,7 +868,7 @@ Partial Class Order_Detail
                 Dim todayString As String = DateTime.Now.ToString("ddMMyyyyHHmmss")
 
                 Dim previewClass As New PreviewClass
-                Dim pathPreview As String = "~/File/Order/"
+                Dim pathPreview As String = "~/File/Preview/"
                 Dim namePreview As String = String.Format("{0}_{1}.pdf", lblOrderId.Text, todayString)
 
                 Dim pdfPreview As String = Server.MapPath(pathPreview & namePreview)
@@ -1243,7 +1243,7 @@ Partial Class Order_Detail
                 Dim todayString As String = DateTime.Now.ToString("ddMMyyyyHHmmss")
 
                 Dim previewClass As New PreviewClass
-                Dim pathPreview As String = "~/File/Order/"
+                Dim pathPreview As String = "~/File/Preview/"
                 Dim namePreview As String = String.Format("{0}_{1}.pdf", lblOrderId.Text, todayString)
 
                 Dim pdfPreview As String = Server.MapPath(pathPreview & namePreview)
@@ -1252,7 +1252,7 @@ Partial Class Order_Detail
                 Dim quoteClass As New QuoteClass
                 Dim quoteName As String = String.Format("QUOTE-{0}_{1}.pdf", lblOrderId.Text, todayString)
 
-                Dim pdfQuote As String = Server.MapPath(String.Format("~/File/Invoice/{0}", quoteName))
+                Dim pdfQuote As String = Server.MapPath(String.Format("~/File/Quote/{0}", quoteName))
                 quoteClass.BindContent(headerId.Value, pdfQuote)
 
                 mailingClass.SentQuote(headerId.Value, pdfPreview, pdfQuote, Session("LoginId").ToString(), txtEmailQuoteTo.Text, ccCustomer, txtEmailQuoteCCStaff.Text)
@@ -1639,7 +1639,7 @@ Partial Class Order_Detail
                 thisConn.Close()
             End Using
 
-            Dim folderPath As String = Server.MapPath("~/file/printing/" & thisId)
+            Dim folderPath As String = Server.MapPath("~/File/Printing/" & thisId)
             If IO.Directory.Exists(folderPath) Then
                 IO.Directory.Delete(folderPath, True)
             End If
@@ -3285,7 +3285,7 @@ Partial Class Order_Detail
                         End If
 
                         If Not String.IsNullOrEmpty(printing) Then
-                            imgPrinting.ImageUrl = String.Format("~/file/printing/{0}/{1}/{2}", headerId.Value, dataId, printing)
+                            imgPrinting.ImageUrl = String.Format("~/File/Printing/{0}/{1}/{2}", headerId.Value, dataId, printing)
                             If lblOrderStatus.Text = "Unsubmitted" Then btnDeletePrinting.Visible = True
                         End If
                     End If
@@ -3305,11 +3305,11 @@ Partial Class Order_Detail
                         End If
 
                         If Not String.IsNullOrEmpty(printing) Then
-                            imgPrinting.ImageUrl = String.Format("~/file/printing/{0}/{1}/{2}", headerId.Value, dataId, printing)
+                            imgPrinting.ImageUrl = String.Format("~/File/Printing/{0}/{1}/{2}", headerId.Value, dataId, printing)
                             If lblOrderStatus.Text = "Unsubmitted" Then btnDeletePrinting.Visible = True
                         End If
                         If Not String.IsNullOrEmpty(printingb) Then
-                            imgPrintingB.ImageUrl = String.Format("~/file/printing/{0}/{1}/{2}", headerId.Value, dataId, printingb)
+                            imgPrintingB.ImageUrl = String.Format("~/File/Printing/{0}/{1}/{2}", headerId.Value, dataId, printingb)
                             If lblOrderStatus.Text = "Unsubmitted" Then btnDeletePrintingB.Visible = True
                         End If
                     End If
@@ -3320,14 +3320,14 @@ Partial Class Order_Detail
                     If width <= 1510 Then
                         aPrinting.Visible = True : divPrinting.Visible = True
                         If Not String.IsNullOrEmpty(printing) Then
-                            imgPrinting.ImageUrl = String.Format("~/file/printing/{0}/{1}/{2}", headerId.Value, dataId, printing)
+                            imgPrinting.ImageUrl = String.Format("~/File/Printing/{0}/{1}/{2}", headerId.Value, dataId, printing)
                             If lblOrderStatus.Text = "Unsubmitted" Then btnDeletePrinting.Visible = True
                         End If
                     End If
                     If widthb <= 1510 Then
                         aPrintingB.Visible = True : divPrintingB.Visible = True
                         If Not String.IsNullOrEmpty(printingb) Then
-                            imgPrintingB.ImageUrl = String.Format("~/file/printing/{0}/{1}/{2}", headerId.Value, dataId, printingb)
+                            imgPrintingB.ImageUrl = String.Format("~/File/Printing/{0}/{1}/{2}", headerId.Value, dataId, printingb)
                             If lblOrderStatus.Text = "Unsubmitted" Then btnDeletePrintingB.Visible = True
                         End If
                     End If
@@ -3352,15 +3352,15 @@ Partial Class Order_Detail
 
                     If width <= 1510 Then
                         aPrinting.Visible = True : divPrinting.Visible = True
-                        If Not String.IsNullOrEmpty(printing) Then imgPrinting.ImageUrl = String.Format("~/file/printing/{0}/{1}", dataId, printing)
+                        If Not String.IsNullOrEmpty(printing) Then imgPrinting.ImageUrl = String.Format("~/File/Printing/{0}/{1}", dataId, printing)
                     End If
                     If widthb <= 1510 Then
                         aPrintingB.Visible = True : divPrintingB.Visible = True
-                        If Not String.IsNullOrEmpty(printingb) Then imgPrintingB.ImageUrl = String.Format("~/file/printing/{0}/{1}", dataId, printingb)
+                        If Not String.IsNullOrEmpty(printingb) Then imgPrintingB.ImageUrl = String.Format("~/File/Printing/{0}/{1}", dataId, printingb)
                     End If
                     If widthc <= 1510 Then
                         aPrintingC.Visible = True : divPrintingC.Visible = True
-                        If Not String.IsNullOrEmpty(printingc) Then imgPrintingC.ImageUrl = String.Format("~/file/printing/{0}/{1}", dataId, printingc)
+                        If Not String.IsNullOrEmpty(printingc) Then imgPrintingC.ImageUrl = String.Format("~/File/Printing/{0}/{1}", dataId, printingc)
                     End If
 
                     If aPrinting.Visible AndAlso divPrinting.Visible Then
@@ -3382,19 +3382,19 @@ Partial Class Order_Detail
 
                     If width <= 1510 Then
                         aPrinting.Visible = True : divPrinting.Visible = True
-                        If Not String.IsNullOrEmpty(printing) Then imgPrinting.ImageUrl = String.Format("~/file/printing/{0}/{1}", dataId, printing)
+                        If Not String.IsNullOrEmpty(printing) Then imgPrinting.ImageUrl = String.Format("~/File/Printing/{0}/{1}", dataId, printing)
                     End If
                     If widthb <= 1510 Then
                         aPrintingB.Visible = True : divPrintingB.Visible = True
-                        If Not String.IsNullOrEmpty(printingb) Then imgPrintingB.ImageUrl = String.Format("~/file/printing/{0}/{1}", dataId, printingb)
+                        If Not String.IsNullOrEmpty(printingb) Then imgPrintingB.ImageUrl = String.Format("~/File/Printing/{0}/{1}", dataId, printingb)
                     End If
                     If widthc <= 1510 Then
                         aPrintingC.Visible = True : divPrintingC.Visible = True
-                        If Not String.IsNullOrEmpty(printingc) Then imgPrintingC.ImageUrl = String.Format("~/file/printing/{0}/{1}", dataId, printingc)
+                        If Not String.IsNullOrEmpty(printingc) Then imgPrintingC.ImageUrl = String.Format("~/File/Printing/{0}/{1}", dataId, printingc)
                     End If
                     If widthd <= 1510 Then
                         aPrintingD.Visible = True : divPrintingD.Visible = True
-                        If Not String.IsNullOrEmpty(printingd) Then imgPrintingD.ImageUrl = String.Format("~/file/printing/{0}/{1}", dataId, printingd)
+                        If Not String.IsNullOrEmpty(printingd) Then imgPrintingD.ImageUrl = String.Format("~/File/Printing/{0}/{1}", dataId, printingd)
                     End If
 
                     If aPrinting.Visible AndAlso divPrinting.Visible Then
@@ -3419,7 +3419,7 @@ Partial Class Order_Detail
                     aPrinting.Attributes("class") = aPrinting.Attributes("class") & " active"
                     divPrinting.Attributes("class") = divPrinting.Attributes("class") & " show active"
 
-                    If Not String.IsNullOrEmpty(printing) Then imgPrinting.ImageUrl = String.Format("~/file/printing/{0}/{1}", headerId.Value, printing)
+                    If Not String.IsNullOrEmpty(printing) Then imgPrinting.ImageUrl = String.Format("~/File/Printing/{0}/{1}", headerId.Value, printing)
                 End If
             End If
         Catch ex As Exception

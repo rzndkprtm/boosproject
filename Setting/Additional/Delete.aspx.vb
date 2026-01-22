@@ -23,7 +23,7 @@ Partial Class Setting_Additional_Delete
             Dim directoryInv As New DirectoryInfo(Server.MapPath("~/File/Invoice/"))
             EmptyFolder(directoryInv)
 
-            Dim directoryOrder As New DirectoryInfo(Server.MapPath("~/File/Order/"))
+            Dim directoryOrder As New DirectoryInfo(Server.MapPath("~/File/Preview/"))
             EmptyFolder(directoryOrder)
 
             Dim directorQuote As New DirectoryInfo(Server.MapPath("~/File/Quote/"))

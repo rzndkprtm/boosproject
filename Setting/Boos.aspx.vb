@@ -493,7 +493,7 @@ Partial Class Setting_Boos
 
                 Dim fileName As String = Trim("Unshipment - In Production Order " & Now.ToString("dd MMm yyyy") & ".pdf")
 
-                Dim pdfFilePath As String = Server.MapPath("~/File/Order/" & fileName)
+                Dim pdfFilePath As String = Server.MapPath("~/File/Report/" & fileName)
                 unshipmentClass.BindContent(pdfFilePath)
 
                 mailClass.MailUnshipment(pdfFilePath)
