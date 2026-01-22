@@ -130,6 +130,10 @@ Partial Class Order_Default
         Response.Redirect("~/order/rework", False)
     End Sub
 
+    Protected Sub btnFile_Click(sender As Object, e As EventArgs)
+        Response.Redirect("~/order/file", False)
+    End Sub
+
     Protected Sub btnStatusOrder_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
@@ -826,6 +830,8 @@ Partial Class Order_Default
 
             btnAdd.Visible = PageAction("Add")
             btnRework.Visible = PageAction("Rework")
+            btnFile.Visible = PageAction("File")
+
             divActive.Visible = PageAction("Active")
             divCompany.Visible = PageAction("Filter Company")
 
