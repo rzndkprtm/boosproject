@@ -2095,6 +2095,16 @@ Partial Class Order_Detail
                 Exit Sub
             End If
 
+            'Dim params As New List(Of SqlParameter) From {
+            '    New SqlParameter("@HeaderId", headerId), New SqlParameter("@RoleName", Session("RoleName")), New SqlParameter("@CompanyId", Session("CompanyId")), New SqlParameter("@CustomerId", Session("CustomerId")), New SqlParameter("@LoginId", Session("LoginId")), New SqlParameter("@CustomerLevel", Session("CustomerLevel")), New SqlParameter("@LevelName", Session("LevelName"))
+            '}
+            'Dim headerData As DataRow = orderClass.GetDataRowSP("sp_GetHeaderOnDetail", params)
+
+            ''If headerData Is Nothing Then
+            ''    Response.Redirect("~/order", False)
+            ''    Exit Sub
+            ''End If
+
             customerId.Value = headerData("CustomerId").ToString()
             companyId.Value = headerData("CompanyId").ToString()
             companyDetailId.Value = headerData("CompanyDetailId").ToString()
@@ -3957,14 +3967,14 @@ Partial Class Order_Detail
         Try
             Dim thisId As String = String.Empty
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderActionContext OUTPUT INSERTED.Id VALUES (NEWID(), @Query)", thisConn)
-                    myCmd.Parameters.AddWithValue("@Query", queryString)
+                Using myCmd As New SqlCommand("sp_InsertOrderActionContext", thisConn)
+                    myCmd.CommandType = CommandType.StoredProcedure
+                    myCmd.Parameters.Add("@Query", SqlDbType.NVarChar).Value = queryString
 
                     thisConn.Open()
-                    thisId = myCmd.ExecuteScalar().ToString()
+                    Return myCmd.ExecuteScalar().ToString()
                 End Using
             End Using
-            Return thisId
         Catch ex As Exception
             Return String.Empty
         End Try

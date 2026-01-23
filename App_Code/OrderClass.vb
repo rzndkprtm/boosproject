@@ -25,6 +25,29 @@ Public Class OrderClass
         End Try
     End Function
 
+    Public Function GetDataRowSP(spName As String, params As List(Of SqlParameter)) As DataRow
+        Try
+            Using conn As New SqlConnection(myConn)
+                Using cmd As New SqlCommand(spName, conn)
+                    cmd.CommandType = CommandType.StoredProcedure
+                    cmd.Parameters.AddRange(params.ToArray())
+
+                    Using da As New SqlDataAdapter(cmd)
+                        Dim dt As New DataTable()
+                        da.Fill(dt)
+
+                        If dt.Rows.Count > 0 Then
+                            Return dt.Rows(0)
+                        End If
+                    End Using
+                End Using
+            End Using
+        Catch ex As Exception
+        End Try
+        Return Nothing
+    End Function
+
+
     Public Function GetDataTable(thisString As String) As DataTable
         Try
             Using thisConn As New SqlConnection(myConn)
