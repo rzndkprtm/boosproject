@@ -807,7 +807,7 @@ function controlForm(status, isEditItem, isCopyItem) {
 
     const inputs = [
         "blindtype", "tubetype", "controltype", "colourtype", "qty", "room", "mounting", "stackposition",
-        "controlposition", "chaincolour", "wandcolour", "controllength", "controllengthvalue", "bottomjoining", "bracketextension", "sloping",
+        "controlposition", "chaincolour", "wandcolour", "controllength", "controllengthvalue", "bracketextension",
         "width", "drop", "fabrictype", "fabriccolour", "notes", "markup"
     ];
 
@@ -839,14 +839,12 @@ function setFormValues(itemData) {
         fabrictype: "FabricId",
         fabriccolour: "FabricColourId",
         stackposition: "StackPosition",
-        bottomjoining: "BottomJoining",
         controlposition: "ControlPosition",
         chaincolour: "ChainId",
         wandcolour: "WandColour",
         controllength: "ControlLength",
         controllengthvalue: "ControlLengthValue",
         bracketextension: "BracketExtension",
-        sloping: "Sloping",
         notes: "Notes",
         markup: "MarkUp"
     };
@@ -886,7 +884,7 @@ function process() {
 
     const fields = [
         "blindtype", "tubetype", "controltype", "colourtype", "qty", "room", "mounting", "stackposition",
-        "controlposition", "chaincolour", "wandcolour", "controllength", "controllengthvalue", "bottomjoining", "bracketextension", "sloping",
+        "controlposition", "chaincolour", "wandcolour", "controllength", "controllengthvalue", "bracketextension",
         "width", "drop", "fabrictype", "fabriccolour", "notes", "markup"
     ];
 

@@ -382,7 +382,7 @@ Public Class MailingClass
             mailBody &= "<br /><br />"
             mailBody &= "A new order has been submitted by customer."
             mailBody &= "<br /><br />"
-            mailBody &= "Please check, grant access if required, and download the BOE so it can be processed for production."
+            mailBody &= "Please check and download it from the BOE for production processing."
             mailBody &= "</span>"
 
             mailBody &= "<br /><br /><br />"
@@ -636,19 +636,6 @@ Public Class MailingClass
         mailBody &= "<br />"
         mailBody &= "Please note that due to this streamlined process, we regret to inform you that we are unable to accept cancellations or modifications for this order."
         mailBody &= "</span>"
-
-        mailBody &= "<br /><br /><br />"
-
-        mailBody &= "<table cellpadding='3' cellspacing='0' style='font-family:Cambria; font-size: 16px;'>"
-        mailBody &= "<tr><td valign='top'>Company</td><td valign='top'>:</td><td valign='top'><b>" & companyName & "</b></td></tr>"
-        mailBody &= "<tr><td valign='top'>Customer Name</td><td valign='top'>:</td><td valign='top'><b>" & customerName & "</b></td></tr>"
-        mailBody &= "<tr><td valign='top'>Order #</td><td valign='top'>:</td><td valign='top'><b>" & orderId & "</b></td></tr>"
-        mailBody &= "<tr><td valign='top'>Order Number</td><td valign='top'>:</td><td valign='top'><b>" & orderNumber & "</b></td></tr>"
-        mailBody &= "<tr><td valign='top'>Order Name</td><td valign='top'>:</td><td valign='top'><b>" & orderName & "</b></td></tr>"
-        mailBody &= "<tr><td valign='top'>Order Note</td><td valign='top'>:</td><td valign='top'><b>" & safeNote & "</b></td></tr>"
-        mailBody &= "</table>"
-
-        mailBody &= "<br /><br />"
 
         mailBody &= "<span style='font-family: Cambria; font-size: 16px;'>"
         mailBody &= "For any inquiries or assistance, kindly contact our office. We appreciate your understanding and trust in our products & services."

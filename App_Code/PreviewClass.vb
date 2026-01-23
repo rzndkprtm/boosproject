@@ -226,7 +226,7 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Mounting", "Aluminium Type", "Aluminium Colour", "Sub Type", "Width (mm)", "Drop (mm)", "Control Position", "Tilter Position", "Cord Length", "Wand Length", "Supply", "Notes"}
+                        Dim headers As String() = {"", "Location", "Mounting", "Aluminium Type", "Aluminium Colour", "Sub Type", "Width (mm)", "Drop (mm)", "Control Position", "Tilter Position", "Cord Length", "Wand Length", "Hold Down Clip", "Notes"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
@@ -1290,7 +1290,7 @@ Public Class PreviewClass
                     Dim table As New PdfPTable(7)
                     table.WidthPercentage = 100
 
-                    Dim items(19, saphoraData.Rows.Count - 1) As String
+                    Dim items(17, saphoraData.Rows.Count - 1) As String
 
                     For i As Integer = 0 To saphoraData.Rows.Count - 1
                         Dim number As Integer = i + 1
@@ -1323,10 +1323,8 @@ Public Class PreviewClass
                         items(12, i) = controlName
                         items(13, i) = controlColour
                         items(14, i) = controlLengthText
-                        items(15, i) = saphoraData.Rows(i)("BottomJoining").ToString()
-                        items(16, i) = saphoraData.Rows(i)("BracketExtension").ToString()
-                        items(17, i) = saphoraData.Rows(i)("Sloping").ToString()
-                        items(18, i) = saphoraData.Rows(i)("Notes").ToString()
+                        items(15, i) = saphoraData.Rows(i)("BracketExtension").ToString()
+                        items(16, i) = saphoraData.Rows(i)("Notes").ToString()
                     Next
 
                     For i As Integer = 0 To items.GetLength(1) - 1 Step 6
@@ -1335,7 +1333,7 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Mounting", "Vertical Type", "Blade Type", "Fabric Type", "Fabric Colour", "Width (mm)", "Drop (mm)", "Track Colour", "Stack Position", "Control Position", "Control Type", "Control Colour", "Control Length", "Bottom Joining", "Extension Bracket", "Sloping", "Notes"}
+                        Dim headers As String() = {"", "Location", "Mounting", "Vertical Type", "Blade Type", "Fabric Type", "Fabric Colour", "Width (mm)", "Drop (mm)", "Track Colour", "Stack Position", "Control Position", "Control Type", "Control Colour", "Control Length", "Extension Bracket", "Notes"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))

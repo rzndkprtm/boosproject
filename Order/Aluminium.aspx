@@ -170,11 +170,7 @@
                                                     <label>Control Position</label>
                                                 </div>
                                                 <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                    <select id="controlposition" class="form-select">
-                                                        <option value=""></option>
-                                                        <option value="Left">Left</option>
-                                                        <option value="Right">Right</option>
-                                                    </select>
+                                                    <select id="controlposition" class="form-select"></select>
                                                 </div>
                                             </div>
 
@@ -183,11 +179,7 @@
                                                     <label>Tilter Position</label>
                                                 </div>
                                                 <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                    <select id="tilterposition" class="form-select">
-                                                        <option value=""></option>
-                                                        <option value="Left">Left</option>
-                                                        <option value="Right">Right</option>
-                                                    </select>
+                                                    <select id="tilterposition" class="form-select"></select>
                                                 </div>
                                             </div>
 
@@ -485,5 +477,5 @@
         </div>
     </div>
 
-    <script src='<%: ResolveUrl("~/Scripts/WebForms/Order/Aluminium.js?v=1.0.0") %>'></script>
+    <script src='<%: ResolveUrl("~/Scripts/WebForms/Order/Aluminium.js?v=1.0.3") %>'></script>
 </asp:Content>

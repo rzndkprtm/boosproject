@@ -190,10 +190,10 @@
                                                 <div class="col-12 col-sm-12 col-lg-3 form-group">
                                                     <select id="stackposition" class="form-select">
                                                         <option value=""></option>
-                                                        <option value="Stack Left">Stack Left</option>
-                                                        <option value="Stack Right">Stack Right</option>
-                                                        <option value="Stack Centre">Stack Centre</option>
-                                                        <option value="Stack Split">Stack Split</option>
+                                                        <option value="Left">Left</option>
+                                                        <option value="Right">Right</option>
+                                                        <option value="Centre">Centre</option>
+                                                        <option value="Split">Split</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -238,7 +238,7 @@
 
                                             <div class="row" id="divcontrollength">
                                                 <div class="col-12 col-sm-12 col-lg-3">
-                                                    <label>Control Length</label>
+                                                    <label>Wand Length</label>
                                                 </div>
                                                 <div class="col-12 col-sm-12 col-lg-3 form-group">
                                                     <div class="input-group">
@@ -258,38 +258,12 @@
                                                 </div>
                                             </div>
 
-                                            <div class="row mt-3">
-                                                <div class="col-12 col-sm-12 col-lg-3">
-                                                    <label>Bottom Joining</label>
-                                                </div>
-                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                    <select id="bottomjoining" class="form-select">
-                                                        <option value=""></option>
-                                                        <option value="Chainless">Chainless</option>
-                                                        <option value="With Chain">With Chain</option>
-                                                        <option value="Sewn In">Sewn In</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
+                                            <div class="row mt-2">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Extension Bracket</label>
                                                 </div>
                                                 <div class="col-12 col-sm-12 col-lg-2 form-group">
                                                     <select id="bracketextension" class="form-select">
-                                                        <option value=""></option>
-                                                        <option value="Yes">Yes</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-12 col-sm-12 col-lg-3">
-                                                    <label>Sloping</label>
-                                                </div>
-                                                <div class="col-12 col-sm-12 col-lg-2 form-group">
-                                                    <select id="sloping" class="form-select">
                                                         <option value=""></option>
                                                         <option value="Yes">Yes</option>
                                                     </select>
@@ -393,5 +367,5 @@
         </div>
     </div>
 
-    <script src='<%: ResolveUrl("~/Scripts/WebForms/Order/Saphora.js?v=1.0.0") %>'></script>
+    <script src='<%: ResolveUrl("~/Scripts/WebForms/Order/Saphora.js?v=1.0.1") %>'></script>
 </asp:Content>

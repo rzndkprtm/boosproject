@@ -808,6 +808,7 @@ function bindFabricColourB(fabricType) {
         });
     });
 }
+
 function bindComponentForm(blindType, controlType, colourType) {
     return new Promise((resolve, reject) => {
         const detail = document.getElementById("divdetail");
