@@ -1052,11 +1052,10 @@ Partial Class Order_Detail
         End Try
     End Sub
 
-    Protected Sub gvListBuilderFile_RowCommand(sender As Object, e As GridViewCommandEventArgs)
+    Protected Sub gvListOrderFile_RowCommand(sender As Object, e As GridViewCommandEventArgs)
         Try
             Dim fileName As String = e.CommandArgument.ToString()
-            Dim orderId As String = lblOrderId.Text
-            Dim directoryPath As String = Server.MapPath(String.Format("~/File/Builder/{0}/", orderId))
+            Dim directoryPath As String = Server.MapPath(String.Format("~/File/Builder/{0}/", lblOrderId.Text))
             Dim filePath As String = IO.Path.Combine(directoryPath, fileName)
 
             Select Case e.CommandName
@@ -1072,12 +1071,12 @@ Partial Class Order_Detail
                     If IO.File.Exists(filePath) Then
                         IO.File.Delete(filePath)
                     End If
-                    BindBuilderFile(orderId)
+                    BindDataFile(lblOrderId.Text)
             End Select
         Catch ex As Exception
-            MessageError_BuilderFile(True, ex.ToString())
+            MessageError_FileOrder(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
-                MessageError_BuilderFile(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                MessageError_FileOrder(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
                 Dim dataMailing As Object() = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "gvListBuilderFile_RowCommand", ex.ToString()}
                 mailingClass.WebError(dataMailing)
             End If
@@ -1160,23 +1159,23 @@ Partial Class Order_Detail
         End Try
     End Sub
 
-    Protected Sub btnBuilderUpload_Click(sender As Object, e As EventArgs)
+    Protected Sub btnUploadFileOrder_Click(sender As Object, e As EventArgs)
         MessageError_BuilderDetail(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showBuilderFile(); };"
+        Dim thisScript As String = "window.onload = function() { showFileOrder(); };"
         Try
-            Dim folderPath As String = Server.MapPath(String.Format("~/File/Builder/{0}", lblOrderId.Text))
+            Dim folderPath As String = Server.MapPath(String.Format("~/File/Order/{0}", lblOrderId.Text))
 
             If Not IO.Directory.Exists(folderPath) Then
                 IO.Directory.CreateDirectory(folderPath)
             End If
 
-            Dim fileName As String = IO.Path.GetFileName(fuBuilderFile.FileName)
-            fuBuilderFile.SaveAs(IO.Path.Combine(folderPath, fileName))
+            Dim fileName As String = IO.Path.GetFileName(fuOrderFile.FileName)
+            fuOrderFile.SaveAs(IO.Path.Combine(folderPath, fileName))
 
             url = String.Format("~/order/detail?orderid={0}", headerId.Value)
             Response.Redirect(url, False)
         Catch ex As Exception
-            ClientScript.RegisterStartupScript(Me.GetType(), "showBuilderFile", thisScript, True)
+            ClientScript.RegisterStartupScript(Me.GetType(), "showFileOrder", thisScript, True)
         End Try
     End Sub
 
@@ -1787,32 +1786,36 @@ Partial Class Order_Detail
             Dim printingg As String = String.Empty
             Dim printingh As String = String.Empty
 
-            Dim folderPath As String = Server.MapPath(String.Format("~/File/Printing/{0}/{1}", headerId.Value, itemId.Value))
+            Dim folderPath As String = Server.MapPath(String.Format("~/File/Order/{0}", lblOrderId.Text))
             If Not IO.Directory.Exists(folderPath) Then
                 IO.Directory.CreateDirectory(folderPath)
             End If
 
             If fuPrinting.HasFile Then
+                Dim thisName As String = String.Format("Printing{0}{1}", itemId.Value, "1")
                 Dim ext As String = IO.Path.GetExtension(fuPrinting.FileName)
-                printing = String.Format("{0}{1}", Now.ToString("yyyyMMddHHmmssfff"), ext)
+                printing = String.Format("{0}{1}", thisName, ext)
                 fuPrinting.SaveAs(IO.Path.Combine(folderPath, printing))
             End If
 
             If fuPrintingB.HasFile Then
+                Dim thisName As String = String.Format("Printing{0}{1}", itemId.Value, "2")
                 Dim ext As String = IO.Path.GetExtension(fuPrintingB.FileName)
-                printingb = String.Format("{0}{1}", Now.ToString("yyyyMMddHHmmssfff"), ext)
+                printingb = String.Format("{0}{1}", thisName, ext)
                 fuPrintingB.SaveAs(IO.Path.Combine(folderPath, printingb))
             End If
 
             If fuPrintingC.HasFile Then
+                Dim thisName As String = String.Format("Printing{0}{1}", itemId.Value, "3")
                 Dim ext As String = IO.Path.GetExtension(fuPrintingC.FileName)
-                printingc = String.Format("{0}{1}", Now.ToString("yyyyMMddHHmmssfff"), ext)
+                printingc = String.Format("{0}{1}", thisName, ext)
                 fuPrintingC.SaveAs(IO.Path.Combine(folderPath, printingc))
             End If
 
             If fuPrintingD.HasFile Then
+                Dim thisName As String = String.Format("Printing{0}{1}", itemId.Value, "4")
                 Dim ext As String = IO.Path.GetExtension(fuPrintingD.FileName)
-                printingd = String.Format("{0}{1}", Now.ToString("yyyyMMddHHmmssfff"), ext)
+                printingd = String.Format("{0}{1}", thisName, ext)
                 fuPrintingD.SaveAs(IO.Path.Combine(folderPath, printingd))
             End If
 
@@ -1899,7 +1902,7 @@ Partial Class Order_Detail
         MessageError_Printing(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showPrinting(); };"
         Try
-            orderClass.DeleteFilePrinting(headerId.Value, itemId.Value, "1")
+            orderClass.DeleteFilePrinting(lblOrderId.Text, itemId.Value, "1")
 
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
@@ -1939,7 +1942,7 @@ Partial Class Order_Detail
         MessageError_Printing(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showPrinting(); };"
         Try
-            orderClass.DeleteFilePrinting(headerId.Value, itemId.Value, "2")
+            orderClass.DeleteFilePrinting(lblOrderId.Text, itemId.Value, "2")
 
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
@@ -1979,7 +1982,7 @@ Partial Class Order_Detail
         MessageError_Printing(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showPrinting(); };"
         Try
-            orderClass.DeleteFilePrinting(headerId.Value, itemId.Value, "3")
+            orderClass.DeleteFilePrinting(lblOrderId.Text, itemId.Value, "3")
 
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
@@ -2019,7 +2022,7 @@ Partial Class Order_Detail
         MessageError_Printing(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showPrinting(); };"
         Try
-            orderClass.DeleteFilePrinting(headerId.Value, itemId.Value, "4")
+            orderClass.DeleteFilePrinting(lblOrderId.Text, itemId.Value, "4")
 
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
@@ -2154,12 +2157,12 @@ Partial Class Order_Detail
             BindDataShipment()
             If lblOrderType.Text = "Builder" Then
                 BindDataBuilder()
-                BindBuilderFile(lblOrderId.Text)
             End If
             BindDataRework(headerId, lblOrderStatus.Text)
             BindCollector()
             BindEmailQuote()
             BindEmailInvoice()
+            BindDataFile(lblOrderId.Text)
 
             divInternalNote.Visible = False
             secBuilder.Visible = False
@@ -2183,7 +2186,8 @@ Partial Class Order_Detail
             liDividerInvoice.Visible = False : liUpdateInvoiceNumber.Visible = False
             liUpdateInvoiceData.Visible = False
 
-            btnBuilder.Visible = False
+            aBuilder.Visible = False
+            aFileOrder.Visible = False
 
             btnMoreAction.Visible = False
             liMoreDownloadQuote.Visible = False
@@ -2207,9 +2211,11 @@ Partial Class Order_Detail
                 liMoreAddNote.Visible = True
                 liMoreHistoryNote.Visible = True
 
+                aFileOrder.Visible = True
+
                 If lblOrderType.Text = "Regular" Then btnQuoteAction.Visible = True
                 If lblOrderType.Text = "Builder" Then
-                    btnBuilder.Visible = True : secBuilder.Visible = True
+                    aBuilder.Visible = True : secBuilder.Visible = True
                 End If
 
                 If lblOrderStatus.Text = "Unsubmitted" Then
@@ -2354,8 +2360,10 @@ Partial Class Order_Detail
                 liMoreAddNote.Visible = True
                 liMoreHistoryNote.Visible = True
 
+                aFileOrder.Visible = True
+
                 If lblOrderType.Text = "Regular" Then btnQuoteAction.Visible = True
-                If lblOrderType.Text = "Builder" Then btnBuilder.Visible = True : secBuilder.Visible = True
+                If lblOrderType.Text = "Builder" Then aBuilder.Visible = True : secBuilder.Visible = True
 
                 If lblOrderStatus.Text = "Unsubmitted" Then
                     liMoreDownloadQuote.Visible = True
@@ -2478,7 +2486,9 @@ Partial Class Order_Detail
                 liMoreAddNote.Visible = True
                 liMoreHistoryNote.Visible = True
 
-                If lblOrderType.Text = "Builder" Then btnBuilder.Visible = True : secBuilder.Visible = True
+                aFileOrder.Visible = True
+
+                If lblOrderType.Text = "Builder" Then aBuilder.Visible = True : secBuilder.Visible = True
 
                 If lblOrderStatus.Text = "Unsubmitted" Then
                     liMoreDownloadQuote.Visible = True
@@ -2595,7 +2605,9 @@ Partial Class Order_Detail
                 liMoreAddNote.Visible = True
                 liMoreHistoryNote.Visible = True
 
-                If lblOrderType.Text = "Builder" Then btnBuilder.Visible = True : secBuilder.Visible = True
+                aFileOrder.Visible = True
+
+                If lblOrderType.Text = "Builder" Then aBuilder.Visible = True : secBuilder.Visible = True
 
                 If lblOrderStatus.Text = "Unsubmitted" Then
                     liMoreDividerQuote.Visible = True
@@ -2675,7 +2687,9 @@ Partial Class Order_Detail
                 liMoreAddNote.Visible = True
                 liMoreHistoryNote.Visible = True
 
-                If lblOrderType.Text = "Builder" Then btnBuilder.Visible = True : secBuilder.Visible = True
+                aFileOrder.Visible = True
+
+                If lblOrderType.Text = "Builder" Then aBuilder.Visible = True : secBuilder.Visible = True
 
                 If lblOrderStatus.Text = "Unsubmitted" Then
                     liMoreDividerQuote.Visible = True
@@ -2762,7 +2776,9 @@ Partial Class Order_Detail
                 liMoreAddNote.Visible = True
                 liMoreHistoryNote.Visible = True
 
-                If lblOrderType.Text = "Builder" Then btnBuilder.Visible = True : secBuilder.Visible = True
+                aFileOrder.Visible = True
+
+                If lblOrderType.Text = "Builder" Then aBuilder.Visible = True : secBuilder.Visible = True
 
                 If lblOrderStatus.Text = "Unsubmitted" Then
                     If lblOrderType.Text = "Builder" Then aQuoteOrder.Visible = True
@@ -2851,7 +2867,7 @@ Partial Class Order_Detail
 
             If Session("RoleName") = "Data Entry" Then
                 If lblOrderType.Text = "Regular" Then btnQuoteAction.Visible = True
-                If lblOrderType.Text = "Builder" Then btnBuilder.Visible = True : secBuilder.Visible = True
+                If lblOrderType.Text = "Builder" Then aBuilder.Visible = True : secBuilder.Visible = True
 
                 divInternalNote.Visible = True
 
@@ -3207,10 +3223,10 @@ Partial Class Order_Detail
         End Try
     End Sub
 
-    Protected Sub BindBuilderFile(orderId As String)
+    Protected Sub BindDataFile(orderId As String)
         Try
-            Dim myPath As String = String.Format("~/File/Builder/{0}/", orderId)
-            Dim directoryPath As String = Server.MapPath(myPath)
+            Dim stringPath As String = String.Format("~/File/Order/{0}/", orderId)
+            Dim directoryPath As String = Server.MapPath(stringPath)
 
             If IO.Directory.Exists(directoryPath) Then
                 Dim filesPath As String() = IO.Directory.GetFiles(directoryPath)
@@ -3220,17 +3236,23 @@ Partial Class Order_Detail
                     files.Add(New With {.FileName = IO.Path.GetFileName(path_1)})
                 Next
 
-                gvListBuilderFile.DataSource = files
-                gvListBuilderFile.DataBind()
+                gvListOrderFile.DataSource = files
+                gvListOrderFile.DataBind()
             Else
-                gvListBuilderFile.DataSource = Nothing
-                gvListBuilderFile.DataBind()
+                IO.Directory.CreateDirectory(directoryPath)
+                gvListOrderFile.DataSource = Nothing
+                gvListOrderFile.DataBind()
+            End If
+
+            divUploadAction.Visible = False
+            If lblOrderType.Text = "Builder" Then
+                divUploadAction.Visible = True
             End If
 
         Catch ex As Exception
-            MessageError_BuilderFile(True, ex.ToString())
+            MessageError_FileOrder(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
-                MessageError_BuilderFile(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                MessageError_FileOrder(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
                 Dim dataMailing As Object() = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindBuilderFile", ex.ToString()}
                 mailingClass.WebError(dataMailing)
             End If
@@ -3285,7 +3307,7 @@ Partial Class Order_Detail
                         End If
 
                         If Not String.IsNullOrEmpty(printing) Then
-                            imgPrinting.ImageUrl = String.Format("~/File/Printing/{0}/{1}/{2}", headerId.Value, dataId, printing)
+                            imgPrinting.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printing)
                             If lblOrderStatus.Text = "Unsubmitted" Then btnDeletePrinting.Visible = True
                         End If
                     End If
@@ -3305,11 +3327,11 @@ Partial Class Order_Detail
                         End If
 
                         If Not String.IsNullOrEmpty(printing) Then
-                            imgPrinting.ImageUrl = String.Format("~/File/Printing/{0}/{1}/{2}", headerId.Value, dataId, printing)
+                            imgPrinting.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printing)
                             If lblOrderStatus.Text = "Unsubmitted" Then btnDeletePrinting.Visible = True
                         End If
                         If Not String.IsNullOrEmpty(printingb) Then
-                            imgPrintingB.ImageUrl = String.Format("~/File/Printing/{0}/{1}/{2}", headerId.Value, dataId, printingb)
+                            imgPrintingB.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printingb)
                             If lblOrderStatus.Text = "Unsubmitted" Then btnDeletePrintingB.Visible = True
                         End If
                     End If
@@ -3320,14 +3342,14 @@ Partial Class Order_Detail
                     If width <= 1510 Then
                         aPrinting.Visible = True : divPrinting.Visible = True
                         If Not String.IsNullOrEmpty(printing) Then
-                            imgPrinting.ImageUrl = String.Format("~/File/Printing/{0}/{1}/{2}", headerId.Value, dataId, printing)
+                            imgPrinting.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printing)
                             If lblOrderStatus.Text = "Unsubmitted" Then btnDeletePrinting.Visible = True
                         End If
                     End If
                     If widthb <= 1510 Then
                         aPrintingB.Visible = True : divPrintingB.Visible = True
                         If Not String.IsNullOrEmpty(printingb) Then
-                            imgPrintingB.ImageUrl = String.Format("~/File/Printing/{0}/{1}/{2}", headerId.Value, dataId, printingb)
+                            imgPrintingB.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printingb)
                             If lblOrderStatus.Text = "Unsubmitted" Then btnDeletePrintingB.Visible = True
                         End If
                     End If
@@ -3352,15 +3374,15 @@ Partial Class Order_Detail
 
                     If width <= 1510 Then
                         aPrinting.Visible = True : divPrinting.Visible = True
-                        If Not String.IsNullOrEmpty(printing) Then imgPrinting.ImageUrl = String.Format("~/File/Printing/{0}/{1}", dataId, printing)
+                        If Not String.IsNullOrEmpty(printing) Then imgPrinting.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printing)
                     End If
                     If widthb <= 1510 Then
                         aPrintingB.Visible = True : divPrintingB.Visible = True
-                        If Not String.IsNullOrEmpty(printingb) Then imgPrintingB.ImageUrl = String.Format("~/File/Printing/{0}/{1}", dataId, printingb)
+                        If Not String.IsNullOrEmpty(printingb) Then imgPrintingB.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printingb)
                     End If
                     If widthc <= 1510 Then
                         aPrintingC.Visible = True : divPrintingC.Visible = True
-                        If Not String.IsNullOrEmpty(printingc) Then imgPrintingC.ImageUrl = String.Format("~/File/Printing/{0}/{1}", dataId, printingc)
+                        If Not String.IsNullOrEmpty(printingc) Then imgPrintingC.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printingc)
                     End If
 
                     If aPrinting.Visible AndAlso divPrinting.Visible Then
@@ -3382,19 +3404,19 @@ Partial Class Order_Detail
 
                     If width <= 1510 Then
                         aPrinting.Visible = True : divPrinting.Visible = True
-                        If Not String.IsNullOrEmpty(printing) Then imgPrinting.ImageUrl = String.Format("~/File/Printing/{0}/{1}", dataId, printing)
+                        If Not String.IsNullOrEmpty(printing) Then imgPrinting.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printing)
                     End If
                     If widthb <= 1510 Then
                         aPrintingB.Visible = True : divPrintingB.Visible = True
-                        If Not String.IsNullOrEmpty(printingb) Then imgPrintingB.ImageUrl = String.Format("~/File/Printing/{0}/{1}", dataId, printingb)
+                        If Not String.IsNullOrEmpty(printingb) Then imgPrintingB.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printingb)
                     End If
                     If widthc <= 1510 Then
                         aPrintingC.Visible = True : divPrintingC.Visible = True
-                        If Not String.IsNullOrEmpty(printingc) Then imgPrintingC.ImageUrl = String.Format("~/File/Printing/{0}/{1}", dataId, printingc)
+                        If Not String.IsNullOrEmpty(printingc) Then imgPrintingC.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printingc)
                     End If
                     If widthd <= 1510 Then
                         aPrintingD.Visible = True : divPrintingD.Visible = True
-                        If Not String.IsNullOrEmpty(printingd) Then imgPrintingD.ImageUrl = String.Format("~/File/Printing/{0}/{1}", dataId, printingd)
+                        If Not String.IsNullOrEmpty(printingd) Then imgPrintingD.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printingd)
                     End If
 
                     If aPrinting.Visible AndAlso divPrinting.Visible Then
@@ -3419,7 +3441,7 @@ Partial Class Order_Detail
                     aPrinting.Attributes("class") = aPrinting.Attributes("class") & " active"
                     divPrinting.Attributes("class") = divPrinting.Attributes("class") & " show active"
 
-                    If Not String.IsNullOrEmpty(printing) Then imgPrinting.ImageUrl = String.Format("~/File/Printing/{0}/{1}", headerId.Value, printing)
+                    If Not String.IsNullOrEmpty(printing) Then imgPrinting.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printing)
                 End If
             End If
         Catch ex As Exception
@@ -3659,7 +3681,7 @@ Partial Class Order_Detail
                 result &= "<br />"
                 result &= String.Format("{0} ({1}mm) {2}", fabricColourName, widthB, linearMetreTextB)
                 result &= "<br />"
-                result &= String.Format("{0} ({1}mm) {2}", fabricColourName, widthC, linearMetreTextc)
+                result &= String.Format("{0} ({1}mm) {2}", fabricColourName, widthC, linearMetreTextC)
             End If
         End If
 
@@ -3954,7 +3976,7 @@ Partial Class Order_Detail
         MessageError_Preview(visible, message)
 
         MessageError_BuilderDetail(visible, message)
-        MessageError_BuilderFile(visible, message)
+        MessageError_FileOrder(visible, message)
 
         MessageError_DetailQuote(visible, message)
 
@@ -3985,8 +4007,8 @@ Partial Class Order_Detail
         divErrorBuilderDetail.Visible = visible : msgErrorBuilderDetail.InnerText = message
     End Sub
 
-    Protected Sub MessageError_BuilderFile(visible As Boolean, message As String)
-        divErrorBuilderFile.Visible = visible : msgErrorBuilderFile.InnerText = message
+    Protected Sub MessageError_FileOrder(visible As Boolean, message As String)
+        divErrorFileOrder.Visible = visible : msgErrorFileOrder.InnerText = message
     End Sub
 
     Protected Sub MessageError_Log(visible As Boolean, message As String)

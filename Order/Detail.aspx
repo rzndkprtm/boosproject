@@ -80,16 +80,10 @@
                         <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalInvoiceData">Update Invoice Data</a>
                     </li>
                 </ul>
-                
-                <button class="btn btn-warning dropdown-toggle me-1" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnBuilder">Builder</button>
-                <ul class="dropdown-menu">
-                    <li>
-                        <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalBuilderDetail">Details</a>
-                    </li>
-                    <li>
-                        <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalBuilderFile">Files</a>
-                    </li>
-                </ul>
+
+                <a href="#" runat="server" id="aBuilder" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalBuilderDetail">Builder Details</a>
+
+                <a href="#" runat="server" id="aFileOrder" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalFileOrder">Files</a>
 
                 <button class="btn btn-dark dropdown-toggle me-1" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnMoreAction">More</button>
                 <ul class="dropdown-menu">
@@ -1216,38 +1210,38 @@
         </div>
     </div>
 
-    <div class="modal modal-blur fade" id="modalBuilderFile" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal modal-blur fade" id="modalFileOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Builder File</h5>
+                    <h5 class="modal-title">Order File</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
                 <div class="modal-body">
-                    <div class="row mb-2" runat="server" id="divErrorBuilderFile">
+                    <div class="row mb-2" runat="server" id="divErrorFileOrder">
                         <div class="col-12">
                             <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorBuilderFile"></span>
+                                <span runat="server" id="msgErrorFileOrder"></span>
                             </div>
                         </div>
                     </div>
 
-                    <div class="row mb-3">
+                    <div class="row mb-3" runat="server" id="divUploadAction">
                         <div class="col-12 form-group">
                             <label class="form-label">Upload New File</label>
-                            <asp:FileUpload runat="server" ID="fuBuilderFile" CssClass="form-control" />
+                            <asp:FileUpload runat="server" ID="fuOrderFile" CssClass="form-control" />
                         </div>
 
                         <div class="col-12">
-                            <asp:Button runat="server" ID="btnBuilderUpload" CssClass="btn btn-secondary" Text="Upload" OnClick="btnBuilderUpload_Click" />
+                            <asp:Button runat="server" ID="btnUploadFileOrder" CssClass="btn btn-secondary" Text="Upload" OnClick="btnUploadFileOrder_Click" />
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="row mb-3">
                         <div class="col-12">
                             <div class="table-responsive">
-                                <asp:GridView runat="server" ID="gvListBuilderFile" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" ShowHeaderWhenEmpty="true" OnRowCommand="gvListBuilderFile_RowCommand">
+                                <asp:GridView runat="server" ID="gvListOrderFile" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" ShowHeaderWhenEmpty="true" OnRowCommand="gvListOrderFile_RowCommand">
                                     <RowStyle />
                                     <Columns>
                                         <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="70px">
@@ -1607,7 +1601,7 @@
                                 <div class="row gallery mt-4">
                                     <div class="col-12">
                                         <asp:Image runat="server" CssClass="w-100" ID="imgPrinting" />
-                                        <asp:Button runat="server" ID="btnDeletePrinting" CssClass="btn btn-danger mt-2" Text="Delete Image #1" OnClick="btnDeletePrinting_Click" />
+                                        <asp:Button runat="server" ID="btnDeletePrinting" CssClass="btn btn-danger mt-2" Text="Delete File #1" OnClick="btnDeletePrinting_Click" />
                                     </div>
                                 </div>
 
@@ -1623,7 +1617,7 @@
                                 <div class="row gallery mt-4">
                                     <div class="col-12">
                                         <asp:Image runat="server" CssClass="w-100" ID="imgPrintingB" />
-                                        <asp:Button runat="server" ID="btnDeletePrintingB" CssClass="btn btn-danger mt-2" Text="Delete Image #2" OnClick="btnDeletePrintingB_Click" />
+                                        <asp:Button runat="server" ID="btnDeletePrintingB" CssClass="btn btn-danger mt-2" Text="Delete File #2" OnClick="btnDeletePrintingB_Click" />
                                     </div>
                                 </div>
 
@@ -1639,7 +1633,7 @@
                                 <div class="row gallery mt-4">
                                     <div class="col-12">
                                         <asp:Image runat="server" CssClass="w-100" ID="imgPrintingC" />
-                                        <asp:Button runat="server" ID="btnDeletePrintingC" CssClass="btn btn-danger mt-2" Text="Delete Image #3" OnClick="btnDeletePrintingC_Click" />
+                                        <asp:Button runat="server" ID="btnDeletePrintingC" CssClass="btn btn-danger mt-2" Text="Delete File #3" OnClick="btnDeletePrintingC_Click" />
                                     </div>
                                 </div>
 
@@ -1655,7 +1649,7 @@
                                 <div class="row gallery mt-4">
                                     <div class="col-12">
                                         <asp:Image runat="server" CssClass="w-100" ID="imgPrintingD" />
-                                        <asp:Button runat="server" ID="btnDeletePrintingD" CssClass="btn btn-danger mt-2" Text="Delete Image #4" OnClick="btnDeletePrintingD_Click" />
+                                        <asp:Button runat="server" ID="btnDeletePrintingD" CssClass="btn btn-danger mt-2" Text="Delete File #4" OnClick="btnDeletePrintingD_Click" />
                                     </div>
                                 </div>
 
@@ -1722,7 +1716,7 @@
             }
         });
         [
-            "modalLog", "modalPreview", "modalWaiting", "modalBuilderDetail", "modalBuilderFile",
+            "modalLog", "modalPreview", "modalWaiting", "modalBuilderDetail", "modalFileOrder",
             "modalDeleteOrder", "modalQuoteOrder", "modalSubmitOrder", "modalUnsubmitOrder", "modalCancelOrder", "modalProductionOrder", "modalHoldOrder", "modalUnHoldOrder", "modalShippedOrder", "modalCompleteOrder",
             "modalReworkOrder",
             "modalSendInvoice", "modalReceivePayment", "modalDownloadInvoice", "modalInvoiceNumber", "modalInvoiceData",
@@ -1757,8 +1751,8 @@
             $("#modalBuilderDetail").modal("show");
         }
 
-        function showBuilderFile() {
-            $("#divErrorBuilderFile").modal("show");
+        function showFileOrder() {
+            $("#modalFileOrder").modal("show");
         }
 
         function showDetailQuote() {

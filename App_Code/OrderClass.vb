@@ -2118,16 +2118,15 @@ Public Class OrderClass
         End Try
     End Sub
 
-    Public Sub DeleteFilePrinting(headerId As String, itemId As String, items As String)
-        If Not String.IsNullOrEmpty(headerId) AndAlso Not String.IsNullOrEmpty(itemId) AndAlso Not String.IsNullOrEmpty(items) Then
+    Public Sub DeleteFilePrinting(orderId As String, itemId As String, items As String)
+        Try
             Dim thisData As DataRow = GetDataRow("SELECT * FROM OrderDetails WHERE Id='" & itemId & "' AND Active=1")
             If thisData IsNot Nothing Then
                 Dim printing As String = thisData("Printing").ToString()
                 Dim printingB As String = thisData("PrintingB").ToString()
 
                 If items = "1" Then
-                    Dim folderPath As String = HttpContext.Current.Server.MapPath(String.Format("~/File/Printing/{0}/{1}", headerId, itemId))
-
+                    Dim folderPath As String = HttpContext.Current.Server.MapPath(String.Format("~/File/Order/{0}", orderId))
                     Dim filePath As String = IO.Path.Combine(folderPath, printing)
 
                     If IO.File.Exists(filePath) Then
@@ -2135,7 +2134,8 @@ Public Class OrderClass
                     End If
                 End If
             End If
-        End If
+        Catch ex As Exception
+        End Try
     End Sub
 
 

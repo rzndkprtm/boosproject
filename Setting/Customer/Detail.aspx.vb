@@ -1,6 +1,7 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 Imports System.Globalization
+Imports System.IO
 Imports System.Web.Services
 
 Partial Class Setting_Customer_Detail
@@ -135,7 +136,6 @@ Partial Class Setting_Customer_Detail
 
                     Dim randomCode As String = orderClass.GenerateRandomCode()
                     orderId = companyAlias & randomCode
-
                     Try
                         Using thisConn As New SqlConnection(myConn)
                             Using myCmd As New SqlCommand("INSERT INTO OrderHeaders (Id, OrderId, CustomerId, OrderNumber, OrderName, OrderNote, OrderType, Status, CreatedBy, CreatedDate, DownloadBOE, Active) VALUES (@Id, @OrderId, @CustomerId, @OrderNumber, @OrderName, @OrderNote, @OrderType, 'Unsubmitted', @CreatedBy, GETDATE(), 0, 1); INSERT INTO OrderQuotes VALUES (@Id, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
@@ -173,11 +173,11 @@ Partial Class Setting_Customer_Detail
                             myCmd.ExecuteNonQuery()
                         End Using
                     End Using
+                End If
 
-                    Dim directoryOrder As String = Server.MapPath(String.Format("~/File/Builder/{0}/", orderId))
-                    If Not IO.Directory.Exists(directoryOrder) Then
-                        IO.Directory.CreateDirectory(directoryOrder)
-                    End If
+                Dim directoryOrder As String = Server.MapPath(String.Format("~/File/Order/{0}/", orderId))
+                If Not Directory.Exists(directoryOrder) Then
+                    Directory.CreateDirectory(directoryOrder)
                 End If
 
                 Dim dataLog As Object() = {"OrderHeaders", thisId, Session("LoginId").ToString(), "Order Created"}

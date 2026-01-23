@@ -1,5 +1,6 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
+Imports System.IO
 
 Partial Class Order_Default
     Inherits Page
@@ -196,7 +197,6 @@ Partial Class Order_Default
 
                     Dim randomCode As String = orderClass.GenerateRandomCode()
                     orderId = companyAlias & randomCode
-
                     Try
                         Using thisConn As New SqlConnection(myConn)
                             Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderHeaders SELECT @NewID, @OrderId, CustomerId, 'Copy ' + CAST(@NewID AS VARCHAR(20)) + ' - ' + OrderNumber, 'Copy ' + CAST(@NewID AS VARCHAR(20)) + ' - ' + OrderName, NULL, OrderType, 'Unsubmitted', NULL, CreatedBy, GETDATE(), NULL, NULL, NULL, NULL, NULL, NULL, 0, 1 FROM OrderHeaders WHERE Id=@OldId; INSERT INTO OrderQuotes VALUES(@NewID, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
@@ -248,6 +248,11 @@ Partial Class Order_Default
                         dataLog = {"OrderDetails", newIdDetail, Session("LoginId").ToString(), "Order Item Added | Copy"}
                         orderClass.Logs(dataLog)
                     Next
+                End If
+
+                Dim directoryOrder As String = Server.MapPath(String.Format("~/File/Order/{0}/", orderId))
+                If Not Directory.Exists(directoryOrder) Then
+                    Directory.CreateDirectory(directoryOrder)
                 End If
 
                 url = String.Format("~/order/detail?orderid={0}", newIdHeader)

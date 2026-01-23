@@ -210,6 +210,16 @@ Partial Class Order_Method
             End If
         End If
 
+        If type = "SubType" Then
+            Dim blindName As String = orderClass.GetItemData("SELECT Name FROM Blinds WHERE Id='" & blindtype & "'")
+            If blindName = "Aluminium 25mm x 0.21mm" Then
+                result.Add(New With {.Value = "Single", .Text = "Single Aluminium"})
+                result.Add(New With {.Value = "2 on 1 Left-Left", .Text = "2 on 1 Aluminium (Left-Left)"})
+                result.Add(New With {.Value = "2 on 1 Right-Right", .Text = "2 on 1 Aluminium (Right-Right)"})
+                result.Add(New With {.Value = "2 on 1 Left-Right", .Text = "2 on 1 Aluminium (Left-Right)"})
+            End If
+        End If
+
         Return result
     End Function
 
@@ -266,14 +276,13 @@ Partial Class Order_Method
 
         If String.IsNullOrEmpty(data.width) Then Return "WIDTH IS REQUIRED !"
         If Not Integer.TryParse(data.width, width) OrElse width <= 0 Then Return "PLEASE CHECK YOUR WIDTH ORDER !"
-        If roleName = "Customer" OrElse data.companydetail = "5" Then
-            If data.mounting = "Reveal Fit" OrElse data.mounting = "Make Size Reveal Fit" Then
-                If width < 310 Then Return String.Format("MINIMUM WIDTH FOR {0} IS 310MM !", data.mounting.ToUpper())
+        If roleName = "Customer" AndAlso (data.companydetail = "2" OrElse data.companydetail = "3" OrElse data.companydetail = "4") Then
+            If width < 200 Then Return "MINIMUM WIDTH IS 200MM !"
+            If data.subtype = "Single" Then
+                If width > 250 AndAlso width <= 299 AndAlso data.controlposition = data.tilterposition Then
+                    Return "PLEASE USE OPPOSITE CONTROL AND TILTER POSITIONS!"
+                End If
             End If
-            If data.mounting = "Face Fit" OrElse data.mounting = "Make Size Face Fit" Then
-                If width < 300 Then Return String.Format("MINIMUM WIDTH FOR {0} IS 300MM !", data.mounting.ToUpper())
-            End If
-            If width > 3010 Then Return "MAXIMUM WIDTH IS 3010MM !"
         End If
 
         If String.IsNullOrEmpty(data.drop) Then Return "DROP IS REQUIRED !"
@@ -7503,8 +7512,6 @@ Partial Class Order_Method
             If controllength > 1000 Then Return "MAXIMUM CONTROL LENGTH IS 1000MM !"
         End If
 
-        If String.IsNullOrEmpty(data.bottomjoining) Then Return "BOTTOM JOINING IS REQUIRED !"
-
         If Not String.IsNullOrEmpty(data.notes) Then
             If data.notes.IndexOfAny({","c, "&"c, "`"c, "'"c}) >= 0 OrElse data.notes.Contains("&=") OrElse data.notes.Contains("&+") Then
                 Return "SPECIAL INFORMATION MUST NOT CONTAIN: , & ` ' &= &+"
@@ -7546,7 +7553,7 @@ Partial Class Order_Method
                 Dim itemId As String = orderClass.GetNewOrderItemId()
 
                 Using thisConn As SqlConnection = New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricColourId, ChainId, PriceProductGroupId, Qty, Room, Mounting, Width, [Drop], StackPosition, ControlPosition, ControlLength, ControlLengthValue, WandColour, WandLengthValue, BottomJoining, BracketExtension, Sloping, LinearMetre, SquareMetre, TotalItems, Notes, MarkUp, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricColourId, @ChainId, @PriceProductGroupId, @Qty, @Room, @Mounting, @Width, @Drop, @StackPosition, @ControlPosition, @ControlLength, @ControlLengthValue, @WandColour, @WandLengthValue, @BottomJoining, @BracketExtension, @Sloping, @LinearMetre, @SquareMetre, 1, @Notes, @MarkUp, 1)", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricColourId, ChainId, PriceProductGroupId, Qty, Room, Mounting, Width, [Drop], StackPosition, ControlPosition, ControlLength, ControlLengthValue, WandColour, WandLengthValue, BracketExtension, LinearMetre, SquareMetre, TotalItems, Notes, MarkUp, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricColourId, @ChainId, @PriceProductGroupId, @Qty, @Room, @Mounting, @Width, @Drop, @StackPosition, @ControlPosition, @ControlLength, @ControlLengthValue, @WandColour, @WandLengthValue, @BracketExtension, @LinearMetre, @SquareMetre, 1, @Notes, @MarkUp, 1)", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", itemId)
                         myCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                         myCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
@@ -7565,9 +7572,7 @@ Partial Class Order_Method
                         myCmd.Parameters.AddWithValue("@ControlLengthValue", controllength)
                         myCmd.Parameters.AddWithValue("@WandColour", data.wandcolour)
                         myCmd.Parameters.AddWithValue("@WandLengthValue", wandlength)
-                        myCmd.Parameters.AddWithValue("@BottomJoining", data.bottomjoining)
                         myCmd.Parameters.AddWithValue("@BracketExtension", data.bracketextension)
-                        myCmd.Parameters.AddWithValue("@Sloping", data.sloping)
                         myCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
                         myCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
                         myCmd.Parameters.AddWithValue("@Notes", data.notes)
@@ -7592,7 +7597,7 @@ Partial Class Order_Method
             Dim itemId As String = data.itemid
 
             Using thisConn As SqlConnection = New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET ProductId=@ProductId, FabricId=@FabricId, FabricColourId=@FabricColourId, ChainId=@ChainId, PriceProductGroupId=@PriceProductGroupId, Qty=@Qty, Room=@Room, Mounting=@Mounting, Width=@Width, [Drop]=@Drop, StackPosition=@StackPosition, ControlPosition=@ControlPosition, ControlLength=@ControlLength, ControlLengthValue=@ControlLengthValue, WandColour=@WandColour, WandLengthValue=@WandLengthValue, BottomJoining=@BottomJoining, BracketExtension=@BracketExtension, Sloping=@Sloping, LinearMetre=@LinearMetre, SquareMetre=@SquareMetre, TotalItems=1, Notes=@Notes, MarkUp=@MarkUp, Active=1 WHERE Id=@Id", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET ProductId=@ProductId, FabricId=@FabricId, FabricColourId=@FabricColourId, ChainId=@ChainId, PriceProductGroupId=@PriceProductGroupId, Qty=@Qty, Room=@Room, Mounting=@Mounting, Width=@Width, [Drop]=@Drop, StackPosition=@StackPosition, ControlPosition=@ControlPosition, ControlLength=@ControlLength, ControlLengthValue=@ControlLengthValue, WandColour=@WandColour, WandLengthValue=@WandLengthValue, BracketExtension=@BracketExtension, LinearMetre=@LinearMetre, SquareMetre=@SquareMetre, TotalItems=1, Notes=@Notes, MarkUp=@MarkUp, Active=1 WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", itemId)
                     myCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                     myCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
@@ -7611,9 +7616,7 @@ Partial Class Order_Method
                     myCmd.Parameters.AddWithValue("@ControlLengthValue", controllength)
                     myCmd.Parameters.AddWithValue("@WandColour", data.wandcolour)
                     myCmd.Parameters.AddWithValue("@WandLengthValue", wandlength)
-                    myCmd.Parameters.AddWithValue("@BottomJoining", data.bottomjoining)
                     myCmd.Parameters.AddWithValue("@BracketExtension", data.bracketextension)
-                    myCmd.Parameters.AddWithValue("@Sloping", data.sloping)
                     myCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
                     myCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
                     myCmd.Parameters.AddWithValue("@Notes", data.notes)
@@ -8590,12 +8593,14 @@ Partial Class Order_Method
         Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetail = companyDetailId}
         Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .companydetail = companyDetailId, .tubetype = "0", .controltype = "0"}
         Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId}
+        Dim subTypeReq As New JSONList With {.type = "SubType", .blindtype = blindId}
 
         Dim result = New With {
             .ItemData = itemDetail,
             .BlindTypes = ListData(blindReq),
             .ColourTypes = ListData(colourReq),
-            .Mountings = ListData(mountingReq)
+            .Mountings = ListData(mountingReq),
+            .SubTypes = ListData(subTypeReq)
         }
         Return result
     End Function

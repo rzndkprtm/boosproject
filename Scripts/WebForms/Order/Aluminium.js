@@ -28,8 +28,12 @@ $("#colourtype").on("change", function () {
 
 $("#subtype").on("change", function () {
     const colourtype = document.getElementById("colourtype").value;
+    const width = parseFloat(document.getElementById("width").value) || 0;
     const drop = document.getElementById("drop").value;
+
     bindComponentForm(colourtype, $(this).val());
+    bindControlPosition($(this).val(), width);
+    bindTilterPosition($(this).val(), width);
 
     otomatisDrop($(this).val(), "1", drop);
 
@@ -42,6 +46,14 @@ $("#subtype").on("change", function () {
     document.getElementById("wandlengthb").value = "";
     document.getElementById("wandlengthvalue").value = "";
     document.getElementById("wandlengthvalueb").value = "";
+});
+
+$("#width").on("input", function () {
+    const subtype = document.getElementById("subtype").value;
+    const width = parseFloat(document.getElementById("width").value) || 0;
+
+    bindControlPosition(subtype, width);
+    bindTilterPosition(subtype, width);
 });
 
 $("#drop").on("input", function () {
@@ -421,30 +433,52 @@ function bindSubType(blindType, colourType) {
             return;
         }
 
-        let options = [
-            { value: "", text: "" },
-            { value: "Single", text: "Single Aluminium" },
-            { value: "2 on 1 Left-Left", text: "2 on 1 Aluminium (Left-Left)" },
-            { value: "2 on 1 Right-Right", text: "2 on 1 Aluminium (Right-Right)" },
-            { value: "2 on 1 Left-Right", text: "2 on 1 Aluminium (Left-Right)" },
-        ];
+        const listData = { type: "SubType", blindtype: blindType };
 
-        const fragment = document.createDocumentFragment();
-        options.forEach(opt => {
-            const optionElement = document.createElement("option");
-            optionElement.value = opt.value;
-            optionElement.textContent = opt.text;
-            fragment.appendChild(optionElement);
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/ListData",
+            data: JSON.stringify({ data: listData }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (Array.isArray(response.d)) {
+                    subtype.innerHTML = "";
+
+                    if (response.d.length > 1) {
+                        const defaultOption = document.createElement("option");
+                        defaultOption.text = "";
+                        defaultOption.value = "";
+                        subtype.add(defaultOption);
+                    }
+
+                    response.d.forEach(function (item) {
+                        const option = document.createElement("option");
+                        option.value = item.Value;
+                        option.text = item.Text;
+                        subtype.add(option);
+                    });
+
+
+                    if (response.d.length === 1) {
+                        subtype.selectedIndex = 0;
+                    }
+
+                    const selectedValue = subtype.value || "";
+                    Promise.all([
+                        bindComponentForm(colourType, selectedValue)
+                    ]).then(resolve).catch(reject);
+                } else {
+                    const selectedValue = subtype.value || "";
+                    Promise.all([
+                        bindComponentForm(colourType, selectedValue)
+                    ]).then(resolve).catch(reject);
+                }
+            },
+            error: function (error) {
+                reject(error);
+            }
         });
-        subtype.appendChild(fragment);
-
-        if (subtype.value === "") {
-            const selectedValue = subtype.value || "";
-            bindComponentForm(colourType, selectedValue);
-            resolve();
-            return;
-        }
-        resolve();
     });
 }
 
@@ -493,6 +527,104 @@ function bindMounting(blindType) {
                 reject(error);
             }
         });
+    });
+}
+
+function bindControlPosition(subType, width) {
+    return new Promise((resolve) => {
+        const controlposition = document.getElementById("controlposition");
+        controlposition.innerHTML = "";
+
+        if (!subType || width === 0) {
+            resolve();
+            return;
+        }
+
+        let options = [
+            { value: "", text: "" },
+            { value: "Left", text: "Left" },
+            { value: "Right", text: "Right" }
+        ];
+
+        const widthRules = [
+            {
+                subType: "Single",
+                min: 200,
+                max: 250,
+                options: [
+                    { value: "", text: "" },
+                    { value: "N/A", text: "N/A" }
+                ]
+            }
+        ];
+
+        const rule = widthRules.find(r =>
+            r.subType === subType &&
+            width >= r.min &&
+            width <= r.max
+        );
+
+        if (rule) {
+            options = rule.options;
+        }
+
+        options.forEach(opt => {
+            const optionElement = document.createElement("option");
+            optionElement.value = opt.value;
+            optionElement.textContent = opt.text;
+            controlposition.appendChild(optionElement);
+        });
+
+        resolve();
+    });
+}
+
+function bindTilterPosition(subType, width) {
+    return new Promise((resolve) => {
+        const tilterposition = document.getElementById("tilterposition");
+        tilterposition.innerHTML = "";
+
+        if (!subType || width === 0) {
+            resolve();
+            return;
+        }
+
+        let options = [
+            { value: "", text: "" },
+            { value: "Left", text: "Left" },
+            { value: "Right", text: "Right" }
+        ];
+
+        const widthRules = [
+            {
+                subType: "Single",
+                min: 200,
+                max: 250,
+                options: [
+                    { value: "", text: "" },
+                    { value: "Centre", text: "Centre" }
+                ]
+            }
+        ];
+
+        const rule = widthRules.find(r =>
+            r.subType === subType &&
+            width >= r.min &&
+            width <= r.max
+        );
+
+        if (rule) {
+            options = rule.options;
+        }
+
+        options.forEach(opt => {
+            const optionElement = document.createElement("option");
+            optionElement.value = opt.value;
+            optionElement.textContent = opt.text;
+            tilterposition.appendChild(optionElement);
+        });
+
+        resolve();
     });
 }
 
@@ -910,9 +1042,15 @@ async function bindItemOrder(itemId, companyDetailId) {
         const data = response.d;
 
         fillSelect("#blindtype", data.BlindTypes);
-        fillSelect("#colourtype", data.ColourTypes);
-        bindSubType(data.ItemData.BlindType, data.ItemData.ProductId);
+        fillSelect("#colourtype", data.ColourTypes);        
         fillSelect("#mounting", data.Mountings);
+        fillSelect("#subtype", data.SubTypes);
+
+        let manual = [
+            bindControlPosition(data.ItemData.SubType, data.ItemData.Width),
+            bindTilterPosition(data.ItemData.SubType, data.ItemData.Width)
+        ];
+        await Promise.all(manual);
 
         setFormValues(data.ItemData);
 
@@ -925,6 +1063,7 @@ async function bindItemOrder(itemId, companyDetailId) {
         visibleCustom("WandLength", data.ItemData.WandLength, "1");
         visibleCustom("WandLength", data.ItemData.WandLengthB, "2");
     } catch (error) {
+        alert(error);
         document.getElementById("divloader").style.display = "none";
     }
 }
