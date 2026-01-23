@@ -212,11 +212,58 @@ Partial Class Order_Method
 
         If type = "SubType" Then
             Dim blindName As String = orderClass.GetItemData("SELECT Name FROM Blinds WHERE Id='" & blindtype & "'")
+
             If blindName = "Aluminium 25mm x 0.21mm" Then
                 result.Add(New With {.Value = "Single", .Text = "Single Aluminium"})
                 result.Add(New With {.Value = "2 on 1 Left-Left", .Text = "2 on 1 Aluminium (Left-Left)"})
                 result.Add(New With {.Value = "2 on 1 Right-Right", .Text = "2 on 1 Aluminium (Right-Right)"})
                 result.Add(New With {.Value = "2 on 1 Left-Right", .Text = "2 on 1 Aluminium (Left-Right)"})
+            End If
+
+            If blindName = "Basswood 50mm" Then
+                result.Add(New With {.Value = "Single", .Text = "Single Aluminium"})
+                result.Add(New With {.Value = "2 on 1 Left-Left", .Text = "2 on 1 Aluminium (Left-Left)"})
+                result.Add(New With {.Value = "2 on 1 Right-Right", .Text = "2 on 1 Aluminium (Right-Right)"})
+                result.Add(New With {.Value = "2 on 1 Left-Right", .Text = "2 on 1 Aluminium (Left-Right)"})
+            End If
+
+            If blindName = "Basswood 63mm" Then
+                result.Add(New With {.Value = "Single", .Text = "Single Aluminium"})
+                result.Add(New With {.Value = "2 on 1 Left-Left", .Text = "2 on 1 Aluminium (Left-Left)"})
+                result.Add(New With {.Value = "2 on 1 Right-Right", .Text = "2 on 1 Aluminium (Right-Right)"})
+                result.Add(New With {.Value = "2 on 1 Left-Right", .Text = "2 on 1 Aluminium (Left-Right)"})
+            End If
+
+            If blindName = "Econo 50mm" Then
+                result.Add(New With {.Value = "Single", .Text = "Single Aluminium"})
+                result.Add(New With {.Value = "2 on 1 Left-Left", .Text = "2 on 1 Aluminium (Left-Left)"})
+                result.Add(New With {.Value = "2 on 1 Right-Right", .Text = "2 on 1 Aluminium (Right-Right)"})
+                result.Add(New With {.Value = "2 on 1 Left-Right", .Text = "2 on 1 Aluminium (Left-Right)"})
+            End If
+
+            If blindName = "Econo 63mm" Then
+                result.Add(New With {.Value = "Single", .Text = "Single Aluminium"})
+                result.Add(New With {.Value = "2 on 1 Left-Left", .Text = "2 on 1 Aluminium (Left-Left)"})
+                result.Add(New With {.Value = "2 on 1 Right-Right", .Text = "2 on 1 Aluminium (Right-Right)"})
+                result.Add(New With {.Value = "2 on 1 Left-Right", .Text = "2 on 1 Aluminium (Left-Right)"})
+            End If
+
+            If blindName = "Ultraslat 50mm" Then
+                result.Add(New With {.Value = "Single", .Text = "Single Aluminium"})
+                result.Add(New With {.Value = "2 on 1 Left-Left", .Text = "2 on 1 Aluminium (Left-Left)"})
+                result.Add(New With {.Value = "2 on 1 Right-Right", .Text = "2 on 1 Aluminium (Right-Right)"})
+                result.Add(New With {.Value = "2 on 1 Left-Right", .Text = "2 on 1 Aluminium (Left-Right)"})
+            End If
+
+            If blindName = "Ultraslat 63mm" Then
+                result.Add(New With {.Value = "Single", .Text = "Single Aluminium"})
+                result.Add(New With {.Value = "2 on 1 Left-Left", .Text = "2 on 1 Aluminium (Left-Left)"})
+                result.Add(New With {.Value = "2 on 1 Right-Right", .Text = "2 on 1 Aluminium (Right-Right)"})
+                result.Add(New With {.Value = "2 on 1 Left-Right", .Text = "2 on 1 Aluminium (Left-Right)"})
+            End If
+
+            If blindName = "Econo 50mm (Cordless)" Then
+                result.Add(New With {.Value = "Single", .Text = "Single Aluminium"})
             End If
         End If
 
