@@ -103,13 +103,23 @@ Public Partial Class SiteMaster
                 End If
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLogins SET LastLogin=GETDATE() WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", loginId)
+                    Using myCmd As New SqlCommand("sp_UpdateCustomerLastLogin", thisConn)
+                        myCmd.CommandType = CommandType.StoredProcedure
+                        myCmd.Parameters.Add("@Id", SqlDbType.Int).Value = loginId
 
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
                     End Using
                 End Using
+
+                ' Using thisConn As New SqlConnection(myConn)
+                '     Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLogins SET LastLogin=GETDATE() WHERE Id=@Id", thisConn)
+                '         myCmd.Parameters.AddWithValue("@Id", loginId)
+
+                '         thisConn.Open()
+                '         myCmd.ExecuteNonQuery()
+                '     End Using
+                ' End Using
             End If
         Catch ex As Exception
             Session.Clear()
