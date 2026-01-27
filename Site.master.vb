@@ -39,17 +39,17 @@ Public Partial Class SiteMaster
 
                 Dim thisQuery As String = "SELECT CustomerLogins.*, Customers.CompanyId AS CompanyId, Customers.CompanyDetailId AS CompanyDetailId, Customers.[Level] AS CustomerLevel, Companys.Name AS CompanyName, Companys.Active AS CompanyActive, Customers.Active AS CustomerActive, CASE WHEN CustomerLogins.Pricing=1 THEN 'Yes' ELSE '' END AS PriceAccess, CustomerLoginRoles.Name AS RoleName, CustomerLoginRoles.Active AS RoleActive, CustomerLoginLevels.Name AS LevelName, CustomerLoginLevels.Active AS LevelActive FROM CustomerLogins INNER JOIN CustomerLoginRoles ON CustomerLogins.RoleId=CustomerLoginRoles.Id INNER JOIN CustomerLoginLevels ON CustomerLogins.LevelId=CustomerLoginLevels.Id INNER JOIN Customers ON CustomerLogins.CustomerId=Customers.Id INNER JOIN Companys ON Customers.CompanyId=Companys.Id WHERE CustomerLogins.Id='" & loginId & "'"
 
-                Dim myData As DataRow = settingClass.GetDataRow(thisQuery)
+                'Dim myData As DataRow = settingClass.GetDataRow(thisQuery)
 
-                'Dim params As New List(Of SqlParameter) From {
-                '    New SqlParameter("@LoginId", loginId)
-                '}
-                'Dim myData As DataRow = settingClass.GetDataRowSP("sp_LoginProfile", params)
-                'If myData Is Nothing Then
-                '    Session.Clear()
-                '    Response.Redirect("~/account/login", False)
-                '    Exit Sub
-                'End If
+                Dim params As New List(Of SqlParameter) From {
+                    New SqlParameter("@LoginId", loginId)
+                }
+                Dim myData As DataRow = settingClass.GetDataRowSP("sp_LoginProfile", params)
+                If myData Is Nothing Then
+                    Session.Clear()
+                    Response.Redirect("~/account/login", False)
+                    Exit Sub
+                End If
 
                 Session("CustomerId") = myData("CustomerId").ToString()
                 Session("CustomerLevel") = myData("CustomerLevel").ToString()
