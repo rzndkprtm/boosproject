@@ -16,13 +16,10 @@ $("#cancel").on("click", () => window.location.href = `/order/detail?orderid=${h
 $("#vieworder").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
 
 $("#blindtype").on("change", function () {
-    const blindtype = $(this).val();
-
-    bindTubeType(blindtype);
-
-    bindMounting(blindtype);
-    bindMeshType(blindtype);
-    bindFrameColour(blindtype);
+    bindTubeType($(this).val());
+    bindMounting($(this).val());
+    bindMeshType($(this).val());
+    bindFrameColour($(this).val());
 });
 
 $("#tubetype").on("change", function () {
@@ -264,11 +261,10 @@ function getFormAction(itemAction) {
         }
 
         const actionMap = {
-            create: "Add Item",
-            edit: "Edit Item",
-            view: "View Item",
-            copy: "Copy Item"
+            create: "Add Item", edit: "Edit Item",
+            view: "View Item", copy: "Copy Item"
         };
+
         pageAction.innerText = actionMap[itemAction] || "";
         resolve();
     });
@@ -475,6 +471,7 @@ function bindColourType(blindType, tubeType) {
 function bindMounting(blindType) {
     return new Promise((resolve, reject) => {
         const mounting = document.getElementById("mounting");
+        mounting.innerHTML = "";
 
         if (!blindType) {
             resolve();
@@ -530,51 +527,41 @@ function bindLayoutCode(tubeType) {
             return;
         }
 
-        getTubeName(tubeType).then((tubeName) => {
-            let options = [{ value: "", text: "" }];
+        const listData = { type: "LayoutCodeDoor", tubetype: tubeType };
 
-            if (tubeName === "Hinged Single") {
-                options = [
-                    { value: "", text: "" },
-                    { value: "L", text: "L" },
-                    { value: "R", text: "R" }
-                ];
-            } else if (tubeName === "Hinged Double") {
-                options = [
-                    { value: "", text: "" },
-                    { value: "L-RA", text: "L-RA" },
-                    { value: "AL-R", text: "AL-R" }
-                ];
-            } else if (tubeName === "Sliding Single") {
-                options = [
-                    { value: "", text: "" },
-                    { value: "AL", text: "AL" },
-                    { value: "RA", text: "RA" }
-                ];
-            } else if (tubeName === "Sliding Double") {
-                options = [
-                    { value: "", text: "" },
-                    { value: "AL", text: "AL" },
-                    { value: "RA", text: "RA" }
-                ];
-            } else if (tubeName === "Sliding Stacker") {
-                options = [
-                    { value: "", text: "" },
-                    { value: "AL", text: "AL" },
-                    { value: "RA", text: "RA" }
-                ];
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/ListData",
+            data: JSON.stringify({ data: listData }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (Array.isArray(response.d)) {
+                    layoutcode.innerHTML = "";
+
+                    if (response.d.length > 1) {
+                        const defaultOption = document.createElement("option");
+                        defaultOption.text = "";
+                        defaultOption.value = "";
+                        layoutcode.add(defaultOption);
+                    }
+
+                    response.d.forEach(function (item) {
+                        const option = document.createElement("option");
+                        option.value = item.Value;
+                        option.text = item.Text;
+                        layoutcode.add(option);
+                    });
+
+                    if (response.d.length === 1) {
+                        layoutcode.selectedIndex = 0;
+                    }
+                }
+                resolve();
+            },
+            error: function (error) {
+                reject(error);
             }
-
-            options.forEach((opt) => {
-                let optionElement = document.createElement("option");
-                optionElement.value = opt.value;
-                optionElement.textContent = opt.text;
-                layoutcode.appendChild(optionElement);
-            });
-
-            resolve();
-        }).catch((error) => {
-            reject(error);
         });
     });
 }
@@ -589,45 +576,41 @@ function bindMeshType(blindType) {
             return;
         }
 
-        getBlindName(blindType).then((blindName) => {
-            let options = [{ value: "", text: "" }];
+        const listData = { type: "MeshDoor", blindtype: blindType };
 
-            if (blindName === "Safety") {
-                options = [
-                    { value: "", text: "" },
-                    { value: "304 SS Mesh", text: "304 SS Mesh" }
-                ];
-            } else if (blindName === "Standard") {
-                options = [
-                    { value: "", text: "" },
-                    { value: "Fibreglass Mesh", text: "Fibreglass Mesh" },
-                    { value: "Pawproof", text: "Pawproof" },
-                    { value: "SS Mesh", text: "SS Mesh" }
-                ];
-            } else if (blindName === "Security") {
-                options = [
-                    { value: "", text: "" },
-                    { value: "316 SS Mesh", text: "316 SS Mesh" }
-                ];
-            } else if (blindName === "Flyscreen") {
-                options = [
-                    { value: "", text: "" },
-                    { value: "Fibreglass Mesh", text: "Fibreglass Mesh" },
-                    { value: "Pawproof", text: "Pawproof" },
-                    { value: "SS Mesh", text: "SS Mesh" }
-                ];
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/ListData",
+            data: JSON.stringify({ data: listData }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (Array.isArray(response.d)) {
+                    meshtype.innerHTML = "";
+
+                    if (response.d.length > 1) {
+                        const defaultOption = document.createElement("option");
+                        defaultOption.text = "";
+                        defaultOption.value = "";
+                        meshtype.add(defaultOption);
+                    }
+
+                    response.d.forEach(function (item) {
+                        const option = document.createElement("option");
+                        option.value = item.Value;
+                        option.text = item.Text;
+                        meshtype.add(option);
+                    });
+
+                    if (response.d.length === 1) {
+                        meshtype.selectedIndex = 0;
+                    }
+                }
+                resolve();
+            },
+            error: function (error) {
+                reject(error);
             }
-
-            options.forEach((opt) => {
-                let optionElement = document.createElement("option");
-                optionElement.value = opt.value;
-                optionElement.textContent = opt.text;
-                meshtype.appendChild(optionElement);
-            });
-
-            resolve();
-        }).catch((error) => {
-            reject(error);
         });
     });
 }
@@ -642,82 +625,41 @@ function bindFrameColour(blindType) {
             return;
         }
 
-        getBlindName(blindType).then((blindName) => {
-            let options = [{ value: "", text: "" }];
+        const listData = { type: "FrameColourDoor", blindtype: blindType };
 
-            if (blindName === "Safety") {
-                options = [
-                    { value: "", text: "" },
-                    { value: "Black (Express)", text: "Black (Express)" },
-                    { value: "Monument (Express)", text: "Monument (Express)" },
-                    { value: "Primrose (Express)", text: "Primrose (Express)" },
-                    { value: "White (Express)", text: "White (Express)" },
-                    { value: "White Birch (Express)", text: "White Birch (Express)" }
-                ];
-            } else if (blindName === "Standard") {
-                options = [
-                    { value: "", text: "" },
-                    { value: "Black (Express)", text: "Black (Express)" },
-                    { value: "Monument (Express)", text: "Monument (Express)" },
-                    { value: "Primrose (Express)", text: "Primrose (Express)" },
-                    { value: "White (Express)", text: "White (Express)" },
-                    { value: "White Birch (Express)", text: "White Birch (Express)" }
-                ];
-            } else if (blindName === "Security") {
-                options = [
-                    { value: "", text: "" },
-                    { value: "Black (Express)", text: "Black (Express)" },
-                    { value: "Monument (Express)", text: "Monument (Express)" },
-                    { value: "Primrose (Express)", text: "Primrose (Express)" },
-                    { value: "White (Express)", text: "White (Express)" },
-                    { value: "White Birch (Express)", text: "White Birch (Express)" }
-                ];
-            } else if (blindName === "Flyscreen") {
-                options = [
-                    { value: "", text: "" },
-                    { value: "Black (Express)", text: "Black (Express)" },
-                    { value: "Monument (Express)", text: "Monument (Express)" },
-                    { value: "Primrose (Express)", text: "Primrose (Express)" },
-                    { value: "White (Express)", text: "White (Express)" },
-                    { value: "White Birch (Express)", text: "White Birch (Express)" }
-                ];
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/ListData",
+            data: JSON.stringify({ data: listData }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (Array.isArray(response.d)) {
+                    framecolour.innerHTML = "";
+
+                    if (response.d.length > 1) {
+                        const defaultOption = document.createElement("option");
+                        defaultOption.text = "";
+                        defaultOption.value = "";
+                        framecolour.add(defaultOption);
+                    }
+
+                    response.d.forEach(function (item) {
+                        const option = document.createElement("option");
+                        option.value = item.Value;
+                        option.text = item.Text;
+                        framecolour.add(option);
+                    });
+
+                    if (response.d.length === 1) {
+                        framecolour.selectedIndex = 0;
+                    }
+                }
+                resolve();
+            },
+            error: function (error) {
+                reject(error);
             }
-
-            const extraOptions = [
-                { value: "", text: "" },
-                { value: "Apo Grey (Regular)", text: "Apo Grey (Regular)" },
-                { value: "Beige (Regular)", text: "Beige (Regular)" },
-                { value: "Birch White (Regular)", text: "Birch White (Regular)" },
-                { value: "Black (Regular)", text: "Black (Regular)" },
-                { value: "Brown (Regular)", text: "Brown (Regular)" },
-                { value: "Charcoal (Regular)", text: "Charcoal (Regular)" },
-                { value: "Deep Ocean (Regular)", text: "Deep Ocean (Regular)" },
-                { value: "Dune (Regular)", text: "Dune (Regular)" },
-                { value: "Hawthorne Green (Regular)", text: "Hawthorne Green (Regular)" },
-                { value: "Jasper (Regular)", text: "Jasper (Regular)" },
-                { value: "Monument (Regular)", text: "Monument (Regular)" },
-                { value: "Notre Dame (Regular)", text: "Notre Dame (Regular)" },
-                { value: "Pale Eucalypt (Regular)", text: "Pale Eucalypt (Regular)" },
-                { value: "Paperbark (Regular)", text: "Paperbark (Regular)" },
-                { value: "Primrose (Regular)", text: "Primrose (Regular)" },
-                { value: "Silver (Regular)", text: "Silver (Regular)" },
-                { value: "Surf Mist (Regular)", text: "Surf Mist (Regular)" },
-                { value: "White (Regular)", text: "White (Regular)" },
-                { value: "Woodland Grey (Regular)", text: "Woodland Grey (Regular)" }
-            ];
-
-            options = options.concat(extraOptions);
-
-            options.forEach((opt) => {
-                let optionElement = document.createElement("option");
-                optionElement.value = opt.value;
-                optionElement.textContent = opt.text;
-                framecolour.appendChild(optionElement);
-            });
-
-            resolve();
-        }).catch((error) => {
-            reject(error);
         });
     });
 }
@@ -732,41 +674,41 @@ function bindInterlock(tubeType) {
             return;
         }
 
-        getTubeName(tubeType).then((tubeName) => {
-            let options = [{ value: "", text: "" }];
+        const listData = { type: "InterlockDoor", tubetype: tubeType };
 
-            if (tubeName === "Sliding Single") {
-                options = [
-                    { value: "", text: "" },
-                    { value: "HD3 Offset (5mm)", text: "HD3 Offset (5mm)" },
-                    { value: "HD2 Flat (1.5mm)", text: "HD2 Flat (1.5mm)" },
-                    { value: "HD10 Large Offset", text: "HD10 Large Offset" },
-                    { value: "HD9 F Interlock", text: "HD9 F Interlock" },
-                ];
-            } else if (tubeName === "Sliding Double") {
-                options = [
-                    { value: "", text: "" },
-                    { value: "HD9 F Interlock", text: "HD9 F Interlock" },
-                ];
-            } else if (tubeName === "Sliding Stacker") {
-                options = [
-                    { value: "", text: "" },
-                    { value: "HD3 Offset (5 mm) with HD9 F Interlock", text: "HD3 Offset (5 mm) with HD9 F Interlock" },
-                    { value: "HD2 Flat (1.5 mm) with HD9 F Interlock", text: "HD2 Flat (1.5 mm) with HD9 F Interlock" },
-                    { value: "HD10 Large Offset with HD9 F Interlock", text: "HD10 Large Offset with HD9 F Interlock" }
-                ];
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/ListData",
+            data: JSON.stringify({ data: listData }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (Array.isArray(response.d)) {
+                    interlocktype.innerHTML = "";
+
+                    if (response.d.length > 1) {
+                        const defaultOption = document.createElement("option");
+                        defaultOption.text = "";
+                        defaultOption.value = "";
+                        interlocktype.add(defaultOption);
+                    }
+
+                    response.d.forEach(function (item) {
+                        const option = document.createElement("option");
+                        option.value = item.Value;
+                        option.text = item.Text;
+                        interlocktype.add(option);
+                    });
+
+                    if (response.d.length === 1) {
+                        interlocktype.selectedIndex = 0;
+                    }
+                }
+                resolve();
+            },
+            error: function (error) {
+                reject(error);
             }
-
-            options.forEach((opt) => {
-                let optionElement = document.createElement("option");
-                optionElement.value = opt.value;
-                optionElement.textContent = opt.text;
-                interlocktype.appendChild(optionElement);
-            });
-
-            resolve();
-        }).catch((error) => {
-            reject(error);
         });
     });
 }
@@ -1059,6 +1001,8 @@ async function initDoor() {
 
     if (!headerId) return redirectOrder();
 
+    updateLinkDetail(headerId);
+
     if (!itemAction || !designId || !loginId || designId !== designIdOri) {
         return window.location.href = `/order/detail?orderid=${headerId}`;
     }
@@ -1104,14 +1048,10 @@ async function bindItemOrder(itemId, companyDetailId) {
         fillSelect("#tubetype", data.TubeTypes);
         fillSelect("#colourtype", data.ColourTypes);
         fillSelect("#mounting", data.Mountings);
-
-        let manual = [
-            bindLayoutCode(data.ItemData.TubeType),
-            bindMeshType(data.ItemData.BlindType),
-            bindInterlock(data.ItemData.TubeType),
-            bindFrameColour(data.ItemData.BlindType)
-        ];
-        await Promise.all(manual);
+        fillSelect("#layoutcode", data.LayoutCodes);
+        fillSelect("#meshtype", data.MeshTypes);
+        fillSelect("#interlocktype", data.Interlocks);
+        fillSelect("#framecolour", data.FrameColours);
 
         setFormValues(data.ItemData);
 
@@ -1126,6 +1066,13 @@ async function bindItemOrder(itemId, companyDetailId) {
 
 function redirectOrder() {
     window.location.replace("/order");
+}
+
+function updateLinkDetail(myId) {
+    const link = document.getElementById("orderDetail");
+    if (!link || !headerId) return;
+
+    link.href = `/order/detail?orderid=${myId}`;
 }
 
 document.getElementById("modalSuccess").addEventListener("hide.bs.modal", function () {

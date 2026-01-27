@@ -142,7 +142,6 @@
                                     <label>Order Status</label>
                                     <br />
                                     <asp:Label runat="server" ID="lblOrderStatus" CssClass="font-bold"></asp:Label>
-                                    <asp:Label runat="server" ID="lblOrderStatusDescription" Visible="false"></asp:Label>
                                 </div>
 
                                 <div class="col-6 col-sm-6 col-lg-7 mb-2">
@@ -1683,14 +1682,18 @@
             </div>
         </div>
     </div>
-
-    <asp:HiddenField ID="headerId" runat="server" />
-    <asp:HiddenField ID="itemId" runat="server" />
-    <asp:HiddenField ID="customerId" runat="server" />
-    <asp:HiddenField ID="companyId" runat="server" />
-    <asp:HiddenField ID="companyDetailId" runat="server" />
-    <asp:HiddenField ID="priceGroupId" runat="server" />
-    <asp:HiddenField ID="createdRole" runat="server" />
+    
+    <div runat="server" visible="false">
+        <asp:Label runat="server" ID="lblHeaderId"></asp:Label>
+        <asp:Label runat="server" ID="lblCustomerId"></asp:Label>
+        <asp:Label runat="server" ID="lblCompanyId"></asp:Label>
+        <asp:Label runat="server" ID="lblCompanyDetailId"></asp:Label>
+        <asp:Label runat="server" ID="lblItemId"></asp:Label>
+        <asp:Label runat="server" ID="lblPriceGroupId"></asp:Label>
+        <asp:Label runat="server" ID="lblCreatedRole"></asp:Label>
+        <asp:Label runat="server" ID="lblOrderStatusDescription"></asp:Label>
+        <asp:Label runat="server" ID="lblOrderPaid"></asp:Label>
+    </div>
     
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', function () {

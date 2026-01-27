@@ -64,19 +64,19 @@ Public Class OrderClass
         End Try
     End Function
 
-    Public Function GetDataTable_Orders(thisCmd As SqlCommand) As DataTable
-        Try
-            Using thisConn As New SqlConnection(myConn)
-                thisCmd.Connection = thisConn
-                Using da As New SqlDataAdapter(thisCmd)
-                    Dim dt As New DataTable()
+    Public Function GetDataTableSP(spName As String, params As List(Of SqlParameter)) As DataTable
+        Dim dt As New DataTable()
+        Using conn As New SqlConnection(myConn)
+            Using cmd As New SqlCommand(spName, conn)
+                cmd.CommandType = CommandType.StoredProcedure
+                cmd.Parameters.AddRange(params.ToArray())
+
+                Using da As New SqlDataAdapter(cmd)
                     da.Fill(dt)
-                    Return dt
                 End Using
             End Using
-        Catch ex As Exception
-            Return Nothing
-        End Try
+        End Using
+        Return dt
     End Function
 
     Public Function GetItemData(thisString As String) As String
@@ -1242,8 +1242,8 @@ Public Class OrderClass
     End Sub
 
     Public Sub CalculatePrice(headerId As String, itemId As String)
-        Try
-            Dim thisData As DataRow = GetDataRow("SELECT * FROM OrderDetails WHERE Id='" & itemId & "' AND Active=1")
+        'Try'
+        Dim thisData As DataRow = GetDataRow("SELECT * FROM OrderDetails WHERE Id='" & itemId & "' AND Active=1")
             If thisData IsNot Nothing Then
                 Dim customerId As String = GetCustomerIdByOrder(headerId)
 
@@ -2038,8 +2038,8 @@ Public Class OrderClass
                     CalculateCharge(objectArray)
                 End If
             End If
-        Catch ex As Exception
-        End Try
+        'Catch ex As Exception
+        'End Try
     End Sub
 
     Public Sub CalculateCharge(data As Object())
@@ -2120,17 +2120,14 @@ Public Class OrderClass
     Public Sub Logs(data As Object())
         Try
             If data.Length = 4 Then
-                Dim type As String = Convert.ToString(data(0))
-                Dim dataId As String = Convert.ToString(data(1))
-                Dim loginId As String = Convert.ToString(data(2))
-                Dim description As String = Convert.ToString(data(3))
+                Using thisConn As New SqlConnection(myConn)
+                    Using myCmd As New SqlCommand("sp_InsertLogs", thisConn)
+                        myCmd.CommandType = CommandType.StoredProcedure
 
-                Using thisConn As SqlConnection = New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Logs VALUES (NEWID(), @Type, @DataId, @ActionBy, GETDATE(), @Description)", thisConn)
-                        myCmd.Parameters.AddWithValue("@Type", type)
-                        myCmd.Parameters.AddWithValue("@DataId", UCase(dataId).ToString())
-                        myCmd.Parameters.AddWithValue("@ActionBy", UCase(loginId).ToString())
-                        myCmd.Parameters.AddWithValue("@Description", description)
+                        myCmd.Parameters.AddWithValue("@Type", Convert.ToString(data(0)))
+                        myCmd.Parameters.AddWithValue("@DataId", Convert.ToString(data(1)))
+                        myCmd.Parameters.AddWithValue("@ActionBy", Convert.ToString(data(2)))
+                        myCmd.Parameters.AddWithValue("@Description", Convert.ToString(data(3)))
 
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()

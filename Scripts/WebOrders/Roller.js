@@ -22,6 +22,7 @@ $("#blindtype").on("change", function () {
 
 $("#tubetype").on("change", function () {
     const blindtype = document.getElementById("blindtype").value;
+
     bindControlType(blindtype, $(this).val());
     bindFabricType(designId);
 });
@@ -265,11 +266,10 @@ function getFormAction(itemAction) {
         }
 
         const actionMap = {
-            create: "Add Item",
-            edit: "Edit Item",
-            view: "View Item",
-            copy: "Copy Item"
+            create: "Add Item", edit: "Edit Item",
+            view: "View Item", copy: "Copy Item"
         };
+
         pageAction.innerText = actionMap[itemAction];
         resolve();
     });
@@ -2696,14 +2696,7 @@ function setFormValues(itemData) {
         adjusting: "Adjusting",
         notes: "Notes",
         markup: "MarkUp",
-        printing: "Printing",
-        printingb: "PrintingB",
-        printingc: "PrintingC",
-        printingd: "PrintingD",
-        printinge: "PrintingE",
-        printingf: "PrintingF",
-        printingg: "PrintingG",
-        printingh: "PrintingH"
+        printing: "Printing", printingb: "PrintingB", printingc: "PrintingC", printingd: "PrintingD", printinge: "PrintingE", printingf: "PrintingF", printingg: "PrintingG", printingh: "PrintingH"
     };
 
     Object.keys(mapping).forEach(id => {
@@ -2820,6 +2813,8 @@ async function initRoller() {
     loginId = params.get("uid");
 
     if (!headerId) return redirectOrder();
+
+    updateLinkDetail(headerId);
 
     if (!itemAction || !designId || !loginId || designId !== designIdOri) {
         return window.location.href = `/order/detail?orderid=${headerId}`;
@@ -3118,6 +3113,13 @@ function showInfo(type) {
 
 function redirectOrder() {
     window.location.replace("/order");
+}
+
+function updateLinkDetail(myId) {
+    const link = document.getElementById("orderDetail");
+    if (!link || !headerId) return;
+
+    link.href = `/order/detail?orderid=${myId}`;
 }
 
 document.getElementById("modalSuccess").addEventListener("hide.bs.modal", function () {

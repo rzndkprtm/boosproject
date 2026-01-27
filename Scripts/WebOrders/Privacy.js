@@ -1,4 +1,4 @@
-﻿let designIdOri = "1";
+﻿let designIdOri = "9";
 let itemAction;
 let headerId;
 let itemId;
@@ -9,77 +9,36 @@ let loginId;
 let roleAccess;
 let priceAccess;
 
-initAluminium();
+initPrivacy();
 
 $("#submit").on("click", process);
 $("#cancel").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
 $("#vieworder").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
 
 $("#blindtype").on("change", function () {
-    const blindtype = $(this).val();
-    bindMounting(blindtype);
-    bindColourType(blindtype);
+    bindMounting($(this).val());
+    bindColourType($(this).val());
+
+    document.getElementById("controllength").value = "";
 });
 
 $("#colourtype").on("change", function () {
     const blindtype = document.getElementById("blindtype").value;
-    bindSubType(blindtype, $(this).val());
-});
-
-$("#subtype").on("change", function () {
-    const colourtype = document.getElementById("colourtype").value;
-    const width = parseFloat(document.getElementById("width").value) || 0;
-    const drop = document.getElementById("drop").value;
-
-    bindComponentForm(colourtype, $(this).val());
-    bindControlPosition($(this).val(), width);
-    bindTilterPosition($(this).val(), width);
-
-    otomatisDrop($(this).val(), "1", drop);
+    bindComponentForm($(this).val());
 
     document.getElementById("controllength").value = "";
-    document.getElementById("controllengthb").value = "";
-    document.getElementById("controllengthvalue").value = "";
-    document.getElementById("controllengthvalueb").value = "";
-
-    document.getElementById("wandlength").value = "";
-    document.getElementById("wandlengthb").value = "";
-    document.getElementById("wandlengthvalue").value = "";
-    document.getElementById("wandlengthvalueb").value = "";
-});
-
-$("#width").on("input", function () {
-    const subtype = document.getElementById("subtype").value;
-    const width = parseFloat(document.getElementById("width").value) || 0;
-
-    bindControlPosition(subtype, width);
-    bindTilterPosition(subtype, width);
-});
-
-$("#drop").on("input", function () {
-    const subtype = document.getElementById("subtype").value;
-    otomatisDrop(subtype, "1", $(this).val());
-});
-
-$("#dropb").on("input", function () {
-    const subtype = document.getElementById("subtype").value;
-    otomatisDrop(subtype, "2", $(this).val());
 });
 
 $("#controllength").on("change", function () {
-    visibleCustom("CordLength", $(this).val(), "1");
+    visibleCustom($(this).val());
 });
 
-$("#controllengthb").on("change", function () {
-    visibleCustom("CordLength", $(this).val(), "2");
+$("#controlposition").on("change", function () {
+    document.getElementById("tilterposition").value = $(this).val();
 });
 
-$("#wandlength").on("change", function () {
-    visibleCustom("WandLength", $(this).val(), "1");
-});
-
-$("#wandlengthb").on("change", function () {
-    visibleCustom("WandLength", $(this).val(), "2");
+$("#tilterposition").on("change", function () {
+    document.getElementById("controlposition").value = $(this).val();
 });
 
 function loader(itemAction) {
@@ -244,30 +203,9 @@ function getDesignName(designId) {
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (response) {
-                const designName = response.d.trim();
+                const designName = response.d.trim() || "Nama desain tidak ditemukan";
                 cardTitle.textContent = designName;
                 resolve();
-            },
-            error: function (error) {
-                reject(error);
-            }
-        });
-    });
-}
-
-function getBlindName(blindType) {
-    if (!blindType) return Promise.resolve(null);;
-
-    const type = "BlindName";
-    return new Promise((resolve, reject) => {
-        $.ajax({
-            type: "POST",
-            url: "Method.aspx/StringData",
-            data: JSON.stringify({ type: type, dataId: blindType }),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (response) {
-                resolve(response.d);
             },
             error: function (error) {
                 reject(error);
@@ -285,11 +223,10 @@ function getFormAction(itemAction) {
         }
 
         const actionMap = {
-            create: "Add Item",
-            edit: "Edit Item",
-            view: "View Item",
-            copy: "Copy Item"
+            create: "Add Item", edit: "Edit Item",
+            view: "View Item", copy: "Copy Item"
         };
+
         pageAction.innerText = actionMap[itemAction] || "";
         resolve();
     });
@@ -367,7 +304,7 @@ function bindColourType(blindType) {
         if (!blindType) {
             const selectedValue = colourtype.value || "";
             Promise.all([
-                bindSubType(blindType, selectedValue)
+                bindComponentForm(selectedValue)
             ]).then(resolve).catch(reject);
             return;
         }
@@ -398,80 +335,18 @@ function bindColourType(blindType) {
                         colourtype.add(option);
                     });
 
-
                     if (response.d.length === 1) {
                         colourtype.selectedIndex = 0;
                     }
 
                     const selectedValue = colourtype.value || "";
                     Promise.all([
-                        bindSubType(blindType, selectedValue)
+                        bindComponentForm(selectedValue)
                     ]).then(resolve).catch(reject);
                 } else {
                     const selectedValue = colourtype.value || "";
                     Promise.all([
-                        bindSubType(blindType, selectedValue)
-                    ]).then(resolve).catch(reject);
-                }
-            },
-            error: function (error) {
-                reject(error);
-            }
-        });
-    });
-}
-
-function bindSubType(blindType, colourType) {
-    return new Promise((resolve, reject) => {
-        const subtype = document.getElementById("subtype");
-        subtype.innerHTML = "";
-
-        if (!blindType || !colourType) {
-            const selectedValue = subtype.value || "";
-            bindComponentForm(colourType, selectedValue);
-            resolve();
-            return;
-        }
-
-        const listData = { type: "SubType", blindtype: blindType };
-
-        $.ajax({
-            type: "POST",
-            url: "Method.aspx/ListData",
-            data: JSON.stringify({ data: listData }),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (response) {
-                if (Array.isArray(response.d)) {
-                    subtype.innerHTML = "";
-
-                    if (response.d.length > 1) {
-                        const defaultOption = document.createElement("option");
-                        defaultOption.text = "";
-                        defaultOption.value = "";
-                        subtype.add(defaultOption);
-                    }
-
-                    response.d.forEach(function (item) {
-                        const option = document.createElement("option");
-                        option.value = item.Value;
-                        option.text = item.Text;
-                        subtype.add(option);
-                    });
-
-
-                    if (response.d.length === 1) {
-                        subtype.selectedIndex = 0;
-                    }
-
-                    const selectedValue = subtype.value || "";
-                    Promise.all([
-                        bindComponentForm(colourType, selectedValue)
-                    ]).then(resolve).catch(reject);
-                } else {
-                    const selectedValue = subtype.value || "";
-                    Promise.all([
-                        bindComponentForm(colourType, selectedValue)
+                        bindComponentForm(selectedValue)
                     ]).then(resolve).catch(reject);
                 }
             },
@@ -530,159 +405,23 @@ function bindMounting(blindType) {
     });
 }
 
-function bindControlPosition(subType, width) {
-    return new Promise((resolve) => {
-        const controlposition = document.getElementById("controlposition");
-        controlposition.innerHTML = "";
-
-        if (!subType || width === 0) {
-            resolve();
-            return;
-        }
-
-        let options = [
-            { value: "", text: "" },
-            { value: "Left", text: "Left" },
-            { value: "Right", text: "Right" }
-        ];
-
-        const widthRules = [
-            {
-                subType: "Single",
-                min: 200,
-                max: 250,
-                options: [
-                    { value: "", text: "" },
-                    { value: "N/A", text: "N/A" }
-                ]
-            }
-        ];
-
-        const rule = widthRules.find(r =>
-            r.subType === subType &&
-            width >= r.min &&
-            width <= r.max
-        );
-
-        if (rule) {
-            options = rule.options;
-        }
-
-        options.forEach(opt => {
-            const optionElement = document.createElement("option");
-            optionElement.value = opt.value;
-            optionElement.textContent = opt.text;
-            controlposition.appendChild(optionElement);
-        });
-
-        resolve();
-    });
-}
-
-function bindTilterPosition(subType, width) {
-    return new Promise((resolve) => {
-        const tilterposition = document.getElementById("tilterposition");
-        tilterposition.innerHTML = "";
-
-        if (!subType || width === 0) {
-            resolve();
-            return;
-        }
-
-        let options = [
-            { value: "", text: "" },
-            { value: "Left", text: "Left" },
-            { value: "Right", text: "Right" }
-        ];
-
-        const widthRules = [
-            {
-                subType: "Single",
-                min: 200,
-                max: 250,
-                options: [
-                    { value: "", text: "" },
-                    { value: "Centre", text: "Centre" }
-                ]
-            }
-        ];
-
-        const rule = widthRules.find(r =>
-            r.subType === subType &&
-            width >= r.min &&
-            width <= r.max
-        );
-
-        if (rule) {
-            options = rule.options;
-        }
-
-        options.forEach(opt => {
-            const optionElement = document.createElement("option");
-            optionElement.value = opt.value;
-            optionElement.textContent = opt.text;
-            tilterposition.appendChild(optionElement);
-        });
-
-        resolve();
-    });
-}
-
-function bindComponentForm(colourType, subType) {
+function bindComponentForm(colourType) {
     return new Promise((resolve) => {
         const detail = document.getElementById("divdetail");
         const markup = document.getElementById("divmarkup");
+        const cordlengthvalue = document.getElementById("divcordlengthvalue");
 
-        const divsToHide = [
-            "divfirstblind", "divfirstend", "divsecondblind", "divsecondend",
-            "divcontrolposition", "divtilterposition",
-            "divwidthb", "divdropb",
-            "divcordlength", "divwandlength",
-            "divcordlengthb", "divwandlengthb",
-            "divcordlengthvalue", "divwandlengthvalue",
-            "divcordlengthvalueb", "divwandlengthvalueb"
-        ].map(id => document.getElementById(id));
-
-        const toggleDisplay = (el, show) => {
-            if (el) el.style.display = show ? "" : "none";
-        };
+        function toggleDisplay(element, show) {
+            if (element) element.style.display = show ? "" : "none";
+        }
 
         toggleDisplay(detail, false);
         toggleDisplay(markup, false);
-        divsToHide.forEach(el => toggleDisplay(el, false));
+        toggleDisplay(cordlengthvalue, false);
 
-        if (!colourType || !subType) return resolve();
+        if (!colourType) return resolve();
 
         toggleDisplay(detail, true);
-
-        const divShow = [];
-
-        if (subType === "Single") {
-            divShow.push("divcontrolposition", "divtilterposition", "divcordlength", "divwandlength");
-        } else if (subType === "2 on 1 Left-Left") {
-            divShow.push(
-                "divfirstblind", "divfirstend", "divsecondblind", "divsecondend",
-                "divcordlength", "divwandlength",
-                "divwidthb", "divdropb", "divcordlengthb"
-            );
-        } else if (subType === "2 on 1 Right-Right") {
-            divShow.push(
-                "divfirstblind", "divfirstend", "divsecondblind", "divsecondend",
-                "divcordlength",
-                "divwidthb", "divdropb", "divcordlengthb", "divwandlengthb"
-            );
-        } else if (subType === "2 on 1 Left-Right") {
-            divShow.push(
-                "divfirstblind", "divfirstend", "divsecondblind", "divsecondend",
-                "divcordlength", "divwandlength",
-                "divwidthb", "divdropb", "divcordlengthb", "divwandlengthb"
-            );
-        }
-
-        divShow.forEach(id => {
-            const el = document.getElementById(id);
-            toggleDisplay(el, true);
-        });
 
         if (typeof priceAccess !== "undefined" && priceAccess) {
             toggleDisplay(markup, true);
@@ -692,31 +431,15 @@ function bindComponentForm(colourType, subType) {
     });
 }
 
-function visibleCustom(type, text, number) {
+function visibleCustom(cordLength) {
     return new Promise((resolve, reject) => {
-        let thisDiv;
+        const thisDiv = document.getElementById("divcordlengthvalue");
+        thisDiv.style.display = "none";
 
-        if (type === "CordLength") {
-            if (number === "1") {
-                thisDiv = document.getElementById("divcordlengthvalue");
-            } else if (number === "2") {
-                thisDiv = document.getElementById("divcordlengthvalueb");
-            }
-        } else if (type === "WandLength") {
-            if (number === "1") {
-                thisDiv = document.getElementById("divwandlengthvalue");
-            } else if (number === "2") {
-                thisDiv = document.getElementById("divwandlengthvalueb");
-            }
+        if (cordLength === "Custom") {
+            thisDiv.style.display = "";
         }
-
-        if (thisDiv) {
-            thisDiv.style.display = "none";
-            if (text === "Custom") {
-                thisDiv.style.display = "";
-            }
-            resolve();
-        }
+        resolve();
     });
 }
 
@@ -757,12 +480,9 @@ function controlForm(status, isEditItem, isCopyItem) {
     document.getElementById("submit").style.display = status ? "none" : "";
 
     const inputs = [
-        "blindtype", "colourtype", "qty", "room", "mounting", "subtype",
-        "controlposition", "tilterposition",
-        "width", "drop", "widthb", "dropb",
-        "controllength", "controllengthvalue", "controllengthb", "controllengthvalueb",
-        "wandlength", "wandlengthvalue", "wandlengthb", "wandlengthvalueb",
-        "supply", "notes", "markup"
+        "blindtype", "colourtype", "qty", "room", "mounting",
+        "controlposition", "tilterposition", "width", "drop",
+        "controllength", "controllengthvalue", "supply", "notes", "markup"
     ];
 
     inputs.forEach(id => {
@@ -779,18 +499,6 @@ function controlForm(status, isEditItem, isCopyItem) {
     });
 }
 
-function fillSelect(selector, list, selected = null) {
-    const el = document.querySelector(selector);
-    el.innerHTML = "<option value=''></option>";
-    list.forEach(item => {
-        const opt = document.createElement("option");
-        opt.value = item.Value;
-        opt.textContent = item.Text;
-        if (selected != null && selected == item.Value) opt.selected = true;
-        el.appendChild(opt);
-    });
-}
-
 function setFormValues(itemData) {
     const mapping = {
         blindtype: "BlindType",
@@ -798,21 +506,12 @@ function setFormValues(itemData) {
         qty: "Qty",
         room: "Room",
         mounting: "Mounting",
-        subtype: "SubType",
         width: "Width",
-        widthb: "WidthB",
         drop: "Drop",
-        dropb: "DropB",
         controlposition: "ControlPosition",
         tilterposition: "TilterPosition",
         controllength: "ControlLength",
         controllengthvalue: "ControlLengthValue",
-        controllengthb: "ControlLengthB",
-        controllengthvalueb: "ControlLengthValueB",
-        wandlength: "WandLength",
-        wandlengthvalue: "WandLengthValue",
-        wandlengthb: "WandLengthB",
-        wandlengthvalueb: "WandLengthValueB",
         supply: "Supply",
         notes: "Notes",
         markup: "MarkUp"
@@ -840,14 +539,9 @@ function process() {
     toggleButtonState(true, "Processing...");
 
     const fields = [
-        "blindtype", "colourtype", "qty", "room", "mounting", "subtype",
-        "controlposition", "tilterposition",
-        "width", "drop", "widthb", "dropb",
-        "controllength", "wandlength",
-        "controllengthb", "wandlengthb",
-        "controllengthvalue", "wandlengthvalue",
-        "controllengthvalueb", "wandlengthvalueb",
-        "supply", "notes", "markup"
+        "blindtype", "colourtype", "qty", "room", "mounting",
+        "controlposition", "tilterposition", "width", "drop",
+        "controllength", "controllengthvalue", "supply", "notes", "markup"
     ];
 
     const formData = {
@@ -864,7 +558,7 @@ function process() {
 
     $.ajax({
         type: "POST",
-        url: "Method.aspx/AluminiumProcess",
+        url: "Method.aspx/PrivacyProcess",
         data: JSON.stringify({ data: formData }),
         contentType: "application/json; charset=utf-8",
         dataType: "json",
@@ -886,99 +580,9 @@ function process() {
     });
 }
 
-function otomatisDrop(subType, number, drop) {
-    return new Promise((resolve) => {
-        if (!subType || !number) return resolve();
-
-        if (subType === "2 on 1 Left-Left" || subType === "2 on 1 Left-Right" || subType === "2 on 1 Right-Right") {
-            let elementId = null;
-            if (number === "1") {
-                elementId = "dropb";
-            } else if (number === "2") {
-                elementId = "drop";
-            }
-
-            if (elementId) {
-                const el = document.getElementById(elementId);
-                if (el) {
-                    el.value = drop;
-                }
-            }
-        }
-        resolve();
-    });
-}
-
-function showInfo(type) {
-    let info;
-
-    if (type === "Cord Length") {
-        info = "<b>Cord Length Information</b>";
-        info += "<br /><br />";
-        info += "- Standard";
-        info += "<br />";
-        info += "Our standard pull cord length is 2/3 from your drop.";
-        info += "<br /><br />";
-        info += "- Custom";
-        info += "<br />";
-        info += "Minimum custom cord length is 450mm.";
-    }
-    else if (type === "Second Drop") {
-        info = "<b>Drop Information</b>";
-        info += "<br /><br />";
-        info += "The second drop automatically matches and follows the first drop.";
-        info += "<br />";
-        info += "If the second drop is changed, the first drop will automatically adjust to match it.";
-    } else if (type === "Wand Length") {
-        info = "<b>Wand Length Information</b>";
-        info += "<br /><br />";
-        info += "- Standard";
-        info += "<br />";
-        info += "Our standard wand length is 2/3 from your drop.";
-        info += "<br /><br />";
-        info += "- Custom";
-        info += "<br />";
-        info += "Minimum custom wand length is 450mm.";
-    } else if (type === "First") {
-        let urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/2on1aluminiumleft-1.png";
-
-        const subType = document.getElementById("subtype").value;
-        if (subType === "2 on 1 Left-Left") {
-            urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/2on1aluminiumleft-1.png";
-        } else if (subType === "2 on 1 Right-Right") {
-            urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/2on1aluminiumright-1.png";
-        } else if (subType === "2 on 1 Left-Right") {
-            urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/2on1aluminiumleftright-1.png";
-        }
-
-        info = "<b>Layout Information</b>";
-        info += "<br /><br />";
-        info += `<img src="${urlImage}" alt="Sub Type Image" style="max-width:100%;height:auto;">`;
-        info += "<br /><br />";
-    } else if (type === "Second") {
-        let urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/2on1aluminiumleft-1.png";
-
-        const subType = document.getElementById("subtype").value;
-        if (subType === "2 on 1 Left-Left") {
-            urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/2on1aluminiumleft-2.png";
-        } else if (subType === "2 on 1 Right-Right") {
-            urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/2on1aluminiumright-2.png";
-        } else if (subType === "2 on 1 Left-Right") {
-            urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/2on1aluminiumleftright-2.png";
-        }
-
-        info = "<b>Layout Information</b>";
-        info += "<br /><br />";
-        info += `<img src="${urlImage}" alt="Sub Type Image" style="max-width:100%;height:auto;">`;
-        info += "<br /><br />";
-    }
-    document.getElementById("spanInfo").innerHTML = info;
-}
-
-async function initAluminium() {
+async function initPrivacy() {
     const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get("boos");
-
     if (!sessionId) return redirectOrder();
 
     const response = await fetch("Method.aspx/StringData", {
@@ -1000,6 +604,8 @@ async function initAluminium() {
 
     if (!headerId) return redirectOrder();
 
+    updateLinkDetail(headerId);
+
     if (!itemAction || !designId || !loginId || designId !== designIdOri) {
         return window.location.href = `/order/detail?orderid=${headerId}`;
     }
@@ -1015,17 +621,17 @@ async function initAluminium() {
     ]);
 
     if (itemAction === "create") {
-        bindBlindType(designId);
         bindComponentForm("", "");
         controlForm(false);
+        bindBlindType(designId);
         loader(itemAction);
     } else if (["edit", "view", "copy"].includes(itemAction)) {
+        await bindItemOrder(itemId, companyDetail);
         controlForm(
             itemAction === "view",
             itemAction === "edit",
             itemAction === "copy"
         );
-        await bindItemOrder(itemId, companyDetail);
     }
 }
 
@@ -1033,7 +639,7 @@ async function bindItemOrder(itemId, companyDetailId) {
     try {
         const response = await $.ajax({
             type: "POST",
-            url: "Method.aspx/AluminiumDetail",
+            url: "Method.aspx/PrivacyDetail",
             data: JSON.stringify({ itemId, companyDetailId }),
             contentType: "application/json; charset=utf-8",
             dataType: "json"
@@ -1042,34 +648,60 @@ async function bindItemOrder(itemId, companyDetailId) {
         const data = response.d;
 
         fillSelect("#blindtype", data.BlindTypes);
-        fillSelect("#colourtype", data.ColourTypes);        
+        fillSelect("#colourtype", data.ColourTypes);
         fillSelect("#mounting", data.Mountings);
-        fillSelect("#subtype", data.SubTypes);
-
-        let manual = [
-            bindControlPosition(data.ItemData.SubType, data.ItemData.Width),
-            bindTilterPosition(data.ItemData.SubType, data.ItemData.Width)
-        ];
-        await Promise.all(manual);
 
         setFormValues(data.ItemData);
 
         document.getElementById("divloader").style.display = "none";
         document.getElementById("divorder").style.display = "";
 
-        bindComponentForm(data.ItemData.ProductId, data.ItemData.SubType);
-        visibleCustom("CordLength", data.ItemData.ControlLength, "1");
-        visibleCustom("CordLength", data.ItemData.ControlLengthB, "2");
-        visibleCustom("WandLength", data.ItemData.WandLength, "1");
-        visibleCustom("WandLength", data.ItemData.WandLengthB, "2");
+        bindComponentForm(data.ItemData.ProductId);
+        visibleCustom(data.ItemData.ControlLength);
     } catch (error) {
-        alert(error);
         document.getElementById("divloader").style.display = "none";
     }
 }
 
+function fillSelect(selector, list, selected = null) {
+    const el = document.querySelector(selector);
+    el.innerHTML = "<option value=''></option>";
+    list.forEach(item => {
+        const opt = document.createElement("option");
+        opt.value = item.Value;
+        opt.textContent = item.Text;
+        if (selected != null && selected == item.Value) opt.selected = true;
+        el.appendChild(opt);
+    });
+}
+
+function showInfo(type) {
+    let info;
+
+    if (type === "Cord Length") {
+        info = "<b>Cord Length Information</b>";
+        info += "<br /><br />";
+        info += "- Standard";
+        info += "<br />";
+        info += "Our standard pull cord length is 2/3 from your drop.";
+        info += "<br /><br />";
+        info += "- Custom";
+        info += "<br />";
+        info += "Minimum custom cord length is 550mm.";
+    }
+
+    document.getElementById("spanInfo").innerHTML = info;
+}
+
 function redirectOrder() {
     window.location.replace("/order");
+}
+
+function updateLinkDetail(myId) {
+    const link = document.getElementById("orderDetail");
+    if (!link || !headerId) return;
+
+    link.href = `/order/detail?orderid=${myId}`;
 }
 
 document.getElementById("modalSuccess").addEventListener("hide.bs.modal", function () {
@@ -1083,11 +715,6 @@ document.getElementById("modalError").addEventListener("hide.bs.modal", function
 });
 
 document.getElementById("modalInfo").addEventListener("hide.bs.modal", function () {
-    document.activeElement.blur();
-    document.body.focus();
-});
-
-document.getElementById("modalLayout").addEventListener("hide.bs.modal", function () {
     document.activeElement.blur();
     document.body.focus();
 });

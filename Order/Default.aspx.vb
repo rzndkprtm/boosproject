@@ -705,7 +705,7 @@ Partial Class Order_Default
             'Dim byInstaller As String = String.Empty
             'Dim byStatus As String = String.Empty
             'Dim byText As String = String.Empty
-            'Dim byOrder As String = "ORDER BY OrderHeaders.Id DESC"
+            'Dim byOrder As String = "ORDER BY OrderHeaders.SubmittedDate DESC"
 
             'If Not String.IsNullOrEmpty(company) Then
             '    byCompany = "AND Customers.CompanyId = '" & company & "'"
@@ -722,7 +722,7 @@ Partial Class Order_Default
             'If Session("RoleName") = "Factory Office" Then
             '    byRole = String.Empty
             '    byStatus = String.Empty
-            '    byOrder = "ORDER BY CASE WHEN OrderHeaders.Status='New Order' THEN 1 WHEN OrderHeaders.Status='In Production' THEN 2 WHEN OrderHeaders.Status='On Hold' THEN 3 ELSE 4 END, OrderHeaders.Id DESC"
+            '    byOrder = "ORDER BY CASE WHEN OrderHeaders.Status='New Order' THEN 1 WHEN OrderHeaders.Status='In Production' THEN 2 WHEN OrderHeaders.Status='On Hold' THEN 3 ELSE 4 END, OrderHeaders.SubmittedDate DESC"
             '    If Not status = "" Then
             '        byStatus = "AND OrderHeaders.Status='" & status & "'"
             '        byOrder = "ORDER BY OrderHeaders.Id DESC"
@@ -737,6 +737,7 @@ Partial Class Order_Default
             '    If Session("CustomerLevel") = "Sponsor" AndAlso Session("LevelName") = "Leader" Then
             '        byRole = "AND (OrderHeaders.CustomerId='" & Session("CustomerId") & "' OR Customers.SponsorId='" & Session("CustomerId") & "')"
             '    End If
+            '    byOrder = "ORDER BY OrderHeaders.Id DESC"
             '    byStatus = String.Empty
             '    If Not status = "" Then
             '        byStatus = "AND OrderHeaders.Status='" & status & "'"
@@ -749,7 +750,7 @@ Partial Class Order_Default
             '        byRole = "AND Customers.Operator='" & Session("LoginId") & "'"
             '    End If
             '    byStatus = String.Empty
-            '    byOrder = "ORDER BY CASE WHEN OrderHeaders.Status='New Order' THEN 1 WHEN OrderHeaders.Status='In Production' THEN 2 WHEN OrderHeaders.Status='On Hold' THEN 3 ELSE 4 END, OrderHeaders.Id ASC"
+            '    byOrder = "ORDER BY CASE WHEN OrderHeaders.Status='New Order' THEN 1 WHEN OrderHeaders.Status='In Production' THEN 2 WHEN OrderHeaders.Status='On Hold' THEN 3 ELSE 4 END, OrderHeaders.SubmittedDate ASC"
             '    If Not status = "" Then
             '        byStatus = "AND OrderHeaders.Status='" & status & "'"
             '        byOrder = "ORDER BY OrderHeaders.Id DESC"
@@ -759,7 +760,7 @@ Partial Class Order_Default
             'If Session("RoleName") = "Account" Then
             '    byRole = "AND Customers.CompanyId='" & Session("CompanyId") & "'"
             '    byStatus = String.Empty
-            '    byOrder = "ORDER BY CASE WHEN OrderHeaders.Status='Waiting Proforma' THEN 1 WHEN OrderHeaders.Status='Proforma Sent' THEN 2 WHEN OrderHeaders.Status='New Order' THEN 3 ELSE 4 END, OrderHeaders.Id ASC"
+            '    byOrder = "ORDER BY CASE WHEN OrderHeaders.Status='Waiting Proforma' THEN 1 WHEN OrderHeaders.Status='Proforma Sent' THEN 2 WHEN OrderHeaders.Status='New Order' THEN 3 ELSE 4 END, OrderHeaders.SubmittedDate ASC"
             '    If Not status = "" Then
             '        byStatus = "AND OrderHeaders.Status='" & status & "'"
             '        byOrder = "ORDER BY OrderHeaders.Id ASC"
@@ -806,24 +807,26 @@ Partial Class Order_Default
 
             'Dim thisQuery As String = String.Format("SELECT OrderHeaders.*, OrderShipments.ShipmentNumber, OrderShipments.ShipmentDate, OrderShipments.ContainerNumber, OrderShipments.Courier, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, Companys.Name AS CompanyName, CustomerLogins.RoleId AS CreatedRole FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id LEFT JOIN Companys ON Customers.CompanyId=Companys.Id LEFT JOIN OrderShipments ON OrderHeaders.Id=OrderShipments.Id LEFT JOIN CustomerLogins ON OrderHeaders.CreatedBy=CustomerLogins.Id LEFT JOIN CustomerLoginRoles ON CustomerLogins.RoleId=CustomerLoginRoles.Id {0} {1} {2} {3} {4} {5} {6}", byActive, byRole, byCompany, byInstaller, byStatus, byText, byOrder)
 
-            'gvList.DataSource = orderClass.GetDataTable_Orders(thisQuery)
+            'gvList.DataSource = orderClass.GetDataTable(thisQuery)
             'gvList.DataBind()
 
-            Dim thisCmd As New SqlCommand("sp_GetOrders")
-            thisCmd.CommandType = CommandType.StoredProcedure
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@Search", search),
+                New SqlParameter("@Status", status),
+                New SqlParameter("@Company", company),
+                New SqlParameter("@Active", active),
+                New SqlParameter("@RoleName", Session("RoleName").ToString()),
+                New SqlParameter("@LevelName", Session("LevelName").ToString()),
+                New SqlParameter("@CustomerLevel", Session("CustomerLevel").ToString()),
+                New SqlParameter("@CustomerId", Session("CustomerId").ToString()),
+                New SqlParameter("@LoginId", Session("LoginId").ToString()),
+                New SqlParameter("@CompanyId", Session("CompanyId").ToString()),
+                New SqlParameter("@RoleId", Session("RoleId").ToString())
+            }
 
-            thisCmd.Parameters.AddWithValue("@Search", search)
-            thisCmd.Parameters.AddWithValue("@Status", status)
-            thisCmd.Parameters.AddWithValue("@Company", company)
-            thisCmd.Parameters.AddWithValue("@Active", active)
-            thisCmd.Parameters.AddWithValue("@RoleName", Session("RoleName"))
-            thisCmd.Parameters.AddWithValue("@CustomerId", Session("CustomerId"))
-            thisCmd.Parameters.AddWithValue("@LoginId", Session("LoginId"))
-            thisCmd.Parameters.AddWithValue("@LevelName", Session("LevelName"))
-            thisCmd.Parameters.AddWithValue("@CustomerLevel", Session("CustomerLevel"))
-            thisCmd.Parameters.AddWithValue("@CompanyId", Session("CompanyId"))
+            Dim thisData As DataTable = orderClass.GetDataTableSP("sp_OrderList", params)
 
-            gvList.DataSource = orderClass.GetDataTable_Orders(thisCmd)
+            gvList.DataSource = thisData
             gvList.DataBind()
 
             gvList.Columns(1).Visible = PageAction("Visible ID")

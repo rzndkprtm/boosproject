@@ -241,13 +241,14 @@ Partial Class Setting_Customer_Detail
 
     Protected Sub BindData(customerId As String)
         Try
-            Dim thisQuery As String = "SELECT Customers.*, Companys.Name AS CompanyName, CompanyDetails.Name AS CompanyDetailName, CustomerLogins.FullName AS OperatorName, CASE WHEN Customers.OnStop=1 THEN 'Yes' WHEN Customers.OnStop=0 THEN 'No' ELSE 'Error' END AS CustOnStop, CASE WHEN Customers.CashSale=1 THEN 'Yes' WHEN Customers.CashSale=0 THEN 'No' ELSE 'Error' END AS CustCashSale, CASE WHEN Customers.Newsletter=1 THEN 'Yes' WHEN Customers.Newsletter=0 THEN 'No' ELSE 'Error' END AS CustNewsletter, CASE WHEN Customers.MinSurcharge=1 THEN 'Yes' WHEN Customers.MinSurcharge=0 THEN 'No' ELSE 'Error' END AS CustMinSurcharge, CASE WHEN Customers.Active=1 THEN 'Yes' WHEN Customers.Active=0 THEN 'No' ELSE 'Error' END AS CustActive FROM Customers LEFT JOIN Companys ON Customers.CompanyId=Companys.Id LEFT JOIN CompanyDetails ON Customers.CompanyDetailId=CompanyDetails.Id LEFT JOIN CustomerLogins ON Customers.Operator=CustomerLogins.Id WHERE Customers.Id='" & customerId & "'"
-
-            If Session("RoleName") = "Sales" OrElse Session("RoleName") = "Account" OrElse Session("RoleName") = "Customer Service" Then
-                thisQuery = "SELECT Customers.*, Companys.Name AS CompanyName, CompanyDetails.Name AS CompanyDetailName, CustomerLogins.FullName AS OperatorName, CASE WHEN Customers.OnStop=1 THEN 'Yes' WHEN Customers.OnStop=0 THEN 'No' ELSE 'Error' END AS CustOnStop, CASE WHEN Customers.CashSale=1 THEN 'Yes' WHEN Customers.CashSale=0 THEN 'No' ELSE 'Error' END AS CustCashSale, CASE WHEN Customers.Newsletter=1 THEN 'Yes' WHEN Customers.Newsletter=0 THEN 'No' ELSE 'Error' END AS CustNewsletter, CASE WHEN Customers.MinSurcharge=1 THEN 'Yes' WHEN Customers.MinSurcharge=0 THEN 'No' ELSE 'Error' END AS CustMinSurcharge, CASE WHEN Customers.Active=1 THEN 'Yes' WHEN Customers.Active=0 THEN 'No' ELSE 'Error' END AS CustActive FROM Customers LEFT JOIN Companys ON Customers.CompanyId=Companys.Id LEFT JOIN CompanyDetails ON Customers.CompanyDetailId=CompanyDetails.Id LEFT JOIN CustomerLogins ON Customers.Operator=CustomerLogins.Id WHERE Customers.Id='" & customerId & "' AND Customers.CompanyId='" & Session("CompanyId") & "'"
-            End If
-
-            Dim thisData As DataRow = settingClass.GetDataRow(thisQuery)
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@CustomerId", customerId),
+                New SqlParameter("@RoleName", Session("RoleName").ToString()),
+                New SqlParameter("@CompanyId", Session("CompanyId")),
+                New SqlParameter("@LoginId", Session("LoginId")),
+                New SqlParameter("@LevelName", Session("LevelName"))
+            }
+            Dim thisData As DataRow = settingClass.GetDataRowSP("sp_CustomerDetail", params)
 
             If thisData Is Nothing Then
                 Response.Redirect("~/setting/customer", False)

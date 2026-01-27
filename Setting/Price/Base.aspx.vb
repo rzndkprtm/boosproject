@@ -279,29 +279,17 @@ Partial Class Setting_Price_Base
         Session("PriceBasePriceGroup") = String.Empty
         Session("PriceBaseSearch") = String.Empty
         Try
-            Dim conditions As New List(Of String)
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@Category", If(String.IsNullOrEmpty(category), CType(DBNull.Value, Object), category)),
+                New SqlParameter("@PriceGroupId", If(String.IsNullOrEmpty(priceGroup), CType(DBNull.Value, Object), priceGroup)),
+                New SqlParameter("@Search", If(String.IsNullOrEmpty(search), CType(DBNull.Value, Object), search))
+            }
 
-            If Not String.IsNullOrEmpty(category) Then
-                conditions.Add("PriceBases.Category = '" & category & "'")
-            End If
+            Dim thisData As DataTable = settingClass.GetDataTableSP("sp_PriceBaseList", params)
 
-            If Not String.IsNullOrEmpty(priceGroup) Then
-                conditions.Add("PriceBases.PriceGroupId = '" & priceGroup & "'")
-            End If
-
-            If Not String.IsNullOrEmpty(search) Then
-                conditions.Add("PriceProductGroups.Name LIKE '%" & search & "%'")
-            End If
-
-            Dim whereClause As String = String.Empty
-            If conditions.Count > 0 Then
-                whereClause = "WHERE " & String.Join(" AND ", conditions)
-            End If
-
-            Dim sql As String = String.Format("SELECT PriceBases.*, PriceProductGroups.Name AS ProductGroupName, PriceGroups.Name AS PriceGroupName FROM PriceBases LEFT JOIN PriceProductGroups ON PriceBases.ProductGroupId = PriceProductGroups.Id LEFT JOIN PriceGroups ON PriceBases.PriceGroupId = PriceGroups.Id {0} ORDER BY PriceProductGroups.Name, PriceGroups.Name, PriceBases.Height, PriceBases.Width ASC", whereClause)
-
-            gvList.DataSource = settingClass.GetDataTable(sql)
+            gvList.DataSource = thisData
             gvList.DataBind()
+
             gvList.Columns(1).Visible = PageAction("Visible ID")
             gvList.Columns(2).Visible = PageAction("Visible Category")
 

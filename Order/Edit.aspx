@@ -23,7 +23,7 @@
 
     <div class="page-content">
         <section class="row">
-            <div class="col-lg-7 col-md-12 col-sm-12">
+            <div class="col-12 col-sm-12 col-lg-7">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title">Edit Form</h4>

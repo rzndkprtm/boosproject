@@ -82,7 +82,7 @@ Partial Class Order_Add
                 End If
 
                 If txtOrderName.Text = "" Then
-                    MessageError(True, "CUSTOMER NAME IS REQUIRED !")
+                    MessageError(True, "ORDER NAME IS REQUIRED !")
                     Exit Sub
                 End If
 

@@ -1,0 +1,10 @@
+﻿let designIdOri = "21";
+let itemAction;
+let headerId;
+let itemId;
+let designId;
+let company;
+let companyDetail;
+let loginId;
+let roleAccess;
+let priceAccess;

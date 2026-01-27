@@ -55,7 +55,7 @@ Partial Class Sales_Product
 
     Protected Sub BindData()
         Try
-            Dim myCmd As New SqlCommand("Rpt_ProductionSummaryBlindsPivot_ByArea")
+            Dim myCmd As New SqlCommand("sp_ProductionSummaryBlindsPivot_ByArea")
             myCmd.CommandType = CommandType.StoredProcedure
 
             Dim area As String = String.Empty

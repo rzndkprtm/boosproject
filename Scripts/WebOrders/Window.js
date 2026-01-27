@@ -1,4 +1,4 @@
-﻿let designIdOri = "10";
+﻿let designIdOri = "20";
 let itemAction;
 let headerId;
 let itemId;
@@ -9,7 +9,7 @@ let loginId;
 let roleAccess;
 let priceAccess;
 
-initVenetian();
+initWindow();
 
 $("#submit").on("click", process);
 $("#cancel").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
@@ -17,54 +17,13 @@ $("#vieworder").on("click", () => window.location.href = `/order/detail?orderid=
 
 $("#blindtype").on("change", function () {
     bindMounting($(this).val());
+    bindMeshType($(this).val());
+    bindFrameColour($(this).val());
     bindColourType($(this).val());
-    bindValanceType($(this).val());
-    bindValancePosition($(this).val());
 });
 
 $("#colourtype").on("change", function () {
-    const blindtype = document.getElementById("blindtype").value;
-    bindSubType(blindtype, $(this).val());
-});
-
-$("#subtype").on("change", function () {
-    const blindtype = document.getElementById("blindtype").value;
-    const drop = document.getElementById("drop").value;
-
-    bindComponentForm(blindtype, $(this).val());
-
-    otomatisDrop($(this).val(), 1, drop);
-
-    document.getElementById("controllength").value = "";
-    document.getElementById("controllengthb").value = "";
-    document.getElementById("valancesize").value = "";
-    document.getElementById("returnlength").value = "";
-});
-
-$("#drop").on("input", function () {
-    const subtype = document.getElementById("subtype").value;
-    otomatisDrop(subtype, 1, $(this).val());
-});
-
-$("#dropb").on("input", function () {
-    const subtype = document.getElementById("subtype").value;
-    otomatisDrop(subtype, 2, $(this).val());
-});
-
-$("#controllength").on("change", function () {
-    visibleCustom("CordLength", $(this).val(), "1");
-});
-
-$("#controllengthb").on("change", function () {
-    visibleCustom("CordLength", $(this).val(), "2");
-});
-
-$("#valancesize").on("change", function () {
-    visibleCustom("ValanceSize", $(this).val(), "");
-});
-
-$("#returnlength").on("change", function () {
-    visibleCustom("ValanceLength", $(this).val(), "");
+    bindComponentForm($(this).val());
 });
 
 function loader(itemAction) {
@@ -211,12 +170,12 @@ function getPriceAccess(loginId) {
     });
 }
 
-function getDesignName(designType) {
+function getDesignName(designId) {
     return new Promise((resolve, reject) => {
         const cardTitle = document.getElementById("cardtitle");
         cardTitle.textContent = "";
 
-        if (!designType) {
+        if (!designId) {
             resolve();
             return;
         }
@@ -225,7 +184,7 @@ function getDesignName(designType) {
         $.ajax({
             type: "POST",
             url: "Method.aspx/StringData",
-            data: JSON.stringify({ type: type, dataId: designType }),
+            data: JSON.stringify({ type: type, dataId: designId }),
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (response) {
@@ -241,7 +200,7 @@ function getDesignName(designType) {
 }
 
 function getBlindName(blindType) {
-    if (!blindType) return;
+    if (!blindType) return Promise.resolve(null);;
 
     const type = "BlindName";
     return new Promise((resolve, reject) => {
@@ -270,12 +229,11 @@ function getFormAction(itemAction) {
         }
 
         const actionMap = {
-            create: "Add Item",
-            edit: "Edit Item",
-            view: "View Item",
-            copy: "Copy Item"
+            create: "Add Item", edit: "Edit Item",
+            view: "View Item", copy: "Copy Item"
         };
-        pageAction.innerText = actionMap[itemAction];
+
+        pageAction.innerText = actionMap[itemAction] || "";
         resolve();
     });
 }
@@ -289,15 +247,15 @@ function bindBlindType(designType) {
             const selectedValue = blindtype.value || "";
             Promise.all([
                 bindMounting(selectedValue),
-                bindColourType(selectedValue),
-                bindValanceType(selectedValue),
-                bindValancePosition(selectedValue)
+                bindMeshType(selectedValue),
+                bindFrameColour(selectedValue),
+                bindColourType(selectedValue)
             ]).then(resolve).catch(reject);
-
             return;
         }
 
         const listData = { type: "BlindType", companydetail: companyDetail, designtype: designType };
+
         $.ajax({
             type: "POST",
             url: "Method.aspx/ListData",
@@ -329,17 +287,17 @@ function bindBlindType(designType) {
                     const selectedValue = blindtype.value || "";
                     Promise.all([
                         bindMounting(selectedValue),
-                        bindColourType(selectedValue),
-                        bindValanceType(selectedValue),
-                        bindValancePosition(selectedValue)
+                        bindMeshType(selectedValue),
+                        bindFrameColour(selectedValue),
+                        bindColourType(selectedValue)
                     ]).then(resolve).catch(reject);
                 } else {
                     const selectedValue = blindtype.value || "";
                     Promise.all([
                         bindMounting(selectedValue),
-                        bindColourType(selectedValue),
-                        bindValanceType(selectedValue),
-                        bindValancePosition(selectedValue)
+                        bindMeshType(selectedValue),
+                        bindFrameColour(selectedValue),
+                        bindColourType(selectedValue)
                     ]).then(resolve).catch(reject);
                 }
             },
@@ -350,20 +308,21 @@ function bindBlindType(designType) {
     });
 }
 
-function bindColourType(blindtype) {
+function bindColourType(blindType) {
     return new Promise((resolve, reject) => {
         const colourtype = document.getElementById("colourtype");
         colourtype.innerHTML = "";
 
-        if (!blindtype) {
+        if (!blindType) {
             const selectedValue = colourtype.value || "";
             Promise.all([
-                bindSubType(blindtype, selectedValue)
+                bindComponentForm(blindType, selectedValue)
             ]).then(resolve).catch(reject);
             return;
         }
 
-        const listData = { type: "ColourType", blindtype: blindtype, companydetail: companyDetail, tubetype: "0", controltype: "0" };
+        const listData = { type: "ColourType", blindtype: blindType, companydetail: companyDetail, tubetype: "0", controltype: "0" };
+
         $.ajax({
             type: "POST",
             url: "Method.aspx/ListData",
@@ -388,79 +347,25 @@ function bindColourType(blindtype) {
                         colourtype.add(option);
                     });
 
+
                     if (response.d.length === 1) {
                         colourtype.selectedIndex = 0;
                     }
 
                     const selectedValue = colourtype.value || "";
                     Promise.all([
-                        bindSubType(blindtype, selectedValue)
+                        bindComponentForm(blindType, selectedValue)
                     ]).then(resolve).catch(reject);
                 } else {
                     const selectedValue = colourtype.value || "";
                     Promise.all([
-                        bindSubType(blindtype, selectedValue)
+                        bindComponentForm(blindType, selectedValue)
                     ]).then(resolve).catch(reject);
                 }
             },
             error: function (error) {
                 reject(error);
             }
-        });
-    });
-}
-
-function bindSubType(blindType, colourType) {
-    return new Promise((resolve, reject) => {
-        const subtype = document.getElementById("subtype");
-        subtype.innerHTML = "";
-
-        if (!blindType || !colourType) {
-            const selectedValue = subtype.value || "";
-            Promise.all([
-                bindComponentForm(blindType, selectedValue)
-            ]).then(resolve).catch(reject);
-            return;
-        }
-
-        let options = [{ value: "", text: "" }];
-
-        getBlindName(blindType).then(blindName => {
-            if (blindName === "Basswood 50mm" || blindName === "Basswood 63mm" || blindName === "Econo 50mm" || blindName === "Econo 63mm" || blindName === "Ultraslat 50mm" || blindName === "Ultraslat 63mm") {
-                options = [
-                    { value: "", text: "" },
-                    { value: "Single", text: "Single Venetian" },
-                    { value: "2 on 1 Left-Left", text: "2 on 1 Venetian (Left-Left)" },
-                    { value: "2 on 1 Right-Right", text: "2 on 1 Venetian (Right-Right)" },
-                    { value: "2 on 1 Left-Right", text: "2 on 1 Venetian (Left-Right)" },
-                    { value: "3 on 1 Left-Left-Right", text: "3 on 1 Venetian (Left-Left-Right)" },
-                    { value: "3 on 1 Left-Right-Right", text: "3 on 1 Venetian (Left-Right-Right)" },
-                ];
-            } else if (blindName === "Econo 50mm (Cordless)") {
-                options = [
-                    { value: "Single", text: "Single Venetian" },
-                ];
-            }
-
-            const fragment = document.createDocumentFragment();
-            options.forEach(opt => {
-                const optionElement = document.createElement("option");
-                optionElement.value = opt.value;
-                optionElement.textContent = opt.text;
-                fragment.appendChild(optionElement);
-            });
-            subtype.appendChild(fragment);
-
-            if (subtype.options.length === 1) {
-                subtype.selectedIndex = 0;
-            }
-
-            const selectedValue = subtype.value || "";
-            Promise.all([
-                bindComponentForm(blindType, selectedValue)
-            ]).then(resolve).catch(reject);
-        }).catch(error => {
-            reject(error);
         });
     });
 }
@@ -513,113 +418,111 @@ function bindMounting(blindType) {
     });
 }
 
-function bindValanceType(blindType) {
+function bindMeshType(blindType) {
     return new Promise((resolve, reject) => {
+        const meshtype = document.getElementById("meshtype");
+        meshtype.innerHTML = "";
+
         if (!blindType) {
             resolve();
             return;
         }
 
-        const valancetype = document.getElementById("valancetype");
-        valancetype.innerHTML = "";
+        const listData = { type: "MeshWindow", blindtype: blindType };
 
-        if (!blindType) return;
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/ListData",
+            data: JSON.stringify({ data: listData }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (Array.isArray(response.d)) {
+                    meshtype.innerHTML = "";
 
-        let options = [{ value: "", text: "" }];
+                    if (response.d.length > 1) {
+                        const defaultOption = document.createElement("option");
+                        defaultOption.text = "";
+                        defaultOption.value = "";
+                        meshtype.add(defaultOption);
+                    }
 
-        getBlindName(blindType).then(blindName => {
-            if (blindName === "Basswood 50mm" || blindName === "Basswood 63mm") {
-                options = [
-                    { value: "", text: "" },
-                    { value: "75mm Valance", text: "75mm" },
-                    { value: "89mm Valance", text: "89mm" },
-                ];
-            } else if (blindName === "Econo 50mm" || blindName === "Econo 63mm" || blindName === "Ultraslat 50mm" || blindName === "Ultraslat 63mm") {
-                options = [
-                    { value: "", text: "" },
-                    { value: "76mm Valance", text: "76mm" },
-                ];
-            } else if (blindName === "Econo 50mm (Cordless)") {
-                options = [
-                    { value: "", text: "" },
-                    { value: "Standard", text: "Standard" }
-                ];
+                    response.d.forEach(function (item) {
+                        const option = document.createElement("option");
+                        option.value = item.Value;
+                        option.text = item.Text;
+                        meshtype.add(option);
+                    });
+
+                    if (response.d.length === 1) {
+                        meshtype.selectedIndex = 0;
+                    }
+                }
+                resolve();
+            },
+            error: function (error) {
+                reject(error);
             }
-
-            const fragment = document.createDocumentFragment();
-            options.forEach(opt => {
-                const optionElement = document.createElement("option");
-                optionElement.value = opt.value;
-                optionElement.textContent = opt.text;
-                fragment.appendChild(optionElement);
-            });
-            valancetype.appendChild(fragment);
-            resolve();
-        }).catch(error => {
-            reject(error);
         });
     });
 }
 
-function bindValancePosition(blindType) {
+function bindFrameColour(blindType) {
     return new Promise((resolve, reject) => {
+        const framecolour = document.getElementById("framecolour");
+        framecolour.innerHTML = "";
+
         if (!blindType) {
             resolve();
             return;
         }
 
-        const returnposition = document.getElementById("returnposition");
-        returnposition.innerHTML = "";
+        const listData = { type: "FrameColourWindow", blindtype: blindType };
 
-        if (!blindType) return;
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/ListData",
+            data: JSON.stringify({ data: listData }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (Array.isArray(response.d)) {
+                    framecolour.innerHTML = "";
 
-        getBlindName(blindType).then(blindName => {
-            let options = [
-                { value: "", text: "" },
-                { value: "Left", text: "Left" },
-                { value: "Right", text: "Right" },
-                { value: "Both Sides", text: "Both Sides" }
-            ];
+                    if (response.d.length > 1) {
+                        const defaultOption = document.createElement("option");
+                        defaultOption.text = "";
+                        defaultOption.value = "";
+                        framecolour.add(defaultOption);
+                    }
 
-            if (blindName === "Econo 50mm (Cordless)") {
-                options = options = [
-                    { value: "", text: "" },
-                    { value: "Left", text: "Left" },
-                    { value: "Right", text: "Right" }
-                ];
+                    response.d.forEach(function (item) {
+                        const option = document.createElement("option");
+                        option.value = item.Value;
+                        option.text = item.Text;
+                        framecolour.add(option);
+                    });
+
+                    if (response.d.length === 1) {
+                        framecolour.selectedIndex = 0;
+                    }
+                }
+                resolve();
+            },
+            error: function (error) {
+                reject(error);
             }
-
-            const fragment = document.createDocumentFragment();
-            options.forEach(opt => {
-                const optionElement = document.createElement("option");
-                optionElement.value = opt.value;
-                optionElement.textContent = opt.text;
-                fragment.appendChild(optionElement);
-            });
-            returnposition.appendChild(fragment);
-
-            resolve();
-        }).catch(error => {
-            reject(error);
         });
     });
 }
 
-function bindComponentForm(blindType, subType) {
-    return new Promise((resolve, reject) => {
+function bindComponentForm(blindType, colourType) {
+    return new Promise((resolve) => {
         const detail = document.getElementById("divdetail");
         const markup = document.getElementById("divmarkup");
-
         const divsToHide = [
-            "divfirstblind", "divfirstend", "divsecondblind", "divsecondend",
-            "divtassel",
-            "divcontrolposition", "divtilterposition",
-            "divcordlength", "divcordlengthb",
-            "divcordlengthvalue", "divcordlengthvalueb",
-            "divsize", "divsizeb",
-            "divwandlength",
-            "divvalancesection",
-            "divvalancesizevalue", "divvalancelengthvalue"
+            "divbrace", "divporthole", "divplungerpin", "divswivelcolour", "divswivelqty", "divspringqty",
+            "divtopplasticqty"
         ].map(id => document.getElementById(id));
 
         const toggleDisplay = (el, show) => {
@@ -628,75 +531,37 @@ function bindComponentForm(blindType, subType) {
 
         toggleDisplay(detail, false);
         toggleDisplay(markup, false);
-
         divsToHide.forEach(el => toggleDisplay(el, false));
 
-        if (!blindType || !subType) {
-            return resolve();
-        }
+        if (!blindType || !colourType) return resolve();
 
         toggleDisplay(detail, true);
 
-        getBlindName(blindType).then(blindName => {
-            let divShow = [];
+        const divShow = [];
 
-            if (blindName === "Basswood 50mm" || blindName === "Basswood 63mm" || blindName === "Econo 50mm" || blindName === "Econo 63mm" || blindName === "Ultraslat 50mm" || blindName === "Ultraslat 63mm") {
-                divShow.push("divtassel", "divvalancesection");
-
-                if (subType === "Single") {
-                    divShow.push("divcontrolposition", "divtilterposition", "divsize", "divcordlength");
-                }
-                else if (subType === "2 on 1 Left-Left" || subType === "2 on 1 Right-Right") {
-                    divShow.push("divfirstblind", "divfirstend", "divsecondblind", "divsecondend", "divsize", "divsizeb", "divcordlength", "divcordlengthb");
-                }
-                else if (subType === "2 on 1 Left-Right") {
-                    divShow.push("divfirstblind", "divfirstend", "divsecondblind", "divsecondend", "divsize", "divsizeb", "divcordlength", "divcordlengthb");
-                }
-            } else if (blindName === "Econo 50mm (Cordless)") {
-                divShow.push("divsize", "divtilterposition", "divwandlength", "divvalancesection",);
+        getBlindName(blindType).then((blindName) => {
+            if (blindName === "Safety") {
+                divShow.push("divbrace");
+            } else if (blindName === "Standard") {
+                divShow.push("divbrace");
+            } else if (blindName === "Flyscreen") {
+                divShow.push("divbrace", "divporthole", "divplungerpin", "divswivelcolour", "divswivelqty", "divspringqty", "divtopplasticqty");
             }
 
-            divShow.forEach(id => toggleDisplay(document.getElementById(id), true));
+            divShow.forEach(id => {
+                const el = document.getElementById(id);
+                toggleDisplay(el, true);
+            });
 
             if (typeof priceAccess !== "undefined" && priceAccess) {
                 toggleDisplay(markup, true);
             }
 
             resolve();
-        }).catch(error => {
+
+        }).catch((error) => {
             reject(error);
         });
-    });
-}
-
-function visibleCustom(type, text, number) {
-    return new Promise((resolve) => {
-        if (!type) {
-            resolve();
-            return;
-        }
-
-        let thisDiv;
-
-        if (type === "ValanceSize") {
-            thisDiv = document.getElementById("divvalancesizevalue");
-        } else if (type === "ValanceLength") {
-            thisDiv = document.getElementById("divvalancelengthvalue");
-        } else if (type === "CordLength") {
-            if (number === "1") {
-                thisDiv = document.getElementById("divcordlengthvalue");
-            } else if (number === "2") {
-                thisDiv = document.getElementById("divcordlengthvalueb");
-            }
-        }
-
-        if (!thisDiv) {
-            return resolve();
-        }
-
-        thisDiv.style.display = (text === "Custom") ? "" : "none";
-
-        resolve();
     });
 }
 
@@ -737,12 +602,10 @@ function controlForm(status, isEditItem, isCopyItem) {
     document.getElementById("submit").style.display = status ? "none" : "";
 
     const inputs = [
-        "blindtype", "colourtype", "qty", "room", "mounting", "subtype",
-        "controlposition", "tilterposition",
-        "width", "drop", "widthb", "dropb",
-        "controllength", "controllengthvalue", "controllengthb", "controllengthvalueb",
-        "valancetype", "valancesize", "valancesizevalue", "returnposition", "returnlength", "returnlengthvalue", "wandlengthvalue",
-        "tassel", "supply", "notes", "markup"
+        "blindtype", "colourtype", "qty", "room", "mounting",
+        "meshtype", "framecolour", "brace", "angletype", "anglelength", "angleqty", "porthole", "plungerpin",
+        "swivelcolour", "swivelqty", "swivelqtyb", "springqty", "topplasticqty",
+        "notes", "markup"
     ];
 
     inputs.forEach(id => {
@@ -762,30 +625,25 @@ function controlForm(status, isEditItem, isCopyItem) {
 function setFormValues(itemData) {
     const mapping = {
         blindtype: "BlindType",
-        colourtype: "ProductId",
+        colourtype: "ColourType",
         qty: "Qty",
         room: "Room",
         mounting: "Mounting",
-        subtype: "SubType",
         width: "Width",
-        widthb: "WidthB",
         drop: "Drop",
-        dropb: "DropB",
-        controlposition: "ControlPosition",
-        tilterposition: "TilterPosition",
-        controllength: "ControlLength",
-        controllengthvalue: "ControlLengthValue",
-        controllengthb: "ControlLengthB",
-        controllengthvalueb: "ControlLengthValueB",
-        wandlengthvalue: "WandLengthValue",
-        valancetype: "ValanceType",
-        valancesize: "ValanceSize",
-        valancesizevalue: "ValanceSizeValue",
-        returnposition: "ReturnPosition",
-        returnlength: "ReturnLength",
-        returnlengthvalue: "ReturnLengthValue",
-        tassel: "Tassel",
-        supply: "Supply",
+        meshtype: "MeshType",
+        framecolour: "FrameColour",
+        brace: "Brace",
+        angletype: "AngleType",
+        anglelength: "AngleLength",
+        angleqty: "AngleQty",
+        porthole: "PortHole",
+        plungerpin: "PlungerPin",
+        swivelcolour: "SwivelColour",
+        swivelqty: "SwivelQty",
+        swivelqtyb: "SwivelQtyB",
+        springqty: "SpringQty",
+        topplasticqty: "TopPlasticQty",
         notes: "Notes",
         markup: "MarkUp"
     };
@@ -808,28 +666,14 @@ function setFormValues(itemData) {
     }
 }
 
-function fillSelect(selector, list, selected = null) {
-    const el = document.querySelector(selector);
-    el.innerHTML = "<option value=''></option>";
-    list.forEach(item => {
-        const opt = document.createElement("option");
-        opt.value = item.Value;
-        opt.textContent = item.Text;
-        if (selected != null && selected == item.Value) opt.selected = true;
-        el.appendChild(opt);
-    });
-}
-
 function process() {
     toggleButtonState(true, "Processing...");
 
     const fields = [
-        "blindtype", "colourtype", "qty", "room", "mounting", "subtype",
-        "controlposition", "tilterposition",
-        "width", "drop", "widthb", "dropb",
-        "controllength", "controllengthvalue", "controllengthb", "controllengthvalueb",
-        "valancetype", "valancesize", "valancesizevalue", "returnposition", "returnlength", "returnlengthvalue", "wandlengthvalue",
-        "tassel", "supply", "notes", "markup"
+        "blindtype", "colourtype", "qty", "room", "mounting", "width", "drop",
+        "meshtype", "framecolour", "brace", "angletype", "anglelength", "angleqty", "porthole", "plungerpin",
+        "swivelcolour", "swivelqty", "swivelqtyb", "springqty", "topplasticqty",
+        "notes", "markup"
     ];
 
     const formData = {
@@ -846,7 +690,7 @@ function process() {
 
     $.ajax({
         type: "POST",
-        url: "Method.aspx/VenetianProcess",
+        url: "Method.aspx/WindowProcess",
         data: JSON.stringify({ data: formData }),
         contentType: "application/json; charset=utf-8",
         dataType: "json",
@@ -868,7 +712,7 @@ function process() {
     });
 }
 
-async function initVenetian() {
+async function initWindow() {
     const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get("boos");
     if (!sessionId) return redirectOrder();
@@ -892,6 +736,8 @@ async function initVenetian() {
 
     if (!headerId) return redirectOrder();
 
+    updateLinkDetail(headerId);
+
     if (!itemAction || !designId || !loginId || designId !== designIdOri) {
         return window.location.href = `/order/detail?orderid=${headerId}`;
     }
@@ -907,7 +753,7 @@ async function initVenetian() {
     ]);
 
     if (itemAction === "create") {
-        bindComponentForm("", "");
+        bindComponentForm("");
         controlForm(false);
         bindBlindType(designId);
         loader(itemAction);
@@ -925,7 +771,7 @@ async function bindItemOrder(itemId, companyDetailId) {
     try {
         const response = await $.ajax({
             type: "POST",
-            url: "Method.aspx/VenetianDetail",
+            url: "Method.aspx/WindowDetail",
             data: JSON.stringify({ itemId, companyDetailId }),
             contentType: "application/json; charset=utf-8",
             dataType: "json"
@@ -936,118 +782,29 @@ async function bindItemOrder(itemId, companyDetailId) {
         fillSelect("#blindtype", data.BlindTypes);
         fillSelect("#colourtype", data.ColourTypes);
         fillSelect("#mounting", data.Mountings);
-
-        let manual = [
-            bindSubType(data.ItemData.BlindType, data.ItemData.ProductId),
-            bindValanceType(data.ItemData.BlindType),
-            bindValancePosition(data.ItemData.BlindType)
-        ];
-        await Promise.all(manual);
+        fillSelect("#meshtype", data.MeshTypes);
+        fillSelect("#framecolour", data.FrameColours);
 
         setFormValues(data.ItemData);
 
         document.getElementById("divloader").style.display = "none";
         document.getElementById("divorder").style.display = "";
 
-        bindComponentForm(data.ItemData.BlindType, data.ItemData.SubType);
-        visibleCustom("CordLength", data.ItemData.ControlLength, "1");
-        visibleCustom("CordLength", data.ItemData.ControlLengthB, "2");
-        visibleCustom("ValanceSize", data.ItemData.ValanceSize, "");
-        visibleCustom("ValanceLength", data.ItemData.ReturnLength, "");
+        bindComponentForm(data.ItemData.BlindType, data.ItemData.ProductId);
     } catch (error) {
         document.getElementById("divloader").style.display = "none";
     }
 }
 
-function otomatisDrop(subType, number, drop) {
-    return new Promise((resolve) => {
-        if (!subType || !number) return resolve();
-
-        if (subType === "2 on 1 Left-Left" || subType === "2 on 1 Left-Right" || subType === "2 on 1 Right-Right") {
-            if (number === 1) {
-                document.getElementById("dropb").value = drop;
-            } else if (number === 2) {
-                document.getElementById("drop").value = drop;
-            }
-        }
-        resolve();
-    });
-}
-
-function showInfo(type) {
-    let info;
-
-    if (type === "Cord Length") {
-        info = "<b>Cord Length Information</b>";
-        info += "<br /><br />";
-        info += "- Standard";
-        info += "<br />";
-        info += "Our standard pull cord length is 2/3 from your drop.";
-        info += "<br /><br />";
-        info += "- Custom";
-        info += "<br />";
-        info += "Minimum custom cord length is 450mm.";
-    } else if (type === "Valance Size") {
-        info = "<b>Valance Size Information</b>";
-        info += "<br /><br />";
-        info += "- Standard";
-        info += "<br />";
-        info += "";
-        info += "<br /><br />";
-        info += "- Custom";
-        info += "<br />";
-        info += "";
-    } else if (type === "Return Length") {
-        info = "<b>Valance Return Length Information</b>";
-        info += "<br /><br />";
-        info += "- Standard";
-        info += "<br />";
-        info += "";
-        info += "<br /><br />";
-        info += "- Custom";
-        info += "<br />";
-        info += "";
-    } else if (type === "Second Size") {
-        info = "<b>Drop Information</b>";
-    } else if (type === "First") {
-        let urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/2on1venetianleft-1.png";
-
-        const subType = document.getElementById("subtype").value;
-        if (subType === "2 on 1 Left-Left") {
-            urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/2on1venetianleft-1.png";
-        } else if (subType === "2 on 1 Right-Right") {
-            urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/2on1venetianright-1.png";
-        } else if (subType === "2 on 1 Left-Right") {
-            urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/2on1venetianleftright-1.png";
-        }
-
-        info = "<b>Layout Information</b>";
-        info += "<br /><br />";
-        info += `<img src="${urlImage}" alt="Sub Type Image" style="max-width:100%;height:auto;">`;
-        info += "<br /><br />";
-    } else if (type === "Second") {
-        let urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/2on1venetianleft-1.png";
-
-        const subType = document.getElementById("subtype").value;
-        if (subType === "2 on 1 Left-Left") {
-            urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/2on1venetianleft-2.png";
-        } else if (subType === "2 on 1 Right-Right") {
-            urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/2on1venetianright-2.png";
-        } else if (subType === "2 on 1 Left-Right") {
-            urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/2on1venetianleftright-2.png";
-        }
-
-        info = "<b>Layout Information</b>";
-        info += "<br /><br />";
-        info += `<img src="${urlImage}" alt="Sub Type Image" style="max-width:100%;height:auto;">`;
-        info += "<br /><br />";
-    }
-
-    document.getElementById("spanInfo").innerHTML = info;
-}
-
 function redirectOrder() {
     window.location.replace("/order");
+}
+
+function updateLinkDetail(myId) {
+    const link = document.getElementById("orderDetail");
+    if (!link || !headerId) return;
+
+    link.href = `/order/detail?orderid=${myId}`;
 }
 
 document.getElementById("modalSuccess").addEventListener("hide.bs.modal", function () {
@@ -1061,11 +818,6 @@ document.getElementById("modalError").addEventListener("hide.bs.modal", function
 });
 
 document.getElementById("modalInfo").addEventListener("hide.bs.modal", function () {
-    document.activeElement.blur();
-    document.body.focus();
-});
-
-document.getElementById("modalLayout").addEventListener("hide.bs.modal", function () {
     document.activeElement.blur();
     document.body.focus();
 });

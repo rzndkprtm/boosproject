@@ -1,4 +1,5 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data
+Imports System.Data.SqlClient
 
 Partial Class Setting_Customer_Default
     Inherits Page
@@ -134,44 +135,20 @@ Partial Class Setting_Customer_Default
         Session("SearchCustomer") = String.Empty
         Session("CompanyCustomer") = String.Empty
         Try
-            Dim activeString As String = "WHERE Customers.Active='" & ddlActive.SelectedValue & "'"
-            Dim searchString As String = String.Empty
-            Dim companyString As String = String.Empty
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@Active", ddlActive.SelectedValue),
+                New SqlParameter("@SearchText", If(String.IsNullOrEmpty(searchText), CType(DBNull.Value, Object), searchText)),
+                New SqlParameter("@CompanyText", If(String.IsNullOrEmpty(companyText), CType(DBNull.Value, Object), companyText)),
+                New SqlParameter("@RoleName", Session("RoleName").ToString()),
+                New SqlParameter("@CompanyId", Session("CompanyId")),
+                New SqlParameter("@LoginId", Session("LoginId")),
+                New SqlParameter("@CustomerId", Session("CustomerId")),
+                New SqlParameter("@LevelName", Session("LevelName"))
+            }
 
-            Dim roleString As String = String.Empty
-            Dim orderString As String = "ORDER BY Customers.Name ASC"
+            Dim thisData As DataTable = settingClass.GetDataTableSP("sp_CustomerList", params)
 
-            If Not searchText = "" Then
-                searchString = "AND (Customers.Id LIKE '%" & searchText.Trim() & "%' OR Customers.DebtorCode LIKE '%" & searchText.Trim() & "%' OR Customers.Name LIKE '%" & searchText.Trim() & "%' OR Customers.Area LIKE '%" & searchText.Trim() & "%' OR Companys.Alias LIKE '%" & searchText.Trim() & "%')"
-            End If
-
-            If Not String.IsNullOrEmpty(companyText) Then
-                companyString = "AND Customers.CompanyId='" & companyText & "'"
-            End If
-
-            If Session("RoleName") = "Sales" Then
-                roleString = "AND Customers.CompanyId='" & Session("CompanyId").ToString() & "'"
-                If Session("LevelName") = "Member" Then
-                    roleString = "AND (Customers.Operator='" & Session("LoginId").ToString() & "' OR Customers.Id='" & Session("CustomerId") & "')"
-                End If
-                orderString = "ORDER BY CASE WHEN Customers.Id='3' THEN 0 ELSE 1 END ASC, Customers.Name ASC"
-            End If
-
-            If Session("RoleName") = "Account" Then
-                roleString = "AND Customers.CompanyId='" & Session("CompanyId").ToString() & "'"
-            End If
-
-            If Session("RoleName") = "Customer Service" Then
-                roleString = "AND Customers.CompanyId='" & Session("CompanyId").ToString() & "'"
-            End If
-
-            If Session("RoleName") = "Data Entry" Then
-                roleString = "AND Customers.CompanyId<>'" & Session("CompanyId").ToString() & "'"
-            End If
-
-            Dim thisQuery As String = String.Format("SELECT Customers.*, CustomerLogins.FullName AS OperatorName, CASE WHEN Customers.CashSale=1 THEN 'Yes' WHEN Customers.CashSale=0 THEN 'No' ELSE 'Error' END AS CustomerCashSale, CASE WHEN Customers.OnStop=1 THEN 'Yes' WHEN Customers.OnStop=0 THEN 'No' ELSE 'Error' END AS CustomerOnStop, CASE WHEN Customers.MinSurcharge=1 THEN 'Yes' WHEN Customers.MinSurcharge=0 THEN 'No' ELSE 'Error' END AS CustomerMinSurcharge, CASE WHEN Customers.Active=1 THEN 'Yes' WHEN Customers.Active=0 THEN 'No' ELSE 'Error' END AS DataActive, Companys.Alias AS CompanyAlias, CompanyDetails.Name AS CompanyDetailName FROM Customers LEFT JOIN Companys ON Customers.CompanyId=Companys.Id LEFT JOIN CompanyDetails ON Customers.CompanyDetailId=CompanyDetails.Id LEFT JOIN CustomerLogins ON Customers.Operator=CustomerLogins.Id {0} {1} {2} {3} {4}", activeString, companyString, roleString, searchString, orderString)
-
-            gvList.DataSource = settingClass.GetDataTable(thisQuery)
+            gvList.DataSource = thisData
             gvList.DataBind()
 
             gvList.Columns(1).Visible = PageAction("Visible ID") ' ID
