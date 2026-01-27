@@ -289,6 +289,9 @@
                 If blindName = "Track Only" Then
                     kitId = String.Empty
                 End If
+                If blindName = "Fabric Only" Then
+                    kitId = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "'")
+                End If
                 Dim kitIdB As String = String.Empty
 
                 If blindName = "Double Curtain & Track" Then kitIdB = kitId
