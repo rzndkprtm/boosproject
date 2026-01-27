@@ -62,7 +62,7 @@ Partial Class Order_Edit
             End If
 
             If txtOrderName.Text = "" Then
-                MessageError(True, "CUSTOMER NAME IS REQUIRED !")
+                MessageError(True, "ORDER NAME IS REQUIRED !")
                 txtOrderName.BackColor = Drawing.Color.Red
                 txtOrderName.Focus()
                 Exit Sub
@@ -100,45 +100,6 @@ Partial Class Order_Edit
                         myCmd.ExecuteNonQuery()
                     End Using
                 End Using
-
-                Dim companyDetailName As String = orderClass.GetCompanyDetailNameByCustomer(ddlCustomer.SelectedValue)
-                If ddlOrderType.SelectedValue = "Builder" Then
-                    Dim checkBuilder As Integer = orderClass.GetItemData_Integer("SELECT COUNT(*) FROM OrderBuilders WHERE Id='" & lblHeaderId.Text & "'")
-                    If checkBuilder = 0 Then
-                        Using thisConn As New SqlConnection(myConn)
-                            Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderBuilders(Id) VALUES (@Id)", thisConn)
-                                myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
-
-                                thisConn.Open()
-                                myCmd.ExecuteNonQuery()
-                            End Using
-                        End Using
-
-                        Dim directoryOrder As String = Server.MapPath(String.Format("~/File/Builder/{0}/", lblHeaderId.Text))
-                        If Not IO.Directory.Exists(directoryOrder) Then
-                            IO.Directory.CreateDirectory(directoryOrder)
-                        End If
-                    End If
-                End If
-
-                If ddlOrderType.SelectedValue = "Regular" Then
-                    Dim checkBuilder As Integer = orderClass.GetItemData_Integer("SELECT COUNT(*) FROM OrderBuilders WHERE Id='" & lblHeaderId.Text & "'")
-                    If checkBuilder > 0 Then
-                        Using thisConn As New SqlConnection(myConn)
-                            Using myCmd As SqlCommand = New SqlCommand("DELETE FROM OrderBuilders WHERE Id=@Id", thisConn)
-                                myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
-
-                                thisConn.Open()
-                                myCmd.ExecuteNonQuery()
-                            End Using
-                        End Using
-
-                        Dim directoryOrder As String = Server.MapPath(String.Format("~/File/Builder/{0}/", lblHeaderId.Text))
-                        If System.IO.Directory.Exists(directoryOrder) Then
-                            System.IO.Directory.Delete(directoryOrder, True)
-                        End If
-                    End If
-                End If
 
                 Dim dataLog As Object() = {"OrderHeaders", lblHeaderId.Text, Session("LoginId").ToString(), "Order Updated"}
                 orderClass.Logs(dataLog)

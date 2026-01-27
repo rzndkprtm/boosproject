@@ -958,8 +958,6 @@ Public Class MailingClass
         smtpClient.Send(myMail)
     End Sub
 
-    'SAMPAI SINI
-
     Public Sub SubmitOrder_PrintingFabric(headerId As String, orderFile As String, zipFile As String)
         If String.IsNullOrEmpty(headerId) OrElse String.IsNullOrEmpty(zipFile) Then Exit Sub
 
@@ -1366,7 +1364,6 @@ Public Class MailingClass
                 Next
                 Dim arrTicketId() As String = dataTicketId.ToArray()
             End If
-
         Catch ex As Exception
         End Try
     End Sub

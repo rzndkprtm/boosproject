@@ -79,7 +79,7 @@ Partial Class Report
                             whereCompanyDetail = " AND c.CompanyDetailId=@CompanyDetailId "
                         End If
 
-                        Dim myCmd As New SqlCommand("Rpt_ProductionSummaryBlindsPivot")
+                        Dim myCmd As New SqlCommand("sp_ProductionSummaryBlindsPivot")
                         myCmd.CommandType = CommandType.StoredProcedure
 
                         myCmd.Parameters.AddWithValue("@StartDate", DateTime.Parse(txtStartDate.Text))

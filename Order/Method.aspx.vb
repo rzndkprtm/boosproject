@@ -210,6 +210,250 @@ Partial Class Order_Method
             End If
         End If
 
+        If type = "CurtainTrackType" Then
+            If Not String.IsNullOrEmpty(customtype) Then
+                result.Add(New With {.Value = "Styletrack", .Text = "Styletrack"})
+                result.Add(New With {.Value = "Commercial", .Text = "Commercial"})
+
+                If customtype = "S-Wave" Then
+                    result.Clear()
+                    result.Add(New With {.Value = "Commercial", .Text = "Commercial"})
+                End If
+
+            End If
+        End If
+
+        If type = "CurtainTrackColour" Then
+            If Not String.IsNullOrEmpty(customtype) Then
+                result.Add(New With {.Value = "Black", .Text = "Black"})
+                result.Add(New With {.Value = "Birch White", .Text = "Birch White"})
+                result.Add(New With {.Value = "Matt Satin", .Text = "Matt Satin"})
+                result.Add(New With {.Value = "White", .Text = "White"})
+            End If
+        End If
+
+        If type = "LayoutCodePG" Then
+            If Not String.IsNullOrEmpty(customtype) Then
+                result.Add(New With {.Value = "A", .Text = "A"})
+                result.Add(New With {.Value = "B", .Text = "B"})
+                result.Add(New With {.Value = "C", .Text = "C"})
+                result.Add(New With {.Value = "D", .Text = "D"})
+                result.Add(New With {.Value = "E", .Text = "E"})
+                result.Add(New With {.Value = "F", .Text = "F"})
+                result.Add(New With {.Value = "S", .Text = "S"})
+                If customtype = "2" Then
+                    result.Clear()
+                    result.Add(New With {.Value = "A", .Text = "A"})
+                    result.Add(New With {.Value = "B", .Text = "B"})
+                    result.Add(New With {.Value = "C", .Text = "C"})
+                    result.Add(New With {.Value = "D", .Text = "D"})
+                    result.Add(New With {.Value = "S", .Text = "S"})
+                End If
+            End If
+        End If
+
+        If type = "LayoutCodeDoor" Then
+            Dim tubeName As String = orderClass.GetTubeName(tubetype)
+            If tubeName = "Hinged Single" Then
+                result.Add(New With {.Value = "L", .Text = "L"})
+                result.Add(New With {.Value = "R", .Text = "R"})
+            End If
+            If tubeName = "Hinged Double" Then
+                result.Add(New With {.Value = "L-RA", .Text = "L-RA"})
+                result.Add(New With {.Value = "AL-R", .Text = "AL-R"})
+            End If
+            If tubeName = "Sliding Single" Then
+                result.Add(New With {.Value = "AL", .Text = "AL"})
+                result.Add(New With {.Value = "RA", .Text = "RA"})
+            End If
+            If tubeName = "Sliding Double" Then
+                result.Add(New With {.Value = "AL", .Text = "AL"})
+                result.Add(New With {.Value = "RA", .Text = "RA"})
+            End If
+            If tubeName = "Sliding Stacker" Then
+                result.Add(New With {.Value = "AL", .Text = "AL"})
+                result.Add(New With {.Value = "RA", .Text = "RA"})
+            End If
+        End If
+
+        If type = "MeshDoor" Then
+            Dim blindName As String = orderClass.GetBlindName(blindtype)
+            If blindName = "Safety" Then
+                result.Add(New With {.Value = "304 SS Mesh", .Text = "304 SS Mesh"})
+            End If
+            If blindName = "Standard" Then
+                result.Add(New With {.Value = "Fibreglass Mesh", .Text = "Fibreglass Mesh"})
+                result.Add(New With {.Value = "Pawproof", .Text = "Pawproof"})
+                result.Add(New With {.Value = "SS Mesh", .Text = "SS Mesh"})
+            End If
+            If blindName = "Security" Then
+                result.Add(New With {.Value = "316 SS Mesh", .Text = "316 SS Mesh"})
+            End If
+            If blindName = "Flyscreen" Then
+                result.Add(New With {.Value = "Fibreglass Mesh", .Text = "Fibreglass Mesh"})
+                result.Add(New With {.Value = "Pawproof", .Text = "Pawproof"})
+                result.Add(New With {.Value = "SS Mesh", .Text = "SS Mesh"})
+            End If
+        End If
+
+        If type = "MeshWindow" Then
+            Dim blindName As String = orderClass.GetBlindName(blindtype)
+            If blindName = "Safety" Then
+                result.Add(New With {.Value = "304 SS Mesh", .Text = "304 SS Mesh"})
+            End If
+            If blindName = "Standard" Then
+                result.Add(New With {.Value = "Fibreglass Mesh", .Text = "Fibreglass Mesh"})
+                result.Add(New With {.Value = "Pawproof", .Text = "Pawproof"})
+                result.Add(New With {.Value = "SS Mesh", .Text = "SS Mesh"})
+            End If
+            If blindName = "Security" Then
+                result.Add(New With {.Value = "316 SS Mesh", .Text = "316 SS Mesh"})
+            End If
+            If blindName = "Flyscreen" Then
+                result.Add(New With {.Value = "Fibreglass Mesh", .Text = "Fibreglass Mesh"})
+                result.Add(New With {.Value = "Pawproof", .Text = "Pawproof"})
+                result.Add(New With {.Value = "SS Mesh", .Text = "SS Mesh"})
+            End If
+        End If
+
+        If type = "FrameColourDoor" Then
+            Dim blindName As String = orderClass.GetBlindName(blindtype)
+            If blindName = "Safety" Then
+                result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
+                result.Add(New With {.Value = "Monument (Express)", .Text = "Monument (Express)"})
+                result.Add(New With {.Value = "Primrose (Express)", .Text = "Primrose (Express)"})
+                result.Add(New With {.Value = "White (Express)", .Text = "White (Express)"})
+                result.Add(New With {.Value = "White Birch (Express)", .Text = "White Birch (Express)"})
+            End If
+            If blindName = "Standard" Then
+                result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
+                result.Add(New With {.Value = "Monument (Express)", .Text = "Monument (Express)"})
+                result.Add(New With {.Value = "Primrose (Express)", .Text = "Primrose (Express)"})
+                result.Add(New With {.Value = "White (Express)", .Text = "White (Express)"})
+                result.Add(New With {.Value = "White Birch (Express)", .Text = "White Birch (Express)"})
+            End If
+            If blindName = "Security" Then
+                result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
+                result.Add(New With {.Value = "Monument (Express)", .Text = "Monument (Express)"})
+                result.Add(New With {.Value = "Primrose (Express)", .Text = "Primrose (Express)"})
+                result.Add(New With {.Value = "White (Express)", .Text = "White (Express)"})
+                result.Add(New With {.Value = "White Birch (Express)", .Text = "White Birch (Express)"})
+            End If
+            If blindName = "Flyscreen" Then
+                result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
+                result.Add(New With {.Value = "Monument (Express)", .Text = "Monument (Express)"})
+                result.Add(New With {.Value = "Primrose (Express)", .Text = "Primrose (Express)"})
+                result.Add(New With {.Value = "White (Express)", .Text = "White (Express)"})
+                result.Add(New With {.Value = "White Birch (Express)", .Text = "White Birch (Express)"})
+            End If
+
+            If Not String.IsNullOrEmpty(blindName) Then
+                result.Add(New With {.Value = "Apo Grey (Regular)", .Text = "Apo Grey (Regular)"})
+                result.Add(New With {.Value = "Beige (Regular)", .Text = "Beige (Regular)"})
+                result.Add(New With {.Value = "Birch White (Regular)", .Text = "Birch White (Regular)"})
+                result.Add(New With {.Value = "Black (Regular)", .Text = "Black (Regular)"})
+                result.Add(New With {.Value = "Brown (Regular)", .Text = "Brown (Regular)"})
+                result.Add(New With {.Value = "Charcoal (Regular)", .Text = "Charcoal (Regular)"})
+                result.Add(New With {.Value = "Deep Ocean (Regular)", .Text = "Deep Ocean (Regular)"})
+                result.Add(New With {.Value = "Dune (Regular)", .Text = "Dune (Regular)"})
+                result.Add(New With {.Value = "Hawthorne Green (Regular)", .Text = "Hawthorne Green (Regular)"})
+                result.Add(New With {.Value = "Jasper (Regular)", .Text = "Jasper (Regular)"})
+                result.Add(New With {.Value = "Monument (Regular)", .Text = "Monument (Regular)"})
+                result.Add(New With {.Value = "Notre Dame (Regular)", .Text = "Notre Dame (Regular)"})
+                result.Add(New With {.Value = "Pale Eucalypt (Regular)", .Text = "Pale Eucalypt (Regular)"})
+                result.Add(New With {.Value = "Paperbark (Regular)", .Text = "Paperbark (Regular)"})
+                result.Add(New With {.Value = "Primrose (Regular)", .Text = "Primrose (Regular)"})
+                result.Add(New With {.Value = "Silver (Regular)", .Text = "Silver (Regular)"})
+                result.Add(New With {.Value = "Surf Mist (Regular)", .Text = "Surf Mist (Regular)"})
+                result.Add(New With {.Value = "White (Regular)", .Text = "White (Regular)"})
+                result.Add(New With {.Value = "Woodland Grey (Regular)", .Text = "Woodland Grey (Regular)"})
+            End If
+        End If
+
+        If type = "FrameColourWindow" Then
+            Dim blindName As String = orderClass.GetBlindName(blindtype)
+            If blindName = "Safety" Then
+                result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
+                result.Add(New With {.Value = "Monument (Express)", .Text = "Monument (Express)"})
+                result.Add(New With {.Value = "Primrose (Express)", .Text = "Primrose (Express)"})
+                result.Add(New With {.Value = "White (Express)", .Text = "White (Express)"})
+                result.Add(New With {.Value = "White Birch (Express)", .Text = "White Birch (Express)"})
+            End If
+            If blindName = "Standard" Then
+                result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
+                result.Add(New With {.Value = "Monument (Express)", .Text = "Monument (Express)"})
+                result.Add(New With {.Value = "Primrose (Express)", .Text = "Primrose (Express)"})
+                result.Add(New With {.Value = "White (Express)", .Text = "White (Express)"})
+                result.Add(New With {.Value = "White Birch (Express)", .Text = "White Birch (Express)"})
+            End If
+            If blindName = "Security" Then
+                result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
+                result.Add(New With {.Value = "Monument (Express)", .Text = "Monument (Express)"})
+                result.Add(New With {.Value = "Primrose (Express)", .Text = "Primrose (Express)"})
+                result.Add(New With {.Value = "White (Express)", .Text = "White (Express)"})
+                result.Add(New With {.Value = "White Birch (Express)", .Text = "White Birch (Express)"})
+            End If
+            If blindName = "Flyscreen" Then
+                result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
+                result.Add(New With {.Value = "Monument (Express)", .Text = "Monument (Express)"})
+                result.Add(New With {.Value = "Primrose (Express)", .Text = "Primrose (Express)"})
+                result.Add(New With {.Value = "White (Express)", .Text = "White (Express)"})
+                result.Add(New With {.Value = "White Birch (Express)", .Text = "White Birch (Express)"})
+            End If
+
+            If Not String.IsNullOrEmpty(blindName) Then
+                result.Add(New With {.Value = "Apo Grey (Regular)", .Text = "Apo Grey (Regular)"})
+                result.Add(New With {.Value = "Beige (Regular)", .Text = "Beige (Regular)"})
+                result.Add(New With {.Value = "Birch White (Regular)", .Text = "Birch White (Regular)"})
+                result.Add(New With {.Value = "Black (Regular)", .Text = "Black (Regular)"})
+                result.Add(New With {.Value = "Brown (Regular)", .Text = "Brown (Regular)"})
+                result.Add(New With {.Value = "Charcoal (Regular)", .Text = "Charcoal (Regular)"})
+                result.Add(New With {.Value = "Deep Ocean (Regular)", .Text = "Deep Ocean (Regular)"})
+                result.Add(New With {.Value = "Dune (Regular)", .Text = "Dune (Regular)"})
+                result.Add(New With {.Value = "Hawthorne Green (Regular)", .Text = "Hawthorne Green (Regular)"})
+                result.Add(New With {.Value = "Jasper (Regular)", .Text = "Jasper (Regular)"})
+                result.Add(New With {.Value = "Monument (Regular)", .Text = "Monument (Regular)"})
+                result.Add(New With {.Value = "Notre Dame (Regular)", .Text = "Notre Dame (Regular)"})
+                result.Add(New With {.Value = "Pale Eucalypt (Regular)", .Text = "Pale Eucalypt (Regular)"})
+                result.Add(New With {.Value = "Paperbark (Regular)", .Text = "Paperbark (Regular)"})
+                result.Add(New With {.Value = "Primrose (Regular)", .Text = "Primrose (Regular)"})
+                result.Add(New With {.Value = "Silver (Regular)", .Text = "Silver (Regular)"})
+                result.Add(New With {.Value = "Surf Mist (Regular)", .Text = "Surf Mist (Regular)"})
+                result.Add(New With {.Value = "White (Regular)", .Text = "White (Regular)"})
+                result.Add(New With {.Value = "Woodland Grey (Regular)", .Text = "Woodland Grey (Regular)"})
+            End If
+        End If
+
+        If type = "InterlockDoor" Then
+            Dim tubeName As String = orderClass.GetTubeName(tubetype)
+            If tubeName = "Sliding Single" Then
+                result.Add(New With {.Value = "HD3 Offset (5mm)", .Text = "HD3 Offset (5mm)"})
+                result.Add(New With {.Value = "HD2 Flat (1.5mm)", .Text = "HD2 Flat (1.5mm)"})
+                result.Add(New With {.Value = "HD10 Large Offset", .Text = "HD10 Large Offset"})
+                result.Add(New With {.Value = "HD9 F Interlock", .Text = "HD9 F Interlock"})
+            End If
+            If tubeName = "Sliding Double" Then
+                result.Add(New With {.Value = "HD9 F Interlock", .Text = "HD9 F Interlock"})
+            End If
+            If tubeName = "Sliding Stacker" Then
+                result.Add(New With {.Value = "HD3 Offset (5 mm) with HD9 F Interlock", .Text = "HD3 Offset (5 mm) with HD9 F Interlock"})
+                result.Add(New With {.Value = "HD2 Flat (1.5 mm) with HD9 F Interlock", .Text = "HD2 Flat (1.5 mm) with HD9 F Interlock"})
+                result.Add(New With {.Value = "HD10 Large Offset with HD9 F Interlock", .Text = "HD10 Large Offset with HD9 F Interlock"})
+            End If
+        End If
+
+        If type = "ValanceRoman" Then
+            Dim controlName As String = orderClass.GetControlName(controltype)
+            If Not String.IsNullOrEmpty(controlName) Then
+                result.Add(New With {.Value = "Facade", .Text = "Facade"})
+                result.Add(New With {.Value = "Retrousse", .Text = "Retrousse"})
+                If controlName = "Chain" Then
+                    result.Clear()
+                    result.Add(New With {.Value = "Retrousse", .Text = "Retrousse"})
+                End If
+            End If
+        End If
+
         If type = "SubType" Then
             Dim blindName As String = orderClass.GetItemData("SELECT Name FROM Blinds WHERE Id='" & blindtype & "'")
 
@@ -221,50 +465,336 @@ Partial Class Order_Method
             End If
 
             If blindName = "Basswood 50mm" Then
-                result.Add(New With {.Value = "Single", .Text = "Single Aluminium"})
-                result.Add(New With {.Value = "2 on 1 Left-Left", .Text = "2 on 1 Aluminium (Left-Left)"})
-                result.Add(New With {.Value = "2 on 1 Right-Right", .Text = "2 on 1 Aluminium (Right-Right)"})
-                result.Add(New With {.Value = "2 on 1 Left-Right", .Text = "2 on 1 Aluminium (Left-Right)"})
+                result.Add(New With {.Value = "Single", .Text = "Single Venetian"})
+                result.Add(New With {.Value = "2 on 1 Left-Left", .Text = "2 on 1 Venetian (Left-Left)"})
+                result.Add(New With {.Value = "2 on 1 Right-Right", .Text = "2 on 1 Venetian (Right-Right)"})
+                result.Add(New With {.Value = "2 on 1 Left-Right", .Text = "2 on 1 Venetian (Left-Right)"})
             End If
 
             If blindName = "Basswood 63mm" Then
-                result.Add(New With {.Value = "Single", .Text = "Single Aluminium"})
-                result.Add(New With {.Value = "2 on 1 Left-Left", .Text = "2 on 1 Aluminium (Left-Left)"})
-                result.Add(New With {.Value = "2 on 1 Right-Right", .Text = "2 on 1 Aluminium (Right-Right)"})
-                result.Add(New With {.Value = "2 on 1 Left-Right", .Text = "2 on 1 Aluminium (Left-Right)"})
+                result.Add(New With {.Value = "Single", .Text = "Single Venetian"})
+                result.Add(New With {.Value = "2 on 1 Left-Left", .Text = "2 on 1 Venetian (Left-Left)"})
+                result.Add(New With {.Value = "2 on 1 Right-Right", .Text = "2 on 1 Venetian (Right-Right)"})
+                result.Add(New With {.Value = "2 on 1 Left-Right", .Text = "2 on 1 Venetian (Left-Right)"})
             End If
 
             If blindName = "Econo 50mm" Then
-                result.Add(New With {.Value = "Single", .Text = "Single Aluminium"})
-                result.Add(New With {.Value = "2 on 1 Left-Left", .Text = "2 on 1 Aluminium (Left-Left)"})
-                result.Add(New With {.Value = "2 on 1 Right-Right", .Text = "2 on 1 Aluminium (Right-Right)"})
-                result.Add(New With {.Value = "2 on 1 Left-Right", .Text = "2 on 1 Aluminium (Left-Right)"})
+                result.Add(New With {.Value = "Single", .Text = "Single Venetian"})
+                result.Add(New With {.Value = "2 on 1 Left-Left", .Text = "2 on 1 Venetian (Left-Left)"})
+                result.Add(New With {.Value = "2 on 1 Right-Right", .Text = "2 on 1 Venetian (Right-Right)"})
+                result.Add(New With {.Value = "2 on 1 Left-Right", .Text = "2 on 1 Venetian (Left-Right)"})
             End If
 
             If blindName = "Econo 63mm" Then
-                result.Add(New With {.Value = "Single", .Text = "Single Aluminium"})
-                result.Add(New With {.Value = "2 on 1 Left-Left", .Text = "2 on 1 Aluminium (Left-Left)"})
-                result.Add(New With {.Value = "2 on 1 Right-Right", .Text = "2 on 1 Aluminium (Right-Right)"})
-                result.Add(New With {.Value = "2 on 1 Left-Right", .Text = "2 on 1 Aluminium (Left-Right)"})
+                result.Add(New With {.Value = "Single", .Text = "Single Venetian"})
+                result.Add(New With {.Value = "2 on 1 Left-Left", .Text = "2 on 1 Venetian (Left-Left)"})
+                result.Add(New With {.Value = "2 on 1 Right-Right", .Text = "2 on 1 Venetian (Right-Right)"})
+                result.Add(New With {.Value = "2 on 1 Left-Right", .Text = "2 on 1 Venetian (Left-Right)"})
             End If
 
             If blindName = "Ultraslat 50mm" Then
-                result.Add(New With {.Value = "Single", .Text = "Single Aluminium"})
-                result.Add(New With {.Value = "2 on 1 Left-Left", .Text = "2 on 1 Aluminium (Left-Left)"})
-                result.Add(New With {.Value = "2 on 1 Right-Right", .Text = "2 on 1 Aluminium (Right-Right)"})
-                result.Add(New With {.Value = "2 on 1 Left-Right", .Text = "2 on 1 Aluminium (Left-Right)"})
+                result.Add(New With {.Value = "Single", .Text = "Single Venetian"})
+                result.Add(New With {.Value = "2 on 1 Left-Left", .Text = "2 on 1 Venetian (Left-Left)"})
+                result.Add(New With {.Value = "2 on 1 Right-Right", .Text = "2 on 1 Venetian (Right-Right)"})
+                result.Add(New With {.Value = "2 on 1 Left-Right", .Text = "2 on 1 Venetian (Left-Right)"})
             End If
 
             If blindName = "Ultraslat 63mm" Then
-                result.Add(New With {.Value = "Single", .Text = "Single Aluminium"})
-                result.Add(New With {.Value = "2 on 1 Left-Left", .Text = "2 on 1 Aluminium (Left-Left)"})
-                result.Add(New With {.Value = "2 on 1 Right-Right", .Text = "2 on 1 Aluminium (Right-Right)"})
-                result.Add(New With {.Value = "2 on 1 Left-Right", .Text = "2 on 1 Aluminium (Left-Right)"})
+                result.Add(New With {.Value = "Single", .Text = "Single Venetian"})
+                result.Add(New With {.Value = "2 on 1 Left-Left", .Text = "2 on 1 Venetian (Left-Left)"})
+                result.Add(New With {.Value = "2 on 1 Right-Right", .Text = "2 on 1 Venetian (Right-Right)"})
+                result.Add(New With {.Value = "2 on 1 Left-Right", .Text = "2 on 1 Venetian (Left-Right)"})
             End If
 
             If blindName = "Econo 50mm (Cordless)" Then
-                result.Add(New With {.Value = "Single", .Text = "Single Aluminium"})
+                result.Add(New With {.Value = "Single", .Text = "Single Venetian"})
             End If
+        End If
+
+        If type = "ValanceType" Then
+            Dim blindName As String = orderClass.GetBlindName(blindtype)
+            If blindName = "Basswood 50mm" OrElse blindName = "Basswood 63mm" Then
+                result.Add(New With {.Value = "75mm Valance", .Text = "75mm"})
+                result.Add(New With {.Value = "89mm Valance", .Text = "89mm"})
+            End If
+            If blindName = "Econo 50mm" OrElse blindName = "Econo 63mm" Then
+                result.Add(New With {.Value = "76mm Valance", .Text = "76mm"})
+            End If
+            If blindName = "Ultraslat 50mm" OrElse blindName = "Ultraslat 63mm" Then
+                result.Add(New With {.Value = "76mm Valance", .Text = "76mm"})
+            End If
+            If blindName = "Econo 50mm (Cordless)" Then
+                result.Add(New With {.Value = "Standard", .Text = "Standard"})
+            End If
+        End If
+
+        If type = "ValancePosition" Then
+            Dim blindName As String = orderClass.GetBlindName(blindtype)
+            If Not String.IsNullOrEmpty(blindName) Then
+                result.Add(New With {.Value = "Left", .Text = "Left"})
+                result.Add(New With {.Value = "Right", .Text = "Right"})
+                result.Add(New With {.Value = "Both Sides", .Text = "Both Sides"})
+
+            End If
+            If blindName = "Econo 50mm (Cordless)" Then
+                result.Clear()
+                result.Add(New With {.Value = "Left", .Text = "Left"})
+                result.Add(New With {.Value = "Right", .Text = "Right"})
+            End If
+        End If
+
+        If type = "LayoutCodeShutter" Then
+            Dim blindName As String = orderClass.GetBlindName(blindtype)
+            If blindName = "Hinged" Then
+                result.Add(New With {.Value = "L", .Text = "L"})
+                result.Add(New With {.Value = "R", .Text = "R"})
+                result.Add(New With {.Value = "LR", .Text = "LR"})
+                result.Add(New With {.Value = "LD-R", .Text = "LD-R"})
+                result.Add(New With {.Value = "L-DR", .Text = "L-DR"})
+                result.Add(New With {.Value = "LTLR", .Text = "LTLR"})
+                result.Add(New With {.Value = "LRTR", .Text = "LRTR"})
+                result.Add(New With {.Value = "LRTLR", .Text = "LRTLR"})
+                result.Add(New With {.Value = "LTLRTR", .Text = "LTLRTR"})
+                result.Add(New With {.Value = "LD-RTLD-R", .Text = "LD-RTLD-R"})
+                result.Add(New With {.Value = "L-DRTL-DR", .Text = "L-DRTL-DR"})
+                result.Add(New With {.Value = "Other", .Text = "Other"})
+            End If
+
+            If blindName = "Hinged Bi-fold" Then
+                result.Add(New With {.Value = "LL", .Text = "LL"})
+                result.Add(New With {.Value = "RR", .Text = "RR"})
+                result.Add(New With {.Value = "LLRR", .Text = "LLRR"})
+                result.Add(New With {.Value = "Other", .Text = "Other"})
+            End If
+
+            If blindName = "Track Bi-fold" Then
+                result.Add(New With {.Value = "LL", .Text = "LL"})
+                result.Add(New With {.Value = "RR", .Text = "RR"})
+                result.Add(New With {.Value = "LLRR", .Text = "LLRR"})
+                result.Add(New With {.Value = "LLLL", .Text = "LLLL"})
+                result.Add(New With {.Value = "RRRR", .Text = "RRRR"})
+                result.Add(New With {.Value = "LLRRRR", .Text = "LLRRRR"})
+                result.Add(New With {.Value = "LLLLRR", .Text = "LLLLRR"})
+                result.Add(New With {.Value = "LLLLLL", .Text = "LLLLLL"})
+                result.Add(New With {.Value = "RRRRRR", .Text = "RRRRRR"})
+                result.Add(New With {.Value = "LLRRRRRR", .Text = "LLRRRRRR"})
+                result.Add(New With {.Value = "LLLLRRRR", .Text = "LLLLRRRR"})
+                result.Add(New With {.Value = "LLLLLLRR", .Text = "LLLLLLRR"})
+                result.Add(New With {.Value = "LLLLLLLL", .Text = "LLLLLLLL"})
+                result.Add(New With {.Value = "RRRRRRRR", .Text = "RRRRRRRR"})
+                result.Add(New With {.Value = "Other", .Text = "Other"})
+            End If
+
+            If blindName = "Track Sliding" Then
+                result.Add(New With {.Value = "BF", .Text = "BF"})
+                result.Add(New With {.Value = "FB", .Text = "FB"})
+                result.Add(New With {.Value = "BFB", .Text = "BFB"})
+                result.Add(New With {.Value = "FBF", .Text = "FBF"})
+                result.Add(New With {.Value = "BFFB", .Text = "BFFB"})
+                result.Add(New With {.Value = "FBBF", .Text = "FBBF"})
+                result.Add(New With {.Value = "BBFF", .Text = "BBFF"})
+                result.Add(New With {.Value = "FFBB", .Text = "FFBB"})
+                result.Add(New With {.Value = "Other", .Text = "Other"})
+            End If
+
+            If blindName = "Track Sliding Single Track" Then
+                result.Add(New With {.Value = "F", .Text = "F"})
+                result.Add(New With {.Value = "FF", .Text = "FF"})
+                result.Add(New With {.Value = "FFF", .Text = "FFF"})
+                result.Add(New With {.Value = "FFFF", .Text = "FFFF"})
+                result.Add(New With {.Value = "Other", .Text = "Other"})
+            End If
+
+            If blindName = "Fixed" Then
+                result.Add(New With {.Value = "", .Text = ""})
+                result.Add(New With {.Value = "F", .Text = "F"})
+                result.Add(New With {.Value = "FF", .Text = "FF"})
+                result.Add(New With {.Value = "FFF", .Text = "FFF"})
+                result.Add(New With {.Value = "FFFF", .Text = "FFFF"})
+                result.Add(New With {.Value = "FFFFFF", .Text = "FFFFFF"})
+                result.Add(New With {.Value = "Other", .Text = "Other"})
+            End If
+        End If
+
+        If type = "FrameTypeShutter" Then
+            Dim blindName As String = orderClass.GetBlindName(blindtype)
+            If blindName = "Hinged" OrElse blindName = "Hinged Bi-fold" Then
+                result.Add(New With {.Value = "Beaded L 48mm", .Text = "Beaded L 48mm"})
+                result.Add(New With {.Value = "Insert L 50mm", .Text = "Insert L 50mm"})
+                result.Add(New With {.Value = "Insert L 63mm", .Text = "Insert L 63mm"})
+                If customtype = "Inside" Then
+                    result.Add(New With {.Value = "Small Bullnose Z Frame", .Text = "Small Bullnose Z Frame"})
+                    result.Add(New With {.Value = "Large Bullnose Z Frame", .Text = "Large Bullnose Z Frame"})
+                    result.Add(New With {.Value = "Colonial Z Frame", .Text = "Colonial Z Frame"})
+                End If
+                result.Add(New With {.Value = "No Frame", .Text = "No Frame"})
+            End If
+
+            If blindName = "Track Bi-fold" Then
+                result.Add(New With {.Value = "100mm", .Text = "100mm"})
+                result.Add(New With {.Value = "160mm", .Text = "160mm"})
+            End If
+
+            If blindName = "Track Sliding" Then
+                result.Add(New With {.Value = "100mm", .Text = "100mm"})
+                result.Add(New With {.Value = "160mm", .Text = "160mm"})
+                result.Add(New With {.Value = "200mm", .Text = "200mm"})
+            End If
+
+            If blindName = "Track Sliding Single Track" Then
+                result.Add(New With {.Value = "100mm", .Text = "100mm"})
+            End If
+
+            If blindName = "Fixed" Then
+                result.Add(New With {.Value = "U Channel", .Text = "U Channel"})
+                result.Add(New With {.Value = "19x19 Light Block", .Text = "19x19 Light Block"})
+            End If
+        End If
+
+        If type = "LeftFrameShutter" Then
+            If customtype = "Beaded L 48mm" OrElse customtype = "Insert L 50mm" OrElse customtype = "Insert L 63mm" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+                result.Add(New With {.Value = "No", .Text = "No"})
+                result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
+                result.Add(New With {.Value = "Sill Plate (9.5mm)", .Text = "Sill Plate (9.5mm)"})
+            End If
+            If customtype = "Small Bullnose Z Frame" OrElse customtype = "Large Bullnose Z Frame" OrElse customtype = "Colonial Bullnose Z Frame" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+                result.Add(New With {.Value = "No", .Text = "No"})
+                result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
+                result.Add(New With {.Value = "Sill Plate (9.5mm)", .Text = "Sill Plate (9.5mm)"})
+                result.Add(New With {.Value = "Sill Plate (Bullnose Z)", .Text = "Sill Plate (Bullnose Z)"})
+            End If
+            If customtype = "No Frame" Then
+                result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
+            End If
+            If customtype = "100mm" OrElse customtype = "160mm" OrElse customtype = "200mm" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+                result.Add(New With {.Value = "No", .Text = "No"})
+            End If
+
+            If customtype = "U Channel" Then
+                result.Add(New With {.Value = "No", .Text = "No"})
+                result.Add(New With {.Value = "L Strip", .Text = "L Strip"})
+            End If
+            If customtype = "19x19 Light Block" Then
+                result.Add(New With {.Value = "No", .Text = "No"})
+            End If
+        End If
+
+        If type = "RightFrameShutter" Then
+            If customtype = "Beaded L 48mm" OrElse customtype = "Insert L 50mm" OrElse customtype = "Insert L 63mm" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+                result.Add(New With {.Value = "No", .Text = "No"})
+                result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
+                result.Add(New With {.Value = "Sill Plate (9.5mm)", .Text = "Sill Plate (9.5mm)"})
+            End If
+            If customtype = "Small Bullnose Z Frame" OrElse customtype = "Large Bullnose Z Frame" OrElse customtype = "Colonial Bullnose Z Frame" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+                result.Add(New With {.Value = "No", .Text = "No"})
+                result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
+                result.Add(New With {.Value = "Sill Plate (9.5mm)", .Text = "Sill Plate (9.5mm)"})
+                result.Add(New With {.Value = "Sill Plate (Bullnose Z)", .Text = "Sill Plate (Bullnose Z)"})
+            End If
+            If customtype = "No Frame" Then
+                result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
+            End If
+            If customtype = "100mm" OrElse customtype = "160mm" OrElse customtype = "200mm" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+                result.Add(New With {.Value = "No", .Text = "No"})
+            End If
+
+            If customtype = "U Channel" Then
+                result.Add(New With {.Value = "No", .Text = "No"})
+                result.Add(New With {.Value = "L Strip", .Text = "L Strip"})
+            End If
+            If customtype = "19x19 Light Block" Then
+                result.Add(New With {.Value = "No", .Text = "No"})
+            End If
+        End If
+
+        If type = "TopFrameShutter" Then
+            If customtype = "Beaded L 48mm" OrElse customtype = "Insert L 50mm" OrElse customtype = "Insert L 63mm" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+                result.Add(New With {.Value = "No", .Text = "No"})
+                result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
+                result.Add(New With {.Value = "Sill Plate (9.5mm)", .Text = "Sill Plate (9.5mm)"})
+                result.Add(New With {.Value = "L Striker Plate", .Text = "L Striker Plate"})
+            End If
+            If customtype = "Small Bullnose Z Frame" OrElse customtype = "Large Bullnose Z Frame" OrElse customtype = "Colonial Bullnose Z Frame" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+                result.Add(New With {.Value = "No", .Text = "No"})
+                result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
+                result.Add(New With {.Value = "Sill Plate (9.5mm)", .Text = "Sill Plate (9.5mm)"})
+                result.Add(New With {.Value = "Sill Plate (Bullnose Z)", .Text = "Sill Plate (Bullnose Z)"})
+                result.Add(New With {.Value = "L Striker Plate", .Text = "L Striker Plate"})
+            End If
+            If customtype = "No Frame" Then
+                result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
+                result.Add(New With {.Value = "L Striker Plate", .Text = "L Striker Plate"})
+            End If
+            If customtype = "100mm" OrElse customtype = "160mm" OrElse customtype = "200mm" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+                result.Add(New With {.Value = "No", .Text = "No"})
+            End If
+
+            If customtype = "U Channel" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+            End If
+            If customtype = "19x19 Light Block" Then
+                result.Add(New With {.Value = "No", .Text = "No"})
+            End If
+        End If
+
+        If type = "BottomFrameShutter" Then
+            If customtype = "Beaded L 48mm" OrElse customtype = "Insert L 50mm" OrElse customtype = "Insert L 63mm" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+                result.Add(New With {.Value = "No", .Text = "No"})
+                result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
+                result.Add(New With {.Value = "Sill Plate (9.5mm)", .Text = "Sill Plate (9.5mm)"})
+                result.Add(New With {.Value = "L Striker Plate", .Text = "L Striker Plate"})
+            End If
+            If customtype = "Small Bullnose Z Frame" OrElse customtype = "Large Bullnose Z Frame" OrElse customtype = "Colonial Bullnose Z Frame" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+                result.Add(New With {.Value = "No", .Text = "No"})
+                result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
+                result.Add(New With {.Value = "Sill Plate (9.5mm)", .Text = "Sill Plate (9.5mm)"})
+                result.Add(New With {.Value = "Sill Plate (Bullnose Z)", .Text = "Sill Plate (Bullnose Z)"})
+                result.Add(New With {.Value = "L Striker Plate", .Text = "L Striker Plate"})
+            End If
+            If customtype = "No Frame" Then
+                result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
+                result.Add(New With {.Value = "L Striker Plate", .Text = "L Striker Plate"})
+            End If
+            If customtype = "100mm" OrElse customtype = "160mm" OrElse customtype = "200mm" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+                result.Add(New With {.Value = "No", .Text = "No"})
+            End If
+
+            If customtype = "U Channel" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+            End If
+            If customtype = "19x19 Light Block" Then
+                result.Add(New With {.Value = "No", .Text = "No"})
+            End If
+        End If
+
+        If type = "BottomTrackShutter" Then
+            Dim blindName As String = orderClass.GetBlindName(blindtype)
+            If blindName = "Track Bi-fold" OrElse blindName = "Track Sliding" OrElse blindName = "Track Sliding Single Track" Then
+                If Not String.IsNullOrEmpty(customtype) Then
+                    result.Add(New With {.Value = "M Track", .Text = "M Track"})
+                    result.Add(New With {.Value = "U Track", .Text = "U Track"})
+                    If customtype = "Yes" Then
+                        result.Clear()
+                        result.Add(New With {.Value = "U Track", .Text = "U Track"})
+                    End If
+                End If
+            End If
+        End If
+
+        If type = "MidrailCriticalShutter" Then
+
         End If
 
         Return result
@@ -323,20 +853,17 @@ Partial Class Order_Method
 
         If String.IsNullOrEmpty(data.width) Then Return "WIDTH IS REQUIRED !"
         If Not Integer.TryParse(data.width, width) OrElse width <= 0 Then Return "PLEASE CHECK YOUR WIDTH ORDER !"
+        If width < 200 Then Return "MINIMUM WIDTH IS 200MM !"
         If roleName = "Customer" AndAlso (data.companydetail = "2" OrElse data.companydetail = "3" OrElse data.companydetail = "4") Then
-            If width < 200 Then Return "MINIMUM WIDTH IS 200MM !"
-            If data.subtype = "Single" Then
-                If width > 250 AndAlso width <= 299 AndAlso data.controlposition = data.tilterposition Then
-                    Return "PLEASE USE OPPOSITE CONTROL AND TILTER POSITIONS!"
-                End If
-            End If
+            If width > 3010 Then Return "MAXIMUM WIDTH IS 3010MM !"
         End If
 
         If String.IsNullOrEmpty(data.drop) Then Return "DROP IS REQUIRED !"
         If Not Integer.TryParse(data.drop, drop) OrElse drop <= 0 Then Return "PLEASE CHECK YOUR DROP ORDER !"
+        If drop < 250 Then Return "MINIMUM DROP IS 250MM !"
 
-        If roleName = "Customer" OrElse data.companydetail = "5" Then
-            If drop < 250 OrElse drop > 3200 Then Return "DROP MUST BE BETWEEN 250MM - 3200MM !"
+        If roleName = "Customer" AndAlso (data.companydetail = "2" OrElse data.companydetail = "3" OrElse data.companydetail = "4") Then
+            If drop > 3200 Then Return "MAXIMUM DROP IS 3200MM !"
         End If
 
         If data.subtype = "Single" Then
@@ -344,10 +871,17 @@ Partial Class Order_Method
             If String.IsNullOrEmpty(data.tilterposition) Then Return "TILTER POSITION IS REQUIRED !"
         End If
 
+        If data.subtype = "Single" Then
+            If width > 250 AndAlso width <= 299 AndAlso data.controlposition = data.tilterposition Then
+                Return "PLEASE USE OPPOSITE CONTROL AND TILTER POSITIONS!"
+            End If
+        End If
+
         If String.IsNullOrEmpty(data.controllength) Then
             If data.subtype.Contains("2 on 1") Then Return "FIRST CORD LENGTH IS REQUIRED !"
             Return "CORD LENGTH IS REQUIRED !"
         End If
+
         If data.controllength = "Custom" Then
             If String.IsNullOrEmpty(data.controllengthvalue) Then
                 If data.subtype = "2 on 1 Left-Right" Then Return "FIRST CORD LENGTH VALUE IS REQUIRED !"
@@ -396,18 +930,20 @@ Partial Class Order_Method
         If data.subtype.Contains("2 on 1") Then
             If String.IsNullOrEmpty(data.widthb) Then Return "SECOND WIDTH IS REQUIRED !"
             If Not Integer.TryParse(data.widthb, widthb) OrElse widthb <= 0 Then Return "PLEASE CHECK YOUR SECOND WIDTH ORDER !"
-            If data.mounting = "Reveal Fit" OrElse data.mounting = "Make Size Reveal Fit" Then
-                If width < 310 Then Return String.Format("MINIMUM WIDTH FOR {0} IS 310MM !", data.mounting.ToUpper())
+
+            If widthb < 200 Then Return "MINIMUM WIDTH FOR SECOND BLIND IS 200MM !"
+
+            If roleName = "Customer" AndAlso (data.companydetail = "2" OrElse data.companydetail = "3" OrElse data.companydetail = "4") Then
+                Dim totalWidth As Integer = width + widthb
+                If totalWidth > 3010 Then Return "TOTAL WIDTH COULDN'T MORE THAN 3010MM !"
             End If
-            If data.mounting = "Face Fit" OrElse data.mounting = "Make Size Face Fit" Then
-                If width < 300 Then Return String.Format("MINIMUM WIDTH FOR {0} IS 300MM !", data.mounting.ToUpper())
-            End If
-            Dim totalWidth As Integer = width + widthb
-            If totalWidth > 3010 Then Return "TOTAL WIDTH COULDN'T MORE THAN 3010MM !"
 
             If String.IsNullOrEmpty(data.dropb) Then Return "SECOND DROP IS REQUIRED !"
             If Not Integer.TryParse(data.dropb, dropb) OrElse dropb <= 0 Then Return "PLEASE CHECK YOUR SECOND DROP ORDER !"
-            If dropb < 250 OrElse dropb > 3200 Then Return "DROP MUST BE BETWEEN 250MM - 3200MM !"
+            If dropb < 250 Then Return "MINIMUM DROP IS 250MM !"
+            If roleName = "Customer" AndAlso (data.companydetail = "2" OrElse data.companydetail = "3" OrElse data.companydetail = "4") Then
+                If dropb > 3200 Then Return "MAXIMUM DROP FOR SECOND DROP IS 3200MM !"
+            End If
 
             If String.IsNullOrEmpty(data.controllengthb) Then Return "SECOND CORD LENGTH IS REQUIRED !"
 
@@ -643,21 +1179,20 @@ Partial Class Order_Method
         Dim totalItems As Integer = 1
 
         Dim designName As String = String.Empty
-        If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
-
         Dim blindName As String = String.Empty
-        If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
-
         Dim tubeName As String = String.Empty
-        If Not String.IsNullOrEmpty(data.tubetype) Then tubeName = orderClass.GetTubeName(data.tubetype)
-
         Dim controlName As String = String.Empty
+
+        If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
+        If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
+        If Not String.IsNullOrEmpty(data.tubetype) Then tubeName = orderClass.GetTubeName(data.tubetype)
         If Not String.IsNullOrEmpty(data.controltype) Then controlName = orderClass.GetControlName(data.controltype)
 
         Dim factory As String = orderClass.GetFabricFactory(data.fabriccolour)
         Dim factoryB As String = orderClass.GetFabricFactory(data.fabriccolourb)
 
         Dim customerPriceGroup As String = orderClass.GetPriceGroupByOrder(data.headerid)
+        Dim roleName As String = orderClass.GetUserRoleName(data.loginid)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "CELLULAR TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.controltype) Then Return "CONTROL TYPE IS REQUIRED !"
@@ -887,15 +1422,15 @@ Partial Class Order_Method
         Dim markup As Integer
 
         Dim designName As String = String.Empty
-        If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
-
         Dim blindName As String = String.Empty
-        If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
-
         Dim tubeName As String = String.Empty
+
+        If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
+        If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
         If Not String.IsNullOrEmpty(data.tubetype) Then orderClass.GetTubeName(data.tubetype)
 
         Dim customerPriceGroup As String = orderClass.GetPriceGroupByOrder(data.headerid)
+        Dim roleName As String = orderClass.GetUserRoleName(data.loginid)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "CURTAIN TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.colourtype) Then Return "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID"
@@ -933,6 +1468,10 @@ Partial Class Order_Method
 
         If String.IsNullOrEmpty(data.width) Then Return "WIDTH IS REQUIRED !"
         If Not Integer.TryParse(data.width, width) OrElse width <= 0 Then Return "PLEASE CHECK YOUR WIDTH ORDER !"
+
+        If blindName = "Fabric Only" Then
+            If width > 2800 Then Return "MAXIMUM WIDTH IS 2800MM !"
+        End If
 
         If blindName = "Single Curtain & Track" OrElse blindName = "Double Curtain & Track" OrElse blindName = "Curtain Only" OrElse blindName = "Fabric Only" Then
             If String.IsNullOrEmpty(data.drop) Then Return "DROP IS REQUIRED !"
@@ -1242,17 +1781,17 @@ Partial Class Order_Method
         Dim squareMetre As Decimal
 
         Dim designName As String = String.Empty
-        If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
-
         Dim blindName As String = String.Empty
-        If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
-
         Dim controlName As String = String.Empty
+
+        If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
+        If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
         If Not String.IsNullOrEmpty(data.controltype) Then controlName = orderClass.GetControlName(data.controltype)
 
         Dim customerPriceGroup As String = orderClass.GetPriceGroupByOrder(data.headerid)
+        Dim roleName As String = orderClass.GetUserRoleName(data.loginid)
 
-        If String.IsNullOrEmpty(data.blindtype) Then Return "PLEASE CONTACT CUSTOMER SERVICE ORDER@JPMDIRECT.COM.AU"
+        If String.IsNullOrEmpty(data.blindtype) Then Return "PLEASE CONTACT CUSTOMER SERVICE !"
         If String.IsNullOrEmpty(data.controltype) Then Return "CONTROL TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.colourtype) Then Return "TRACK COLOUR IS REQUIRED !"
 
@@ -1269,13 +1808,17 @@ Partial Class Order_Method
 
         If String.IsNullOrEmpty(data.width) Then Return "WIDTH IS REQUIRED !"
         If Not Integer.TryParse(data.width, width) OrElse width <= 0 Then Return "PLEASE CHECK YOUR WIDTH ORDER !"
-        If width < 500 Then Return "MINIMUM WIDTH IS 500MM !"
-        If width > 3900 Then Return "MAXIMUM WIDTH IS 3900MM !"
+        If roleName = "Customer" Then
+            If width < 500 Then Return "MINIMUM WIDTH IS 500MM !"
+            If width > 3900 Then Return "MAXIMUM WIDTH IS 3900MM !"
+        End If
 
         If String.IsNullOrEmpty(data.drop) Then Return "DROP IS REQUIRED !"
         If Not Integer.TryParse(data.drop, drop) OrElse drop <= 0 Then Return "PLEASE CHECK YOUR DROP ORDER !"
-        If drop < 600 Then Return "MINIMUM DROP IS 600MM !"
-        If drop > 2700 Then Return "MINIMUM DROP IS 2700MM !"
+        If roleName = "Customer" Then
+            If drop < 600 Then Return "MINIMUM DROP IS 600MM !"
+            If drop > 2700 Then Return "MINIMUM DROP IS 2700MM !"
+        End If
 
         If String.IsNullOrEmpty(data.stackposition) Then Return "STACK POSITION IS REQUIRED !"
         If controlName = "Chain" AndAlso String.IsNullOrEmpty(data.controlposition) Then Return "CONTROL POSITION IS REQUIRED !"
@@ -1459,12 +2002,13 @@ Partial Class Order_Method
         Dim markup As Integer
 
         Dim designName As String = String.Empty
-        If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
-
         Dim tubeName As String = String.Empty
+
+        If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.tubetype) Then tubeName = orderClass.GetTubeName(data.tubetype)
 
         Dim customerPriceGroup As String = orderClass.GetPriceGroupByOrder(data.headerid)
+        Dim roleName As String = orderClass.GetUserRoleName(data.loginid)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "BLIND TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.tubetype) Then Return "VALANCE TYPE IS REQUIRED !"
@@ -1485,8 +2029,10 @@ Partial Class Order_Method
 
         If String.IsNullOrEmpty(data.width) Then Return "WIDTH IS REQUIRED !"
         If Not Integer.TryParse(data.width, width) OrElse width <= 0 Then Return "PLEASE CHECK YOUR WIDTH ORDER !"
-        If width < 600 Then Return "MINIMUM WIDTH IS 600MM !"
-        If width > 3000 Then Return "MAXIMUM WIDTH IS 3000MM !"
+        If roleName = "Customer" Then
+            If width < 600 Then Return "MINIMUM WIDTH IS 600MM !"
+            If width > 3000 Then Return "MAXIMUM WIDTH IS 3000MM !"
+        End If
 
         If String.IsNullOrEmpty(data.brackettype) Then Return "BRACKET TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.isblindin) Then Return "IS BLIND IN IS REQUIRED !"
@@ -1635,16 +2181,16 @@ Partial Class Order_Method
         Dim squareMetre As Decimal
 
         Dim designName As String = String.Empty
-        If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
-
         Dim blindName As String = String.Empty
-        If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
-
         Dim tubeName As String = String.Empty
+
+        If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
+        If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
         If Not String.IsNullOrEmpty(data.tubetype) Then tubeName = orderClass.GetTubeName(data.tubetype)
 
         Dim companyId As String = orderClass.GetCompanyIdByOrder(data.headerid)
         Dim customerPriceGroup As String = orderClass.GetPriceGroupByOrder(data.headerid)
+        Dim roleName As String = orderClass.GetUserRoleName(data.loginid)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "PANEL SYSTEM IS REQUIRED !"
         If String.IsNullOrEmpty(data.tubetype) Then Return "PANEL STYLE IS REQUIRED !"
@@ -1669,12 +2215,18 @@ Partial Class Order_Method
 
         If String.IsNullOrEmpty(data.width) Then Return "WIDTH IS REQUIRED !"
         If Not Integer.TryParse(data.width, width) OrElse width <= 0 Then Return "PLEASE CHECK YOUR WIDTH ORDER !"
-        If width > 6010 Then Return "MAXIMUM WIDTH IS 6010MM !"
+        If roleName = "Customer" Then
+            If width < 360 Then Return "MINIMUM WIDTH IS 30MM !"
+            If width > 6010 Then Return "MAXIMUM WIDTH IS 6010MM !"
+        End If
 
         If blindName = "Complete Set" OrElse blindName = "Panel Only" Then
             If String.IsNullOrEmpty(data.drop) Then Return "DROP IS REQUIRED !"
             If Not Integer.TryParse(data.drop, drop) OrElse drop <= 0 Then Return "PLEASE CHECK YOUR DROP ORDER !"
-            If drop > 3000 Then Return "MAXIMUM DROP IS 3000MM !"
+            If roleName = "Customer" Then
+                If drop < 500 Then Return "MINIMUM DROP IS 500MM !"
+                If drop > 3000 Then Return "MAXIMUM DROP IS 3000MM !"
+            End If
         End If
 
         If blindName = "Complete Set" OrElse blindName = "Track Only" Then
@@ -1891,12 +2443,13 @@ Partial Class Order_Method
         Dim totalItems As Integer = 1
 
         Dim designName As String = String.Empty
-        If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
-
         Dim tubeName As String = String.Empty
+
+        If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.tubetype) Then tubeName = orderClass.GetTubeName(data.tubetype)
 
         Dim customerPriceGroup As String = orderClass.GetPriceGroupByOrder(data.headerid)
+        Dim roleName As String = orderClass.GetUserRoleName(data.loginid)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "BLIND TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.tubetype) Then Return "PELMET TYPE IS REQUIRED !"
@@ -1961,13 +2514,11 @@ Partial Class Order_Method
         If data.layoutcode = "B" OrElse data.layoutcode = "C" Then
             widthc = 0
             linearMetreB = widthb / 1000
-
             totalItems = 2
         End If
 
         If data.layoutcode = "D" Then
             linearMetreC = widthc / 1000
-
             totalItems = 3
         End If
 
@@ -2101,16 +2652,16 @@ Partial Class Order_Method
         Dim markup As Integer
 
         Dim designName As String = String.Empty
-        If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
-
         Dim tubeName As String = String.Empty
-        If Not String.IsNullOrEmpty(data.tubetype) Then tubeName = orderClass.GetTubeName(data.tubetype)
-
         Dim controlName As String = String.Empty
+
+        If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
+        If Not String.IsNullOrEmpty(data.tubetype) Then tubeName = orderClass.GetTubeName(data.tubetype)
         If Not String.IsNullOrEmpty(data.controltype) Then controlName = orderClass.GetControlName(data.controltype)
 
         Dim companyId As String = orderClass.GetCompanyIdByOrder(data.headerid)
         Dim customerPriceGroup As String = orderClass.GetPriceGroupByOrder(data.headerid)
+        Dim roleName As String = orderClass.GetUserRoleName(data.loginid)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "BLIND TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.tubetype) Then Return "ROMAN STYLE IS REQUIRED !"
@@ -2129,8 +2680,10 @@ Partial Class Order_Method
 
         If String.IsNullOrEmpty(data.width) Then Return "WIDTH IS REQUIRED !"
         If Not Integer.TryParse(data.width, width) OrElse width <= 0 Then Return "PLEASE CHECK YOUR WIDTH ORDER !"
-        If width < 360 Then Return "MINIMUM WIDTH IS 360MM !"
-        If width > 2910 Then Return "MINIMUM WIDTH IS 2910MM !"
+        If roleName = "Customer" Then
+            If width < 360 Then Return "MINIMUM WIDTH IS 360MM !"
+            If width > 2910 Then Return "MINIMUM WIDTH IS 2910MM !"
+        End If
 
         If String.IsNullOrEmpty(data.drop) Then Return "DROP IS REQUIRED !"
         If Not Integer.TryParse(data.drop, drop) OrElse drop <= 0 Then Return "PLEASE CHECK YOUR DROP ORDER !"
@@ -2325,12 +2878,13 @@ Partial Class Order_Method
         Dim markup As Integer
 
         Dim designName As String = String.Empty
-        If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
-
         Dim blindName As String = String.Empty
+
+        If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
 
         Dim customerPriceGroup As String = orderClass.GetPriceGroupByOrder(data.headerid)
+        Dim roleName As String = orderClass.GetUserRoleName(data.loginid)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "PRIVACY TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.colourtype) Then Return "PRIVACY COLOUR IS REQUIRED !"
@@ -2501,12 +3055,13 @@ Partial Class Order_Method
         Dim totalItems As Integer = 1
 
         Dim designName As String = String.Empty
-        If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
-
         Dim blindName As String = String.Empty
+
+        If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
 
         Dim customerPriceGroup As String = orderClass.GetPriceGroupByOrder(data.headerid)
+        Dim roleName As String = orderClass.GetUserRoleName(data.loginid)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "VENETIAN TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.colourtype) Then Return "VENETIAN COLOUR IS REQUIRED !"
@@ -2843,18 +3398,17 @@ Partial Class Order_Method
         Dim markup As Integer
 
         Dim designName As String = String.Empty
-        If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
-
         Dim blindName As String = String.Empty
-        If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
-
         Dim tubeName As String = String.Empty
-        If Not String.IsNullOrEmpty(data.tubetype) Then tubeName = orderClass.GetTubeName(data.tubetype)
-
         Dim controlName As String = String.Empty
+
+        If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
+        If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
+        If Not String.IsNullOrEmpty(data.tubetype) Then tubeName = orderClass.GetTubeName(data.tubetype)
         If Not String.IsNullOrEmpty(data.controltype) Then controlName = orderClass.GetControlName(data.controltype)
 
         Dim customerPriceGroup As String = orderClass.GetPriceGroupByOrder(data.headerid)
+        Dim roleName As String = orderClass.GetUserRoleName(data.loginid)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "VERTICAL SYSTEM IS REQUIRED !"
         If String.IsNullOrEmpty(data.tubetype) Then Return "BLADE TYPE IS REQUIRED !"
@@ -3185,6 +3739,7 @@ Partial Class Order_Method
         Dim companyId As String = orderClass.GetCompanyIdByOrder(data.headerid)
         Dim customerId As String = orderClass.GetCustomerIdByOrder(data.headerid)
         Dim companyAlias As String = orderClass.GetCompanyAliasByCustomer(customerId)
+        Dim roleName As String = orderClass.GetUserRoleName(data.loginid)
 
         Dim chainType As String = String.Empty
         Dim chainTypeB As String = String.Empty
@@ -5870,10 +6425,7 @@ Partial Class Order_Method
 
         Dim orderClass As New OrderClass
 
-        Dim designName As String = orderClass.GetDesignName(data.designid)
-        Dim blindName As String = orderClass.GetBlindName(data.blindtype)
-
-        Dim roleName As String = orderClass.GetUserRoleName(data.loginid)
+        Dim qty As Integer
 
         Dim width As Integer = 0
         Dim drop As Integer = 0
@@ -5899,10 +6451,17 @@ Partial Class Order_Method
 
         Dim markup As Integer
 
+        Dim designName As String = String.Empty
+        Dim blindName As String = orderClass.GetBlindName(data.blindtype)
+        Dim roleName As String = orderClass.GetUserRoleName(data.loginid)
+
+        If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
+        If Not String.IsNullOrEmpty(data.designid) Then blindName = orderClass.GetBlindName(data.blindtype)
+
         If String.IsNullOrEmpty(data.blindtype) Then Return "SHUTTER TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.colourtype) Then Return "COLOUR IS REQUIRED !"
 
-        Dim qty As Integer
+
         If String.IsNullOrEmpty(data.qty) Then Return "QTY IS REQUIRED !"
         If Not Integer.TryParse(data.qty, qty) OrElse qty <= 0 Then Return "PLEASE CHECK YOUR QTY ORDER !"
 
@@ -6008,12 +6567,7 @@ Partial Class Order_Method
         End If
 
         If blindName = "Track Bi-fold" OrElse blindName = "Track Sliding" OrElse blindName = "Track Sliding Single Track" Then
-            If String.IsNullOrEmpty(data.bottomtracktype) Then
-                Return "BOTTOM TRACK TYPE IS REQUIRED !"
-            End If
-            If data.bottomtracktype = "M Track" AndAlso data.bottomtrackrecess = "" Then
-                Return "BOTTOM TRACK RECESS FOR IS REQUIRED !"
-            End If
+            If String.IsNullOrEmpty(data.bottomtracktype) Then Return "BOTTOM TRACK TYPE IS REQUIRED !"
         End If
 
         If blindName = "Hinged" OrElse blindName = "Hinged Bi-fold" Then
@@ -6153,66 +6707,68 @@ Partial Class Order_Method
         End If
 
         'GAP POSITION
-        If String.IsNullOrEmpty(data.samesizepanel) AndAlso designName = "Skyline Shutter Ocean" AndAlso roleName = "Customer" Then
-            If blindName = "Hinged" OrElse blindName = "Hinged Bi-fold" Then
-                Dim pemisah As Char() = {"T"c, "C"c, "B"c, "G"c}
+        If designName = "Skyline Shutter Ocean" AndAlso roleName = "Customer" Then
+            If String.IsNullOrEmpty(data.samesizepanel) Then
+                If blindName = "Hinged" OrElse blindName = "Hinged Bi-fold" Then
+                    Dim pemisah As Char() = {"T"c, "C"c, "B"c, "G"c}
 
-                Dim gaps As Integer() = {gap1, gap2, gap3, gap4, gap5}
-                Dim totalWidth As Integer = width
+                    Dim gaps As Integer() = {gap1, gap2, gap3, gap4, gap5}
+                    Dim totalWidth As Integer = width
 
-                Dim sections As New List(Of String)
-                Dim startIndex As Integer = 0
-                Dim totalPemisah As Integer = 0
+                    Dim sections As New List(Of String)
+                    Dim startIndex As Integer = 0
+                    Dim totalPemisah As Integer = 0
 
-                For i As Integer = 1 To layoutCode.Length - 1
-                    If pemisah.Contains(layoutCode(i)) Then
-                        totalPemisah += 1
-                        sections.Add(layoutCode.Substring(startIndex, i - startIndex + 1))
-                        startIndex = i
+                    For i As Integer = 1 To layoutCode.Length - 1
+                        If pemisah.Contains(layoutCode(i)) Then
+                            totalPemisah += 1
+                            sections.Add(layoutCode.Substring(startIndex, i - startIndex + 1))
+                            startIndex = i
+                        End If
+                    Next
+
+                    If startIndex < layoutCode.Length Then
+                        sections.Add(layoutCode.Substring(startIndex))
                     End If
-                Next
 
-                If startIndex < layoutCode.Length Then
-                    sections.Add(layoutCode.Substring(startIndex))
+                    Dim sumGapUsed As Integer = 0
+
+                    For idx As Integer = 0 To sections.Count - 1
+                        Dim section As String = sections(idx)
+                        Dim panelCount As Integer = section.Count(Function(ch) "LRFM".Contains(ch))
+
+                        Dim currentGap As Integer
+
+                        If idx = sections.Count - 1 Then
+                            currentGap = totalWidth - sumGapUsed
+                        Else
+                            currentGap = If(idx < gaps.Length, gaps(idx), 0)
+                            sumGapUsed += currentGap
+                        End If
+
+                        If currentGap <= 0 Then
+                            Return String.Format("GAP 1 IS REQUIRED !", idx + 1)
+                            Exit For
+                        End If
+
+                        Dim dataGap As Object() = {blindName, "Gap", currentGap, data.mounting, section, data.frametype, data.frameleft, data.frameright, panelCount}
+
+                        Dim widthDeduct As Decimal = orderClass.WidthDeductShutter(dataGap)
+
+                        If widthDeduct / panelCount < 200 Then
+                            Return String.Format("MINIMUM PANEL WIDTH IS 200MM.<br />FINAL PANEL WIDTH IN SECTION {0} IS {1} !", idx + 1, widthDeduct)
+                            Exit For
+                        End If
+                        If blindName = "Hinged Bi-fold" AndAlso widthDeduct / panelCount > 650 Then
+                            Return String.Format("MAXIMUM PANEL WIDTH FOR HINGED BI-FOLD IS 650MM.<br />FINAL PANEL WIDTH IN SECTION {0} IS {1} !", idx + 1, widthDeduct)
+                            Exit For
+                        End If
+                        If widthDeduct / panelCount > 900 Then
+                            Return String.Format("MAXIMUM PANEL WIDTH IS 900MM.<br />FINAL PANEL WIDTH IN SECTION {0} IS {1} !", idx + 1, widthDeduct)
+                            Exit For
+                        End If
+                    Next
                 End If
-
-                Dim sumGapUsed As Integer = 0
-
-                For idx As Integer = 0 To sections.Count - 1
-                    Dim section As String = sections(idx)
-                    Dim panelCount As Integer = section.Count(Function(ch) "LRFM".Contains(ch))
-
-                    Dim currentGap As Integer
-
-                    If idx = sections.Count - 1 Then
-                        currentGap = totalWidth - sumGapUsed
-                    Else
-                        currentGap = If(idx < gaps.Length, gaps(idx), 0)
-                        sumGapUsed += currentGap
-                    End If
-
-                    If currentGap <= 0 Then
-                        Return String.Format("GAP 1 IS REQUIRED !", idx + 1)
-                        Exit For
-                    End If
-
-                    Dim dataGap As Object() = {blindName, "Gap", currentGap, data.mounting, section, data.frametype, data.frameleft, data.frameright, panelCount}
-
-                    Dim widthDeduct As Decimal = orderClass.WidthDeductShutter(dataGap)
-
-                    If widthDeduct / panelCount < 200 Then
-                        Return String.Format("MINIMUM PANEL WIDTH IS 200MM.<br />FINAL PANEL WIDTH IN SECTION {0} IS {1} !", idx + 1, widthDeduct)
-                        Exit For
-                    End If
-                    If blindName = "Hinged Bi-fold" AndAlso widthDeduct / panelCount > 650 Then
-                        Return String.Format("MAXIMUM PANEL WIDTH FOR HINGED BI-FOLD IS 650MM.<br />FINAL PANEL WIDTH IN SECTION {0} IS {1} !", idx + 1, widthDeduct)
-                        Exit For
-                    End If
-                    If widthDeduct / panelCount > 900 Then
-                        Return String.Format("MAXIMUM PANEL WIDTH IS 900MM.<br />FINAL PANEL WIDTH IN SECTION {0} IS {1} !", idx + 1, widthDeduct)
-                        Exit For
-                    End If
-                Next
             End If
         End If
 
@@ -6334,9 +6890,8 @@ Partial Class Order_Method
             If Not data.layoutcode = "Other" Then
                 data.layoutcodecustom = String.Empty
             End If
-            If data.bottomtracktype = "U Track" Then
-                data.bottomtrackrecess = "Yes"
-            End If
+            If data.bottomtracktype = "U Track" Then data.bottomtrackrecess = "Yes"
+
             data.buildout = "" : data.buildoutposition = ""
             data.samesizepanel = String.Empty
 
@@ -6501,7 +7056,6 @@ Partial Class Order_Method
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
                 Dim itemId As String = orderClass.GetNewOrderItemId()
-                'Dim itemId As String = orderClass.CreateOrderItemId_WebOrder()
 
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, PriceProductGroupId, Qty, Room, Mounting, Width, [Drop], SemiInsideMount, LouvreSize, LouvrePosition, HingeColour, MidrailHeight1, MidrailHeight2, MidrailCritical, LayoutCode, LayoutCodeCustom, CustomHeaderLength, FrameType, FrameLeft, FrameRight, FrameTop, FrameBottom, BottomTrackType, BottomTrackRecess, Buildout, BuildoutPosition, PanelQty, TrackQty, TrackLength, SameSizePanel, HingeQtyPerPanel, PanelQtyWithHinge, Gap1, Gap2, Gap3, Gap4, Gap5, HorizontalTPost, HorizontalTPostHeight, JoinedPanels, ReverseHinged, PelmetFlat, ExtraFascia, HingesLoose, TiltrodType, TiltrodSplit, SplitHeight1, SplitHeight2, DoorCutOut, SpecialShape, TemplateProvided, SquareMetre, LinearMetre, TotalItems, Notes, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, @Qty, @Room, @Mounting, @Width, @Drop, @SemiInsideMount, @LouvreSize, @LouvrePosition, @HingeColour, @MidrailHeight1, @MidrailHeight2, @MidrailCritical, @LayoutCode, @LayoutCodeCustom, @CustomHeaderLength, @FrameType, @FrameLeft, @FrameRight, @FrameTop, @FrameBottom, @BottomTrackType, @BottomTrackRecess, @Buildout, @BuildoutPosition, @PanelQty, @TrackQty, @TrackLength, @SameSizePanel, @HingeQtyPerPanel, @PanelQtyWithHinge, @Gap1, @Gap2, @Gap3, @Gap4, @Gap5, @HorizontalTPost, @HorizontalTPostHeight, @JoinedPanels, @ReverseHinged, @PelmetFlat, @ExtraFascia, @HingesLoose, @TiltrodType, @TiltrodSplit, @SplitHeight1, @SplitHeight2, @DoorCutOut, @SpecialShape, @TemplateProvided, @SquareMetre, @LinearMetre, @TotalItems, @Notes, @MarkUp, 1)", thisConn)
@@ -7389,9 +7943,9 @@ Partial Class Order_Method
         Dim markup As Integer
 
         Dim designName As String = String.Empty
-        If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
-
         Dim blindName As String = String.Empty
+
+        If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "SAMPLE TYPE IS REQUIRED !"
@@ -7495,18 +8049,17 @@ Partial Class Order_Method
         Dim markup As Integer
 
         Dim designName As String = String.Empty
-        If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
-
         Dim blindName As String = String.Empty
-        If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
-
         Dim tubeName As String = String.Empty
-        If Not String.IsNullOrEmpty(data.tubetype) Then tubeName = orderClass.GetTubeName(data.tubetype)
-
         Dim controlName As String = String.Empty
+
+        If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
+        If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
+        If Not String.IsNullOrEmpty(data.tubetype) Then tubeName = orderClass.GetTubeName(data.tubetype)
         If Not String.IsNullOrEmpty(data.controltype) Then controlName = orderClass.GetControlName(data.controltype)
 
         Dim customerPriceGroup As String = orderClass.GetPriceGroupByOrder(data.headerid)
+        Dim roleName As String = orderClass.GetUserRoleName(data.loginid)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.tubetype) Then Return "BLADE TYPE IS REQUIRED !"
@@ -7700,10 +8253,12 @@ Partial Class Order_Method
         Dim markup As Integer
 
         Dim designName As String = String.Empty
-        If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
-
         Dim controlName As String = String.Empty
+
+        If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.controltype) Then controlName = orderClass.GetControlName(data.controltype)
+
+        Dim roleName As String = orderClass.GetUserRoleName(data.loginid)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "OUTDOOR TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.controltype) Then Return "CONTROL TYPE IS REQUIRED !"
@@ -7868,13 +8423,14 @@ Partial Class Order_Method
         Dim markup As Integer
 
         Dim designName As String = String.Empty
-        If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
-
         Dim blindName As String = String.Empty
-        If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
-
         Dim tubeName As String = String.Empty
+
+        If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
+        If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
         If Not String.IsNullOrEmpty(data.tubetype) Then tubeName = orderClass.GetTubeName(data.tubetype)
+
+        Dim roleName As String = orderClass.GetUserRoleName(data.loginid)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "DOOR TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.tubetype) Then Return "MECHANISM TYPE IS REQUIRED !"
@@ -8154,10 +8710,12 @@ Partial Class Order_Method
         Dim markup As Integer
 
         Dim designName As String = String.Empty
-        If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
-
         Dim blindName As String = String.Empty
+
+        If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
+
+        Dim roleName As String = orderClass.GetUserRoleName(data.loginid)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.colourtype) Then Return "PRODUCT IS REQUIRED !"
@@ -8341,285 +8899,6 @@ Partial Class Order_Method
         Return "TEST"
     End Function
 
-    <WebMethod()>
-    Public Shared Function Detail(itemId As String) As List(Of Dictionary(Of String, Object))
-        Dim resultData As New List(Of Dictionary(Of String, Object))()
-        If String.IsNullOrEmpty(itemId) Then Return resultData
-
-        Dim orderCfg As New OrderClass
-
-        ' Ambil OrderDetails 1 row
-        Dim row As DataRow = orderCfg.GetDataRow("SELECT * FROM OrderDetails WHERE Id='" & itemId & "'")
-        If row Is Nothing Then Return resultData
-
-        ' Ambil Product terkait
-        Dim productId As String = row("ProductId").ToString()
-        Dim product As DataRow = orderCfg.GetDataRow("SELECT Products.*, Blinds.Name AS BlindName FROM Products LEFT JOIN Blinds ON Products.BlindId = Blinds.Id WHERE Products.Id='" & productId & "'")
-
-        Dim data As New Dictionary(Of String, Object)()
-
-        If product IsNot Nothing Then
-            Dim blindId As String = product("BlindId").ToString()
-            Dim tubeType As String = product("TubeType").ToString()
-            Dim controlType As String = product("ControlType").ToString()
-            Dim blindName As String = product("BlindName").ToString()
-
-            data("BlindType") = blindId
-            data("TubeType") = tubeType
-            data("ControlType") = controlType
-            data("BlindName") = blindName
-            data("ColourType") = productId
-            data("SubType") = row("SubType")
-        End If
-
-        data("Qty") = row("Qty")
-        data("QtyBlade") = row("QtyBlade")
-        data("Room") = row("Room")
-        data("Mounting") = row("Mounting")
-
-        data("Width") = row("Width")
-        data("WidthB") = row("WidthB")
-        data("WidthC") = row("WidthC")
-        data("WidthD") = row("WidthD")
-        data("WidthE") = row("WidthE")
-        data("WidthF") = row("WidthF")
-
-        data("Drop") = row("Drop")
-        data("DropB") = row("DropB")
-        data("DropC") = row("DropC")
-        data("DropD") = row("DropD")
-        data("DropE") = row("DropE")
-        data("DropF") = row("DropF")
-
-        data("FabricInsert") = row("FabricInsert")
-
-        data("FabricType") = row("FabricId")
-        data("FabricTypeB") = row("FabricIdB")
-        data("FabricTypeC") = row("FabricIdC")
-        data("FabricTypeD") = row("FabricIdD")
-        data("FabricTypeE") = row("FabricIdE")
-        data("FabricTypeF") = row("FabricIdF")
-
-        data("FabricColour") = row("FabricColourId")
-        data("FabricColourB") = row("FabricColourIdB")
-        data("FabricColourC") = row("FabricColourIdC")
-        data("FabricColourD") = row("FabricColourIdD")
-        data("FabricColourE") = row("FabricColourIdE")
-        data("FabricColourF") = row("FabricColourIdF")
-
-        data("Remote") = row("ChainId")
-        data("Charger") = row("Charger")
-        data("ExtensionCable") = row("ExtensionCable")
-
-        data("ChainId") = row("ChainId")
-        data("ChainIdB") = row("ChainIdB")
-        data("ChainIdC") = row("ChainIdC")
-        data("ChainIdD") = row("ChainIdD")
-        data("ChainIdE") = row("ChainIdE")
-        data("ChainIdF") = row("ChainIdF")
-
-        data("BottomType") = row("BottomId")
-        data("BottomTypeB") = row("BottomIdB")
-        data("BottomTypeC") = row("BottomIdC")
-        data("BottomTypeD") = row("BottomIdD")
-        data("BottomTypeE") = row("BottomIdE")
-        data("BottomTypeF") = row("BottomIdF")
-
-        data("BottomColour") = row("BottomColourId")
-        data("BottomColourB") = row("BottomColourIdB")
-        data("BottomColourC") = row("BottomColourIdC")
-        data("BottomColourD") = row("BottomColourIdD")
-        data("BottomColourE") = row("BottomColourIdE")
-        data("BottomColourF") = row("BottomColourIdF")
-
-        data("BottomOption") = row("FlatOption")
-        data("BottomOptionB") = row("FlatOptionB")
-        data("BottomOptionC") = row("FlatOptionC")
-        data("BottomOptionD") = row("FlatOptionD")
-        data("BottomOptionE") = row("FlatOptionE")
-        data("BottomOptionF") = row("FlatOptionF")
-
-        data("StackPosition") = row("StackPosition")
-        data("StackPositionB") = row("StackPositionB")
-
-        data("Roll") = row("Roll")
-        data("RollB") = row("RollB")
-        data("RollC") = row("RollC")
-        data("RollD") = row("RollD")
-        data("RollE") = row("RollE")
-        data("RollF") = row("RollF")
-
-        data("ControlPosition") = row("ControlPosition")
-        data("ControlPositionB") = row("ControlPositionB")
-        data("ControlPositionC") = row("ControlPositionC")
-        data("ControlPositionD") = row("ControlPositionD")
-        data("ControlPositionE") = row("ControlPositionE")
-        data("ControlPositionF") = row("ControlPositionF")
-
-        data("TilterPosition") = row("TilterPosition")
-        data("TilterPositionB") = row("TilterPositionB")
-
-        data("WandColour") = row("WandColour")
-
-        data("ControlColour") = row("ControlColour")
-        data("ControlColourB") = row("ControlColourB")
-
-        data("ControlLength") = row("ControlLength")
-        data("ControlLengthB") = row("ControlLengthB")
-        data("ControlLengthC") = row("ControlLengthC")
-        data("ControlLengthD") = row("ControlLengthD")
-        data("ControlLengthE") = row("ControlLengthE")
-        data("ControlLengthF") = row("ControlLengthF")
-
-        data("ControlLengthValue") = row("ControlLengthValue")
-        data("ControlLengthValueB") = row("ControlLengthValueB")
-        data("ControlLengthValueC") = row("ControlLengthValueC")
-        data("ControlLengthValueD") = row("ControlLengthValueD")
-        data("ControlLengthValueE") = row("ControlLengthValueE")
-        data("ControlLengthValueF") = row("ControlLengthValueF")
-
-        data("WandLength") = row("WandLength")
-        data("WandLengthB") = row("WandLengthB")
-
-        data("WandLengthValue") = row("WandLengthValue")
-        data("WandLengthValueB") = row("WandLengthValueB")
-
-        data("Heading") = row("Heading")
-        data("HeadingB") = row("HeadingB")
-
-        data("PanelQty") = row("PanelQty")
-        data("TrackType") = row("TrackType")
-        data("TrackColour") = row("TrackColour")
-        data("TrackDraw") = row("TrackDraw")
-        data("TrackTypeB") = row("TrackTypeB")
-        data("TrackColourB") = row("TrackColourB")
-        data("TrackDrawB") = row("TrackDrawB")
-
-        data("ChainStopper") = row("ChainStopper")
-        data("ChainStopperB") = row("ChainStopperB")
-        data("ChainStopperC") = row("ChainStopperC")
-        data("ChainStopperD") = row("ChainStopperD")
-        data("ChainStopperE") = row("ChainStopperE")
-        data("ChainStopperF") = row("ChainStopperF")
-
-        data("ValanceOption") = row("ValanceOption")
-        data("ValanceType") = row("ValanceType")
-        data("ValanceSize") = row("ValanceSize")
-        data("ValanceSizeValue") = row("ValanceSizeValue")
-
-        data("ReturnPosition") = row("ReturnPosition")
-        data("ReturnLength") = row("ReturnLength")
-        data("ReturnLengthB") = row("ReturnLengthB")
-        data("ReturnLengthValue") = row("ReturnLengthValue")
-        data("ReturnLengthValueB") = row("ReturnLengthValueB")
-
-        data("Batten") = row("Batten")
-
-        data("BracketType") = row("BracketType")
-        data("BracketSize") = row("BracketSize")
-        data("BracketExtension") = row("BracketExtension")
-        data("Sloping") = row("Sloping")
-        data("IsBlindIn") = row("IsBlindIn")
-        data("LayoutCode") = row("LayoutCode")
-        data("LayoutCodeCustom") = row("LayoutCodeCustom")
-
-        data("BottomJoining") = row("BottomJoining")
-        data("BottomHem") = row("BottomHem")
-        data("Tassel") = row("Tassel")
-        data("Supply") = row("Supply")
-        data("Adjusting") = row("Adjusting")
-        data("SpringAssist") = row("SpringAssist")
-        data("Printing") = row("Printing")
-        data("PrintingB") = row("PrintingB")
-        data("PrintingC") = row("PrintingC")
-        data("PrintingD") = row("PrintingD")
-        data("PrintingE") = row("PrintingE")
-        data("PrintingF") = row("PrintingF")
-        data("PrintingG") = row("PrintingG")
-        data("PrintingH") = row("PrintingH")
-
-        ' ==== SHUTTER ====
-        data("LouvreSize") = row("LouvreSize")
-        data("LouvrePosition") = row("LouvrePosition")
-        data("HingeColour") = row("HingeColour")
-        data("MidrailHeight1") = row("MidrailHeight1")
-        data("MidrailHeight2") = row("MidrailHeight2")
-        data("MidrailCritical") = row("MidrailCritical")
-        data("CustomHeaderLength") = row("CustomHeaderLength")
-        data("FrameColour") = row("FrameColour")
-        data("FrameType") = row("FrameType")
-        data("FrameLeft") = row("FrameLeft")
-        data("FrameRight") = row("FrameRight")
-        data("FrameTop") = row("FrameTop")
-        data("FrameBottom") = row("FrameBottom")
-        data("BottomTrackType") = row("BottomTrackType")
-        data("BottomTrackRecess") = row("BottomTrackRecess")
-        data("Buildout") = row("Buildout")
-        data("BuildoutPosition") = row("BuildoutPosition")
-        data("SameSizePanel") = row("SameSizePanel")
-        data("Gap1") = row("Gap1")
-        data("Gap2") = row("Gap2")
-        data("Gap3") = row("Gap3")
-        data("Gap4") = row("Gap4")
-        data("Gap5") = row("Gap5")
-        data("HorizontalTPost") = row("HorizontalTPost")
-        data("HorizontalTPostHeight") = row("HorizontalTPostHeight")
-        data("JoinedPanels") = row("JoinedPanels")
-        data("ReverseHinged") = row("ReverseHinged")
-        data("PelmetFlat") = row("PelmetFlat")
-        data("ExtraFascia") = row("ExtraFascia")
-        data("HingesLoose") = row("HingesLoose")
-        data("SemiInsideMount") = row("SemiInsideMount")
-        data("TiltrodType") = row("TiltrodType")
-        data("TiltrodSplit") = row("TiltrodSplit")
-        data("SplitHeight1") = row("SplitHeight1")
-        data("SplitHeight2") = row("SplitHeight2")
-        data("DoorCutOut") = row("DoorCutOut")
-        data("SpecialShape") = row("SpecialShape")
-        data("TemplateProvided") = row("TemplateProvided")
-
-        ' ==== DOOR ====
-        data("MidrailPosition") = row("MidrailPosition")
-        data("HandleType") = row("HandleType")
-        data("HandleLength") = row("HandleLength")
-        data("TripleLock") = row("TripleLock")
-        data("BugSeal") = row("BugSeal")
-        data("PetType") = row("PetType")
-        data("PetPosition") = row("PetPosition")
-        data("DoorCloser") = row("DoorCloser")
-        data("FlushBold") = row("FlushBold")
-        data("Beading") = row("Beading")
-        data("JambType") = row("JambType")
-        data("JambPosition") = row("JambPosition")
-        data("InterlockType") = row("InterlockType")
-        data("TopTrack") = row("TopTrack")
-        data("TopTrackLength") = row("TopTrackLength")
-        data("BottomTrack") = row("BottomTrack")
-        data("BottomTrackLength") = row("BottomTrackLength")
-        data("Receiver") = row("Receiver")
-        data("ReceiverLength") = row("ReceiverLength")
-        data("SlidingQty") = row("SlidingQty")
-        data("MeshType") = row("MeshType")
-        data("Brace") = row("Brace")
-        data("AngleType") = row("AngleType")
-        data("AngleLength") = row("AngleLength")
-        data("AngleQty") = row("AngleQty")
-        data("PortHole") = row("PortHole")
-        data("PlungerPin") = row("PlungerPin")
-        data("SwivelColour") = row("SwivelColour")
-        data("SwivelQty") = row("SwivelQty")
-        data("SwivelQtyB") = row("SwivelQtyB")
-        data("SpringQty") = row("SpringQty")
-        data("TopPlasticQty") = row("TopPlasticQty")
-
-        data("TotalItems") = row("TotalItems")
-        data("Notes") = row("Notes")
-        data("MarkUp") = row("MarkUp")
-
-        resultData.Add(data)
-        Return resultData
-    End Function
-
     'DETAIL
 
     <WebMethod()>
@@ -8708,6 +8987,12 @@ Partial Class Order_Method
         Dim fabricId As String = detailData("FabricId").ToString()
         Dim fabricIdB As String = detailData("FabricIdB").ToString()
 
+        Dim heading As String = detailData("Heading").ToString()
+        Dim headingB As String = detailData("HeadingB").ToString()
+
+        Dim trackType As String = detailData("TrackType").ToString()
+        Dim trackTypeB As String = detailData("TrackTypeB").ToString()
+
         Dim itemDetail As New Dictionary(Of String, Object)
         For Each col As DataColumn In detailData.Table.Columns
             itemDetail(col.ColumnName) = detailData(col.ColumnName)
@@ -8720,6 +9005,12 @@ Partial Class Order_Method
         Dim fabricColourReq As New JSONList With {.type = "FabricColour", .fabrictype = fabricId}
         Dim fabricColourReqB As New JSONList With {.type = "FabricColour", .fabrictype = fabricIdB}
 
+        Dim trackTypeReq As New JSONList With {.type = "CurtainTrackType", .customtype = heading}
+        Dim trackTypeReqB As New JSONList With {.type = "CurtainTrackType", .customtype = headingB}
+
+        Dim trackColourReq As New JSONList With {.type = "CurtainTrackColour", .customtype = trackType}
+        Dim trackColourReqB As New JSONList With {.type = "CurtainTrackColour", .customtype = trackTypeB}
+
         Dim result = New With {
                 .ItemData = itemDetail,
                 .BlindTypes = ListData(blindReq),
@@ -8727,7 +9018,11 @@ Partial Class Order_Method
                 .Mountings = ListData(mountingReq),
                 .Fabrics = ListData(fabricReq),
                 .FabricColours = ListData(fabricColourReq),
-                .FabricColoursB = ListData(fabricColourReqB)
+                .FabricColoursB = ListData(fabricColourReqB),
+                .TrackTypes = ListData(trackTypeReq),
+                .TrackTypesB = ListData(trackTypeReqB),
+                .TrackColours = ListData(trackColourReq),
+                .TrackColoursB = ListData(trackColourReqB)
             }
         Return result
     End Function
@@ -8860,6 +9155,7 @@ Partial Class Order_Method
         Dim controlId As String = detailData("ControlType").ToString()
         Dim fabricId As String = detailData("FabricId").ToString()
         Dim fabricIdB As String = detailData("FabricIdB").ToString()
+        Dim trackType As String = detailData("TrackType").ToString()
 
         Dim itemDetail As New Dictionary(Of String, Object)
         For Each col As DataColumn In detailData.Table.Columns
@@ -8872,6 +9168,7 @@ Partial Class Order_Method
         Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId}
         Dim fabricReq As New JSONList With {.type = "FabricType", .designtype = designId, .companydetail = companyDetailId, .tubetype = tubeId}
         Dim fabricColourReq As New JSONList With {.type = "FabricColour", .fabrictype = fabricId, .companydetail = companyDetailId}
+        Dim layoutCodeReq As New JSONList With {.type = "LayoutCodePG", .customtype = trackType}
 
         Dim result = New With {
                 .ItemData = itemDetail,
@@ -8880,7 +9177,8 @@ Partial Class Order_Method
                 .ColourTypes = ListData(colourReq),
                 .Mountings = ListData(mountingReq),
                 .Fabrics = ListData(fabricReq),
-                .FabricColours = ListData(fabricColourReq)
+                .FabricColours = ListData(fabricColourReq),
+                .LayoutCodes = ListData(layoutCodeReq)
             }
         Return result
     End Function
@@ -9019,13 +9317,11 @@ Partial Class Order_Method
         Dim tubeReq As New JSONList With {.type = "TubeType", .blindtype = blindId, .companydetail = companyDetailId}
         Dim controlReq As New JSONList With {.type = "ControlType", .blindtype = blindId, .tubetype = tubeId, .companydetail = companyDetailId}
         Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetail = companyDetailId}
-
         Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId}
-
         Dim fabricReq As New JSONList With {.type = "FabricType", .designtype = designId, .companydetail = companyDetailId, .tubetype = tubeId}
         Dim fabricColourReq As New JSONList With {.type = "FabricColour", .fabrictype = fabricId}
-
         Dim chainReq As New JSONList With {.type = "ControlColour", .designtype = designId, .companydetail = companyDetailId, .controltype = controlId}
+        Dim valanceReq As New JSONList With {.type = "ValanceRoman", .controltype = controlId}
 
         Dim result = New With {
             .ItemData = itemDetail,
@@ -9036,7 +9332,8 @@ Partial Class Order_Method
             .Mountings = ListData(mountingReq),
             .Fabrics = ListData(fabricReq),
             .FabricColours = ListData(fabricColourReq),
-            .Chains = ListData(chainReq)
+            .Chains = ListData(chainReq),
+            .Valances = ListData(valanceReq)
         }
         Return result
     End Function
@@ -9151,12 +9448,18 @@ Partial Class Order_Method
         Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetail = companyDetailId}
         Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .companydetail = companyDetailId, .tubetype = "0", .controltype = "0"}
         Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId}
+        Dim subTypeReq As New JSONList With {.type = "SubType", .blindtype = blindId}
+        Dim valanceTypeReq As New JSONList With {.type = "ValanceType", .blindtype = blindId}
+        Dim valancePositionReq As New JSONList With {.type = "ValancePosition", .blindtype = blindId}
 
         Dim result = New With {
             .ItemData = itemDetail,
             .BlindTypes = ListData(blindReq),
             .ColourTypes = ListData(colourReq),
-            .Mountings = ListData(mountingReq)
+            .Mountings = ListData(mountingReq),
+            .SubTypes = ListData(subTypeReq),
+            .ValanceTypes = ListData(valanceTypeReq),
+            .ValancePosition = ListData(valancePositionReq)
         }
         Return result
     End Function
@@ -9229,13 +9532,21 @@ Partial Class Order_Method
         Dim tubeReq As New JSONList With {.type = "TubeType", .blindtype = blindId, .companydetail = companyDetailId}
         Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .controltype = "0", .companydetail = companyDetailId}
         Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId}
+        Dim layoutCodeReq As New JSONList With {.type = "LayoutCodeDoor", .tubetype = tubeId}
+        Dim meshReq As New JSONList With {.type = "MeshDoor", .blindtype = blindId}
+        Dim interlockReq As New JSONList With {.type = "InterlockDoor", .tubetype = tubeId}
+        Dim frameColourReq As New JSONList With {.type = "FrameColourDoor", .blindtype = blindId}
 
         Dim result = New With {
                 .ItemData = itemDetail,
                 .BlindTypes = ListData(blindReq),
                 .TubeTypes = ListData(tubeReq),
                 .ColourTypes = ListData(colourReq),
-                .Mountings = ListData(mountingReq)
+                .Mountings = ListData(mountingReq),
+                .LayoutCodes = ListData(layoutCodeReq),
+                .MeshTypes = ListData(meshReq),
+                .Interlocks = ListData(interlockReq),
+                .FrameColours = ListData(frameColourReq)
             }
         Return result
     End Function
@@ -9258,12 +9569,16 @@ Partial Class Order_Method
         Dim blindReq As New JSONList With {.type = "BlindTypeCS", .designtype = designId, .companydetail = companyDetailId}
         Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = "0", .controltype = "0", .companydetail = companyDetailId}
         Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId}
+        Dim meshReq As New JSONList With {.type = "MeshWindow", .blindtype = blindId}
+        Dim frameColourReq As New JSONList With {.type = "FrameColourWindow", .blindtype = blindId}
 
         Dim result = New With {
                 .ItemData = itemDetail,
                 .BlindTypes = ListData(blindReq),
                 .ColourTypes = ListData(colourReq),
-                .Mountings = ListData(mountingReq)
+                .Mountings = ListData(mountingReq),
+                .MeshTypes = ListData(meshReq),
+                .FrameColours = ListData(frameColourReq)
             }
         Return result
     End Function
@@ -9277,6 +9592,9 @@ Partial Class Order_Method
 
         Dim designId As String = detailData("DesignType").ToString()
         Dim blindId As String = detailData("BlindType").ToString()
+        Dim mounting As String = detailData("Mounting").ToString()
+        Dim frameType As String = detailData("FrameType").ToString()
+        Dim frameBottom As String = detailData("FrameBottom").ToString()
 
         Dim itemDetail As New Dictionary(Of String, Object)
         For Each col As DataColumn In detailData.Table.Columns
@@ -9286,12 +9604,26 @@ Partial Class Order_Method
         Dim blindReq As New JSONList With {.type = "BlindTypeCS", .designtype = designId, .companydetail = companyDetailId}
         Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = "0", .controltype = "0", .companydetail = companyDetailId}
         Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId}
+        Dim layoutCodeReq As New JSONList With {.type = "LayoutCodeShutter", .blindtype = blindId}
+        Dim frameTypeReq As New JSONList With {.type = "FrameTypeShutter", .blindtype = blindId, .customtype = mounting}
+        Dim leftFrameReq As New JSONList With {.type = "LeftFrameShutter", .customtype = frameType}
+        Dim rightFrameReq As New JSONList With {.type = "RightFrameShutter", .customtype = frameType}
+        Dim topFrameReq As New JSONList With {.type = "TopFrameShutter", .customtype = frameType}
+        Dim bottomFrameReq As New JSONList With {.type = "BottomFrameShutter", .customtype = frameType}
+        Dim bottomTrackReq As New JSONList With {.type = "BottomTrackShutter", .blindtype = blindId, .customtype = frameBottom}
 
         Dim result = New With {
                 .ItemData = itemDetail,
                 .BlindTypes = ListData(blindReq),
                 .ColourTypes = ListData(colourReq),
-                .Mountings = ListData(mountingReq)
+                .Mountings = ListData(mountingReq),
+                .LayoutCodes = ListData(layoutCodeReq),
+                .FrameTypes = ListData(frameTypeReq),
+                .LeftFrames = ListData(leftFrameReq),
+                .RightFrames = ListData(rightFrameReq),
+                .TopFrames = ListData(topFrameReq),
+                .BottomFrames = ListData(bottomFrameReq),
+                .BottomTracks = ListData(bottomTrackReq)
             }
         Return result
     End Function
@@ -9387,7 +9719,6 @@ Partial Class Order_Method
         Return result
     End Function
 End Class
-
 
 Public Class ProccessData
     Public Property headerid As String

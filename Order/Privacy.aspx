@@ -13,6 +13,7 @@
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a runat="server" href="~/">Home</a></li>
                             <li class="breadcrumb-item"><a runat="server" href="~/order">Order</a></li>
+                            <li class="breadcrumb-item"><a id="orderDetail" href="#">Detail</a></li>
                             <li class="breadcrumb-item active" aria-current="page"><%: Page.Title %></li>
                         </ol>
                     </nav>
@@ -43,17 +44,17 @@
                         <div class="card-content">
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-12 col-sm-12 col-lg-3">
+                                    <div class="col-6 col-sm-6 col-lg-3 mb-2">
                                         <label>Order #</label>
                                         <br />
                                         <label id="orderid" class="font-bold"></label>
                                     </div>
-                                    <div class="col-12 col-sm-12 col-lg-4">
+                                    <div class="col-6 col-sm-6 col-lg-4 mb-2">
                                         <label>Order Number</label>
                                         <br />
                                         <label id="ordernumber" class="font-bold"></label>
                                     </div>
-                                    <div class="col-6 col-sm-6 col-lg-5">
+                                    <div class="col-12 col-sm-12 col-lg-5">
                                         <label>Order Name</label>
                                         <br />
                                         <label id="ordername" class="font-bold"></label>
@@ -277,7 +278,7 @@
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-danger ">
-                    <h5 class="modal-title white text-center">System Message</h5>
+                    <h5 class="modal-title white text-center">Information</h5>
                 </div>
 
                 <div class="modal-body text-center py-4">
@@ -307,5 +308,5 @@
         </div>
     </div>
     
-    <script src='<%: ResolveUrl("~/Scripts/WebForms/Order/Privacy.js?v=1.0.0") %>'></script>
+    <script src='<%: ResolveUrl("~/Scripts/WebOrders/Privacy.js?v=1.0.0") %>'></script>
 </asp:Content>

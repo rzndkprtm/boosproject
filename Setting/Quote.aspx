@@ -281,6 +281,10 @@
         </div>
     </div>
 
+    <div runat="server" visible="false">
+        <asp:Label runat="server" ID="lblOldLogo"></asp:Label>
+    </div>
+
     <script type="text/javascript">
         function showLogo() {
             $("#modalLogo").modal("show");

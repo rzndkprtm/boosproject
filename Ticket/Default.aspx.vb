@@ -1,4 +1,5 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data
+Imports System.Data.SqlClient
 
 Partial Class Ticket_Default
     Inherits Page
@@ -185,44 +186,21 @@ Partial Class Ticket_Default
     Protected Sub BindDataTicket(searchText As String)
         Session("TicketSearch") = String.Empty
         Try
-            Dim byRole As String = String.Empty
-            Dim bySearch As String = String.Empty
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@SearchText", If(String.IsNullOrEmpty(searchText), CType(DBNull.Value, Object), searchText)),
+                New SqlParameter("@RoleName", Session("RoleName").ToString()),
+                New SqlParameter("@CompanyId", Session("CompanyId")),
+                New SqlParameter("@LoginId", Session("LoginId")),
+                New SqlParameter("@LevelName", Session("LevelName"))
+            }
 
-            If Session("RoleName") = "Sales" Then
-                byRole = "WHERE Customers.CompanyId='" & Session("CompanyId").ToString() & "'"
-                If Session("LevelName") = "Member" Then
-                    byRole = "WHERE Customers.Operator='" & Session("LoginId").ToString() & "'"
-                End If
-            End If
+            Dim thisData As DataTable = settingClass.GetDataTableSP("sp_TicketList", params)
 
-            If Session("RoleName") = "Account" Then
-                byRole = "WHERE Tickets.Issue='Pricing Issue'"
-            End If
-
-            If Session("RoleName") = "Customer Service" Then
-                byRole = "WHERE Tickets.Issue='Product Issue'"
-            End If
-
-            If Session("RoleName") = "Customer" Then
-                byRole = "WHERE Tickets.CreatedBy='" & Session("LoginId").ToString() & "'"
-            End If
-
-            If Not String.IsNullOrEmpty(searchText) Then
-                If String.IsNullOrEmpty(byRole) Then
-                    bySearch = "WHERE Tickets.Id LIKE '%" & searchText & "%' OR Tickets.TicketCode LIKE '%" & searchText & "%' OR Tickets.Issue LIKE '%" & searchText & "%' OR Tickets.Subject LIKE '%" & searchText & "%'"
-                Else
-                    bySearch = "AND (Tickets.Id LIKE '%" & searchText & "%' OR Tickets.TicketCode LIKE '%" & searchText & "%' OR Tickets.Issue LIKE '%" & searchText & "%' OR Tickets.Subject LIKE '%" & searchText & "%')"
-                End If
-            End If
-
-            Dim thisQuery As String = String.Format("SELECT Tickets.*, CASE WHEN Tickets.Status=1 THEN 'Open' WHEN Tickets.Status=0 THEN 'Closed' ELSE 'Error' END AS TicketStatus, CustomerLogins.FullName AS FullName, Customers.Name AS CustomerName FROM Tickets LEFT JOIN CustomerLogins ON Tickets.CreatedBy=CustomerLogins.Id LEFT JOIN Customers ON CustomerLogins.CustomerId=Customers.Id {0} {1} ORDER BY Tickets.CreatedDate DESC", byRole, bySearch)
-
-            gvList.DataSource = settingClass.GetDataTable(thisQuery)
+            gvList.DataSource = thisData
             gvList.DataBind()
             gvList.Columns(1).Visible = PageAction("Visible ID")
 
             btnAdd.Visible = PageAction("Add")
-            'pPageInfo.Visible = PageAction("Ticket Information")
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then

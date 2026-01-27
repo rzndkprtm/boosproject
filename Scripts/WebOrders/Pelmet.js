@@ -1,4 +1,4 @@
-﻿let designIdOri = "13";
+﻿let designIdOri = "7";
 let itemAction;
 let headerId;
 let itemId;
@@ -9,21 +9,36 @@ let loginId;
 let roleAccess;
 let priceAccess;
 
-initSample();
+initPelmet();
 
 $("#submit").on("click", process);
 $("#cancel").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
 $("#vieworder").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
 
 $("#blindtype").on("change", function () {
-    const blindtype = $(this).val();
-    bindColourType(blindtype);
+    bindTubeType($(this).val());
+    bindMounting($(this).val());
 });
+
+$("#tubetype").on("change", function () {
+    const blindtype = document.getElementById("blindtype").value;
+    bindColourType(blindtype, $(this).val());
+});
+
 $("#colourtype").on("change", function () {
     bindComponentForm($(this).val());
 });
+
 $("#fabrictype").on("change", function () {
     bindFabricColour($(this).val());
+});
+
+$("#layoutcode").on("change", function () {
+    visibleWidth($(this).val());
+});
+
+$("#returnposition").on("change", function () {
+    visiblReturnLength($(this).val());
 });
 
 function loader(itemAction) {
@@ -59,6 +74,24 @@ function getOrderHeader(headerId) {
             },
             error: reject
         });
+    });
+}
+
+function getFormAction(itemAction) {
+    return new Promise((resolve) => {
+        const pageAction = document.getElementById("pageaction");
+        if (!pageAction) {
+            resolve();
+            return;
+        }
+
+        const actionMap = {
+            create: "Add Item", edit: "Edit Item",
+            view: "View Item", copy: "Copy Item"
+        };
+
+        pageAction.innerText = actionMap[itemAction];
+        resolve();
     });
 }
 
@@ -170,12 +203,12 @@ function getPriceAccess(loginId) {
     });
 }
 
-function getDesignName(designId) {
+function getDesignName(designType) {
     return new Promise((resolve, reject) => {
         const cardTitle = document.getElementById("cardtitle");
         cardTitle.textContent = "";
 
-        if (!designId) {
+        if (!designType) {
             resolve();
             return;
         }
@@ -184,7 +217,7 @@ function getDesignName(designId) {
         $.ajax({
             type: "POST",
             url: "Method.aspx/StringData",
-            data: JSON.stringify({ type: type, dataId: designId }),
+            data: JSON.stringify({ type: type, dataId: designType }),
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (response) {
@@ -199,25 +232,6 @@ function getDesignName(designId) {
     });
 }
 
-function getFormAction(itemAction) {
-    return new Promise((resolve) => {
-        const pageAction = document.getElementById("pageaction");
-        if (!pageAction) {
-            resolve();
-            return;
-        }
-
-        const actionMap = {
-            create: "Add Item",
-            edit: "Edit Item",
-            view: "View Item",
-            copy: "Copy Item"
-        };
-        pageAction.innerText = actionMap[itemAction];
-        resolve();
-    });
-}
-
 function bindBlindType(designType) {
     return new Promise((resolve, reject) => {
         const blindtype = document.getElementById("blindtype");
@@ -226,13 +240,13 @@ function bindBlindType(designType) {
         if (!designType) {
             const selectedValue = blindtype.value || "";
             Promise.all([
-                bindColourType(selectedValue)
+                bindMounting(selectedValue),
+                bindTubeType(selectedValue)
             ]).then(resolve).catch(reject);
             return;
         }
 
         const listData = { type: "BlindType", companydetail: companyDetail, designtype: designType };
-
         $.ajax({
             type: "POST",
             url: "Method.aspx/ListData",
@@ -263,12 +277,14 @@ function bindBlindType(designType) {
 
                     const selectedValue = blindtype.value || "";
                     Promise.all([
-                        bindColourType(selectedValue)
+                        bindMounting(selectedValue),
+                        bindTubeType(selectedValue)
                     ]).then(resolve).catch(reject);
                 } else {
                     const selectedValue = blindtype.value || "";
                     Promise.all([
-                        bindColourType(selectedValue)
+                        bindMounting(selectedValue),
+                        bindTubeType(selectedValue)
                     ]).then(resolve).catch(reject);
                 }
             },
@@ -279,12 +295,73 @@ function bindBlindType(designType) {
     });
 }
 
-function bindColourType(blindType) {
+function bindTubeType(blindType) {
+    return new Promise((resolve, reject) => {
+        const tubetype = document.getElementById("tubetype");
+        tubetype.innerHTML = "";
+
+        if (!blindType) {
+            const selectedValue = tubetype.value || "";
+            Promise.all([
+                bindColourType(blindType, selectedValue)
+            ]).then(resolve).catch(reject);
+            return;
+        }
+
+        let listData = { type: "TubeType", companydetail: companyDetail, blindtype: blindType };
+
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/ListData",
+            data: JSON.stringify({ data: listData }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (Array.isArray(response.d)) {
+                    tubetype.innerHTML = "";
+
+                    if (response.d.length > 1) {
+                        const defaultOption = document.createElement("option");
+                        defaultOption.text = "";
+                        defaultOption.value = "";
+                        tubetype.add(defaultOption);
+                    }
+
+                    response.d.forEach(function (item) {
+                        const option = document.createElement("option");
+                        option.value = item.Value;
+                        option.text = item.Text;
+                        tubetype.add(option);
+                    });
+
+                    if (response.d.length === 1) {
+                        tubetype.selectedIndex = 0;
+                    }
+
+                    const selectedValue = tubetype.value || "";
+                    Promise.all([
+                        bindColourType(blindType, selectedValue)
+                    ]).then(resolve).catch(reject);
+                } else {
+                    const selectedValue = tubetype.value || "";
+                    Promise.all([
+                        bindColourType(blindType, selectedValue)
+                    ]).then(resolve).catch(reject);
+                }
+            },
+            error: function (error) {
+                reject(error);
+            }
+        });
+    });
+}
+
+function bindColourType(blindType, tubeType) {
     return new Promise((resolve, reject) => {
         const colourtype = document.getElementById("colourtype");
         colourtype.innerHTML = "";
 
-        if (!blindType) {
+        if (!blindType || !tubeType) {
             const selectedValue = colourtype.value || "";
             Promise.all([
                 bindComponentForm(selectedValue)
@@ -292,7 +369,7 @@ function bindColourType(blindType) {
             return;
         }
 
-        const listData = { type: "ColourType", blindtype: blindType, companydetail: companyDetail, tubetype: "0", controltype: "0" };
+        const listData = { type: "ColourType", companydetail: companyDetail, blindtype: blindType, tubetype: tubeType, controltype: "0" };
 
         $.ajax({
             type: "POST",
@@ -318,7 +395,6 @@ function bindColourType(blindType) {
                         colourtype.add(option);
                     });
 
-
                     if (response.d.length === 1) {
                         colourtype.selectedIndex = 0;
                     }
@@ -333,6 +409,54 @@ function bindColourType(blindType) {
                         bindComponentForm(selectedValue)
                     ]).then(resolve).catch(reject);
                 }
+            },
+            error: function (error) {
+                reject(error);
+            }
+        });
+    });
+}
+
+function bindMounting(blindType) {
+    return new Promise((resolve, reject) => {
+        const mounting = document.getElementById("mounting");
+
+        if (!blindType) {
+            resolve();
+            return;
+        }
+
+        const listData = { type: "Mounting", blindtype: blindType };
+
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/ListData",
+            data: JSON.stringify({ data: listData }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (Array.isArray(response.d)) {
+                    mounting.innerHTML = "";
+
+                    if (response.d.length > 1) {
+                        const defaultOption = document.createElement("option");
+                        defaultOption.text = "";
+                        defaultOption.value = "";
+                        mounting.add(defaultOption);
+                    }
+
+                    response.d.forEach(function (item) {
+                        const option = document.createElement("option");
+                        option.value = item.Value;
+                        option.text = item.Text;
+                        mounting.add(option);
+                    });
+
+                    if (response.d.length === 1) {
+                        mounting.selectedIndex = 0;
+                    }
+                }
+                resolve();
             },
             error: function (error) {
                 reject(error);
@@ -451,30 +575,6 @@ function bindFabricColour(fabricType) {
     });
 }
 
-function bindComponentForm(colourType) {
-    return new Promise((resolve) => {
-        const detail = document.getElementById("divdetail");
-        const markup = document.getElementById("divmarkup");
-
-        function toggleDisplay(element, show) {
-            if (element) element.style.display = show ? "" : "none";
-        }
-
-        toggleDisplay(detail, false);
-        toggleDisplay(markup, false);
-
-        if (!colourType) return resolve();
-
-        toggleDisplay(detail, true);
-
-        if (typeof priceAccess !== "undefined" && priceAccess) {
-            toggleDisplay(markup, true);
-        }
-
-        resolve();
-    });
-}
-
 function toggleButtonState(disabled, text) {
     $("#submit")
         .prop("disabled", disabled)
@@ -512,7 +612,12 @@ function controlForm(status, isEditItem, isCopyItem) {
     document.getElementById("submit").style.display = status ? "none" : "";
 
     const inputs = [
-        "blindtype", "colourtype", "qty", "fabrictype", "fabriccolour", "notes", "markup"
+        "blindtype", "tubetype", "colourtype",
+        "qty", "room", "mounting",
+        "fabrictype", "fabriccolour", "batten",
+        "layoutcode", "width", "widthb", "widthc",
+        "returnposition", "returnlengthvalue", "returnlengthvalueb",
+        "notes", "markup"
     ];
 
     inputs.forEach(id => {
@@ -532,12 +637,21 @@ function controlForm(status, isEditItem, isCopyItem) {
 function setFormValues(itemData) {
     const mapping = {
         blindtype: "BlindType",
+        tubetype: "TubeType",
         colourtype: "ProductId",
         qty: "Qty",
         room: "Room",
         mounting: "Mounting",
+        width: "Width",
+        widthb: "WidthB",
+        widthc: "WidthC",
         fabrictype: "FabricId",
         fabriccolour: "FabricColourId",
+        layoutcode: "LayoutCode",
+        batten: "Batten",
+        returnposition: "ReturnPosition",
+        returnlengthvalue: "ReturnLengthValue",
+        returnlengthvalueb: "ReturnLengthValueB",
         notes: "Notes",
         markup: "MarkUp"
     };
@@ -552,7 +666,7 @@ function setFormValues(itemData) {
     });
 
     if (itemAction === "copy") {
-        const resetFields = ["notes"];
+        const resetFields = ["room", "notes"];
         resetFields.forEach(id => {
             const el = document.getElementById(id);
             if (el) el.value = "";
@@ -572,11 +686,91 @@ function fillSelect(selector, list, selected = null) {
     });
 }
 
+function bindComponentForm(colourType) {
+    return new Promise((resolve) => {
+        const detail = document.getElementById("divdetail");
+        const widthb = document.getElementById("divwidthb");
+        const widthc = document.getElementById("divwidthc");
+        const returnlength = document.getElementById("divreturnlength");
+        const returnlengthb = document.getElementById("divreturnlengthb");
+        const markup = document.getElementById("divmarkup");
+
+        function toggleDisplay(element, show) {
+            if (element) element.style.display = show ? "" : "none";
+        }
+
+        toggleDisplay(detail, false);
+        toggleDisplay(widthb, false);
+        toggleDisplay(widthc, false);
+        toggleDisplay(returnlength, false);
+        toggleDisplay(returnlengthb, false);
+        toggleDisplay(markup, false);
+
+        if (!colourType) return resolve();
+
+        toggleDisplay(detail, true);
+
+        if (typeof priceAccess !== "undefined" && priceAccess) {
+            toggleDisplay(markup, true);
+        }
+
+        resolve();
+    });
+}
+
+function visibleWidth(layoutCode) {
+    return new Promise((resolve) => {
+        const widthb = document.getElementById("divwidthb");
+        const widthc = document.getElementById("divwidthc");
+
+        function toggleDisplay(el, show) {
+            if (el) el.style.display = show ? "" : "none";
+        }
+
+        toggleDisplay(widthb, false);
+        toggleDisplay(widthc, false);
+
+        if (layoutCode === "B" || layoutCode === "C") {
+            toggleDisplay(widthb, true);
+        } else if (layoutCode === "D") {
+            toggleDisplay(widthb, true);
+            toggleDisplay(widthc, true);
+        }
+
+        resolve();
+    });
+}
+
+function visiblReturnLength(retrunPosition) {
+    return new Promise((resolve, reject) => {
+        const returnlength = document.getElementById("divreturnlength");
+        const returnlengthb = document.getElementById("divreturnlengthb");
+
+        returnlength.style.display = "none";
+        returnlengthb.style.display = "none";
+
+        if (retrunPosition === "Left") {
+            returnlength.style.display = "";
+        } else if (retrunPosition === "Right") {
+            returnlengthb.style.display = "";
+        } else if (retrunPosition === "Left and Right") {
+            returnlength.style.display = "";
+            returnlengthb.style.display = "";
+        }
+        resolve();
+    });
+}
+
 function process() {
     toggleButtonState(true, "Processing...");
 
     const fields = [
-        "blindtype", "colourtype", "qty", "fabrictype", "fabriccolour", "notes", "markup"
+        "blindtype", "tubetype", "colourtype",
+        "qty", "room", "mounting",
+        "fabrictype", "fabriccolour", "batten",
+        "layoutcode", "width", "widthb", "widthc",
+        "returnposition", "returnlengthvalue", "returnlengthvalueb",
+        "notes", "markup"
     ];
 
     const formData = {
@@ -593,7 +787,7 @@ function process() {
 
     $.ajax({
         type: "POST",
-        url: "Method.aspx/SampleProcess",
+        url: "Method.aspx/PelmetProcess",
         data: JSON.stringify({ data: formData }),
         contentType: "application/json; charset=utf-8",
         dataType: "json",
@@ -615,7 +809,40 @@ function process() {
     });
 }
 
-async function initSample() {
+async function bindItemOrder(itemId, companyDetailId) {
+    try {
+        const response = await $.ajax({
+            type: "POST",
+            url: "Method.aspx/PelmetDetail",
+            data: JSON.stringify({ itemId, companyDetailId }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json"
+        });
+
+        const data = response.d;
+
+        fillSelect("#blindtype", data.BlindTypes);
+        fillSelect("#tubetype", data.TubeTypes);
+        fillSelect("#colourtype", data.ColourTypes);
+        fillSelect("#mounting", data.Mountings);
+        fillSelect("#fabrictype", data.Fabrics);
+        fillSelect("#fabriccolour", data.FabricColours);
+
+        setFormValues(data.ItemData);
+
+        document.getElementById("divloader").style.display = "none";
+        document.getElementById("divorder").style.display = "";
+
+        bindComponentForm(data.ItemData.ProductId);
+        visibleWidth(data.ItemData.LayoutCode);
+        visiblReturnLength(data.ItemData.ReturnPosition);
+    } catch (error) {
+        document.getElementById("divloader").style.display = "none";
+    }
+}
+
+
+async function initPelmet() {
     const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get("boos");
     if (!sessionId) return redirectOrder();
@@ -639,6 +866,8 @@ async function initSample() {
 
     if (!headerId) return redirectOrder();
 
+    updateLinkDetail(headerId);
+
     if (!itemAction || !designId || !loginId || designId !== designIdOri) {
         return window.location.href = `/order/detail?orderid=${headerId}`;
     }
@@ -654,7 +883,7 @@ async function initSample() {
     ]);
 
     if (itemAction === "create") {
-        bindComponentForm("", "");
+        bindComponentForm("");
         controlForm(false);
         bindBlindType(designId);
         bindFabricType(designId);
@@ -669,35 +898,15 @@ async function initSample() {
     }
 }
 
-async function bindItemOrder(itemId, companyDetailId) {
-    try {
-        const response = await $.ajax({
-            type: "POST",
-            url: "Method.aspx/SampleDetail",
-            data: JSON.stringify({ itemId, companyDetailId }),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json"
-        });
-
-        const data = response.d;
-
-        fillSelect("#blindtype", data.BlindTypes);
-        fillSelect("#colourtype", data.ColourTypes);
-        fillSelect("#fabrictype", data.Fabrics);
-        fillSelect("#fabriccolour", data.FabricColours);
-
-        document.getElementById("divloader").style.display = "none";
-        document.getElementById("divorder").style.display = "";
-
-        setFormValues(data.ItemData);
-        bindComponentForm(data.ItemData.ProductId);
-    } catch (error) {
-        document.getElementById("divloader").style.display = "none";
-    }
-}
-
 function redirectOrder() {
     window.location.replace("/order");
+}
+
+function updateLinkDetail(myId) {
+    const link = document.getElementById("orderDetail");
+    if (!link || !headerId) return;
+
+    link.href = `/order/detail?orderid=${myId}`;
 }
 
 document.getElementById("modalSuccess").addEventListener("hide.bs.modal", function () {

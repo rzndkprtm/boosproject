@@ -12,15 +12,6 @@ Partial Class Setting_Quote
 
     Dim settingClass As New SettingClass
 
-    Private Property oldLogo As String
-        Get
-            Return If(ViewState("oldLogo"), String.Empty)
-        End Get
-        Set(value As String)
-            ViewState("oldLogo") = value
-        End Set
-    End Property
-
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
         If pageAccess = False Then
@@ -161,8 +152,8 @@ Partial Class Setting_Quote
                 myImgGraph.SmoothingMode = SmoothingMode.HighQuality
                 myImgGraph.InterpolationMode = InterpolationMode.HighQualityBicubic
 
-                If Not String.IsNullOrEmpty(oldLogo) AndAlso Not {"accent.png", "jpmdirect.jpg", "yourlogo.png"}.Contains(oldLogo) Then
-                    Dim oldFilePath As String = Server.MapPath(String.Format("~/assets/images/logo/customers/{0}", oldLogo))
+                If Not String.IsNullOrEmpty(lblOldLogo.Text) AndAlso Not {"accent.png", "jpmdirect.jpg", "yourlogo.png"}.Contains(lblOldLogo.Text) Then
+                    Dim oldFilePath As String = Server.MapPath(String.Format("~/assets/images/logo/customers/{0}", lblOldLogo.Text))
                     If IO.File.Exists(oldFilePath) Then
                         IO.File.Delete(oldFilePath)
                     End If
@@ -298,7 +289,7 @@ Partial Class Setting_Quote
             End If
 
             imgQuote.ImageUrl = String.Format("~/assets/images/logo/customers/{0}", thisData("Logo").ToString())
-            oldLogo = thisData("Logo").ToString()
+            lblOldLogo.Text = thisData("Logo").ToString()
 
             Dim companyId As String = settingClass.GetItemData("SELECT CompanyId FROM Customers WHERE Id='" & customerId & "'")
 

@@ -1,4 +1,4 @@
-﻿let designIdOri = "15";
+﻿let designIdOri = "14";
 let itemAction;
 let headerId;
 let itemId;
@@ -9,23 +9,17 @@ let loginId;
 let roleAccess;
 let priceAccess;
 
-initSkylineOcean();
+initSkylineExpress();
 
 $("#submit").on("click", process);
 $("#cancel").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
 $("#vieworder").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
 
 $("#blindtype").on("change", function () {
-    const blindtype = $(this).val();
-    const midrailheight1 = parseFloat(document.getElementById("midrailheight1").value) || 0;
-    const louvreposition = document.getElementById("louvreposition").value;
-    const louvresize = document.getElementById("louvresize").value;
-
-    bindMounting(blindtype);
-    bindColourType(blindtype);
-    bindLayoutCode(blindtype);
-    bindFrameType(blindtype, mounting, louvresize, louvreposition);
-    bindTiltrodSplit(midrailheight1);
+    bindMounting($(this).val());
+    bindColourType($(this).val());
+    bindLayoutCode($(this).val());
+    bindTiltrodSplit(0);
 });
 
 $("#colourtype").on("change", function () {
@@ -34,52 +28,10 @@ $("#colourtype").on("change", function () {
 });
 
 $("#mounting").on("change", function () {
-    const mounting = $(this).val();
     const blindtype = document.getElementById("blindtype").value;
-    const louvreposition = document.getElementById("louvreposition").value;
-    const louvresize = document.getElementById("louvresize").value;
 
-    bindFrameType(blindtype, mounting, louvresize, louvreposition);
-    visibleSemiInside(blindtype, mounting);
-});
-
-$("#louvresize").on("change", function () {
-    const blindtype = document.getElementById("blindtype").value;
-    const mounting = document.getElementById("mounting").value;
-    const louvresize = $(this).val();
-    const louvreposition = document.getElementById("louvreposition").value;
-
-    bindFrameType(blindtype, mounting, louvresize, louvreposition);
-
-    getBlindName(blindtype).then((blindName) => {
-        if (blindName === "Panel Only") {
-            const dropInput = document.getElementById("drop").value;
-            const drop = parseFloat(dropInput) || 0;
-
-            if (dropInput.length < 4) return;
-            if (drop.length < 4) return;
-            if (louvresize === "63" && drop < 282) {
-                isError("MINIMUM PANEL HEIGHT IS 282MM !");
-            } else if (louvresize === "89" && drop < 333) {
-                isError("MINIMUM PANEL HEIGHT IS 333MM !");
-            } else if (louvresize === "114" && drop < 384) {
-                isError("MINIMUM PANEL HEIGHT IS 384MM !");
-            } else if (drop > 2500) {
-                isError("MAXIMUM PANEL HEIGHT IS 2500MM !");
-            }
-        }
-    }).catch((error) => {
-        reject(error);
-    });
-});
-
-$("#louvreposition").on("change", function () {
-    const blindtype = document.getElementById("blindtype").value;
-    const mounting = document.getElementById("mounting").value;
-    const louvresize = document.getElementById("louvresize").value;
-    const louvreposition = $(this).val();
-
-    bindFrameType(blindtype, mounting, louvresize, louvreposition);
+    bindFrameType(blindtype, $(this).val());
+    visibleSemiInside(blindtype, $(this).val());
 });
 
 $("#midrailheight1").on("input", function () {
@@ -88,6 +40,8 @@ $("#midrailheight1").on("input", function () {
 
     bindMidrailCritical(midrailheight1, midrailheight2);
     bindTiltrodSplit(midrailheight1);
+
+    visibleMidrail(midrailheight1);
 });
 
 $("#midrailheight2").on("input", function () {
@@ -117,12 +71,11 @@ $("#layoutcode").on("change", function () {
     $("#samesizepanel").val("");
     const blindtype = document.getElementById("blindtype").value;
     let layoutcode = $(this).val();
-
-    visibleLayoutCustom(layoutcode);
-
     if (layoutcode === "Other") {
         layoutcode = document.getElementById("layoutcodecustom").value;
     }
+
+    visibleLayoutCustom(layoutcode);
     visibleSameSize(blindtype, layoutcode);
     visibleGap(blindtype, "", layoutcode);
 });
@@ -150,13 +103,12 @@ $("#samesizepanel").on("change", function () {
 $("#frametype").on("change", function () {
     const blindtype = document.getElementById("blindtype").value;
     const frametype = $(this).val();
-    const mounting = document.getElementById("mounting").value;
     const buildout = document.getElementById("buildout").value;
 
-    bindLeftFrame(frametype, mounting);
-    bindRightFrame(frametype, mounting);
-    bindTopFrame(frametype, mounting);
-    bindBottomFrame(frametype, mounting);
+    bindLeftFrame(frametype);
+    bindRightFrame(frametype);
+    bindTopFrame(frametype);
+    bindBottomFrame(frametype);
     visibleFrameDetail(frametype);
     visibleBuildout(blindtype, frametype);
     visibleBuildoutPosition(blindtype, frametype, buildout);
@@ -169,6 +121,10 @@ $("#framebottom").on("change", function () {
     bindBottomTrack(blindtype, framebottom);
 });
 
+$("#bottomtracktype").on("change", function () {
+    visibleBottomTrackReccess($(this).val());
+});
+
 $("#buildout").on("change", function () {
     const blindtype = document.getElementById("blindtype").value;
     const frametype = document.getElementById("frametype").value;
@@ -176,13 +132,8 @@ $("#buildout").on("change", function () {
     visibleBuildoutPosition(blindtype, frametype, $(this).val());
 });
 
-$("#bottomtracktype").on("change", function () {
-    visibleBottomTrackReccess($(this).val());
-});
-
 $("#horizontaltpostheight").on("input", function () {
     const value = parseFloat($(this).val()) || 0;
-
     visibleHorizontalRequired(value);
 });
 
@@ -190,56 +141,6 @@ $("#tiltrodsplit").on("change", function () {
     visibleSplitHeight($(this).val());
 });
 
-$("#specialshape").on("change", function () {
-    visibleTemplateProvided($(this).val());
-});
-
-$("#width").on("input", function () {
-    const blindtype = document.getElementById("blindtype").value;
-
-    getBlindName(blindtype).then((blindName) => {
-        if (blindName !== "Panel Only") return;
-        const widthInput = $(this).val();
-        const width = parseFloat(widthInput) || 0;
-
-        if (widthInput.length < 3) return;
-        if (width < 200 || width > 900) {
-            isError("PANEL WIDTH MUST BE BETWEEN 200MM & 900MM !");
-            $(this).val("");
-        }
-    }).catch((error) => {
-        reject(error);
-    });
-});
-
-$("#drop").on("input", function () {
-    const blindtype = document.getElementById("blindtype").value;
-
-    getBlindName(blindtype).then((blindName) => {
-        if (blindName === "Panel Only") {
-            const drop = parseFloat($(this).val()) || 0;
-            const louvresize = document.getElementById("louvresize").value;
-
-            if ($(this).val().length < 4) return;
-
-            if (louvresize === "63" && drop < 282) {
-                isError("MINIMUM PANEL HEIGHT IS 282MM !");
-                $(this).val("");
-            } else if (louvresize === "89" && drop < 333) {
-                isError("MINIMUM PANEL HEIGHT IS 333MM !");
-                $(this).val("");
-            } else if (louvresize === "114" && drop < 384) {
-                isError("MINIMUM PANEL HEIGHT IS 384MM !");
-                $(this).val("");
-            } else if (drop > 2500) {
-                isError("MAXIMUM PANEL HEIGHT IS 2500MM !");
-                $(this).val("");
-            }
-        }
-    }).catch((error) => {
-        reject(error);
-    });
-});
 function loader(itemAction) {
     return new Promise((resolve) => {
         if (itemAction === "create") {
@@ -443,11 +344,10 @@ function getFormAction(itemAction) {
         }
 
         const actionMap = {
-            create: "Add Item",
-            edit: "Edit Item",
-            view: "View Item",
-            copy: "Copy Item"
+            create: "Add Item", edit: "Edit Item",
+            view: "View Item", copy: "Copy Item"
         };
+
         pageAction.innerText = actionMap[itemAction] || "";
         resolve();
     });
@@ -585,6 +485,7 @@ function bindColourType(blindType) {
 function bindMounting(blindType) {
     return new Promise((resolve, reject) => {
         const mounting = document.getElementById("mounting");
+        mounting.innerHTML = "";
 
         if (!blindType) {
             resolve();
@@ -603,7 +504,7 @@ function bindMounting(blindType) {
                 if (Array.isArray(response.d)) {
                     mounting.innerHTML = "";
 
-                    if (response.d.length > 1) {
+                    if (response.d.length >= 1) {
                         const defaultOption = document.createElement("option");
                         defaultOption.text = "";
                         defaultOption.value = "";
@@ -616,10 +517,6 @@ function bindMounting(blindType) {
                         option.text = item.Text;
                         mounting.add(option);
                     });
-
-                    if (response.d.length === 1) {
-                        mounting.selectedIndex = 0;
-                    }
                 }
                 resolve();
             },
@@ -635,27 +532,20 @@ function bindMidrailCritical(height1, height2) {
         const midrailcritical = document.getElementById("midrailcritical");
         midrailcritical.innerHTML = "";
 
-        visibleMidrail(height1);
-
         let options = [{ value: "", text: "" }];
 
-        if (height1 > 0 && height2 > 0) {
+        if (height1 > 0) {
+            options = [
+                { value: "", text: "" }, { value: "Yes", text: "Yes" },
+            ];
+        } else if (height1 > 0 && height2 > 0) {
             options = [
                 { value: "", text: "" },
                 { value: "Yes - Top Only", text: "Yes - Top Only" },
                 { value: "Yes - Bottom Only", text: "Yes - Bottom Only" },
             ];
-        } else if (height1 > 0) {
-            options = [
-                { value: "", text: "" },
-                { value: "Yes", text: "Yes" },
-            ];
-        } else if (height2 > 0) {
-            options = [
-                { value: "", text: "" },
-                { value: "Yes - Top Only", text: "Yes - Top Only" },
-                { value: "Yes - Bottom Only", text: "Yes - Bottom Only" },
-            ];
+        } else {
+            options = [{ value: "", text: "" }];
         }
 
         options.forEach((opt) => {
@@ -679,213 +569,92 @@ function bindLayoutCode(blindType) {
             return;
         }
 
-        getBlindName(blindType).then((blindName) => {
-            let options = [{ value: "", text: "" }];
+        const listData = { type: "LayoutCodeShutter", blindtype: blindType };
 
-            switch (blindName) {
-                case "Hinged":
-                    options = [
-                        { value: "", text: "" },
-                        { value: "L", text: "L" },
-                        { value: "R", text: "R" },
-                        { value: "LR", text: "LR" },
-                        { value: "LD-R", text: "LD-R" },
-                        { value: "L-DR", text: "L-DR" },
-                        { value: "LTLR", text: "LTLR" },
-                        { value: "LRTR", text: "LRTR" },
-                        { value: "LRTLR", text: "LRTLR" },
-                        { value: "LTLRTR", text: "LTLRTR" },
-                        { value: "LD-RTLD-R", text: "LD-RTLD-R" },
-                        { value: "L-DRTL-DR", text: "L-DRTL-DR" },
-                        { value: "Other", text: "Other" },
-                    ];
-                    break;
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/ListData",
+            data: JSON.stringify({ data: listData }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (Array.isArray(response.d)) {
+                    layoutcode.innerHTML = "";
 
-                case "Hinged Bi-fold":
-                    options = [
-                        { value: "", text: "" },
-                        { value: "LL", text: "LL" },
-                        { value: "RR", text: "RR" },
-                        { value: "LLRR", text: "LLRR" },
-                        { value: "Other", text: "Other" },
-                    ];
-                    break;
+                    if (response.d.length > 1) {
+                        const defaultOption = document.createElement("option");
+                        defaultOption.text = "";
+                        defaultOption.value = "";
+                        layoutcode.add(defaultOption);
+                    }
 
-                case "Track Bi-fold":
-                    options = [
-                        { value: "", text: "" },
-                        { value: "LL", text: "LL" },
-                        { value: "RR", text: "RR" },
-                        { value: "LLRR", text: "LLRR" },
-                        { value: "LLLL", text: "LLLL" },
-                        { value: "RRRR", text: "RRRR" },
-                        { value: "LLRRRR", text: "LLRRRR" },
-                        { value: "LLLLRR", text: "LLLLRR" },
-                        { value: "LLLLLL", text: "LLLLLL" },
-                        { value: "RRRRRR", text: "RRRRRR" },
-                        { value: "LLRRRRRR", text: "LLRRRRRR" },
-                        { value: "LLLLRRRR", text: "LLLLRRRR" },
-                        { value: "LLLLLLRR", text: "LLLLLLRR" },
-                        { value: "LLLLLLLL", text: "LLLLLLLL" },
-                        { value: "RRRRRRRR", text: "RRRRRRRR" },
-                        { value: "Other", text: "Other" },
-                    ];
-                    break;
+                    response.d.forEach(function (item) {
+                        const option = document.createElement("option");
+                        option.value = item.Value;
+                        option.text = item.Text;
+                        layoutcode.add(option);
+                    });
 
-                case "Track Sliding":
-                    options = [
-                        { value: "", text: "" },
-                        { value: "BF", text: "BF" },
-                        { value: "FB", text: "FB" },
-                        { value: "BFB", text: "BFB" },
-                        { value: "FBF", text: "FBF" },
-                        { value: "BFFB", text: "BFFB" },
-                        { value: "FBBF", text: "FBBF" },
-                        { value: "BBFF", text: "BBFF" },
-                        { value: "FFBB", text: "FFBB" },
-                        { value: "Other", text: "Other" },
-                    ];
-                    break;
-
-                case "Track Sliding Single Track":
-                    options = [
-                        { value: "", text: "" },
-                        { value: "F", text: "F" },
-                        { value: "FF", text: "FF" },
-                        { value: "FFF", text: "FFF" },
-                        { value: "FFFF", text: "FFFF" },
-                        { value: "Other", text: "Other" },
-                    ];
-                    break;
-
-                case "Fixed":
-                    options = [
-                        { value: "", text: "" },
-                        { value: "F", text: "F" },
-                        { value: "FF", text: "FF" },
-                        { value: "FFF", text: "FFF" },
-                        { value: "FFFF", text: "FFFF" },
-                        { value: "FFFFFF", text: "FFFFFF" },
-                        { value: "Other", text: "Other" },
-                    ];
-                    break;
+                    if (response.d.length === 1) {
+                        layoutcode.selectedIndex = 0;
+                    }
+                }
+                resolve();
+            },
+            error: function (error) {
+                reject(error);
             }
-            options.forEach((opt) => {
-                let optionElement = document.createElement("option");
-                optionElement.value = opt.value;
-                optionElement.textContent = opt.text;
-                layoutcode.appendChild(optionElement);
-            });
-            resolve();
-        }).catch((error) => {
-            reject(error);
         });
     });
 }
 
-function bindFrameType(blindType, mounting, louvreSize, louvrePosition) {
+function bindFrameType(blindType, mounting) {
     return new Promise((resolve, reject) => {
         const frametype = document.getElementById("frametype");
-        const buildout = document.getElementById("buildout");
         frametype.innerHTML = "";
 
-        visibleFrameDetail(frametype.value);
-        visibleBuildout(blindType, frametype.value);
-        visibleBuildoutPosition(blindType, frametype.value, buildout.value);
-
-        if (!blindType) {
+        if (!blindType || !mounting) {
             resolve();
             return;
         }
 
-        getBlindName(blindType).then((blindName) => {
-            let options = [{ value: "", text: "" }];
+        const listData = { type: "FrameTypeShutter", blindtype: blindType, customtype: mounting };
 
-            if (blindName === "Hinged" || blindName === "Hinged Bi-fold") {
-                options = [
-                    { value: "", text: "" },
-                    { value: "Beaded L 48mm", text: "Beaded L 48mm" },
-                    { value: "Insert L 50mm", text: "Insert L 50mm" },
-                    { value: "Insert L 63mm", text: "Insert L 63mm" }
-                ];
-                if (mounting === "Inside") {
-                    options = [
-                        { value: "", text: "" },
-                        { value: "Beaded L 48mm", text: "Beaded L 48mm" },
-                        { value: "Insert L 50mm", text: "Insert L 50mm" },
-                        { value: "Insert L 63mm", text: "Insert L 63mm" },
-                        { value: "Small Bullnose Z Frame", text: "Small Bullnose Z Frame" },
-                        { value: "Large Bullnose Z Frame", text: "Large Bullnose Z Frame" },
-                        { value: "Colonial Z Frame", text: "Colonial Z Frame" },
-                        { value: "No Frame", text: "No Frame" },
-                    ];
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/ListData",
+            data: JSON.stringify({ data: listData }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (Array.isArray(response.d)) {
+                    frametype.innerHTML = "";
+
+                    if (response.d.length >= 1) {
+                        const defaultOption = document.createElement("option");
+                        defaultOption.text = "";
+                        defaultOption.value = "";
+                        frametype.add(defaultOption);
+                    }
+
+                    response.d.forEach(function (item) {
+                        const option = document.createElement("option");
+                        option.value = item.Value;
+                        option.text = item.Text;
+                        frametype.add(option);
+                    });
                 }
-            } else if (blindName === "Track Bi-fold") {
-                options = [
-                    { value: "", text: "" },
-                    { value: "100mm", text: "100mm" },
-                    { value: "160mm", text: "160mm" },
-                ];
-            } else if (blindName === "Track Sliding") {
-                options = [
-                    { value: "", text: "" },
-                    { value: "100mm", text: "100mm" },
-                    { value: "160mm", text: "160mm" },
-                    { value: "200mm", text: "200mm" },
-                ];
-                if (louvrePosition === "Open") {
-                    options = [
-                        { value: "", text: "" },
-                        { value: "160mm", text: "160mm" },
-                        { value: "200mm", text: "200mm" },
-                    ];
-                }
-                if (louvrePosition === "Open" && (louvreSize === "89" || louvreSize === "114")) {
-                    options = [
-                        { value: "", text: "" },
-                        { value: "100mm", text: "100mm" },
-                        { value: "200mm", text: "200mm" },
-                    ];
-                }
-            } else if (blindName === "Track Sliding Single Track") {
-                options = [
-                    { value: "100mm", text: "100mm" }
-                ];
-            } else if (blindName === "Fixed") {
-                options = [
-                    { value: "", text: "" },
-                    { value: "U Channel", text: "U Channel" },
-                    { value: "19x19 Light Block", text: "19X19 Light Block" },
-                ];
+                resolve();
+            },
+            error: function (error) {
+                reject(error);
             }
-
-            options.forEach((opt) => {
-                let optionElement = document.createElement("option");
-                optionElement.value = opt.value;
-                optionElement.textContent = opt.text;
-                frametype.appendChild(optionElement);
-            });
-
-            if (frametype.options.length === 1) {
-                bindLeftFrame(frametype.value, mounting);
-                bindRightFrame(frametype.value, mounting);
-                bindTopFrame(frametype.value, mounting);
-                bindBottomFrame(frametype.value, mounting);
-
-                visibleFrameDetail(frametype.value);
-                visibleBuildout(blindType, frametype.value);
-                visibleBuildoutPosition(blindType, frametype.value, buildout.value);
-            }
-
-            resolve();
-        }).catch((error) => {
-            reject(error);
         });
     });
 }
 
 function bindLeftFrame(frameType) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         const frameleft = document.getElementById("frameleft");
         frameleft.innerHTML = "";
 
@@ -894,76 +663,43 @@ function bindLeftFrame(frameType) {
             return;
         }
 
-        let options = [{ value: "", text: "" }];
+        const listData = { type: "LeftFrameShutter", customtype: frameType };
 
-        if (frameType === "Beaded L 48mm" || frameType === "Insert L 50mm" || frameType === "Insert L 63mm" || frameType === "Flat L 48mm") {
-            options = [
-                { value: "", text: "" },
-                { value: "Yes", text: "Yes" },
-                { value: "No", text: "No" },
-                { value: "Light Block", text: "Light Block" },
-                { value: "Sill Plate (9.5mm)", text: "Sill Plate (9.5mm)" },
-            ];
-        } else if (frameType === "Small Bullnose Z Frame") {
-            options = [
-                { value: "", text: "" },
-                { value: "Yes", text: "Yes" },
-                { value: "No", text: "No" },
-                { value: "Light Block", text: "Light Block" },
-                { value: "Sill Plate (9.5mm)", text: "Sill Plate (9.5mm)" },
-                { value: "Sill Plate (Bullnose Z)", text: "Sill Plate (Bullnose Z)" },
-            ];
-        } else if (frameType === "Large Bullnose Z Frame") {
-            options = [
-                { value: "", text: "" },
-                { value: "Yes", text: "Yes" },
-                { value: "No", text: "No" },
-                { value: "Light Block", text: "Light Block" },
-                { value: "Sill Plate (9.5mm)", text: "Sill Plate (9.5mm)" },
-                { value: "Sill Plate (Bullnose Z)", text: "Sill Plate (Bullnose Z)" },
-            ];
-        } else if (frameType === "Colonial Z Frame") {
-            options = [
-                { value: "", text: "" },
-                { value: "Yes", text: "YES" },
-                { value: "No", text: "NO" },
-                { value: "Light Block", text: "Light Block" },
-                { value: "Sill Plate (9.5mm)", text: "Sill Plate (9.5mm)" },
-                { value: "Sill Plate (Colonial Z)", text: "Sill Plate (Colonial Z)" },
-            ];
-        } else if (frameType === "No Frame") {
-            options = [
-                { value: "Light Block", text: "Light Block" }
-            ];
-        } else if (frameType === "100mm" || frameType === "160mm" || frameType === "200mm") {
-            options = [
-                { value: "", text: "" },
-                { value: "Yes", text: "Yes" },
-                { value: "No", text: "No" },
-            ];
-        } else if (frameType === "U Channel") {
-            options = [
-                { value: "", text: "" },
-                { value: "No", text: "No" },
-                { value: "L Strip", text: "L Strip" },
-            ];
-        } else if (frameType === "19x19 Light Block") {
-            options = [{ value: "No", text: "No" }];
-        }
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/ListData",
+            data: JSON.stringify({ data: listData }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (Array.isArray(response.d)) {
+                    frameleft.innerHTML = "";
 
-        options.forEach((opt) => {
-            let optionElement = document.createElement("option");
-            optionElement.value = opt.value;
-            optionElement.textContent = opt.text;
-            frameleft.appendChild(optionElement);
+                    if (response.d.length >= 1) {
+                        const defaultOption = document.createElement("option");
+                        defaultOption.text = "";
+                        defaultOption.value = "";
+                        frameleft.add(defaultOption);
+                    }
+
+                    response.d.forEach(function (item) {
+                        const option = document.createElement("option");
+                        option.value = item.Value;
+                        option.text = item.Text;
+                        frameleft.add(option);
+                    });
+                }
+                resolve();
+            },
+            error: function (error) {
+                reject(error);
+            }
         });
-
-        resolve();
     });
 }
 
 function bindRightFrame(frameType) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         const frameright = document.getElementById("frameright");
         frameright.innerHTML = "";
 
@@ -972,71 +708,38 @@ function bindRightFrame(frameType) {
             return;
         }
 
-        let options = [{ value: "", text: "" }];
+        const listData = { type: "RightFrameShutter", customtype: frameType };
 
-        if (frameType === "Beaded L 48mm" || frameType === "Insert L 50mm" || frameType === "Insert L 63mm" || frameType === "Flat L 48mm") {
-            options = [
-                { value: "", text: "" },
-                { value: "Yes", text: "Yes" },
-                { value: "No", text: "No" },
-                { value: "Light Block", text: "Light Block" },
-                { value: "Sill Plate (9.5mm)", text: "Sill Plate (9.5mm)" }
-            ];
-        } else if (frameType === "Small Bullnose Z Frame") {
-            options = [
-                { value: "", text: "" },
-                { value: "Yes", text: "Yes" },
-                { value: "No", text: "No" },
-                { value: "Light Block", text: "Light Block" },
-                { value: "Sill Plate (9.5mm)", text: "Sill Plate (9.5mm)" },
-                { value: "Sill Plate (Bullnose Z)", text: "Sill Plate (Bullnose Z)" },
-            ];
-        } else if (frameType === "Large Bullnose Z Frame") {
-            options = [
-                { value: "", text: "" },
-                { value: "Yes", text: "Yes" },
-                { value: "No", text: "No" },
-                { value: "Light Block", text: "Light Block" },
-                { value: "Sill Plate (9.5mm)", text: "Sill Plate (9.5mm)" },
-                { value: "Sill Plate (Bullnose Z)", text: "Sill Plate (Bullnose Z)" },
-            ];
-        } else if (frameType === "Colonial Z Frame") {
-            options = [
-                { value: "", text: "" },
-                { value: "Yes", text: "YES" },
-                { value: "No", text: "NO" },
-                { value: "Light Block", text: "Light Block" },
-                { value: "Sill Plate (9.5mm)", text: "Sill Plate (9.5mm)" },
-                { value: "Sill Plate (Colonial Z)", text: "Sill Plate (Colonial Z)" },
-            ];
-        } else if (frameType === "No Frame") {
-            options = [{ value: "Light Block", text: "Light Block" }];
-        } else if (frameType === "100mm" || frameType === "160mm" || frameType === "200mm") {
-            options = [
-                { value: "", text: "" },
-                { value: "Yes", text: "Yes" },
-                { value: "No", text: "No" },
-            ];
-        } else if (frameType === "U Channel") {
-            options = [
-                { value: "", text: "" },
-                { value: "No", text: "No" },
-                { value: "L Strip", text: "L Strip" },
-            ];
-        } else if (frameType === "19x19 Light Block") {
-            options = [
-                { value: "No", text: "No" }
-            ];
-        }
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/ListData",
+            data: JSON.stringify({ data: listData }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (Array.isArray(response.d)) {
+                    frameright.innerHTML = "";
 
-        options.forEach((opt) => {
-            let optionElement = document.createElement("option");
-            optionElement.value = opt.value;
-            optionElement.textContent = opt.text;
-            frameright.appendChild(optionElement);
+                    if (response.d.length >= 1) {
+                        const defaultOption = document.createElement("option");
+                        defaultOption.text = "";
+                        defaultOption.value = "";
+                        frameright.add(defaultOption);
+                    }
+
+                    response.d.forEach(function (item) {
+                        const option = document.createElement("option");
+                        option.value = item.Value;
+                        option.text = item.Text;
+                        frameright.add(option);
+                    });
+                }
+                resolve();
+            },
+            error: function (error) {
+                reject(error);
+            }
         });
-
-        resolve();
     });
 }
 
@@ -1050,87 +753,38 @@ function bindTopFrame(frameType) {
             return;
         }
 
-        let options = [{ value: "", text: "" }];
+        const listData = { type: "TopFrameShutter", customtype: frameType };
 
-        if (frameType === "Beaded L 48mm" || frameType === "Insert L 50mm" || frameType === "Insert L 63mm") {
-            options = [
-                { value: "", text: "" },
-                { value: "Yes", text: "Yes" },
-                { value: "No", text: "No" },
-                { value: "Light Block", text: "Light Block" },
-                { value: "Sill Plate (9.5mm)", text: "Sill Plate (9.5mm)" },
-                { value: "Flat L 48mm", text: "Flat L 48mm" },
-                { value: "L Striker Plate", text: "L Striker Plate" }
-            ];
-        } else if (frameType === "Flat L 48mm") {
-            options = [
-                { value: "", text: "" },
-                { value: "Yes", text: "Yes" },
-                { value: "No", text: "No" },
-                { value: "Light Block", text: "Light Block" },
-                { value: "Sill Plate (9.5mm)", text: "Sill Plate (9.5mm)" },
-                { value: "L Striker Plate", text: "L Striker Plate" }
-            ];
-        } else if (frameType === "Small Bullnose Z Frame") {
-            options = [
-                { value: "", text: "" },
-                { value: "Yes", text: "Yes" },
-                { value: "No", text: "No" },
-                { value: "Light Block", text: "Light Block" },
-                { value: "Sill Plate (9.5mm)", text: "Sill Plate (9.5mm)" },
-                { value: "Sill Plate (Bullnose Z)", text: "Sill Plate (Bullnose Z)" },
-                { value: "L Striker Plate", text: "L Striker Plate" }
-            ];
-        } else if (frameType === "Large Bullnose Z Frame") {
-            options = [
-                { value: "", text: "" },
-                { value: "Yes", text: "Yes" },
-                { value: "No", text: "No" },
-                { value: "Light Block", text: "Light Block" },
-                { value: "Sill Plate (9.5mm)", text: "Sill Plate (9.5mm)" },
-                { value: "Sill Plate (Bullnose Z)", text: "Sill Plate (Bullnose Z)" },
-                { value: "L Striker Plate", text: "L Striker Plate" }
-            ];
-        } else if (frameType === "Colonial Z Frame") {
-            options = [
-                { value: "", text: "" },
-                { value: "Yes", text: "Yes" },
-                { value: "No", text: "No" },
-                { value: "Light Block", text: "Light Block" },
-                { value: "Sill Plate (9.5mm)", text: "Sill Plate (9.5mm)" },
-                { value: "Sill Plate (Colonial Z)", text: "Sill Plate (Colonial Z)" },
-                { value: "L Striker Plate", text: "L Striker Plate" }
-            ];
-        }
-        else if (frameType === "No Frame") {
-            options = [
-                { value: "", text: "" },
-                { value: "Light Block", text: "Light Block" },
-                { value: "L Striker Plate", text: "L Striker Plate" },
-            ];
-        } else if (frameType === "100mm" || frameType === "160mm" || frameType === "200mm") {
-            options = [
-                { value: "", text: "" },
-                { value: "Yes", text: "Yes" },
-                { value: "No", text: "No" }
-            ];
-        } else if (frameType === "U Channel") {
-            options = [
-                { value: "Yes", text: "Yes" }
-            ];
-        } else if (frameType === "19x19 Light Block") {
-            options = [
-                { value: "No", text: "No" }
-            ];
-        }
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/ListData",
+            data: JSON.stringify({ data: listData }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (Array.isArray(response.d)) {
+                    frametop.innerHTML = "";
 
-        options.forEach((opt) => {
-            let optionElement = document.createElement("option");
-            optionElement.value = opt.value;
-            optionElement.textContent = opt.text;
-            frametop.appendChild(optionElement);
+                    if (response.d.length >= 1) {
+                        const defaultOption = document.createElement("option");
+                        defaultOption.text = "";
+                        defaultOption.value = "";
+                        frametop.add(defaultOption);
+                    }
+
+                    response.d.forEach(function (item) {
+                        const option = document.createElement("option");
+                        option.value = item.Value;
+                        option.text = item.Text;
+                        frametop.add(option);
+                    });
+                }
+                resolve();
+            },
+            error: function (error) {
+                reject(error);
+            }
         });
-        resolve();
     });
 }
 
@@ -1144,87 +798,38 @@ function bindBottomFrame(frameType) {
             return;
         }
 
-        let options = [{ value: "", text: "" }];
+        const listData = { type: "BottomFrameShutter", customtype: frameType };
 
-        if (frameType === "Beaded L 48mm" || frameType === "Insert L 50mm" || frameType === "Insert L 63mm") {
-            options = [
-                { value: "", text: "" },
-                { value: "Yes", text: "Yes" },
-                { value: "No", text: "No" },
-                { value: "Light Block", text: "Light Block" },
-                { value: "Sill Plate (9.5mm)", text: "Sill Plate (9.5mm)" },
-                { value: "Flat L 48mm", text: "Flat L 48mm" },
-                { value: "L Striker Plate", text: "L Striker Plate" }
-            ];
-        } else if (frameType === "Flat L 48mm") {
-            options = [
-                { value: "", text: "" },
-                { value: "Yes", text: "Yes" },
-                { value: "No", text: "No" },
-                { value: "Light Block", text: "Light Block" },
-                { value: "Sill Plate (9.5mm)", text: "Sill Plate (9.5mm)" },
-                { value: "L Striker Plate", text: "L Striker Plate" }
-            ];
-        } else if (frameType === "Small Bullnose Z Frame") {
-            options = [
-                { value: "", text: "" },
-                { value: "Yes", text: "Yes" },
-                { value: "No", text: "No" },
-                { value: "Light Block", text: "Light Block" },
-                { value: "Sill Plate (9.5mm)", text: "Sill Plate (9.5mm)" },
-                { value: "Sill Plate (Bullnose Z)", text: "Sill Plate (Bullnose Z)" },
-                { value: "L Striker Plate", text: "L Striker Plate" }
-            ];
-        } else if (frameType === "Large Bullnose Z Frame") {
-            options = [
-                { value: "", text: "" },
-                { value: "Yes", text: "Yes" },
-                { value: "No", text: "No" },
-                { value: "Light Block", text: "Light Block" },
-                { value: "Sill Plate (9.5mm)", text: "Sill Plate (9.5mm)" },
-                { value: "Sill Plate (Bullnose Z)", text: "Sill Plate (Bullnose Z)" },
-                { value: "L Striker Plate", text: "L Striker Plate" }
-            ];
-        } else if (frameType === "Colonial Z Frame") {
-            options = [
-                { value: "", text: "" },
-                { value: "Yes", text: "Yes" },
-                { value: "No", text: "No" },
-                { value: "Light Block", text: "Light Block" },
-                { value: "Sill Plate (9.5mm)", text: "Sill Plate (9.5mm)" },
-                { value: "Sill Plate (Colonial Z)", text: "Sill Plate (Colonial Z)" },
-                { value: "L Striker Plate", text: "L Striker Plate" }
-            ];
-        }
-        else if (frameType === "No Frame") {
-            options = [
-                { value: "Yes", text: "Yes" },
-                { value: "Light Block", text: "Light Block" },
-                { value: "L Striker Plate", text: "L Striker Plate" },
-            ];
-        } else if (frameType === "100mm" || frameType === "160mm" || frameType === "200mm") {
-            options = [
-                { value: "", text: "" },
-                { value: "Yes", text: "Yes" },
-                { value: "No", text: "No" }
-            ];
-        } else if (frameType === "U Channel") {
-            options = [
-                { value: "Yes", text: "Yes" }
-            ];
-        } else if (frameType === "19x19 Light Block") {
-            options = [
-                { value: "No", text: "No" }
-            ];
-        }
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/ListData",
+            data: JSON.stringify({ data: listData }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (Array.isArray(response.d)) {
+                    framebottom.innerHTML = "";
 
-        options.forEach((opt) => {
-            let optionElement = document.createElement("option");
-            optionElement.value = opt.value;
-            optionElement.textContent = opt.text;
-            framebottom.appendChild(optionElement);
+                    if (response.d.length >= 1) {
+                        const defaultOption = document.createElement("option");
+                        defaultOption.text = "";
+                        defaultOption.value = "";
+                        framebottom.add(defaultOption);
+                    }
+
+                    response.d.forEach(function (item) {
+                        const option = document.createElement("option");
+                        option.value = item.Value;
+                        option.text = item.Text;
+                        framebottom.add(option);
+                    });
+                }
+                resolve();
+            },
+            error: function (error) {
+                reject(error);
+            }
         });
-        resolve();
     });
 }
 
@@ -1233,42 +838,42 @@ function bindBottomTrack(blindType, bottomFrame) {
         const bottomtracktype = document.getElementById("bottomtracktype");
         bottomtracktype.innerHTML = "";
 
-        visibleBottomTrackReccess(bottomtracktype.value);
-
-        if (!blindType) {
+        if (!blindType || !bottomFrame) {
             resolve();
             return;
         }
 
-        getBlindName(blindType).then((blindName) => {
-            let options = [{ value: "", text: "" }];
+        const listData = { type: "BottomTrackShutter", blindtype: blindType, customtype: bottomFrame };
 
-            if (blindName === "Track Bi-fold" || blindName === "Track Sliding" || blindName === "Track Sliding Single Track") {
-                options = [
-                    { value: "", text: "" },
-                    { value: "M Track", text: "M Track" },
-                    { value: "U Track", text: "U Track" },
-                ];
-                if (bottomFrame === "Yes") {
-                    options = [{ value: "U Track", text: "U Track" }];
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/ListData",
+            data: JSON.stringify({ data: listData }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (Array.isArray(response.d)) {
+                    bottomtracktype.innerHTML = "";
+
+                    if (response.d.length >= 1) {
+                        const defaultOption = document.createElement("option");
+                        defaultOption.text = "";
+                        defaultOption.value = "";
+                        bottomtracktype.add(defaultOption);
+                    }
+
+                    response.d.forEach(function (item) {
+                        const option = document.createElement("option");
+                        option.value = item.Value;
+                        option.text = item.Text;
+                        bottomtracktype.add(option);
+                    });
                 }
+                resolve();
+            },
+            error: function (error) {
+                reject(error);
             }
-
-            options.forEach((opt) => {
-                let optionElement = document.createElement("option");
-                optionElement.value = opt.value;
-                optionElement.textContent = opt.text;
-                bottomtracktype.appendChild(optionElement);
-            });
-
-            if (bottomtracktype.options.length === 0) {
-                bottomtracktype.selectedIndex = 0;
-                visibleBottomTrackReccess(bottomtracktype.value);
-            }
-
-            resolve();
-        }).catch((error) => {
-            reject(error);
         });
     });
 }
@@ -1278,24 +883,22 @@ function bindTiltrodSplit(height1) {
         const tiltrodsplit = document.getElementById("tiltrodsplit");
         tiltrodsplit.innerHTML = "";
 
-        visibleSplitHeight(tiltrodsplit.value);
-
         let options = [{ value: "", text: "" }];
 
-        if (height1 === 0) {
-            options = [
-                { value: "", text: "" },
-                { value: "None", text: "None" },
-                { value: "Split Halfway", text: "Split Halfway" },
-                { value: "Other", text: "Other" },
-            ];
-        } else if (height1 > 0) {
+        if (height1 > 0) {
             options = [
                 { value: "", text: "" },
                 { value: "None", text: "None" },
                 { value: "Split Halfway Above Midrail", text: "Split Halfway Above Midrail" },
                 { value: "Split Halfway Below Midrail", text: "Split Halfway Below Midrail" },
                 { value: "Split Halfway Above and Below Midrail", text: "Split Halfway Above & Below Midrail" },
+                { value: "Other", text: "Other" },
+            ];
+        } else {
+            options = [
+                { value: "", text: "" },
+                { value: "None", text: "None" },
+                { value: "Split Halfway", text: "Split Halfway" },
                 { value: "Other", text: "Other" },
             ];
         }
@@ -1306,11 +909,6 @@ function bindTiltrodSplit(height1) {
             optionElement.textContent = opt.text;
             tiltrodsplit.appendChild(optionElement);
         });
-
-        if (tiltrodsplit.options.length === 0) {
-            tiltrodsplit.selectedIndex = 0;
-            visibleSplitHeight(tiltrodsplit.value);
-        }
 
         resolve();
     });
@@ -1351,10 +949,7 @@ function bindComponentForm(blindType, colourType) {
             "divreversehinged",
             "divpelmetflat",
             "divextrafascia",
-            "divhingesloose",
-            "divcutout",
-            "divspecialshape",
-            "divtemplateprovided"
+            "divhingesloose"
         ].map(id => document.getElementById(id));
 
 
@@ -1376,7 +971,7 @@ function bindComponentForm(blindType, colourType) {
             if (blindName === "Panel Only") {
                 divShow.push("divpanelqty", "divtiltrodtype", "divtiltrodsplit");
             } else if (blindName === "Hinged" || blindName === "Hinged Bi-fold") {
-                divShow.push("divhingecolour", "divlayoutcode", "divframetype", "divtiltrodtype", "divtiltrodsplit", "divcutout", "divspecialshape", "divhorizontaltpost");
+                divShow.push("divhingecolour", "divlayoutcode", "divframetype", "divtiltrodtype", "divtiltrodsplit", "divhorizontaltpost");
             } else if (blindName === "Track Bi-fold") {
                 divShow.push("divhingecolour", "divlayoutcode", "divframetype", "divtiltrodtype", "divtiltrodsplit", "divbottomtracktype", "divreversehinged", "divpelmetflat", "divextrafascia");
             } else if (blindName === "Track Sliding") {
@@ -1384,7 +979,7 @@ function bindComponentForm(blindType, colourType) {
             } else if (blindName === "Track Sliding Single Track") {
                 divShow.push("divjoinedpanels", "divcustomheaderlength", "divlayoutcode", "divframetype", "divtiltrodtype", "divtiltrodsplit", "divbottomtracktype", "divpelmetflat", "divextrafascia");
             } else if (blindName === "Fixed") {
-                divShow.push("divlayoutcode", "divframetype", "divtiltrodtype", "divtiltrodsplit", "divspecialshape");
+                divShow.push("divlayoutcode", "divframetype", "divtiltrodtype", "divtiltrodsplit");
             }
 
             divShow.forEach(id => {
@@ -1397,7 +992,6 @@ function bindComponentForm(blindType, colourType) {
             }
 
             resolve();
-
         }).catch((error) => {
             reject(error);
         });
@@ -1522,7 +1116,7 @@ function visibleSameSize(blindType, layoutCode) {
         if (!blindType && !layoutCode) return resolve();
 
         getBlindName(blindType).then((blindName) => {
-            if ((blindName === "Hinged" || blindName === "Hinged Bi-fold" || blindName === "Track Bi-fold") && cekSameSizePanels(layoutCode)) {
+            if ((blindName === "Hinged" || blindName === "Hinged Bi-fold") && cekSameSizePanels(layoutCode)) {
                 divSameSize.style.display = "";
             }
             resolve();
@@ -1647,7 +1241,11 @@ function visibleBottomTrackReccess(bottomTrack) {
 
         const bottomtrackrecess = document.getElementById("bottomtrackrecess");
 
-        if (!bottomTrack) return resolve();
+        if (!bottomTrack) {
+            bottomtrackrecess.value = "";
+            resolve()
+            return;
+        }
 
         if (bottomTrack === "M Track") divBottomTrackRecess.style.display = "";
         if (bottomTrack === "U Track") bottomtrackrecess.value = "Yes";
@@ -1662,19 +1260,6 @@ function visibleSplitHeight(tiltrodSplit) {
         tiltrodHeight.style.display = "none";
 
         if (tiltrodSplit === "Other") tiltrodHeight.style.display = "";
-
-        resolve();
-    });
-}
-
-function visibleTemplateProvided(spesialShape) {
-    return new Promise((resolve) => {
-        const divTemplateProvided = document.getElementById("divtemplateprovided");
-        divTemplateProvided.style.display = "none";
-
-        if (!specialshape) return resolve();
-
-        if (spesialShape === "Yes") divTemplateProvided.style.display = "";
 
         resolve();
     });
@@ -1733,7 +1318,6 @@ function controlForm(status, isEditItem, isCopyItem) {
         "qty",
         "room",
         "mounting",
-        "semiinside",
         "width",
         "drop",
         "louvresize",
@@ -1744,7 +1328,7 @@ function controlForm(status, isEditItem, isCopyItem) {
         "panelqty",
         "joinedpanels",
         "hingecolour",
-        "hingesloose",
+        "semiinside",
         "customheaderlength",
         "layoutcode",
         "layoutcodecustom",
@@ -1769,12 +1353,10 @@ function controlForm(status, isEditItem, isCopyItem) {
         "tiltrodsplit",
         "splitheight1",
         "splitheight2",
-        "pelmetflat",
         "reversehinged",
+        "pelmetflat",
         "extrafascia",
-        "cutout",
-        "specialshape",
-        "templateprovided",
+        "hingesloose",
         "markup",
         "notes",
     ];
@@ -1800,7 +1382,6 @@ function setFormValues(itemData) {
         qty: "Qty",
         room: "Room",
         mounting: "Mounting",
-        semiinside: "SemiInsideMount",
         width: "Width",
         drop: "Drop",
         louvresize: "LouvreSize",
@@ -1811,7 +1392,7 @@ function setFormValues(itemData) {
         panelqty: "PanelQty",
         joinedpanels: "JoinedPanels",
         hingecolour: "HingeColour",
-        hingesloose: "HingesLoose",
+        semiinside: "SemiInsideMount",
         customheaderlength: "CustomHeaderLength",
         layoutcode: "LayoutCode",
         layoutcodecustom: "LayoutCodeCustom",
@@ -1839,9 +1420,7 @@ function setFormValues(itemData) {
         reversehinged: "ReverseHinged",
         pelmetflat: "PelmetFlat",
         extrafascia: "ExtraFascia",
-        cutout: "DoorCutOut",
-        specialshape: "SpecialShape",
-        templateprovided: "TemplateProvided",
+        hingesloose: "HingesLoose",
         notes: "Notes",
         markup: "MarkUp",
     };
@@ -1954,7 +1533,6 @@ function process() {
         "qty",
         "room",
         "mounting",
-        "semiinside",
         "width",
         "drop",
         "louvresize",
@@ -1965,7 +1543,7 @@ function process() {
         "panelqty",
         "joinedpanels",
         "hingecolour",
-        "hingesloose",
+        "semiinside",
         "customheaderlength",
         "layoutcode",
         "layoutcodecustom",
@@ -1993,9 +1571,7 @@ function process() {
         "reversehinged",
         "pelmetflat",
         "extrafascia",
-        "cutout",
-        "specialshape",
-        "templateprovided",
+        "hingesloose",
         "markup",
         "notes",
     ];
@@ -2006,6 +1582,9 @@ function process() {
         itemid: itemId,
         designid: designId,
         loginid: loginId,
+        cutout: "",
+        specialshape: "",
+        templateprovided: ""
     };
 
     fields.forEach((id) => {
@@ -2036,7 +1615,7 @@ function process() {
     });
 }
 
-async function initSkylineOcean() {
+async function initSkylineExpress() {
     const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get("boos");
     if (!sessionId) return redirectOrder();
@@ -2059,6 +1638,8 @@ async function initSkylineOcean() {
     loginId = params.get("uid");
 
     if (!headerId) return redirectOrder();
+
+    updateLinkDetail(headerId);
 
     if (!itemAction || !designId || !loginId || designId !== designIdOri) {
         return window.location.href = `/order/detail?orderid=${headerId}`;
@@ -2104,17 +1685,17 @@ async function bindItemOrder(itemId, companyDetailId) {
         fillSelect("#blindtype", data.BlindTypes);
         fillSelect("#colourtype", data.ColourTypes);
         fillSelect("#mounting", data.Mountings);
+        fillSelect("#layoutcode", data.LayoutCodes);
+        fillSelect("#frametype", data.FrameTypes);
+        fillSelect("#frameleft", data.LeftFrames);
+        fillSelect("#frameright", data.RightFrames);
+        fillSelect("#frametop", data.TopFrames);
+        fillSelect("#framebottom", data.BottomFrames);
+        fillSelect("#bottomtracktype", data.BottomTracks);
 
         let manual = [
-            bindLayoutCode(data.ItemData.BlindType),
             bindMidrailCritical(data.ItemData.MidrailHeight1, data.ItemData.MidrailHeight2),
-            bindTiltrodSplit(data.ItemData.MidrailHeight1),
-            bindFrameType(data.ItemData.BlindType, data.ItemData.Mounting, data.ItemData.LouvreSize, data.ItemData.LouvrePosition),
-            bindLeftFrame(data.ItemData.FrameType),
-            bindRightFrame(data.ItemData.FrameType),
-            bindTopFrame(data.ItemData.FrameType),
-            bindBottomFrame(data.ItemData.FrameType),
-            bindBottomTrack(data.ItemData.BlindType, data.ItemData.FrameBottom)
+            bindTiltrodSplit(data.ItemData.MidrailHeight1)
         ];
         await Promise.all(manual);
 
@@ -2124,7 +1705,7 @@ async function bindItemOrder(itemId, companyDetailId) {
         document.getElementById("divorder").style.display = "";
 
         let layoutCodeFinal = data.ItemData.LayoutCode;
-        if (data.ItemData.LayoutCode === "Other") {
+        if (layoutCodeFinal === "Other") {
             layoutCodeFinal = data.ItemData.LayoutCodeCustom
         }
 
@@ -2141,18 +1722,23 @@ async function bindItemOrder(itemId, companyDetailId) {
             visibleHingesLoose(data.ItemData.BlindType, data.ItemData.HingeColour, data.ItemData.JoinedPanels),
             visibleSemiInside(data.ItemData.BlindType, data.ItemData.Mounting),
             visibleBottomTrackReccess(data.ItemData.BottomTrackType),
-            visibleSplitHeight(data.ItemData.TiltrodSplit),
+            visibleSplitHeight(data.ItemData.TiltrodType),
             visibleHorizontalRequired(data.ItemData.HorizontalTPostHeight),
-            visibleTemplateProvided(data.ItemData.SpecialShape)
         ]);
     } catch (error) {
-        alert(error);
         document.getElementById("divloader").style.display = "none";
     }
 }
 
 function redirectOrder() {
     window.location.replace("/order");
+}
+
+function updateLinkDetail(myId) {
+    const link = document.getElementById("orderDetail");
+    if (!link || !headerId) return;
+
+    link.href = `/order/detail?orderid=${myId}`;
 }
 
 document.getElementById("modalSuccess").addEventListener("hide.bs.modal", function () {

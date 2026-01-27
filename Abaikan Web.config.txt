@@ -42,3 +42,17 @@ WHERE
 	Order_Header.UserLogin = 'u_builder' 
 	AND Order_Header.Active = 1
 	AND Order_Detail.Active = 1
+
+
+https://swh7.conetix.com.au:8443/
+User : ordersbl
+Password : ramin41mta
+
+https://login.siteground.com/
+User : jpmspeed
+Password : ramin41mta
+
+FTP
+IP : 202.74.70.10
+User : bigblinds
+Password : CA^0n8jWva!x2zgx

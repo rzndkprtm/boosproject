@@ -219,34 +219,17 @@ Partial Class Setting_Specification_Product_Default
 
     Private Sub BindData(designText As String, blindText As String, companyText As String, active As String, searchText As String)
         Try
-            Dim designString As String = String.Empty
-            Dim blindString As String = String.Empty
-            Dim companyArray As String = String.Empty
-            Dim companyString As String = String.Empty
-            Dim activeString As String = "WHERE Products.Active=1"
-            Dim searchString As String = String.Empty
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@Active", active),
+                New SqlParameter("@DesignId", If(String.IsNullOrEmpty(designText), CType(DBNull.Value, Object), designText)),
+                New SqlParameter("@BlindId", If(String.IsNullOrEmpty(blindText), CType(DBNull.Value, Object), blindText)),
+                New SqlParameter("@CompanyDetailId", If(String.IsNullOrEmpty(companyText), CType(DBNull.Value, Object), companyText)),
+                New SqlParameter("@SearchText", If(String.IsNullOrEmpty(searchText), CType(DBNull.Value, Object), searchText))
+            }
 
-            If active = 0 Then
-                activeString = "WHERE Products.Active=0"
-            End If
+            Dim thisData As DataTable = settingClass.GetDataTableSP("sp_ProductList", params)
 
-            If Not designText = "" Then
-                designString = "AND Products.DesignId='" & designText & "'"
-            End If
-
-            If Not blindText = "" Then
-                blindString = "AND Products.BlindId='" & blindText & "'"
-            End If
-
-            If Not companyText = "" Then
-                companyArray = "CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray"
-                companyString = "AND companyArray.value='" & companyText & "'"
-            End If
-
-            If Not String.IsNullOrEmpty(searchText) Then
-                searchString = "AND Products.Name LIKE '%" & searchText & "%'"
-            End If
-            gvList.DataSource = settingClass.GetDataTable(String.Format("SELECT Products.*, Designs.Name AS DesignName, Blinds.Name AS BlindName, CASE WHEN Products.Active=1 THEN 'Yes' WHEN Products.Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Products {5} LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id {0} {1} {2} {3} {4} ORDER BY Designs.Name, Blinds.Name, Products.Name ASC", activeString, designString, blindString, companyString, searchString, companyArray))
+            gvList.DataSource = thisData
             gvList.DataBind()
             gvList.Columns(1).Visible = PageAction("Visible ID")
 

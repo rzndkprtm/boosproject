@@ -16,9 +16,8 @@ $("#cancel").on("click", () => window.location.href = `/order/detail?orderid=${h
 $("#vieworder").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
 
 $("#blindtype").on("change", function () {
-    const blindtype = $(this).val();
-    bindTubeType(blindtype);
-    bindMounting(blindtype);
+    bindTubeType($(this).val());
+    bindMounting($(this).val());
 
     document.getElementById("returnlength").value = "";
 });
@@ -76,11 +75,10 @@ function getFormAction(itemAction) {
         }
 
         const actionMap = {
-            create: "Add Item",
-            edit: "Edit Item",
-            view: "View Item",
-            copy: "Copy Item"
+            create: "Add Item", edit: "Edit Item",
+            view: "View Item", copy: "Copy Item"
         };
+
         pageAction.innerText = actionMap[itemAction];
         resolve();
     });
@@ -636,11 +634,9 @@ function visibleFabric(fabricInsert) {
 function visibleCustom(returnLength) {
     return new Promise((resolve) => {
         const thisDiv = document.getElementById("divreturnlengthvalue");
-
         if (!thisDiv) {
             return resolve();
         }
-
         thisDiv.style.display = (returnLength === "Custom") ? "" : "none";
 
         resolve();
@@ -826,6 +822,8 @@ async function initLinea() {
 
     if (!headerId) return redirectOrder();
 
+    updateLinkDetail(headerId);
+
     if (!itemAction || !designId || !loginId || designId !== designIdOri) {
         return window.location.href = `/order/detail?orderid=${headerId}`;
     }
@@ -918,6 +916,13 @@ function showInfo(type) {
 
 function redirectOrder() {
     window.location.replace("/order");
+}
+
+function updateLinkDetail(myId) {
+    const link = document.getElementById("orderDetail");
+    if (!link || !headerId) return;
+
+    link.href = `/order/detail?orderid=${myId}`;
 }
 
 document.getElementById("modalSuccess").addEventListener("hide.bs.modal", function () {
