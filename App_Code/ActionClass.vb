@@ -1,31 +1,28 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data
+Imports System.Data.SqlClient
 
 Public Class ActionClass
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Public Function GetActionAccess(RoleId As String, LevelId As String, Page As String, Action As String) As Boolean
-        Dim result As Boolean = False
-        If String.IsNullOrEmpty(RoleId) OrElse String.IsNullOrEmpty(LevelId) OrElse String.IsNullOrEmpty(Page) OrElse String.IsNullOrEmpty(Action) Then Return False
-
+        If String.IsNullOrEmpty(RoleId) OrElse String.IsNullOrEmpty(LevelId) OrElse
+           String.IsNullOrEmpty(Page) OrElse String.IsNullOrEmpty(Action) Then Return False
         Try
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As New SqlCommand("SELECT * FROM Actions WHERE RoleId=@RoleId AND LevelId=@LevelId AND Page=@Page AND Action=@Action AND Active=1", thisConn)
-                    myCmd.Parameters.AddWithValue("@RoleId", RoleId)
-                    myCmd.Parameters.AddWithValue("@LevelId", LevelId)
-                    myCmd.Parameters.AddWithValue("@Page", Page)
-                    myCmd.Parameters.AddWithValue("@Action", Action)
+                Using cmd As New SqlCommand("sp_GetActionAccess", thisConn)
+                    cmd.CommandType = CommandType.StoredProcedure
+                    cmd.Parameters.AddWithValue("@RoleId", RoleId)
+                    cmd.Parameters.AddWithValue("@LevelId", LevelId)
+                    cmd.Parameters.AddWithValue("@Page", Page)
+                    cmd.Parameters.AddWithValue("@Action", Action)
 
                     thisConn.Open()
-                    Dim obj = myCmd.ExecuteScalar()
-                    If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
-                        result = True
-                    End If
+                    Return Convert.ToInt32(cmd.ExecuteScalar()) = 1
                 End Using
             End Using
-        Catch ex As Exception
-            result = False
+        Catch
+            Return False
         End Try
-        Return result
     End Function
 End Class
