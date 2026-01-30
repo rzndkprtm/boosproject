@@ -1330,7 +1330,6 @@ Partial Class Order_Detail
                     End If
 
                     Dim itemAction As String = "view"
-
                     If lblOrderStatus.Text = "Unsubmitted" Then
                         itemAction = "edit"
                     End If
@@ -1352,7 +1351,6 @@ Partial Class Order_Detail
                     Dim queryString As String = String.Format("do={0}&orderid={1}&itemid={2}&dtype={3}&uid={4}", itemAction, lblHeaderId.Text, dataId, designId, Session("LoginId").ToString())
 
                     Dim contextId As String = InsertContext(queryString)
-
                     url = String.Format("{0}?boos={1}", page, contextId)
 
                     Response.Redirect(url, False)
@@ -1400,6 +1398,12 @@ Partial Class Order_Detail
                     BindPrinting(dataId)
 
                     ClientScript.RegisterStartupScript(Me.GetType(), "showPrinting", thisScript, True)
+
+                    'Dim queryString As String = String.Format("headerid={0}&itemid={1}", lblHeaderId.Text, dataId)
+
+                    'Dim contextId As String = InsertContext(queryString)
+                    'url = String.Format("~/order/printing?boos={0}", contextId)
+                    'Response.Redirect(url)
                 Catch ex As Exception
                     MessageError_Printing(True, ex.ToString())
                     If Not Session("RoleName") = "Developer" Then
@@ -2832,15 +2836,15 @@ Partial Class Order_Detail
                 End If
             End If
         Catch ex As Exception
-            'MessageError(True, ex.ToString())
-            'If Not Session("RoleName") = "Developer" Then
-            '    MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            '    If Session("RoleName") = "Customer" Then
-            '        MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
-            '    End If
-            '    dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindDataOrder", ex.ToString()}
-            '    mailingClass.WebError(dataMailing)
-            'End If
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                If Session("RoleName") = "Customer" Then
+                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
+                End If
+                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindDataOrder", ex.ToString()}
+                mailingClass.WebError(dataMailing)
+            End If
         End Try
     End Sub
 
