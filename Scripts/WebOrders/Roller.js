@@ -2759,7 +2759,10 @@ function process() {
         itemaction: itemAction,
         itemid: itemId,
         designid: designId,
-        loginid: loginId
+        loginid: loginId,
+        rolename: roleAccess,
+        companyid: company,
+        companydetailid: companyDetail
     };
 
     fields.forEach(id => {
@@ -2963,51 +2966,12 @@ function showInfo(type) {
     ]).then(function ([blindName, companyDetailName]) {
         if (type === "Layout") {
             title = "Layout Information";
-
-            info = "";
-        }
-        else if (type === "Tube") {
-            title = "Tube Information";
-            info = "<b>1. Gear Reduction 38mm</b>";
-            info += "<br />";
-            info += "The maximum tube width for this blind is 1810 mm.";
-            info += "<br /><br />";
-            info += "<b>2. Gear Reduction 45mm</b>";
-            info += "<br />";
-            info += "This tube may be used for blind sizes under 6 square meters.";
-            info += "<br /><br />";
-            info += "<b>2. Gear Reduction 49mm</b>";
-            info += "<br />";
-            info += "The use of this tube is required for blind sizes of 6 square meters and above.";
-            info += "<br />";
-
-            if (companyDetailName === "ACCENT") {
-                info = "<b>1. Gear Reduction 38mm / LD</b>";
-                info += "<br />";
-                info += "Maksimal width adalah 1810mm.";
-                info += "<br /><br />";
-                info += "<b>2. Gear Reduction 45mm / Standard</b>";
-                info += "<br />";
-                info += "Ukuran dibawah 6 meter persegi";
-                info += "<br /><br />";
-                info += "<b>2. Gear Reduction 49mm / HD</b>";
-                info += "<br />";
-                info += "Untuk ukuran 6 meter persegi dan lebih";
-                info += "<br />";
-            }
+            info += "";
         }
         else if (type === "Roll") {
             title = "Roll Information";
 
-            let urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/rolldirection.png";
-            info = `<img src="${urlImage}" alt="Roll Image" style="max-width:100%;height:auto;">`;
-
-            if (companyDetailName === "CWS") {
-                info += "<br />";
-                info += "<b>1. Standard = Standard Roll = Back Roll</b>";
-                info += "<br />";
-                info += "<b>2. Reverse = Reverse Roll = Front Roll</b>";
-            }
+            
         }
         else if (type === "Bracket Extension") {
             title = "Bracket Extension Information";
@@ -3107,8 +3071,19 @@ function showInfo(type) {
         document.getElementById("titleInfo").innerHTML = title || "";
         document.getElementById("spanInfo").innerHTML = info || "";
     }).catch(function (error) {
-        console.error("showInfo error:", error);
+        document.getElementById("titleInfo").innerHTML = "";
+        document.getElementById("spanInfo").innerHTML = "";
     });
+}
+
+function showGallery(type) {
+    let info;
+
+    if (type === "Roll") {
+        let urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/roller/roll.jpg";
+        info = `<img src="${urlImage}" alt="Roll Image" style="max-width:100%;height:auto;">`;
+    }
+    document.getElementById("spanInfoGallery").innerHTML = info;
 }
 
 function redirectOrder() {
@@ -3137,7 +3112,17 @@ document.getElementById("modalInfo").addEventListener("hide.bs.modal", function 
     document.body.focus();
 });
 
+document.getElementById("modalGallery").addEventListener("hide.bs.modal", function () {
+    document.activeElement.blur();
+    document.body.focus();
+});
+
 document.getElementById("modalInfoTube").addEventListener("hide.bs.modal", function () {
+    document.activeElement.blur();
+    document.body.focus();
+});
+
+document.getElementById("modalLayout").addEventListener("hide.bs.modal", function () {
     document.activeElement.blur();
     document.body.focus();
 });

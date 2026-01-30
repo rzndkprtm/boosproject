@@ -182,7 +182,6 @@ Public Class SettingClass
 
             result *= (1D - (discValue / 100D))
         Next
-
         Return (1D - result) * 100D
     End Function
 

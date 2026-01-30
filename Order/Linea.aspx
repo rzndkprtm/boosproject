@@ -283,7 +283,17 @@
                         </div>
                         <div class="card-content">
                             <div class="card-body">
-
+                                <b>LIMITATIONS</b>
+                                <ul>
+                                    <li>Minimum width : 600mm</li>
+                                    <li>Maximum width : 2910mm (subject to max fabric width)</li>
+                                </ul>
+                                <b>STANDARD ALLOWANCES</b>
+                                <ul>
+                                    <li>Factory takes all deductions</li>
+                                    <li>Refeal Fit : Width deduction 2mm</li>
+                                    <li>Face Fit : width add 10mm</li>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -342,5 +352,5 @@
         </div>
     </div>
 
-    <script src='<%: ResolveUrl("~/Scripts/WebOrders/Linea.js?v=1.0.0") %>'></script>
+    <script src='<%: ResolveUrl("~/Scripts/WebOrders/Linea.js?v=1.0.1") %>'></script>
 </asp:Content>

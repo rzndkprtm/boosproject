@@ -76,6 +76,7 @@ Partial Class Setting_Specification_ControlType
                     Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM ProductControls WHERE Id='" & lblId.Text & "'")
                     If myData Is Nothing Then Exit Sub
 
+                    ddlType.SelectedValue = myData("Type").ToString()
                     txtName.Text = myData("Name").ToString()
                     txtAlias.Text = myData("Alias").ToString()
                     txtDescription.Text = myData("Description").ToString()
@@ -127,8 +128,9 @@ Partial Class Setting_Specification_ControlType
                 If lblAction.Text = "Add" Then
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM ProductControls ORDER BY Id DESC")
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO ProductControls VALUES (@Id, @Name, @Alias, @Description)", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO ProductControls VALUES (@Id, @Type, @Name, @Alias, @Description)", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", thisId)
+                            myCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
                             myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Alias", aliasName)
                             myCmd.Parameters.AddWithValue("@Description", descText)
@@ -147,8 +149,9 @@ Partial Class Setting_Specification_ControlType
 
                 If lblAction.Text = "Edit" Then
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE ProductControls SET Name=@Name, Alias=@Alias, Description=@Description WHERE Id=@Id", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("UPDATE ProductControls SET Type=@Type, Name=@Name, Alias=@Alias, Description=@Description WHERE Id=@Id", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                            myCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
                             myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Alias", aliasName)
                             myCmd.Parameters.AddWithValue("@Description", descText)

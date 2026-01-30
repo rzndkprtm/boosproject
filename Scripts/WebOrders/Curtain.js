@@ -1147,7 +1147,10 @@ function process() {
         itemaction: itemAction,
         itemid: itemId,
         designid: designId,
-        loginid: loginId
+        loginid: loginId,
+        rolename: roleAccess,
+        companyid: company,
+        companydetailid: companyDetail
     };
 
     fields.forEach(id => {
@@ -1284,8 +1287,23 @@ function showInfo(type) {
         info += `<img src="${img}" alt="Sub Type Image" style="max-width:100%;height:auto;">`;
         info += "<br /><br />";
     }
-
     document.getElementById("spanInfo").innerHTML = info;
+}
+
+function showGallery(type) {
+    let info;
+
+    if (type === "Heading") {
+        let urlImage = "https://bigblinds.ordersblindonline.com/Assets/images/products/curtain/heading.jpg";
+        info = `<img src="${urlImage}" style="max-width:100%;height:auto;">`;
+    } else if (type === "Style") {
+        let urlImage = "https://bigblinds.ordersblindonline.com/Assets/images/products/curtain/styletrack.jpg";
+        info = `<img src="${urlImage}" style="max-width:100%;height:auto;">`;
+    } else if (type === "Commercial") {
+        let urlImage = "https://bigblinds.ordersblindonline.com/Assets/images/products/curtain/commercialtrack.jpg";
+        info = `<img src="${urlImage}" style="max-width:100%;height:auto;">`;
+    }
+    document.getElementById("spanInfoGallery").innerHTML = info;
 }
 
 function redirectOrder() {
@@ -1310,6 +1328,11 @@ document.getElementById("modalError").addEventListener("hide.bs.modal", function
 });
 
 document.getElementById("modalInfo").addEventListener("hide.bs.modal", function () {
+    document.activeElement.blur();
+    document.body.focus();
+});
+
+document.getElementById("modalGallery").addEventListener("hide.bs.modal", function () {
     document.activeElement.blur();
     document.body.focus();
 });

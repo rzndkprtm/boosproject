@@ -986,7 +986,6 @@ Partial Class Order_Add
                         End If
 
                         Dim blindId As String = orderClass.GetItemData("SELECT Id FROM Blinds CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designId & "' AND Name='" & blindType & "' AND companyArray.value='" & companyDetailId & "' AND Active=1")
-
                         If String.IsNullOrEmpty(blindId) Then
                             MessageError(True, "YOUR ORDER TYPE NOT REGISTERED YET !")
                             Exit For

@@ -186,8 +186,6 @@ Public Class PreviewClass
 
             ' START ALUMINIUM BLIND
             Try
-                'Dim aluminiumData As DataTable = GetDataTable("SELECT OrderDetails.Id, OrderDetails.Room, OrderDetails.Mounting, OrderDetails.Width AS Width, OrderDetails.[Drop] AS Height, OrderDetails.ControlPosition AS CtrlPosition, OrderDetails.TilterPosition AS TiltPosition, OrderDetails.ControlLength AS CL, OrderDetails.ControlLengthValue AS CLValue, OrderDetails.WandLength AS WL, OrderDetails.WandLengthValue AS WLValue, OrderDetails.Supply, OrderDetails.Notes, OrderDetails.SubType, OrderDetails.TotalItems AS TotalItems, Blinds.Name AS BlindName, Blinds.Alias AS BlindAlias, ProductColours.Name AS ColourName, 1 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND Designs.Name='Aluminium Blind' UNION ALL SELECT OrderDetails.Id, OrderDetails.Room, OrderDetails.Mounting, OrderDetails.WidthB AS Width, OrderDetails.DropB AS Height, OrderDetails.ControlPositionB AS CtrlPosition, OrderDetails.TilterPositionB AS TiltPosition, OrderDetails.ControlLengthB AS CL, OrderDetails.ControlLengthValueB AS CLValue, OrderDetails.WandLengthB AS WL, OrderDetails.WandLengthValueB AS WLValue, OrderDetails.Supply, OrderDetails.Notes, OrderDetails.SubType, OrderDetails.TotalItems AS TotalItems, Blinds.Name AS BlindName, Blinds.Alias AS BlindAlias, ProductColours.Name AS ColourName, 2 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.SubType LIKE '%2 on 1%' AND OrderDetails.Active=1 AND Designs.Name='Aluminium Blind' ORDER BY OrderDetails.Id, Item ASC")
-
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
@@ -283,8 +281,6 @@ Public Class PreviewClass
 
             ' START CELLULAR SHADES
             Try
-                'Dim cellularData As DataTable = GetDataTable("SELECT OrderDetails.*, Blinds.Name AS BlindName, Blinds.Alias AS BlindAlias, ProductControls.Name AS ControlName, Fab.Name AS FabricName, FabB.Name AS FabricNameB, FabColour.Colour AS FabricColour, FabColourB.Colour AS FabricColourB FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductControls ON Products.ControlType=ProductControls.Id LEFT JOIN Fabrics AS Fab ON OrderDetails.FabricId=Fab.Id LEFT JOIN Fabrics AS FabB ON OrderDetails.FabricIdB=FabB.Id LEFT JOIN FabricColours AS FabColour ON OrderDetails.FabricColourId=FabColour.Id LEFT JOIN FabricColours AS FabColourB ON OrderDetails.FabricColourIdB=FabColourB.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Cellular Shades' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
-
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
@@ -369,8 +365,6 @@ Public Class PreviewClass
 
             ' START CURTAIN
             Try
-                'Dim curtainData As DataTable = GetDataTable("SELECT OrderDetails.Id, OrderDetails.Room, OrderDetails.Mounting, OrderDetails.Width AS Width, OrderDetails.[Drop] AS Height, OrderDetails.FabricId AS FabricId, OrderDetails.FabricColourId AS FabricColourId, OrderDetails.Heading AS Heading, OrderDetails.TrackType AS TrackType, OrderDetails.TrackColour AS TrackColour, OrderDetails.TrackDraw AS TrackDraw, OrderDetails.StackPosition AS StackPosition, OrderDetails.ControlColour AS ControlColour, OrderDetails.ControlLengthValue AS CL, OrderDetails.ReturnLengthValue AS RetLengthValue, OrderDetails.BottomHem, OrderDetails.Supply AS Supply, OrderDetails.Notes, Blinds.Name AS BlindName, Blinds.Alias AS BlindAlias, 1 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND Designs.Name='Curtain' UNION ALL SELECT OrderDetails.Id, OrderDetails.Room, OrderDetails.Mounting, OrderDetails.WidthB AS Width, OrderDetails.DropB AS Height, OrderDetails.FabricIdB AS FabricId, OrderDetails.FabricColourIdB AS FabricColourId, OrderDetails.HeadingB AS Heading, OrderDetails.TrackTypeB AS TrackType, OrderDetails.TrackColourB AS TrackColour, OrderDetails.TrackDrawB AS TrackDraw, OrderDetails.StackPositionB AS StackPosition, OrderDetails.ControlColourB AS ControlColour, OrderDetails.ControlLengthValueB AS CL, OrderDetails.ReturnLengthValueB AS RetLengthValue, OrderDetails.BottomHem, OrderDetails.Supply AS Supply, OrderDetails.Notes, Blinds.Name AS BlindName, Blinds.Alias AS BlindAlias, 2 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND Designs.Name='Curtain' AND Blinds.Name='Double Curtain & Track' ORDER BY OrderDetails.Id, Item ASC")
-
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
@@ -463,8 +457,6 @@ Public Class PreviewClass
 
             ' START DESIGN SHADES
             Try
-                'Dim designData As DataTable = GetDataTable("SELECT OrderDetails.*, Chains.Name AS ChainName, Fabrics.Name AS FabricName, FabricColours.Colour AS FabricColour, ProductControls.Name AS ControlName, ProductColours.Name AS ColourName FROM OrderDetails LEFT JOIN FabricColours ON OrderDetails.FabricColourId=FabricColours.Id LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN ProductControls ON Products.ControlType=ProductControls.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id LEFT JOIN Fabrics ON OrderDetails.FabricId=Fabrics.Id LEFT JOIN Chains ON OrderDetails.ChainId=Chains.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Design Shades' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
-
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
@@ -557,8 +549,6 @@ Public Class PreviewClass
 
             ' START LINEA VALANCE
             Try
-                'Dim lineaData As DataTable = GetDataTable("SELECT OrderDetails.*, ProductTubes.Name AS TubeName, ProductColours.Name AS ColourName, Fabrics.Name AS FabricName, FabricColours.Colour AS FabricColour FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN ProductTubes ON Products.TubeType=ProductTubes.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id LEFT JOIN Fabrics ON OrderDetails.FabricId=Fabrics.Id LEFT JOIN FabricColours ON OrderDetails.FabricColourId=FabricColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Linea Valance' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
-
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
@@ -642,8 +632,6 @@ Public Class PreviewClass
 
             ' START PANEL GLIDE
             Try
-                'Dim panelData As DataTable = GetDataTable("SELECT OrderDetails.*, Blinds.Name AS BlindName, ProductTubes.Name AS TubeName, ProductColours.Name AS ColourName, Fabrics.Name AS FabricName, FabricColours.Colour AS FabricColour FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductTubes ON Products.TubeType=ProductTubes.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id LEFT JOIN Fabrics ON OrderDetails.FabricId=Fabrics.Id LEFT JOIN FabricColours ON OrderDetails.FabricColourId=FabricColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Panel Glide' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
-
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
@@ -735,8 +723,6 @@ Public Class PreviewClass
 
             ' START PELMET
             Try
-                'Dim pelmetData As DataTable = GetDataTable("SELECT OrderDetails.*, ProductTubes.Name AS TubeName, Fabrics.Name AS FabricName, FabricColours.Colour AS FabricColour FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN ProductTubes ON Products.TubeType=ProductTubes.Id LEFT JOIN Fabrics ON OrderDetails.FabricId=Fabrics.Id LEFT JOIN FabricColours ON OrderDetails.FabricColourId=FabricColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Pelmet' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
-
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
@@ -813,8 +799,6 @@ Public Class PreviewClass
 
             ' START PRIVACY VENETIAN
             Try
-                'Dim privacyData As DataTable = GetDataTable("SELECT OrderDetails.*, Blinds.Name AS BlindName, ProductColours.Name AS ColourName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Privacy Venetian' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
-
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
@@ -896,8 +880,6 @@ Public Class PreviewClass
 
             ' START ROLLER BLIND
             Try
-                'Dim rollerData As DataTable = GetDataTable("SELECT OrderDetails.Id, OrderDetails.Room, OrderDetails.Mounting, OrderDetails.Width AS Width, OrderDetails.[Drop] AS Height, Blinds.Name AS BlindName, Blinds.Alias AS BlindAlias, Products.TubeType AS TubeType, Products.ControlType, Products.ColourType, OrderDetails.FabricId AS Fabric, OrderDetails.FabricColourId AS FabricColour, OrderDetails.Roll, OrderDetails.ControlPosition, OrderDetails.Charger AS Charger, OrderDetails.ExtensionCable AS ExtensionCable, OrderDetails.Supply AS NeoBox, OrderDetails.Adjusting AS Adjusting, OrderDetails.ChainId AS Chain, OrderDetails.ChainStopper AS ChainStopper, OrderDetails.ControlLengthValue AS ChainLength, OrderDetails.BottomId AS BottomType, OrderDetails.BottomColourId AS BottomColour, OrderDetails.FlatOption AS FlatOption, OrderDetails.TopTrack AS TopTrack, OrderDetails.SpringAssist, OrderDetails.BracketSize, OrderDetails.BracketExtension AS BracketExtension, OrderDetails.Printing AS PrintingImage, OrderDetails.Notes, 1 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Roller Blind' AND (Blinds.Name='Single Blind' OR Blinds.Name='Full Cassette' OR Blinds.Name='Semi Cassette' OR Blinds.Name='Wire Guide' OR Blinds.Name='Dual Blinds' OR Blinds.Name='Link 2 Blinds Dependent' OR Blinds.Name='Link 2 Blinds Independent' OR Blinds.Name='Link 3 Blinds Dependent' OR Blinds.Name='Link 3 Blinds Independent with Dependent' OR Blinds.Name='DB Link 2 Blinds Dependent' OR Blinds.Name='DB Link 2 Blinds Independent' OR Blinds.Name='DB Link 3 Blinds Dependent' OR Blinds.Name='DB Link 3 Blinds Independent with Dependent') AND OrderDetails.Active=1 UNION ALL SELECT OrderDetails.Id, OrderDetails.Room, OrderDetails.Mounting, OrderDetails.WidthB AS Width, OrderDetails.DropB AS Height, Blinds.Name AS BlindName, Blinds.Alias AS BlindAlias, Products.TubeType AS TubeType, Products.ControlType, Products.ColourType, OrderDetails.FabricIdB AS Fabric, OrderDetails.FabricColourIdB AS FabricColour, OrderDetails.RollB, OrderDetails.ControlPositionB, OrderDetails.Charger AS Charger, OrderDetails.ExtensionCable AS ExtensionCable, OrderDetails.Supply AS NeoBox, OrderDetails.Adjusting AS Adjusting, OrderDetails.ChainIdB AS Chain, OrderDetails.ChainStopperB AS ChainStopper, OrderDetails.ControlLengthValueB AS ChainLength, OrderDetails.BottomIdB AS BottomType, OrderDetails.BottomColourIdB AS BottomColour, OrderDetails.FlatOptionB AS FlatOption, NULL, OrderDetails.SpringAssist, OrderDetails.BracketSize, OrderDetails.BracketExtension AS BracketExtension, OrderDetails.PrintingB AS PrintingImage, OrderDetails.Notes, 2 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Roller Blind' AND (Blinds.Name='Dual Blinds' OR Blinds.Name='Link 2 Blinds Dependent' OR Blinds.Name='Link 2 Blinds Independent' OR Blinds.Name='Link 3 Blinds Dependent' OR Blinds.Name='Link 3 Blinds Independent with Dependent' OR Blinds.Name='DB Link 2 Blinds Dependent' OR Blinds.Name='DB Link 2 Blinds Independent' OR Blinds.Name='DB Link 3 Blinds Dependent' OR Blinds.Name='DB Link 3 Blinds Independent with Dependent') AND OrderDetails.Active=1 UNION ALL SELECT OrderDetails.Id, OrderDetails.Room, OrderDetails.Mounting, OrderDetails.WidthC AS Width, OrderDetails.DropC AS Height, Blinds.Name AS BlindName, Blinds.Alias AS BlindAlias, Products.TubeType AS TubeType, Products.ControlType, Products.ColourType, OrderDetails.FabricIdC AS Fabric, OrderDetails.FabricColourIdC AS FabricColour, OrderDetails.RollC, OrderDetails.ControlPositionC, OrderDetails.Charger AS Charger, OrderDetails.ExtensionCable AS ExtensionCable, OrderDetails.Supply AS NeoBox, OrderDetails.Adjusting AS Adjusting, OrderDetails.ChainIdC AS Chain, OrderDetails.ChainStopperC AS ChainStopper, OrderDetails.ControlLengthValueC AS ChainLength, OrderDetails.BottomIdC AS BottomType, OrderDetails.BottomColourIdC AS BottomColour, OrderDetails.FlatOptionC AS FlatOption, NULL, OrderDetails.SpringAssist, OrderDetails.BracketSize, OrderDetails.BracketExtension AS BracketExtension, OrderDetails.PrintingC AS PrintingImage, OrderDetails.Notes, 3 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Roller Blind' AND (Blinds.Name='Link 3 Blinds Dependent' OR Blinds.Name='Link 3 Blinds Independent with Dependent' OR Blinds.Name='DB Link 2 Blinds Dependent' OR Blinds.Name='DB Link 2 Blinds Independent' OR Blinds.Name='DB Link 3 Blinds Dependent' OR Blinds.Name='DB Link 3 Blinds Independent with Dependent') AND OrderDetails.Active=1 UNION ALL SELECT OrderDetails.Id, OrderDetails.Room, OrderDetails.Mounting, OrderDetails.WidthD AS Width, OrderDetails.DropD AS Height, Blinds.Name AS BlindName, Blinds.Alias AS BlindAlias, Products.TubeType AS TubeType, Products.ControlType, Products.ColourType, OrderDetails.FabricIdC AS Fabric, OrderDetails.FabricColourIdD AS FabricColour, OrderDetails.RollD, OrderDetails.ControlPositionD, OrderDetails.Charger AS Charger, OrderDetails.ExtensionCable AS ExtensionCable, OrderDetails.Supply AS NeoBox, OrderDetails.Adjusting AS Adjusting, OrderDetails.ChainIdD AS Chain, OrderDetails.ChainStopperD AS ChainStopper, OrderDetails.ControlLengthValueD AS ChainLength, OrderDetails.BottomIdD AS BottomType, OrderDetails.BottomColourIdD AS BottomColour, OrderDetails.FlatOptionD AS FlatOption, NULL, OrderDetails.SpringAssist, OrderDetails.BracketSize, OrderDetails.BracketExtension AS BracketExtension, OrderDetails.PrintingD AS PrintingImage, OrderDetails.Notes, 4 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Roller Blind' AND (Blinds.Name='DB Link 2 Blinds Dependent' OR Blinds.Name='DB Link 2 Blinds Independent' OR Blinds.Name='DB Link 3 Blinds Dependent' OR Blinds.Name='DB Link 3 Blinds Independent with Dependent') AND OrderDetails.Active=1 UNION ALL SELECT OrderDetails.Id, OrderDetails.Room, OrderDetails.Mounting, OrderDetails.WidthE AS Width, OrderDetails.DropE AS Height, Blinds.Name AS BlindName, Blinds.Alias AS BlindAlias, Products.TubeType AS TubeType, Products.ControlType, Products.ColourType, OrderDetails.FabricIdE AS Fabric, OrderDetails.FabricColourIdE AS FabricColour, OrderDetails.RollE, OrderDetails.ControlPositionE, OrderDetails.Charger AS Charger, OrderDetails.ExtensionCable AS ExtensionCable, OrderDetails.Supply AS NeoBox, OrderDetails.Adjusting AS Adjusting, OrderDetails.ChainIdE AS Chain, OrderDetails.ChainStopperE AS ChainStopper, OrderDetails.ControlLengthValueE AS ChainLength, OrderDetails.BottomIdE AS BottomType, OrderDetails.BottomColourIdE AS BottomColour, OrderDetails.FlatOptionE AS FlatOption, NULL, OrderDetails.SpringAssist, OrderDetails.BracketSize, OrderDetails.BracketExtension AS BracketExtension, OrderDetails.PrintingE AS PrintingImage, OrderDetails.Notes, 5 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId =Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Roller Blind' AND (Blinds.Name='DB Link 3 Blinds Dependent' OR Blinds.Name='DB Link 3 Blinds Independent with Dependent') AND OrderDetails.Active=1 UNION ALL SELECT OrderDetails.Id, OrderDetails.Room, OrderDetails.Mounting, OrderDetails.WidthF AS Width, OrderDetails.DropF AS Height, Blinds.Name AS BlindName, Blinds.Alias AS BlindAlias, Products.TubeType AS TubeType, Products.ControlType, Products.ColourType, OrderDetails.FabricIdF AS Fabric, OrderDetails.FabricColourIdF AS FabricColour, OrderDetails.RollF, OrderDetails.ControlPositionF, OrderDetails.Charger AS Charger, OrderDetails.ExtensionCable AS ExtensionCable, OrderDetails.Supply AS NeoBox, OrderDetails.Adjusting AS Adjusting, OrderDetails.ChainIdF AS Chain, OrderDetails.ChainStopperF AS ChainStopper, OrderDetails.ControlLengthValueF AS ChainLength, OrderDetails.BottomIdF AS BottomType, OrderDetails.BottomColourIdF AS BottomColour, OrderDetails.FlatOptionF AS FlatOption, NULL, OrderDetails.SpringAssist, OrderDetails.BracketSize, OrderDetails.BracketExtension AS BracketExtension, OrderDetails.PrintingF AS PrintingImage, OrderDetails.Notes, 6 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Roller Blind' AND (Blinds.Name='DB Link 3 Blinds Dependent' OR Blinds.Name='DB Link 3 Blinds Independent with Dependent') AND OrderDetails.Active=1 ORDER BY OrderDetails.Id, Item ASC")
-
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
@@ -1048,7 +1030,6 @@ Public Class PreviewClass
 
             ' START ROMAN BLIND
             Try
-                'Dim romanData As DataTable = GetDataTable("SELECT OrderDetails.*, ProductTubes.Name AS TubeName, ProductControls.Name AS ControlName, Fabrics.Name AS FabricName, FabricColours.Colour AS FabricColour, Chains.Name AS ChainName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN ProductTubes ON Products.TubeType = ProductTubes.Id LEFT JOIN ProductControls ON Products.ControlType=ProductControls.Id LEFT JOIN Fabrics ON OrderDetails.FabricId=Fabrics.Id LEFT JOIN FabricColours ON OrderDetails.FabricColourId=FabricColours.Id LEFT JOIN Chains ON OrderDetails.ChainId=Chains.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Roman Blind' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
@@ -1153,8 +1134,6 @@ Public Class PreviewClass
 
             ' START VENETIAN BLIND
             Try
-                'Dim venetianData As DataTable = GetDataTable("SELECT OrderDetails.Id, OrderDetails.Room, OrderDetails.Mounting, OrderDetails.Width AS Width, OrderDetails.[Drop] AS Height, OrderDetails.ControlPosition AS CtrlPosition, OrderDetails.TilterPosition AS TiltPosition, OrderDetails.ControlLength AS CL, OrderDetails.ControlLengthValue AS CLValue, OrderDetails.Supply, OrderDetails.Tassel, OrderDetails.ValanceType, OrderDetails.ValanceSize, OrderDetails.ValanceSizeValue, OrderDetails.ReturnPosition, OrderDetails.ReturnLength, OrderDetails.ReturnLengthValue, OrderDetails.Notes, OrderDetails.SubType, Blinds.Name AS BlindName, ProductColours.Name AS ColourName, 1 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND Designs.Name='Venetian Blind' UNION ALL SELECT OrderDetails.Id, OrderDetails.Room, OrderDetails.Mounting, OrderDetails.WidthB AS Width, OrderDetails.DropB AS Height, OrderDetails.ControlPositionB AS CtrlPosition, OrderDetails.TilterPositionB AS TiltPosition, OrderDetails.ControlLengthB AS CL, OrderDetails.ControlLengthValueB AS CLValue, OrderDetails.Supply, OrderDetails.Tassel, OrderDetails.ValanceType, OrderDetails.ValanceSize, OrderDetails.ValanceSizeValue, OrderDetails.ReturnPosition, OrderDetails.ReturnLength, OrderDetails.ReturnLengthValue, OrderDetails.Notes, OrderDetails.SubType, Blinds.Name AS BlindName, ProductColours.Name AS ColourName, 2 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.SubType LIKE '%2 on 1%' AND OrderDetails.Active=1 AND Designs.Name='Venetian Blind' UNION ALL SELECT OrderDetails.Id, OrderDetails.Room, OrderDetails.Mounting, OrderDetails.WidthC AS Width, OrderDetails.DropC AS Height, OrderDetails.ControlPositionC AS CtrlPosition, OrderDetails.TilterPositionC AS TiltPosition, OrderDetails.ControlLengthC AS CL, OrderDetails.ControlLengthValueC AS CLValue, OrderDetails.Supply, OrderDetails.Tassel, OrderDetails.ValanceType, OrderDetails.ValanceSize, OrderDetails.ValanceSizeValue, OrderDetails.ReturnPosition, OrderDetails.ReturnLength, OrderDetails.ReturnLengthValue, OrderDetails.Notes, OrderDetails.SubType, Blinds.Name AS BlindName, ProductColours.Name AS ColourName, 3 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType = ProductColours.Id WHERE OrderDetails.HeaderId='" + headerId + "' AND OrderDetails.SubType LIKE '%3 on 1%' AND OrderDetails.Active=1 AND Designs.Name='Venetian Blind' ORDER BY OrderDetails.Id, Item ASC")
-
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
@@ -1258,8 +1237,6 @@ Public Class PreviewClass
 
             ' START VERTICAL
             Try
-                'Dim verticalData As DataTable = GetDataTable("SELECT OrderDetails.*, Blinds.Name AS BlindName, ProductTubes.Name AS TubeName, ProductControls.Name AS ControlName, ProductColours.Name AS ColourName, Fabrics.Name AS FabricName, FabricColours.Colour AS FabricColour, Chains.Name AS ChainName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductTubes ON Products.TubeType=ProductTubes.Id LEFT JOIN ProductControls ON Products.ControlType=ProductControls.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id LEFT JOIN Fabrics ON OrderDetails.FabricId=Fabrics.Id LEFT JOIN FabricColours ON OrderDetails.FabricColourId=FabricColours.Id LEFT JOIN Chains ON OrderDetails.ChainId=Chains.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Vertical' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
-
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
@@ -1357,8 +1334,6 @@ Public Class PreviewClass
 
             ' START SAPHORA DRAPE
             Try
-                'Dim saphoraData As DataTable = GetDataTable("SELECT OrderDetails.*, Blinds.Name AS BlindName, ProductTubes.Name AS TubeName, ProductControls.Name AS ControlName, ProductColours.Name AS ColourName, Fabrics.Name AS FabricName, FabricColours.Colour AS FabricColour, Chains.Name AS ChainName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductTubes ON Products.TubeType=ProductTubes.Id LEFT JOIN ProductControls ON Products.ControlType=ProductControls.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id LEFT JOIN Fabrics ON OrderDetails.FabricId=Fabrics.Id LEFT JOIN FabricColours ON OrderDetails.FabricColourId=FabricColours.Id LEFT JOIN Chains ON OrderDetails.ChainId=Chains.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Saphora Drape' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
-
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
@@ -1450,8 +1425,6 @@ Public Class PreviewClass
 
             ' START SKYLINE SHUTTER EXPRESS
             Try
-                'Dim shutterData As DataTable = GetDataTable("SELECT OrderDetails.*, ProductColours.Name AS ColourType, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId = Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Skyline Shutter Express' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
-
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
@@ -1638,8 +1611,6 @@ Public Class PreviewClass
 
             ' START SKYLINE SHUTTER OCEAN
             Try
-                'Dim shutterData As DataTable = GetDataTable("SELECT OrderDetails.*, ProductColours.Name AS ColourType, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Skyline Shutter Ocean' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
-
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
@@ -2011,8 +1982,6 @@ Public Class PreviewClass
 
             ' START WINDOW
             Try
-                'Dim windowData As DataTable = GetDataTable("SELECT OrderDetails.*, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Window' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
-
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
@@ -2106,7 +2075,6 @@ Public Class PreviewClass
 
             ' START DOOR
             Try
-                'Dim doorData As DataTable = GetDataTable("SELECT OrderDetails.*, Blinds.Name AS BlindName, ProductTubes.Name AS TubeName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductTubes ON Products.TubeType=ProductTubes.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Door' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
@@ -2223,7 +2191,6 @@ Public Class PreviewClass
 
             ' START SAMPLE
             Try
-                'Dim sampleData As DataTable = GetDataTable("SELECT OrderDetails.*, Blinds.Name AS BlindName, Fabrics.Name AS FabricName, FabricColours.Colour AS FabricColour FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN Fabrics ON OrderDetails.FabricId=Fabrics.Id LEFT JOIN FabricColours ON OrderDetails.FabricColourId=FabricColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Sample' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
@@ -2290,8 +2257,6 @@ Public Class PreviewClass
 
             ' START OUTDOOR
             Try
-                'Dim outdoorData As DataTable = GetDataTable("SELECT OrderDetails.*, Blinds.Name AS BlindName, Fabrics.Name AS FabricName, FabricColours.Colour AS FabricColour, ProductControls.Name AS ControlName FROM OrderDetails LEFT JOIN FabricColours ON OrderDetails.FabricColourId=FabricColours.Id LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductControls ON Products.ControlType=ProductControls.Id LEFT JOIN Fabrics ON OrderDetails.FabricId=Fabrics.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND Designs.Name='Outdoor' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
-
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }

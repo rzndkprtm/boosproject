@@ -248,17 +248,20 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Batten Colour (Front)</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                    <select id="batten" class="form-select">
-                                                        <option value=""></option>
-                                                        <option value="Baltic">Baltic</option>
-                                                        <option value="Black">Black</option>
-                                                        <option value="Brown">Brown</option>
-                                                        <option value="Cherry">Cherry</option>
-                                                        <option value="Natural">Natural</option>
-                                                        <option value="Teak">Teak</option>
-                                                        <option value="White">White</option>
-                                                    </select>
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                    <div class="input-group">
+                                                        <select id="batten" class="form-select">
+                                                            <option value=""></option>
+                                                            <option value="Baltic">Baltic</option>
+                                                            <option value="Black">Black</option>
+                                                            <option value="Brown">Brown</option>
+                                                            <option value="Cherry">Cherry</option>
+                                                            <option value="Natural">Natural</option>
+                                                            <option value="Teak">Teak</option>
+                                                            <option value="White">White</option>
+                                                        </select>
+                                                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Batten Colour');">?</a>
+                                                    </div>
                                                 </div>
                                             </div>
 
@@ -301,7 +304,14 @@
                         </div>
                         <div class="card-content">
                             <div class="card-body">
-                                <asp:Image runat="server" CssClass="w-100" ImageUrl="~/Assets/images/products/pglayout.jpg" />
+                                <b>LIMITATIONS</b>
+                                <ul>
+                                    <li>Minimum width : 610mm</li>
+                                    <li>Maximum width : 5410mm</li>
+                                    <li>Minimum drop : 600mm</li>
+                                    <li>Maximum drop : 3200mm</li>
+                                </ul>
+                                <a class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalGallery">Detail Gallery</a>
                             </div>
                         </div>
                     </div>
@@ -360,5 +370,18 @@
         </div>
     </div>
 
-    <script src='<%: ResolveUrl("~/Scripts/WebOrders/PanelGlide.js?v=1.0.0") %>'></script>
+    <div class="modal modal-blur fade" id="modalGallery" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <asp:Image runat="server" CssClass="w-100" ImageUrl="~/Assets/images/products/panelglide/gallery.jpg" />
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src='<%: ResolveUrl("~/Scripts/WebOrders/PanelGlide.js?v=1.0.1") %>'></script>
 </asp:Content>

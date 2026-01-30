@@ -187,11 +187,7 @@
                                                     <label>Control Position</label>
                                                 </div>
                                                 <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                    <select id="controlposition" class="form-select">
-                                                        <option value=""></option>
-                                                        <option value="Left">Left</option>
-                                                        <option value="Right">Right</option>
-                                                    </select>
+                                                    <select id="controlposition" class="form-select"></select>
                                                 </div>
                                             </div>
 
@@ -200,11 +196,7 @@
                                                     <label>Tilter Position</label>
                                                 </div>
                                                 <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                    <select id="tilterposition" class="form-select">
-                                                        <option value=""></option>
-                                                        <option value="Left">Left</option>
-                                                        <option value="Right">Right</option>
-                                                    </select>
+                                                    <select id="tilterposition" class="form-select"></select>
                                                 </div>
                                             </div>
 
@@ -454,7 +446,41 @@
                         </div>
                         <div class="card-content">
                             <div class="card-body">
-
+                                <b>LIMITATIONS</b>
+                                <ol>
+                                    <li>
+                                        BASSWOOD
+                                        <ul>
+                                            <li>Minimum width : 300mm</li>
+                                            <li>Maximum width : 2710mm</li>
+                                            <li>Minimum drop : 200mm</li>
+                                            <li>Maximum drop : 3200mm</li>
+                                        </ul>
+                                        <a class="btn btn-sm btn-primary mt-2 mb-2" data-bs-toggle="modal" data-bs-target="#modalGallery" onclick="return showGallery('Basswood');">Basswood Gallery</a>
+                                    </li>
+                                    
+                                    <li>
+                                        ECONO
+                                        <ul>
+                                            <li>Minimum width : 300mm</li>
+                                            <li>Maximum width : 2710mm</li>
+                                            <li>Minimum drop : 200mm</li>
+                                            <li>Maximum drop : 3200mm</li>
+                                        </ul>
+                                        <a class="btn btn-sm btn-primary mt-2 mb-2" data-bs-toggle="modal" data-bs-target="#modalGallery" onclick="return showGallery('Econo');">Econo Gallery</a>
+                                    </li>
+                                    
+                                    <li>
+                                        ECONO - CORDLESS
+                                        <ul>
+                                            <li>Minimum width : 610mm</li>
+                                            <li>Maximum width : 2410mm</li>
+                                            <li>Minimum drop : 600mm</li>
+                                            <li>Maximum drop : 2500mm</li>
+                                        </ul>
+                                        <a class="btn btn-sm btn-primary mt-2 mb-2" data-bs-toggle="modal" data-bs-target="#modalGallery" onclick="return showGallery('Cordless');">Econo Cordless Gallery</a>
+                                    </li>
+                                </ol>
                             </div>
                         </div>
                     </div>
@@ -526,15 +552,15 @@
                     <div class="tab-content text-justify">
                         <div class="tab-pane fade show active" id="list-left" role="tabpanel" aria-labelledby="list-left-list">
                             <br />
-                            <img runat="server" src="~/Assets/images/products/2on1aluminiumleft.png" alt="Sub Type Image" style="max-width:100%;height:auto;">
+                            <img runat="server" src="~/Assets/images/products/venetian/2on1venetianleft.png" alt="Sub Type Image" style="max-width:100%;height:auto;">
                         </div>
                         <div class="tab-pane fade" id="list-right" role="tabpanel" aria-labelledby="list-right-list">
                             <br />
-                            <img runat="server" src="~/Assets/images/products/2on1aluminiumright.png" alt="Sub Type Image" style="max-width:100%;height:auto;">
+                            <img runat="server" src="~/Assets/images/products/venetian/2on1venetianright.png" alt="Sub Type Image" style="max-width:100%;height:auto;">
                         </div>
                         <div class="tab-pane fade" id="list-leftright" role="tabpanel" aria-labelledby="list-leftright-list">
                             <br />
-                            <img runat="server" src="~/Assets/images/products/2on1aluminiumleftright.png" alt="Sub Type Image" style="max-width:100%;height:auto;">
+                            <img runat="server" src="~/Assets/images/products/venetian/2on1venetianleftright.png" alt="Sub Type Image" style="max-width:100%;height:auto;">
                         </div>
                     </div>
                 </div>
@@ -544,6 +570,22 @@
             </div>
         </div>
     </div>
+
+    <div class="modal modal-blur fade" id="modalGallery" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <h5 class="modal-title white">Gallery</h5>
+                </div>
+                <div class="modal-body">
+                    <span id="spanInfoGallery"></span>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
     
-    <script src="<%: ResolveUrl("~/Scripts/WebOrders/Venetian.js?v=1.0.0") %>"></script>
+    <script src="<%: ResolveUrl("~/Scripts/WebOrders/Venetian.js?v=1.0.1") %>"></script>
 </asp:Content>
