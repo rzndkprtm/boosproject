@@ -144,20 +144,24 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-6 form-group">
+                        <div class="col-12 form-group">
                             <label class="form-label">Address</label>
                             <asp:TextBox runat="server" ID="txtAddress" CssClass="form-control" placeholder="Address ..." autocomplete="off"></asp:TextBox>
                         </div>
+                    </div>
+
+                    <div class="row">
                         <div class="col-6 form-group">
                             <label class="form-label">Suburb</label>
                             <asp:TextBox runat="server" ID="txtSuburb" CssClass="form-control" placeholder="Suburb ..." autocomplete="off"></asp:TextBox>
+                            
                         </div>
-                    </div>
-                    <div class="row">
                         <div class="col-6 form-group">
                             <label class="form-label">State</label>
                             <asp:TextBox runat="server" ID="txtState" CssClass="form-control" placeholder="State ..." autocomplete="off"></asp:TextBox>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="col-6 form-group">
                             <label class="form-label">Post Code</label>
                             <asp:TextBox runat="server" ID="txtPostCode" CssClass="form-control" placeholder="Post Code ..." autocomplete="off"></asp:TextBox>

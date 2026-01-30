@@ -25,7 +25,12 @@ $("#blindtype").on("change", function () {
 
 $("#subtype").on("change", function () {
     const blindtype = document.getElementById("blindtype").value;
-    const drop = document.getElementById("drop").value;
+
+    const width = parseFloat(document.getElementById("width").value) || 0;
+    const drop = parseFloat(document.getElementById("drop").value) || 0;
+
+    bindControlPosition($(this).val(), width);
+    bindTilterPosition($(this).val(), width);
 
     bindComponentForm(blindtype, $(this).val());
 
@@ -35,6 +40,23 @@ $("#subtype").on("change", function () {
     document.getElementById("controllengthb").value = "";
     document.getElementById("valancesize").value = "";
     document.getElementById("returnlength").value = "";
+});
+
+$("#width").on("input", function () {
+    const subtype = document.getElementById("subtype").value;
+    const width = parseFloat(document.getElementById("width").value) || 0;
+
+    bindControlPosition(subtype, width);
+    bindTilterPosition(subtype, width);
+});
+
+$("#width").on("blur", function () {
+    const subtype = document.getElementById("subtype").value;
+    const width = parseFloat(document.getElementById("width").value) || 0;
+
+    if (subtype === "Single" && roleAccess === "Customer" && width < 300) {
+        isError("PLEASE NOTE THAT YOUR ORDER WIDTH IS NOT COVERED UNDER OUR WARRANTY.");
+    }
 });
 
 $("#drop").on("input", function () {
@@ -501,6 +523,104 @@ function bindMounting(blindType) {
     });
 }
 
+function bindControlPosition(subType, width) {
+    return new Promise((resolve) => {
+        const controlposition = document.getElementById("controlposition");
+        controlposition.innerHTML = "";
+
+        if (!subType || width === 0) {
+            resolve();
+            return;
+        }
+
+        let options = [
+            { value: "", text: "" },
+            { value: "Left", text: "Left" },
+            { value: "Right", text: "Right" }
+        ];
+
+        const widthRules = [
+            {
+                subType: "Single",
+                min: 200,
+                max: 250,
+                options: [
+                    { value: "", text: "" },
+                    { value: "N/A", text: "N/A" }
+                ]
+            }
+        ];
+
+        const rule = widthRules.find(r =>
+            r.subType === subType &&
+            width >= r.min &&
+            width <= r.max
+        );
+
+        if (rule) {
+            options = rule.options;
+        }
+
+        options.forEach(opt => {
+            const optionElement = document.createElement("option");
+            optionElement.value = opt.value;
+            optionElement.textContent = opt.text;
+            controlposition.appendChild(optionElement);
+        });
+
+        resolve();
+    });
+}
+
+function bindTilterPosition(subType, width) {
+    return new Promise((resolve) => {
+        const tilterposition = document.getElementById("tilterposition");
+        tilterposition.innerHTML = "";
+
+        if (!subType || width === 0) {
+            resolve();
+            return;
+        }
+
+        let options = [
+            { value: "", text: "" },
+            { value: "Left", text: "Left" },
+            { value: "Right", text: "Right" }
+        ];
+
+        const widthRules = [
+            {
+                subType: "Single",
+                min: 200,
+                max: 250,
+                options: [
+                    { value: "", text: "" },
+                    { value: "Centre", text: "Centre" }
+                ]
+            }
+        ];
+
+        const rule = widthRules.find(r =>
+            r.subType === subType &&
+            width >= r.min &&
+            width <= r.max
+        );
+
+        if (rule) {
+            options = rule.options;
+        }
+
+        options.forEach(opt => {
+            const optionElement = document.createElement("option");
+            optionElement.value = opt.value;
+            optionElement.textContent = opt.text;
+            tilterposition.appendChild(optionElement);
+        });
+
+        resolve();
+    });
+}
+
 function bindValanceType(blindType) {
     return new Promise((resolve, reject) => {
         const valancetype = document.getElementById("valancetype");
@@ -872,7 +992,10 @@ function process() {
         itemaction: itemAction,
         itemid: itemId,
         designid: designId,
-        loginid: loginId
+        loginid: loginId,
+        rolename: roleAccess,
+        companyid: company,
+        companydetailid: companyDetail
     };
 
     fields.forEach(id => {
@@ -974,10 +1097,12 @@ async function bindItemOrder(itemId, companyDetailId) {
         fillSelect("#colourtype", data.ColourTypes);
         fillSelect("#mounting", data.Mountings);
         fillSelect("#subtype", data.SubTypes);
+        fillSelect("#valancetype", data.ValanceTypes);
+        fillSelect("#returnposition", data.ValancePositions);
 
         let manual = [
-            bindValanceType(data.ItemData.BlindType),
-            bindValancePosition(data.ItemData.BlindType)
+            bindControlPosition(data.ItemData.SubType, data.ItemData.Width),
+            bindTilterPosition(data.ItemData.SubType, data.ItemData.Width)
         ];
         await Promise.all(manual);
 
@@ -1047,15 +1172,15 @@ function showInfo(type) {
     } else if (type === "Second Size") {
         info = "<b>Drop Information</b>";
     } else if (type === "First") {
-        let urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/2on1venetianleft-1.png";
+        let urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/venetian/2on1venetianleft-1.png";
 
         const subType = document.getElementById("subtype").value;
         if (subType === "2 on 1 Left-Left") {
-            urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/2on1venetianleft-1.png";
+            urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/venetian/2on1venetianleft-1.png";
         } else if (subType === "2 on 1 Right-Right") {
-            urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/2on1venetianright-1.png";
+            urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/venetian/2on1venetianright-1.png";
         } else if (subType === "2 on 1 Left-Right") {
-            urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/2on1venetianleftright-1.png";
+            urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/venetian/2on1venetianleftright-1.png";
         }
 
         info = "<b>Layout Information</b>";
@@ -1063,15 +1188,15 @@ function showInfo(type) {
         info += `<img src="${urlImage}" alt="Sub Type Image" style="max-width:100%;height:auto;">`;
         info += "<br /><br />";
     } else if (type === "Second") {
-        let urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/2on1venetianleft-1.png";
+        let urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/venetian/2on1venetianleft-1.png";
 
         const subType = document.getElementById("subtype").value;
         if (subType === "2 on 1 Left-Left") {
-            urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/2on1venetianleft-2.png";
+            urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/venetian/2on1venetianleft-2.png";
         } else if (subType === "2 on 1 Right-Right") {
-            urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/2on1venetianright-2.png";
+            urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/venetian/2on1venetianright-2.png";
         } else if (subType === "2 on 1 Left-Right") {
-            urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/2on1venetianleftright-2.png";
+            urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/venetian/2on1venetianleftright-2.png";
         }
 
         info = "<b>Layout Information</b>";
@@ -1080,6 +1205,32 @@ function showInfo(type) {
         info += "<br /><br />";
     }
     document.getElementById("spanInfo").innerHTML = info;
+}
+
+function showGallery(type) {
+    let info;
+
+    if (type === "Basswood") {
+        let urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/venetian/basswoodgallery.jpg";
+
+        info = "<b>Basswood Gallery</b>";
+        info += "<br /><br />";
+        info += `<img src="${urlImage}" alt="Sub Type Image" style="max-width:100%;height:auto;">`;
+    } else if (type === "Econo") {
+        let urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/venetian/econogallery.jpg";
+
+        info = "<b>Econo Gallery</b>";
+        info += "<br /><br />";
+        info += `<img src="${urlImage}" alt="Sub Type Image" style="max-width:100%;height:auto;">`;
+    } else if (type === "Cordless") {
+        let urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/venetian/cordlessgallery.jpg";
+
+        info = "<b>Econo Cordless Gallery</b>";
+        info += "<br /><br />";
+        info += `<img src="${urlImage}" alt="Sub Type Image" style="max-width:100%;height:auto;">`;
+    }
+
+    document.getElementById("spanInfoGallery").innerHTML = info;
 }
 
 function redirectOrder() {
@@ -1109,6 +1260,11 @@ document.getElementById("modalInfo").addEventListener("hide.bs.modal", function 
 });
 
 document.getElementById("modalLayout").addEventListener("hide.bs.modal", function () {
+    document.activeElement.blur();
+    document.body.focus();
+});
+
+document.getElementById("modalGallery").addEventListener("hide.bs.modal", function () {
     document.activeElement.blur();
     document.body.focus();
 });

@@ -22,18 +22,45 @@ Partial Class Setting_Specification_ChainRemote
         End If
     End Sub
 
-    Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
+    Protected Sub btnAddChain_Click(sender As Object, e As EventArgs)
         MessageError_Process(False, String.Empty)
         Session("SearchChain") = txtSearch.Text
 
         Dim thisScript As String = "window.onload = function() { showProcess(); };"
         Try
             BindDesign()
-            BindControl()
+            BindControl("Chain")
             BindCompany()
 
             lblAction.Text = "Add"
-            titleProcess.InnerText = "Add Chain - Remote"
+            titleProcess.InnerText = "Add Chain"
+
+            divChainType.Visible = True
+
+            ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
+        Catch ex As Exception
+            MessageError_Process(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+            ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
+        End Try
+    End Sub
+
+    Protected Sub btnAddRemote_Click(sender As Object, e As EventArgs)
+        MessageError_Process(False, String.Empty)
+        Session("SearchChain") = txtSearch.Text
+
+        Dim thisScript As String = "window.onload = function() { showProcess(); };"
+        Try
+            BindDesign()
+            BindControl("Motorised")
+            BindCompany()
+
+            lblAction.Text = "Add"
+            titleProcess.InnerText = "Add Remote"
+
+            divChainType.Visible = False
 
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         Catch ex As Exception
@@ -79,8 +106,15 @@ Partial Class Setting_Specification_ChainRemote
                     If myData Is Nothing Then Exit Sub
 
                     BindDesign()
-                    BindControl()
                     BindCompany()
+
+                    Dim controlTypeId As String = myData("ControlTypeId").ToString()
+                    Dim thisControl As String = String.Empty
+                    If Not String.IsNullOrEmpty(controlTypeId) Then
+                        thisControl = "Motorised"
+                        If controlTypeId = "1" Then thisControl = "Chain"
+                    End If
+                    BindControl(thisControl)
 
                     txtBoeId.Text = myData("BoeId").ToString()
                     txtName.Text = myData("Name").ToString()
@@ -312,7 +346,8 @@ Partial Class Setting_Specification_ChainRemote
             gvList.DataBind()
             gvList.Columns(1).Visible = PageAction("Visible ID")
 
-            btnAdd.Visible = PageAction("Add")
+            btnAddChain.Visible = PageAction("Add")
+            btnAddRemote.Visible = PageAction("Add")
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -340,16 +375,18 @@ Partial Class Setting_Specification_ChainRemote
         End Try
     End Sub
 
-    Protected Sub BindControl()
+    Protected Sub BindControl(type As String)
         lbControl.Items.Clear()
         Try
-            lbControl.DataSource = settingClass.GetDataTable("SELECT * FROM ProductControls ORDER BY Name ASC")
-            lbControl.DataTextField = "Name"
-            lbControl.DataValueField = "Id"
-            lbControl.DataBind()
+            If Not String.IsNullOrEmpty(type) Then
+                lbControl.DataSource = settingClass.GetDataTable("SELECT * FROM ProductControls WHERE Type='" & type & "' ORDER BY Name ASC")
+                lbControl.DataTextField = "Name"
+                lbControl.DataValueField = "Id"
+                lbControl.DataBind()
 
-            If lbControl.Items.Count > 0 Then
-                lbControl.Items.Insert(0, New ListItem("", ""))
+                If lbControl.Items.Count > 0 Then
+                    lbControl.Items.Insert(0, New ListItem("", ""))
+                End If
             End If
         Catch ex As Exception
             MessageError_Process(True, ex.ToString())

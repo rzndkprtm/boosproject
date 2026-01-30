@@ -138,14 +138,17 @@
                                                     <label>Curtain Heading</label>
                                                 </div>
                                                 <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                                    <select id="heading" class="form-select">
-                                                        <option value=""></option>
-                                                        <option value="Double Pinch">Double Pinch</option>
-                                                        <option value="Triple Pinch">Triple Pinch</option>
-                                                        <option value="Inverted Box">Inverted Box</option>
-                                                        <option value="Knife">Knife</option>
-                                                        <option value="S-Wave">S-Wave</option>
-                                                    </select>
+                                                    <div class="input-group">
+                                                        <select id="heading" class="form-select">
+                                                            <option value=""></option>
+                                                            <option value="Double Pinch">Double Pinch</option>
+                                                            <option value="Triple Pinch">Triple Pinch</option>
+                                                            <option value="Inverted Box">Inverted Box</option>
+                                                            <option value="Knife">Knife</option>
+                                                            <option value="S-Wave">S-Wave</option>
+                                                        </select>
+                                                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalGallery" onclick="return showGallery('Heading');">Info</a>
+                                                    </div>
                                                 </div>
                                             </div>
 
@@ -174,7 +177,7 @@
                                                     <div class="col-12 col-sm-12 col-lg-3">
                                                         <label>Track Type</label>
                                                     </div>
-                                                    <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                         <select id="tracktype" class="form-select"></select>
                                                     </div>
                                                 </div>
@@ -302,7 +305,7 @@
                                                             <option value="Knife">Knife</option>
                                                             <option value="S-Wave">S-Wave</option>
                                                         </select>
-                                                        <%--<a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Second Heading');">Info</a>--%>
+                                                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalGallery" onclick="return showGallery('Heading');">Info</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -333,10 +336,7 @@
                                                         <label>Track Type</label>
                                                     </div>
                                                     <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                                        <div class="input-group">
-                                                            <select id="tracktypeb" class="form-select"></select>
-                                                            <%--<a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Second Track');">Info</a>--%>
-                                                        </div>
+                                                        <select id="tracktypeb" class="form-select"></select>
                                                     </div>
                                                 </div>
 
@@ -532,7 +532,19 @@
                         </div>
                         <div class="card-content">
                             <div class="card-body">
-
+                                <b>CURTAIN TRACK</b>
+                                <ol>
+                                    <li>
+                                        Commercial Track
+                                        <br />
+                                        <a class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalGallery" onclick="return showGallery('Commercial');">Detail Gallery</a>
+                                    </li>
+                                    <li class="mt-3">
+                                        Styletrack
+                                        <br />
+                                        <a class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalGallery" onclick="return showGallery('Track');">Detail Gallery</a>
+                                    </li>
+                                </ol>
                             </div>
                         </div>
                     </div>
@@ -591,5 +603,18 @@
         </div>
     </div>
 
-    <script src='<%: ResolveUrl("~/Scripts/WebOrders/Curtain.js?v=1.0.0") %>'></script>
+    <div class="modal modal-blur fade" id="modalGallery" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <span id="spanInfoGallery"></span>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src='<%: ResolveUrl("~/Scripts/WebOrders/Curtain.js?v=1.0.1") %>'></script>
 </asp:Content>

@@ -332,7 +332,9 @@
                             <h4 class="card-title text-center">Information</h4>
                         </div>
                         <div class="card-content">
-                            <div class="card-body"></div>
+                            <div class="card-body">
+                                <%--<a class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalGallery">Detail Gallery</a>--%>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -390,5 +392,18 @@
         </div>
     </div>
 
-    <script src="<%: ResolveUrl("~/Scripts/WebOrders/Window.js?v=1.0.0") %>"></script>
+    <div class="modal modal-blur fade" id="modalGallery" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <asp:Image runat="server" CssClass="w-100" />
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="<%: ResolveUrl("~/Scripts/WebOrders/Window.js?v=1.0.1") %>"></script>
 </asp:Content>

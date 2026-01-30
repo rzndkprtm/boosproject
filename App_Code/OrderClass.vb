@@ -1085,23 +1085,6 @@ Public Class OrderClass
         Return result
     End Function
 
-    Public Function GetListLog(logType As String, dataId As String) As DataSet
-        Try
-            Using thisConn As New SqlConnection(myConn)
-                Using myCmd As New SqlCommand("SELECT * FROM Logs WHERE Type=@Type AND DataId=@DataId ORDER BY ActionDate ASC", thisConn), thisAdapter As New SqlDataAdapter(myCmd)
-                    myCmd.Parameters.AddWithValue("@Type", logType)
-                    myCmd.Parameters.AddWithValue("@DataId", dataId)
-
-                    Dim ds As New DataSet()
-                    thisAdapter.Fill(ds)
-                    Return ds
-                End Using
-            End Using
-        Catch ex As Exception
-            Return New DataSet()
-        End Try
-    End Function
-
     Public Function GetTextLog(logId As String) As String
         Dim result As String = String.Empty
         Try
@@ -1242,8 +1225,8 @@ Public Class OrderClass
     End Sub
 
     Public Sub CalculatePrice(headerId As String, itemId As String)
-        'Try'
-        Dim thisData As DataRow = GetDataRow("SELECT * FROM OrderDetails WHERE Id='" & itemId & "' AND Active=1")
+        Try
+            Dim thisData As DataRow = GetDataRow("SELECT * FROM OrderDetails WHERE Id='" & itemId & "' AND Active=1")
             If thisData IsNot Nothing Then
                 Dim customerId As String = GetCustomerIdByOrder(headerId)
 
@@ -2038,8 +2021,8 @@ Public Class OrderClass
                     CalculateCharge(objectArray)
                 End If
             End If
-        'Catch ex As Exception
-        'End Try
+        Catch ex As Exception
+        End Try
     End Sub
 
     Public Sub CalculateCharge(data As Object())

@@ -28,7 +28,7 @@ $("#colourtype").on("change", function () {
 $("#subtype").on("change", function () {
     const colourtype = document.getElementById("colourtype").value;
     const width = parseFloat(document.getElementById("width").value) || 0;
-    const drop = document.getElementById("drop").value;
+    const drop = parseFloat(document.getElementById("drop").value) || 0;
 
     bindComponentForm(colourtype, $(this).val());
     bindControlPosition($(this).val(), width);
@@ -52,7 +52,16 @@ $("#width").on("input", function () {
     const width = parseFloat(document.getElementById("width").value) || 0;
 
     bindControlPosition(subtype, width);
-    bindTilterPosition(subtype, width);
+    bindTilterPosition(subtype, width);    
+});
+
+$("#width").on("blur", function () {
+    const subtype = document.getElementById("subtype").value;
+    const width = parseFloat(document.getElementById("width").value) || 0;
+
+    if (subtype === "Single" && roleAccess === "Customer" && width < 300) {
+        isError("PLEASE NOTE THAT YOUR ORDER WIDTH IS NOT COVERED UNDER OUR WARRANTY.");
+    }
 });
 
 $("#drop").on("input", function () {
@@ -851,7 +860,10 @@ function process() {
         itemaction: itemAction,
         itemid: itemId,
         designid: designId,
-        loginid: loginId
+        loginid: loginId,
+        rolename: roleAccess,
+        companyid: company,
+        companydetailid: companyDetail
     };
 
     fields.forEach(id => {
@@ -936,15 +948,15 @@ function showInfo(type) {
         info += "<br />";
         info += "Minimum custom wand length is 450mm.";
     } else if (type === "First") {
-        let urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/2on1aluminiumleft-1.png";
+        let urlImage = "https://bigblinds.ordersblindonline.com/Assets/images/products/aluminium/2on1aluminiumleft-1.png";
 
         const subType = document.getElementById("subtype").value;
         if (subType === "2 on 1 Left-Left") {
-            urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/2on1aluminiumleft-1.png";
+            urlImage = "https://bigblinds.ordersblindonline.com/Assets/images/products/aluminium/2on1aluminiumleft-1.png";
         } else if (subType === "2 on 1 Right-Right") {
-            urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/2on1aluminiumright-1.png";
+            urlImage = "https://bigblinds.ordersblindonline.com/Assets/images/products/aluminium/2on1aluminiumright-1.png";
         } else if (subType === "2 on 1 Left-Right") {
-            urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/2on1aluminiumleftright-1.png";
+            urlImage = "https://bigblinds.ordersblindonline.com/Assets/images/products/aluminium/2on1aluminiumleftright-1.png";
         }
 
         info = "<b>Layout Information</b>";
@@ -952,15 +964,15 @@ function showInfo(type) {
         info += `<img src="${urlImage}" alt="Sub Type Image" style="max-width:100%;height:auto;">`;
         info += "<br /><br />";
     } else if (type === "Second") {
-        let urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/2on1aluminiumleft-1.png";
+        let urlImage = "https://bigblinds.ordersblindonline.com/Assets/images/products/aluminium/2on1aluminiumleft-1.png";
 
         const subType = document.getElementById("subtype").value;
         if (subType === "2 on 1 Left-Left") {
-            urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/2on1aluminiumleft-2.png";
+            urlImage = "https://bigblinds.ordersblindonline.com/Assets/images/products/aluminium/2on1aluminiumleft-2.png";
         } else if (subType === "2 on 1 Right-Right") {
-            urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/2on1aluminiumright-2.png";
+            urlImage = "https://bigblinds.ordersblindonline.com/Assets/images/products/aluminium/2on1aluminiumright-2.png";
         } else if (subType === "2 on 1 Left-Right") {
-            urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/2on1aluminiumleftright-2.png";
+            urlImage = "https://bigblinds.ordersblindonline.com/Assets/images/products/aluminium/2on1aluminiumleftright-2.png";
         }
 
         info = "<b>Layout Information</b>";
@@ -1092,6 +1104,11 @@ document.getElementById("modalInfo").addEventListener("hide.bs.modal", function 
 });
 
 document.getElementById("modalLayout").addEventListener("hide.bs.modal", function () {
+    document.activeElement.blur();
+    document.body.focus();
+});
+
+document.getElementById("modalGallery").addEventListener("hide.bs.modal", function () {
     document.activeElement.blur();
     document.body.focus();
 });

@@ -153,18 +153,21 @@
                                         <div class="col-12 col-sm-12 col-lg-3">
                                             <label>Timber Batten</label>
                                         </div>
-                                        <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                            <select id="batten" class="form-select">
-                                                <option value=""></option>
-                                                <option value="Alabaster">Alabaster</option>
-                                                <option value="Baltic">Baltic</option>
-                                                <option value="Black">Black</option>
-                                                <option value="Brown">Brown</option>
-                                                <option value="Cherry">Cherry</option>
-                                                <option value="Natural">Natural</option>
-                                                <option value="Teak">Teak</option>
-                                                <option value="White">White</option>
-                                            </select>
+                                        <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                            <div class="input-group">
+                                                <select id="batten" class="form-select">
+                                                    <option value=""></option>
+                                                    <option value="Alabaster">Alabaster</option>
+                                                    <option value="Baltic">Baltic</option>
+                                                    <option value="Black">Black</option>
+                                                    <option value="Brown">Brown</option>
+                                                    <option value="Cherry">Cherry</option>
+                                                    <option value="Natural">Natural</option>
+                                                    <option value="Teak">Teak</option>
+                                                    <option value="White">White</option>
+                                                </select>
+                                                <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Batten Colour');"> ? </a>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -172,14 +175,17 @@
                                         <div class="col-12 col-sm-12 col-lg-3">
                                             <label>Pelmet Layout</label>
                                         </div>
-                                        <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                            <select id="layoutcode" class="form-select">
-                                                <option value=""></option>
-                                                <option value="A">Plan A</option>
-                                                <option value="B">Plan B</option>
-                                                <option value="C">Plan C</option>
-                                                <option value="D">Plan D</option>
-                                            </select>
+                                        <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                            <div class="input-group">
+                                                <select id="layoutcode" class="form-select">
+                                                    <option value=""></option>
+                                                    <option value="A">Plan A</option>
+                                                    <option value="B">Plan B</option>
+                                                    <option value="C">Plan C</option>
+                                                    <option value="D">Plan D</option>
+                                                </select>
+                                                <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalGallery" onclick="return showGallery('Layout');">?</a>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -228,7 +234,7 @@
                                                 <option value=""></option>
                                                 <option value="Left">Left</option>
                                                 <option value="Right">Right</option>
-                                                <option value="Left and Right">Both Sides</option>
+                                                <option value="Both Sides">Both Sides</option>
                                             </select>
                                         </div>
                                     </div>
@@ -295,7 +301,9 @@
                         </div>
                         <div class="card-content">
                             <div class="card-body">
-                                <asp:Image runat="server" CssClass="w-100" ImageUrl="~/Assets/images/products/pelmetlayout.jpg" />
+                                <b>PELMET LAYOUTS</b>
+                                <br />
+                                <a class="btn btn-sm btn-primary mt-2 mb-2" data-bs-toggle="modal" data-bs-target="#modalGallery" onclick="return showGallery('Layout');">Click Here</a>
                             </div>
                         </div>
                     </div>
@@ -353,5 +361,18 @@
         </div>
     </div>
 
-    <script src='<%: ResolveUrl("~/Scripts/WebOrders/Pelmet.js?v=1.0.0") %>'></script>
+    <div class="modal modal-blur fade" id="modalGallery" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <span id="spanInfoGallery"></span>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src='<%: ResolveUrl("~/Scripts/WebOrders/Pelmet.js?v=1.0.1") %>'></script>
 </asp:Content>

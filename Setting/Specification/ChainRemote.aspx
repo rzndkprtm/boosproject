@@ -23,6 +23,21 @@
     </div>
 
     <div class="page-content">
+        <section class="row mb-3" runat="server" id="divError">
+            <div class="col-12">
+                <div class="alert alert-danger">
+                    <span runat="server" id="msgError"></span>
+                </div>
+            </div>
+        </section>
+
+        <section class="row mb-3">
+            <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
+                <asp:Button runat="server" ID="btnAddChain" CssClass="btn btn-primary" Text="Add Chain" OnClick="btnAddChain_Click" />
+                <asp:Button runat="server" ID="btnAddRemote" CssClass="btn btn-info" Text="Add Remote" OnClick="btnAddRemote_Click" />
+            </div>
+        </section>
+
         <section class="row">
             <div class="col-12">
                 <div class="card">
@@ -30,7 +45,7 @@
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-12 col-sm-12 col-lg-6 mb-2">
-                                    <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Add New" OnClick="btnAdd_Click" />
+                                    &nbsp;
                                 </div>
                                 <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
                                     <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
@@ -44,15 +59,7 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <div class="row mb-2" runat="server" id="divError">
-                                <div class="col-12">
-                                    <div class="alert alert-danger">
-                                        <span runat="server" id="msgError"></span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
+                            <div class="row">
                                 <div class="col-12">
                                     <div class="table-responsive">
                                         <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="True" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom" OnPageIndexChanging="gvList_PageIndexChanging" OnRowCommand="gvList_RowCommand">
@@ -150,7 +157,7 @@
                             <label class="form-label">Company</label>
                             <asp:ListBox runat="server" ID="lbCompany" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
                         </div>
-                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                        <div class="col-12 col-sm-12 col-lg-6 form-group" runat="server" id="divChainType">
                             <label class="form-label">Chain Type</label>
                             <asp:DropDownList runat="server" ID="ddlChainType" CssClass="form-select">
                                 <asp:ListItem Value="" Text=""></asp:ListItem>

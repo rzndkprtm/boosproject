@@ -37,28 +37,6 @@ Partial Class Order_Detail
         End If
     End Sub
 
-    Protected Sub btnLog_Click(sender As Object, e As EventArgs)
-        MessageError_Log(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showLog(); };"
-        Try
-            gvListLogs.DataSource = orderClass.GetListLog("OrderHeaders", lblHeaderId.Text)
-            gvListLogs.DataBind()
-
-            ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
-        Catch ex As Exception
-            MessageError_Log(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Log(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                If Session("RoleName") = "Customer" Then
-                    MessageError_Log(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
-                End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnLog_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
-        End Try
-    End Sub
-
     Protected Sub btnPreview_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showPreview(); };"
@@ -1427,42 +1405,12 @@ Partial Class Order_Detail
                     If Not Session("RoleName") = "Developer" Then
                         MessageError_Printing(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
                         If Session("RoleName") = "Customer" Then
-                            MessageError_Costing(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
+                            MessageError_Printing(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                         End If
                         dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "linkPrinting_Click", ex.ToString()}
                         mailingClass.WebError(dataMailing)
                     End If
                     ClientScript.RegisterStartupScript(Me.GetType(), "showPrinting", thisScript, True)
-                End Try
-            ElseIf e.CommandName = "Costing" Then
-                MessageError_Costing(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showCosting(); };"
-                Try
-                    Dim queryDetailsPrice As String = "SELECT *, FORMAT(BuyPrice, 'C', 'en-US') AS BuyPricing, FORMAT(SellPrice, 'C', 'en-US') AS SellPricing FROM OrderCostings WHERE ItemId='" & dataId & "' AND Type<>'Final' AND Number<>0 ORDER BY Number, CASE WHEN Type='Base' THEN 1 WHEN Type='Surcharge' THEN 2 ELSE 3 END ASC"
-                    If lblCompanyId.Text = "3" OrElse lblCompanyId.Text = "5" Then
-                        queryDetailsPrice = "SELECT *, FORMAT(BuyPrice, 'C', 'id-ID') AS BuyPricing, FORMAT(SellPrice, 'C', 'id-ID') AS SellPricing FROM OrderCostings WHERE ItemId='" & dataId & "' AND Type<>'Final' AND Number<>0 ORDER BY Number, CASE WHEN Type='Base' THEN 1 WHEN Type='Surcharge' THEN 2 ELSE 3 END ASC"
-                    End If
-
-                    gvListCosting.DataSource = orderClass.GetDataTable(queryDetailsPrice)
-                    gvListCosting.DataBind()
-
-                    gvListCosting.Columns(1).Visible = PageAction("Price Details | Visible Type") ' TYPE
-                    gvListCosting.Columns(3).Visible = PageAction("Price Details | Visible Buy Price") ' BUY PRICE
-                    gvListCosting.Columns(4).Visible = PageAction("Price Details | Visible Sell Price") ' SELL PRICE
-                    gvListCosting.Columns(5).Visible = PageAction("Price Details | Visible Price") ' PRICE
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showCosting", thisScript, True)
-                Catch ex As Exception
-                    MessageError_Costing(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError_Costing(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                        If Session("RoleName") = "Customer" Then
-                            MessageError_Costing(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
-                        End If
-                        dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "linkCosting_Click", ex.ToString()}
-                        mailingClass.WebError(dataMailing)
-                    End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showCosting", thisScript, True)
                 End Try
             ElseIf e.CommandName = "EditCosting" Then
                 MessageError_EditCosting(False, String.Empty)
@@ -1495,26 +1443,6 @@ Partial Class Order_Detail
                         mailingClass.WebError(dataMailing)
                     End If
                     ClientScript.RegisterStartupScript(Me.GetType(), "showEditCosting", thisScript, True)
-                End Try
-            ElseIf e.CommandName = "Log" Then
-                MessageError_Log(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showLog(); };"
-                Try
-                    gvListLogs.DataSource = orderClass.GetListLog("OrderDetails", dataId)
-                    gvListLogs.DataBind()
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
-                Catch ex As Exception
-                    MessageError_Log(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError_Log(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                        If Session("RoleName") = "Customer" Then
-                            MessageError_Log(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
-                        End If
-                        dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "linkLog_Click", ex.ToString()}
-                        mailingClass.WebError(dataMailing)
-                    End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
                 End Try
             End If
         End If
@@ -3982,7 +3910,6 @@ Partial Class Order_Detail
 
     Protected Sub AllMessageError(visible As Boolean, message As String)
         MessageError(visible, message)
-        MessageError_Log(visible, message)
         MessageError_Preview(visible, message)
 
         MessageError_BuilderDetail(visible, message)
@@ -4002,7 +3929,7 @@ Partial Class Order_Detail
         MessageError_ReworkOrder(visible, message)
         MessageError_MoreEmailQuote(visible, message)
 
-        MessageError_Costing(visible, message)
+        'MessageError_Costing(visible, message)
         MessageError_Service(visible, message)
         MessageError_EditCosting(visible, message)
         MessageError_Printing(visible, message)
@@ -4019,10 +3946,6 @@ Partial Class Order_Detail
 
     Protected Sub MessageError_FileOrder(visible As Boolean, message As String)
         divErrorFileOrder.Visible = visible : msgErrorFileOrder.InnerText = message
-    End Sub
-
-    Protected Sub MessageError_Log(visible As Boolean, message As String)
-        divErrorLog.Visible = visible : msgErrorLog.InnerText = message
     End Sub
 
     Protected Sub MessageError_Preview(visible As Boolean, message As String)
@@ -4069,9 +3992,9 @@ Partial Class Order_Detail
         divErrorReworkOrder.Visible = visible : msgErrorReworkOrder.InnerText = message
     End Sub
 
-    Protected Sub MessageError_Costing(visible As Boolean, message As String)
-        divErrorCosting.Visible = visible : msgErrorCosting.InnerText = message
-    End Sub
+    'Protected Sub MessageError_Costing(visible As Boolean, message As String)
+    '    divErrorCosting.Visible = visible : msgErrorCosting.InnerText = message
+    'End Sub
 
     Protected Sub MessageError_EditCosting(visible As Boolean, message As String)
         divErrorEditCosting.Visible = visible : msgErrorEditCosting.InnerText = message

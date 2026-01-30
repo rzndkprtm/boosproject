@@ -66,7 +66,7 @@
                 </div>
             </section>
             <section class="row">
-                <div class="col-lg-8 col-md-12 col-sm-12">
+                <div class="col-12 col-sm-12 col-lg-7">
                     <div class="card">
                         <div class="card-header">
                             <h4 class="card-title" id="cardtitle"></h4>
@@ -136,13 +136,13 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Width x Height</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                     <div class="input-group">
                                                         <span class="input-group-text">W</span>
                                                         <input type="number" id="width" class="form-control" autocomplete="off" placeholder="Width ...." />
                                                     </div>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                     <div class="input-group">
                                                         <span class="input-group-text">H</span>
                                                         <input type="number" id="drop" class="form-control" autocomplete="off" placeholder="Height ...." />
@@ -154,7 +154,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Louvre Size</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-2 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
                                                     <select id="louvresize" class="form-select">
                                                         <option value=""></option>
                                                         <option value="89">89mm</option>
@@ -246,7 +246,7 @@
                                             </div>
 
                                             <div class="row mt-3" id="divhingecolour">
-                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                <div class="col-12 col-sm-12 col-lg-4">
                                                     <label>Hinge Colour</label>
                                                 </div>
                                                 <div class="col-12 col-sm-12 col-lg-3 form-group">
@@ -289,7 +289,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3 form-group">
                                                     <select id="layoutcode" class="form-select"></select>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-4 form-group" id="divlayoutcodecustom">
+                                                <div class="col-12 col-sm-12 col-lg-5 form-group" id="divlayoutcodecustom">
                                                     <div class="input-group">
                                                         <input type="text" id="layoutcodecustom" class="form-control" autocomplete="off" placeholder="Custom ...." />
                                                         <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Layout Code');">?</a>
@@ -301,7 +301,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Frame Type</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-5 form-group">
                                                     <select id="frametype" class="form-select"></select>
                                                 </div>
                                             </div>
@@ -367,7 +367,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Buildout</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                     <select id="buildout" class="form-select">
                                                         <option value=""></option>
                                                         <option value="9.5mm Buildout">9.5mm Buildout</option>
@@ -380,7 +380,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Buildout Position</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                     <select id="buildoutposition" class="form-select">
                                                         <option value=""></option>
                                                         <option value="Back of Frame">Back of Frame</option>
@@ -470,7 +470,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Tiltrod Type</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                     <div class="input-group">
                                                         <select id="tiltrodtype" class="form-select">
                                                             <option value=""></option>
@@ -486,7 +486,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Split Tiltrod</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-5 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-6 form-group">
                                                     <div class="input-group">
                                                         <select id="tiltrodsplit" class="form-select"></select>
                                                     </div>
@@ -581,6 +581,17 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-12 col-sm-12 col-lg-5">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title text-center">Information</h4>
+                        </div>
+                        <div class="card-content">
+                            <div class="card-body">
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </section>
         </div>
     </div>
@@ -634,6 +645,19 @@
             </div>
         </div>
     </div>
+
+    <div class="modal modal-blur fade" id="modalGallery" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <asp:Image runat="server" CssClass="w-100" />
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
     
-    <script src="<%: ResolveUrl("~/Scripts/WebOrders/SkylineExpress.js?v=1.0.0") %>"></script>
+    <script src="<%: ResolveUrl("~/Scripts/WebOrders/SkylineExpress.js?v=1.0.1") %>"></script>
 </asp:Content>

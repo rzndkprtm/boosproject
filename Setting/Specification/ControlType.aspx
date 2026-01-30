@@ -64,6 +64,7 @@
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:BoundField DataField="Id" HeaderText="ID" />
+                                                <asp:BoundField DataField="Type" HeaderText="Type" />
                                                 <asp:BoundField DataField="Name" HeaderText="Name" />
                                                 <asp:BoundField DataField="Alias" HeaderText="Alias" />
                                                  <asp:BoundField DataField="Description" HeaderText="Description" />
@@ -111,6 +112,16 @@
                             <div class="alert alert-danger">
                                 <span runat="server" id="msgErrorProcess"></span>
                             </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Type</label>
+                            <asp:DropDownList runat="server" ID="ddlType" CssClass="form-select">
+                                <asp:ListItem Value="" Text=""></asp:ListItem>
+                                <asp:ListItem Value="Chain" Text="Chain"></asp:ListItem>
+                                <asp:ListItem Value="Motorised" Text="Motorised"></asp:ListItem>
+                            </asp:DropDownList>
                         </div>
                     </div>
                     <div class="row">

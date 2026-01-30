@@ -202,10 +202,10 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-12 col-sm-12 col-lg-4 form-group" id="divcontrollengthvalue">
-                                                    <select id="controllengthvalue" class="form-select">
-                                                        <option value=""></option>
-                                                        <option value="500">500MM</option>
-                                                    </select>
+                                                    <div class="input-group">
+                                                        <input type="number" id="controllengthvalue" class="form-control" autocomplete="off" placeholder="Length ...." />
+                                                        <span class="input-group-text">mm</span>
+                                                    </div>
                                                 </div>
                                             </div>
 
@@ -248,7 +248,10 @@
                         </div>
                         <div class="card-content">
                             <div class="card-body">
-
+                                <b>LIMITATIONS</b>
+                                <ul>
+                                    <li></li>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -307,5 +310,18 @@
         </div>
     </div>
 
-    <script src='<%: ResolveUrl("~/Scripts/WebOrders/Outdoor.js?v=1.0.0") %>'></script>
+    <div class="modal modal-blur fade" id="modalGallery" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <asp:Image runat="server" CssClass="w-100" />
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src='<%: ResolveUrl("~/Scripts/WebOrders/Outdoor.js?v=1.0.1") %>'></script>
 </asp:Content>

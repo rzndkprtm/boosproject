@@ -778,7 +778,10 @@ function process() {
         itemaction: itemAction,
         itemid: itemId,
         designid: designId,
-        loginid: loginId
+        loginid: loginId,
+        rolename: roleAccess,
+        companyid: company,
+        companydetailid: companyDetail
     };
 
     fields.forEach(id => {
@@ -909,6 +912,29 @@ function updateLinkDetail(myId) {
     link.href = `/order/detail?orderid=${myId}`;
 }
 
+function showInfo(type) {
+    let info;
+
+    if (type === "Batten Colour") {
+        let urlImage = "https://bigblinds.ordersblindonline.com/Assets/images/products/pelmet/timbercolour.JPG";
+
+        info = "Batten Colour";
+        info = `<img src="${urlImage}" style="max-width:100%;height:auto;">`;
+    }
+    document.getElementById("spanInfo").innerHTML = info;
+}
+
+function showGallery(type) {
+    let info;
+
+    if (type === "Layout") {
+        let urlImage = "https://bigblinds.ordersblindonline.com/Assets/images/products/pelmet/layout.jpg";
+
+        info = `<img src="${urlImage}" style="max-width:100%;height:auto;">`;
+    }
+    document.getElementById("spanInfoGallery").innerHTML = info;
+}
+
 document.getElementById("modalSuccess").addEventListener("hide.bs.modal", function () {
     document.activeElement.blur();
     document.body.focus();
@@ -920,6 +946,11 @@ document.getElementById("modalError").addEventListener("hide.bs.modal", function
 });
 
 document.getElementById("modalInfo").addEventListener("hide.bs.modal", function () {
+    document.activeElement.blur();
+    document.body.focus();
+});
+
+document.getElementById("modalGallery").addEventListener("hide.bs.modal", function () {
     document.activeElement.blur();
     document.body.focus();
 });

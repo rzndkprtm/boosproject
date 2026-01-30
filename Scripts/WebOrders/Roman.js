@@ -1040,7 +1040,10 @@ function process() {
         itemaction: itemAction,
         itemid: itemId,
         designid: designId,
-        loginid: loginId
+        loginid: loginId,
+        rolename: roleAccess,
+        companyid: company,
+        companydetailid: companyDetail
     };
 
     fields.forEach(id => {
@@ -1171,6 +1174,19 @@ function updateLinkDetail(myId) {
     link.href = `/order/detail?orderid=${myId}`;
 }
 
+function showInfo(type) {
+    let info;
+
+    if (type === "Batten Colour") {
+        let urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/roman/battencolour.jpg";
+        info = `<img src="${urlImage}" alt="Sub Type Image" style="max-width:100%;height:auto;">`;
+    } else if (type === "Control Length") {
+
+    }
+
+    document.getElementById("spanInfo").innerHTML = info;
+}
+
 document.getElementById("modalSuccess").addEventListener("hide.bs.modal", function () {
     document.activeElement.blur();
     document.body.focus();
@@ -1182,6 +1198,11 @@ document.getElementById("modalError").addEventListener("hide.bs.modal", function
 });
 
 document.getElementById("modalInfo").addEventListener("hide.bs.modal", function () {
+    document.activeElement.blur();
+    document.body.focus();
+});
+
+document.getElementById("modalGallery").addEventListener("hide.bs.modal", function () {
     document.activeElement.blur();
     document.body.focus();
 });

@@ -36,7 +36,7 @@
 
         <section class="row mb-4">
             <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
-                <asp:Button runat="server" ID="btnLog" CssClass="btn btn-secondary me-1" Text="Log" OnClick="btnLog_Click" />
+                <a href="javascript:void(0)" class="btn btn-secondary me-1" onclick="showLog('OrderHeaders', '<%= lblHeaderId.Text %>')">Log</a>
                 <asp:Button runat="server" ID="btnPreview" CssClass="btn btn-primary me-1" Text="Preview" OnClick="btnPreview_Click" />
                 <asp:Button runat="server" ID="btnEditHeader" CssClass="btn btn-secondary me-1" Text="Edit Header" OnClick="btnEditHeader_Click" />
                 <a href="#" runat="server" id="aDeleteOrder" class="btn btn-danger me-1" data-bs-toggle="modal" data-bs-target="#modalDeleteOrder">Delete</a>
@@ -463,7 +463,7 @@
                                                             </li>
                                                             <li runat="server" visible='<%# VisibleCosting() %>'><hr class="dropdown-divider"></li>
                                                             <li runat="server" visible='<%# VisibleCosting() %>'>
-                                                                <asp:LinkButton runat="server" CssClass="dropdown-item" ID="linkCosting" Text="Costing" CommandName="Costing" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                                <a href="javascript:void(0)" class="dropdown-item" onclick="loadCostings('<%# Eval("Id") %>')">Costing</a>
                                                             </li>
                                                             <li runat="server" visible='<%# VisibleEditPrice() %>'>
                                                                 <asp:LinkButton runat="server" CssClass="dropdown-item" ID="linkEditCosting" Text="Edit Costing" CommandName="EditCosting" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
@@ -472,7 +472,7 @@
                                                                 <hr class="dropdown-divider">
                                                             </li>
                                                             <li>
-                                                                <asp:LinkButton runat="server" ID="linkLog" CssClass="dropdown-item" Text="Log" CommandName="Log" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                                <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('OrderDetails', '<%# Eval("Id") %>')">Log</a>
                                                             </li>
                                                         </ul>
                                                     </ItemTemplate>
@@ -514,26 +514,11 @@
                 </div>
 
                 <div class="modal-body">
-                    <div class="row" runat="server" id="divErrorLog">
-                        <div class="col-12">
-                            <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorLog"></span>
-                            </div>
-                        </div>
-                    </div>
-
+                    <div class="alert alert-danger d-none" id="logError"></div>
                     <div class="table-responsive">
-                        <asp:GridView runat="server" ID="gvListLogs" CssClass="table table-vcenter card-table" AutoGenerateColumns="false" EmptyDataText="DATA NOT FOUND" EmptyDataRowStyle-HorizontalAlign="Center" ShowHeader="false" GridLines="None" BorderStyle="None">
-                            <RowStyle />
-                            <Columns>
-                                <asp:TemplateField>
-                                    <ItemTemplate>
-                                        <%# BindTextLog(Eval("Id").ToString()) %>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                            </Columns>
-                            <AlternatingRowStyle BackColor="White" />
-                        </asp:GridView>
+                        <table class="table table-vcenter card-table" id="tblLogs">
+                            <tbody></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -1493,24 +1478,12 @@
                 </div>
                 
                 <div class="modal-body">
-                    <div class="card-body border-bottom py-3" runat="server" id="divErrorCosting">
-                        <div class="alert alert-danger">
-                            <span runat="server" id="msgErrorCosting"></span>
-                        </div>
-                    </div>
+                    <div class="alert alert-danger d-none" id="costingError"></div>
                     <div class="table-responsive">
-                        <asp:GridView runat="server" ID="gvListCosting" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" ShowHeaderWhenEmpty="true">
-                            <RowStyle />
-                            <Columns>
-                                <asp:BoundField DataField="Id" HeaderText="ID" ItemStyle-CssClass="hiddencol" HeaderStyle-CssClass="hiddencol" />
-                                <asp:BoundField DataField="Type" HeaderText="Type" />
-                                <asp:BoundField DataField="Description" HeaderText="Description" />                                
-                                <asp:BoundField DataField="BuyPricing" HeaderText="Buy Price" />
-                                <asp:BoundField DataField="SellPricing" HeaderText="Sell Price" />
-                                <asp:BoundField DataField="SellPricing" HeaderText="Price" />
-                            </Columns>
-                            <AlternatingRowStyle BackColor="White" />
-                        </asp:GridView>
+                         <table class="table table-bordered table-hover mb-0">
+                             <thead id="costingHead"></thead>
+                             <tbody id="costingBody"></tbody>
+                         </table>
                     </div>
                     <div class="modal-footer"></div>
                 </div>
@@ -1742,8 +1715,102 @@
             });
         }
 
-        function showLog() {
+        function showLog(type, dataId) {
+            $("#logError").addClass("d-none").html("");
+            $("#tblLogs tbody").html("");
             $("#modalLog").modal("show");
+
+            $.ajax({
+                type: "POST",
+                url: "Method.aspx/GetLogs",
+                data: JSON.stringify({ type: type, dataId: dataId }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (res) {
+                    const logs = res.d;
+
+                    if (!logs || logs.length === 0) {
+                        $("#tblLogs tbody").html(
+                            `<tr><td class="text-center">DATA LOG NOT FOUND</td></tr>`
+                        );
+                        return;
+                    }
+
+                    let html = "";
+                    logs.forEach(r => {
+                        html += `<tr><td>${r.TextLog}</td></tr>`;
+                    });
+
+                    $("#tblLogs tbody").html(html);
+                },
+                error: function (err) {
+                    $("#logError").removeClass("d-none").html("FAILED TO LOAD LOG DATA");
+                }
+            });
+        }
+
+        function loadCostings(itemId) {
+            $("#costingError").addClass("d-none").html("");
+            $("#costingHead").html("");
+            $("#costingBody").html("");
+            $("#modalCosting").modal("show");
+
+            $.ajax({
+                type: "POST",
+                url: "Method.aspx/GetCostings",
+                data: JSON.stringify({ itemId }),
+                contentType: "application/json",
+                dataType: "json",
+                success: res => {
+                    const perm = {
+                        showType: res.d.showType,
+                        showBuy: res.d.showBuy,
+                        showSell: res.d.showSell,
+                        showPrice: res.d.showPrice
+                    };
+
+                    renderCostingTable(res.d.data, perm);
+                },
+                error: () => {
+                    $("#costingError").removeClass("d-none").text("FAILED TO LOAD COSTING DATA");
+                }
+            });
+        }
+
+        function renderCostingTable(data, perm) {
+            let headHtml = "<tr>";
+            if (perm.showType) headHtml += "<th>Type</th>";
+            headHtml += "<th>Description</th>";
+            if (perm.showBuy) headHtml += "<th>Buy Price</th>";
+            if (perm.showSell) headHtml += "<th>Sell Price</th>";
+            if (perm.showPrice) headHtml += "<th>Price</th>";
+            headHtml += "</tr>";
+
+            $("#costingHead").html(headHtml);
+
+            const colCount = $("#costingHead th").length;
+
+            if (!data || data.length === 0) {
+                $("#costingBody").html(
+                    `<tr><td colspan="${colCount}" class="text-center">
+                DATA NOT FOUND :)
+             </td></tr>`
+                );
+                return;
+            }
+
+            let bodyHtml = "";
+            data.forEach(r => {
+                bodyHtml += "<tr>";
+                if (perm.showType) bodyHtml += `<td>${r.Type}</td>`;
+                bodyHtml += `<td>${r.Description}</td>`;
+                if (perm.showBuy) bodyHtml += `<td>${r.BuyPricing}</td>`;
+                if (perm.showSell) bodyHtml += `<td>${r.SellPricing}</td>`;
+                if (perm.showPrice) bodyHtml += `<td>${r.Price}</td>`;
+                bodyHtml += "</tr>";
+            });
+
+            $("#costingBody").html(bodyHtml);
         }
 
         function showPreview() {
@@ -1796,10 +1863,6 @@
 
         function showReworkOrder() {
             $("#modalReworkOrder").modal("show");
-        }
-
-        function showCosting() {
-            $("#modalCosting").modal("show");
         }
 
         function showEditCosting() {

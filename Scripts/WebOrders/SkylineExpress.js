@@ -69,13 +69,16 @@ $("#hingecolour").on("change", function () {
 $("#layoutcode").on("change", function () {
     $("#layoutcodecustom").val("");
     $("#samesizepanel").val("");
+
     const blindtype = document.getElementById("blindtype").value;
     let layoutcode = $(this).val();
+
+    visibleLayoutCustom($(this).val());
+
     if (layoutcode === "Other") {
         layoutcode = document.getElementById("layoutcodecustom").value;
     }
 
-    visibleLayoutCustom(layoutcode);
     visibleSameSize(blindtype, layoutcode);
     visibleGap(blindtype, "", layoutcode);
 });
@@ -1039,12 +1042,11 @@ function visibleHingeColour(blindType, joinedPanels) {
 
 function visibleLayoutCustom(layout) {
     return new Promise((resolve) => {
-        const divLayoutCodeCustom = document.getElementById("divlayoutcodecustom");
-        divLayoutCodeCustom.style.display = "none";
+        const divlayoutcodecustom = document.getElementById("divlayoutcodecustom");
+        divlayoutcodecustom.style.display = "none";
         if (layout === "Other") {
-            divLayoutCodeCustom.style.display = "";
+            divlayoutcodecustom.style.display = "";
         }
-
         resolve();
     });
 }
@@ -1582,6 +1584,9 @@ function process() {
         itemid: itemId,
         designid: designId,
         loginid: loginId,
+        rolename: roleAccess,
+        companyid: company,
+        companydetailid: companyDetail,
         cutout: "",
         specialshape: "",
         templateprovided: ""
@@ -1752,6 +1757,11 @@ document.getElementById("modalError").addEventListener("hide.bs.modal", function
 });
 
 document.getElementById("modalInfo").addEventListener("hide.bs.modal", function () {
+    document.activeElement.blur();
+    document.body.focus();
+});
+
+document.getElementById("modalGallery").addEventListener("hide.bs.modal", function () {
     document.activeElement.blur();
     document.body.focus();
 });

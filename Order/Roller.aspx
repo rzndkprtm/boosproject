@@ -39,7 +39,7 @@
 
         <div id="divorder" style="display:none;">
             <section class="row">
-                <div class="col-12 col-sm-12 col-lg-8">
+                <div class="col-12 col-sm-12 col-lg-7">
                     <div class="card">
                         <div class="card-content">
                             <div class="card-body">
@@ -66,7 +66,7 @@
                 </div>
             </section>
             <section class="row">
-                <div class="col-12 col-sm-12 col-lg-8">
+                <div class="col-12 col-sm-12 col-lg-7">
                     <div class="card">
                         <div class="card-header">
                             <h4 class="card-title" id="cardtitle"></h4>
@@ -80,10 +80,10 @@
                                             <div class="col-12 col-sm-12 col-lg-3">
                                                 <label>Blind Type</label>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-7 form-group">
+                                            <div class="col-12 col-sm-12 col-lg-8 form-group">
                                                 <div class="input-group">
                                                     <select id="blindtype" class="form-select"></select>
-                                                    <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Layout');">Info</a>
+                                                    <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalLayout">Info</a>
                                                 </div>
                                     
                                             </div>
@@ -144,7 +144,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Mounting</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-5 form-group">
                                                     <select id="mounting" class="form-select"></select>
                                                 </div>
                                             </div>
@@ -153,7 +153,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Remote Type</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-7 form-group">
                                                     <select id="remote" class="form-select"></select>
                                                 </div>
                                             </div>
@@ -226,14 +226,14 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Roll Direction</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                     <div class="input-group">
                                                         <select id="roll" class="form-select">
                                                             <option value=""></option>
                                                             <option value="Standard">Standard</option>
                                                             <option value="Reverse">Reverse</option>
                                                         </select>
-                                                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Roll');">Info</a>
+                                                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalGallery" onclick="return showGallery('Roll');">Info</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -242,7 +242,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Control Position</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-2 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
                                                     <select id="controlposition" class="form-select">
                                                         <option value=""></option>
                                                         <option value="Left">Left</option>
@@ -263,7 +263,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Chain Colour</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-5 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-6 form-group">
                                                     <div class="input-group">
                                                         <select id="chaincolour" class="form-select"></select>
                                                         <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Chain');">Info</a>
@@ -418,14 +418,14 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Roll Direction</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                     <div class="input-group">
                                                         <select id="rollb" class="form-select">
                                                             <option value=""></option>
                                                             <option value="Standard">Standard</option>
                                                             <option value="Reverse">Reverse</option>
                                                         </select>
-                                                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Roll');">Info</a>
+                                                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalGallery" onclick="return showGallery('Roll');">Info</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -442,7 +442,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Control Position</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-2 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
                                                     <select id="controlpositionb" class="form-select">
                                                         <option value=""></option>
                                                         <option value="Left">Left</option>
@@ -455,7 +455,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Chain Colour</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-5 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-6 form-group">
                                                     <div class="input-group">
                                                         <select id="chaincolourb" class="form-select"></select>
                                                         <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Second Chain');">Info</a>
@@ -610,14 +610,14 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Roll Direction</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                     <div class="input-group">
                                                         <select id="rollc" class="form-select">
                                                             <option value=""></option>
                                                             <option value="Standard">Standard</option>
                                                             <option value="Reverse">Reverse</option>
                                                         </select>
-                                                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Roll');">Info</a>
+                                                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalGallery" onclick="return showGallery('Roll');">Info</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -634,7 +634,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Control Position</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-2 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
                                                     <select id="controlpositionc" class="form-select">
                                                         <option value=""></option>
                                                         <option value="Left">Left</option>
@@ -647,7 +647,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Chain Colour</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-5 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-6 form-group">
                                                     <div class="input-group">
                                                         <select id="chaincolourc" class="form-select"></select>
                                                         <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Third Chain');">Info</a>
@@ -796,14 +796,14 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Roll Direction</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                     <div class="input-group">
                                                         <select id="rolld" class="form-select">
                                                             <option value=""></option>
                                                             <option value="Standard">Standard</option>
                                                             <option value="Reverse">Reverse</option>
                                                         </select>
-                                                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Roll');">Info</a>
+                                                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalGallery" onclick="return showGallery('Roll');">Info</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -812,7 +812,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Control Position</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-2 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
                                                     <select id="controlpositiond" class="form-select">
                                                         <option value=""></option>
                                                         <option value="Left">Left</option>
@@ -833,7 +833,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Chain Colour</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-5 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-6 form-group">
                                                     <div class="input-group">
                                                         <select id="chaincolourd" class="form-select"></select>
                                                         <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Chain');">Info</a>
@@ -1017,7 +1017,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Chain Colour</label>
                                                 </div>
-                                                <div class="col-9 col-sm-9 col-lg-4 form-group">
+                                                <div class="col-9 col-sm-9 col-lg-6 form-group">
                                                     <select id="chaincoloure" class="form-select"></select>
                                                 </div>
                                                 <div class="col-3 col-sm-3 col-lg-2">
@@ -1163,7 +1163,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Roll Direction</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                     <select id="rollf" class="form-select">
                                                         <option value=""></option>
                                                         <option value="Standard">Standard</option>
@@ -1184,7 +1184,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Control Position</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-2 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
                                                     <select id="controlpositionf" class="form-select">
                                                         <option value=""></option>
                                                         <option value="Left">Left</option>
@@ -1197,7 +1197,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Chain Colour</label>
                                                 </div>
-                                                <div class="col-9 col-sm-9 col-lg-4 form-group">
+                                                <div class="col-9 col-sm-9 col-lg-6 form-group">
                                                     <select id="chaincolourf" class="form-select"></select>
                                                 </div>
                                                 <div class="col-3 col-sm-3 col-lg-2">
@@ -1341,7 +1341,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Bracket Size</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-2 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
                                                     <select id="bracketsize" class="form-select">
                                                         <option value=""></option>
                                                         <option value="40">40mm</option>
@@ -1421,6 +1421,25 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-12 col-sm-12 col-lg-5">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title text-center">Information</h4>
+                        </div>
+                        <div class="card-content">
+                            <div class="card-body">
+                                <b>LIMITATIONS</b>
+                                <ul>
+                                    <li>Minimum width : 200mm</li>
+                                    <li>Minimum width for motorised : 700mm</li>
+                                    <li>Maximum width : 3000mm</li>
+                                    <li>Minimum drop : 600mm</li>
+                                    <li>Maximum drop : 3200mm</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </section>
         </div>
     </div>
@@ -1475,13 +1494,116 @@
         </div>
     </div>
 
-    <div class="modal modal-blur fade" id="modalInfoTube" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal modal-blur fade" id="modalGallery" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <span id="spanInfoGallery"></span>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal modal-blur fade" id="modalInfoTube" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-info">
                     <h5 class="modal-title white">Tube Information</h5>
                 </div>
-                <div class="modal-body"></div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Description</th>
+                                    <th>Available Control Types</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Standard</td>
+                                    <td></td>
+                                    <td>Chain, Mercure, Altus</td>
+                                </tr>
+                                <tr>
+                                    <td>Gear Reduction 38mm</td>
+                                    <td>Maximum width : 1810mm</td>
+                                    <td>Chain</td>
+                                </tr>
+                                <tr>
+                                    <td>Gear Reduction 45mm</td>
+                                    <td>Up to 6 SQM</td>
+                                    <td>Chain, Mercure, Altus</td>
+                                </tr>
+                                <tr>
+                                    <td>Gear Reduction 49mm</td>
+                                    <td></td>
+                                    <td>Chain, Mercure, Altus, Sonesse 30 WF, Alpha 1Nm WF, Alpha 2Nm WF</td>
+                                </tr>
+                                <tr>
+                                    <td>Acmeda 43mm</td>
+                                    <td>Maximum width : 1810mm</td>
+                                    <td>Chain, Mercure, Altus, Sonesse 30 WF, Alpha 1Nm WF, Alpha 2Nm WF</td>
+                                </tr>
+                                <tr>
+                                    <td>Acmeda 49mm</td>
+                                    <td></td>
+                                    <td>Chain, Mercure, Altus, Sonesse 30 WF, Alpha 1Nm WF, Alpha 2Nm WF</td>
+                                </tr>
+                                <tr>
+                                    <td>Sunboss 43mm</td>
+                                    <td></td>
+                                    <td>Chain, Mercure, Altus, Sonesse 30 WF, Alpha 1Nm WF, Alpha 2Nm WF</td>
+                                </tr>
+                                <tr>
+                                    <td>Sunboss 50mm</td>
+                                    <td></td>
+                                    <td>Chain, Mercure, Altus, Sonesse 30 WF, Alpha 1Nm WF, Alpha 2Nm WF</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal modal-blur fade" id="modalLayout" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-full modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Roller Diagram</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="list-group list-group-horizontal-sm mb-1 text-center" id="dvTab" role="tablist">
+                        <a class="list-group-item list-group-item-action active" id="link2dep" data-bs-toggle="list" href="#list-link2dep" role="tab">Link 2 Blinds Dependent</a>
+                        <a class="list-group-item list-group-item-action" id="link2ind" data-bs-toggle="list" href="#list-link2ind" role="tab">Link 2 Blinds Independent</a>
+                        <a class="list-group-item list-group-item-action" id="link3dep" data-bs-toggle="list" href="#list-link3dep" role="tab">Link 3 Blinds Dependent</a>
+                        <a class="list-group-item list-group-item-action" id="link3ind" data-bs-toggle="list" href="#list-link3ind" role="tab">Link 3 Blinds Independent</a>
+                    </div>
+                    <div class="tab-content text-justify">
+                        <div class="tab-pane fade show active" id="list-link2dep" role="tabpanel" aria-labelledby="link2dep">
+                            <asp:Image runat="server" CssClass="mt-3 mb-3 d-block mx-auto img-fluid" ImageUrl="~/Assets/images/products/roller/linkdep2.png" />
+                        </div>
+
+                        <div class="tab-pane fade" id="list-link2ind" role="tabpanel" aria-labelledby="link2ind">
+                            <asp:Image runat="server" CssClass="mt-3 mb-3 d-block mx-auto img-fluid" ImageUrl="~/Assets/images/products/roller/linkind2.png" />
+                        </div>
+                        <div class="tab-pane fade" id="list-link3dep" role="tabpanel" aria-labelledby="link3dep">
+                            <asp:Image runat="server" CssClass="mt-3 mb-3 d-block mx-auto img-fluid" ImageUrl="~/Assets/images/products/roller/linkdep3.png" />
+                        </div>
+                        <div class="tab-pane fade" id="list-link3ind" role="tabpanel" aria-labelledby="link3ind">
+                            <asp:Image runat="server" CssClass="mt-3 mb-3 d-block mx-auto img-fluid" ImageUrl="~/Assets/images/products/roller/linkind3.png" />
+                        </div>
+                    </div>
+                </div>
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
                 </div>
@@ -1489,5 +1611,5 @@
         </div>
     </div>
     
-    <script src='<%: ResolveUrl("~/Scripts/WebOrders/Roller.js?v=1.0.0") %>'></script>
+    <script src='<%: ResolveUrl("~/Scripts/WebOrders/Roller.js?v=1.0.1") %>'></script>
 </asp:Content>

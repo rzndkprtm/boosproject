@@ -167,5 +167,5 @@
         </div>
     </div>
 
-    <script src='<%: ResolveUrl("~/Scripts/WebOrders/Component.js?v=1.0.0") %>'></script>
+    <script src='<%: ResolveUrl("~/Scripts/WebOrders/Component.js?v=1.0.1") %>'></script>
 </asp:Content>

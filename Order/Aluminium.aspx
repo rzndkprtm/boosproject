@@ -381,12 +381,23 @@
                         </div>
                         <div class="card-content">
                             <div class="card-body">
+                                <b>MATERIALS & SIZES</b>
                                 <ul>
-                                    <li>Minimum width is 200mm</li>
-                                    <li>Maximum width is 3010mm</li>
-                                    <li>Minimum drop is 250mm</li>
-                                    <li>Maximum drop is 3200mm</li>
+                                    <li>Aluminium 25mm Slat Only</li>
+                                    <li>0.21mm Thickness</li>
                                 </ul>
+                                <b>OPERATING SYSTEM</b>
+                                <ul>
+                                    <li>Cord operation including cord lock, with wand tilter.</li>
+                                </ul>
+                                <b>LIMITATIONS</b>
+                                <ul>
+                                    <li>Minimum width : 300mm</li>
+                                    <li>Maximum width : 3010mm</li>
+                                    <li>Minimum drop : 300mm</li>
+                                    <li>Maximum drop : 3200mm</li>
+                                </ul>
+                                <a class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalGallery">Detail Gallery</a>
                             </div>
                         </div>
                     </div>
@@ -443,17 +454,30 @@
                     <div class="tab-content text-justify">
                         <div class="tab-pane fade show active" id="list-left" role="tabpanel" aria-labelledby="list-left-list">
                             <br />
-                            <img runat="server" src="~/Assets/images/products/2on1aluminiumleft.png" alt="Sub Type Image" style="max-width:100%;height:auto;">
+                            <img runat="server" src="~/Assets/images/products/aluminium/2on1aluminiumleft.png" alt="Sub Type Image" style="max-width:100%;height:auto;">
                         </div>
                         <div class="tab-pane fade" id="list-right" role="tabpanel" aria-labelledby="list-right-list">
                             <br />
-                            <img runat="server" src="~/Assets/images/products/2on1aluminiumright.png" alt="Sub Type Image" style="max-width:100%;height:auto;">
+                            <img runat="server" src="~/Assets/images/products/aluminium/2on1aluminiumright.png" alt="Sub Type Image" style="max-width:100%;height:auto;">
                         </div>
                         <div class="tab-pane fade" id="list-leftright" role="tabpanel" aria-labelledby="list-leftright-list">
                             <br />
-                            <img runat="server" src="~/Assets/images/products/2on1aluminiumleftright.png" alt="Sub Type Image" style="max-width:100%;height:auto;">
+                            <img runat="server" src="~/Assets/images/products/aluminium/2on1aluminiumleftright.png" alt="Sub Type Image" style="max-width:100%;height:auto;">
                         </div>
                     </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal modal-blur fade" id="modalGallery" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <asp:Image runat="server" CssClass="w-100" ImageUrl="~/Assets/images/products/aluminium/gallery.jpg" />
                 </div>
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
@@ -478,5 +502,5 @@
         </div>
     </div>
 
-    <script src='<%: ResolveUrl("~/Scripts/WebOrders/Aluminium.js?v=1.0.0") %>'></script>
+    <script src='<%: ResolveUrl("~/Scripts/WebOrders/Aluminium.js?v=1.0.1") %>'></script>
 </asp:Content>

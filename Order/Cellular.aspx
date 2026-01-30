@@ -337,7 +337,62 @@
                         </div>
                         <div class="card-content">
                             <div class="card-body">
-
+                                <b>LIMITATIONS</b>
+                                <ul>
+                                    <li>
+                                        CORDED
+                                        <ol>
+                                            <li>
+                                                <b>Standard</b>
+                                                <ul>
+                                                    <li>Width between 200mm and 3000mm</li>
+                                                    <li>Drop between 300mm and 3600mm</li>
+                                                </ul>
+                                            </li>
+                                            <li>
+                                                <b>TDBU</b>
+                                                <ul>
+                                                    <li>Width between 400mm and 3000mm</li>
+                                                    <li>Drop between 400mm and 3600mm</li>
+                                                </ul>
+                                            </li>
+                                            <li>
+                                                <b>Day & Night</b>
+                                                <ul>
+                                                    <li>Width between 450mm and 3000mm</li>
+                                                    <li>Drop between 750mm and 3600mm</li>
+                                                </ul>
+                                            </li>
+                                        </ol>
+                                    </li>
+                                    <li class="mt-3">
+                                        CORDLESS
+                                        <ol>
+                                            <li>
+                                                <b>Standard</b>
+                                                <ul>
+                                                    <li>Width between 400mm and 2400mm</li>
+                                                    <li>Drop between 400mm and 2100mm</li>
+                                                </ul>
+                                            </li>
+                                            <li>
+                                                <b>TDBU</b>
+                                                <ul>
+                                                    <li>Width between 700mm and 2400mm</li>
+                                                    <li>Drop between 450mm and 2100mm</li>
+                                                </ul>
+                                            </li>
+                                            <li>
+                                                <b>Day & Night</b>
+                                                <ul>
+                                                    <li>Width between 700mm and 2400mm</li>
+                                                    <li>Drop between 750mm and 2100mm</li>
+                                                </ul>
+                                            </li>
+                                        </ol>
+                                    </li>
+                                </ul>
+                                <a class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalGallery">Detail Gallery (Express)</a>
                             </div>
                         </div>
                     </div>
@@ -396,5 +451,18 @@
         </div>
     </div>
 
-    <script src='<%: ResolveUrl("~/Scripts/WebOrders/Cellular.js?v=1.0.0") %>'></script>
+    <div class="modal modal-blur fade" id="modalGallery" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <asp:Image runat="server" CssClass="w-100" ImageUrl="~/Assets/images/products/cellular/gallery.jpg" />
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src='<%: ResolveUrl("~/Scripts/WebOrders/Cellular.js?v=1.0.1") %>'></script>
 </asp:Content>

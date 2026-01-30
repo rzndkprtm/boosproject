@@ -221,7 +221,7 @@ Partial Class Setting_Specification_TubeType
         Try
             Dim search As String = String.Empty
             If Not searchText = "" Then
-                search = " WHERE Id LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%' OR Alias LIKE '%" & searchText & "%' OR Description LIKE '%" & searchText & "%'"
+                search = "WHERE Id LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%' OR Alias LIKE '%" & searchText & "%' OR Description LIKE '%" & searchText & "%'"
             End If
 
             Dim thisString As String = String.Format("SELECT * FROM ProductTubes {0} ORDER BY Name ASC", search)

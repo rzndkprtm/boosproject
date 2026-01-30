@@ -875,7 +875,10 @@ function process() {
         itemaction: itemAction,
         itemid: itemId,
         designid: designId,
-        loginid: loginId
+        loginid: loginId,
+        rolename: roleAccess,
+        companyid: company,
+        companydetailid: companyDetail
     };
 
     fields.forEach(id => {
@@ -1115,7 +1118,9 @@ function showInfo(type) {
     if (type === "Layout") {
         info = "Layout Information";
         info += "<br /><br />";
-        info += "Click " + "<a href='https://bigblinds.ordersblindonline.com/assets/document/pglayout.pdf' target='_blank'>here</a>" + " for the layouts.";
+
+        let urlImage = "https://bigblinds.ordersblindonline.com/Assets/images/products/panelglide/layoutoption.jpg";
+        info += `<img src="${urlImage}" style="max-width:100%;height:auto;">`;
     } else if (type === "Layout Custom") {
         info = "Layout Custom Information";
         info += "<br /><br />";
@@ -1132,6 +1137,9 @@ function showInfo(type) {
         info += "Minimum custom wand length is 2 / 3 from your drop";
         info += "<br />";
         info += "Maximum custom wand length is 1000mm.";
+    } else if (type === "Batten Colour") {
+        let urlImage = "https://bigblinds.ordersblindonline.com/Assets/images/products/panelglide/battencolour.jpg";
+        info = `<img src="${urlImage}" style="max-width:100%;height:auto;">`;
     }
     document.getElementById("spanInfo").innerHTML = info;
 }
@@ -1158,6 +1166,15 @@ document.getElementById("modalError").addEventListener("hide.bs.modal", function
 });
 
 document.getElementById("modalInfo").addEventListener("hide.bs.modal", function () {
+    document.activeElement.blur();
+    document.body.focus();
+});
+document.getElementById("modalInfo").addEventListener("hide.bs.modal", function () {
+    document.activeElement.blur();
+    document.body.focus();
+});
+
+document.getElementById("modalGallery").addEventListener("hide.bs.modal", function () {
     document.activeElement.blur();
     document.body.focus();
 });
