@@ -1544,105 +1544,6 @@
             </div>
         </div>
     </div>
-    
-    <div class="modal fade w-100" id="modalPrinting" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Printing Fabric</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-            
-                <div class="modal-body">
-                    <div class="card-body border-bottom py-3" runat="server" id="divErrorPrinting">
-                        <div class="alert alert-danger">
-                            <span runat="server" id="msgErrorPrinting"></span>
-                        </div>
-                    </div>
-
-                    <div class="card-body">
-                        <div class="list-group list-group-horizontal-sm mb-1 text-center" role="tablist">
-                            <a class="list-group-item list-group-item-action" runat="server" id="aPrinting" data-bs-toggle="list" href="#divPrinting" role="tab">First Fabric</a>
-                            <a class="list-group-item list-group-item-action" runat="server" id="aPrintingB" data-bs-toggle="list" href="#divPrintingB" role="tab">Second Fabric</a>
-                            <a class="list-group-item list-group-item-action" runat="server" id="aPrintingC" data-bs-toggle="list" href="#divPrintingC" role="tab">Thrid Fabric</a>
-                            <a class="list-group-item list-group-item-action" runat="server" id="aPrintingD" data-bs-toggle="list" href="#divPrintingD" role="tab">Fourth Fabric</a>
-                        </div>
-
-                        <div class="tab-content text-justify">
-                            <div runat="server" class="tab-pane fade" id="divPrinting" ClientIDMode="Static" role="tabpanel" aria-labelledby="aPrinting">
-                                <div class="row gallery mt-4">
-                                    <div class="col-12">
-                                        <asp:Image runat="server" CssClass="w-100" ID="imgPrinting" />
-                                        <asp:Button runat="server" ID="btnDeletePrinting" CssClass="btn btn-danger mt-2" Text="Delete File #1" OnClick="btnDeletePrinting_Click" />
-                                    </div>
-                                </div>
-
-                                <div class="row mt-4" runat="server" id="divUploadPrinting">
-                                    <div class="col-12">
-                                        <label class="form-label">Upload New Image</label>
-                                        <asp:FileUpload runat="server" ID="fuPrinting" CssClass="form-control" />
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="tab-pane fade" runat="server" id="divPrintingB" ClientIDMode="Static" role="tabpanel" aria-labelledby="aPrintingB">
-                                <div class="row gallery mt-4">
-                                    <div class="col-12">
-                                        <asp:Image runat="server" CssClass="w-100" ID="imgPrintingB" />
-                                        <asp:Button runat="server" ID="btnDeletePrintingB" CssClass="btn btn-danger mt-2" Text="Delete File #2" OnClick="btnDeletePrintingB_Click" />
-                                    </div>
-                                </div>
-
-                                <div class="row mt-4" runat="server" id="divUploadPrintingB">
-                                    <div class="col-12">
-                                        <label class="form-label">Upload New Image</label>
-                                        <asp:FileUpload runat="server" ID="fuPrintingB" CssClass="form-control" />
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="tab-pane fade" runat="server" id="divPrintingC" ClientIDMode="Static" role="tabpanel" aria-labelledby="aPrintingC">
-                                <div class="row gallery mt-4">
-                                    <div class="col-12">
-                                        <asp:Image runat="server" CssClass="w-100" ID="imgPrintingC" />
-                                        <asp:Button runat="server" ID="btnDeletePrintingC" CssClass="btn btn-danger mt-2" Text="Delete File #3" OnClick="btnDeletePrintingC_Click" />
-                                    </div>
-                                </div>
-
-                                <div class="row mt-4" runat="server" id="divUploadPrintingC">
-                                    <div class="col-12">
-                                        <label class="form-label">Upload New Image</label>
-                                        <asp:FileUpload runat="server" ID="fuPrintingC" CssClass="form-control" />
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="tab-pane fade" runat="server" id="divPrintingD" ClientIDMode="Static" role="tabpanel" aria-labelledby="aPrintingD">
-                                <div class="row gallery mt-4">
-                                    <div class="col-12">
-                                        <asp:Image runat="server" CssClass="w-100" ID="imgPrintingD" />
-                                        <asp:Button runat="server" ID="btnDeletePrintingD" CssClass="btn btn-danger mt-2" Text="Delete File #4" OnClick="btnDeletePrintingD_Click" />
-                                    </div>
-                                </div>
-
-                                <div class="row mt-4" runat="server" id="divUploadPrintingD">
-                                    <div class="col-12">
-                                        <label class="form-label">Upload New Image</label>
-                                        <asp:FileUpload runat="server" ID="fuPrintingD" CssClass="form-control" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <asp:Button runat="server" ID="btnSubmitPrinting" CssClass="btn btn-success" Text="Submit" OnClick="btnSubmitPrinting_Click" OnClientClick="return showWaiting();" />
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <div class="modal fade text-center" id="modalWaiting" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
@@ -1699,7 +1600,7 @@
             "modalDetailQuote", "modalDownloadQuote",
             "modalMoreDownloadQuote", "modalMoreEmailQuote",
             "modalAddNote", "modalHistoryNote",
-            "modalAddItem", "modalDeleteItem", "modalCosting", "modalEditCosting", "modalPrinting"
+            "modalAddItem", "modalDeleteItem", "modalCosting", "modalEditCosting"
         ].forEach(id => {
             document.getElementById(id).addEventListener("hide.bs.modal", () => {
                 document.activeElement.blur();
@@ -1875,10 +1776,6 @@
 
         function showDeleteItem(id) {
             document.getElementById("<%=txtDeleteItemId.ClientID %>").value = id;
-        }
-
-        function showPrinting() {
-            $("#modalPrinting").modal("show");
         }
 
         function showWaiting(hideModal = null) {

@@ -227,8 +227,7 @@ Partial Class Setting_Specification_Bottom_Default
         Try
             If Not Session("CompanyDetailId") = "" Then
                 Dim thisString As String = "SELECT * FROM CompanyDetails ORDER BY Id ASC"
-
-                If Session("RoleName") = "Account" OrElse Session("RoleName") = "Customer Service" Then
+                If Session("RoleName") = "Customer Service" Then
                     thisString = "SELECT * FROM CompanyDetails WHERE CompanyId='" & Session("CompanyId") & "' ORDER BY Id ASC"
                 End If
 

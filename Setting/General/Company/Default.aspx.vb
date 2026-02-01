@@ -95,21 +95,6 @@ Partial Class Setting_General_Company_Default
                     End If
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 End Try
-            ElseIf e.CommandName = "Log" Then
-                MessageError_Log(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showLog(); };"
-                Try
-                    gvListLog.DataSource = settingClass.GetDataTable("SELECT * FROM Logs WHERE DataId='" & dataId & "' AND Type='Companys' ORDER BY ActionDate DESC")
-                    gvListLog.DataBind()
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
-                Catch ex As Exception
-                    MessageError_Log(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError_Log(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                    End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
-                End Try
             End If
         End If
     End Sub
@@ -137,7 +122,7 @@ Partial Class Setting_General_Company_Default
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Companys ORDER BY Id DESC")
 
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Companys VALUES (@Id, @Name, @Alias, NULL, @Description, @Active, 0)", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Companys VALUES (@Id, @Name, @Alias, NULL, @Description, @Active)", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", thisId)
                             myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Alias", txtAlias.Text.Trim())
@@ -160,7 +145,7 @@ Partial Class Setting_General_Company_Default
 
                 If lblAction.Text = "Edit" Then
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE Companys SET Name=@Name, Alias=@Alias, Description=@Description WHERE Id=@Id", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("UPDATE Companys SET Name=@Name, Alias=@Alias, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", lblId.Text)
                             myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Alias", txtAlias.Text.Trim())
@@ -191,11 +176,13 @@ Partial Class Setting_General_Company_Default
     Protected Sub BindData(searchText As String)
         Session("SearchCompany") = String.Empty
         Try
-            Dim searchString As String = String.Empty
-            If Not searchText = "" Then
-                searchString = "WHERE Id LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%' OR Alias LIKE '%" & searchText & "%' OR Description LIKE '%" & searchText & "%'"
+
+            Dim search As String = String.Empty
+            If Not String.IsNullOrEmpty(searchText) Then
+                search = "WHERE Id LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%' OR Alias LIKE '%" & searchText & "%' OR Description LIKE '%" & searchText & "%'"
             End If
-            Dim thisString As String = String.Format("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Companys {0} ORDER BY Id ASC", searchString)
+
+            Dim thisString As String = String.Format("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Companys {0} ORDER BY Id ASC", search)
 
             gvList.DataSource = settingClass.GetDataTable(thisString)
             gvList.DataBind()
@@ -217,14 +204,6 @@ Partial Class Setting_General_Company_Default
     Protected Sub MessageError_Process(visible As Boolean, message As String)
         divErrorProcess.Visible = visible : msgErrorProcess.InnerText = message
     End Sub
-
-    Protected Sub MessageError_Log(visible As Boolean, message As String)
-        divErrorLog.Visible = visible : msgErrorLog.InnerText = message
-    End Sub
-
-    Protected Function BindTextLog(logId As String) As String
-        Return settingClass.getTextLog(logId)
-    End Function
 
     Protected Function PageAction(action As String) As Boolean
         Try

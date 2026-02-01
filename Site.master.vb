@@ -1,6 +1,5 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
-Imports System.IdentityModel.Protocols.WSTrust
 
 Public Partial Class SiteMaster
     Inherits MasterPage
@@ -36,10 +35,6 @@ Public Partial Class SiteMaster
         Try
             If Session("IsLoggedIn") = True Then
                 Dim loginId As String = Session("LoginId")
-
-                Dim thisQuery As String = "SELECT CustomerLogins.*, Customers.CompanyId AS CompanyId, Customers.CompanyDetailId AS CompanyDetailId, Customers.[Level] AS CustomerLevel, Companys.Name AS CompanyName, Companys.Active AS CompanyActive, Customers.Active AS CustomerActive, CASE WHEN CustomerLogins.Pricing=1 THEN 'Yes' ELSE '' END AS PriceAccess, CustomerLoginRoles.Name AS RoleName, CustomerLoginRoles.Active AS RoleActive, CustomerLoginLevels.Name AS LevelName, CustomerLoginLevels.Active AS LevelActive FROM CustomerLogins INNER JOIN CustomerLoginRoles ON CustomerLogins.RoleId=CustomerLoginRoles.Id INNER JOIN CustomerLoginLevels ON CustomerLogins.LevelId=CustomerLoginLevels.Id INNER JOIN Customers ON CustomerLogins.CustomerId=Customers.Id INNER JOIN Companys ON Customers.CompanyId=Companys.Id WHERE CustomerLogins.Id='" & loginId & "'"
-
-                'Dim myData As DataRow = settingClass.GetDataRow(thisQuery)
 
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@LoginId", loginId)
@@ -292,19 +287,6 @@ Public Partial Class SiteMaster
                 liPricePromo.Visible = True
             End If
 
-            If Session("RoleName") = "Representative" Then
-                liOldOrder.Visible = True
-                liGuide.Visible = True
-                liTicket.Visible = True
-                If Session("LevelName") = "Leader" Then
-                    liReport.Visible = True
-                    liSales.Visible = True
-                End If
-
-                liSetting.Visible = True
-                liCustomer.Visible = True
-            End If
-
             If Session("RoleName") = "Production" Then
                 liGuide.Visible = True
                 liTicket.Visible = True
@@ -355,8 +337,6 @@ Public Partial Class SiteMaster
                 liCustomer.Visible = True
 
                 liSpecification.Visible = True
-                liSpecificationDesign.Visible = True
-                liSpecificationBlind.Visible = True
                 liSpecificationProduct.Visible = True
                 liSpecificationFabric.Visible = True
                 liSpecificationChain.Visible = True
@@ -374,9 +354,7 @@ Public Partial Class SiteMaster
 
             If Session("RoleName") = "Data Entry" Then
                 liGuide.Visible = True
-
                 liSetting.Visible = True
-
                 liCustomer.Visible = True
             End If
 

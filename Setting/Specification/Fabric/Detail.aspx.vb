@@ -430,7 +430,6 @@ Partial Class Setting_Specification_Fabric_Detail
         lbCompany.Items.Clear()
         Try
             lbCompany.DataSource = settingClass.GetDataTable("SELECT * FROM CompanyDetails ORDER BY Name ASC")
-
             lbCompany.DataTextField = "Name"
             lbCompany.DataValueField = "Id"
             lbCompany.DataBind()

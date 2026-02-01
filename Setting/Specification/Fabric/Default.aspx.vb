@@ -416,7 +416,7 @@ Partial Class Setting_Specification_Fabric_Default
     Protected Sub BindDesign()
         lbDesign.Items.Clear()
         Try
-            lbDesign.DataSource = settingClass.GetDataTable("SELECT * FROM Designs ORDER BY Name ASC")
+            lbDesign.DataSource = settingClass.GetDataTable("SELECT * FROM Designs CROSS APPLY STRING_SPLIT(AppliesTo, ',') AS thisArray WHERE thisArray.VALUE='Fabrics' ORDER BY Name ASC")
             lbDesign.DataTextField = "Name"
             lbDesign.DataValueField = "Id"
             lbDesign.DataBind()

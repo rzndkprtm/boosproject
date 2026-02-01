@@ -4,10 +4,9 @@ Imports System.Data.SqlClient
 Partial Class Setting_General_Level
     Inherits Page
 
-    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-
     Dim settingClass As New SettingClass
 
+    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataLog As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -73,7 +72,7 @@ Partial Class Setting_General_Level
                     lblAction.Text = "Edit"
                     titleProcess.InnerText = "Edit Level Access"
 
-                    Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerLoginLevels WHERE Id='" & lblId.Text & "'")
+                    Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM LoginLevels WHERE Id='" & lblId.Text & "'")
                     If myData Is Nothing Then Exit Sub
 
                     txtName.Text = myData("Name").ToString()
@@ -87,21 +86,6 @@ Partial Class Setting_General_Level
                         MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
                     End If
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-                End Try
-            ElseIf e.CommandName = "Log" Then
-                MessageError_Log(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showLog(); };"
-                Try
-                    gvListLog.DataSource = settingClass.GetDataTable("SELECT * FROM Logs WHERE DataId='" & dataId & "' AND Type='CustomerLoginLevels' ORDER BY ActionDate DESC")
-                    gvListLog.DataBind()
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
-                Catch ex As Exception
-                    MessageError_Log(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError_Log(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                    End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
                 End Try
             End If
         End If
@@ -120,10 +104,10 @@ Partial Class Setting_General_Level
             If msgErrorProcess.InnerText = "" Then
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
                 If lblAction.Text = "Add" Then
-                    Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerLoginLevels ORDER BY Id DESC")
+                    Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM LoginLevels ORDER BY Id DESC")
 
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerLoginLevels VALUES (@Id, @Name, @Description, @Active)", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO LoginLevels VALUES (@Id, @Name, @Description, @Active)", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", thisId)
                             myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Description", descText)
@@ -134,7 +118,7 @@ Partial Class Setting_General_Level
                         End Using
                     End Using
 
-                    dataLog = {"CustomerLoginLevels", thisId, Session("LoginId").ToString(), "Created"}
+                    dataLog = {"LoginLevels", thisId, Session("LoginId").ToString(), "Created"}
                     settingClass.Logs(dataLog)
 
                     Session("SearchLevel") = txtSearch.Text
@@ -143,7 +127,7 @@ Partial Class Setting_General_Level
 
                 If lblAction.Text = "Edit" Then
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLoginLevels SET Name=@Name, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("UPDATE LoginLevels SET Name=@Name, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", lblId.Text)
                             myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Description", descText)
@@ -154,7 +138,7 @@ Partial Class Setting_General_Level
                         End Using
                     End Using
 
-                    dataLog = {"CustomerLoginLevels", lblId.Text, Session("LoginId").ToString(), "Updated"}
+                    dataLog = {"LoginLevels", lblId.Text, Session("LoginId").ToString(), "Updated"}
                     settingClass.Logs(dataLog)
 
                     Session("SearchLevel") = txtSearch.Text
@@ -170,33 +154,6 @@ Partial Class Setting_General_Level
         End Try
     End Sub
 
-    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        Try
-            'Dim thisId As String = txtIdDelete.Text
-
-            'Using thisConn As New SqlConnection(myConn)
-            '    Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLoginLevels SET Active=0 WHERE Id=@Id; UPDATE CustomerLogins SET LevelId=NULL WHERE LevelId=@Id;", thisConn)
-            '        myCmd.Parameters.AddWithValue("@Id", thisId)
-
-            '        thisConn.Open()
-            '        myCmd.ExecuteNonQuery()
-            '    End Using
-            'End Using
-
-            'dataLog = {"CustomerLoginLevels", thisId, Session("LoginId").ToString(), "Deleted"}
-            'settingClass.Logs(dataLog)
-
-            Session("SearchLevel") = txtSearch.Text
-            Response.Redirect("~/setting/general/level", False)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
     Protected Sub BindData(searchText As String)
         Session("SearchLevel") = String.Empty
         Try
@@ -204,7 +161,7 @@ Partial Class Setting_General_Level
             If Not searchText = "" Then
                 searchString = "WHERE Id LIKE '%" & searchText.Trim() & "%' OR Name LIKE '%" & searchText.Trim() & "%' OR Description LIKE '%" & searchText.Trim() & "%'"
             End If
-            Dim thisString As String = String.Format("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM CustomerLoginLevels {0} ORDER BY Name ASC", searchString)
+            Dim thisString As String = String.Format("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM LoginLevels {0} ORDER BY Name ASC", searchString)
 
             gvList.DataSource = settingClass.GetDataTable(thisString)
             gvList.DataBind()
@@ -226,14 +183,6 @@ Partial Class Setting_General_Level
     Protected Sub MessageError_Process(visible As Boolean, message As String)
         divErrorProcess.Visible = visible : msgErrorProcess.InnerText = message
     End Sub
-
-    Protected Sub MessageError_Log(visible As Boolean, message As String)
-        divErrorLog.Visible = visible : msgErrorLog.InnerText = message
-    End Sub
-
-    Protected Function BindTextLog(logId As String) As String
-        Return settingClass.getTextLog(logId)
-    End Function
 
     Protected Function PageAction(action As String) As Boolean
         Try

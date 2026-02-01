@@ -1,6 +1,7 @@
 ﻿let designIdOri = "17";
 let itemAction;
 let headerId;
+let orderId;
 let itemId;
 let designId;
 let company;

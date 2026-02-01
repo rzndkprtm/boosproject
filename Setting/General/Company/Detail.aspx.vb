@@ -89,21 +89,6 @@ Partial Class Setting_General_Company_Detail
                     End If
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcessDetail", thisScript, True)
                 End Try
-            ElseIf e.CommandName = "Log" Then
-                MessageError_Log(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showLog(); };"
-                Try
-                    gvListLog.DataSource = settingClass.GetDataTable("SELECT * FROM Logs WHERE DataId='" & dataId & "' AND Type='CompanyDetails' ORDER BY ActionDate DESC")
-                    gvListLog.DataBind()
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
-                Catch ex As Exception
-                    MessageError_Log(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError_Log(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                    End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
-                End Try
             End If
         End If
     End Sub
@@ -214,75 +199,6 @@ Partial Class Setting_General_Company_Detail
         End Try
     End Sub
 
-    Protected Sub btnDeleteDetail_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        Try
-            Dim thisId As String = txtIdDeleteDetail.Text
-
-            Using thisConn As New SqlConnection(myConn)
-                thisConn.Open()
-
-                ' COMPANYDETAILS
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM CompanyDetails WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                ' LOG COMPANYDETAILS
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Logs WHERE Type='CompanyDetails' AND DataId=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                ' CUSTOMER COMPANY DETAIL
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE Customers SET CompanyDetailId=NULL WHERE CompanyDetailId=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                ' BOTTOMS
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE Bottoms SET CompanyDetailId=LTRIM(RTRIM(TRIM(',' FROM REPLACE(REPLACE(',' + CompanyDetailId + ',', ',' + @Id + ',', ','), ',,', ',')))) WHERE (',' + CompanyDetailId + ',') LIKE '%,' + @Id + ',%';", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                ' FABRICS
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE Fabrics SET CompanyDetailId=LTRIM(RTRIM(TRIM(',' FROM REPLACE(REPLACE(',' + CompanyDetailId + ',', ',' + @Id + ',', ','), ',,', ',')))) WHERE (',' + CompanyDetailId + ',') LIKE '%,' + @Id + ',%';", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                ' CHAINS
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE Chains SET CompanyDetailId=LTRIM(RTRIM(TRIM(',' FROM REPLACE(REPLACE(',' + CompanyDetailId + ',', ',' + @Id + ',', ','), ',,', ',')))) WHERE (',' + CompanyDetailId + ',') LIKE '%,' + @Id + ',%';", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                'BLINDS
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE Blinds SET CompanyDetailId = LTRIM(RTRIM(TRIM(',' FROM REPLACE(REPLACE(',' + CompanyDetailId + ',', ',' + @Id + ',', ','), ',,', ',')))) WHERE (',' + CompanyDetailId + ',') LIKE '%,' + @Id + ',%';", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                'PRODUCTS
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE Products SET CompanyDetailId=LTRIM(RTRIM(TRIM(',' FROM REPLACE(REPLACE(',' + CompanyDetailId + ',', ',' + @Id + ',', ','), ',,', ',')))) WHERE (',' + CompanyDetailId + ',') LIKE '%,' + @Id + ',%';", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                thisConn.Close()
-            End Using
-
-            url = String.Format("~/setting/general/company/detail?boosid={0}", lblId.Text)
-            Response.Redirect(url, False)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
     Protected Sub BindData(companyId As String)
         Try
             Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM Companys WHERE Id='" & companyId & "'")
@@ -329,14 +245,6 @@ Partial Class Setting_General_Company_Detail
     Protected Sub MessageError_ProcessDetail(visible As Boolean, message As String)
         divErrorProcessDetail.Visible = visible : msgErrorProcessDetail.InnerText = message
     End Sub
-
-    Protected Sub MessageError_Log(visible As Boolean, message As String)
-        divErrorLog.Visible = visible : msgErrorLog.InnerText = message
-    End Sub
-
-    Protected Function BindTextLog(logId As String) As String
-        Return settingClass.getTextLog(logId)
-    End Function
 
     Protected Function PageAction(action As String) As Boolean
         Try

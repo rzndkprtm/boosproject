@@ -1355,7 +1355,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Bracket Extension</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-2 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
                                                     <div class="input-group">
                                                         <select id="bracketextension" class="form-select">
                                                             <option value=""></option>
@@ -1611,5 +1611,5 @@
         </div>
     </div>
     
-    <script src='<%: ResolveUrl("~/Scripts/WebOrders/Roller.js?v=1.0.1") %>'></script>
+    <script src='<%: ResolveUrl("~/Scripts/WebOrders/Roller.js?v=1.0.2") %>'></script>
 </asp:Content>

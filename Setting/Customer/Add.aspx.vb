@@ -3,11 +3,11 @@
 Partial Class Setting_Customer_Add
     Inherits Page
 
-    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-    Dim dataMailing As Object() = Nothing
-
     Dim settingClass As New SettingClass
     Dim mailingClass As New MailingClass
+
+    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim dataMailing As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")

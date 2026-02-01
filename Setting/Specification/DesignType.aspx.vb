@@ -4,11 +4,10 @@ Imports System.Data.SqlClient
 Partial Class Setting_Specification_Design
     Inherits Page
 
-    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-    Dim dataMailing As Object() = Nothing
-    Dim dataLog As Object() = Nothing
-
     Dim settingClass As New SettingClass
+
+    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim dataLog As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
@@ -80,7 +79,7 @@ Partial Class Setting_Specification_Design
 
                     If myData Is Nothing Then Exit Sub
 
-                    BindCompany()
+                    BindCompany(True)
 
                     txtName.Text = myData("Name").ToString()
                     ddlType.SelectedValue = myData("Type").ToString()
@@ -90,10 +89,21 @@ Partial Class Setting_Specification_Design
 
                     If Not myData("CompanyId").ToString() = "" Then
                         Dim companyArray() As String = myData("CompanyId").ToString().Split(",")
-
                         For Each i In companyArray
                             If Not String.IsNullOrEmpty(i) Then
                                 Dim item = lbCompany.Items.FindByValue(i)
+                                If item IsNot Nothing Then
+                                    item.Selected = True
+                                End If
+                            End If
+                        Next
+                    End If
+
+                    If Not myData("AppliesTo").ToString() = "" Then
+                        Dim applyArray() As String = myData("AppliesTo").ToString().Split(",")
+                        For Each i In applyArray
+                            If Not String.IsNullOrEmpty(i) Then
+                                Dim item = lbApplies.Items.FindByValue(i)
                                 If item IsNot Nothing Then
                                     item.Selected = True
                                 End If
@@ -108,21 +118,6 @@ Partial Class Setting_Specification_Design
                         MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
                     End If
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-                End Try
-            ElseIf e.CommandName = "Log" Then
-                MessageError_Log(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showLog(); };"
-                Try
-                    gvListLogs.DataSource = settingClass.GetDataTable("SELECT * FROM Logs WHERE DataId='" & dataId & "' AND Type='Designs' ORDER BY ActionDate DESC")
-                    gvListLogs.DataBind()
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
-                Catch ex As Exception
-                    MessageError_Log(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError_Log(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                    End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
                 End Try
             End If
         End If
@@ -146,8 +141,14 @@ Partial Class Setting_Specification_Design
 
             If msgErrorProcess.InnerText = "" Then
                 Dim company As String = String.Empty
+                Dim applyTo As String = String.Empty
+
                 If Not lbCompany.SelectedValue = "" Then
                     company = String.Join(",", lbCompany.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
+                End If
+
+                If Not lbApplies.SelectedValue = "" Then
+                    applyTo = String.Join(",", lbApplies.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
                 End If
 
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
@@ -156,12 +157,13 @@ Partial Class Setting_Specification_Design
                     Using thisConn As New SqlConnection(myConn)
                         thisConn.Open()
 
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Designs VALUES (@Id, @Name, @CompanyId, @Type, @Page, @Description, @Active)", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Designs VALUES (@Id, @Name, @CompanyId, @Type, @Page, @AppliesTo, @Description, @Active)", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", thisId)
                             myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                             myCmd.Parameters.AddWithValue("@CompanyId", company)
                             myCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
                             myCmd.Parameters.AddWithValue("@Page", txtPage.Text.Trim())
+                            myCmd.Parameters.AddWithValue("@AppliesTo", applyTo)
                             myCmd.Parameters.AddWithValue("@Description", descText)
                             myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
 
@@ -185,12 +187,13 @@ Partial Class Setting_Specification_Design
                 End If
                 If lblAction.Text = "Edit" Then
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE Designs SET Name=@Name, CompanyId=@CompanyId, Type=@Type, Page=@Page, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("UPDATE Designs SET Name=@Name, CompanyId=@CompanyId, Type=@Type, Page=@Page, AppliesTo=@AppliesTo, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", lblId.Text)
                             myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                             myCmd.Parameters.AddWithValue("@CompanyId", company)
                             myCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
                             myCmd.Parameters.AddWithValue("@Page", txtPage.Text.Trim())
+                            myCmd.Parameters.AddWithValue("@AppliesTo", applyTo)
                             myCmd.Parameters.AddWithValue("@Description", descText)
                             myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
 
@@ -212,32 +215,6 @@ Partial Class Setting_Specification_Design
                 MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-        End Try
-    End Sub
-
-    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        Try
-            Dim thisId As String = txtIdDelete.Text
-
-            Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE Designs SET Active=0 WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-
-                    thisConn.Open()
-                    myCmd.ExecuteNonQuery()
-                End Using
-            End Using
-
-            dataLog = {"Designs", lblId.Text, Session("LoginId").ToString(), "Deleted"}
-
-            Session("SearchDesign") = txtSearch.Text
-            Response.Redirect("~/setting/specification/designtype", False)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
         End Try
     End Sub
 
@@ -263,10 +240,15 @@ Partial Class Setting_Specification_Design
         End Try
     End Sub
 
-    Protected Sub BindCompany()
+    Protected Sub BindCompany(Optional isEdit As Boolean = False)
         lbCompany.Items.Clear()
         Try
-            lbCompany.DataSource = settingClass.GetDataTable("SELECT * FROM Companys ORDER BY Name ASC")
+            Dim thisString As String = "SELECT * FROM Companys WHERE Active=1 ORDER BY Name ASC"
+            If isEdit = True Then
+                thisString = "SELECT * FROM Companys ORDER BY Name ASC"
+            End If
+
+            lbCompany.DataSource = settingClass.GetDataTable(thisString)
             lbCompany.DataTextField = "Name"
             lbCompany.DataValueField = "Id"
             lbCompany.DataBind()
@@ -306,14 +288,6 @@ Partial Class Setting_Specification_Design
     Protected Sub MessageError_Process(visible As Boolean, message As String)
         divErrorProcess.Visible = visible : msgErrorProcess.InnerText = message
     End Sub
-
-    Protected Sub MessageError_Log(visible As Boolean, message As String)
-        divErrorLog.Visible = visible : msgErrorLog.InnerText = message
-    End Sub
-
-    Protected Function BindTextLog(logId As String) As String
-        Return settingClass.getTextLog(logId)
-    End Function
 
     Protected Function PageAction(action As String) As Boolean
         Try

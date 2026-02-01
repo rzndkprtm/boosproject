@@ -65,6 +65,7 @@ Partial Class Order_Method
         Dim chaincolour As String = data.chaincolour
         Dim company As String = data.company
         Dim companydetail As String = data.companydetail
+        Dim action As String = data.action
 
         If type = "BlindType" Then
             Dim thisQuery As String = "SELECT * FROM Blinds CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designtype & "' AND companyArray.VALUE='" & companydetail & "' AND Active=1 ORDER BY Name ASC"
@@ -2791,8 +2792,8 @@ Partial Class Order_Method
             End If
         End If
 
-        If width > 1510 AndAlso drop > 1510 Then
-            orderClass.DeleteFilePrinting(data.headerid, data.itemid, "1")
+        If width > 1510 OrElse drop > 1510 Then
+            orderClass.DeleteFilePrinting(data.orderid, data.printing)
             data.printing = String.Empty
         End If
 
@@ -4235,8 +4236,8 @@ Partial Class Order_Method
             data.printingg = String.Empty
             data.printingh = String.Empty
 
-            If width > 1510 AndAlso drop > 1510 Then
-                orderClass.DeleteFilePrinting(data.headerid, data.itemid, "1")
+            If width > 1510 OrElse drop > 1510 Then
+                orderClass.DeleteFilePrinting(data.orderid, data.printing)
                 data.printing = String.Empty
             End If
 
@@ -4318,8 +4319,8 @@ Partial Class Order_Method
             data.printingg = String.Empty
             data.printingh = String.Empty
 
-            If width > 1510 AndAlso drop > 1510 Then
-                orderClass.DeleteFilePrinting(data.headerid, data.itemid, "1")
+            If width > 1510 OrElse drop > 1510 Then
+                orderClass.DeleteFilePrinting(data.orderid, data.printing)
                 data.printing = String.Empty
             End If
 
@@ -4418,8 +4419,8 @@ Partial Class Order_Method
             data.printingg = String.Empty
             data.printingh = String.Empty
 
-            If width > 1510 AndAlso drop > 1510 Then
-                orderClass.DeleteFilePrinting(data.headerid, data.itemid, "1")
+            If width > 1510 OrElse drop > 1510 Then
+                orderClass.DeleteFilePrinting(data.orderid, data.printing)
                 data.printing = String.Empty
             End If
 
@@ -4523,9 +4524,9 @@ Partial Class Order_Method
 
             data.bracketextension = String.Empty
 
-            If width > 1510 AndAlso drop > 1510 Then
-                orderClass.DeleteFilePrinting(data.headerid, data.itemid, "1")
-                orderClass.DeleteFilePrinting(data.headerid, data.itemid, "2")
+            If width > 1510 OrElse drop > 1510 Then
+                orderClass.DeleteFilePrinting(data.orderid, data.printing)
+                orderClass.DeleteFilePrinting(data.orderid, data.printingb)
 
                 data.printing = String.Empty
                 data.printingb = String.Empty
@@ -4683,12 +4684,12 @@ Partial Class Order_Method
             data.printingg = String.Empty
             data.printingh = String.Empty
 
-            If width > 1510 AndAlso drop > 1510 Then
-                orderClass.DeleteFilePrinting(data.headerid, data.itemid, "1")
+            If width > 1510 OrElse drop > 1510 Then
+                orderClass.DeleteFilePrinting(data.orderid, data.printing)
                 data.printing = String.Empty
             End If
-            If widthb > 1510 AndAlso dropb > 1510 Then
-                orderClass.DeleteFilePrinting(data.headerid, data.itemid, "2")
+            If widthb > 1510 OrElse dropb > 1510 Then
+                orderClass.DeleteFilePrinting(data.orderid, data.printingb)
                 data.printingb = String.Empty
             End If
 
@@ -4811,12 +4812,12 @@ Partial Class Order_Method
             data.printingg = String.Empty
             data.printingh = String.Empty
 
-            If width > 1510 AndAlso drop > 1510 Then
-                orderClass.DeleteFilePrinting(data.headerid, data.itemid, "1")
+            If width > 1510 OrElse drop > 1510 Then
+                orderClass.DeleteFilePrinting(data.orderid, data.printing)
                 data.printing = String.Empty
             End If
-            If widthb > 1510 AndAlso dropb > 1510 Then
-                orderClass.DeleteFilePrinting(data.headerid, data.itemid, "2")
+            If widthb > 1510 OrElse dropb > 1510 Then
+                orderClass.DeleteFilePrinting(data.orderid, data.printingb)
                 data.printingb = String.Empty
             End If
 
@@ -4972,16 +4973,16 @@ Partial Class Order_Method
             data.printingg = String.Empty
             data.printingh = String.Empty
 
-            If width > 1510 AndAlso drop > 1510 Then
-                orderClass.DeleteFilePrinting(data.headerid, data.itemid, "1")
+            If width > 1510 OrElse drop > 1510 Then
+                orderClass.DeleteFilePrinting(data.orderid, data.printing)
                 data.printing = String.Empty
             End If
-            If widthb > 1510 AndAlso dropb > 1510 Then
-                orderClass.DeleteFilePrinting(data.headerid, data.itemid, "2")
+            If widthb > 1510 OrElse dropb > 1510 Then
+                orderClass.DeleteFilePrinting(data.orderid, data.printingb)
                 data.printingb = String.Empty
             End If
-            If widthc > 1510 AndAlso dropc > 1510 Then
-                orderClass.DeleteFilePrinting(data.headerid, data.itemid, "3")
+            If widthc > 1510 OrElse dropc > 1510 Then
+                orderClass.DeleteFilePrinting(data.orderid, data.printingc)
                 data.printingc = String.Empty
             End If
 
@@ -5124,16 +5125,16 @@ Partial Class Order_Method
             data.printingg = String.Empty
             data.printingh = String.Empty
 
-            If width > 1510 AndAlso drop > 1510 Then
-                orderClass.DeleteFilePrinting(data.headerid, data.itemid, "1")
+            If width > 1510 OrElse drop > 1510 Then
+                orderClass.DeleteFilePrinting(data.orderid, data.printing)
                 data.printing = String.Empty
             End If
-            If widthb > 1510 AndAlso dropb > 1510 Then
-                orderClass.DeleteFilePrinting(data.headerid, data.itemid, "2")
+            If widthb > 1510 OrElse dropb > 1510 Then
+                orderClass.DeleteFilePrinting(data.orderid, data.printingb)
                 data.printingb = String.Empty
             End If
-            If widthc > 1510 AndAlso dropc > 1510 Then
-                orderClass.DeleteFilePrinting(data.headerid, data.itemid, "3")
+            If widthc > 1510 OrElse dropc > 1510 Then
+                orderClass.DeleteFilePrinting(data.orderid, data.printingc)
                 data.printingc = String.Empty
             End If
 
@@ -5285,20 +5286,20 @@ Partial Class Order_Method
             data.toptrack = String.Empty
             data.bracketextension = String.Empty
 
-            If width > 1510 AndAlso drop > 1510 Then
-                orderClass.DeleteFilePrinting(data.headerid, data.itemid, "1")
+            If width > 1510 OrElse drop > 1510 Then
+                orderClass.DeleteFilePrinting(data.orderid, data.printing)
                 data.printing = String.Empty
             End If
-            If widthb > 1510 AndAlso dropb > 1510 Then
-                orderClass.DeleteFilePrinting(data.headerid, data.itemid, "2")
+            If widthb > 1510 OrElse dropb > 1510 Then
+                orderClass.DeleteFilePrinting(data.orderid, data.printingb)
                 data.printingb = String.Empty
             End If
-            If widthc > 1510 AndAlso dropc > 1510 Then
-                orderClass.DeleteFilePrinting(data.headerid, data.itemid, "3")
+            If widthc > 1510 OrElse dropc > 1510 Then
+                orderClass.DeleteFilePrinting(data.orderid, data.printingc)
                 data.printingc = String.Empty
             End If
-            If widthd > 1510 AndAlso dropd > 1510 Then
-                orderClass.DeleteFilePrinting(data.headerid, data.itemid, "4")
+            If widthd > 1510 OrElse dropd > 1510 Then
+                orderClass.DeleteFilePrinting(data.orderid, data.printingd)
                 data.printingd = String.Empty
             End If
 
@@ -5469,20 +5470,20 @@ Partial Class Order_Method
             data.toptrack = String.Empty
             data.bracketextension = String.Empty
 
-            If width > 1510 AndAlso drop > 1510 Then
-                orderClass.DeleteFilePrinting(data.headerid, data.itemid, "1")
+            If width > 1510 OrElse drop > 1510 Then
+                orderClass.DeleteFilePrinting(data.orderid, data.printing)
                 data.printing = String.Empty
             End If
-            If widthb > 1510 AndAlso dropb > 1510 Then
-                orderClass.DeleteFilePrinting(data.headerid, data.itemid, "2")
+            If widthb > 1510 OrElse dropb > 1510 Then
+                orderClass.DeleteFilePrinting(data.orderid, data.printingb)
                 data.printingb = String.Empty
             End If
-            If widthc > 1510 AndAlso dropc > 1510 Then
-                orderClass.DeleteFilePrinting(data.headerid, data.itemid, "3")
+            If widthc > 1510 OrElse dropc > 1510 Then
+                orderClass.DeleteFilePrinting(data.orderid, data.printingc)
                 data.printingc = String.Empty
             End If
-            If widthd > 1510 AndAlso dropd > 1510 Then
-                orderClass.DeleteFilePrinting(data.headerid, data.itemid, "4")
+            If widthd > 1510 OrElse dropd > 1510 Then
+                orderClass.DeleteFilePrinting(data.orderid, data.printingd)
                 data.printingd = String.Empty
             End If
 
@@ -5929,33 +5930,33 @@ Partial Class Order_Method
             data.printingg = String.Empty
             data.printingh = String.Empty
 
-            If width > 1510 AndAlso drop > 1510 Then
-                orderClass.DeleteFilePrinting(data.headerid, data.itemid, "1")
+            If width > 1510 OrElse drop > 1510 Then
+                orderClass.DeleteFilePrinting(data.orderid, data.printing)
                 data.printing = String.Empty
             End If
 
-            If widthb > 1510 AndAlso dropb > 1510 Then
-                orderClass.DeleteFilePrinting(data.headerid, data.itemid, "2")
+            If widthb > 1510 OrElse dropb > 1510 Then
+                orderClass.DeleteFilePrinting(data.orderid, data.printingb)
                 data.printingb = String.Empty
             End If
 
-            If widthc > 1510 AndAlso dropc > 1510 Then
-                orderClass.DeleteFilePrinting(data.headerid, data.itemid, "3")
+            If widthc > 1510 OrElse dropc > 1510 Then
+                orderClass.DeleteFilePrinting(data.orderid, data.printingc)
                 data.printingc = String.Empty
             End If
 
-            If widthd > 1510 AndAlso dropd > 1510 Then
-                orderClass.DeleteFilePrinting(data.headerid, data.itemid, "4")
+            If widthd > 1510 OrElse dropd > 1510 Then
+                orderClass.DeleteFilePrinting(data.orderid, data.printingd)
                 data.printingd = String.Empty
             End If
 
-            If widthe > 1510 AndAlso drope > 1510 Then
-                orderClass.DeleteFilePrinting(data.headerid, data.itemid, "5")
+            If widthe > 1510 OrElse drope > 1510 Then
+                orderClass.DeleteFilePrinting(data.orderid, data.printinge)
                 data.printinge = String.Empty
             End If
 
-            If widthf > 1510 AndAlso dropf > 1510 Then
-                orderClass.DeleteFilePrinting(data.headerid, data.itemid, "6")
+            If widthf > 1510 OrElse dropf > 1510 Then
+                orderClass.DeleteFilePrinting(data.orderid, data.printingf)
                 data.printingf = String.Empty
             End If
 
@@ -9839,6 +9840,7 @@ End Class
 
 Public Class ProccessData
     Public Property headerid As String
+    Public Property orderid As String
     Public Property itemaction As String
     Public Property itemid As String
     Public Property companyid As String
@@ -10087,6 +10089,7 @@ Public Class JSONList
     Public Property chaincolour As String
     Public Property company As String
     Public Property companydetail As String
+    Public Property action As String
 End Class
 
 Public Class LogDto

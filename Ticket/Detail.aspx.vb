@@ -211,7 +211,7 @@ Partial Class Ticket_Detail
 
             Dim status As Boolean = thisData("Status")
 
-            rptDetail.DataSource = settingClass.GetDataTable("SELECT TicketDetails.*, CustomerLogins.FullName AS ReplyName, CustomerLoginRoles.Name AS ReplyRole FROM TicketDetails LEFT JOIN CustomerLogins ON TicketDetails.ReplyBy=CustomerLogins.Id LEFT JOIN CustomerLoginRoles ON CustomerLogins.RoleId=CustomerLoginRoles.Id WHERE TicketDetails.TicketId='" & ticketId & "' ORDER BY CreatedDate DESC")
+            rptDetail.DataSource = settingClass.GetDataTable("SELECT TicketDetails.*, CustomerLogins.FullName AS ReplyName, LoginRoles.Name AS ReplyRole FROM TicketDetails LEFT JOIN CustomerLogins ON TicketDetails.ReplyBy=CustomerLogins.Id LEFT JOIN LoginRoles ON CustomerLogins.RoleId=LoginRoles.Id WHERE TicketDetails.TicketId='" & ticketId & "' ORDER BY CreatedDate DESC")
             rptDetail.DataBind()
 
             aReply.Visible = False : aClose.Visible = False

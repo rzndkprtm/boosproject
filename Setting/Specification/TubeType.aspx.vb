@@ -81,6 +81,18 @@ Partial Class Setting_Specification_TubeType
                     txtAlias.Text = myData("Alias").ToString()
                     txtDescription.Text = myData("Description").ToString()
 
+                    If Not myData("AppliesTo").ToString() = "" Then
+                        Dim applyArray() As String = myData("AppliesTo").ToString().Split(",")
+                        For Each i In applyArray
+                            If Not String.IsNullOrEmpty(i) Then
+                                Dim item = lbApplies.Items.FindByValue(i)
+                                If item IsNot Nothing Then
+                                    item.Selected = True
+                                End If
+                            End If
+                        Next
+                    End If
+
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Catch ex As Exception
                     MessageError_Process(True, ex.ToString())
@@ -88,21 +100,6 @@ Partial Class Setting_Specification_TubeType
                         MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
                     End If
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-                End Try
-            ElseIf e.CommandName = "Log" Then
-                MessageError_Log(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showLog(); };"
-                Try
-                    gvListLogs.DataSource = settingClass.GetDataTable("SELECT * FROM Logs WHERE DataId='" & dataId & "' AND Type='ProductTubes' ORDER BY ActionDate DESC")
-                    gvListLogs.DataBind()
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
-                Catch ex As Exception
-                    MessageError_Log(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError_Log(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                    End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
                 End Try
             End If
         End If
@@ -123,15 +120,22 @@ Partial Class Setting_Specification_TubeType
                 If String.IsNullOrEmpty(txtAlias.Text) Then
                     aliasName = txtName.Text.Trim()
                 End If
+
+                Dim applyTo As String = String.Empty
+                If Not lbApplies.SelectedValue = "" Then
+                    applyTo = String.Join(",", lbApplies.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
+                End If
+
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 
                 If lblAction.Text = "Add" Then
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM ProductTubes ORDER BY Id DESC")
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO ProductTubes VALUES (@Id, @Name, @Alias, @Description)", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO ProductTubes VALUES (@Id, @Name, @Alias, @AppliesTo, @Description)", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", thisId)
                             myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Alias", aliasName)
+                            myCmd.Parameters.AddWithValue("@AppliesTo", applyTo)
                             myCmd.Parameters.AddWithValue("@Description", descText)
 
                             thisConn.Open()
@@ -148,10 +152,11 @@ Partial Class Setting_Specification_TubeType
 
                 If lblAction.Text = "Edit" Then
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE ProductTubes SET Name=@Name, Alias=@Alias, Description=@Description WHERE Id=@Id", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("UPDATE ProductTubes SET Name=@Name, Alias=@Alias, AppliesTo=@AppliesTo, Description=@Description WHERE Id=@Id", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", lblId.Text)
                             myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Alias", aliasName)
+                            myCmd.Parameters.AddWithValue("@AppliesTo", applyTo)
                             myCmd.Parameters.AddWithValue("@Description", descText)
 
                             thisConn.Open()
@@ -172,47 +177,6 @@ Partial Class Setting_Specification_TubeType
                 MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-        End Try
-    End Sub
-
-    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        Try
-            Dim thisId As String = txtIdDelete.Text
-
-            Using thisConn As New SqlConnection(myConn)
-                thisConn.Open()
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM ProductTubes WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Logs WHERE Type='ProductTubes' AND DataId=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE Products SET TubeType=NULL WHERE TubeType=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE Fabrics SET TubeId=LTRIM(RTRIM(TRIM(',' FROM REPLACE(REPLACE(',' + TubeId + ',', ',' + @Id + ',', ','), ',,', ',')))) WHERE (',' + TubeId + ',') LIKE '%,' + @Id + ',%';", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                thisConn.Close()
-            End Using
-
-            txtSearch.Text = Session("SearchTube")
-            Response.Redirect("~/setting/specification/tubetype", False)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
         End Try
     End Sub
 
@@ -246,14 +210,6 @@ Partial Class Setting_Specification_TubeType
     Protected Sub MessageError_Process(visible As Boolean, message As String)
         divErrorProcess.Visible = visible : msgErrorProcess.InnerText = message
     End Sub
-
-    Protected Sub MessageError_Log(visible As Boolean, message As String)
-        divErrorLog.Visible = visible : msgErrorLog.InnerText = message
-    End Sub
-
-    Protected Function BindTextLog(logId As String) As String
-        Return settingClass.getTextLog(logId)
-    End Function
 
     Protected Function PageAction(action As String) As Boolean
         Try

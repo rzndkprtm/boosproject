@@ -1,5 +1,6 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
+Imports System.Drawing
 
 Public Class OrderClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
@@ -217,7 +218,7 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(loginId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT CustomerLoginRoles.Name FROM CustomerLogins INNER JOIN CustomerLoginRoles ON CustomerLogins.RoleId=CustomerLoginRoles.Id WHERE CustomerLogins.Id=@LoginId", thisConn)
+                    Using myCmd As New SqlCommand("SELECT LoginRoles.Name FROM CustomerLogins INNER JOIN LoginRoles ON CustomerLogins.RoleId=LoginRoles.Id WHERE CustomerLogins.Id=@LoginId", thisConn)
                         myCmd.Parameters.AddWithValue("@LoginId", loginId)
 
                         thisConn.Open()
@@ -2121,26 +2122,17 @@ Public Class OrderClass
         End Try
     End Sub
 
-    Public Sub DeleteFilePrinting(orderId As String, itemId As String, items As String)
+    Public Sub DeleteFilePrinting(orderId As String, fileName As String)
         Try
-            Dim thisData As DataRow = GetDataRow("SELECT * FROM OrderDetails WHERE Id='" & itemId & "' AND Active=1")
-            If thisData IsNot Nothing Then
-                Dim printing As String = thisData("Printing").ToString()
-                Dim printingB As String = thisData("PrintingB").ToString()
+            Dim folderPath As String = HttpContext.Current.Server.MapPath(String.Format("~/File/Order/{0}", orderId))
+            Dim filePath As String = IO.Path.Combine(folderPath, fileName)
 
-                If items = "1" Then
-                    Dim folderPath As String = HttpContext.Current.Server.MapPath(String.Format("~/File/Order/{0}", orderId))
-                    Dim filePath As String = IO.Path.Combine(folderPath, printing)
-
-                    If IO.File.Exists(filePath) Then
-                        IO.File.Delete(filePath)
-                    End If
-                End If
+            If IO.File.Exists(filePath) Then
+                IO.File.Delete(filePath)
             End If
         Catch ex As Exception
         End Try
     End Sub
-
 
     ' REWORK
     Public Function IsReworkOrder(orderId As String) As Boolean

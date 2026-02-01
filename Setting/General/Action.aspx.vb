@@ -191,9 +191,9 @@ Partial Class Setting_General_Action
         Try
             Dim search As String = String.Empty
             If Not searchText = "" Then
-                search = " WHERE Actions.Id LIKE '%" & searchText.Trim() & "%' OR Actions.Page LIKE '%" & searchText.Trim() & "%' OR Actions.Action LIKE '%" & searchText.Trim() & "%' OR Actions.Description LIKE '%" & searchText.Trim() & "%' OR CustomerLoginRoles.Name LIKE '%" & searchText.Trim() & "%' OR CustomerLoginLevels.Name LIKE '%" & searchText.Trim() & "%'"
+                search = " WHERE Actions.Id LIKE '%" & searchText.Trim() & "%' OR Actions.Page LIKE '%" & searchText.Trim() & "%' OR Actions.Action LIKE '%" & searchText.Trim() & "%' OR Actions.Description LIKE '%" & searchText.Trim() & "%' OR LoginRoles.Name LIKE '%" & searchText.Trim() & "%' OR LoginLevels.Name LIKE '%" & searchText.Trim() & "%'"
             End If
-            Dim thisString As String = String.Format("SELECT Actions.*, CustomerLoginRoles.Name AS RoleName, CustomerLoginLevels.Name AS LevelName, CASE WHEN Actions.Active=1 THEN 'Yes' WHEN Actions.Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Actions LEFT JOIN CustomerLoginRoles ON Actions.RoleId=CustomerLoginRoles.Id LEFT JOIN CustomerLoginLevels ON Actions.LevelId=CustomerLoginLevels.Id {0} ORDER BY Actions.RoleId, Actions.LevelId, Actions.Page ASC", search)
+            Dim thisString As String = String.Format("SELECT Actions.*, LoginRoles.Name AS RoleName, LoginLevels.Name AS LevelName, CASE WHEN Actions.Active=1 THEN 'Yes' WHEN Actions.Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Actions LEFT JOIN LoginRoles ON Actions.RoleId=LoginRoles.Id LEFT JOIN LoginLevels ON Actions.LevelId=LoginLevels.Id {0} ORDER BY Actions.RoleId, Actions.LevelId, Actions.Page ASC", search)
 
             gvList.DataSource = settingClass.GetDataTable(thisString)
             gvList.DataBind()
@@ -207,7 +207,7 @@ Partial Class Setting_General_Action
     Protected Sub BindRole()
         ddlRoleId.Items.Clear()
         Try
-            ddlRoleId.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerLoginRoles ORDER BY Name ASC")
+            ddlRoleId.DataSource = settingClass.GetDataTable("SELECT * FROM LoginRoles ORDER BY Name ASC")
             ddlRoleId.DataTextField = "Name"
             ddlRoleId.DataValueField = "Id"
             ddlRoleId.DataBind()
@@ -223,7 +223,7 @@ Partial Class Setting_General_Action
     Protected Sub BindLevel()
         ddlLevelId.Items.Clear()
         Try
-            ddlLevelId.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerLoginLevels ORDER BY Name ASC")
+            ddlLevelId.DataSource = settingClass.GetDataTable("SELECT * FROM LoginLevels ORDER BY Name ASC")
             ddlLevelId.DataTextField = "Name"
             ddlLevelId.DataValueField = "Id"
             ddlLevelId.DataBind()
