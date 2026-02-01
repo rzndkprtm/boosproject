@@ -96,12 +96,12 @@ Partial Class Setting_Specification_Fabric_Default
                     lblAction.Text = "Edit"
                     titleProcess.InnerText = "Edit Fabric"
 
-                    BindDesign()
-                    BindTube()
-                    BindCompanyDetail()
-
                     Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Fabrics WHERE Id='" & lblId.Text & "'")
                     If myData Is Nothing Then Exit Sub
+
+                    BindDesign(True)
+                    BindCompanyDetail(True)
+                    BindTube()
 
                     txtName.Text = myData("Name").ToString()
                     ddlType.SelectedValue = myData("Type").ToString()
@@ -143,22 +143,6 @@ Partial Class Setting_Specification_Fabric_Default
                         MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
                     End If
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-                End Try
-
-            ElseIf e.CommandName = "Log" Then
-                MessageError_Log(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showLog(); };"
-                Try
-                    gvListLogs.DataSource = settingClass.GetDataTable("SELECT * FROM Logs WHERE DataId='" & dataId & "' AND Type='Fabrics' ORDER BY ActionDate DESC")
-                    gvListLogs.DataBind()
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
-                Catch ex As Exception
-                    MessageError_Log(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError_Log(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                    End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
                 End Try
             End If
         End If
@@ -333,37 +317,6 @@ Partial Class Setting_Specification_Fabric_Default
         End Try
     End Sub
 
-    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        Try
-            Dim thisId As String = txtIdDelete.Text
-
-            Using thisConn As New SqlConnection(myConn)
-                thisConn.Open()
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Fabrics WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Logs WHERE Type='Fabrics' AND DataId=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                thisConn.Close()
-            End Using
-
-            Session("SearchFabric") = txtSearch.Text
-            Response.Redirect("~/setting/specification/fabric", False)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
     Protected Sub BindData(searchText As String, sortText As String)
         Session("SearchFabric") = String.Empty
         Try
@@ -413,10 +366,14 @@ Partial Class Setting_Specification_Fabric_Default
         End Try
     End Sub
 
-    Protected Sub BindDesign()
+    Protected Sub BindDesign(Optional isEdit As Boolean = False)
         lbDesign.Items.Clear()
         Try
-            lbDesign.DataSource = settingClass.GetDataTable("SELECT * FROM Designs CROSS APPLY STRING_SPLIT(AppliesTo, ',') AS thisArray WHERE thisArray.VALUE='Fabrics' ORDER BY Name ASC")
+            Dim thisString As String = "SELECT * FROM Designs CROSS APPLY STRING_SPLIT(AppliesTo, ',') AS thisArray WHERE thisArray.VALUE='Fabrics' AND Active=1 ORDER BY Name ASC"
+            If isEdit = True Then
+                thisString = "SELECT * FROM Designs CROSS APPLY STRING_SPLIT(AppliesTo, ',') AS thisArray WHERE thisArray.VALUE='Fabrics' ORDER BY Name ASC"
+            End If
+            lbDesign.DataSource = settingClass.GetDataTable(thisString)
             lbDesign.DataTextField = "Name"
             lbDesign.DataValueField = "Id"
             lbDesign.DataBind()
@@ -451,10 +408,14 @@ Partial Class Setting_Specification_Fabric_Default
         End Try
     End Sub
 
-    Protected Sub BindCompanyDetail()
+    Protected Sub BindCompanyDetail(Optional isEdit As Boolean = False)
         lbCompany.Items.Clear()
         Try
-            lbCompany.DataSource = settingClass.GetDataTable("SELECT * FROM CompanyDetails ORDER BY Name ASC")
+            Dim thisString As String = "SELECT * FROM CompanyDetails WHERE Active=1 ORDER BY Name ASC"
+            If isEdit = True Then
+                thisString = "SELECT * FROM CompanyDetails ORDER BY Name ASC"
+            End If
+            lbCompany.DataSource = settingClass.GetDataTable(thisString)
             lbCompany.DataTextField = "Name"
             lbCompany.DataValueField = "Id"
             lbCompany.DataBind()
@@ -478,10 +439,6 @@ Partial Class Setting_Specification_Fabric_Default
         divErrorProcess.Visible = visible : msgErrorProcess.InnerText = message
     End Sub
 
-    Protected Sub MessageError_Log(visible As Boolean, message As String)
-        divErrorLog.Visible = visible : msgErrorLog.InnerText = message
-    End Sub
-
     Protected Function BindCompany(fabricId As String) As String
         If Not String.IsNullOrEmpty(fabricId) Then
             Dim myData As DataTable = settingClass.GetDataTable("SELECT CompanyDetails.Name AS CompanyName FROM Fabrics CROSS APPLY STRING_SPLIT(Fabrics.CompanyDetailId, ',') AS splitArray LEFT JOIN CompanyDetails ON splitArray.VALUE=CompanyDetails.Id WHERE Fabrics.Id='" & fabricId & "' ORDER BY CompanyDetails.Id ASC")
@@ -502,10 +459,6 @@ Partial Class Setting_Specification_Fabric_Default
     Protected Function TextActive(active As Boolean) As String
         If active = True Then Return "Deactivate"
         Return "Activate"
-    End Function
-
-    Protected Function BindTextLog(logId As String) As String
-        Return settingClass.getTextLog(logId)
     End Function
 
     Protected Function PageAction(action As String) As Boolean

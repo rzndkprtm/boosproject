@@ -80,8 +80,8 @@ Partial Class Setting_Specification_BlindType
 
                     If myData Is Nothing Then Exit Sub
 
-                    BindDesign()
-                    BindCompany()
+                    BindDesign(True)
+                    BindCompany(True)
 
                     ddlDesign.SelectedValue = myData("DesignId").ToString()
                     txtName.Text = myData("Name").ToString()
