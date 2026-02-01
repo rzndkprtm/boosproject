@@ -185,33 +185,6 @@ Partial Class Setting_Specification_Mounting
         End Try
     End Sub
 
-    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        Try
-            'Dim thisId As String = txtIdDelete.Text
-
-            'Using thisConn As New SqlConnection(myConn)
-            '    Using myCmd As SqlCommand = New SqlCommand("UPDATE Mountings SET Active=0 WHERE Id=@Id;", thisConn)
-            '        myCmd.Parameters.AddWithValue("@Id", thisId)
-
-            '        thisConn.Open()
-            '        myCmd.ExecuteNonQuery()
-            '    End Using
-            'End Using
-
-            'dataLog = {"Mountings", thisId, Session("LoginId").ToString(), "Deleted"}
-            'settingClass.Logs(dataLog)
-
-            txtSearch.Text = Session("SearchMounting")
-            Response.Redirect("~/setting/specification/mounting", False)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
     Protected Sub BindData(searchText As String)
         Session("SearchMounting") = String.Empty
         Try
@@ -235,10 +208,14 @@ Partial Class Setting_Specification_Mounting
         End Try
     End Sub
 
-    Protected Sub BindBlind()
+    Protected Sub BindBlind(Optional isEdit As Boolean = False)
         lbBlind.Items.Clear()
         Try
-            lbBlind.DataSource = settingClass.GetDataTable("SELECT Blinds.*, CONVERT(VARCHAR, Blinds.Name) + ' | ' + CONVERT(VARCHAR, Designs.Name) AS NameText FROM Blinds LEFT JOIN Designs ON Blinds.DesignId=Designs.Id ORDER BY Designs.Id, Blinds.Id ASC")
+            Dim thisString As String = "SELECT Blinds.*, CONVERT(VARCHAR, Blinds.Name) + ' | ' + CONVERT(VARCHAR, Designs.Name) AS NameText FROM Blinds LEFT JOIN Designs ON Blinds.DesignId=Designs.Id WHERE Blinds.Active=1 ORDER BY Designs.Id, Blinds.Id ASC"
+            If isEdit = True Then
+                thisString = "SELECT Blinds.*, CONVERT(VARCHAR, Blinds.Name) + ' | ' + CONVERT(VARCHAR, Designs.Name) AS NameText FROM Blinds LEFT JOIN Designs ON Blinds.DesignId=Designs.Id ORDER BY Designs.Id, Blinds.Id ASC"
+            End If
+            lbBlind.DataSource = settingClass.GetDataTable(thisString)
             lbBlind.DataTextField = "NameText"
             lbBlind.DataValueField = "Id"
             lbBlind.DataBind()
