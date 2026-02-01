@@ -13,7 +13,7 @@
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a runat="server" href="~/">Home</a></li>
                             <li class="breadcrumb-item"><a runat="server" href="~/order">Order</a></li>
-                            <li class="breadcrumb-item"><a runat="server" href="~/order/detail">Detail</a></li>
+                            <li class="breadcrumb-item"><a href='<%= ResolveUrl("~/order/detail?orderid=" & lblHeaderId.Text) %>'>Detail</a></li>
                             <li class="breadcrumb-item active" aria-current="page"><%: Page.Title %></li>
                         </ol>
                     </nav>
@@ -44,21 +44,21 @@
                                     <div class="col-12">
                                         <label>Order #</label>
                                         <br />
-                                        <label runat="server" id="lblOrderId" class="font-bold">Order #</label>
+                                        <asp:Label runat="server" ID="lblOrderId" CssClass="form-control font-bold"></asp:Label>
                                     </div>
                                 </div>
                                 <div class="row mb-2">
                                     <div class="col-12">
                                         <label>Order Number</label>
                                         <br />
-                                        <label runat="server" id="lblOrderNumber" class="font-bold">Order Number</label>
+                                        <asp:Label runat="server" ID="lblOrderNumber" CssClass="form-control font-bold"></asp:Label>
                                     </div>
                                 </div>
                                 <div class="row mb-2">
                                     <div class="col-12">
                                         <label>Order Name</label>
                                         <br />
-                                        <label runat="server" id="lblOrderName" class="font-bold">Order Name</label>
+                                        <asp:Label runat="server" ID="lblOrderName" CssClass="form-control font-bold"></asp:Label>
                                     </div>
                                 </div>
                             </div>
@@ -82,37 +82,77 @@
 
                             <div class="tab-content text-justify">
                                 <div runat="server" class="tab-pane fade" id="divPrinting" ClientIDMode="Static" role="tabpanel" aria-labelledby="aPrinting">
-                                    <div class="row gallery mt-4">
+                                    <div class="row mt-4 mb-3">
+                                        <div class="col-12">
+                                            <span runat="server" class="font-extrabold" id="spanFabric"></span>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3 gallery">
                                         <div class="col-12">
                                             <asp:Image runat="server" CssClass="w-100" ID="imgPrinting" />
-                                            <asp:Button runat="server" ID="btnDeletePrinting" CssClass="btn btn-danger mt-2" Text="Delete" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <a href="javascript:void(0)" runat="server" id="aUpload" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalUpload">Upload Image</a>
+                                            <a href="javascript:void(0)" runat="server" id="aDelete" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalDelete">Delete Image</a>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="tab-pane fade" runat="server" id="divPrintingB" ClientIDMode="Static" role="tabpanel" aria-labelledby="aPrintingB">
-                                    <div class="row gallery mt-4">
+                                    <div class="row mt-4 mb-3">
+                                        <div class="col-12">
+                                            <span runat="server" class="font-extrabold" id="spanFabricB"></span>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3 gallery">
                                         <div class="col-12">
                                             <asp:Image runat="server" CssClass="w-100" ID="imgPrintingB" />
-                                            <asp:Button runat="server" ID="btnDeletePrintingB" CssClass="btn btn-danger mt-2" Text="Delete" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <a href="javascript:void(0)" runat="server" id="aUploadB" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalUploadB">Upload Image</a>
+                                            <a href="javascript:void(0)" runat="server" id="aDeleteB" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalDeleteB">Delete Image</a>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="tab-pane fade" runat="server" id="divPrintingC" ClientIDMode="Static" role="tabpanel" aria-labelledby="aPrintingC">
-                                    <div class="row gallery mt-4">
+                                    <div class="row mt-4 mb-3">
+                                        <div class="col-12">
+                                            <span runat="server" class="font-extrabold" id="spanFabricC"></span>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3 gallery">
                                         <div class="col-12">
                                             <asp:Image runat="server" CssClass="w-100" ID="imgPrintingC" />
-                                            <asp:Button runat="server" ID="btnDeletePrintingC" CssClass="btn btn-danger mt-2" Text="Delete" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <a href="javascript:void(0)" runat="server" id="aUploadC" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalUploadC">Upload Image</a>
+                                            <a href="javascript:void(0)" runat="server" id="aDeleteC" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalDeleteC">Delete Image</a>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="tab-pane fade" runat="server" id="divPrintingD" ClientIDMode="Static" role="tabpanel" aria-labelledby="aPrintingD">
-                                    <div class="row gallery mt-4">
+                                    <div class="row mt-4 mb-3">
+                                        <div class="col-12">
+                                            <span runat="server" class="font-extrabold" id="spanFabricD"></span>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3 gallery">
                                         <div class="col-12">
                                             <asp:Image runat="server" CssClass="w-100" ID="imgPrintingD" />
-                                            <asp:Button runat="server" ID="btnDeletePrintingD" CssClass="btn btn-danger mt-2" Text="Delete" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <a href="javascript:void(0)" runat="server" id="aUploadD" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalUploadD">Upload Image</a>
+                                            <a href="javascript:void(0)" runat="server" id="aDeleteD" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalDeleteD">Delete Image</a>
                                         </div>
                                     </div>
                                 </div>
@@ -124,9 +164,171 @@
         </section>
     </div>
 
+    <div class="modal fade" id="modalUpload" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <h5 class="modal-title white">Upload File</h5>
+                </div>
+                <div class="modal-body">
+                    <label class="form-label">Upload New Image</label>
+                    <asp:FileUpload runat="server" ID="fuUpload" CssClass="form-control" />
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnUpload" CssClass="btn btn-info" Text="Submit" OnClick="btnUpload_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalUploadB" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <h5 class="modal-title white">Upload File</h5>
+                </div>
+                <div class="modal-body">
+                    <label class="form-label">Upload New Image</label>
+                    <asp:FileUpload runat="server" ID="fuUploadB" CssClass="form-control" />
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnUploadB" CssClass="btn btn-info" Text="Submit" OnClick="btnUploadB_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalUploadC" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <h5 class="modal-title white">Upload File</h5>
+                </div>
+                <div class="modal-body">
+                    <label class="form-label">Upload New Image</label>
+                    <asp:FileUpload runat="server" ID="fuUploadC" CssClass="form-control" />
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnUploadC" CssClass="btn btn-info" Text="Submit" OnClick="btnUploadC_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalUploadD" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <h5 class="modal-title white">Upload File</h5>
+                </div>
+                <div class="modal-body">
+                    <label class="form-label">Upload New Image</label>
+                    <asp:FileUpload runat="server" ID="fuUploadD" CssClass="form-control" />
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnUploadD" CssClass="btn btn-info" Text="Submit" OnClick="btnUploadD_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade text-center" id="modalDelete" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-danger">
+                    <h5 class="modal-title white">Delete Image</h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnDelete" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDelete_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade text-center" id="modalDeleteB" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-danger">
+                    <h5 class="modal-title white">Delete Image</h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnDeleteB" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDeleteB_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade text-center" id="modalDeleteC" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-danger">
+                    <h5 class="modal-title white">Delete Image</h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnDeleteC" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDeleteC_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade text-center" id="modalDeleteD" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-danger">
+                    <h5 class="modal-title white">Delete Image</h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnDeleteD" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDeleteD_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <asp:HiddenField ID="selected_tab" runat="server" />
+
+    <script type="text/javascript">
+        [
+            "modalUpload", "modalUploadB", "modalUploadC", "modalUploadD",
+            "modalDelete", "modalDeleteB", "modalDeleteC", "modalDeleteD"
+        ].forEach(id => {
+            document.getElementById(id).addEventListener("hide.bs.modal", () => {
+                document.activeElement.blur();
+                document.body.focus();
+            });
+        });
+    </script>
+
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblId"></asp:Label>
         <asp:Label runat="server" ID="lblHeaderId"></asp:Label>
         <asp:Label runat="server" ID="lblItemId"></asp:Label>
+        <asp:Label runat="server" ID="lblStatus"></asp:Label>
+
+        <asp:Label runat="server" ID="lblPrinting"></asp:Label>
+        <asp:Label runat="server" ID="lblPrintingB"></asp:Label>
+        <asp:Label runat="server" ID="lblPrintingC"></asp:Label>
+        <asp:Label runat="server" ID="lblPrintingD"></asp:Label>
+        <asp:Label runat="server" ID="lblPrintingE"></asp:Label>
+        <asp:Label runat="server" ID="lblPrintingF"></asp:Label>
     </div>
 </asp:Content>

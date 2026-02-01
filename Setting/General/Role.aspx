@@ -73,11 +73,8 @@
                                                             <li runat="server" visible='<%# PageAction("Detail") %>'>
                                                                 <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                             </li>
-                                                            <li runat="server" visible='<%# PageAction("Delete") %>'>
-                                                                <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
-                                                            </li>
                                                             <li>
-                                                                <asp:LinkButton runat="server" ID="linkLog" CssClass="dropdown-item" Text="Log" CommandName="Log" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                                <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('LoginRoles', '<%# Eval("Id") %>')">Log</a>
                                                             </li>
                                                         </ul>
                                                     </ItemTemplate>
@@ -121,7 +118,7 @@
                     </div>
 
                     <div class="row mb-2">
-                        <div class="col-12 col-sm-12 col-lg-3 form-group">
+                        <div class="col-12 col-sm-12 col-lg-4 form-group">
                             <label class="form-label">Active</label>
                             <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select">
                                 <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
@@ -147,26 +144,6 @@
         </div>
     </div>
 
-    <div class="modal fade text-center" id="modalDelete" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-danger">
-                    <h5 class="modal-title white">Delete Role</h5>
-                </div>
-
-                <div class="modal-body text-center py-4">
-                    <asp:TextBox runat="server" ID="txtIdDelete" style="display:none;"></asp:TextBox>
-                    Hi <b><%: Session("FullName") %></b>,<br />you sure you would like to do this?
-                </div>
-
-                <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnDelete" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDelete_Click" />
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div class="modal modal-blur fade" id="modalLog" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -176,25 +153,11 @@
                 </div>
 
                 <div class="modal-body">
-                    <div class="row" runat="server" id="divErrorLog">
-                        <div class="col-12">
-                            <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorLog"></span>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="alert alert-danger d-none" id="logError"></div>
                     <div class="table-responsive">
-                        <asp:GridView runat="server" ID="gvListLog" CssClass="table table-vcenter card-table" AutoGenerateColumns="false" EmptyDataText="DATA LOG NOT FOUND" EmptyDataRowStyle-HorizontalAlign="Center" ShowHeader="false" GridLines="None" BorderStyle="None">
-                            <RowStyle />
-                            <Columns>
-                                <asp:TemplateField>
-                                    <ItemTemplate>
-                                        <%# BindTextLog(Eval("Id").ToString()) %>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                            </Columns>
-                            <AlternatingRowStyle BackColor="White" />
-                        </asp:GridView>
+                        <table class="table table-vcenter card-table" id="tblLogs">
+                            <tbody></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -224,16 +187,46 @@
                 });
             }
         });
+
         function showProcess() {
             $("#modalProcess").modal("show");
         }
-        function showDelete(id) {
-            document.getElementById("<%=txtIdDelete.ClientID %>").value = id;
-        }
-        function showLog() {
+
+        function showLog(type, dataId) {
+            $("#logError").addClass("d-none").html("");
+            $("#tblLogs tbody").html("");
             $("#modalLog").modal("show");
+
+            $.ajax({
+                type: "POST",
+                url: "/Setting/Method.aspx/GetLogs",
+                data: JSON.stringify({ type: type, dataId: dataId }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (res) {
+                    const logs = res.d;
+
+                    if (!logs || logs.length === 0) {
+                        $("#tblLogs tbody").html(
+                            `<tr><td class="text-center">DATA LOG NOT FOUND</td></tr>`
+                        );
+                        return;
+                    }
+
+                    let html = "";
+                    logs.forEach(r => {
+                        html += `<tr><td>${r.TextLog}</td></tr>`;
+                    });
+
+                    $("#tblLogs tbody").html(html);
+                },
+                error: function (err) {
+                    $("#logError").removeClass("d-none").html("FAILED TO LOAD LOG DATA");
+                }
+            });
         }
-        ["modalProcess", "modalDelete", "modalLog"].forEach(function (id) {
+
+        ["modalProcess", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

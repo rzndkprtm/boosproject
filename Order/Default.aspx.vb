@@ -5,12 +5,12 @@ Imports System.IO
 Partial Class Order_Default
     Inherits Page
 
+    Dim orderClass As New OrderClass
+    Dim mailingClass As New MailingClass
+
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataMailing As Object() = Nothing
     Dim url As String = String.Empty
-
-    Dim orderClass As New OrderClass
-    Dim mailingClass As New MailingClass
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
@@ -679,117 +679,6 @@ Partial Class Order_Default
         Session("OrderSearch") = String.Empty
         Session("OrderActive") = String.Empty
         Try
-            'Dim byActive As String = "WHERE OrderHeaders.Active='" & active & "'"
-            'Dim byRole As String = String.Empty
-            'Dim byCompany As String = String.Empty
-            'Dim byInstaller As String = String.Empty
-            'Dim byStatus As String = String.Empty
-            'Dim byText As String = String.Empty
-            'Dim byOrder As String = "ORDER BY OrderHeaders.SubmittedDate DESC"
-
-            'If Not String.IsNullOrEmpty(company) Then
-            '    byCompany = "AND Customers.CompanyId = '" & company & "'"
-            'End If
-
-            'If Not String.IsNullOrEmpty(status) Then
-            '    byStatus = "AND OrderHeaders.Status='" & status & "'"
-            'End If
-
-            'If Not search = "" Then
-            '    byText = "AND (OrderHeaders.Id LIKE '%" & search.Trim() & "%' OR OrderHeaders.OrderId LIKE '%" & search.Trim() & "%' OR OrderHeaders.OrderNumber LIKE '%" & search.Trim() & "%' OR OrderHeaders.OrderName LIKE '%" & search.Trim() & "%' OR OrderHeaders.CustomerId LIKE '%" & search.Trim() & "%' OR Customers.Name LIKE '%" & search.Trim() & "%')"
-            'End If
-
-            'If Session("RoleName") = "Factory Office" Then
-            '    byRole = String.Empty
-            '    byStatus = String.Empty
-            '    byOrder = "ORDER BY CASE WHEN OrderHeaders.Status='New Order' THEN 1 WHEN OrderHeaders.Status='In Production' THEN 2 WHEN OrderHeaders.Status='On Hold' THEN 3 ELSE 4 END, OrderHeaders.SubmittedDate DESC"
-            '    If Not status = "" Then
-            '        byStatus = "AND OrderHeaders.Status='" & status & "'"
-            '        byOrder = "ORDER BY OrderHeaders.Id DESC"
-            '    End If
-            'End If
-
-            'If Session("RoleName") = "Customer" Then
-            '    byRole = "AND OrderHeaders.CustomerId='" & Session("CustomerId") & "'"
-            '    If Session("LevelName") = "Member" Then
-            '        byRole = "AND OrderHeaders.CreatedBy='" & Session("LoginId") & "'"
-            '    End If
-            '    If Session("CustomerLevel") = "Sponsor" AndAlso Session("LevelName") = "Leader" Then
-            '        byRole = "AND (OrderHeaders.CustomerId='" & Session("CustomerId") & "' OR Customers.SponsorId='" & Session("CustomerId") & "')"
-            '    End If
-            '    byOrder = "ORDER BY OrderHeaders.Id DESC"
-            '    byStatus = String.Empty
-            '    If Not status = "" Then
-            '        byStatus = "AND OrderHeaders.Status='" & status & "'"
-            '    End If
-            'End If
-
-            'If Session("RoleName") = "Sales" Then
-            '    byRole = "AND Customers.CompanyId='" & Session("CompanyId") & "'"
-            '    If Session("LevelName") = "Member" Then
-            '        byRole = "AND Customers.Operator='" & Session("LoginId") & "'"
-            '    End If
-            '    byStatus = String.Empty
-            '    byOrder = "ORDER BY CASE WHEN OrderHeaders.Status='New Order' THEN 1 WHEN OrderHeaders.Status='In Production' THEN 2 WHEN OrderHeaders.Status='On Hold' THEN 3 ELSE 4 END, OrderHeaders.SubmittedDate ASC"
-            '    If Not status = "" Then
-            '        byStatus = "AND OrderHeaders.Status='" & status & "'"
-            '        byOrder = "ORDER BY OrderHeaders.Id DESC"
-            '    End If
-            'End If
-
-            'If Session("RoleName") = "Account" Then
-            '    byRole = "AND Customers.CompanyId='" & Session("CompanyId") & "'"
-            '    byStatus = String.Empty
-            '    byOrder = "ORDER BY CASE WHEN OrderHeaders.Status='Waiting Proforma' THEN 1 WHEN OrderHeaders.Status='Proforma Sent' THEN 2 WHEN OrderHeaders.Status='New Order' THEN 3 ELSE 4 END, OrderHeaders.SubmittedDate ASC"
-            '    If Not status = "" Then
-            '        byStatus = "AND OrderHeaders.Status='" & status & "'"
-            '        byOrder = "ORDER BY OrderHeaders.Id ASC"
-            '    End If
-            'End If
-
-            'If Session("RoleName") = "Customer Service" Then
-            '    byRole = "AND Customers.CompanyId='" & Session("CompanyId") & "'"
-            '    byStatus = String.Empty
-            '    byOrder = "ORDER BY CASE WHEN OrderHeaders.Status='New Order' THEN 1 WHEN OrderHeaders.Status='In Production' THEN 2 WHEN OrderHeaders.Status='On Hold' THEN 3 ELSE 4 END, OrderHeaders.Id ASC"
-            '    If Not status = "" Then
-            '        byStatus = "AND OrderHeaders.Status='" & status & "'"
-            '        byOrder = "ORDER BY OrderHeaders.Id DESC"
-            '    End If
-            'End If
-
-            'If Session("RoleName") = "Data Entry" Then
-            '    byRole = "AND Customers.CompanyId='" & Session("CompanyId") & "' AND CustomerLogins.RoleId='" & Session("RoleId") & "'"
-            '    If Session("CompanyId") = "1" Then byRole = String.Empty
-            '    byStatus = String.Empty
-            '    If Not status = "" Then
-            '        byStatus = "AND OrderHeaders.Status='" & status & "'"
-            '    End If
-            'End If
-
-            'If Session("RoleName") = "Export" Then
-            '    byRole = String.Empty
-            '    byStatus = "AND (OrderHeaders.Status='In Production' OR OrderHeaders.Status='Shipped Out' OR OrderHeaders.Status='Completed')"
-            '    If Not status = "" Then
-            '        byStatus = "AND OrderHeaders.Status='" & status & "'"
-            '    End If
-            'End If
-
-            'If Session("RoleName") = "Installer" Then
-            '    byRole = "AND OrderHeaders.OrderType='Builder'"
-            '    Dim area As String = orderClass.GetItemData("SELECT Area FROM InstallerAccess WHERE Id='" & Session("LoginId").ToString() & "'")
-            '    byInstaller = "AND Customers.Area IN ('" & area & "')"
-            '    byStatus = "AND OrderHeaders.Status='Quoted'"
-            '    If Not status = "" Then
-            '        byStatus = "AND OrderHeaders.Status='" & status & "'"
-            '    End If
-            '    byOrder = "ORDER BY OrderHeaders.Id, CASE WHEN Status='New Order' THEN 1 WHEN Status='In Production' THEN 2 WHEN Status='Completed' THEN 3 WHEN Status='Unsubmitted' THEN 4 WHEN Status='Canceled' THEN 5 END DESC"
-            'End If
-
-            'Dim thisQuery As String = String.Format("SELECT OrderHeaders.*, OrderShipments.ShipmentNumber, OrderShipments.ShipmentDate, OrderShipments.ContainerNumber, OrderShipments.Courier, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, Companys.Name AS CompanyName, CustomerLogins.RoleId AS CreatedRole FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id LEFT JOIN Companys ON Customers.CompanyId=Companys.Id LEFT JOIN OrderShipments ON OrderHeaders.Id=OrderShipments.Id LEFT JOIN CustomerLogins ON OrderHeaders.CreatedBy=CustomerLogins.Id LEFT JOIN CustomerLoginRoles ON CustomerLogins.RoleId=CustomerLoginRoles.Id {0} {1} {2} {3} {4} {5} {6}", byActive, byRole, byCompany, byInstaller, byStatus, byText, byOrder)
-
-            'gvList.DataSource = orderClass.GetDataTable(thisQuery)
-            'gvList.DataBind()
-
             Dim params As New List(Of SqlParameter) From {
                 New SqlParameter("@Search", search),
                 New SqlParameter("@Status", status),

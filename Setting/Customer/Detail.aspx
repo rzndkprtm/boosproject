@@ -36,7 +36,7 @@
                 <asp:Button runat="server" ID="btnEditCustomer" CssClass="btn btn-primary" Text="Edit" OnClick="btnEditCustomer_Click" />
                 <a href="#" runat="server" id="aDelete" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalDelete">Delete</a>
                 <a href="#" runat="server" id="aCreateOrder" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#modalCreateOrder">Create Order</a>
-                <asp:Button runat="server" ID="btnLog" CssClass="btn btn-secondary" Text="Log" OnClick="btnLog_Click" />
+                <a href="javascript:void(0)" class="btn btn-secondary" onclick="showLog('Customers', '<%= lblId.Text %>')">Log</a>
             </div>
         </section>
 
@@ -217,7 +217,7 @@
                                                                         <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalPrimaryContact" onclick='<%# String.Format("return showPrimaryContact(`{0}`);", Eval("Id").ToString()) %>'>Set As Primary</a>
                                                                     </li>
                                                                     <li>
-                                                                        <asp:LinkButton runat="server" ID="linkLogContact" CssClass="dropdown-item" Text="Log" CommandName="Log" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                                        <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('CustomerContacts', '<%# Eval("Id") %>')">Log</a>
                                                                     </li>
                                                                 </ul>
                                                             </ItemTemplate>
@@ -285,7 +285,7 @@
                                                                         <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalPrimaryAddress" onclick='<%# String.Format("return showPrimaryAddress(`{0}`);", Eval("Id").ToString()) %>'>Set As Primary</a>
                                                                     </li>
                                                                     <li>
-                                                                        <asp:LinkButton runat="server" CssClass="dropdown-item" ID="linkLogAddress" Text="Log" CommandName="Log" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                                        <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('CustomerAddress', '<%# Eval("Id") %>')">Log</a>
                                                                     </li>
                                                                 </ul>
                                                             </ItemTemplate>
@@ -349,7 +349,7 @@
                                                                             <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalPrimaryBusiness" onclick='<%# String.Format("return showPrimaryBusiness(`{0}`);", Eval("Id").ToString()) %>'>Set As Primary</a>
                                                                         </li>
                                                                         <li>
-                                                                            <asp:LinkButton runat="server" CssClass="dropdown-item" ID="linkLogBusiness" Text="Log" CommandName="Log" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                                            <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('CustomerBusiness', '<%# Eval("Id") %>')">Log</a>
                                                                         </li>
                                                                     </ul>
                                                                 </ItemTemplate>
@@ -423,7 +423,7 @@
                                                                         <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDencryptPass" onclick='<%# String.Format("return showDencryptPass(`{0}`, `{1}`);", Eval("UserName").ToString(), DencryptPassword(Eval("Password").ToString())) %>'>Show Password</a>
                                                                     </li>
                                                                     <li>
-                                                                        <asp:LinkButton runat="server" CssClass="dropdown-item" ID="linkLogLogin" Text="Log" CommandName="Log" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                                        <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('CustomerLogins', '<%# Eval("Id") %>')">Log</a>
                                                                     </li>
                                                                 </ul>
                                                             </ItemTemplate>
@@ -487,7 +487,7 @@
                                                                         <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteDiscount" onclick='<%# String.Format("return showDeleteDiscount(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                                     </li>
                                                                     <li>
-                                                                        <asp:LinkButton runat="server" CssClass="dropdown-item" ID="linkLogDiscount" Text="Log" CommandName="Log" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                                        <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('CustomerDiscounts', '<%# Eval("Id") %>')">Log</a>
                                                                     </li>
                                                                 </ul>
                                                             </ItemTemplate>
@@ -544,7 +544,7 @@
                                                                         <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeletePromo" onclick='<%# String.Format("return showDeletePromo(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                                     </li>
                                                                     <li>
-                                                                        <asp:LinkButton runat="server" CssClass="dropdown-item" ID="linkLogPromo" Text="Log" CommandName="Log" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                                        <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('CustomerPromos', '<%# Eval("Id") %>')">Log</a>
                                                                     </li>
                                                                 </ul>
                                                             </ItemTemplate>
@@ -599,7 +599,7 @@
                                                                         <asp:LinkButton runat="server" ID="linkDetailProduct" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                                     </li>
                                                                     <li>
-                                                                        <asp:LinkButton runat="server" CssClass="dropdown-item" ID="linkLogProduct" Text="Log" CommandName="Log" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                                        <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('CustomerProductAccess', '<%# Eval("Id") %>')">Log</a>
                                                                     </li>
                                                                 </ul>
                                                             </ItemTemplate>
@@ -748,25 +748,11 @@
                 </div>
 
                 <div class="modal-body">
-                    <div class="row" runat="server" id="divErrorLog">
-                        <div class="col-12">
-                            <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorLog"></span>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="alert alert-danger d-none" id="logError"></div>
                     <div class="table-responsive">
-                        <asp:GridView runat="server" ID="gvListLogs" CssClass="table table-vcenter card-table" AutoGenerateColumns="false" EmptyDataText="DATA LOG NOT FOUND" EmptyDataRowStyle-HorizontalAlign="Center" ShowHeader="false" GridLines="None" BorderStyle="None">
-                            <RowStyle />
-                            <Columns>
-                                <asp:TemplateField>
-                                    <ItemTemplate>
-                                        <%# BindTextLog(Eval("Id").ToString()) %>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                            </Columns>
-                            <AlternatingRowStyle BackColor="White" />
-                        </asp:GridView>
+                        <table class="table table-vcenter card-table" id="tblLogs">
+                            <tbody></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -1626,8 +1612,38 @@
             });
         }
 
-        function showLog() {
+        function showLog(type, dataId) {
+            $("#logError").addClass("d-none").html("");
+            $("#tblLogs tbody").html("");
             $("#modalLog").modal("show");
+
+            $.ajax({
+                type: "POST",
+                url: "/Setting/Method.aspx/GetLogs",
+                data: JSON.stringify({ type: type, dataId: dataId }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (res) {
+                    const logs = res.d;
+
+                    if (!logs || logs.length === 0) {
+                        $("#tblLogs tbody").html(
+                            `<tr><td class="text-center">DATA LOG NOT FOUND</td></tr>`
+                        );
+                        return;
+                    }
+
+                    let html = "";
+                    logs.forEach(r => {
+                        html += `<tr><td>${r.TextLog}</td></tr>`;
+                    });
+
+                    $("#tblLogs tbody").html(html);
+                },
+                error: function (err) {
+                    $("#logError").removeClass("d-none").html("FAILED TO LOAD LOG DATA");
+                }
+            });
         }
 
         function showCreateOrder() {

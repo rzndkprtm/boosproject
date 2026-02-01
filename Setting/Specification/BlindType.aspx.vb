@@ -7,6 +7,7 @@ Partial Class Setting_Specification_BlindType
     Dim settingClass As New SettingClass
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim dataLog As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
@@ -105,21 +106,6 @@ Partial Class Setting_Specification_BlindType
                     End If
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 End Try
-            ElseIf e.CommandName = "Log" Then
-                MessageError_Log(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showLog(); };"
-                Try
-                    gvListLogs.DataSource = settingClass.GetDataTable("SELECT * FROM Logs WHERE DataId='" & dataId & "' AND Type='Blinds' ORDER BY ActionDate DESC")
-                    gvListLogs.DataBind()
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
-                Catch ex As Exception
-                    MessageError_Log(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError_Log(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                    End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
-                End Try
             End If
         End If
     End Sub
@@ -174,7 +160,7 @@ Partial Class Setting_Specification_BlindType
                         End Using
                     End Using
 
-                    Dim dataLog As Object() = {"Blinds", thisId, Session("LoginId").ToString(), "Blind Type Created"}
+                    dataLog = {"Blinds", thisId, Session("LoginId").ToString(), "Blind Type Created"}
                     settingClass.Logs(dataLog)
 
                     Session("SearchBlind") = txtSearch.Text
@@ -197,7 +183,7 @@ Partial Class Setting_Specification_BlindType
                         End Using
                     End Using
 
-                    Dim dataLog As Object() = {"Blinds", lblId.Text, Session("LoginId").ToString(), "Blind Type Updated"}
+                    dataLog = {"Blinds", lblId.Text, Session("LoginId").ToString(), "Blind Type Updated"}
                     settingClass.Logs(dataLog)
 
                     Session("SearchBlind") = txtSearch.Text
@@ -213,61 +199,12 @@ Partial Class Setting_Specification_BlindType
         End Try
     End Sub
 
-    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        Try
-            Dim thisId As String = txtIdDelete.Text
-
-            Using thisConn As New SqlConnection(myConn)
-                thisConn.Open()
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Blinds WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                ' PRODUCTS
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE Products SET BlindId=NULL WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                ' MOUNTING
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE Mounting SET BlindId=LTRIM(RTRIM(TRIM(',' FROM REPLACE(REPLACE(',' + BlindId + ',', ',' + @Id + ',', ','), ',,', ',')))) WHERE (',' + BlindId + ',') LIKE '%,' + @Id + ',%';", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                ' PRICE SURCHARGE
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE PriceSurcharges SET BlindId=LTRIM(RTRIM(TRIM(',' FROM REPLACE(REPLACE(',' + BlindId + ',', ',' + @Id + ',', ','), ',,', ',')))) WHERE (',' + BlindId + ',') LIKE '%,' + @Id + ',%';", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Logs WHERE Type='Blinds' AND DataId=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                thisConn.Close()
-            End Using
-
-            Session("SearchBlind") = txtSearch.Text
-            Response.Redirect("~/setting/specification/blindtype", False)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
     Protected Sub BindData(searchText As String)
         Session("SearchBlind") = String.Empty
         Try
             Dim search As String = String.Empty
             If Not searchText = "" Then
-                search = " WHERE Blinds.Id LIKE '%" & searchText & "%' OR Blinds.Name LIKE '%" & searchText & "%' OR Blinds.Alias LIKE '%" & searchText & "%' OR Blinds.Description LIKE '%" & searchText & "%' OR Designs.Name LIKE '%" & searchText & "%'"
+                search = "WHERE Blinds.Id LIKE '%" & searchText & "%' OR Blinds.Name LIKE '%" & searchText & "%' OR Blinds.Alias LIKE '%" & searchText & "%' OR Blinds.Description LIKE '%" & searchText & "%' OR Designs.Name LIKE '%" & searchText & "%'"
             End If
             Dim thisString As String = String.Format("SELECT Blinds.*, Designs.Name AS DesignName, CASE WHEN Blinds.Active=1 THEN 'Yes' WHEN Blinds.Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Blinds LEFT JOIN Designs ON Blinds.DesignId = Designs.Id {0} ORDER BY Designs.Id, Blinds.Name ASC", search)
 
@@ -284,10 +221,14 @@ Partial Class Setting_Specification_BlindType
         End Try
     End Sub
 
-    Protected Sub BindDesign()
+    Protected Sub BindDesign(Optional isEdit As Boolean = False)
         ddlDesign.Items.Clear()
         Try
-            ddlDesign.DataSource = settingClass.GetDataTable("SELECT * FROM Designs ORDER BY Name ASC")
+            Dim thisString As String = "SELECT * FROM Designs WHERE Active=1 ORDER BY Name ASC"
+            If isEdit = True Then
+                thisString = "SELECT * FROM Designs ORDER BY Name ASC"
+            End If
+            ddlDesign.DataSource = settingClass.GetDataTable(thisString)
             ddlDesign.DataTextField = "Name"
             ddlDesign.DataValueField = "Id"
             ddlDesign.DataBind()
@@ -303,10 +244,14 @@ Partial Class Setting_Specification_BlindType
         End Try
     End Sub
 
-    Protected Sub BindCompany()
+    Protected Sub BindCompany(Optional isEdit As Boolean = False)
         lbCompany.Items.Clear()
         Try
-            lbCompany.DataSource = settingClass.GetDataTable("SELECT * FROM CompanyDetails ORDER BY Name ASC")
+            Dim thisString As String = "SELECT * FROM CompanyDetails WHERE Active=1 ORDER BY Name ASC"
+            If isEdit = True Then
+                thisString = "SELECT * FROM CompanyDetails ORDER BY Name ASC"
+            End If
+            lbCompany.DataSource = settingClass.GetDataTable(thisString)
             lbCompany.DataTextField = "Name"
             lbCompany.DataValueField = "Id"
             lbCompany.DataBind()
@@ -330,10 +275,6 @@ Partial Class Setting_Specification_BlindType
         divErrorProcess.Visible = visible : msgErrorProcess.InnerText = message
     End Sub
 
-    Protected Sub MessageError_Log(visible As Boolean, message As String)
-        divErrorLog.Visible = visible : msgErrorLog.InnerText = message
-    End Sub
-
     Protected Function BindCompanyDetail(blindId As String) As String
         If Not String.IsNullOrEmpty(blindId) Then
             Dim myData As DataTable = settingClass.GetDataTable("SELECT CompanyDetails.Name AS CompanyName FROM Blinds CROSS APPLY STRING_SPLIT(Blinds.CompanyDetailId, ',') AS splitArray LEFT JOIN CompanyDetails ON splitArray.VALUE=CompanyDetails.Id WHERE Blinds.Id='" & blindId & "' ORDER BY CompanyDetails.Id ASC")
@@ -349,10 +290,6 @@ Partial Class Setting_Specification_BlindType
             End If
         End If
         Return "Error"
-    End Function
-
-    Protected Function BindTextLog(logId As String) As String
-        Return settingClass.getTextLog(logId)
     End Function
 
     Protected Function PageAction(action As String) As Boolean

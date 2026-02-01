@@ -315,7 +315,7 @@ Partial Class Setting_Customer_Login
             If Not String.IsNullOrEmpty(searchText) Then
                 search = "WHERE Customers.Name LIKE '%" & searchText & "%' OR CustomerLogins.UserName LIKE '%" & searchText & "%' OR CustomerLogins.FullName LIKE '%" & searchText & "%'"
             End If
-            Dim thisQuery As String = String.Format("SELECT CustomerLogins.*, Customers.Name AS CustomerName, CustomerLoginRoles.Name AS RoleName, CustomerLoginLevels.Name AS LevelName FROM CustomerLogins LEFT JOIN Customers ON CustomerLogins.CustomerId=Customers.Id LEFT JOIN CustomerLoginRoles ON CustomerLogins.RoleId=CustomerLoginRoles.Id LEFT JOIN CustomerLoginLevels ON CustomerLogins.LevelId=CustomerLoginLevels.Id {0} ORDER BY CustomerLogins.RoleId, CustomerLogins.Id ASC", search)
+            Dim thisQuery As String = String.Format("SELECT CustomerLogins.*, Customers.Name AS CustomerName, LoginRoles.Name AS RoleName, CustomerLoginLevels.Name AS LevelName FROM CustomerLogins LEFT JOIN Customers ON CustomerLogins.CustomerId=Customers.Id LEFT JOIN LoginRoles ON CustomerLogins.RoleId=LoginRoles.Id LEFT JOIN LoginLevels ON CustomerLogins.LevelId=LoginLevels.Id {0} ORDER BY CustomerLogins.RoleId, CustomerLogins.Id ASC", search)
 
             gvList.DataSource = settingClass.GetDataTable(thisQuery)
             gvList.DataBind()
@@ -346,7 +346,7 @@ Partial Class Setting_Customer_Login
     Protected Sub BindRole()
         ddlRole.Items.Clear()
         Try
-            ddlRole.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerLoginRoles ORDER BY Name ASC")
+            ddlRole.DataSource = settingClass.GetDataTable("SELECT * FROM LoginRoles ORDER BY Name ASC")
             ddlRole.DataTextField = "Name"
             ddlRole.DataValueField = "Id"
             ddlRole.DataBind()
@@ -360,7 +360,7 @@ Partial Class Setting_Customer_Login
     Protected Sub BindLevel()
         ddlLevel.Items.Clear()
         Try
-            ddlLevel.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerLoginLevels ORDER BY Name ASC")
+            ddlLevel.DataSource = settingClass.GetDataTable("SELECT * FROM LoginLevels ORDER BY Name ASC")
             ddlLevel.DataTextField = "Name"
             ddlLevel.DataValueField = "Id"
             ddlLevel.DataBind()

@@ -79,7 +79,7 @@
                             </div>
                             <div class="col-8">
                                 <h6 class="text-muted font-semibold">Role Access</h6>
-                                <h6 class="font-extrabold mb-0"><%= GetSumData("CustomerLoginRoles") %></h6>
+                                <h6 class="font-extrabold mb-0"><%= GetSumData("LoginRoles") %></h6>
                             </div>
                         </div>
                     </div>
@@ -96,7 +96,7 @@
                             </div>
                             <div class="col-8">
                                 <h6 class="text-muted font-semibold">Level Access</h6>
-                                <h6 class="font-extrabold mb-0"><%= GetSumData("CustomerLoginLevels") %></h6>
+                                <h6 class="font-extrabold mb-0"><%= GetSumData("LoginLevels") %></h6>
                             </div>
                         </div>
                     </div>

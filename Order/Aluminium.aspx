@@ -502,5 +502,5 @@
         </div>
     </div>
 
-    <script src='<%: ResolveUrl("~/Scripts/WebOrders/Aluminium.js?v=1.0.1") %>'></script>
+    <script src='<%: ResolveUrl("~/Scripts/WebOrders/Aluminium.js?v=1.0.2") %>'></script>
 </asp:Content>

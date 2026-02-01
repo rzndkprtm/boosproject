@@ -33,35 +33,39 @@
          </section>
 
         <section class="row">
-            <div class="col-lg-7 col-md-7 col-sm-12">
+            <div class="col-12 col-sm-12 col-lg-4">
                 <div class="card">
                     <div class="card-content">
                         <div class="card-body">
                             <div class="row mb-2">
-                                <div class="col-12 col-sm-12 col-lg-6 mb-2">
+                                <div class="col-12">
                                     <label>Company Name</label>
                                     <br />
-                                    <asp:Label runat="server" ID="lblName" CssClass="font-bold"></asp:Label>
-                                </div>
-
-                                <div class="col-12 col-sm-12 col-lg-6">
-                                    <label>Alias</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblAlias" CssClass="font-bold"></asp:Label>
+                                    <asp:Label runat="server" ID="lblName" CssClass="form-control font-bold"></asp:Label>
                                 </div>
                             </div>
 
-                            <div class="row mb-3">
-                                <div class="col-12 col-sm-12 col-lg-6 mb-2">
+                            <div class="row mb-2">
+                                <div class="col-12">
+                                    <label>Alias</label>
+                                    <br />
+                                    <asp:Label runat="server" ID="lblAlias" CssClass="form-control font-bold"></asp:Label>
+                                </div>
+                            </div>
+
+                            <div class="row mb-2">
+                                <div class="col-12">
                                     <label>Description</label>
                                     <br />
-                                    <asp:Label runat="server" ID="lblDescription" CssClass="font-bold"></asp:Label>
+                                    <asp:Label runat="server" ID="lblDescription" CssClass="form-control font-bold"></asp:Label>
                                 </div>
+                            </div>
 
-                                <div class="col-12 col-sm-12 col-lg-6">
+                            <div class="row">
+                                <div class="col-12">
                                     <label>Active</label>
                                     <br />
-                                    <asp:Label runat="server" ID="lblActive" CssClass="font-bold"></asp:Label>
+                                    <asp:Label runat="server" ID="lblActive" CssClass="form-control font-bold"></asp:Label>
                                 </div>
                             </div>
                         </div>
@@ -69,13 +73,11 @@
 
                     <div class="card-footer text-start" runat="server" id="divEdit">
                         <a href="#" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalProcess">Edit Company</a>
+                        <a href="#" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalDelete">Delete Company</a>
                     </div>
                 </div>
             </div>
-        </section>
-
-        <section class="row">
-            <div class="col-12">
+            <div class="col-12 col-sm-12 col-lg-8">
                 <div class="card">
                     <div class="card-content">
                         <div class="card-header">
@@ -112,11 +114,8 @@
                                                             <li runat="server" visible='<%# PageAction("Edit Detail") %>'>
                                                                 <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                             </li>
-                                                            <li runat="server" visible='<%# PageAction("Delete Detail") %>'>
-                                                                <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteDetail" onclick='<%# String.Format("return showDeleteDetail(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
-                                                            </li>
                                                             <li>
-                                                                <asp:LinkButton runat="server" ID="linkLog" CssClass="dropdown-item" Text="Log" CommandName="Log" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                                <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('CompanyDetails', '<%# Eval("Id") %>')">Log</a>
                                                             </li>
                                                         </ul>
                                                     </ItemTemplate>
@@ -241,26 +240,6 @@
         </div>
     </div>
 
-    <div class="modal fade text-center" id="modalDeleteDetail" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-danger">
-                    <h5 class="modal-title white">Delete Company Detail</h5>
-                </div>
-
-                <div class="modal-body">
-                    <asp:TextBox runat="server" ID="txtIdDeleteDetail" style="display:none;"></asp:TextBox>
-                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
-                </div>
-
-                <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnDeleteDetail" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDeleteDetail_Click" />
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div class="modal modal-blur fade" id="modalLog" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -270,25 +249,11 @@
                 </div>
 
                 <div class="modal-body">
-                    <div class="row" runat="server" id="divErrorLog">
-                        <div class="col-12">
-                            <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorLog"></span>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="alert alert-danger d-none" id="logError"></div>
                     <div class="table-responsive">
-                        <asp:GridView runat="server" ID="gvListLog" CssClass="table table-vcenter card-table" AutoGenerateColumns="false" EmptyDataText="DATA LOG NOT FOUND" EmptyDataRowStyle-HorizontalAlign="Center" ShowHeader="false" GridLines="None" BorderStyle="None">
-                            <RowStyle />
-                            <Columns>
-                                <asp:TemplateField>
-                                    <ItemTemplate>
-                                        <%# BindTextLog(Eval("Id").ToString()) %>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                            </Columns>
-                            <AlternatingRowStyle BackColor="White" />
-                        </asp:GridView>
+                        <table class="table table-vcenter card-table" id="tblLogs">
+                            <tbody></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -296,19 +261,72 @@
     </div>
 
     <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            const gv = document.getElementById('<%= gvList.ClientID %>');
+            if (!gv) return;
+
+            for (let i = 1; i < gv.rows.length; i++) {
+                const row = gv.rows[i];
+                row.style.cursor = 'pointer';
+
+                row.addEventListener('click', function (e) {
+                    if (
+                        e.target.closest("a") ||
+                        e.target.closest("button") ||
+                        e.target.closest("[data-bs-toggle]")
+                    ) {
+                        return;
+                    }
+
+                    const btn = this.querySelector("a[id*='linkDetail']");
+                    if (btn) btn.click();
+                });
+            }
+        });
+
         function showProcess() {
             $("#modalProcess").modal("show");
         }
+
         function showProcessDetail() {
             $("#modalProcessDetail").modal("show");
         }
-        function showDeleteDetail(id) {
-            document.getElementById("<%=txtIdDeleteDetail.ClientID %>").value = id;
-        }
-        function showLog() {
+
+        function showLog(type, dataId) {
+            $("#logError").addClass("d-none").html("");
+            $("#tblLogs tbody").html("");
             $("#modalLog").modal("show");
+
+            $.ajax({
+                type: "POST",
+                url: "/Setting/Method.aspx/GetLogs",
+                data: JSON.stringify({ type: type, dataId: dataId }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (res) {
+                    const logs = res.d;
+
+                    if (!logs || logs.length === 0) {
+                        $("#tblLogs tbody").html(
+                            `<tr><td class="text-center">DATA LOG NOT FOUND</td></tr>`
+                        );
+                        return;
+                    }
+
+                    let html = "";
+                    logs.forEach(r => {
+                        html += `<tr><td>${r.TextLog}</td></tr>`;
+                    });
+
+                    $("#tblLogs tbody").html(html);
+                },
+                error: function (err) {
+                    $("#logError").removeClass("d-none").html("FAILED TO LOAD LOG DATA");
+                }
+            });
         }
-        ["modalProcess", "modalProcessDetail", "modalDeleteDetail", "modalLog"].forEach(function (id) {
+
+        ["modalProcess", "modalProcessDetail", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
@@ -316,8 +334,7 @@
         });
         window.history.replaceState(null, null, window.location.href);
     </script>
-
-
+    
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblId"></asp:Label>
         <asp:Label runat="server" ID="lblDetailId"></asp:Label>

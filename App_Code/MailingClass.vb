@@ -749,7 +749,7 @@ Public Class MailingClass
 
         Dim actionName As String = GetItemData("SELECT FullName FROM CustomerLogins WHERE Id='" & actionBy & "'")
         Dim actionEmail As String = GetItemData("SELECT Email FROM CustomerLogins WHERE Id='" & actionBy & "'")
-        Dim actionRole As String = GetItemData("SELECT CustomerLoginRoles.Name FROM CustomerLogins LEFT JOIN CustomerLoginRoles ON CustomerLogins.RoleId=CustomerLoginRoles.Id WHERE CustomerLogins.Id='" & actionBy & "'")
+        Dim actionRole As String = GetItemData("SELECT LoginRoles.Name FROM CustomerLogins LEFT JOIN LoginRoles ON CustomerLogins.RoleId=LoginRoles.Id WHERE CustomerLogins.Id='" & actionBy & "'")
 
         Dim signatureUser As String = String.Format("{0} - {1}", actionName, actionRole)
 
@@ -869,7 +869,7 @@ Public Class MailingClass
 
         Dim actionName As String = GetItemData("SELECT FullName FROM CustomerLogins WHERE Id='" & actionBy & "'")
         Dim actionEmail As String = GetItemData("SELECT Email FROM CustomerLogins WHERE Id='" & actionBy & "'")
-        Dim actionRole As String = GetItemData("SELECT CustomerLoginRoles.Name FROM CustomerLogins LEFT JOIN CustomerLoginRoles ON CustomerLogins.RoleId=CustomerLoginRoles.Id WHERE CustomerLogins.Id='" & actionBy & "'")
+        Dim actionRole As String = GetItemData("SELECT LoginRoles.Name FROM CustomerLogins LEFT JOIN LoginRoles ON CustomerLogins.RoleId=LoginRoles.Id WHERE CustomerLogins.Id='" & actionBy & "'")
 
         Dim signatureUser As String = String.Format("{0} - {1}", actionName, actionRole)
 

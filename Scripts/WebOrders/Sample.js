@@ -1,6 +1,7 @@
 ﻿let designIdOri = "13";
 let itemAction;
 let headerId;
+let orderId;
 let itemId;
 let designId;
 let company;
@@ -51,6 +52,7 @@ function getOrderHeader(headerId) {
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: ({ d }) => {
+                orderId = d.OrderId || "-";
                 document.getElementById("orderid").innerText = d.OrderId || "-";
                 document.getElementById("ordernumber").innerText = d.OrderNumber || "-";
                 document.getElementById("ordername").innerText = d.OrderName || "-";
@@ -578,6 +580,7 @@ function process() {
 
     const formData = {
         headerid: headerId,
+        orderid: orderId,
         itemaction: itemAction,
         itemid: itemId,
         designid: designId,

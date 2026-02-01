@@ -7,6 +7,7 @@ Partial Class Order_Detail
     Inherits Page
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+
     Dim dataMailing As Object() = Nothing
     Dim dataLog As Object() = Nothing
     Dim url As String = String.Empty
@@ -1391,25 +1392,19 @@ Partial Class Order_Detail
                     End If
                 End Try
             ElseIf e.CommandName = "Printing" Then
-                MessageError_Printing(False, String.Empty)
+                MessageError(False, String.Empty)
                 Dim thisScript As String = "window.onload = function() { showPrinting(); };"
                 Try
-                    lblItemId.Text = dataId
-                    BindPrinting(dataId)
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showPrinting", thisScript, True)
-
-                    'Dim queryString As String = String.Format("headerid={0}&itemid={1}", lblHeaderId.Text, dataId)
-
-                    'Dim contextId As String = InsertContext(queryString)
-                    'url = String.Format("~/order/printing?boos={0}", contextId)
-                    'Response.Redirect(url)
+                    Dim queryString As String = String.Format("headerid={0}&itemid={1}", lblHeaderId.Text, dataId)
+                    Dim contextId As String = InsertContext(queryString)
+                    url = String.Format("~/order/printing?boos={0}", contextId)
+                    Response.Redirect(url)
                 Catch ex As Exception
-                    MessageError_Printing(True, ex.ToString())
+                    MessageError(True, ex.ToString())
                     If Not Session("RoleName") = "Developer" Then
-                        MessageError_Printing(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                        MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
                         If Session("RoleName") = "Customer" Then
-                            MessageError_Printing(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
+                            MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                         End If
                         dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "linkPrinting_Click", ex.ToString()}
                         mailingClass.WebError(dataMailing)
@@ -1461,9 +1456,7 @@ Partial Class Order_Detail
             End If
 
             Dim page As String = orderClass.GetDesignPage(ddlDesign.SelectedValue)
-
             Dim queryString As String = String.Format("do={0}&orderid={1}&itemid={2}&dtype={3}&uid={4}", "create", lblHeaderId.Text, String.Empty, ddlDesign.SelectedValue, Session("LoginId").ToString())
-
             Dim contextId As String = InsertContext(queryString)
 
             url = String.Format("{0}?boos={1}", page, contextId)
@@ -1696,328 +1689,8 @@ Partial Class Order_Detail
         End Try
     End Sub
 
-    Protected Sub btnSubmitPrinting_Click(sender As Object, e As EventArgs)
-        MessageError_Printing(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showPrinting(); };"
-        Try
-            Dim printing As String = String.Empty
-            Dim printingb As String = String.Empty
-            Dim printingc As String = String.Empty
-            Dim printingd As String = String.Empty
-            Dim printinge As String = String.Empty
-            Dim printingf As String = String.Empty
-            Dim printingg As String = String.Empty
-            Dim printingh As String = String.Empty
-
-            Dim folderPath As String = Server.MapPath(String.Format("~/File/Order/{0}", lblOrderId.Text))
-            If Not IO.Directory.Exists(folderPath) Then
-                IO.Directory.CreateDirectory(folderPath)
-            End If
-
-            If fuPrinting.HasFile Then
-                Dim thisName As String = String.Format("Printing{0}{1}", lblItemId.Text, "1")
-                Dim ext As String = IO.Path.GetExtension(fuPrinting.FileName)
-                printing = String.Format("{0}{1}", thisName, ext)
-                fuPrinting.SaveAs(IO.Path.Combine(folderPath, printing))
-            End If
-
-            If fuPrintingB.HasFile Then
-                Dim thisName As String = String.Format("Printing{0}{1}", lblItemId.Text, "2")
-                Dim ext As String = IO.Path.GetExtension(fuPrintingB.FileName)
-                printingb = String.Format("{0}{1}", thisName, ext)
-                fuPrintingB.SaveAs(IO.Path.Combine(folderPath, printingb))
-            End If
-
-            If fuPrintingC.HasFile Then
-                Dim thisName As String = String.Format("Printing{0}{1}", lblItemId.Text, "3")
-                Dim ext As String = IO.Path.GetExtension(fuPrintingC.FileName)
-                printingc = String.Format("{0}{1}", thisName, ext)
-                fuPrintingC.SaveAs(IO.Path.Combine(folderPath, printingc))
-            End If
-
-            If fuPrintingD.HasFile Then
-                Dim thisName As String = String.Format("Printing{0}{1}", lblItemId.Text, "4")
-                Dim ext As String = IO.Path.GetExtension(fuPrintingD.FileName)
-                printingd = String.Format("{0}{1}", thisName, ext)
-                fuPrintingD.SaveAs(IO.Path.Combine(folderPath, printingd))
-            End If
-
-            Using thisConn As New SqlConnection(myConn)
-                thisConn.Open()
-
-                Dim updates As New List(Of String)
-                Dim myCmd As New SqlCommand()
-                myCmd.Parameters.AddWithValue("@Id", lblItemId.Text)
-
-                If Not String.IsNullOrEmpty(printing) Then
-                    updates.Add("Printing=@Printing")
-                    myCmd.Parameters.AddWithValue("@Printing", printing)
-                End If
-
-                If Not String.IsNullOrEmpty(printingb) Then
-                    updates.Add("PrintingB=@PrintingB")
-                    myCmd.Parameters.AddWithValue("@PrintingB", printingb)
-                End If
-
-                If Not String.IsNullOrEmpty(printingc) Then
-                    updates.Add("PrintingC=@PrintingC")
-                    myCmd.Parameters.AddWithValue("@PrintingC", printingc)
-                End If
-
-                If Not String.IsNullOrEmpty(printingd) Then
-                    updates.Add("PrintingD=@PrintingD")
-                    myCmd.Parameters.AddWithValue("@PrintingD", printingd)
-                End If
-
-                If Not String.IsNullOrEmpty(printinge) Then
-                    updates.Add("PrintingE=@PrintingE")
-                    myCmd.Parameters.AddWithValue("@PrintingE", printinge)
-                End If
-
-                If Not String.IsNullOrEmpty(printingf) Then
-                    updates.Add("PrintingF=@PrintingF")
-                    myCmd.Parameters.AddWithValue("@PrintingF", printingf)
-                End If
-
-                If Not String.IsNullOrEmpty(printingg) Then
-                    updates.Add("PrintingG=@PrintingG")
-                    myCmd.Parameters.AddWithValue("@PrintingG", printingg)
-                End If
-
-                If Not String.IsNullOrEmpty(printingh) Then
-                    updates.Add("PrintingH=@PrintingH")
-                    myCmd.Parameters.AddWithValue("@PrintingH", printingh)
-                End If
-
-                If updates.Count > 0 Then
-                    myCmd.CommandText = "UPDATE OrderDetails SET " & String.Join(", ", updates) & " WHERE Id=@Id"
-                    myCmd.Connection = thisConn
-                    myCmd.ExecuteNonQuery()
-                End If
-
-                thisConn.Close()
-            End Using
-
-            orderClass.ResetPriceDetail(lblHeaderId.Text, lblItemId.Text)
-            orderClass.CalculatePrice(lblHeaderId.Text, lblItemId.Text)
-            orderClass.FinalCostItem(lblHeaderId.Text, lblItemId.Text)
-
-            Dim dataLog As Object() = {"OrderDetails", lblItemId.Text, Session("LoginId"), "Update Printing Fabric"}
-            orderClass.Logs(dataLog)
-
-            url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
-            Response.Redirect(url, False)
-        Catch ex As Exception
-            MessageError_Printing(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Printing(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                If Session("RoleName") = "Customer" Then
-                    MessageError_Printing(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
-                End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnSubmitPrinting_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showPrinting", thisScript, True)
-        End Try
-    End Sub
-
-    Protected Sub btnDeletePrinting_Click(sender As Object, e As EventArgs)
-        MessageError_Printing(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showPrinting(); };"
-        Try
-            orderClass.DeleteFilePrinting(lblOrderId.Text, lblItemId.Text, "1")
-
-            Using thisConn As New SqlConnection(myConn)
-                thisConn.Open()
-
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET Printing=NULL WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblItemId.Text)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                thisConn.Close()
-            End Using
-
-            orderClass.ResetPriceDetail(lblHeaderId.Text, lblItemId.Text)
-            orderClass.CalculatePrice(lblHeaderId.Text, lblItemId.Text)
-            orderClass.FinalCostItem(lblHeaderId.Text, lblItemId.Text)
-
-            Dim dataLog As Object() = {"OrderDetails", lblItemId.Text, Session("LoginId"), "Delete Printing Fabric"}
-            orderClass.Logs(dataLog)
-
-            url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
-            Response.Redirect(url, False)
-        Catch ex As Exception
-            MessageError_Printing(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Printing(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                If Session("RoleName") = "Customer" Then
-                    MessageError_Printing(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
-                End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnDeletePrinting_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showPrinting", thisScript, True)
-        End Try
-    End Sub
-
-    Protected Sub btnDeletePrintingB_Click(sender As Object, e As EventArgs)
-        MessageError_Printing(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showPrinting(); };"
-        Try
-            orderClass.DeleteFilePrinting(lblOrderId.Text, lblItemId.Text, "2")
-
-            Using thisConn As New SqlConnection(myConn)
-                thisConn.Open()
-
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET PrintingB=NULL WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblItemId.Text)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                thisConn.Close()
-            End Using
-
-            orderClass.ResetPriceDetail(lblHeaderId.Text, lblItemId.Text)
-            orderClass.CalculatePrice(lblHeaderId.Text, lblItemId.Text)
-            orderClass.FinalCostItem(lblHeaderId.Text, lblItemId.Text)
-
-            Dim dataLog As Object() = {"OrderDetails", lblItemId.Text, Session("LoginId"), "Delete Printing Fabric #2"}
-            orderClass.Logs(dataLog)
-
-            url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
-            Response.Redirect(url, False)
-        Catch ex As Exception
-            MessageError_Printing(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Printing(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                If Session("RoleName") = "Customer" Then
-                    MessageError_Printing(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
-                End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnDeletePrintingB_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showPrinting", thisScript, True)
-        End Try
-    End Sub
-
-    Protected Sub btnDeletePrintingC_Click(sender As Object, e As EventArgs)
-        MessageError_Printing(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showPrinting(); };"
-        Try
-            orderClass.DeleteFilePrinting(lblOrderId.Text, lblItemId.Text, "3")
-
-            Using thisConn As New SqlConnection(myConn)
-                thisConn.Open()
-
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET PrintingC=NULL WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblItemId.Text)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                thisConn.Close()
-            End Using
-
-            orderClass.ResetPriceDetail(lblHeaderId.Text, lblItemId.Text)
-            orderClass.CalculatePrice(lblHeaderId.Text, lblItemId.Text)
-            orderClass.FinalCostItem(lblHeaderId.Text, lblItemId.Text)
-
-            Dim dataLog As Object() = {"OrderDetails", lblItemId.Text, Session("LoginId"), "Delete Printing Fabric #3"}
-            orderClass.Logs(dataLog)
-
-            url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
-            Response.Redirect(url, False)
-        Catch ex As Exception
-            MessageError_Printing(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Printing(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                If Session("RoleName") = "Customer" Then
-                    MessageError_Printing(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
-                End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnDeletePrintingC_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showPrinting", thisScript, True)
-        End Try
-    End Sub
-
-    Protected Sub btnDeletePrintingD_Click(sender As Object, e As EventArgs)
-        MessageError_Printing(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showPrinting(); };"
-        Try
-            orderClass.DeleteFilePrinting(lblOrderId.Text, lblItemId.Text, "4")
-
-            Using thisConn As New SqlConnection(myConn)
-                thisConn.Open()
-
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET PrintingD=NULL WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblItemId.Text)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                thisConn.Close()
-            End Using
-
-            orderClass.ResetPriceDetail(lblHeaderId.Text, lblItemId.Text)
-            orderClass.CalculatePrice(lblHeaderId.Text, lblItemId.Text)
-            orderClass.FinalCostItem(lblHeaderId.Text, lblItemId.Text)
-
-            Dim dataLog As Object() = {"OrderDetails", lblItemId.Text, Session("LoginId"), "Delete Printing Fabric #4"}
-            orderClass.Logs(dataLog)
-
-            url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
-            Response.Redirect(url, False)
-        Catch ex As Exception
-            MessageError_Printing(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Printing(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                If Session("RoleName") = "Customer" Then
-                    MessageError_Printing(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
-                End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnDeletePrintingD_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showPrinting", thisScript, True)
-        End Try
-    End Sub
-
     Protected Sub BindDataOrder(headerId As String)
         Try
-            'Dim thisQuery As String = "SELECT OrderHeaders.*, CustomerLogins.FullName AS CreatedFullName, CustomerLogins.RoleId AS CreatedRole, Customers.DebtorCode AS DebtorCode, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, Customers.CompanyDetailId AS CompanyDetailId, Customers.PriceGroupId AS PriceGroupId FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id LEFT JOIN CustomerLogins ON OrderHeaders.CreatedBy=CustomerLogins.Id LEFT JOIN CustomerLoginRoles ON CustomerLogins.RoleId=CustomerLoginRoles.Id WHERE OrderHeaders.Id='" & headerId & "' AND OrderHeaders.Active=1"
-
-            'If Session("RoleName") = "Sales" Then
-            '    thisQuery = "SELECT OrderHeaders.*, CustomerLogins.FullName AS CreatedFullName, CustomerLogins.RoleId AS CreatedRole, Customers.DebtorCode AS DebtorCode, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, Customers.CompanyDetailId AS CompanyDetailId, Customers.PriceGroupId AS PriceGroupId FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id LEFT JOIN CustomerLogins ON OrderHeaders.CreatedBy=CustomerLogins.Id LEFT JOIN CustomerLoginRoles ON CustomerLogins.RoleId=CustomerLoginRoles.Id WHERE OrderHeaders.Id='" & headerId & "' AND Customers.CompanyId='" & Session("CompanyId") & "' AND OrderHeaders.Active=1"
-            '    If Session("LevelName") = "Member" Then
-            '        thisQuery = "SELECT OrderHeaders.*, CustomerLogins.FullName AS CreatedFullName, CustomerLogins.RoleId AS CreatedRole, Customers.DebtorCode AS DebtorCode, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, Customers.CompanyDetailId AS CompanyDetailId, Customers.PriceGroupId AS PriceGroupId FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id LEFT JOIN CustomerLogins ON OrderHeaders.CreatedBy=CustomerLogins.Id LEFT JOIN CustomerLoginRoles ON CustomerLogins.RoleId=CustomerLoginRoles.Id WHERE OrderHeaders.Id='" & headerId & "' AND Customers.Operator='" & Session("LoginId") & "' AND OrderHeaders.Active=1"
-            '    End If
-            'End If
-
-            'If Session("RoleName") = "Account" OrElse
-            '    Session("RoleName") = "Customer Service" OrElse
-            '    Session("RoleName") = "Export" Then
-            '    thisQuery = "SELECT OrderHeaders.*, CustomerLogins.FullName AS CreatedFullName, CustomerLogins.RoleId AS CreatedRole, Customers.DebtorCode AS DebtorCode, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, Customers.CompanyDetailId AS CompanyDetailId, Customers.PriceGroupId AS PriceGroupId FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id LEFT JOIN CustomerLogins ON OrderHeaders.CreatedBy=CustomerLogins.Id LEFT JOIN CustomerLoginRoles ON CustomerLogins.RoleId=CustomerLoginRoles.Id WHERE OrderHeaders.Id='" & headerId & "' AND Customers.CompanyId='" & Session("CompanyId") & "' AND OrderHeaders.Active=1"
-            'End If
-
-            'If Session("RoleName") = "Data Entry" Then
-            '    thisQuery = "SELECT OrderHeaders.*, CustomerLogins.FullName AS CreatedFullName, CustomerLogins.RoleId AS CreatedRole, Customers.DebtorCode AS DebtorCode, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, Customers.CompanyDetailId AS CompanyDetailId, Customers.PriceGroupId AS PriceGroupId FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id LEFT JOIN CustomerLogins ON OrderHeaders.CreatedBy=CustomerLogins.Id LEFT JOIN CustomerLoginRoles ON CustomerLogins.RoleId=CustomerLoginRoles.Id WHERE OrderHeaders.Id='" & headerId & "' AND OrderHeaders.Active=1"
-            'End If
-
-            'If Session("RoleName") = "Customer" Then
-            '    thisQuery = "SELECT OrderHeaders.*, CustomerLogins.FullName AS CreatedFullName, CustomerLogins.RoleId AS CreatedRole, Customers.DebtorCode AS DebtorCode, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, Customers.CompanyDetailId AS CompanyDetailId, Customers.PriceGroupId AS PriceGroupId FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id LEFT JOIN CustomerLogins ON OrderHeaders.CreatedBy=CustomerLogins.Id LEFT JOIN CustomerLoginRoles ON CustomerLogins.RoleId=CustomerLoginRoles.Id WHERE OrderHeaders.Id='" & headerId & "' AND OrderHeaders.CustomerId='" & Session("CustomerId") & "' AND OrderHeaders.Active=1"
-            '    If Session("LevelName") = "Member" Then
-            '        thisQuery = "SELECT OrderHeaders.*, CustomerLogins.FullName AS CreatedFullName, CustomerLogins.RoleId AS CreatedRole, Customers.DebtorCode AS DebtorCode, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, Customers.CompanyDetailId AS CompanyDetailId, Customers.PriceGroupId AS PriceGroupId FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id LEFT JOIN CustomerLogins ON OrderHeaders.CreatedBy=CustomerLogins.Id LEFT JOIN CustomerLoginRoles ON CustomerLogins.RoleId=CustomerLoginRoles.Id WHERE OrderHeaders.Id='" & headerId & "' AND OrderHeaders.CreatedBy='" & Session("LoginId") & "' AND OrderHeaders.Active=1"
-            '    End If
-            '    If Session("CustomerLevel") = "Sponsor" AndAlso Session("LevelName") = "Leader" Then
-            '        thisQuery = "SELECT OrderHeaders.*, CustomerLogins.FullName AS CreatedFullName, CustomerLogins.RoleId AS CreatedRole, Customers.DebtorCode AS DebtorCode, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, Customers.CompanyDetailId AS CompanyDetailId, Customers.PriceGroupId AS PriceGroupId FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id LEFT JOIN CustomerLogins ON OrderHeaders.CreatedBy=CustomerLogins.Id LEFT JOIN CustomerLoginRoles ON CustomerLogins.RoleId=CustomerLoginRoles.Id WHERE OrderHeaders.Id='" & headerId & "' AND (OrderHeaders.CustomerId='" & Session("CustomerId") & "' OR Customers.SponsorId='" & Session("CustomerId") & "') AND OrderHeaders.Active=1"
-            '    End If
-            'End If
-
-            'Dim headerData As DataRow = orderClass.GetDataRow(thisQuery)
-            'If headerData Is Nothing Then
-            '    Response.Redirect("~/order", False)
-            '    Exit Sub
-            'End If
-
             Dim params As New List(Of SqlParameter) From {
                 New SqlParameter("@HeaderId", CInt(headerId)),
                 New SqlParameter("@RoleName", Session("RoleName").ToString()),
@@ -3213,180 +2886,6 @@ Partial Class Order_Detail
         End If
     End Sub
 
-    Protected Sub BindPrinting(dataId As String)
-        aPrinting.Visible = False : divPrinting.Visible = False : btnDeletePrinting.Visible = False : divUploadPrinting.Visible = False
-        aPrintingB.Visible = False : divPrintingB.Visible = False : btnDeletePrintingB.Visible = False : divUploadPrintingB.Visible = False
-        aPrintingC.Visible = False : divPrintingC.Visible = False : btnDeletePrintingC.Visible = False : divUploadPrintingC.Visible = False
-        aPrintingD.Visible = False : divPrintingD.Visible = False : btnDeletePrintingD.Visible = False : divUploadPrintingD.Visible = False
-
-        btnSubmitPrinting.Visible = False
-
-        Try
-            Dim thisData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Designs.Name AS DesignName, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.Id='" & dataId & "'")
-
-            Dim designname As String = thisData("DesignName").ToString()
-            Dim blindname As String = thisData("BlindName").ToString()
-            Dim width As Integer = thisData("Width")
-            Dim drop As Integer = thisData("Drop")
-
-            Dim printing As String = thisData("Printing").ToString()
-            Dim printingb As String = thisData("PrintingB").ToString()
-            Dim printingc As String = thisData("PrintingC").ToString()
-            Dim printingd As String = thisData("PrintingD").ToString()
-
-            If designname = "Roller Blind" Then
-                If blindname = "Single Blind" Then
-                    If width <= 1510 OrElse drop <= 1510 Then
-                        aPrinting.Visible = True : divPrinting.Visible = True
-                        aPrinting.Attributes("class") = aPrinting.Attributes("class") & " active"
-                        divPrinting.Attributes("class") = divPrinting.Attributes("class") & " show active"
-
-                        If lblOrderStatus.Text = "Unsubmitted" Then
-                            divUploadPrinting.Visible = True : btnSubmitPrinting.Visible = True
-                        End If
-
-                        If Not String.IsNullOrEmpty(printing) Then
-                            imgPrinting.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printing)
-                            If lblOrderStatus.Text = "Unsubmitted" Then btnDeletePrinting.Visible = True
-                        End If
-                    End If
-                End If
-
-                If blindname = "Dual Blinds" Then
-                    If width <= 1510 Then
-                        aPrinting.Visible = True : divPrinting.Visible = True
-                        aPrintingB.Visible = True : divPrintingB.Visible = True
-
-                        aPrinting.Attributes("class") = aPrinting.Attributes("class") & " active"
-                        divPrinting.Attributes("class") = divPrinting.Attributes("class") & " show active"
-
-                        If lblOrderStatus.Text = "Unsubmitted" Then
-                            divUploadPrinting.Visible = True : divUploadPrintingB.Visible = True
-                            btnSubmitPrinting.Visible = True
-                        End If
-
-                        If Not String.IsNullOrEmpty(printing) Then
-                            imgPrinting.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printing)
-                            If lblOrderStatus.Text = "Unsubmitted" Then btnDeletePrinting.Visible = True
-                        End If
-                        If Not String.IsNullOrEmpty(printingb) Then
-                            imgPrintingB.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printingb)
-                            If lblOrderStatus.Text = "Unsubmitted" Then btnDeletePrintingB.Visible = True
-                        End If
-                    End If
-                End If
-
-                If blindname = "Link 2 Blinds Dependent" OrElse blindname = "Link 2 Blinds Independent" Then
-                    Dim widthb As Integer = thisData("WidthB")
-                    If width <= 1510 Then
-                        aPrinting.Visible = True : divPrinting.Visible = True
-                        If Not String.IsNullOrEmpty(printing) Then
-                            imgPrinting.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printing)
-                            If lblOrderStatus.Text = "Unsubmitted" Then btnDeletePrinting.Visible = True
-                        End If
-                    End If
-                    If widthb <= 1510 Then
-                        aPrintingB.Visible = True : divPrintingB.Visible = True
-                        If Not String.IsNullOrEmpty(printingb) Then
-                            imgPrintingB.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printingb)
-                            If lblOrderStatus.Text = "Unsubmitted" Then btnDeletePrintingB.Visible = True
-                        End If
-                    End If
-
-                    If lblOrderStatus.Text = "Unsubmitted" Then
-                        divUploadPrinting.Visible = True : divUploadPrintingB.Visible = True
-                        btnSubmitPrinting.Visible = True
-                    End If
-
-                    If aPrinting.Visible AndAlso divPrinting.Visible Then
-                        aPrinting.Attributes("class") = (aPrinting.Attributes("class") & " active").Trim()
-                        divPrinting.Attributes("class") = (divPrinting.Attributes("class") & " show active").Trim()
-                    ElseIf aPrintingB.Visible AndAlso divPrintingB.Visible Then
-                        aPrintingB.Attributes("class") = (aPrintingB.Attributes("class") & " active").Trim()
-                        divPrintingB.Attributes("class") = (divPrintingB.Attributes("class") & " show active").Trim()
-                    End If
-                End If
-
-                If blindname = "Link 3 Blinds Dependent" OrElse blindname = "Link 3 Blinds Independent with Dependent" Then
-                    Dim widthb As Integer = thisData("WidthB")
-                    Dim widthc As Integer = thisData("WidthC")
-
-                    If width <= 1510 Then
-                        aPrinting.Visible = True : divPrinting.Visible = True
-                        If Not String.IsNullOrEmpty(printing) Then imgPrinting.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printing)
-                    End If
-                    If widthb <= 1510 Then
-                        aPrintingB.Visible = True : divPrintingB.Visible = True
-                        If Not String.IsNullOrEmpty(printingb) Then imgPrintingB.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printingb)
-                    End If
-                    If widthc <= 1510 Then
-                        aPrintingC.Visible = True : divPrintingC.Visible = True
-                        If Not String.IsNullOrEmpty(printingc) Then imgPrintingC.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printingc)
-                    End If
-
-                    If aPrinting.Visible AndAlso divPrinting.Visible Then
-                        aPrinting.Attributes("class") = (aPrinting.Attributes("class") & " active").Trim()
-                        divPrinting.Attributes("class") = (divPrinting.Attributes("class") & " show active").Trim()
-                    ElseIf aPrintingB.Visible AndAlso divPrintingB.Visible Then
-                        aPrintingB.Attributes("class") = (aPrintingB.Attributes("class") & " active").Trim()
-                        divPrintingB.Attributes("class") = (divPrintingB.Attributes("class") & " show active").Trim()
-                    ElseIf aPrintingC.Visible AndAlso divPrintingC.Visible Then
-                        aPrintingC.Attributes("class") = (aPrintingC.Attributes("class") & " active").Trim()
-                        divPrintingC.Attributes("class") = (divPrintingC.Attributes("class") & " show active").Trim()
-                    End If
-                End If
-
-                If blindname = "Link 4 Blinds Independent with Dependent" OrElse blindname = "DB Link 2 Blinds Dependent" OrElse blindname = "DB Link 2 Blinds Independent" Then
-                    Dim widthb As Integer = thisData("WidthB")
-                    Dim widthc As Integer = thisData("WidthC")
-                    Dim widthd As Integer = thisData("WidthD")
-
-                    If width <= 1510 Then
-                        aPrinting.Visible = True : divPrinting.Visible = True
-                        If Not String.IsNullOrEmpty(printing) Then imgPrinting.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printing)
-                    End If
-                    If widthb <= 1510 Then
-                        aPrintingB.Visible = True : divPrintingB.Visible = True
-                        If Not String.IsNullOrEmpty(printingb) Then imgPrintingB.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printingb)
-                    End If
-                    If widthc <= 1510 Then
-                        aPrintingC.Visible = True : divPrintingC.Visible = True
-                        If Not String.IsNullOrEmpty(printingc) Then imgPrintingC.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printingc)
-                    End If
-                    If widthd <= 1510 Then
-                        aPrintingD.Visible = True : divPrintingD.Visible = True
-                        If Not String.IsNullOrEmpty(printingd) Then imgPrintingD.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printingd)
-                    End If
-
-                    If aPrinting.Visible AndAlso divPrinting.Visible Then
-                        aPrinting.Attributes("class") = (aPrinting.Attributes("class") & " active").Trim()
-                        divPrinting.Attributes("class") = (divPrinting.Attributes("class") & " show active").Trim()
-                    ElseIf aPrintingB.Visible AndAlso divPrintingB.Visible Then
-                        aPrintingB.Attributes("class") = (aPrintingB.Attributes("class") & " active").Trim()
-                        divPrintingB.Attributes("class") = (divPrintingB.Attributes("class") & " show active").Trim()
-                    ElseIf aPrintingC.Visible AndAlso divPrintingC.Visible Then
-                        aPrintingC.Attributes("class") = (aPrintingC.Attributes("class") & " active").Trim()
-                        divPrintingC.Attributes("class") = (divPrintingC.Attributes("class") & " show active").Trim()
-                    ElseIf aPrintingD.Visible AndAlso divPrintingD.Visible Then
-                        aPrintingD.Attributes("class") = (aPrintingD.Attributes("class") & " active").Trim()
-                        divPrintingD.Attributes("class") = (divPrintingD.Attributes("class") & " show active").Trim()
-                    End If
-                End If
-            End If
-
-            If designname = "Roman Blind" Then
-                If width <= 1510 OrElse drop <= 1510 Then
-                    aPrinting.Visible = True : divPrinting.Visible = True
-                    aPrinting.Attributes("class") = aPrinting.Attributes("class") & " active"
-                    divPrinting.Attributes("class") = divPrinting.Attributes("class") & " show active"
-
-                    If Not String.IsNullOrEmpty(printing) Then imgPrinting.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printing)
-                End If
-            End If
-        Catch ex As Exception
-        End Try
-    End Sub
-
     Protected Sub BindEmailQuote()
         Try
             txtEmailQuoteTo.Text = orderClass.GetCustomerPrimaryEmail(lblCustomerId.Text)
@@ -3933,10 +3432,8 @@ Partial Class Order_Detail
         MessageError_ReworkOrder(visible, message)
         MessageError_MoreEmailQuote(visible, message)
 
-        'MessageError_Costing(visible, message)
         MessageError_Service(visible, message)
         MessageError_EditCosting(visible, message)
-        MessageError_Printing(visible, message)
     End Sub
 
     Protected Sub MessageError(visible As Boolean, message As String)
@@ -3996,20 +3493,12 @@ Partial Class Order_Detail
         divErrorReworkOrder.Visible = visible : msgErrorReworkOrder.InnerText = message
     End Sub
 
-    'Protected Sub MessageError_Costing(visible As Boolean, message As String)
-    '    divErrorCosting.Visible = visible : msgErrorCosting.InnerText = message
-    'End Sub
-
     Protected Sub MessageError_EditCosting(visible As Boolean, message As String)
         divErrorEditCosting.Visible = visible : msgErrorEditCosting.InnerText = message
     End Sub
 
     Protected Sub MessageError_Service(visible As Boolean, message As String)
         divErrorService.Visible = visible : msgErrorService.InnerText = message
-    End Sub
-
-    Protected Sub MessageError_Printing(visible As Boolean, message As String)
-        divErrorPrinting.Visible = visible : msgErrorPrinting.InnerText = message
     End Sub
 
     Protected Function VisibleCopy(productId As String) As Boolean
@@ -4069,7 +3558,6 @@ Partial Class Order_Detail
 
     Protected Function VisibleDelete(productId As String) As Boolean
         Dim result As Boolean = False
-
         Try
             Dim designId As String = orderClass.GetItemData("SELECT DesignId FROM Products WHERE Id='" & productId & "'")
 

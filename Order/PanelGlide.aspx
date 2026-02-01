@@ -383,5 +383,5 @@
         </div>
     </div>
 
-    <script src='<%: ResolveUrl("~/Scripts/WebOrders/PanelGlide.js?v=1.0.1") %>'></script>
+    <script src='<%: ResolveUrl("~/Scripts/WebOrders/PanelGlide.js?v=1.0.2") %>'></script>
 </asp:Content>

@@ -220,25 +220,6 @@ Partial Class Setting_Customer_Detail
         End Try
     End Sub
 
-    Protected Sub btnLog_Click(sender As Object, e As EventArgs)
-        MessageError_Log(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showLog(); };"
-        Try
-            gvListLogs.DataSource = settingClass.GetDataTable("SELECT * FROM Logs WHERE DataId='" & lblId.Text & "' AND Type='Customers' ORDER BY ActionDate DESC")
-            gvListLogs.DataBind()
-
-            ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
-        Catch ex As Exception
-            MessageError_Log(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Log(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnLog_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
-        End Try
-    End Sub
-
     Protected Sub BindData(customerId As String)
         Try
             Dim params As New List(Of SqlParameter) From {
@@ -319,10 +300,6 @@ Partial Class Setting_Customer_Detail
 
     Protected Sub MessageError_CreateOrder(visible As Boolean, message As String)
         divErrorCreateOrder.Visible = visible : msgErrorCreateOrder.InnerText = message
-    End Sub
-
-    Protected Sub MessageError_Log(visible As Boolean, message As String)
-        divErrorLog.Visible = visible : msgErrorLog.InnerText = message
     End Sub
 
     Protected Function PageAction(action As String) As Boolean
@@ -409,23 +386,6 @@ Partial Class Setting_Customer_Detail
                         mailingClass.WebError(dataMailing)
                     End If
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcessContact", thisScript, True)
-                End Try
-            ElseIf e.CommandName = "Log" Then
-                MessageError_Log(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showLog(); };"
-                Try
-                    gvListLogs.DataSource = settingClass.GetDataTable("SELECT * FROM Logs WHERE Type='CustomerContacts' AND DataId='" & dataId & "'  ORDER BY ActionDate DESC")
-                    gvListLogs.DataBind()
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
-                Catch ex As Exception
-                    MessageError_Log(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError_Log(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                        dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "linkLogContact_Click", ex.ToString()}
-                        mailingClass.WebError(dataMailing)
-                    End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
                 End Try
             End If
         End If
@@ -697,23 +657,6 @@ Partial Class Setting_Customer_Detail
                         mailingClass.WebError(dataMailing)
                     End If
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcessAddress", thisScript, True)
-                End Try
-            ElseIf e.CommandName = "Log" Then
-                MessageError_Log(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showLog(); };"
-                Try
-                    gvListLogs.DataSource = settingClass.GetDataTable("SELECT * FROM Logs WHERE Type='CustomerAddress' AND DataId='" & dataId & "'  ORDER BY ActionDate DESC")
-                    gvListLogs.DataBind()
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
-                Catch ex As Exception
-                    MessageError_Log(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError_Log(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                        dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "linkLogAddress_Click", ex.ToString()}
-                        mailingClass.WebError(dataMailing)
-                    End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
                 End Try
             End If
         End If
@@ -998,23 +941,6 @@ Partial Class Setting_Customer_Detail
                         mailingClass.WebError(dataMailing)
                     End If
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcessBusiness", thisScript, True)
-                End Try
-            ElseIf e.CommandName = "Log" Then
-                MessageError_Log(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showLog(); };"
-                Try
-                    gvListLogs.DataSource = settingClass.GetDataTable("SELECT * FROM Logs WHERE Type='CustomerBusiness' AND DataId='" & dataId & "'  ORDER BY ActionDate DESC")
-                    gvListLogs.DataBind()
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
-                Catch ex As Exception
-                    MessageError_Log(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError_Log(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                        dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "linkLogBusiness_Click", ex.ToString()}
-                        mailingClass.WebError(dataMailing)
-                    End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
                 End Try
             End If
         End If
@@ -1303,23 +1229,6 @@ Partial Class Setting_Customer_Detail
                         mailingClass.WebError(dataMailing)
                     End If
                     ClientScript.RegisterStartupScript(Me.GetType(), "showInstallerAccess", thisScript, True)
-                End Try
-            ElseIf e.CommandName = "Log" Then
-                MessageError_Log(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showLog(); };"
-                Try
-                    gvListLogs.DataSource = settingClass.GetDataTable("SELECT * FROM Logs WHERE Type='CustomerLogins' AND DataId='" & dataId & "'  ORDER BY ActionDate DESC")
-                    gvListLogs.DataBind()
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
-                Catch ex As Exception
-                    MessageError_Log(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError_Log(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                        dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "linkLogLogin_Click", ex.ToString()}
-                        mailingClass.WebError(dataMailing)
-                    End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
                 End Try
             End If
         End If
@@ -1638,7 +1547,7 @@ Partial Class Setting_Customer_Detail
     Protected Sub BindDataLogin(customerId As String)
         MessageError_Login(False, String.Empty)
         Try
-            Dim thisQuery As String = "SELECT CustomerLogins.*, CustomerLoginRoles.Name AS RoleName, CustomerLoginLevels.Name AS LevelName FROM CustomerLogins LEFT JOIN CustomerLoginRoles ON CustomerLogins.RoleId=CustomerLoginRoles.Id LEFT JOIN CustomerLoginLevels ON CustomerLogins.LevelId=CustomerLoginLevels.Id WHERE CustomerLogins.CustomerId='" & customerId & "' ORDER BY CustomerLogins.RoleId, CustomerLogins.Id ASC"
+            Dim thisQuery As String = "SELECT CustomerLogins.*, LoginRoles.Name AS RoleName, LoginLevels.Name AS LevelName FROM CustomerLogins LEFT JOIN LoginRoles ON CustomerLogins.RoleId=LoginRoles.Id LEFT JOIN LoginLevels ON CustomerLogins.LevelId=LoginLevels.Id WHERE CustomerLogins.CustomerId='" & customerId & "' ORDER BY CustomerLogins.RoleId, CustomerLogins.Id ASC"
 
             gvListLogin.DataSource = settingClass.GetDataTable(thisQuery)
             gvListLogin.DataBind()
@@ -1659,17 +1568,17 @@ Partial Class Setting_Customer_Detail
     Protected Sub BindDataLoginRole()
         ddlLoginRole.Items.Clear()
         Try
-            Dim thisQuery As String = "SELECT * FROM CustomerLoginRoles ORDER BY Name ASC"
+            Dim thisQuery As String = "SELECT * FROM LoginRoles ORDER BY Name ASC"
             If Session("RoleName") = "IT" Then
-                thisQuery = "SELECT * FROM CustomerLoginRoles WHERE Id<>'1' ORDER BY Name ASC"
+                thisQuery = "SELECT * FROM LoginRoles WHERE Id<>'1' ORDER BY Name ASC"
                 If Session("LevelName") = "Member" Then
-                    thisQuery = "SELECT * FROM CustomerLoginRoles WHERE Id<>'1' AND Id<>'2' ORDER BY Name ASC"
+                    thisQuery = "SELECT * FROM LoginRoles WHERE Id<>'1' AND Id<>'2' ORDER BY Name ASC"
                 End If
             End If
             If Session("RoleName") = "Factory Office" Then
-                thisQuery = "SELECT * FROM CustomerLoginRoles WHERE Id<>'1' AND Id<>'2' ORDER BY Name ASC"
+                thisQuery = "SELECT * FROM LoginRoles WHERE Id<>'1' AND Id<>'2' ORDER BY Name ASC"
                 If Session("LevelName") = "Member" Then
-                    thisQuery = "SELECT * FROM CustomerLoginRoles WHERE Id<>'1' AND Id<>'2' AND Id<>'3' ORDER BY Name ASC"
+                    thisQuery = "SELECT * FROM LoginRoles WHERE Id<>'1' AND Id<>'2' AND Id<>'3' ORDER BY Name ASC"
                 End If
             End If
 
@@ -1689,7 +1598,7 @@ Partial Class Setting_Customer_Detail
     Protected Sub BindDataLoginLevel()
         ddlLoginLevel.Items.Clear()
         Try
-            ddlLoginLevel.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerLoginLevels ORDER BY Name ASC")
+            ddlLoginLevel.DataSource = settingClass.GetDataTable("SELECT * FROM LoginLevels ORDER BY Name ASC")
             ddlLoginLevel.DataTextField = "Name"
             ddlLoginLevel.DataValueField = "Id"
             ddlLoginLevel.DataBind()
@@ -1726,7 +1635,7 @@ Partial Class Setting_Customer_Detail
     Protected Function VisibleInstallerAccess(roleId As String) As Boolean
         If Not String.IsNullOrEmpty(roleId) Then
             If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" Then
-                Dim roleName As String = settingClass.GetItemData("SELECT Name FROM CustomerLoginRoles WHERE Id='" & roleId & "'")
+                Dim roleName As String = settingClass.GetItemData("SELECT Name FROM LoginRoles WHERE Id='" & roleId & "'")
                 If roleName = "Installer" Then Return True
             End If
             Return False
@@ -1781,23 +1690,6 @@ Partial Class Setting_Customer_Detail
                         mailingClass.WebError(dataMailing)
                     End If
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcessDiscount", thisScript, True)
-                End Try
-            ElseIf e.CommandName = "Log" Then
-                MessageError_Log(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showLog(); };"
-                Try
-                    gvListLogs.DataSource = settingClass.GetDataTable("SELECT * FROM Logs WHERE Type='CustomerDiscounts' AND DataId='" & dataId & "'  ORDER BY ActionDate DESC")
-                    gvListLogs.DataBind()
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
-                Catch ex As Exception
-                    MessageError_Log(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError_Log(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                        dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "linkLogDiscount_Click", ex.ToString()}
-                        mailingClass.WebError(dataMailing)
-                    End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
                 End Try
             End If
         End If
@@ -2138,23 +2030,6 @@ Partial Class Setting_Customer_Detail
                         mailingClass.WebError(dataMailing)
                     End If
                     ClientScript.RegisterStartupScript(Me.GetType(), "showDetailPromo", thisScript, True)
-                End Try
-            ElseIf e.CommandName = "Log" Then
-                MessageError_Log(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showLog(); };"
-                Try
-                    gvListLogs.DataSource = settingClass.GetDataTable("SELECT * FROM Logs WHERE Type='CustomerPromos' AND DataId='" & dataId & "'  ORDER BY ActionDate DESC")
-                    gvListLogs.DataBind()
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
-                Catch ex As Exception
-                    MessageError_Log(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError_Log(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                        dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "linkLogPromo_Click", ex.ToString()}
-                        mailingClass.WebError(dataMailing)
-                    End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
                 End Try
             End If
         End If
@@ -2590,7 +2465,6 @@ Partial Class Setting_Customer_Detail
     Protected Sub AllMessageError(visible As Boolean, message As String)
         MessageError(visible, message)
         MessageError_CreateOrder(visible, message)
-        MessageError_Log(visible, message)
 
         MessageError_Contact(visible, message)
         MessageError_ProcessContact(visible, message)
