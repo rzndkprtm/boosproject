@@ -637,6 +637,15 @@ Partial Class Order_Default
                 ddlStatus.Items.Add(New ListItem("Shipped Out", "Shipped Out"))
                 ddlStatus.Items.Add(New ListItem("Completed", "Completed"))
                 ddlStatus.Items.Add(New ListItem("Canceled", "Canceled"))
+                If Session("CompanyId") = "3" Then
+                    ddlStatus.Items.Add(New ListItem("Unsubmitted", "Unsubmitted"))
+                    ddlStatus.Items.Add(New ListItem("New Order", "New Order"))
+                    ddlStatus.Items.Add(New ListItem("In Production", "In Production"))
+                    ddlStatus.Items.Add(New ListItem("On Hold", "On Hold"))
+                    ddlStatus.Items.Add(New ListItem("Shipped Out", "Shipped Out"))
+                    ddlStatus.Items.Add(New ListItem("Completed", "Completed"))
+                    ddlStatus.Items.Add(New ListItem("Canceled", "Canceled"))
+                End If
             End If
 
             If Session("RoleName") = "Data Entry" Then
