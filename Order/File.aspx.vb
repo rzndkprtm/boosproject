@@ -63,29 +63,33 @@ Partial Class Order_File
     End Sub
 
     Protected Sub BindFolder(Optional search As String = "")
-        Dim path As String = Server.MapPath("~/File/Order")
-        Dim dt As New DataTable
-        dt.Columns.Add("FolderName")
-        dt.Columns.Add("FileCount", GetType(Integer))
+        Try
+            Dim path As String = Server.MapPath("~/File/Order")
+            Dim dt As New DataTable
+            dt.Columns.Add("FolderName")
+            dt.Columns.Add("FileCount", GetType(Integer))
 
-        If Directory.Exists(path) Then
-            For Each dir As String In Directory.GetDirectories(path)
-                Dim folderName As String = New DirectoryInfo(dir).Name
+            If Directory.Exists(path) Then
+                For Each dir As String In Directory.GetDirectories(path)
+                    Dim folderName As String = New DirectoryInfo(dir).Name
 
-                If String.IsNullOrEmpty(search) OrElse
-               folderName.ToLower().Contains(search.ToLower()) Then
+                    If String.IsNullOrEmpty(search) OrElse
+                   folderName.ToLower().Contains(search.ToLower()) Then
 
-                    Dim files = Directory.GetFiles(dir)
-                    Dim row = dt.NewRow()
-                    row("FolderName") = folderName
-                    row("FileCount") = files.Length
-                    dt.Rows.Add(row)
-                End If
-            Next
-        End If
+                        Dim files = Directory.GetFiles(dir)
+                        Dim row = dt.NewRow()
+                        row("FolderName") = folderName
+                        row("FileCount") = files.Length
+                        dt.Rows.Add(row)
+                    End If
+                Next
+            End If
 
-        gvList.DataSource = dt
-        gvList.DataBind()
+            gvList.DataSource = dt
+            gvList.DataBind()
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+        End Try
     End Sub
 
     Protected Sub BindFiles(folderName As String)
