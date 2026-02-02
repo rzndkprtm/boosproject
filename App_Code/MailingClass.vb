@@ -83,85 +83,6 @@ Public Class MailingClass
         Return result
     End Function
 
-    Public Sub TestEmail(companyId As String, sendTo As String, message As String)
-        If String.IsNullOrEmpty(companyId) OrElse String.IsNullOrEmpty(sendTo) Then Exit Sub
-
-        Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='Test Email' AND Active=1")
-        If mailData Is Nothing Then Exit Sub
-
-        Dim mailServer As String = mailData("Server").ToString()
-        Dim mailHost As String = mailData("Host").ToString()
-        Dim mailPort As Integer = mailData("Port")
-
-        Dim mailAccount As String = mailData("Account").ToString()
-        Dim mailPassword As String = mailData("Password").ToString()
-        Dim mailAlias As String = mailData("Alias").ToString()
-        Dim mailSubject As String = mailData("Subject").ToString()
-
-        Dim mailTo As String = mailData("To").ToString()
-        Dim mailCc As String = mailData("Cc").ToString()
-        Dim mailBcc As String = mailData("Bcc").ToString()
-
-        Dim mailNetworkCredentials As Boolean = mailData("NetworkCredentials")
-        Dim mailDefaultCredentials As Boolean = mailData("DefaultCredentials")
-        Dim mailEnableSSL As Boolean = mailData("EnableSSL")
-
-        Dim mailBody As String = String.Empty
-        If Not String.IsNullOrEmpty(message) Then
-            Dim safeMessage As String = HttpUtility.HtmlEncode(message)
-            safeMessage = safeMessage.Replace(vbCrLf, "<br>").Replace(vbLf, "<br>")
-
-            mailBody = safeMessage
-        End If
-
-        mailBody &= "<br /><br /><br />"
-        mailBody &= "<span style='font-family: Cambria; font-size:16px;font-weight: bold;'>Reza Andika Pratama</span><span style='font-family: Cambria; font-size:16px;'> | Developer</span>"
-        mailBody &= "<br />"
-        mailBody &= "<span style='font-family: Cambria; font-size:16px;font-weight: bold;'>E</span><span style='font-family: Cambria; font-size:16px;'> : reza@bigblinds.co.id</span>"
-        mailBody &= "<br />"
-        mailBody &= "<span style='font-family: Cambria; font-size:16px;font-weight: bold;'>P</span><span style='font-family: Cambria; font-size:16px;'> : 0852-1504-3355</span>"
-
-        Dim myMail As New MailMessage
-
-        myMail.Subject = mailSubject.ToString()
-        myMail.From = New MailAddress(mailServer, mailAlias)
-
-        myMail.To.Add(sendTo)
-
-        If Not mailCc = "" Then
-            Dim thisArray() As String = mailCc.Split(";")
-            Dim thisMail As String = String.Empty
-            For Each thisMail In thisArray
-                myMail.CC.Add(thisMail)
-            Next
-        End If
-
-        If Not mailBcc = "" Then
-            Dim thisArray() As String = mailBcc.Split(";")
-            Dim thisMail As String = String.Empty
-            For Each thisMail In thisArray
-                myMail.Bcc.Add(thisMail)
-            Next
-        End If
-
-        myMail.Body = mailBody
-        myMail.IsBodyHtml = True
-        Dim smtpClient As New SmtpClient()
-        smtpClient.Host = mailHost
-        smtpClient.Port = mailPort
-        smtpClient.EnableSsl = mailEnableSSL
-        smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network
-        smtpClient.Timeout = 120000
-
-        If mailNetworkCredentials Then
-            smtpClient.UseDefaultCredentials = False
-            smtpClient.Credentials = New NetworkCredential(mailAccount, mailPassword)
-        Else
-            smtpClient.UseDefaultCredentials = mailDefaultCredentials
-        End If
-        smtpClient.Send(myMail)
-    End Sub
-
     Public Sub WebError(data As Object())
         Try
             Dim loginId As String = Convert.ToString(data(0))
@@ -958,8 +879,8 @@ Public Class MailingClass
         smtpClient.Send(myMail)
     End Sub
 
-    Public Sub SubmitOrder_PrintingFabric(headerId As String, orderFile As String, zipFile As String)
-        If String.IsNullOrEmpty(headerId) OrElse String.IsNullOrEmpty(zipFile) Then Exit Sub
+    Public Sub SubmitOrder_PrintingFabric(headerId As String, orderFile As String)
+        If String.IsNullOrEmpty(headerId) Then Exit Sub
 
         Dim orderData As DataRow = GetDataRow("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id='" & headerId & "'")
         If orderData Is Nothing Then Exit Sub
@@ -1002,7 +923,11 @@ Public Class MailingClass
         mailBody &= "<br /><br />"
         mailBody &= "A new order has been submitted by the customer, including printed fabric."
         mailBody &= "<br />"
-        mailBody &= "Please review the printing details in the attached document."
+        mailBody &= "Please access the web portal and download the images uploaded by the customer."
+        mailBody &= "<br />"
+        mailBody &= "Navigation:"
+        mailBody &= "<br />"
+        mailBody &= "<b>Order → File Order → Enter this <u>Order #</u> in the search field.</b>"
 
         If orderStatus = "Waiting Proforma" Then
             mailBody &= "<br /><br />"
@@ -1066,7 +991,6 @@ Public Class MailingClass
 
         myMail.Body = mailBody
         myMail.IsBodyHtml = True
-        myMail.Attachments.Add(New Attachment(zipFile))
         myMail.Attachments.Add(New Attachment(orderFile))
         Dim smtpClient As New SmtpClient()
         smtpClient.Host = mailHost

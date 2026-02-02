@@ -1,5 +1,6 @@
 ﻿Imports System.Data
 Imports System.IO
+Imports System.IO.Compression
 
 Partial Class Order_File
     Inherits Page
@@ -10,70 +11,36 @@ Partial Class Order_File
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-            LoadRootFolders()
+            BindFolder()
         End If
     End Sub
 
-    Protected Sub LoadRootFolders(Optional keyword As String = "")
-        Dim dt As New DataTable
-        dt.Columns.Add("FolderName")
-        dt.Columns.Add("FullPath")
-
-        Dim rootPath As String = Server.MapPath("~/File/Order")
-
-        For Each dir As String In Directory.GetDirectories(rootPath)
-            Dim folderName As String = Path.GetFileName(dir)
-
-            If folderName.Equals("bin", StringComparison.OrdinalIgnoreCase) _
-               OrElse folderName.Equals("app_data", StringComparison.OrdinalIgnoreCase) Then
-                Continue For
-            End If
-
-            If keyword <> "" AndAlso
-               Not folderName.ToLower().Contains(keyword.ToLower()) Then
-                Continue For
-            End If
-
-            dt.Rows.Add(folderName, dir)
-        Next
-        gvList.DataSource = dt
-        gvList.DataBind()
-    End Sub
-
-    Protected Sub LoadFolderContent(folderName As String)
-        Dim dt As New DataTable
-        dt.Columns.Add("Type")
-        dt.Columns.Add("Name")
-        dt.Columns.Add("FullPath")
-        dt.Columns.Add("Command")
-
-        Dim folderPath As String = Server.MapPath(String.Format("~/File/Order/{0}", folderName))
-
-        For Each file As String In Directory.GetFiles(folderPath)
-            dt.Rows.Add("File", Path.GetFileName(file), file, "OpenFile")
-        Next
-
-        gvListDetail.DataSource = dt
-        gvListDetail.DataBind()
-    End Sub
-
-
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
-        LoadRootFolders(txtSearch.Text)
+        BindFolder(txtSearch.Text)
     End Sub
 
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
         MessageError(False, String.Empty)
+        Try
+            gvList.PageIndex = e.NewPageIndex
+            BindFolder(txtSearch.Text)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
     End Sub
 
     Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
         If Not String.IsNullOrEmpty(e.CommandArgument) Then
-            Dim folderName As String = e.CommandArgument.ToString()
             If e.CommandName = "Detail" Then
                 MessageError(False, String.Empty)
+
+                Dim folderName As String = e.CommandArgument.ToString()
                 Dim thisScript As String = "window.onload = function() { showDetailFile(); };"
                 Try
-                    LoadFolderContent(folderName)
+                    BindFiles(folderName)
 
                     ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
                 Catch ex As Exception
@@ -88,8 +55,96 @@ Partial Class Order_File
                     End If
                     ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
                 End Try
+            ElseIf e.CommandName = "Zip" Then
+                Dim folderName As String = e.CommandArgument.ToString()
+                DownloadFolderAsZip(folderName)
             End If
         End If
+    End Sub
+
+    Protected Sub BindFolder(Optional search As String = "")
+        Dim path As String = Server.MapPath("~/File/Order")
+        Dim dt As New DataTable
+        dt.Columns.Add("FolderName")
+        dt.Columns.Add("FileCount", GetType(Integer))
+
+        If Directory.Exists(path) Then
+            For Each dir As String In Directory.GetDirectories(path)
+                Dim folderName As String = New DirectoryInfo(dir).Name
+
+                If String.IsNullOrEmpty(search) OrElse
+               folderName.ToLower().Contains(search.ToLower()) Then
+
+                    Dim files = Directory.GetFiles(dir)
+                    Dim row = dt.NewRow()
+                    row("FolderName") = folderName
+                    row("FileCount") = files.Length
+                    dt.Rows.Add(row)
+                End If
+            Next
+        End If
+
+        gvList.DataSource = dt
+        gvList.DataBind()
+    End Sub
+
+    Protected Sub BindFiles(folderName As String)
+        MessageError_DetailFile(False, String.Empty)
+        Try
+            Dim path As String = Server.MapPath("~/File/Order/" & folderName)
+
+            Dim dt As New DataTable
+            dt.Columns.Add("FolderName")
+            dt.Columns.Add("FileName")
+            dt.Columns.Add("FileUrl")
+
+            If Directory.Exists(path) Then
+                For Each file As String In Directory.GetFiles(path)
+                    Dim fileName = IO.Path.GetFileName(file)
+                    Dim row = dt.NewRow()
+
+                    row("FolderName") = folderName
+                    row("FileName") = fileName
+                    row("FileUrl") = ResolveUrl("~/File/Order/" & folderName & "/" & fileName)
+                    dt.Rows.Add(row)
+                Next
+            End If
+
+            gvListDetail.DataSource = dt
+            gvListDetail.DataBind()
+        Catch ex As Exception
+            MessageError_DetailFile(True, ex.ToString())
+        End Try
+    End Sub
+
+    Private Sub DownloadFolderAsZip(folderName As String)
+        Dim folderPath As String = Server.MapPath("~/File/Order/" & folderName)
+
+        If Not Directory.Exists(folderPath) Then Exit Sub
+
+        Using ms As New MemoryStream()
+            Using zip As New ZipArchive(ms, ZipArchiveMode.Create, True)
+                For Each filePath In Directory.GetFiles(folderPath)
+                    Dim entryName As String = Path.GetFileName(filePath)
+
+                    Dim entry = zip.CreateEntry(entryName, CompressionLevel.Fastest)
+                    Using entryStream = entry.Open()
+                        Using fileStream As New FileStream(filePath, FileMode.Open, FileAccess.Read)
+                            fileStream.CopyTo(entryStream)
+                        End Using
+                    End Using
+                Next
+            End Using
+
+            Dim zipBytes As Byte() = ms.ToArray()
+
+            Response.Clear()
+            Response.ContentType = "application/zip"
+            Response.AddHeader("Content-Disposition", "attachment; filename=""" & folderName & ".zip""")
+            Response.BinaryWrite(zipBytes)
+            Response.Flush()
+            HttpContext.Current.ApplicationInstance.CompleteRequest()
+        End Using
     End Sub
 
     Protected Sub MessageError(visible As Boolean, message As String)
@@ -99,46 +154,4 @@ Partial Class Order_File
     Protected Sub MessageError_DetailFile(visible As Boolean, message As String)
         divErrorDetailFile.Visible = visible : msgErrorDetailFile.InnerText = message
     End Sub
-
-    Protected Sub gvListDetail_RowCommand(sender As Object, e As GridViewCommandEventArgs)
-        If e.CommandName = "OpenFile" Then
-            Dim filePath As String = e.CommandArgument.ToString()
-            OpenOrDownloadFile(filePath)
-        End If
-    End Sub
-
-    Protected Sub OpenOrDownloadFile(filePath As String)
-        If Not File.Exists(filePath) Then Exit Sub
-
-        Dim ext As String = Path.GetExtension(filePath).ToLower()
-        Dim fileName As String = Path.GetFileName(filePath)
-
-        Dim previewExtensions As String() = {".pdf", ".jpg", ".jpeg", ".png", ".gif"}
-
-        Response.Clear()
-        Response.ContentType = GetContentType(ext)
-
-        If previewExtensions.Contains(ext) Then
-            ' Preview (open di tab baru)
-            Response.AddHeader("Content-Disposition", "inline; filename=" & fileName)
-        Else
-            ' Download
-            Response.AddHeader("Content-Disposition", "attachment; filename=" & fileName)
-        End If
-
-        Response.TransmitFile(filePath)
-        Response.End()
-    End Sub
-
-    Private Function GetContentType(ext As String) As String
-        Select Case ext
-            Case ".pdf" : Return "application/pdf"
-            Case ".jpg", ".jpeg" : Return "image/jpeg"
-            Case ".png" : Return "image/png"
-            Case ".gif" : Return "image/gif"
-            Case ".txt" : Return "text/plain"
-            Case ".zip" : Return "application/zip"
-            Case Else : Return "application/octet-stream"
-        End Select
-    End Function
 End Class

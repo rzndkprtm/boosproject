@@ -1,7 +1,6 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 Imports System.Globalization
-Imports System.IO.Compression
 
 Partial Class Order_Detail
     Inherits Page
@@ -254,13 +253,7 @@ Partial Class Order_Detail
             Dim checkPrinting As Integer = orderClass.GetItemData_Integer("SELECT COUNT(*) FROM OrderDetails WHERE HeaderId='" & lblHeaderId.Text & "' AND (NULLIF(LTRIM(RTRIM(Printing)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingB)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingC)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingD)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingE)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingF)),'') IS NOT NULL)")
 
             If checkPrinting > 0 Then
-                Dim sourceFolder As String = Server.MapPath(String.Format("~/File/Printing/{0}", lblHeaderId.Text))
-                Dim zipPath As String = Server.MapPath(String.Format("~/File/Printing/{0}.zip", lblOrderId.Text))
-
-                If IO.File.Exists(zipPath) Then IO.File.Delete(zipPath)
-                ZipFile.CreateFromDirectory(sourceFolder, zipPath, CompressionLevel.Fastest, True)
-
-                mailingClass.SubmitOrder_PrintingFabric(lblHeaderId.Text, finalFilePath, zipPath)
+                mailingClass.SubmitOrder_PrintingFabric(lblHeaderId.Text, finalFilePath)
             End If
 
             Dim berhasil As String = String.Format("showSuccessSwal('{0}')", lblHeaderId.Text)

@@ -61,14 +61,23 @@
                                             <RowStyle />
                                             <Columns>
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center">
-                                                     <ItemTemplate>
-                                                         <%# Container.DataItemIndex + 1 %>
-                                                     </ItemTemplate>
-                                                 </asp:TemplateField>
-                                                <asp:BoundField DataField="FolderName" HeaderText="Folder Name" />
-                                                <asp:TemplateField HeaderStyle-CssClass="hiddencol" ItemStyle-CssClass="hiddencol">
                                                     <ItemTemplate>
-                                                        <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail" CommandName="Detail" CommandArgument='<%# Eval("FolderName") %>'></asp:LinkButton>
+                                                        <%# Container.DataItemIndex + 1 %>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:BoundField DataField="FolderName" HeaderText="Folder Name" />
+                                                <asp:BoundField DataField="FileCount" HeaderText="Total Files" />
+                                                <asp:TemplateField ItemStyle-Width="150px" ItemStyle-HorizontalAlign="Center">
+                                                    <ItemTemplate>
+                                                        <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
+                                                        <ul class="dropdown-menu">
+                                                            <li>
+                                                                <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail" CommandName="Detail" CommandArgument='<%# Eval("FolderName") %>'></asp:LinkButton>
+                                                            </li>
+                                                            <li>
+                                                                <asp:LinkButton runat="server" ID="linkZip" CssClass="dropdown-item" Text="Download Zip" CommandName="Zip" CommandArgument='<%# Eval("FolderName") %>'></asp:LinkButton>
+                                                            </li>
+                                                        </ul>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                             </Columns>
@@ -103,10 +112,10 @@
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="row mb-3">
                         <div class="col-12">
                             <div class="table-responsive">
-                                <asp:GridView runat="server" ID="gvListDetail" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowCommand="gvListDetail_RowCommand">
+                                <asp:GridView runat="server" ID="gvListDetail" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center">
                                     <RowStyle />
                                     <Columns>
                                         <asp:TemplateField ItemStyle-HorizontalAlign="Center">
@@ -114,10 +123,12 @@
                                                 <%# Container.DataItemIndex + 1 %>
                                             </ItemTemplate>
                                         </asp:TemplateField>
-                                        <asp:BoundField DataField="Type" HeaderText="Type" />
-                                        <asp:TemplateField HeaderText="Name">
+                                        <asp:BoundField DataField="FileName" HeaderText="File Name" />
+
+                                        <asp:TemplateField ItemStyle-Width="200px" ItemStyle-HorizontalAlign="Center">
                                             <ItemTemplate>
-                                                <asp:LinkButton ID="lnkItem" runat="server" Text='<%# Eval("Name") %>' CommandName='<%# Eval("Command") %>' CommandArgument='<%# Eval("FullPath") %>' />
+                                                <a class="btn btn-sm btn-primary" href='<%# Eval("FileUrl") %>' target="_blank">Preview</a>
+                                                <a class="btn btn-sm btn-info" href='<%# ResolveUrl("~/Handler/Download.ashx?folder=" & Eval("FolderName") & "&file=" & Eval("FileName")) %>'>Download</a>
                                             </ItemTemplate>
                                         </asp:TemplateField>
                                     </Columns>
@@ -131,7 +142,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
                 </div>
             </div>
         </div>
