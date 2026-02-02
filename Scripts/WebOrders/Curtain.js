@@ -305,7 +305,7 @@ function bindBlindType(designType) {
             return;
         }
 
-        const listData = { type: "BlindType", companydetail: companyDetail, designtype: designType };
+        const listData = { type: "BlindType", companydetail: companyDetail, designtype: designType, action: itemAction };
         $.ajax({
             type: "POST",
             url: "Method.aspx/ListData",
@@ -367,7 +367,7 @@ function bindColourType(blindType) {
             return;
         }
 
-        const listData = { type: "ProductName", companydetail: companyDetail, blindtype: blindType, tubetype: 0, controltype: "0" };
+        const listData = { type: "ProductName", companydetail: companyDetail, blindtype: blindType, tubetype: 0, controltype: "0", action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -424,7 +424,7 @@ function bindMounting(blindType) {
             return;
         }
 
-        const listData = { type: "Mounting", blindtype: blindType };
+        const listData = { type: "Mounting", blindtype: blindType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -482,11 +482,7 @@ function bindFabricType(designType) {
             return;
         }
 
-        const listData = {
-            type: "FabricTypeByDesign",
-            designtype: designType,
-            companydetail: companyDetail
-        };
+        const listData = { type: "FabricTypeByDesign", designtype: designType, companydetail: companyDetail, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -555,7 +551,7 @@ function bindFabricColour(fabricType) {
             return;
         }
 
-        const listData = { type: "FabricColour", fabrictype: fabricType };
+        const listData = { type: "FabricColour", fabrictype: fabricType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -604,7 +600,7 @@ function bindFabricColourB(fabricType) {
             return;
         }
 
-        const listData = { type: "FabricColour", fabrictype: fabricType };
+        const listData = { type: "FabricColour", fabrictype: fabricType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -655,7 +651,7 @@ function bindTrackType(heading) {
             ]).then(resolve).catch(reject);
         }
 
-        const listData = { type: "CurtainTrackType", customtype: heading };
+        const listData = { type: "CurtainTrackType", customtype: heading, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -715,7 +711,7 @@ function bindTrackTypeB(heading) {
             ]).then(resolve).catch(reject);
         }
 
-        const listData = { type: "CurtainTrackType", customtype: heading };
+        const listData = { type: "CurtainTrackType", customtype: heading, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -773,7 +769,7 @@ function bindTrackColour(trackType) {
             return;
         }
 
-        const listData = { type: "CurtainTrackColour", customtype: trackType };
+        const listData = { type: "CurtainTrackColour", customtype: trackType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -822,7 +818,7 @@ function bindTrackColourB(trackType) {
             return;
         }
 
-        const listData = { type: "CurtainTrackColour", customtype: trackType };
+        const listData = { type: "CurtainTrackColour", customtype: trackType, action: itemAction };
 
         $.ajax({
             type: "POST",

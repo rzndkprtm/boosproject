@@ -92,21 +92,6 @@ Partial Class Setting_Price_ProductGroup
                     End If
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 End Try
-            ElseIf e.CommandName = "Log" Then
-                MessageError_Log(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showLog(); };"
-                Try
-                    gvListLogs.DataSource = settingClass.GetDataTable("SELECT * FROM Logs WHERE DataId='" & dataId & "' AND Type='ProductGroups' ORDER BY ActionDate DESC")
-                    gvListLogs.DataBind()
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
-                Catch ex As Exception
-                    MessageError_Log(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError_Log(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                    End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
-                End Try
             End If
         End If
     End Sub
@@ -183,48 +168,12 @@ Partial Class Setting_Price_ProductGroup
         End Try
     End Sub
 
-    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        Try
-            Dim thisId As String = txtIdDelete.Text
-
-            Using thisConn As New SqlConnection(myConn)
-                thisConn.Open()
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM PriceProductGroups WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Logs WHERE Type='ProductGroups' AND DataId=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE PriceBases SET ProductGroupId=NULL WHERE ProductGroupId=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                thisConn.Close()
-            End Using
-
-            Session("SearchProductGroup") = txtSearch.Text
-            Response.Redirect("~/setting/price/productgroup", False)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
     Protected Sub BindData(searchText As String)
         Session("SearchProductGroup") = String.Empty
         Try
             Dim search As String = String.Empty
             If Not searchText = "" Then
-                search = " WHERE PriceProductGroups.Id LIKE '%" & searchText & "%' OR PriceProductGroups.Name LIKE '%" & searchText & "%' OR PriceProductGroups.Description LIKE '%" & searchText & "%' OR Designs.Name LIKE '%" & searchText & "%'"
+                search = "WHERE PriceProductGroups.Id LIKE '%" & searchText & "%' OR PriceProductGroups.Name LIKE '%" & searchText & "%' OR PriceProductGroups.Description LIKE '%" & searchText & "%' OR Designs.Name LIKE '%" & searchText & "%'"
             End If
 
             Dim thisString As String = String.Format("SELECT PriceProductGroups.*, Designs.Name AS DesignName, CASE WHEN PriceProductGroups.Active=1 THEN 'Yes' WHEN PriceProductGroups.Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM PriceProductGroups LEFT JOIN Designs ON PriceProductGroups.DesignId = Designs.Id {0} ORDER BY Designs.Name, PriceProductGroups.Name ASC", search)
@@ -242,10 +191,14 @@ Partial Class Setting_Price_ProductGroup
         End Try
     End Sub
 
-    Protected Sub BindDesignType()
+    Protected Sub BindDesignType(Optional isEdit As Boolean = False)
         ddlDesign.Items.Clear()
         Try
-            ddlDesign.DataSource = settingClass.GetDataTable("SELECT * FROM Designs ORDER BY Name ASC")
+            Dim thisString As String = "SELECT * FROM Designs WHERE Active=1 ORDER BY Name ASC"
+            If isEdit = True Then
+                thisString = "SELECT * FROM Designs ORDER BY Name ASC"
+            End If
+            ddlDesign.DataSource = settingClass.GetDataTable(thisString)
             ddlDesign.DataTextField = "Name"
             ddlDesign.DataValueField = "Id"
             ddlDesign.DataBind()
@@ -268,14 +221,6 @@ Partial Class Setting_Price_ProductGroup
     Protected Sub MessageError_Process(visible As Boolean, message As String)
         divErrorProcess.Visible = visible : msgErrorProcess.InnerText = message
     End Sub
-
-    Protected Sub MessageError_Log(visible As Boolean, message As String)
-        divErrorLog.Visible = visible : msgErrorLog.InnerText = message
-    End Sub
-
-    Protected Function BindTextLog(logId As String) As String
-        Return settingClass.getTextLog(logId)
-    End Function
 
     Protected Function PageAction(action As String) As Boolean
         Try

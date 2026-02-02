@@ -288,7 +288,7 @@ function bindBlindType(designType) {
             return;
         }
 
-        const listData = { type: "BlindType", companydetail: companyDetail, designtype: designType };
+        const listData = { type: "BlindType", companydetail: companyDetail, designtype: designType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -357,7 +357,7 @@ function bindTubeType(blindType) {
             return;
         }
 
-        let listData = { type: "TubeType", companydetail: companyDetail, blindtype: blindType };
+        let listData = { type: "TubeType", companydetail: companyDetail, blindtype: blindType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -422,7 +422,7 @@ function bindColourType(blindType, tubeType) {
             return;
         }
 
-        const listData = { type: "ColourType", companydetail: companyDetail, blindtype: blindType, tubetype: tubeType, controltype: "0" };
+        const listData = { type: "ColourType", companydetail: companyDetail, blindtype: blindType, tubetype: tubeType, controltype: "0", action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -480,7 +480,7 @@ function bindMounting(blindType) {
             return;
         }
 
-        const listData = { type: "Mounting", blindtype: blindType };
+        const listData = { type: "Mounting", blindtype: blindType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -529,7 +529,7 @@ function bindLayoutCode(tubeType) {
             return;
         }
 
-        const listData = { type: "LayoutCodeDoor", tubetype: tubeType };
+        const listData = { type: "LayoutCodeDoor", tubetype: tubeType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -578,7 +578,7 @@ function bindMeshType(blindType) {
             return;
         }
 
-        const listData = { type: "MeshDoor", blindtype: blindType };
+        const listData = { type: "MeshDoor", blindtype: blindType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -627,7 +627,7 @@ function bindFrameColour(blindType) {
             return;
         }
 
-        const listData = { type: "FrameColourDoor", blindtype: blindType };
+        const listData = { type: "FrameColourDoor", blindtype: blindType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -676,7 +676,7 @@ function bindInterlock(tubeType) {
             return;
         }
 
-        const listData = { type: "InterlockDoor", tubetype: tubeType };
+        const listData = { type: "InterlockDoor", tubetype: tubeType, action: itemAction };
 
         $.ajax({
             type: "POST",

@@ -136,7 +136,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Mounting</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-5 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
                                                     <select id="mounting" class="form-select"></select>
                                                 </div>
                                             </div>
@@ -205,12 +205,24 @@
                                                 </div>
                                             </div>
 
-                                            <div class="row">
+                                            <div class="row" id="divchainremote">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label id="controlcolourtitle"></label>
                                                 </div>
                                                 <div class="col-12 col-sm-12 col-lg-6 form-group">
-                                                    <select id="controlcolour" class="form-select"></select>
+                                                    <select id="chaincolour" class="form-select"></select>
+                                                </div>
+                                            </div>
+
+                                            <div class="row" id="divcordcolour">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Cord Colour</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                    <select id="controlcolour" class="form-select">
+                                                        <option value=""></option>
+                                                        <option value="White">White</option>
+                                                    </select>
                                                 </div>
                                             </div>
 
@@ -346,7 +358,7 @@
                         </div>
                         <div class="card-content">
                             <div class="card-body">
-                                <b>LIMITATION</b>
+                                <b>LIMITATIONS</b>
                                 <ul>
                                     <li>Minimum width for Chain and Reg Cord Lock : 360mm</li>
                                     <li>Minimum width for motorised : 700mm</li>
@@ -425,5 +437,5 @@
         </div>
     </div>
 
-    <script src='<%: ResolveUrl("~/Scripts/WebOrders/Roman.js?v=1.0.2") %>'></script>
+    <script src='<%: ResolveUrl("~/Scripts/WebOrders/Roman.js?v=1.0.3") %>'></script>
 </asp:Content>

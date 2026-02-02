@@ -176,6 +176,15 @@
                                                     </div>
                                                 </div>
                                             </div>
+
+                                            <div class="row mt-3" id="divqtyblade">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Blade Quantity</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-2 form-group">
+                                                    <input type="number" id="qtyblade" class="form-control" autocomplete="off" placeholder="Blade" />
+                                                </div>
+                                            </div>
                                 
                                             <div class="row" id="divwidth">
                                                 <div class="col-12 col-sm-12 col-lg-3">
@@ -188,16 +197,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            <div class="row" id="divqtyblade">
-                                                <div class="col-12 col-sm-12 col-lg-3">
-                                                    <label>Blade Quantity</label>
-                                                </div>
-                                                <div class="col-12 col-sm-12 col-lg-2 form-group">
-                                                    <input type="number" id="qtyblade" class="form-control" autocomplete="off" placeholder="Blade" />
-                                                </div>
-                                            </div>
-
+                                            
                                             <div class="row" id="divdrop">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Drop</label>
@@ -446,5 +446,5 @@
         </div>
     </div>
     
-    <script src="<%: ResolveUrl("~/Scripts/WebOrders/Vertical.js?v=1.0.2") %>"></script>
+    <script src="<%: ResolveUrl("~/Scripts/WebOrders/Vertical.js?v=1.0.3") %>"></script>
 </asp:Content>

@@ -244,7 +244,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3 mb-1">
                                                     <label>Cord Position</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-2 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
                                                     <select id="controlposition" class="form-select">
                                                         <option value=""></option>
                                                         <option value="Left">Left</option>
@@ -464,5 +464,5 @@
         </div>
     </div>
 
-    <script src='<%: ResolveUrl("~/Scripts/WebOrders/Cellular.js?v=1.0.2") %>'></script>
+    <script src='<%: ResolveUrl("~/Scripts/WebOrders/Cellular.js?v=1.0.3") %>'></script>
 </asp:Content>
