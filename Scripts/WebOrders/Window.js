@@ -256,7 +256,7 @@ function bindBlindType(designType) {
             return;
         }
 
-        const listData = { type: "BlindType", companydetail: companyDetail, designtype: designType };
+        const listData = { type: "BlindType", companydetail: companyDetail, designtype: designType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -323,7 +323,7 @@ function bindColourType(blindType) {
             return;
         }
 
-        const listData = { type: "ColourType", blindtype: blindType, companydetail: companyDetail, tubetype: "0", controltype: "0" };
+        const listData = { type: "ColourType", blindtype: blindType, companydetail: companyDetail, tubetype: "0", controltype: "0", action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -381,7 +381,7 @@ function bindMounting(blindType) {
             return;
         }
 
-        const listData = { type: "Mounting", blindtype: blindType };
+        const listData = { type: "Mounting", blindtype: blindType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -430,7 +430,7 @@ function bindMeshType(blindType) {
             return;
         }
 
-        const listData = { type: "MeshWindow", blindtype: blindType };
+        const listData = { type: "MeshWindow", blindtype: blindType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -479,7 +479,7 @@ function bindFrameColour(blindType) {
             return;
         }
 
-        const listData = { type: "FrameColourWindow", blindtype: blindType };
+        const listData = { type: "FrameColourWindow", blindtype: blindType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -627,7 +627,7 @@ function controlForm(status, isEditItem, isCopyItem) {
 function setFormValues(itemData) {
     const mapping = {
         blindtype: "BlindType",
-        colourtype: "ColourType",
+        colourtype: "ProductId",
         qty: "Qty",
         room: "Room",
         mounting: "Mounting",
@@ -666,6 +666,18 @@ function setFormValues(itemData) {
             if (el) el.value = "";
         });
     }
+}
+
+function fillSelect(selector, list, selected = null) {
+    const el = document.querySelector(selector);
+    el.innerHTML = "<option value=''></option>";
+    list.forEach(item => {
+        const opt = document.createElement("option");
+        opt.value = item.Value;
+        opt.textContent = item.Text;
+        if (selected != null && selected == item.Value) opt.selected = true;
+        el.appendChild(opt);
+    });
 }
 
 function process() {

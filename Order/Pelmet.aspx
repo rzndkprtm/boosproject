@@ -243,7 +243,7 @@
                                         <div class="col-12 col-sm-12 col-lg-3">
                                             <label>Return Length (L)</label>
                                         </div>
-                                        <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                        <div class="col-12 col-sm-12 col-lg-4 form-group">
                                             <div class="input-group">
                                                 <input type="number" id="returnlengthvalue" class="form-control" autocomplete="off" placeholder="Length ...." />
                                                 <span class="input-group-text">mm</span>
@@ -255,7 +255,7 @@
                                         <div class="col-12 col-sm-12 col-lg-3">
                                             <label>Return Length (R)</label>
                                         </div>
-                                        <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                        <div class="col-12 col-sm-12 col-lg-4 form-group">
                                             <div class="input-group">
                                                 <input type="number" id="returnlengthvalueb" class="form-control" autocomplete="off" placeholder="Length ...." />
                                                 <span class="input-group-text">mm</span>
@@ -374,5 +374,5 @@
         </div>
     </div>
 
-    <script src='<%: ResolveUrl("~/Scripts/WebOrders/Pelmet.js?v=1.0.2") %>'></script>
+    <script src='<%: ResolveUrl("~/Scripts/WebOrders/Pelmet.js?v=1.0.3") %>'></script>
 </asp:Content>

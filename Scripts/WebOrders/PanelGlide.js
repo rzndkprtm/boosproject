@@ -313,11 +313,7 @@ function bindBlindType(designType) {
             return;
         }
 
-        const listData = {
-            type: "BlindType",
-            companydetail: companyDetail,
-            designtype: designType
-        };
+        const listData = { type: "BlindType", companydetail: companyDetail, designtype: designType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -383,7 +379,7 @@ function bindTubeType(blindType) {
             return;
         }
 
-        let listData = { type: "TubeType", companydetail: companyDetail, blindtype: blindType };
+        let listData = { type: "TubeType", companydetail: companyDetail, blindtype: blindType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -446,7 +442,7 @@ function bindColourType(blindType, tubeType) {
             return;
         }
 
-        const listData = { type: "ColourType", companydetail: companyDetail, blindtype: blindType, tubetype: tubeType, controltype: "0" };
+        const listData = { type: "ColourType", companydetail: companyDetail, blindtype: blindType, tubetype: tubeType, controltype: "0", action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -503,7 +499,7 @@ function bindMounting(blindType) {
             return;
         }
 
-        const listData = { type: "Mounting", blindtype: blindType };
+        const listData = { type: "Mounting", blindtype: blindType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -555,7 +551,7 @@ function bindFabricType(designType, tubeType) {
             return;
         }
 
-        const listData = { type: "FabricType", designtype: designType, companydetail: companyDetail, tubetype: tubeType };
+        const listData = { type: "FabricType", designtype: designType, companydetail: companyDetail, tubetype: tubeType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -613,7 +609,7 @@ function bindFabricColour(fabricType) {
             return;
         }
 
-        const listData = { type: "FabricColour", fabrictype: fabricType };
+        const listData = { type: "FabricColour", fabrictype: fabricType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -662,7 +658,7 @@ function bindLayoutCode(trackType) {
             return;
         }
 
-        const listData = { type: "LayoutCodePG", customtype: trackType };
+        const listData = { type: "LayoutCodePG", customtype: trackType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -789,15 +785,10 @@ function visibleDetail(blindType, tubeType, colourType) {
 
         toggleDisplay(detail, true);
 
-        getBlindName(blindType).then(blindName => {
-            const tubePromise = getTubeName(tubeType).then(tubeName => {
-                if (tubeName === "Plantation") {
-                    toggleDisplay(battenfront, true);
-                }
-            }).catch(err => {
-                resolve();
-            });
-
+        Promise.all([
+            getBlindName(blindType),
+            getTubeName(tubeType)
+        ]).then(([blindName, tubeName]) => {
             if (blindName === "Complete Set") {
                 toggleDisplay(mounting, true);
                 toggleDisplay(fabrictype, true);
@@ -808,7 +799,9 @@ function visibleDetail(blindType, tubeType, colourType) {
                 toggleDisplay(layoutcode, true);
                 toggleDisplay(panelqty, true);
 
-                tubePromise.finally(() => resolve());
+                if (tubeName === "Plantation") {
+                    toggleDisplay(battenfront, true);
+                }
             } else if (blindName === "Track Only") {
                 toggleDisplay(mounting, true);
                 toggleDisplay(tracktype, true);
@@ -819,17 +812,17 @@ function visibleDetail(blindType, tubeType, colourType) {
                 wandSelect.value = "Custom";
                 wandSelect.disabled = true;
                 visibleWandLength(wandSelect.value);
-                resolve();
             } else if (blindName === "Panel Only") {
                 toggleDisplay(fabrictype, true);
                 toggleDisplay(fabriccolour, true);
                 toggleDisplay(drop, true);
 
-                tubePromise.finally(() => resolve());
-            } else {
-                resolve();
+                if (tubeName === "Plantation") {
+                    toggleDisplay(battenfront, true);
+                }
             }
-        }).catch(err => {
+            resolve();
+        }).catch(error => {
             resolve();
         });
 

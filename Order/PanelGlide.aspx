@@ -246,9 +246,9 @@
 
                                             <div class="row mt-3" id="divbattenfront">
                                                 <div class="col-12 col-sm-12 col-lg-3">
-                                                    <label>Batten Colour (Front)</label>
+                                                    <label>Batten Colour</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
                                                     <div class="input-group">
                                                         <select id="batten" class="form-select">
                                                             <option value=""></option>
@@ -383,5 +383,5 @@
         </div>
     </div>
 
-    <script src='<%: ResolveUrl("~/Scripts/WebOrders/PanelGlide.js?v=1.0.2") %>'></script>
+    <script src='<%: ResolveUrl("~/Scripts/WebOrders/PanelGlide.js?v=1.0.3") %>'></script>
 </asp:Content>

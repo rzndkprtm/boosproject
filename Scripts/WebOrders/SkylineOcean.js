@@ -376,7 +376,7 @@ function bindBlindType(designType) {
             return;
         }
 
-        const listData = { type: "BlindTypeShutter", companydetail: companyDetail, designtype: designType };
+        const listData = { type: "BlindTypeShutter", companydetail: companyDetail, designtype: designType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -441,7 +441,7 @@ function bindColourType(blindType) {
             return;
         }
 
-        const listData = { type: "ColourType", blindtype: blindType, companydetail: companyDetail, tubetype: "0", controltype: "0" };
+        const listData = { type: "ColourType", blindtype: blindType, companydetail: companyDetail, tubetype: "0", controltype: "0", action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -499,7 +499,7 @@ function bindMounting(blindType) {
             return;
         }
 
-        const listData = { type: "Mounting", blindtype: blindType };
+        const listData = { type: "Mounting", blindtype: blindType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -576,7 +576,7 @@ function bindLayoutCode(blindType) {
             return;
         }
 
-        const listData = { type: "LayoutCodeShutter", blindtype: blindType };
+        const listData = { type: "LayoutCodeShutter", blindtype: blindType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -625,7 +625,7 @@ function bindFrameType(blindType, mounting) {
             return;
         }
 
-        const listData = { type: "FrameTypeShutter", blindtype: blindType, customtype: mounting };
+        const listData = { type: "FrameTypeShutter", blindtype: blindType, customtype: mounting, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -670,7 +670,7 @@ function bindLeftFrame(frameType) {
             return;
         }
 
-        const listData = { type: "LeftFrameShutter", customtype: frameType };
+        const listData = { type: "LeftFrameShutter", customtype: frameType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -715,7 +715,7 @@ function bindRightFrame(frameType) {
             return;
         }
 
-        const listData = { type: "RightFrameShutter", customtype: frameType };
+        const listData = { type: "RightFrameShutter", customtype: frameType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -760,7 +760,7 @@ function bindTopFrame(frameType) {
             return;
         }
 
-        const listData = { type: "TopFrameShutter", customtype: frameType };
+        const listData = { type: "TopFrameShutter", customtype: frameType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -805,7 +805,7 @@ function bindBottomFrame(frameType) {
             return;
         }
 
-        const listData = { type: "BottomFrameShutter", customtype: frameType };
+        const listData = { type: "BottomFrameShutter", customtype: frameType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -850,7 +850,7 @@ function bindBottomTrack(blindType, bottomFrame) {
             return;
         }
 
-        const listData = { type: "BottomTrackShutter", blindtype: blindType, customtype: bottomFrame };
+        const listData = { type: "BottomTrackShutter", blindtype: blindType, customtype: bottomFrame, action: itemAction };
 
         $.ajax({
             type: "POST",

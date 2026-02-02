@@ -78,7 +78,7 @@ Partial Class Setting_Specification_Mounting
                     Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Mountings WHERE Id='" & dataId & "'")
                     If myData Is Nothing Then Exit Sub
 
-                    BindBlind()
+                    BindBlind(True)
 
                     txtName.Text = myData("Name").ToString()
                     txtDescription.Text = myData("Description").ToString()

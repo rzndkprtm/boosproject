@@ -1050,21 +1050,19 @@ Public Class PreviewClass
 
                         Dim chainName As String = GetItemData("SELECT Name FROM Chains WHERE Id='" & romanData.Rows(i)("ChainId").ToString() & "'")
 
-                        Dim chainColour As String = String.Empty
+                        Dim controlColour As String = String.Empty
                         Dim remoteType As String = String.Empty
 
-                        If controlName = "Chain" OrElse controlName = "Reg Cord Lock" Then
-                            chainColour = chainName
+                        If controlName = "Chain" Then controlColour = chainName
+                        If controlName = "Reg Cord Lock" OrElse controlName = "Cord Lock" Then
+                            controlColour = romanData.Rows(i)("ControlColour").ToString()
                         End If
-
                         If controlName.Contains("Alpha") OrElse controlName = "Mercure" OrElse controlName = "Altus" OrElse controlName = "Sonesse 30 WF" Then
                             remoteType = chainName
                         End If
 
                         Dim controlLength As String = romanData.Rows(i)("ControlLength").ToString()
-
                         Dim controlLengthValue As String = romanData.Rows(i)("ControlLengthValue").ToString()
-
                         Dim controlLengthText As String = controlLength
                         If controlLength = "Custom" Then
                             controlLengthText = String.Format("{0} : {1}mm", controlLength, controlLengthValue)
@@ -1080,7 +1078,7 @@ Public Class PreviewClass
                         items(7, i) = romanData.Rows(i)("TubeName").ToString()
                         items(8, i) = romanData.Rows(i)("ControlName").ToString()
                         items(9, i) = romanData.Rows(i)("ControlPosition").ToString()
-                        items(10, i) = chainColour
+                        items(10, i) = controlColour
                         items(11, i) = controlLengthText
                         items(12, i) = remoteType
                         items(13, i) = romanData.Rows(i)("Charger").ToString()
@@ -1297,7 +1295,7 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Mounting", "Vertical Type", "Blade Type", "Blade Qty", "Fabric Insert", "Fabric Type", "Fabric Colour", "Width (mm)", "Drop (mm)", "Stack Position", "Control Position", "Control Type", "Track Colour", "Control Colour", "Control Length", "Bottom Joining", "Extension Bracket", "Sloping", "Notes"}
+                        Dim headers As String() = {"", "Location", "Mounting", "Vertical Type", "Slat Type", "Blade Qty", "Fabric Insert", "Fabric Type", "Fabric Colour", "Width (mm)", "Drop (mm)", "Stack Position", "Control Position", "Control Type", "Track Colour", "Control Colour", "Control Length", "Bottom Joining", "Extension Bracket", "Sloping", "Notes"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
@@ -1388,7 +1386,7 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Mounting", "Vertical Type", "Blade Type", "Fabric Type", "Fabric Colour", "Width (mm)", "Drop (mm)", "Track Colour", "Stack Position", "Control Position", "Control Type", "Control Colour", "Control Length", "Extension Bracket", "Notes"}
+                        Dim headers As String() = {"", "Location", "Mounting", "Vertical Type", "Slat Type", "Fabric Type", "Fabric Colour", "Width (mm)", "Drop (mm)", "Track Colour", "Stack Position", "Control Position", "Control Type", "Control Colour", "Control Length", "Extension Bracket", "Notes"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
@@ -2287,9 +2285,9 @@ Public Class PreviewClass
                         items(3, i) = outdoorData.Rows(i)("Width").ToString()
                         items(4, i) = outdoorData.Rows(i)("Drop").ToString()
                         items(5, i) = outdoorData.Rows(i)("BlindName").ToString()
-                        items(6, i) = outdoorData.Rows(i)("ControlName").ToString()
-                        items(7, i) = outdoorData.Rows(i)("FabricName").ToString()
-                        items(8, i) = outdoorData.Rows(i)("FabricColour").ToString()
+                        items(6, i) = outdoorData.Rows(i)("FabricName").ToString()
+                        items(7, i) = outdoorData.Rows(i)("FabricColour").ToString()
+                        items(8, i) = outdoorData.Rows(i)("ControlName").ToString()
                         items(9, i) = outdoorData.Rows(i)("ControlPosition").ToString()
                         items(10, i) = controlLengthText
                         items(11, i) = outdoorData.Rows(i)("Notes").ToString()
@@ -2301,7 +2299,7 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Mounting", "Width (mm)", "Drop (mm)", "Type", "Control Type", "Fabric Type", "Fabric Colour", "Control Position", "Control Length", "Notes"}
+                        Dim headers As String() = {"", "Location", "Mounting", "Width (mm)", "Drop (mm)", "Type", "Fabric Type", "Fabric Colour", "Control Type", "Control Position", "Control Length", "Notes"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))

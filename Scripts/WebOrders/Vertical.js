@@ -342,7 +342,8 @@ function bindBlindType(designType) {
             return;
         }
 
-        const listData = { type: "BlindType", companydetail: companyDetail, designtype: designType };
+        const listData = { type: "BlindType", companydetail: companyDetail, designtype: designType, action: itemAction };
+
         $.ajax({
             type: "POST",
             url: "Method.aspx/ListData",
@@ -405,7 +406,7 @@ function bindTubeType(blindType) {
             return;
         }
 
-        let listData = { type: "TubeType", companydetail: companyDetail, blindtype: blindType };
+        let listData = { type: "TubeType", companydetail: companyDetail, blindtype: blindType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -469,7 +470,7 @@ function bindControlType(blindType, tubeType) {
             return;
         }
 
-        let listData = { type: "ControlType", companydetail: companyDetail, blindtype: blindType, tubetype: tubeType };
+        let listData = { type: "ControlType", companydetail: companyDetail, blindtype: blindType, tubetype: tubeType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -532,7 +533,7 @@ function bindColourType(blindType, tubeType, controlType) {
             return;
         }
 
-        const listData = { type: "ColourType", companydetail: companyDetail, blindtype: blindType, tubetype: tubeType, controltype: controlType };
+        const listData = { type: "ColourType", companydetail: companyDetail, blindtype: blindType, tubetype: tubeType, controltype: controlType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -589,7 +590,7 @@ function bindMounting(blindType) {
             return;
         }
 
-        const listData = { type: "Mounting", blindtype: blindType };
+        const listData = { type: "Mounting", blindtype: blindType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -641,7 +642,7 @@ function bindFabricType(designType, tubeType) {
             return;
         }
 
-        const listData = { type: "FabricType", designtype: designType, companydetail: companyDetail, tubetype: tubeType };
+        const listData = { type: "FabricType", designtype: designType, companydetail: companyDetail, tubetype: tubeType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -699,7 +700,7 @@ function bindFabricColour(fabricType) {
             return;
         }
 
-        const listData = { type: "FabricColour", fabrictype: fabricType };
+        const listData = { type: "FabricColour", fabrictype: fabricType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -748,7 +749,7 @@ function bindControlColour(designType, controlType) {
             return;
         }
 
-        const listData = { type: "ControlColour", designtype: designType, controltype: controlType, companydetail: companyDetail };
+        const listData = { type: "ControlColour", designtype: designType, controltype: controlType, companydetail: companyDetail, action: itemAction };
 
         $.ajax({
             type: "POST",

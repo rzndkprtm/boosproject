@@ -271,7 +271,7 @@ function bindBlindType(designType) {
             return;
         }
 
-        const listData = { type: "BlindType", companydetail: companyDetail, designtype: designType };
+        const listData = { type: "BlindType", companydetail: companyDetail, designtype: designType, action:itemAction };
         $.ajax({
             type: "POST",
             url: "Method.aspx/ListData",
@@ -334,7 +334,7 @@ function bindControlType(blindType) {
             return;
         }
 
-        let listData = { type: "ControlType", companydetail: companyDetail, blindtype: blindType, tubetype: "0" };
+        let listData = { type: "ControlType", companydetail: companyDetail, blindtype: blindType, tubetype: "0", action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -397,7 +397,7 @@ function bindColourType(blindType, controlType) {
             return;
         }
 
-        const listData = { type: "ColourType", companydetail: companyDetail, blindtype: blindType, tubetype: "0", controltype: controlType };
+        const listData = { type: "ColourType", companydetail: companyDetail, blindtype: blindType, tubetype: "0", controltype: controlType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -454,7 +454,7 @@ function bindMounting(blindType) {
             return;
         }
 
-        const listData = { type: "Mounting", blindtype: blindType };
+        const listData = { type: "Mounting", blindtype: blindType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -506,7 +506,7 @@ function bindFabricType(designType) {
             return;
         }
 
-        const listData = { type: "FabricTypeByDesign", designtype: designType, companydetail: companyDetail };
+        const listData = { type: "FabricTypeByDesign", designtype: designType, companydetail: companyDetail, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -564,7 +564,7 @@ function bindFabricColour(fabricType) {
             return;
         }
 
-        const listData = { type: "FabricColour", fabrictype: fabricType };
+        const listData = { type: "FabricColour", fabrictype: fabricType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -613,7 +613,7 @@ function bindChainColour(designType, controlType) {
             return;
         }
 
-        const listData = { type: "ControlColour", designtype: designType, controltype: controlType, companydetail: companyDetail };
+        const listData = { type: "ControlColour", designtype: designType, controltype: controlType, companydetail: companyDetail, action: itemAction };
 
         $.ajax({
             type: "POST",

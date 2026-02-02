@@ -128,7 +128,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3 mb-1">
                                                     <label>Width</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                     <div class="input-group">
                                                         <input type="number" id="width" class="form-control" autocomplete="off" placeholder="Width ...." />
                                                         <span class="input-group-text">mm</span>
@@ -140,7 +140,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3 mb-1">
                                                     <label>Height</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                     <div class="input-group">
                                                         <input type="number" id="drop" class="form-control" autocomplete="off" placeholder="Height ...." />
                                                         <span class="input-group-text">mm</span>
@@ -405,5 +405,5 @@
         </div>
     </div>
 
-    <script src="<%: ResolveUrl("~/Scripts/WebOrders/Window.js?v=1.0.2") %>"></script>
+    <script src="<%: ResolveUrl("~/Scripts/WebOrders/Window.js?v=1.0.3") %>"></script>
 </asp:Content>

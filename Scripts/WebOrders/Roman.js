@@ -323,7 +323,7 @@ function bindBlindType(designType) {
             return;
         }
 
-        const listData = { type: "BlindType", companydetail: companyDetail, designtype: designType };
+        const listData = { type: "BlindType", companydetail: companyDetail, designtype: designType, action: itemAction };
         $.ajax({
             type: "POST",
             url: "Method.aspx/ListData",
@@ -386,7 +386,7 @@ function bindTubeType(blindType) {
             return;
         }
 
-        let listData = { type: "TubeType", companydetail: companyDetail, blindtype: blindType };
+        let listData = { type: "TubeType", companydetail: companyDetail, blindtype: blindType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -451,7 +451,7 @@ function bindControlType(blindType, tubeType) {
             return;
         }
 
-        let listData = { type: "ControlType", companydetail: companyDetail, blindtype: blindType, tubetype: tubeType };
+        let listData = { type: "ControlType", companydetail: companyDetail, blindtype: blindType, tubetype: tubeType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -516,7 +516,7 @@ function bindColourType(blindType, tubeType, controlType) {
             return;
         }
 
-        const listData = { type: "ColourType", companydetail: companyDetail, blindtype: blindType, tubetype: tubeType, controltype: controlType };
+        const listData = { type: "ColourType", companydetail: companyDetail, blindtype: blindType, tubetype: tubeType, controltype: controlType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -573,7 +573,7 @@ function bindMounting(blindType) {
             return;
         }
 
-        const listData = { type: "Mounting", blindtype: blindType };
+        const listData = { type: "Mounting", blindtype: blindType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -625,7 +625,7 @@ function bindFabricType(designType, tubeType) {
             return;
         }
 
-        const listData = { type: "FabricType", designtype: designType, companydetail: companyDetail, tubetype: tubeType };
+        const listData = { type: "FabricType", designtype: designType, companydetail: companyDetail, tubetype: tubeType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -683,7 +683,7 @@ function bindFabricColour(fabricType) {
             return;
         }
 
-        const listData = { type: "FabricColour", fabrictype: fabricType };
+        const listData = { type: "FabricColour", fabrictype: fabricType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -724,15 +724,15 @@ function bindFabricColour(fabricType) {
 
 function bindControlColour(designType, controlType) {
     return new Promise((resolve, reject) => {
-        const controlcolour = document.getElementById("controlcolour");
-        controlcolour.innerHTML = "";
+        const chaincolour = document.getElementById("chaincolour");
+        chaincolour.innerHTML = "";
 
         if (!designType || !controlType) {
             resolve();
             return;
         }
 
-        const listData = { type: "ControlColour", designtype: designType, controltype: controlType, companydetail: companyDetail };
+        const listData = { type: "ControlColour", designtype: designType, controltype: controlType, companydetail: companyDetail, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -742,19 +742,20 @@ function bindControlColour(designType, controlType) {
             dataType: "json",
             success: function (response) {
                 if (Array.isArray(response.d)) {
-                    controlcolour.innerHTML = "";
+                    chaincolour.innerHTML = "";
+
                     if (response.d.length > 1) {
                         var defaultOption = document.createElement("option");
                         defaultOption.text = "";
                         defaultOption.value = "";
-                        controlcolour.add(defaultOption);
+                        chaincolour.add(defaultOption);
                     }
 
                     response.d.forEach(function (item) {
                         var option = document.createElement("option");
                         option.value = item.Value;
                         option.text = item.Text;
-                        controlcolour.add(option);
+                        chaincolour.add(option);
                     });
                 }
                 resolve();
@@ -776,7 +777,7 @@ function bindValanceOption(controlType) {
             return;
         }
 
-        const listData = { type: "ValanceRoman", controltype: controlType};
+        const listData = { type: "ValanceRoman", controltype: controlType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -814,6 +815,8 @@ function bindValanceOption(controlType) {
 function bindComponentForm(tubeType, controlType, colourType) {
     return new Promise((resolve) => {
         const detail = document.getElementById("divdetail");
+        const chainremote = document.getElementById("divchainremote");
+        const cordcolour = document.getElementById("divcordcolour");
         const controllength = document.getElementById("divcontrollength");
         const chainlength = document.getElementById("divcustomchainlength");
         const cordlength = document.getElementById("divcustomcordlength");
@@ -828,6 +831,8 @@ function bindComponentForm(tubeType, controlType, colourType) {
         }
 
         toggleDisplay(detail, false);
+        toggleDisplay(chainremote, false);
+        toggleDisplay(cordcolour, false);
         toggleDisplay(controllength, false);
         toggleDisplay(chainlength, false);
         toggleDisplay(cordlength, false);
@@ -841,45 +846,41 @@ function bindComponentForm(tubeType, controlType, colourType) {
 
         toggleDisplay(detail, true);
 
-        const tubePromise = getTubeName(tubeType)
-            .then(tubeName => {
-                if (tubeName === "Plantation") {
-                    toggleDisplay(batten, true);
-                }
-            })
-            .catch(error => {
-                reject(error);
-            });
+        Promise.all([
+            getTubeName(tubeType),
+            getControlName(controlType)
+        ]).then(([tubeName, controlName]) => {
+            if (tubeName === "Plantation") {
+                toggleDisplay(batten, true);
+            }
 
-        const controlPromise = getControlName(controlType)
-            .then(controlName => {
+            if (controlName === "Chain") {
+                toggleDisplay(controllength, true);
+                toggleDisplay(chainremote, true);
+
+                $("#controlcolourtitle").text("Chain Colour");
+                $("#controllengthtitle").text("Chain Length");
+            } else if (controlName === "Reg Cord Lock" || controlName === "Regular Cord Lock" || controlName === "Cord Lock" || controlName === "Cord") {
+                toggleDisplay(cordcolour, true);
                 toggleDisplay(controllength, true);
 
-                if (controlName === "Chain") {
-                    $("#controlcolourtitle").text("Chain Type");
-                    $("#controllengthtitle").text("Chain Length");
-                } else if (controlName === "Reg Cord Lock" || controlName === "Regular Cord Lock") {
-                    $("#controlcolourtitle").text("Chain Colour");
-                    $("#controllengthtitle").text("Cord Length");
-                } else if (controlName === "Altus" || controlName === "Mercure" || controlName === "Sonesse 30 WF" || controlName === "Alpha 1Nm WF" || controlName === "Alpha 2Nm WF" || controlName === "Alpha 3Nm WF") {
-                    toggleDisplay(controllength, false);
-                    $("#controlcolourtitle").text("Remote Type");
-                }
+                $("#controlcolourtitle").text("Cord Colour");
+                $("#controllengthtitle").text("Cord Length");
+            } else if (controlName === "Altus" || controlName === "Mercure" || controlName === "Sonesse 30 WF" || controlName === "Alpha 1Nm WF" || controlName === "Alpha 2Nm WF" || controlName === "Alpha 3Nm WF") {
+                toggleDisplay(chainremote, true);
 
-                if (controlName === "Sonesse 30 WF" || controlName === "Alpha 1Nm WF" || controlName === "Alpha 2Nm WF" || controlName === "Alpha 3Nm WF") {
-                    toggleDisplay(charger, true);
-                }
+                $("#controlcolourtitle").text("Remote Type");
+            }
 
-                if (controlName === "Alpha 1Nm WF" || controlName === "Alpha 2Nm WF" || controlName === "Alpha 3Nm WF") {
-                    toggleDisplay(extensioncable, true);
-                    toggleDisplay(supply, true);
-                }
-            })
-            .catch(error => {
-                reject(error);
-            });
+            if (controlName === "Sonesse 30 WF" || controlName === "Alpha 1Nm WF" || controlName === "Alpha 2Nm WF" || controlName === "Alpha 3Nm WF") {
+                toggleDisplay(charger, true);
+            }
 
-        Promise.all([tubePromise, controlPromise]).then(() => {
+            if (controlName === "Alpha 1Nm WF" || controlName === "Alpha 2Nm WF" || controlName === "Alpha 3Nm WF") {
+                toggleDisplay(extensioncable, true);
+                toggleDisplay(supply, true);
+            }
+        }).catch(error => {
             resolve();
         });
     });
@@ -950,7 +951,7 @@ function controlForm(status, isEditItem, isCopyItem) {
 
     const inputs = [
         "blindtype", "tubetype", "controltype", "colourtype", "qty", "room", "mounting",
-        "controlposition", "controlcolour", "charger", "controllength", "chainlengthvalue", "cordlengthvalue", "extensioncable", "supply",
+        "controlposition", "chaincolour", "controlcolour", "charger", "controllength", "chainlengthvalue", "cordlengthvalue", "extensioncable", "supply",
         "width", "drop", "fabrictype", "fabriccolour",
         "valanceoption", "batten", "notes", "markup", "printing"
     ];
@@ -985,7 +986,8 @@ function setFormValues(itemData) {
         batten: "Batten",
         valanceoption: "ValanceOption",
         controlposition: "ControlPosition",
-        controlcolour: "ChainId",
+        chaincolour: "ChainId",
+        controlcolour: "ControlColour",
         charger: "Charger",
         extensioncable: "ExtensionCable",
         supply: "Supply",
@@ -1032,7 +1034,7 @@ function process() {
 
     const fields = [
         "blindtype", "tubetype", "controltype", "colourtype", "qty", "room", "mounting",
-        "controlposition", "controlcolour", "charger", "controllength", "chainlengthvalue", "cordlengthvalue", "extensioncable", "supply",
+        "controlposition", "chaincolour", "controlcolour", "charger", "controllength", "chainlengthvalue", "cordlengthvalue", "extensioncable", "supply",
         "width", "drop", "fabrictype", "fabriccolour",
         "valanceoption", "batten", "notes", "markup", "printing"
     ];
@@ -1151,7 +1153,7 @@ async function bindItemOrder(itemId, companyDetailId) {
         fillSelect("#mounting", data.Mountings);
         fillSelect("#fabrictype", data.Fabrics);
         fillSelect("#fabriccolour", data.FabricColours);
-        fillSelect("#controlcolour", data.Chains);
+        fillSelect("#chaincolour", data.Chains);
         fillSelect("#valanceoption", data.Valances);
 
         document.getElementById("divloader").style.display = "none";

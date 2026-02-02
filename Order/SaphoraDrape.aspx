@@ -87,7 +87,7 @@
 
                                         <div class="row" style="display:none;">
                                             <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Blade Type</label>
+                                                <label>Slat Type</label>
                                             </div>
                                             <div class="col-12 col-sm-12 col-lg-3 form-group">
                                                 <select id="tubetype" class="form-select"></select>
@@ -386,5 +386,5 @@
         </div>
     </div>
 
-    <script src='<%: ResolveUrl("~/Scripts/WebOrders/Saphora.js?v=1.0.2") %>'></script>
+    <script src='<%: ResolveUrl("~/Scripts/WebOrders/Saphora.js?v=1.0.3") %>'></script>
 </asp:Content>

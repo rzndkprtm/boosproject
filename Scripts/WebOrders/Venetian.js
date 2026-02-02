@@ -316,7 +316,8 @@ function bindBlindType(designType) {
             return;
         }
 
-        const listData = { type: "BlindType", companydetail: companyDetail, designtype: designType };
+        const listData = { type: "BlindType", companydetail: companyDetail, designtype: designType, action: itemAction };
+
         $.ajax({
             type: "POST",
             url: "Method.aspx/ListData",
@@ -379,7 +380,8 @@ function bindColourType(blindtype) {
             return;
         }
 
-        const listData = { type: "ColourType", blindtype: blindtype, companydetail: companyDetail, tubetype: "0", controltype: "0" };
+        const listData = { type: "ColourType", blindtype: blindtype, companydetail: companyDetail, tubetype: "0", controltype: "0", action: itemAction };
+
         $.ajax({
             type: "POST",
             url: "Method.aspx/ListData",
@@ -429,7 +431,7 @@ function bindSubType(blindType) {
             return;
         }
 
-        const listData = { type: "SubType", blindtype: blindType };
+        const listData = { type: "SubType", blindtype: blindType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -486,7 +488,7 @@ function bindMounting(blindType) {
             return;
         }
 
-        const listData = { type: "Mounting", blindtype: blindType };
+        const listData = { type: "Mounting", blindtype: blindType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -633,7 +635,7 @@ function bindValanceType(blindType) {
             return;
         }
 
-        const listData = { type: "ValanceType", blindtype: blindType };
+        const listData = { type: "ValanceType", blindtype: blindType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -682,7 +684,7 @@ function bindValancePosition(blindType) {
             return;
         }
 
-        const listData = { type: "ValancePosition", blindtype: blindType };
+        const listData = { type: "ValancePosition", blindtype: blindType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -717,48 +719,6 @@ function bindValancePosition(blindType) {
             error: function (error) {
                 reject(error);
             }
-        });
-    });
-
-    return new Promise((resolve, reject) => {
-        if (!blindType) {
-            resolve();
-            return;
-        }
-
-        const returnposition = document.getElementById("");
-        returnposition.innerHTML = "";
-
-        if (!blindType) return;
-
-        getBlindName(blindType).then(blindName => {
-            let options = [
-                { value: "", text: "" },
-                { value: "", text: "Left" },
-                { value: "", text: "Right" },
-                { value: "", text: "Both Sides" }
-            ];
-
-            if (blindName === "Econo 50mm (Cordless)") {
-                options = options = [
-                    { value: "", text: "" },
-                    { value: "Left", text: "Left" },
-                    { value: "Right", text: "Right" }
-                ];
-            }
-
-            const fragment = document.createDocumentFragment();
-            options.forEach(opt => {
-                const optionElement = document.createElement("option");
-                optionElement.value = opt.value;
-                optionElement.textContent = opt.text;
-                fragment.appendChild(optionElement);
-            });
-            returnposition.appendChild(fragment);
-
-            resolve();
-        }).catch(error => {
-            reject(error);
         });
     });
 }
