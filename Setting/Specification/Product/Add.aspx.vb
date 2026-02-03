@@ -22,6 +22,10 @@ Partial Class Setting_Specification_Product_Add
             BindControl()
             BindTube()
             BindColour()
+
+            btnAddTube.Visible = PageAction("Add Tube")
+            btnAddControl.Visible = PageAction("Add Control")
+            btnAddColour.Visible = PageAction("Add Colour")
         End If
     End Sub
 
