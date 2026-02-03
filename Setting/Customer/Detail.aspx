@@ -437,6 +437,7 @@
                                     <div class="row mt-3">
                                         <div class="col-12">
                                             <asp:Button runat="server" ID="btnAddLogin" CssClass="btn btn-primary" Text="Add New" OnClick="btnAddLogin_Click" />
+                                            <a href="javascript:void(0)" runat="server" id="aCredentialsLogin" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalCredentialsLogin">Send Login Credentials</a>
                                         </div>
                                     </div>
                                 </div>
@@ -504,7 +505,7 @@
 
                                             <asp:Button runat="server" ID="btnAddDiscountCustom" CssClass="btn btn-info" Text="Add Discount (Custom Product)" OnClick="btnAddDiscountCustom_Click" />
 
-                                            <a href="#" runat="server" id="aResetDiscount" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalResetDiscount">Reset Discount</a>
+                                            <a href="#" runat="server" id="aResetDiscount" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalResetDiscount">Send Login Credentials</a>
                                         </div>
                                     </div>
                                 </div>
@@ -531,8 +532,10 @@
                                                                 <%# Container.DataItemIndex + 1 %>
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
-                                                        <asp:BoundField DataField="Id" HeaderStyle-CssClass="hiddencol" ItemStyle-CssClass="hiddencol" />
+                                                        <asp:BoundField DataField="Id" HeaderText="ID" />
                                                         <asp:BoundField DataField="PromoName" HeaderText="Promo" />
+                                                         <asp:BoundField DataField="StartDate" HeaderText="Start Date" DataFormatString="{0:dd MMM yyyy}" />
+                                                        <asp:BoundField DataField="EndDate" HeaderText="End Date" DataFormatString="{0:dd MMM yyyy}" />
                                                         <asp:TemplateField ItemStyle-Width="120px">
                                                             <ItemTemplate>
                                                                 <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
@@ -1273,6 +1276,23 @@
         </div>
     </div>
 
+    <div class="modal modal-blur fade" id="modalCredentialsLogin" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-danger">
+                    <h5 class="modal-title white">Send Login Credentials</h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    Hi <b><%: Session("FullName") %></b>,<br />All login details will be sent to the primary contact email address.<br /><br />Are you sure you would like to do this?
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnCredentialsLogin" CssClass="btn btn-danger" Text="Confirm" OnClick="btnCredentialsLogin_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+
     <%--CUSTOMER DISCOUNT--%>
     <div class="modal modal-blur fade" id="modalProcessDiscount" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -1817,7 +1837,7 @@
             "modalProcessContact", "modalDeleteContact", "modalPrimaryContact",
             "modalProcessAddress", "modalDeleteAddress", "modalPrimaryAddress",
             "modalProcessBusiness", "modalDeleteBusiness", "modalPrimaryBusiness",
-            "modalProcessLogin", "modalInstallerAccess", "modalActiveLogin", "modalDeleteLogin", "modalResetPass", "modalDencryptPass",
+            "modalProcessLogin", "modalInstallerAccess", "modalActiveLogin", "modalDeleteLogin", "modalResetPass", "modalDencryptPass", "modalCredentialsLogin",
             "modalProcessDiscount", "modalResetDiscount", "modalDeleteDiscount",
             "modalProcessPromo", "modalDetailPromo", "modalResetPromo", "modalDeletePromo",
             "modalResetProduct", "modalProcessProduct"

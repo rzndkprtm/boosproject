@@ -83,7 +83,7 @@
                                             <label>Order Name</label>
                                         </div>
                                         <div class="col-12 col-sm-12 col-lg-9 form-group">
-                                            <asp:TextBox runat="server" ID="txtOrderName" CssClass="form-control" placeholder="Customer Name ...." autocomplete="off"></asp:TextBox>
+                                            <asp:TextBox runat="server" ID="txtOrderName" CssClass="form-control" placeholder="Order Name ...." autocomplete="off"></asp:TextBox>
                                         </div>
                                     </div>
 

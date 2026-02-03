@@ -36,7 +36,7 @@
 
         <section class="row mb-4">
             <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
-                <a href="javascript:void(0)" class="btn btn-secondary me-1" onclick="showLog('OrderHeaders', '<%= lblHeaderId.Text %>')">Log</a>
+                <a href="javascript:void(0);" class="btn btn-secondary me-1" onclick="showLog('OrderHeaders', '<%= lblHeaderId.Text %>')">Log</a>
                 <asp:Button runat="server" ID="btnPreview" CssClass="btn btn-primary me-1" Text="Preview" OnClick="btnPreview_Click" />
                 <asp:Button runat="server" ID="btnEditHeader" CssClass="btn btn-secondary me-1" Text="Edit Header" OnClick="btnEditHeader_Click" />
                 <a href="#" runat="server" id="aDeleteOrder" class="btn btn-danger me-1" data-bs-toggle="modal" data-bs-target="#modalDeleteOrder">Delete</a>
@@ -81,9 +81,9 @@
                     </li>
                 </ul>
 
-                <a href="#" runat="server" id="aBuilder" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalBuilderDetail">Builder Details</a>
+                <a href="#" runat="server" id="aBuilder" class="btn btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modalBuilderDetail">Builder Details</a>
 
-                <a href="#" runat="server" id="aFileOrder" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalFileOrder">Files</a>
+                <a href="#" runat="server" id="aFileOrder" class="btn btn-secondary me-1" data-bs-toggle="modal" data-bs-target="#modalFileOrder">Files</a>
 
                 <button class="btn btn-dark dropdown-toggle me-1" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnMoreAction">More</button>
                 <ul class="dropdown-menu">
@@ -773,6 +773,61 @@
         </div>
     </div>
 
+    <div class="modal modal-blur fade" id="modalFileOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Order File</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row mb-2" runat="server" id="divErrorFileOrder">
+                        <div class="col-12">
+                            <div class="alert alert-danger">
+                                <span runat="server" id="msgErrorFileOrder"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <div class="table-responsive">
+                                <asp:GridView runat="server" ID="gvListOrderFile" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" ShowHeaderWhenEmpty="true" OnRowCommand="gvListOrderFile_RowCommand">
+                                    <RowStyle />
+                                    <Columns>
+                                        <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="70px">
+                                            <ItemTemplate>
+                                                <%# Container.DataItemIndex + 1 %>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:BoundField DataField="FileName" HeaderText="File Name" />
+                                        <asp:TemplateField HeaderText="Action" ItemStyle-Width="130px">
+                                            <ItemTemplate>
+                                                <a class="btn btn-sm btn-info" href='<%# ResolveUrl("~/Handler/Download.ashx?folder=" & Eval("FolderName") & "&file=" & Eval("FileName")) %>'>Download</a>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                    </Columns>
+                                </asp:GridView>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" runat="server" id="divUploadAction">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Upload New File</label>
+                            <asp:FileUpload runat="server" ID="fuOrderFile" CssClass="form-control" />
+                        </div>
+
+                        <div class="col-12">
+                            <asp:Button runat="server" ID="btnUploadFileOrder" CssClass="btn btn-secondary" Text="Upload" OnClick="btnUploadFileOrder_Click" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="modalReworkOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -1190,70 +1245,6 @@
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnBuilderDetail" CssClass="btn btn-primary" Text="Submit" OnClick="btnBuilderDetail_Click" OnClientClick="return showWaiting();" />
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal modal-blur fade" id="modalFileOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Order File</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <div class="modal-body">
-                    <div class="row mb-2" runat="server" id="divErrorFileOrder">
-                        <div class="col-12">
-                            <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorFileOrder"></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row mb-3" runat="server" id="divUploadAction">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Upload New File</label>
-                            <asp:FileUpload runat="server" ID="fuOrderFile" CssClass="form-control" />
-                        </div>
-
-                        <div class="col-12">
-                            <asp:Button runat="server" ID="btnUploadFileOrder" CssClass="btn btn-secondary" Text="Upload" OnClick="btnUploadFileOrder_Click" />
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="col-12">
-                            <div class="table-responsive">
-                                <asp:GridView runat="server" ID="gvListOrderFile" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" ShowHeaderWhenEmpty="true" OnRowCommand="gvListOrderFile_RowCommand">
-                                    <RowStyle />
-                                    <Columns>
-                                        <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="70px">
-                                            <ItemTemplate>
-                                                <%# Container.DataItemIndex + 1 %>
-                                            </ItemTemplate>
-                                        </asp:TemplateField>
-                                        <asp:BoundField DataField="FileName" HeaderText="File Name" />
-                                        <asp:TemplateField HeaderText="Action" ItemStyle-Width="100px">
-                                            <ItemTemplate>
-                                                <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
-                                                <ul class="dropdown-menu">
-                                                    <li>
-                                                        <asp:LinkButton runat="server" ID="linkDownloadFile" CssClass="dropdown-item" Text="Download" CommandName="DownloadFile" CommandArgument='<%# Eval("FileName") %>'></asp:LinkButton>
-                                                    </li>
-                                                    <li>
-                                                        <asp:LinkButton runat="server" CssClass="dropdown-item" Text="Delete" CommandName="DeleteFile" CommandArgument='<%# Eval("FileName") %>' OnClientClick="return confirm('Are you sure want to delete this file?');"></asp:LinkButton>
-                                                    </li>
-                                                </ul>
-                                            </ItemTemplate>
-                                        </asp:TemplateField>
-                                    </Columns>
-                                </asp:GridView>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer"></div>
             </div>
         </div>
     </div>

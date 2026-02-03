@@ -194,6 +194,7 @@
                 });
             }
         });
+
         function showProcess() {
             $("#modalProcess").modal("show");
         }
@@ -238,6 +239,7 @@
                 document.body.focus();
             });
         });
+
         window.history.replaceState(null, null, window.location.href);
     </script>
     <div runat="server" visible="false">

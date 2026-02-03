@@ -5,13 +5,11 @@ Imports System.Globalization
 Partial Class Setting_Price_Promo_Detail
     Inherits Page
 
+    Dim settingClass As New SettingClass
+
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
-    Dim promoId As String = String.Empty
-
     Dim enUS As CultureInfo = New CultureInfo("en-US")
-
-    Dim settingClass As New SettingClass
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
@@ -25,12 +23,11 @@ Partial Class Setting_Price_Promo_Detail
             Exit Sub
         End If
 
-        promoId = Request.QueryString("promoid").ToString()
-
+        lblId.Text = Request.QueryString("promoid").ToString()
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             MessageError_Process(False, String.Empty)
-            BindData(promoId)
+            BindData(lblId.Text)
         End If
     End Sub
 
@@ -44,6 +41,8 @@ Partial Class Setting_Price_Promo_Detail
 
             BindDesignPromo()
             BindBlindPromo()
+            BindFabricPromo()
+            BindFabricColourPromo()
 
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcessDetail", thisScript, True)
         Catch ex As Exception
@@ -57,30 +56,32 @@ Partial Class Setting_Price_Promo_Detail
 
     Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
         If Not String.IsNullOrEmpty(e.CommandArgument) Then
-            Dim dataId As String = e.CommandArgument.ToString()
+            Dim promoDetailId As String = e.CommandArgument.ToString()
             If e.CommandName = "Detail" Then
                 MessageError_ProcessDetail(False, String.Empty)
                 Dim thisScript As String = "window.onload = function() { showProcessDetail(); };"
                 Try
-                    lblIdDetail.Text = dataId
+                    lblIdDetail.Text = promoDetailId
                     lblAction.Text = "Edit"
                     titleProcessDetail.InnerText = "Detail Promo Detail"
 
-                    Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM PromoDetails WHERE Id='" & dataId & "'")
+                    Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM PromoDetails WHERE Id='" & promoDetailId & "'")
                     If thisData Is Nothing Then Exit Sub
 
-                    BindDesignPromo()
-                    BindBlindPromo()
+                    BindDesignPromo(True)
+                    BindBlindPromo(True)
+                    BindFabricPromo(True)
+                    BindFabricColourPromo(True)
 
                     Dim type As String = thisData("Type").ToString()
+                    Dim dataId As String = thisData("DataId").ToString()
+
                     ddlPromoType.SelectedValue = type
                     ddlPromoType.Enabled = False
-                    If type = "Designs" Then
-                        ddlDesignPromo.SelectedValue = thisData("DataId").ToString()
-                    End If
-                    If type = "Blinds" Then
-                        ddlBlindPromo.SelectedValue = thisData("DataId").ToString()
-                    End If
+                    If type = "Designs" Then ddlDesignPromo.SelectedValue = dataId
+                    If type = "Blinds" Then ddlBlindPromo.SelectedValue = dataId
+                    If type = "Fabrics" Then ddlFabricPromo.SelectedValue = dataId
+                    If type = "FabricColours" Then ddlFabricColourPromo.SelectedValue = dataId
                     txtDiscount.Text = Convert.ToDecimal(thisData("Discount")).ToString("G29", enUS)
 
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcessDetail", thisScript, True)
@@ -90,21 +91,6 @@ Partial Class Setting_Price_Promo_Detail
                         MessageError_ProcessDetail(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
                     End If
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcessDetail", thisScript, True)
-                End Try
-            ElseIf e.CommandName = "Log" Then
-                MessageError_Log(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showLog(); };"
-                Try
-                    gvListLogs.DataSource = settingClass.GetDataTable("SELECT * FROM Logs WHERE DataId='" & dataId & "' AND Type='PromoDetails' ORDER BY ActionDate DESC")
-                    gvListLogs.DataBind()
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
-                Catch ex As Exception
-                    MessageError_Log(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError_Log(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                    End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
                 End Try
             End If
         End If
@@ -162,17 +148,19 @@ Partial Class Setting_Price_Promo_Detail
             End If
 
             If msgErrorProcessDetail.InnerText = "" Then
-                Dim dataId As String = ddlDesignPromo.SelectedValue
-                If ddlPromoType.SelectedValue = "Blinds" Then
-                    dataId = ddlBlindPromo.SelectedValue
-                End If
+                Dim dataId As String = String.Empty
+                If ddlPromoType.SelectedValue = "Designs" Then dataId = ddlDesignPromo.SelectedValue
+                If ddlPromoType.SelectedValue = "Blinds" Then dataId = ddlBlindPromo.SelectedValue
+                If ddlPromoType.SelectedValue = "Fabrics" Then dataId = ddlFabricPromo.SelectedValue
+                If ddlPromoType.SelectedValue = "FabricColours" Then dataId = ddlFabricColourPromo.SelectedValue
+
                 If lblAction.Text = "Add" Then
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM PromoDetails ORDER BY Id DESC")
 
                     Using thisConn As New SqlConnection(myConn)
                         Using myCmd As SqlCommand = New SqlCommand("INSERT INTO PromoDetails VALUES (@Id, @PromoId, @Type, @DataId, @Discount)", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", thisId)
-                            myCmd.Parameters.AddWithValue("@PromoId", promoId)
+                            myCmd.Parameters.AddWithValue("@PromoId", lblId.Text)
                             myCmd.Parameters.AddWithValue("@Type", ddlPromoType.SelectedValue)
                             myCmd.Parameters.AddWithValue("@DataId", dataId)
                             myCmd.Parameters.AddWithValue("@Discount", txtDiscount.Text)
@@ -185,7 +173,7 @@ Partial Class Setting_Price_Promo_Detail
                     Dim dataLog As Object() = {"PromoDetails", thisId, Session("LoginId").ToString(), "Promo Detail Created"}
                     settingClass.Logs(dataLog)
 
-                    url = String.Format("~/setting/price/promo/detail?promoid={0}", promoId)
+                    url = String.Format("~/setting/price/promo/detail?promoid={0}", lblId.Text)
                     Response.Redirect(url, False)
                 End If
 
@@ -205,7 +193,7 @@ Partial Class Setting_Price_Promo_Detail
                     Dim dataLog As Object() = {"PromoDetails", lblIdDetail.Text, Session("LoginId").ToString(), "Promo Detail Updated"}
                     settingClass.Logs(dataLog)
 
-                    url = String.Format("~/setting/price/promo/detail?promoid={0}", promoId)
+                    url = String.Format("~/setting/price/promo/detail?promoid={0}", lblId.Text)
                     Response.Redirect(url, False)
                 End If
             End If
@@ -239,7 +227,7 @@ Partial Class Setting_Price_Promo_Detail
                 thisConn.Close()
             End Using
 
-            url = String.Format("~/setting/price/promo/detail?promoid={0}", promoId)
+            url = String.Format("~/setting/price/promo/detail?promoid={0}", lblId.Text)
             Response.Redirect(url, False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -286,10 +274,14 @@ Partial Class Setting_Price_Promo_Detail
         End Try
     End Sub
 
-    Protected Sub BindDesignPromo()
+    Protected Sub BindDesignPromo(Optional isEdit As Boolean = False)
         ddlDesignPromo.Items.Clear()
         Try
-            ddlDesignPromo.DataSource = settingClass.GetDataTable("SELECT * FROM Designs WHERE Active=1 ORDER BY Name ASC")
+            Dim thisString As String = "SELECT * FROM Designs WHERE Active=1 ORDER BY Name ASC"
+            If isEdit = True Then
+                thisString = "SELECT * FROM Designs ORDER BY Name ASC"
+            End If
+            ddlDesignPromo.DataSource = settingClass.GetDataTable(thisString)
             ddlDesignPromo.DataTextField = "Name"
             ddlDesignPromo.DataValueField = "Id"
             ddlDesignPromo.DataBind()
@@ -301,10 +293,14 @@ Partial Class Setting_Price_Promo_Detail
         End Try
     End Sub
 
-    Protected Sub BindBlindPromo()
+    Protected Sub BindBlindPromo(Optional isEdit As Boolean = False)
         ddlBlindPromo.Items.Clear()
         Try
-            ddlBlindPromo.DataSource = settingClass.GetDataTable("SELECT Blinds.*, CONVERT(VARCHAR, Designs.Name) + ' | ' + CONVERT(VARCHAR, Blinds.Name) AS BlindName FROM Blinds LEFT JOIN Designs ON Blinds.DesignId = Designs.Id ORDER BY Designs.Name, Blinds.Name ASC")
+            Dim thisString As String = "SELECT Blinds.*, CONVERT(VARCHAR, Designs.Name) + ' | ' + CONVERT(VARCHAR, Blinds.Name) AS BlindName FROM Blinds LEFT JOIN Designs ON Blinds.DesignId = Designs.Id WHERE Blinds.Active=1 AND Designs.Active=1 ORDER BY Designs.Name, Blinds.Name ASC"
+            If isEdit = True Then
+                thisString = "SELECT Blinds.*, CONVERT(VARCHAR, Designs.Name) + ' | ' + CONVERT(VARCHAR, Blinds.Name) AS BlindName FROM Blinds LEFT JOIN Designs ON Blinds.DesignId = Designs.Id ORDER BY Designs.Name, Blinds.Name ASC"
+            End If
+            ddlBlindPromo.DataSource = settingClass.GetDataTable(thisString)
             ddlBlindPromo.DataTextField = "BlindName"
             ddlBlindPromo.DataValueField = "Id"
             ddlBlindPromo.DataBind()
@@ -313,6 +309,44 @@ Partial Class Setting_Price_Promo_Detail
             End If
         Catch ex As Exception
             ddlBlindPromo.Items.Clear()
+        End Try
+    End Sub
+
+    Protected Sub BindFabricPromo(Optional isEdit As Boolean = False)
+        ddlFabricPromo.Items.Clear()
+        Try
+            Dim thisString As String = "SELECT * FROM Fabrics WHERE Active=1 ORDER BY Name ASC"
+            If isEdit = True Then
+                thisString = "SELECT * FROM Fabrics ORDER BY Name ASC"
+            End If
+            ddlFabricPromo.DataSource = settingClass.GetDataTable(thisString)
+            ddlFabricPromo.DataTextField = "Name"
+            ddlFabricPromo.DataValueField = "Id"
+            ddlFabricPromo.DataBind()
+            If ddlFabricPromo.Items.Count > 1 Then
+                ddlFabricPromo.Items.Insert(0, New ListItem("", ""))
+            End If
+        Catch ex As Exception
+            ddlFabricPromo.Items.Clear()
+        End Try
+    End Sub
+
+    Protected Sub BindFabricColourPromo(Optional isEdit As Boolean = False)
+        ddlFabricColourPromo.Items.Clear()
+        Try
+            Dim thisString As String = "SELECT * FROM FabricColours WHERE Active=1 ORDER BY Name ASC"
+            If isEdit = True Then
+                thisString = "SELECT * FROM FabricColours ORDER BY Name ASC"
+            End If
+            ddlFabricColourPromo.DataSource = settingClass.GetDataTable(thisString)
+            ddlFabricColourPromo.DataTextField = "Name"
+            ddlFabricColourPromo.DataValueField = "Id"
+            ddlFabricColourPromo.DataBind()
+            If ddlFabricColourPromo.Items.Count > 1 Then
+                ddlFabricColourPromo.Items.Insert(0, New ListItem("", ""))
+            End If
+        Catch ex As Exception
+            ddlFabricColourPromo.Items.Clear()
         End Try
     End Sub
 
@@ -328,10 +362,6 @@ Partial Class Setting_Price_Promo_Detail
         divErrorProcessDetail.Visible = visible : msgErrorProcessDetail.InnerText = message
     End Sub
 
-    Protected Sub MessageError_Log(visible As Boolean, message As String)
-        divErrorLog.Visible = visible : msgErrorLog.InnerText = message
-    End Sub
-
     Protected Function DiscountTitle(type As String, dataId As String) As String
         If String.IsNullOrEmpty(type) Then Return String.Empty
         Return settingClass.GetItemData(String.Format("SELECT Name FROM {0} WHERE Id='{1}'", type, dataId))
@@ -342,10 +372,6 @@ Partial Class Setting_Price_Promo_Detail
             Return data.ToString("G29", enUS) & "%"
         End If
         Return "ERROR"
-    End Function
-
-    Protected Function BindTextLog(logId As String) As String
-        Return settingClass.getTextLog(logId)
     End Function
 
     Protected Function PageAction(action As String) As Boolean
