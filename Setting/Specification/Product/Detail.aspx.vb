@@ -72,18 +72,6 @@ Partial Class Setting_Specification_Product_Detail
                     MessageError_ProcessKit(True, ex.ToString())
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcessKit", thisScript, True)
                 End Try
-            ElseIf e.CommandName = "Log" Then
-                MessageError_Log(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showLog(); };"
-                Try
-                    gvListLogs.DataSource = settingClass.GetDataTable("SELECT * FROM Logs WHERE DataId='" & dataId & "' AND Type='ProductKits' ORDER BY ActionDate DESC")
-                    gvListLogs.DataBind()
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
-                Catch ex As Exception
-                    MessageError_Log(True, ex.ToString())
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
-                End Try
             End If
         End If
     End Sub
@@ -240,14 +228,6 @@ Partial Class Setting_Specification_Product_Detail
     Protected Sub MessageError_ProcessKit(visible As Boolean, message As String)
         divErrorProcessKit.Visible = visible : msgErrorProcessKit.InnerText = message
     End Sub
-
-    Protected Sub MessageError_Log(Svisiblehow As Boolean, message As String)
-        divErrorLog.Visible = Visible : msgErrorLog.InnerText = message
-    End Sub
-
-    Protected Function BindTextLog(logId As String) As String
-        Return settingClass.getTextLog(logId)
-    End Function
 
     Protected Function PageAction(action As String) As Boolean
         Try

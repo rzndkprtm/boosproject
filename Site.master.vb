@@ -237,9 +237,6 @@ Public Partial Class SiteMaster
                 liSpecificationDesign.Visible = True
                 liSpecificationBlind.Visible = True
                 liSpecificationProduct.Visible = True
-                liSpecificationTube.Visible = True
-                liSpecificationControl.Visible = True
-                liSpecificationColour.Visible = True
                 liSpecificationFabric.Visible = True
                 liSpecificationChain.Visible = True
                 liSpecificationBottom.Visible = True

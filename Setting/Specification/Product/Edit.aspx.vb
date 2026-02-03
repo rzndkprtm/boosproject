@@ -285,6 +285,10 @@ Partial Class Setting_Specification_Product_Edit
                     End If
                 Next
             End If
+
+            btnAddTube.Visible = PageAction("Add Tube")
+            btnAddControl.Visible = PageAction("Add Control")
+            btnAddColour.Visible = PageAction("Add Colour")
         Catch ex As Exception
             MessageError(True, ex.ToString())
         End Try
