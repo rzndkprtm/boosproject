@@ -1123,11 +1123,16 @@ Partial Class Order_Detail
     End Sub
 
     Protected Sub btnUploadFileOrder_Click(sender As Object, e As EventArgs)
-        MessageError_BuilderDetail(False, String.Empty)
+        MessageError_FileOrder(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showFileOrder(); };"
         Try
-            Dim folderPath As String = Server.MapPath(String.Format("~/File/Order/{0}", lblOrderId.Text))
+            If Not fuOrderFile.HasFile Then
+                MessageError_FileOrder(True, "FILE IS REQUIRED !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showFileOrder", thisScript, True)
+                Exit Sub
+            End If
 
+            Dim folderPath As String = Server.MapPath(String.Format("~/File/Order/{0}", lblOrderId.Text))
             If Not IO.Directory.Exists(folderPath) Then
                 IO.Directory.CreateDirectory(folderPath)
             End If
@@ -1138,6 +1143,12 @@ Partial Class Order_Detail
             url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
             Response.Redirect(url, False)
         Catch ex As Exception
+            MessageError_FileOrder(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_FileOrder(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnUploadFileOrder_Click", ex.ToString()}
+                mailingClass.WebError(dataMailing)
+            End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showFileOrder", thisScript, True)
         End Try
     End Sub
@@ -2830,27 +2841,30 @@ Partial Class Order_Detail
 
     Protected Sub BindDataFile(orderId As String)
         Try
-            Dim stringPath As String = String.Format("~/File/Order/{0}/", orderId)
-            Dim directoryPath As String = Server.MapPath(stringPath)
+            Dim path As String = Server.MapPath("~/File/Order/" & lblOrderId.Text)
 
-            If IO.Directory.Exists(directoryPath) Then
-                Dim filesPath As String() = IO.Directory.GetFiles(directoryPath)
-                Dim files As New List(Of Object)()
+            Dim dt As New DataTable
+            dt.Columns.Add("FolderName")
+            dt.Columns.Add("FileName")
+            dt.Columns.Add("FileUrl")
 
-                For Each path_1 As String In filesPath
-                    files.Add(New With {.FileName = IO.Path.GetFileName(path_1)})
+            If IO.Directory.Exists(path) Then
+                For Each file As String In IO.Directory.GetFiles(path)
+                    Dim fileName = IO.Path.GetFileName(file)
+                    Dim row = dt.NewRow()
+
+                    row("FolderName") = lblOrderId.Text
+                    row("FileName") = fileName
+                    row("FileUrl") = ResolveUrl("~/File/Order/" & lblOrderId.Text & "/" & fileName)
+                    dt.Rows.Add(row)
                 Next
-
-                gvListOrderFile.DataSource = files
-                gvListOrderFile.DataBind()
-            Else
-                IO.Directory.CreateDirectory(directoryPath)
-                gvListOrderFile.DataSource = Nothing
-                gvListOrderFile.DataBind()
             End If
 
+            gvListOrderFile.DataSource = dt
+            gvListOrderFile.DataBind()
+
             divUploadAction.Visible = False
-            If lblOrderType.Text = "Builder" Then
+            If lblOrderType.Text = "Builder" AndAlso (lblOrderStatus.Text = "Unsubmitted" OrElse lblOrderStatus.Text = "Quoted") Then
                 divUploadAction.Visible = True
             End If
 

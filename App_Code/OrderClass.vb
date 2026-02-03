@@ -1,6 +1,5 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
-Imports System.Drawing
 
 Public Class OrderClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
@@ -901,16 +900,20 @@ Public Class OrderClass
     End Function
 
     Public Function GenerateRandomCode() As String
-        Dim chars As String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-        Dim rnd As New Random()
-        Dim result As New System.Text.StringBuilder()
+        Try
+            Dim chars As String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+            Dim rnd As New Random()
+            Dim result As New System.Text.StringBuilder()
 
-        For i As Integer = 1 To 5
-            Dim idx As Integer = rnd.Next(0, chars.Length)
-            result.Append(chars(idx))
-        Next
+            For i As Integer = 1 To 5
+                Dim idx As Integer = rnd.Next(0, chars.Length)
+                result.Append(chars(idx))
+            Next
 
-        Return result.ToString()
+            Return result.ToString()
+        Catch ex As Exception
+            Return String.Empty
+        End Try
     End Function
 
     Public Function GetNewOrderHeaderId() As String
@@ -1110,7 +1113,7 @@ Public Class OrderClass
 
     ' PRICING
     Public Function GetGridPrice(data As Object()) As Decimal
-        Dim result As Decimal = 0.00
+        Dim result As Decimal = 0D
         Try
             Dim productGroupId As String = Convert.ToString(data(0))
             Dim priceGroupId As String = Convert.ToString(data(1))
@@ -1178,15 +1181,18 @@ Public Class OrderClass
     End Function
 
     Public Sub ResetPriceDetail(headerId As String, itemId As String)
-        Using thisConn As SqlConnection = New SqlConnection(myConn)
-            Using myCmd As SqlCommand = New SqlCommand("DELETE FROM OrderCostings WHERE HeaderId=@HeaderId AND ItemId=@ItemId", thisConn)
-                myCmd.Parameters.AddWithValue("@HeaderId", headerId)
-                myCmd.Parameters.AddWithValue("@ItemId", itemId)
+        Try
+            Using thisConn As SqlConnection = New SqlConnection(myConn)
+                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM OrderCostings WHERE HeaderId=@HeaderId AND ItemId=@ItemId", thisConn)
+                    myCmd.Parameters.AddWithValue("@HeaderId", headerId)
+                    myCmd.Parameters.AddWithValue("@ItemId", itemId)
 
-                thisConn.Open()
-                myCmd.ExecuteNonQuery()
+                    thisConn.Open()
+                    myCmd.ExecuteNonQuery()
+                End Using
             End Using
-        End Using
+        Catch ex As Exception
+        End Try
     End Sub
 
     Public Sub FinalCostItem(headerId As String, itemId As String)

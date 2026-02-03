@@ -1154,7 +1154,6 @@ Partial Class Setting_Customer_Detail
 
     ' START CUSTOMER BUSINESS
 
-
     ' START CUSTOMER LOGIN
     Protected Sub gvListLogin_RowCommand(sender As Object, e As GridViewCommandEventArgs)
         If Not String.IsNullOrEmpty(e.CommandArgument) Then
@@ -1544,6 +1543,29 @@ Partial Class Setting_Customer_Detail
         End Try
     End Sub
 
+    Protected Sub btnCredentialsLogin_Click(sender As Object, e As EventArgs)
+        MessageError_Login(False, String.Empty)
+        Session("selectedTabCustomer") = "list-login"
+        Try
+            Dim checkPrimary As Integer = settingClass.GetItemData_Integer("SELECT COUNT(*) FROM CustomerContacts WHERE CustomerId='" & lblId.Text & "' AND [Primary]=1")
+            If checkPrimary = 0 Then
+                MessageError_Login(True, "PRIMARY CONTACT EMAIL IS REQUIRED !")
+                Exit Sub
+            End If
+
+            'mailingClass.LoginCredentials(lblId.Text, Session("LoginId").ToString())
+            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError_Login(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Login(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnCredentialsLogin_Click", ex.ToString()}
+                mailingClass.WebError(dataMailing)
+            End If
+        End Try
+    End Sub
+
     Protected Sub BindDataLogin(customerId As String)
         MessageError_Login(False, String.Empty)
         Try
@@ -1644,7 +1666,6 @@ Partial Class Setting_Customer_Detail
     End Function
 
     ' END CUSTOMER LOGIN
-
 
     ' CUSTOMER DISCOUNT
     Protected Sub gvListDiscount_RowCommand(sender As Object, e As GridViewCommandEventArgs)
@@ -2006,7 +2027,6 @@ Partial Class Setting_Customer_Detail
 
     ' END CUSTOMER DISCOUNT
 
-
     ' START CUSTOMER PROMO
     Protected Sub gvListPromo_RowCommand(sender As Object, e As GridViewCommandEventArgs)
         If Not String.IsNullOrEmpty(e.CommandArgument) Then
@@ -2064,6 +2084,13 @@ Partial Class Setting_Customer_Detail
         Try
             If ddlListPromo.SelectedValue = "" Then
                 MessageError_ProcessPromo(True, "PROMO IS REQUIRED !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showProcessPromo", thisScript, True)
+                Exit Sub
+            End If
+
+            Dim checkData As Integer = settingClass.GetItemData_Integer("SELECT COUNT(*) FROM CustomerPromos WHERE CustomerId='" & lblId.Text & "' AND PromoId='" & ddlListPromo.SelectedValue & "'")
+            If checkData > 0 Then
+                MessageError_ProcessPromo(True, "THIS PROMO IS ALREADY REGISTERED. PLEASE USE A DIFFERENT PROMO !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcessPromo", thisScript, True)
                 Exit Sub
             End If
@@ -2174,7 +2201,7 @@ Partial Class Setting_Customer_Detail
     Protected Sub BindDataPromo(customerId As String)
         MessageError_Promo(False, String.Empty)
         Try
-            Dim thisQuery As String = "SELECT CustomerPromos.*, Promos.Name AS PromoName FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "'"
+            Dim thisQuery As String = "SELECT CustomerPromos.*, Promos.Name AS PromoName, Promos.StartDate AS StartDate, Promos.EndDate AS EndDate FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "'"
 
             gvListPromo.DataSource = settingClass.GetDataTable(thisQuery)
             gvListPromo.DataBind()
@@ -2232,8 +2259,9 @@ Partial Class Setting_Customer_Detail
         divErrorProcessPromo.Visible = visible : msgErrorProcessPromo.InnerText = message
     End Sub
 
+    ' END CUSTOMER PROMO
 
-    ' CUSTOMER PRODUCT ACCESS
+    ' START CUSTOMER PRODUCT ACCESS
     Protected Sub gvListProduct_RowCommand(sender As Object, e As GridViewCommandEventArgs)
         If Not String.IsNullOrEmpty(e.CommandArgument) Then
             Session("selectedTabCustomer") = "list-product"
@@ -2424,8 +2452,9 @@ Partial Class Setting_Customer_Detail
         divErrorProduct.Visible = visible : msgErrorProduct.InnerText = message
     End Sub
 
+    ' END CUSTOMER PRODUCT ACCESS
 
-    ' CUSTOMER QUOTE
+    ' START CUSTOMER QUOTE
     Protected Sub BindDataQuote(customerId As String)
         MessageError_Quote(False, String.Empty)
         Try
@@ -2461,6 +2490,8 @@ Partial Class Setting_Customer_Detail
     Protected Sub MessageError_Quote(visible As Boolean, message As String)
         divErrorQuote.Visible = visible : msgErrorQuote.InnerText = message
     End Sub
+
+    ' STENDART CUSTOMER QUOTE
 
     Protected Sub AllMessageError(visible As Boolean, message As String)
         MessageError(visible, message)

@@ -45,7 +45,11 @@
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-12 col-sm-12 col-lg-5 mb-2">
-                                    <asp:DropDownList runat="server" ID="ddlCompanyDetail" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCompanyDetail_SelectedIndexChanged"></asp:DropDownList>
+                                    <div class="input-group">
+                                        <span class="input-group-text">Company : </span>
+                                        <asp:DropDownList runat="server" ID="ddlCompanyDetail" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCompanyDetail_SelectedIndexChanged"></asp:DropDownList>
+                                    </div>
+                                    
                                 </div>
                                 <div class="col-12 col-sm-12 col-lg-7 d-flex justify-content-end">
                                     <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">

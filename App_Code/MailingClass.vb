@@ -1659,4 +1659,143 @@ Public Class MailingClass
         Catch ex As Exception
         End Try
     End Sub
+
+    Public Sub LoginCredentials(customerId As String, loginId As String)
+        Try
+            If String.IsNullOrEmpty(customerId) OrElse String.IsNullOrEmpty(loginId) Then Exit Sub
+
+            Dim customerData As DataRow = GetDataRow("SELECT Customers.*, CustomerLogins.FullName AS CustOperator, CASE WHEN Customers.CashSale=1 THEN 'Yes' WHEN Customers.CashSale=0 THEN 'No' ELSE 'Error' END AS CustomerCashSale FROM Customers LEFT JOIN CustomerLogins ON Customers.Operator=CustomerLogins.Id WHERE Customers.Id='" & customerId & "'")
+            If customerData Is Nothing Then Exit Sub
+
+            Dim loginData As DataTable = GetDataTable("SELECT * FROM CustomerLogins WHERE CustomerId='" & customerId & "' WHERE Active=1 ORDER BY UserName ASC")
+            If Not loginData.Rows.Count = 0 Then
+
+            End If
+
+            Dim debtorCode As String = customerData("DebtorCode").ToString()
+            Dim customerName As String = customerData("Name").ToString()
+            Dim companyId As String = customerData("CompanyId").ToString()
+            Dim customerArea As String = customerData("Area").ToString()
+            Dim customerOperator As String = customerData("Operator").ToString()
+            Dim operatorName As String = customerData("CustOperator").ToString()
+            Dim customerCashSale As String = customerData("CustomerCashSale").ToString()
+
+            Dim priceGroupId As String = customerData("PriceGroupId").ToString()
+            Dim shutterPriceGroupId As String = customerData("ShutterPriceGroupId").ToString()
+            Dim doorPriceGroupId As String = customerData("DoorPriceGroupId").ToString()
+
+            Dim priceGroupName As String = GetItemData("SELECT Name FROM PriceGroups WHERE Id='" & priceGroupId & "'")
+            Dim shutterPriceGroupName As String = GetItemData("SELECT Name FROM PriceGroups WHERE Id='" & shutterPriceGroupId & "'")
+            Dim doorPriceGroupName As String = GetItemData("SELECT Name FROM PriceGroups WHERE Id='" & doorPriceGroupId & "'")
+
+            Dim companyName As String = GetItemData("SELECT Name FROM Companys WHERE Id='" & companyId & "'")
+            Dim emailOperator As String = GetItemData("SELECT Email FROM CustomerLogins WHERE Id='" & customerOperator & "'")
+
+            Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='New Customer' AND Active=1")
+            If mailData Is Nothing Then Exit Sub
+
+            Dim mailServer As String = mailData("Server").ToString()
+            Dim mailHost As String = mailData("Host").ToString()
+            Dim mailPort As Integer = mailData("Port")
+
+            Dim mailAccount As String = mailData("Account").ToString()
+            Dim mailPassword As String = mailData("Password").ToString()
+            Dim mailAlias As String = mailData("Alias").ToString()
+            Dim mailSubject As String = mailData("Subject").ToString()
+
+            Dim mailTo As String = mailData("To").ToString()
+            Dim mailCc As String = mailData("Cc").ToString()
+            Dim mailBcc As String = mailData("Bcc").ToString()
+
+            Dim mailNetworkCredentials As Boolean = mailData("NetworkCredentials")
+            Dim mailDefaultCredentials As Boolean = mailData("DefaultCredentials")
+            Dim mailEnableSSL As Boolean = mailData("EnableSSL")
+
+            Dim fullName As String = GetItemData("SELECT FullName FROM CustomerLogins WHERE Id='" & loginId & "'")
+
+            Dim mailBody As String = String.Empty
+
+            mailBody = "<span style='font-family: Cambria; font-size: 16px;'>"
+            mailBody &= "Hi Bella & Team,"
+            mailBody &= "<br /><br />"
+            mailBody &= "A new customer has been added to the online ordering portal by "
+            mailBody &= "<b>" & fullName & "</b>, with the following details:"
+            mailBody &= "</span>"
+
+            mailBody &= "<br /><br />"
+
+            mailBody &= "<table cellpadding='3' cellspacing='0' style='font-family:Cambria; font-size: 16px;'>"
+            mailBody &= "<tr><td valign='top'>Company</td><td valign='top'>:</td><td valign='top'><b>" & companyName & "</b></td></tr>"
+            mailBody &= "<tr><td valign='top'>Debtor Code</td><td valign='top'>:</td><td valign='top'><b>" & debtorCode & "</b></td></tr>"
+            mailBody &= "<tr><td valign='top'>Customer Name</td><td valign='top'>:</td><td valign='top'><b>" & customerName & "</b></td></tr>"
+            mailBody &= "<tr><td valign='top'>Operator</td><td valign='top'>:</td><td valign='top'><b>" & operatorName & "</b></td></tr>"
+            mailBody &= "<tr><td valign='top'>Area</td><td valign='top'>:</td><td valign='top'><b>" & customerArea & "</b></td></tr>"
+            mailBody &= "<tr><td valign='top'>Cash Sale</td><td valign='top'>:</td><td valign='top'><b>" & customerCashSale & "</b></td></tr>"
+            mailBody &= "<tr><td valign='top'></td><td valign='top'></td><td valign='top'></td></tr>"
+            mailBody &= "<tr><td valign='top'></td><td valign='top'></td><td valign='top'></td></tr>"
+            mailBody &= "<tr><td valign='top'></td><td valign='top'></td><td valign='top'></td></tr>"
+            mailBody &= "<tr><td valign='top'>Blinds Pricing</td><td valign='top'>:</td><td valign='top'><b>" & priceGroupName & "</b></td></tr>"
+            mailBody &= "<tr><td valign='top'>Shutters Pricing</td><td valign='top'>:</td><td valign='top'><b>" & shutterPriceGroupName & "</b></td></tr>"
+            mailBody &= "<tr><td valign='top'>Doors Pricing</td><td valign='top'>:</td><td valign='top'><b>" & doorPriceGroupName & "</b></td></tr>"
+
+            mailBody &= "</table>"
+
+            mailBody &= "<br /><br /><br />"
+
+            mailBody &= "<span style='font-family: Cambria; font-size: 16px;'>Please check and proceed with the data integration.</span>"
+
+            mailBody &= "<br /><br /><br />"
+
+            mailBody &= "<span style='font-family: Cambria; font-size:16px;'>Kind Regards,</span>"
+            mailBody &= "<br /><br /><br />"
+            mailBody &= "<span style='font-family: Cambria; font-size:16px;font-weight: bold;'>Reza Andika Pratama</span><span style='font-family: Cambria; font-size:16px;'> | Developer</span>"
+            mailBody &= "<br />"
+            mailBody &= "<span style='font-family: Cambria; font-size:16px;'>reza@bigblinds.co.id</span>"
+
+            Dim myMail As New MailMessage()
+            myMail.Subject = String.Format("New Customer | {0}", customerName)
+            myMail.From = New MailAddress(mailServer, mailAlias)
+
+            If Not String.IsNullOrEmpty(mailTo) Then
+                For Each thisMail In mailTo.Split(";"c)
+                    If Not String.IsNullOrEmpty(thisMail.Trim()) Then myMail.To.Add(thisMail.Trim())
+                Next
+            End If
+
+            If Not String.IsNullOrEmpty(mailCc) Then
+                For Each thisMail In mailCc.Split(";"c)
+                    If Not String.IsNullOrEmpty(thisMail.Trim()) Then myMail.CC.Add(thisMail.Trim())
+                Next
+            End If
+
+            If Not String.IsNullOrEmpty(emailOperator) Then
+                myMail.CC.Add(emailOperator)
+            End If
+
+            If Not String.IsNullOrEmpty(mailBcc) Then
+                For Each thisMail In mailBcc.Split(";"c)
+                    If Not String.IsNullOrEmpty(thisMail.Trim()) Then myMail.Bcc.Add(thisMail.Trim())
+                Next
+            End If
+
+            myMail.Body = mailBody
+            myMail.IsBodyHtml = True
+            Dim smtpClient As New SmtpClient()
+            smtpClient.Host = mailHost
+            smtpClient.Port = mailPort
+            smtpClient.EnableSsl = mailEnableSSL
+            smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network
+            smtpClient.Timeout = 120000
+
+            If mailNetworkCredentials Then
+                smtpClient.UseDefaultCredentials = False
+                smtpClient.Credentials = New NetworkCredential(mailAccount, mailPassword)
+            Else
+                smtpClient.UseDefaultCredentials = mailDefaultCredentials
+            End If
+
+            smtpClient.Send(myMail)
+        Catch ex As Exception
+        End Try
+    End Sub
 End Class

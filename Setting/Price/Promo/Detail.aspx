@@ -24,7 +24,7 @@
     </div>
 
     <div class="page-content">
-        <section class="row" runat="server" id="divError">
+        <section class="row mb-3" runat="server" id="divError">
             <div class="col-12">
                 <div class="alert alert-danger">
                     <span runat="server" id="msgError"></span>
@@ -32,61 +32,70 @@
             </div>
         </section>
 
-        <section class="row mb-3">
-            <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
-                <a href="#" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalProcess">Log</a>
-                <a href="#" runat="server" id="aEdit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalProcess">Edit Promo</a>
-            </div>
-        </section>
-
         <section class="row">
-            <div class="col-12">
+            <div class="col-12 col-sm-12 col-lg-3">
                 <div class="card">
                     <div class="card-content">
                         <div class="card-body">
-                            <div class="row mb-3">
-                                <div class="col-12 col-sm-12 col-lg-6">
-                                    <label>Promo Name</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblName" CssClass="font-bold"></asp:Label>
+                            <div class="form form-vertical">
+                                <div class="row mb-2">
+                                    <div class="col-12">
+                                        <label>ID</label>
+                                        <br />
+                                        <asp:Label runat="server" ID="lblId" CssClass="form-control font-bold"></asp:Label>
+                                    </div>
                                 </div>
-                                <div class="col-12 col-sm-12 col-lg-3">
-                                    <label>Start Date</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblStartDate" CssClass="font-bold"></asp:Label>
-                                </div>
-                                <div class="col-12 col-sm-12 col-lg-3">
-                                    <label>End Date</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblEndDate" CssClass="font-bold"></asp:Label>
-                                </div>
-                            </div>
 
-                            <div class="row">
-                                <div class="col-12 col-sm-12 col-lg-6">
-                                    <label>Description</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblDescription" CssClass="font-bold"></asp:Label>
+                                <div class="row mb-2">
+                                    <div class="col-12">
+                                        <label>Promo Name</label>
+                                        <br />
+                                        <asp:Label runat="server" ID="lblName" CssClass="form-control font-bold"></asp:Label>
+                                    </div>
                                 </div>
-                                <div class="col-12 col-sm-12 col-lg-3">
-                                    <label>Active</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblActive" CssClass="font-bold"></asp:Label>
+
+                                <div class="row mb-2">
+                                    <div class="col-12">
+                                        <label>Start Date</label>
+                                        <br />
+                                        <asp:Label runat="server" ID="lblStartDate" CssClass="form-control font-bold"></asp:Label>
+                                    </div>
                                 </div>
-                                <div class="col-12 col-sm-12 col-lg-3">
-                                    <label>ID</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblId" CssClass="font-bold"></asp:Label>
+
+                                <div class="row mb-2">
+                                    <div class="col-12">
+                                        <label>End Date</label>
+                                        <br />
+                                        <asp:Label runat="server" ID="lblEndDate" CssClass="form-control font-bold"></asp:Label>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-2">
+                                    <div class="col-12">
+                                        <label>Description</label>
+                                        <br />
+                                        <asp:Label runat="server" ID="lblDescription" CssClass="form-control font-bold"></asp:Label>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-2">
+                                    <div class="col-12">
+                                        <label>Active</label>
+                                        <br />
+                                        <asp:Label runat="server" ID="lblActive" CssClass="form-control font-bold"></asp:Label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <div class="card-footer text-center">
+                        <a href="javascript:void(0)" class="btn btn-secondary" onclick="showLog('Promos', '<%= lblId.Text %>')">Log</a>
+                        <a href="#" runat="server" id="aEdit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalProcess">Edit Promo</a>
+                    </div>
                 </div>
             </div>
-        </section>
-        
-        <section class="row">
-            <div class="col-12">
+            <div class="col-12 col-sm-12 col-lg-9">
                 <div class="card">
                     <div class="card-content">
                         <div class="card-header">
@@ -135,7 +144,7 @@
                                                                 <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteDetail" onclick='<%# String.Format("return showDeleteDetail(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                             </li>
                                                             <li>
-                                                                <asp:LinkButton runat="server" CssClass="dropdown-item" ID="linkLogPromo" Text="Log" CommandName="Log" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                                <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('PromoDetails', '<%# Eval("Id") %>')">Log</a>
                                                             </li>
                                                         </ul>
                                                     </ItemTemplate>
@@ -229,21 +238,37 @@
                             <asp:DropDownList runat="server" ID="ddlPromoType" CssClass="form-select" ClientIDMode="Static" onchange="visiblePromoType()">
                                 <asp:ListItem Value="Designs" Text="Design Type"></asp:ListItem>
                                 <asp:ListItem Value="Blinds" Text="Blind Type"></asp:ListItem>
+                                <asp:ListItem Value="Fabrics" Text="Fabric Type"></asp:ListItem>
+                                <asp:ListItem Value="FabricColours" Text="Fabric Colour"></asp:ListItem>
                             </asp:DropDownList>
                         </div>
                     </div>
 
-                    <div class="row mb-2" id="divDesigns">
+                    <div class="row mb-2" id="designtype">
                         <div class="col-12 form-group">
                             <label class="form-label">Product</label>
                             <asp:DropDownList runat="server" ID="ddlDesignPromo" CssClass="form-select"></asp:DropDownList>
                         </div>
                     </div>
 
-                    <div class="row mb-2" id="divBlinds">
+                    <div class="row mb-2" id="blindtype">
                         <div class="col-12 form-group">
                             <label class="form-label">Product</label>
                             <asp:DropDownList runat="server" ID="ddlBlindPromo" CssClass="form-select"></asp:DropDownList>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2" id="fabrictype">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Fabric</label>
+                            <asp:DropDownList runat="server" ID="ddlFabricPromo" CssClass="form-select"></asp:DropDownList>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2" id="fabriccolour">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Fabric Colour</label>
+                            <asp:DropDownList runat="server" ID="ddlFabricColourPromo" CssClass="form-select"></asp:DropDownList>
                         </div>
                     </div>
 
@@ -303,25 +328,11 @@
                 </div>
 
                 <div class="modal-body">
-                    <div class="row" runat="server" id="divErrorLog">
-                        <div class="col-12">
-                            <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorLog"></span>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="alert alert-danger d-none" id="logError"></div>
                     <div class="table-responsive">
-                        <asp:GridView runat="server" ID="gvListLogs" CssClass="table table-vcenter card-table" AutoGenerateColumns="false" EmptyDataText="DATA NOT FOUND" EmptyDataRowStyle-HorizontalAlign="Center" ShowHeader="false" GridLines="None" BorderStyle="None">
-                            <RowStyle />
-                            <Columns>
-                                <asp:TemplateField>
-                                    <ItemTemplate>
-                                        <%# BindTextLog(Eval("Id").ToString()) %>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                            </Columns>
-                            <AlternatingRowStyle BackColor="White" />
-                        </asp:GridView>
+                        <table class="table table-vcenter card-table" id="tblLogs">
+                            <tbody></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -332,33 +343,90 @@
         $(document).ready(function () {
             visiblePromoType();
         });
+
         function showProcess() {
             $("#modalProcess").modal("show");
         }
+
         function showProcessDetail() {
             $("#modalProcessDetail").modal("show");
         }
+
         function showDeleteDetail(id) {
             document.getElementById("<%=txtIdDeleteDetail.ClientID %>").value = id;
         }
-        function showLog() {
+
+        function showLog(type, dataId) {
+            $("#logError").addClass("d-none").html("");
+            $("#tblLogs tbody").html("");
             $("#modalLog").modal("show");
+
+            $.ajax({
+                type: "POST",
+                url: "/Setting/Method.aspx/GetLogs",
+                data: JSON.stringify({ type: type, dataId: dataId }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (res) {
+                    const logs = res.d;
+
+                    if (!logs || logs.length === 0) {
+                        $("#tblLogs tbody").html(
+                            `<tr><td class="text-center">DATA LOG NOT FOUND</td></tr>`
+                        );
+                        return;
+                    }
+
+                    let html = "";
+                    logs.forEach(r => {
+                        html += `<tr><td>${r.TextLog}</td></tr>`;
+                    });
+
+                    $("#tblLogs tbody").html(html);
+                },
+                error: function (err) {
+                    $("#logError").removeClass("d-none").html("FAILED TO LOAD LOG DATA");
+                }
+            });
         }
 
         function visiblePromoType() {
-            var type = document.getElementById("ddlPromoType");
-            var divDesigns = document.getElementById("divDesigns");
-            var divBlinds = document.getElementById("divBlinds");
+            const type = document.getElementById("ddlPromoType").value;
 
-            if (type.value === "Designs") {
-                if (divDesigns) divDesigns.style.display = "block";
-                if (divBlinds) divBlinds.style.display = "none";
-            } else if (type.value === "Blinds") {
-                if (divDesigns) divDesigns.style.display = "none";
-                if (divBlinds) divBlinds.style.display = "block";
-            } else {
-                if (divDesigns) divDesigns.style.display = "none";
-                if (divBlinds) divBlinds.style.display = "none";
+            const designtype = document.getElementById("designtype");
+            const blindtype = document.getElementById("blindtype");
+            const fabrictype = document.getElementById("fabrictype");
+            const fabriccolour = document.getElementById("fabriccolour");
+
+            if (type === "Designs") {
+                if (designtype) designtype.style.display = "block";
+                if (blindtype) blindtype.style.display = "none";
+                if (fabrictype) fabrictype.style.display = "none";
+                if (fabriccolour) fabriccolour.style.display = "none";
+            }
+            else if (type === "Blinds") {
+                if (designtype) designtype.style.display = "none";
+                if (blindtype) blindtype.style.display = "block";
+                if (fabrictype) fabrictype.style.display = "none";
+                if (fabriccolour) fabriccolour.style.display = "none";
+            }
+            else if (type === "Fabrics") {
+                if (designtype) designtype.style.display = "none";
+                if (blindtype) blindtype.style.display = "none";
+                if (fabrictype) fabrictype.style.display = "block";
+                if (fabriccolour) fabriccolour.style.display = "none";
+            }
+            else if (type === "FabricColours") {
+                if (designtype) designtype.style.display = "none";
+                if (blindtype) blindtype.style.display = "none";
+                if (fabrictype) fabrictype.style.display = "none";
+                if (fabriccolour) fabriccolour.style.display = "block";
+            }
+            else {
+                if (designtype) designtype.style.display = "none";
+                if (blindtype) blindtype.style.display = "none";
+                if (fabrictype) fabrictype.style.display = "none";
+                if (fabriccolour) fabriccolour.style.display = "none";
             }
         }
 
@@ -385,7 +453,6 @@
                     ) {
                         return;
                     }
-
                     const btn = this.querySelector("a[id*='linkDetailPromo']");
                     if (btn) btn.click();
                 });

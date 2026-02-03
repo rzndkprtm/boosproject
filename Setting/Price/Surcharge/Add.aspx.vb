@@ -113,7 +113,7 @@ Partial Class Setting_Price_Surcharge_Add
     Protected Sub BindDesign()
         ddlDesign.Items.Clear()
         Try
-            ddlDesign.DataSource = settingClass.GetDataTable("SELECT * FROM Designs ORDER BY Name ASC")
+            ddlDesign.DataSource = settingClass.GetDataTable("SELECT * FROM Designs WHERE Active=1 ORDER BY Name ASC")
             ddlDesign.DataTextField = "Name"
             ddlDesign.DataValueField = "Id"
             ddlDesign.DataBind()
@@ -128,7 +128,7 @@ Partial Class Setting_Price_Surcharge_Add
         ddlBlind.Items.Clear()
         Try
             If Not designId = "" Then
-                ddlBlind.DataSource = settingClass.GetDataTable("SELECT * FROM Blinds WHERE DesignId='" & designId & "' ORDER BY Name ASC")
+                ddlBlind.DataSource = settingClass.GetDataTable("SELECT * FROM Blinds WHERE DesignId='" & designId & "' AND Active=1 ORDER BY Name ASC")
                 ddlBlind.DataTextField = "Name"
                 ddlBlind.DataValueField = "Id"
                 ddlBlind.DataBind()
@@ -161,7 +161,7 @@ Partial Class Setting_Price_Surcharge_Add
     Protected Sub BindPriceGroup()
         ddlPriceGroup.Items.Clear()
         Try
-            ddlPriceGroup.DataSource = settingClass.GetDataTable("SELECT * FROM PriceGroups ORDER BY Name ASC")
+            ddlPriceGroup.DataSource = settingClass.GetDataTable("SELECT * FROM PriceGroups WHERE Active=1 ORDER BY Name ASC")
             ddlPriceGroup.DataTextField = "Name"
             ddlPriceGroup.DataValueField = "Id"
             ddlPriceGroup.DataBind()

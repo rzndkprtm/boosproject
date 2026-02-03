@@ -73,7 +73,6 @@
 
                     <div class="card-footer text-start" runat="server" id="divEdit">
                         <a href="#" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalProcess">Edit Company</a>
-                        <a href="#" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalDelete">Delete Company</a>
                     </div>
                 </div>
             </div>
