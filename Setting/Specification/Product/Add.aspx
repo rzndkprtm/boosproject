@@ -63,7 +63,7 @@
                                         <div class="col-12">
                                             <div class="form-group">
                                                 <label class="form-label">Product Name</label>
-                                                <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="" autocomplete="off"></asp:TextBox>
+                                                <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Product Name" autocomplete="off"></asp:TextBox>
                                             </div>
                                         </div>
                                     </div>

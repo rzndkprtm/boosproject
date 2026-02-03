@@ -3,12 +3,12 @@ Imports System.Data.SqlClient
 
 Partial Class Setting_Customer_Edit
     Inherits Page
+    Dim settingClass As New SettingClass
+    Dim mailingClass As New MailingClass
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataMailing As Object() = Nothing
 
-    Dim settingClass As New SettingClass
-    Dim mailingClass As New MailingClass
 
     Dim url As String = String.Empty
 
@@ -25,6 +25,10 @@ Partial Class Setting_Customer_Edit
         End If
 
         lblId.Text = Request.QueryString("customeredit").ToString()
+        If Not Session("RoleName") = "Developer" AndAlso lblId.Text = "1" Then
+            Response.Redirect("~/setting/customer", False)
+            Exit Sub
+        End If
         If Not IsPostBack Then
             BindData(lblId.Text)
         End If
