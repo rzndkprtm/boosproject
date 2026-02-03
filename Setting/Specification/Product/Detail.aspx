@@ -39,7 +39,7 @@
             </div>
         </section>
 
-        <section class="row">
+        <section class="row mt-2">
             <div class="col-12">
                 <div class="card">
                     <div class="card-content">
