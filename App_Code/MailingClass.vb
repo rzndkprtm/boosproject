@@ -299,8 +299,6 @@ Public Class MailingClass
             Dim mailBody As String = String.Empty
 
             mailBody = "<span style='font-family: Cambria; font-size: 16px;'>"
-            mailBody &= "Hi Team,"
-            mailBody &= "<br /><br />"
             mailBody &= "A new order has been submitted by customer."
             mailBody &= "<br /><br />"
             mailBody &= "Please check and download it from the BOE for production processing."
