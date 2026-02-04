@@ -112,10 +112,18 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="row">
                         <div class="col-12 form-group">
                             <label class="form-label">Name</label>
                             <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Price Group Name ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Company</label>
+                            <asp:DropDownList runat="server" ID="ddlCompany" CssClass="form-select"></asp:DropDownList>
                         </div>
                     </div>
 
@@ -129,13 +137,6 @@
                                 <asp:ListItem Value="Samples" Text="Samples"></asp:ListItem>
                                 <asp:ListItem Value="Component" Text="Component"></asp:ListItem>
                             </asp:DropDownList>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Company</label>
-                            <asp:DropDownList runat="server" ID="ddlCompany" CssClass="form-select"></asp:DropDownList>
                         </div>
                     </div>
 

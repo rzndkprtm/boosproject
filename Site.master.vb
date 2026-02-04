@@ -259,12 +259,6 @@ Public Partial Class SiteMaster
 
                 liSetting.Visible = True
 
-                liGeneral.Visible = True
-                liGeneralCompany.Visible = True
-                liGeneralMailing.Visible = True
-                liGeneralNewsletter.Visible = True
-                liGeneralTutorial.Visible = True
-
                 liCustomer.Visible = True
 
                 liSpecification.Visible = True
