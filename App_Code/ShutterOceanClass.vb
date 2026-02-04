@@ -60,7 +60,7 @@ Public Class ShutterOceanClass
         Using thisConn As New SqlConnection(myConn)
             thisConn.Open()
 
-            Using cmd As New SqlCommand("Select OrderDetails.*, Blinds.Name AS BlindName, ProductColours.Name AS ColourName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId = Products.Id LEFT JOIN Designs ON Products.DesignId = Designs.Id LEFT JOIN Blinds ON Products.BlindId = Blinds.Id LEFT JOIN ProductColours ON Products.ColourType = ProductColours.Id WHERE OrderDetails.HeaderId=@Id AND Designs.Name='Skyline Shutter Ocean'", thisConn)
+            Using cmd As New SqlCommand("SELECT OrderDetails.*, Blinds.Name AS BlindName, ProductColours.Name AS ColourName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId = Products.Id LEFT JOIN Designs ON Products.DesignId = Designs.Id LEFT JOIN Blinds ON Products.BlindId = Blinds.Id LEFT JOIN ProductColours ON Products.ColourType = ProductColours.Id WHERE OrderDetails.HeaderId=@Id AND Designs.Name='Skyline Shutter Ocean'", thisConn)
                 cmd.Parameters.AddWithValue("@Id", orderId)
 
                 Using rdr As SqlDataReader = cmd.ExecuteReader()
