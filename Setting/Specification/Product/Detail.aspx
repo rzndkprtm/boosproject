@@ -24,13 +24,6 @@
     </div>
 
     <div class="page-content">
-        <section class="row mb-2">
-            <div class="col-12 d-flex flex-wrap justify-content-end gap-1">
-                <asp:Button runat="server" ID="btnEditProduct" CssClass="btn btn-primary" Text="Edit Product" OnClick="btnEditProduct_Click" />
-                <a href="javascript:void(0);" class="btn btn-secondary" onclick="showLog('Products', '<%= lblId.Text %>')">Log</a>
-            </div>
-        </section>
-
         <section class="row mb-2" runat="server" id="divError">
             <div class="col-12">
                 <div class="alert alert-danger">
@@ -39,7 +32,14 @@
             </div>
         </section>
 
-        <section class="row mt-2">
+        <section class="row mb-3">
+            <div class="col-12 d-flex flex-wrap justify-content-end gap-1">
+                <asp:Button runat="server" ID="btnEditProduct" CssClass="btn btn-primary" Text="Edit Product" OnClick="btnEditProduct_Click" />
+                <a href="javascript:void(0);" class="btn btn-secondary" onclick="showLog('Products', '<%= lblId.Text %>')">Log</a>
+            </div>
+        </section>
+
+        <section class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-content">
@@ -133,7 +133,7 @@
                                     <h4 class="card-title">List Hardware / Ven Kit</h4>
                                 </div>
                                 <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
-                                    <asp:Button runat="server" ID="btnAddKit" CssClass="btn btn-primary btn-sm" Text="Add New" OnClick="btnAddKit_Click" />
+                                    <asp:Button runat="server" ID="btnAddKit" CssClass="btn btn-primary" Text="Add New" OnClick="btnAddKit_Click" />
                                 </div>
                             </div>
                         </div>

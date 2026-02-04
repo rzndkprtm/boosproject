@@ -841,7 +841,7 @@ Partial Class Order_Default
     End Function
 
     Protected Function VisibleHoldOrder(status As String, active As Boolean) As Boolean
-        If active = True AndAlso status = "In Production" AndAlso Session("RoleName") = "Developer" Then Return True
+        If active = True AndAlso status = "In Production" AndAlso (Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office") Then Return True
         Return False
     End Function
 

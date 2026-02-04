@@ -106,14 +106,14 @@ Partial Class Setting_Price_Group
                 Exit Sub
             End If
 
-            If ddlType.SelectedValue = "" Then
-                MessageError_Process(True, "TYPE IS REQUIRED !")
+            If ddlCompany.SelectedValue = "" Then
+                MessageError_Process(True, "COMPANY IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
             End If
 
-            If ddlCompany.SelectedValue = "" Then
-                MessageError_Process(True, "COMPANY IS REQUIRED !")
+            If ddlType.SelectedValue = "" Then
+                MessageError_Process(True, "TYPE IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
             End If

@@ -1577,6 +1577,7 @@ Partial Class Setting_Customer_Detail
             gvListLogin.Columns(5).Visible = PageAction("Visible Email Login")
 
             btnAddLogin.Visible = PageAction("Add Login")
+            aCredentialsLogin.Visible = PageAction("Credentials Login")
         Catch ex As Exception
             MessageError_Login(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
