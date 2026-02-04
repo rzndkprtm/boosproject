@@ -20,14 +20,23 @@ Partial Class Setting_Additional_Delete
             Dim directoryArchive As New DirectoryInfo(Server.MapPath("~/File/Archive/"))
             EmptyFolder(directoryArchive)
 
+            Dim directoryCws As New DirectoryInfo(Server.MapPath("~/File/CWS/"))
+            EmptyFolder(directoryCws)
+
             Dim directoryInv As New DirectoryInfo(Server.MapPath("~/File/Invoice/"))
             EmptyFolder(directoryInv)
 
             Dim directoryOrder As New DirectoryInfo(Server.MapPath("~/File/Preview/"))
             EmptyFolder(directoryOrder)
 
-            Dim directorQuote As New DirectoryInfo(Server.MapPath("~/File/Quote/"))
-            EmptyFolder(directorQuote)
+            Dim directoryQuote As New DirectoryInfo(Server.MapPath("~/File/Quote/"))
+            EmptyFolder(directoryQuote)
+
+            Dim directoryReport As New DirectoryInfo(Server.MapPath("~/File/Report/"))
+            EmptyFolder(directoryReport)
+
+            Dim directorySuratJalan As New DirectoryInfo(Server.MapPath("~/File/SuratJalan/"))
+            EmptyFolder(directorySuratJalan)
 
             Dim directoryRework As New DirectoryInfo(Server.MapPath("~/File/Rework/"))
             EmptyFolder_Rework(directoryRework)

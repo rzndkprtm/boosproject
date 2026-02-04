@@ -259,6 +259,15 @@ Partial Class Order_Add
                 End Try
             Loop
 
+            Dim directoryOrder As String = Server.MapPath(String.Format("~/File/Order/{0}/", orderId))
+            If Not Directory.Exists(directoryOrder) Then
+                Directory.CreateDirectory(directoryOrder)
+            End If
+
+            Dim fileName As String = Path.GetFileName(filePath)
+            Dim newPath As String = Path.Combine(directoryOrder, fileName)
+            File.Copy(filePath, newPath, True)
+
             Dim dataLog As Object() = {"OrderHeaders", headerId, Session("LoginId").ToString(), "Order Created | CSV"}
             orderClass.Logs(dataLog)
 
@@ -2735,6 +2744,7 @@ Partial Class Order_Add
         Try
             Dim role As String = String.Empty
             If Session("RoleName") = "IT" Then role = "AND Id<>'1' AND Id<>'2'"
+            If Session("RoleName") = "Customer" Then role = "AND Id='" & Session("CustomerId").ToString() & "'"
 
             Dim thisQuery As String = String.Format("SELECT * FROM Customers WHERE Active=1 {0} ORDER BY Name ASC", role)
 
@@ -2745,10 +2755,6 @@ Partial Class Order_Add
 
             If ddlCustomer.Items.Count > 1 Then
                 ddlCustomer.Items.Insert(0, New ListItem("", ""))
-            End If
-
-            If Session("RoleName") = "Customer" Then
-                ddlCustomer.SelectedValue = Session("CustomerId").ToString()
             End If
         Catch ex As Exception
             ddlCustomer.Items.Clear()

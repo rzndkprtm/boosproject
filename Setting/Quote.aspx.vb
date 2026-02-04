@@ -31,86 +31,13 @@ Partial Class Setting_Quote
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
+            MessageError_Logo(False, String.Empty)
+            MessageError_Address(False, String.Empty)
+            MessageError_Contact(False, String.Empty)
+            MessageError_Terms(False, String.Empty)
+
             BindData(lblCustomerId.Text)
         End If
-    End Sub
-
-    Protected Sub linkLogo_Click(sender As Object, e As EventArgs)
-        MessageError_Logo(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showLogo(); };"
-        Try
-            ClientScript.RegisterStartupScript(Me.GetType(), "showLogo", thisScript, True)
-        Catch ex As Exception
-            MessageError_Logo(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Logo(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showLogo", thisScript, True)
-        End Try
-    End Sub
-
-    Protected Sub linkAddress_Click(sender As Object, e As EventArgs)
-        MessageError_Address(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showAddress(); };"
-        Try
-            Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerQuotes WHERE Id='" & lblCustomerId.Text & "'")
-            If myData Is Nothing Then Exit Sub
-
-            txtAddress.Text = myData("Address").ToString
-            txtSuburb.Text = myData("Suburb").ToString
-            txtState.Text = myData("State").ToString
-            txtPostCode.Text = myData("PostCode").ToString
-            ddlCountry.SelectedValue = myData("Country").ToString
-
-            ClientScript.RegisterStartupScript(Me.GetType(), "showAddress", thisScript, True)
-        Catch ex As Exception
-            MessageError_Address(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Address(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showAddress", thisScript, True)
-        End Try
-    End Sub
-
-    Protected Sub linkContact_Click(sender As Object, e As EventArgs)
-        MessageError_Contact(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showContact(); };"
-        Try
-            Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerQuotes WHERE Id='" & lblCustomerId.Text & "'")
-            If myData Is Nothing Then Exit Sub
-
-            txtEmail.Text = myData("Email").ToString
-            txtPhone.Text = myData("Phone").ToString
-
-            ClientScript.RegisterStartupScript(Me.GetType(), "showContact", thisScript, True)
-        Catch ex As Exception
-            MessageError_Contact(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Contact(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showContact", thisScript, True)
-        End Try
-    End Sub
-
-    Protected Sub linkTerms_Click(sender As Object, e As EventArgs)
-        MessageError_Terms(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showTerms(); };"
-        Try
-            Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerQuotes WHERE Id='" & lblCustomerId.Text & "'")
-            If myData Is Nothing Then Exit Sub
-
-            Dim termText As String = myData("Terms").ToString()
-            termText = termText.Replace(vbCrLf, "<br>").Replace(vbLf, "<br>")
-            txtTerms.Text = myData("Terms").ToString()
-
-            ClientScript.RegisterStartupScript(Me.GetType(), "showTerms", thisScript, True)
-        Catch ex As Exception
-            MessageError_Terms(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Terms(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showTerms", thisScript, True)
-        End Try
     End Sub
 
     Protected Sub btnLogo_Click(sender As Object, e As EventArgs)
@@ -286,6 +213,18 @@ Partial Class Setting_Quote
                 Exit Sub
             End If
 
+            txtAddress.Text = thisData("Address").ToString
+            txtSuburb.Text = thisData("Suburb").ToString
+            txtState.Text = thisData("State").ToString
+            txtPostCode.Text = thisData("PostCode").ToString
+            ddlCountry.SelectedValue = thisData("Country").ToString
+            txtEmail.Text = thisData("Email").ToString
+            txtPhone.Text = thisData("Phone").ToString
+
+            Dim termText As String = thisData("Terms").ToString()
+            termText = termText.Replace(vbCrLf, "<br>").Replace(vbLf, "<br>")
+            txtTerms.Text = thisData("Terms").ToString()
+
             imgQuote.ImageUrl = String.Format("~/assets/images/logo/customers/{0}", thisData("Logo").ToString())
             lblOldLogo.Text = thisData("Logo").ToString()
 
@@ -314,9 +253,6 @@ Partial Class Setting_Quote
             If Not String.IsNullOrEmpty(phone) Then
                 contact &= String.Format("- Phone : {0}", phone)
             End If
-
-            Dim termText As String = thisData("Terms").ToString()
-            termText = termText.Replace(vbCrLf, "<br>").Replace(vbLf, "<br>")
 
             pAddress.InnerHtml = address
             pContact.InnerHtml = contact

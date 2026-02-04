@@ -44,34 +44,33 @@
                 <div class="card-content">
                     <div class="card-body">
                         <div class="list-group">
-                            <asp:LinkButton runat="server" ID="linkLogo" CssClass="list-group-item list-group-item-action" OnClick="linkLogo_Click">
+                            <a href="javascript:void(0);" class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#modalLogo">
                                 <div class="d-flex w-100 justify-content-between">
                                     <h6 class="mb-1">Section 1 - Logo</h6>
                                 </div>
-
                                 <asp:Image runat="server" CssClass="w-100" ID="imgQuote" />
-                            </asp:LinkButton>
+                            </a>
 
-                            <asp:LinkButton runat="server" ID="linkAddress" CssClass="list-group-item list-group-item-action" OnClick="linkAddress_Click">
+                            <a href="javascript:void(0);" class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#modalAddress">
                                 <div class="d-flex w-100 justify-content-between">
                                     <h6 class="mb-1">Section 2 - Address</h6>
                                 </div>
                                 <p class="mt-2" runat="server" id="pAddress"></p>
-                            </asp:LinkButton>
+                            </a>
 
-                            <asp:LinkButton runat="server" ID="linkContact" CssClass="list-group-item list-group-item-action" OnClick="linkContact_Click">
+                            <a href="javascript:void(0);" class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#modalAddress">
                                 <div class="d-flex w-100 justify-content-between">
                                     <h6 class="mb-1">Section 3 - Contact</h6>
                                 </div>
                                 <p class="mt-2" runat="server" id="pContact"></p>
-                            </asp:LinkButton>
+                            </a>
 
-                            <asp:LinkButton runat="server" ID="linkTerms" CssClass="list-group-item list-group-item-action" OnClick="linkTerms_Click">
+                            <a href="javascript:void(0);" class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#modalAddress">
                                 <div class="d-flex w-100 justify-content-between">
                                     <h6 class="mb-1">Section 4 - Terms & Conditions</h6>
                                 </div>
                                 <p class="mt-2" runat="server" id="pTerms"></p>
-                            </asp:LinkButton>
+                            </a>
                         </div>
                     </div>
                 </div>
