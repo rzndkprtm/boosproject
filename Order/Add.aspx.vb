@@ -1508,7 +1508,6 @@ Partial Class Order_Add
                         End If
 
                         designId = orderClass.GetItemData("SELECT Id FROM Designs WHERE Name='Roller Blind'")
-
                         If String.IsNullOrEmpty(designId) Then
                             MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
                             Exit For

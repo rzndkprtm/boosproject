@@ -9908,6 +9908,27 @@ Partial Class Order_Method
             .showPrice = actionClass.GetActionAccess(roleId, levelId, "Order Detail", "Price Details | Visible Price")
         }
     End Function
+
+    <WebMethod()>
+    Public Shared Function GetHistoryNote(headerId As String) As List(Of HistoryNoteDto)
+
+        Dim orderClass As New OrderClass
+
+        Dim dt = orderClass.GetDataTable(
+            "SELECT OrderInternalNotes.Note, CustomerLogins.FullName, FORMAT(OrderInternalNotes.CreatedDate, 'dd MMM yyyy') AS CreatedDate FROM OrderInternalNotes INNER JOIN CustomerLogins ON OrderInternalNotes.CreatedBy = CustomerLogins.Id WHERE OrderInternalNotes.HeaderId='" & headerId & "' ORDER BY OrderInternalNotes.CreatedDate DESC")
+
+        Dim list As New List(Of HistoryNoteDto)
+
+        For Each r As DataRow In dt.Rows
+            list.Add(New HistoryNoteDto With {
+                .FullName = r("FullName").ToString(),
+                .CreatedDate = r("CreatedDate").ToString(),
+                .Note = r("Note").ToString()
+            })
+        Next
+
+        Return list
+    End Function
 End Class
 
 Public Class ProccessData
@@ -10174,4 +10195,10 @@ Public Class CostingDto
     Public Property BuyPricing As String
     Public Property SellPricing As String
     Public Property Price As String
+End Class
+
+Public Class HistoryNoteDto
+    Public Property FullName As String
+    Public Property CreatedDate As String
+    Public Property Note As String
 End Class
