@@ -768,10 +768,6 @@ Partial Class Order_Default
         divErrorShipmentOrder.Visible = visible : msgErrorShipmentOrder.InnerText = message
     End Sub
 
-    Protected Function BindTextLog(logId As String) As String
-        Return orderClass.GetTextLog(logId)
-    End Function
-
     Protected Function VisibleDelete(data As Object) As Boolean
         Dim active As Boolean = Convert.ToBoolean(data(0))
         Dim status As String = Convert.ToString(data(1))
