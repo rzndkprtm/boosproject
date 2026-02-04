@@ -1280,25 +1280,6 @@ Partial Class Order_Detail
         End Try
     End Sub
 
-    Protected Sub linkHistoryNote_Click(sender As Object, e As EventArgs)
-        MessageError_HistoryNote(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showHistoryNote(); };"
-        Try
-            gvHistoryNote.DataSource = orderClass.GetDataTable("SELECT OrderInternalNotes.*, CustomerLogins.FullName AS FullName FROM OrderInternalNotes INNER JOIN CustomerLogins ON OrderInternalNotes.CreatedBy=CustomerLogins.Id WHERE OrderInternalNotes.HeaderId='" & lblHeaderId.Text & "' ORDER BY OrderInternalNotes.CreatedDate DESC")
-            gvHistoryNote.DataBind()
-
-            ClientScript.RegisterStartupScript(Me.GetType(), "showHistoryNote", thisScript, True)
-        Catch ex As Exception
-            MessageError_HistoryNote(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_HistoryNote(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "linkHistoryNote_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showHistoryNote", thisScript, True)
-        End Try
-    End Sub
-
     Protected Sub gvListItem_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
         MessageError(False, String.Empty)
         Try
@@ -1774,7 +1755,9 @@ Partial Class Order_Detail
             If lblOrderType.Text = "Builder" Then
                 BindDataBuilder()
             End If
-            BindDataRework(headerId, lblOrderStatus.Text)
+            If lblOrderStatus.Text = "Shipped Out" OrElse lblOrderStatus.Text = "Completed" Then
+                BindDataRework(headerId)
+            End If
             BindCollector()
             BindEmailQuote()
             BindEmailInvoice()
@@ -2591,7 +2574,11 @@ Partial Class Order_Detail
     Protected Sub BindDataItem(status As String)
         divMinimumOrderSurcharge.Visible = False
         Try
-            gvListItem.DataSource = orderClass.GetDataTable("SELECT OrderDetails.* FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id WHERE OrderDetails.HeaderId='" & lblHeaderId.Text & "' AND OrderDetails.Active=1 ORDER BY CASE WHEN Designs.Type='Blinds' OR Designs.Type='Shutters' OR Designs.Type='Component' THEN 1 ELSE 2 END, OrderDetails.Id ASC")
+            Dim param As New List(Of SqlParameter) From {
+                New SqlParameter("@HeaderId", Convert.ToInt32(lblHeaderId.Text))
+            }
+
+            gvListItem.DataSource = orderClass.GetDataTableSP("sp_GetOrderItemsByHeader", param)
             gvListItem.DataBind()
 
             gvListItem.Columns(1).Visible = PageAction("Visible ID")
@@ -2717,7 +2704,11 @@ Partial Class Order_Detail
     End Sub
 
     Protected Sub BindDataInvoice()
-        Dim invoiceData As DataRow = orderClass.GetDataRow("SELECT OrderInvoices.*, CustomerLogins.FullName AS CollectorName, CASE WHEN Payment=1 THEN 'Paid' ELSE '' END AS OrderPaid FROM OrderInvoices LEFT JOIN CustomerLogins ON CustomerLogins.Id=OrderInvoices.Collector WHERE OrderInvoices.Id='" & lblHeaderId.Text & "'")
+        Dim param As New List(Of SqlParameter) From {
+            New SqlParameter("@InvoiceId", Convert.ToInt32(lblHeaderId.Text))
+        }
+
+        Dim invoiceData As DataRow = orderClass.GetDataRowSP("sp_GetInvoiceById", param)
 
         lblInvoiceNumber.Text = "-"
         lblInvoiceDate.Text = "-"
@@ -2725,30 +2716,39 @@ Partial Class Order_Detail
         lblPaymentDate.Text = "-"
 
         If invoiceData IsNot Nothing Then
+
             If Not String.IsNullOrEmpty(invoiceData("InvoiceNumber").ToString()) Then
                 lblInvoiceNumber.Text = invoiceData("InvoiceNumber").ToString()
                 txtUpdateInvoiceNumber.Text = invoiceData("InvoiceNumber").ToString()
                 txtInvoiceNumber.Text = invoiceData("InvoiceNumber").ToString()
             End If
+
             If Not String.IsNullOrEmpty(invoiceData("InvoiceDate").ToString()) Then
                 lblInvoiceDate.Text = Convert.ToDateTime(invoiceData("InvoiceDate")).ToString("dd MMM yyyy")
                 txtInvoiceDate.Text = Convert.ToDateTime(invoiceData("InvoiceDate")).ToString("yyyy-MM-dd")
             End If
+
             If Not String.IsNullOrEmpty(invoiceData("CollectorName").ToString()) Then
                 lblCollector.Text = invoiceData("CollectorName").ToString()
                 ddlCollector.SelectedValue = invoiceData("Collector").ToString()
             End If
+
             If Not String.IsNullOrEmpty(invoiceData("PaymentDate").ToString()) Then
                 lblPaymentDate.Text = Convert.ToDateTime(invoiceData("PaymentDate")).ToString("dd MMM yyyy")
                 txtPaymentDate.Text = Convert.ToDateTime(invoiceData("PaymentDate")).ToString("yyyy-MM-dd")
             End If
+
             ddlPayment.SelectedValue = Convert.ToInt32(invoiceData("Payment"))
-            lblOrderPaid.Text = invoiceData("OrderPaid")
+            lblOrderPaid.Text = invoiceData("OrderPaid").ToString()
         End If
     End Sub
 
     Protected Sub BindDataShipment()
-        Dim shipmentData As DataRow = orderClass.GetDataRow("SELECT * FROM OrderShipments WHERE Id='" & lblHeaderId.Text & "'")
+        Dim param As New List(Of SqlParameter) From {
+            New SqlParameter("@ShipmentId", Convert.ToInt32(lblHeaderId.Text))
+        }
+
+        Dim shipmentData As DataRow = orderClass.GetDataRowSP("sp_GetShipmentById", param)
 
         lblShipmentNumber.Text = "-"
         lblShipmentDate.Text = "-"
@@ -2756,22 +2756,27 @@ Partial Class Order_Detail
         lblCourier.Text = "-"
 
         If shipmentData IsNot Nothing Then
+
             If Not String.IsNullOrEmpty(shipmentData("ShipmentNumber").ToString()) Then
                 lblShipmentNumber.Text = shipmentData("ShipmentNumber").ToString()
                 txtShipmentNumber.Text = shipmentData("ShipmentNumber").ToString()
             End If
+
             If Not String.IsNullOrEmpty(shipmentData("ShipmentDate").ToString()) Then
                 lblShipmentDate.Text = Convert.ToDateTime(shipmentData("ShipmentDate")).ToString("dd MMM yyyy")
                 txtShipmentDate.Text = Convert.ToDateTime(shipmentData("ShipmentDate")).ToString("yyyy-MM-dd")
             End If
+
             If Not String.IsNullOrEmpty(shipmentData("ContainerNumber").ToString()) Then
                 lblContainerNumber.Text = shipmentData("ContainerNumber").ToString()
                 txtContainerNumber.Text = shipmentData("ContainerNumber").ToString()
             End If
+
             If Not String.IsNullOrEmpty(shipmentData("Courier").ToString()) Then
                 lblCourier.Text = shipmentData("Courier").ToString()
                 txtCourier.Text = shipmentData("Courier").ToString()
             End If
+
         End If
     End Sub
 
@@ -2878,17 +2883,15 @@ Partial Class Order_Detail
         End Try
     End Sub
 
-    Protected Sub BindDataRework(headerId As String, status As String)
-        If Not String.IsNullOrEmpty(headerId) AndAlso Not String.IsNullOrEmpty(status) Then
-            If status = "Shipped Out" OrElse status = "Completed" Then
-                gvListItemRework.DataSource = orderClass.GetDataTable("SELECT OrderDetails.* FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN OrderReworks ON OrderReworks.HeaderId=OrderDetails.HeaderId AND OrderReworks.Status='Unsubmitted' AND OrderReworks.Active=1 LEFT JOIN OrderReworkDetails ON OrderReworkDetails.ItemId=OrderDetails.Id AND OrderReworkDetails.ReworkId=OrderReworks.Id AND OrderReworkDetails.Active=1 WHERE OrderDetails.HeaderId=" & headerId & " AND OrderDetails.Active=1 AND (Designs.Type='Blinds' OR Designs.Type='Shutters') AND OrderReworkDetails.ItemId IS NULL ORDER BY OrderDetails.Id ASC"
+    Protected Sub BindDataRework(headerId As String)
+        If Not String.IsNullOrEmpty(headerId) Then
+            gvListItemRework.DataSource = orderClass.GetDataTable("SELECT OrderDetails.* FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN OrderReworks ON OrderReworks.HeaderId=OrderDetails.HeaderId AND OrderReworks.Status='Unsubmitted' AND OrderReworks.Active=1 LEFT JOIN OrderReworkDetails ON OrderReworkDetails.ItemId=OrderDetails.Id AND OrderReworkDetails.ReworkId=OrderReworks.Id AND OrderReworkDetails.Active=1 WHERE OrderDetails.HeaderId=" & headerId & " AND OrderDetails.Active=1 AND (Designs.Type='Blinds' OR Designs.Type='Shutters') AND OrderReworkDetails.ItemId IS NULL ORDER BY OrderDetails.Id ASC"
 )
-                gvListItemRework.DataBind()
+            gvListItemRework.DataBind()
 
-                gvListItemRework.Columns(1).Visible = False ' ID
-                If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" Then
-                    gvListItemRework.Columns(1).Visible = True ' ID
-                End If
+            gvListItemRework.Columns(1).Visible = False ' ID
+            If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" Then
+                gvListItemRework.Columns(1).Visible = True ' ID
             End If
         End If
     End Sub
@@ -2931,12 +2934,16 @@ Partial Class Order_Detail
         End Try
     End Sub
 
-    Protected Function BindProductDescription(itemId As String) As String
+    Protected Function BindProductDescription(itemId As Integer) As String
         Dim result As String = String.Empty
 
-        Dim thisData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Products.Name AS ProductName, Designs.Name AS DesignName, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.Id='" & itemId & "'")
+        Dim param As New List(Of SqlParameter) From {
+            New SqlParameter("@ItemId", Convert.ToInt32(itemId))
+        }
+
+        Dim thisData As DataRow = orderClass.GetDataRowSP("sp_GetOrderDetailForDescription", param)
         If thisData Is Nothing Then
-            result = "PLEASE CONTACT YOUR CUSTOMER SERVICE !"
+            Return "PLEASE CONTACT YOUR CUSTOMER SERVICE !"
         End If
 
         Dim productId As String = thisData("ProductId").ToString()
@@ -3397,10 +3404,6 @@ Partial Class Order_Detail
         Return result
     End Function
 
-    Protected Function BindTextLog(logId As String) As String
-        Return orderClass.GetTextLog(logId)
-    End Function
-
     Protected Function InsertContext(queryString As String) As String
         Try
             Dim thisId As String = String.Empty
@@ -3428,7 +3431,6 @@ Partial Class Order_Detail
         MessageError_DetailQuote(visible, message)
 
         MessageError_AddNote(visible, message)
-        MessageError_HistoryNote(visible, message)
 
         MessageError_SendInvoice(visible, message)
         MessageError_InvoiceNumber(visible, message)
@@ -3466,10 +3468,6 @@ Partial Class Order_Detail
 
     Protected Sub MessageError_AddNote(visible As Boolean, message As String)
         divErrorAddNote.Visible = visible : msgErrorAddNote.InnerText = message
-    End Sub
-
-    Protected Sub MessageError_HistoryNote(visible As Boolean, message As String)
-        divErrorHistoryNote.Visible = visible : msgErrorHistoryNote.InnerText = message
     End Sub
 
     Protected Sub MessageError_CancelOrder(visible As Boolean, message As String)

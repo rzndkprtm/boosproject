@@ -98,7 +98,9 @@
                         <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalAddNote">Add Internal Note</a>
                     </li>                    
                     <li runat="server" id="liMoreHistoryNote">
-                        <asp:LinkButton runat="server" ID="linkHistoryNote" CssClass="dropdown-item" Text="History Note" OnClick="linkHistoryNote_Click"></asp:LinkButton>
+                        <a href="javascript:void(0)" class="dropdown-item" onclick="showHistoryNote('<%= lblHeaderId.Text %>')">History Note</a>
+
+                        <%--<asp:LinkButton runat="server" ID="linkHistoryNote" CssClass="dropdown-item" Text="History Note" OnClick="linkHistoryNote_Click"></asp:LinkButton>--%>
                     </li>
                 </ul>
             </div>
@@ -419,7 +421,7 @@
                                                 <asp:BoundField DataField="ProductId" HeaderText="Product ID" />
                                                 <asp:TemplateField HeaderText="Description">
                                                     <ItemTemplate>
-                                                        <%# BindProductDescription(Eval("Id").ToString()) %>
+                                                        <%# BindProductDescription(Eval("Id")) %>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:TemplateField HeaderText="Buy Price">
@@ -1356,27 +1358,19 @@
                 </div>
 
                 <div class="modal-body">
-                    <div class="row" runat="server" id="divErrorHistoryNote">
-                        <div class="col-12">
-                            <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorHistoryNote"></span>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="alert alert-danger d-none" id="historyNoteError"></div>
                     <div class="table-responsive">
-                        <asp:GridView runat="server" ID="gvHistoryNote" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center">
-                            <RowStyle />
-                            <Columns>
-                                <asp:TemplateField ItemStyle-HorizontalAlign="Center">
-                                    <ItemTemplate>
-                                        <%# Container.DataItemIndex + 1 %>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                                <asp:BoundField DataField="FullName" HeaderText="Created By" />
-                                <asp:BoundField DataField="Note" HeaderText="Note" />
-                            </Columns>
-                            <AlternatingRowStyle BackColor="White" />
-                        </asp:GridView>
+                        <table class="table table-bordered table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width:50px"></th>
+                                    <th>Created By</th>
+                                    <th>Created Date</th>
+                                    <th>Note</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyNoteBody"></tbody>
+                        </table>
                     </div>
                 </div>
                 <div class="modal-footer"></div>
@@ -1725,8 +1719,45 @@
             $("#modalAddNote").modal("show");
         }
 
-        function showHistoryNote() {
+        function showHistoryNote(headerId) {
+            $("#historyNoteError").addClass("d-none").html("");
+            $("#historyNoteBody").html("");
             $("#modalHistoryNote").modal("show");
+
+            $.ajax({
+                type: "POST",
+                url: "Method.aspx/GetHistoryNote",
+                data: JSON.stringify({ headerId }),
+                contentType: "application/json",
+                dataType: "json",
+                success: res => {
+                    const data = res.d;
+
+                    if (!data || data.length === 0) {
+                        $("#historyNoteBody").html(
+                            `<tr><td colspan="4" class="text-center">DATA NOT FOUND :)</td></tr>`
+                        );
+                        return;
+                    }
+
+                    let html = "";
+                    data.forEach((r, i) => {
+                        html += `<tr>
+                            <td class="text-center">${i + 1}</td>
+                            <td>${r.FullName}</td>
+                            <td>${r.CreatedDate}</td>
+                            <td>${r.Note}</td>
+                        </tr>`;
+                    });
+
+                    $("#historyNoteBody").html(html);
+                },
+                error: () => {
+                    $("#historyNoteError")
+                        .removeClass("d-none")
+                        .text("FAILED TO LOAD HISTORY NOTE");
+                }
+            });
         }
 
         function showEmailQuote() {
