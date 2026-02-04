@@ -9872,11 +9872,9 @@ Partial Class Order_Method
     End Function
 
     <WebMethod()>
-    Public Shared Function GetCostings(itemId As String) As Object
+    Public Shared Function GetCostings(itemId As String, companyId As String) As Object
         Dim orderClass As New OrderClass
         Dim actionClass As New ActionClass
-
-        Dim companyId As String = HttpContext.Current.Session("CompanyId").ToString()
 
         Dim thisQuery As String = "SELECT *, FORMAT(BuyPrice, 'C', 'en-US') AS BuyPricing, FORMAT(SellPrice, 'C', 'en-US') AS SellPricing FROM OrderCostings WHERE ItemId='" & itemId & "' AND Type<>'Final' AND Number<>0 ORDER BY Number, CASE WHEN Type='Base' THEN 1 WHEN Type='Surcharge' THEN 2 ELSE 3 END ASC"
         If companyId = "3" OrElse companyId = "5" Then

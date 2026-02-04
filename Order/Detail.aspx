@@ -465,7 +465,7 @@
                                                             </li>
                                                             <li runat="server" visible='<%# VisibleCosting() %>'><hr class="dropdown-divider"></li>
                                                             <li runat="server" visible='<%# VisibleCosting() %>'>
-                                                                <a href="javascript:void(0)" class="dropdown-item" onclick="loadCostings('<%# Eval("Id") %>')">Costing</a>
+                                                                <a href="javascript:void(0)" class="dropdown-item" onclick="loadCostings('<%# Eval("Id") %>', '<%= lblCompanyId.Text %>')">Costing</a>
                                                             </li>
                                                             <li runat="server" visible='<%# VisibleEditPrice() %>'>
                                                                 <asp:LinkButton runat="server" CssClass="dropdown-item" ID="linkEditCosting" Text="Edit Costing" CommandName="EditCosting" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
@@ -1635,7 +1635,7 @@
             });
         }
 
-        function loadCostings(itemId) {
+        function loadCostings(itemId, companyId) {
             $("#costingError").addClass("d-none").html("");
             $("#costingHead").html("");
             $("#costingBody").html("");
@@ -1644,7 +1644,7 @@
             $.ajax({
                 type: "POST",
                 url: "Method.aspx/GetCostings",
-                data: JSON.stringify({ itemId }),
+                data: JSON.stringify({ itemId, companyId }),
                 contentType: "application/json",
                 dataType: "json",
                 success: res => {
