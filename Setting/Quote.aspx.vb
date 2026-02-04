@@ -6,11 +6,10 @@ Imports System.Drawing.Drawing2D
 Partial Class Setting_Quote
     Inherits Page
 
-    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-    Dim customerId As String = String.Empty
-    Dim url As String = String.Empty
-
     Dim settingClass As New SettingClass
+
+    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim url As String = String.Empty
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
@@ -24,15 +23,15 @@ Partial Class Setting_Quote
             Exit Sub
         End If
 
-        customerId = Request.QueryString("accountid").ToString()
-        If customerId <> Session("CustomerId") Then
+        lblCustomerId.Text = Request.QueryString("accountid").ToString()
+        If lblCustomerId.Text <> Session("CustomerId") Then
             Response.Redirect("~/", False)
             Exit Sub
         End If
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-            BindData(customerId)
+            BindData(lblCustomerId.Text)
         End If
     End Sub
 
@@ -40,7 +39,6 @@ Partial Class Setting_Quote
         MessageError_Logo(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showLogo(); };"
         Try
-
             ClientScript.RegisterStartupScript(Me.GetType(), "showLogo", thisScript, True)
         Catch ex As Exception
             MessageError_Logo(True, ex.ToString())
@@ -55,7 +53,7 @@ Partial Class Setting_Quote
         MessageError_Address(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showAddress(); };"
         Try
-            Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerQuotes WHERE Id='" & customerId & "'")
+            Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerQuotes WHERE Id='" & lblCustomerId.Text & "'")
             If myData Is Nothing Then Exit Sub
 
             txtAddress.Text = myData("Address").ToString
@@ -78,7 +76,7 @@ Partial Class Setting_Quote
         MessageError_Contact(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showContact(); };"
         Try
-            Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerQuotes WHERE Id='" & customerId & "'")
+            Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerQuotes WHERE Id='" & lblCustomerId.Text & "'")
             If myData Is Nothing Then Exit Sub
 
             txtEmail.Text = myData("Email").ToString
@@ -98,7 +96,7 @@ Partial Class Setting_Quote
         MessageError_Terms(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showTerms(); };"
         Try
-            Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerQuotes WHERE Id='" & customerId & "'")
+            Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerQuotes WHERE Id='" & lblCustomerId.Text & "'")
             If myData Is Nothing Then Exit Sub
 
             Dim termText As String = myData("Terms").ToString()
@@ -162,7 +160,7 @@ Partial Class Setting_Quote
                 Dim imgRectangle = New Rectangle(0, 0, newWidth, newHeight)
                 myImgGraph.DrawImage(image, imgRectangle)
 
-                newLogo = String.Format("{0}{1}{2}", Now.ToString("ddMMyyyyHHmmss"), customerId, ext)
+                newLogo = String.Format("{0}{1}{2}", Now.ToString("ddMMyyyyHHmmss"), lblCustomerId.Text, ext)
                 Dim path = IO.Path.Combine(Server.MapPath("~/assets/images/logo/customers"), newLogo)
 
                 myImg.Save(path, image.RawFormat)
@@ -170,7 +168,7 @@ Partial Class Setting_Quote
 
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerQuotes SET Logo=@Logo WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", customerId)
+                    myCmd.Parameters.AddWithValue("@Id", lblCustomerId.Text)
                     myCmd.Parameters.AddWithValue("@Logo", newLogo)
 
                     thisConn.Open()
@@ -178,7 +176,7 @@ Partial Class Setting_Quote
                 End Using
             End Using
 
-            url = String.Format("~/setting/quote?accountid={0}", customerId)
+            url = String.Format("~/setting/quote?accountid={0}", lblCustomerId.Text)
             Response.Redirect(url, False)
         Catch ex As Exception
             MessageError_Logo(True, ex.ToString())
@@ -199,7 +197,7 @@ Partial Class Setting_Quote
 
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerQuotes SET Address=@Address, Suburb=@Suburb, State=@State, PostCode=@PostCode, Country=@Country WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", customerId)
+                        myCmd.Parameters.AddWithValue("@Id", lblCustomerId.Text)
                         myCmd.Parameters.AddWithValue("@Address", txtAddress.Text.Trim())
                         myCmd.Parameters.AddWithValue("@Suburb", txtSuburb.Text.Trim())
                         myCmd.Parameters.AddWithValue("@State", txtState.Text.Trim())
@@ -211,7 +209,7 @@ Partial Class Setting_Quote
                     End Using
                 End Using
 
-                url = String.Format("~/setting/quote?accountid={0}", customerId)
+                url = String.Format("~/setting/quote?accountid={0}", lblCustomerId.Text)
                 Response.Redirect(url, False)
             End If
         Catch ex As Exception
@@ -230,7 +228,7 @@ Partial Class Setting_Quote
             If msgErrorContact.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerQuotes SET Email=@Email, Phone=@Phone WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", customerId)
+                        myCmd.Parameters.AddWithValue("@Id", lblCustomerId.Text)
                         myCmd.Parameters.AddWithValue("@Email", txtEmail.Text.Trim())
                         myCmd.Parameters.AddWithValue("@Phone", txtPhone.Text.Trim())
 
@@ -239,7 +237,7 @@ Partial Class Setting_Quote
                     End Using
                 End Using
 
-                url = String.Format("~/setting/quote?accountid={0}", customerId)
+                url = String.Format("~/setting/quote?accountid={0}", lblCustomerId.Text)
                 Response.Redirect(url, False)
             End If
         Catch ex As Exception
@@ -260,7 +258,7 @@ Partial Class Setting_Quote
 
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerQuotes SET Terms=@Terms WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", customerId)
+                        myCmd.Parameters.AddWithValue("@Id", lblCustomerId.Text)
                         myCmd.Parameters.AddWithValue("@Terms", txtTerms.Text)
 
                         thisConn.Open()
@@ -268,7 +266,7 @@ Partial Class Setting_Quote
                     End Using
                 End Using
 
-                url = String.Format("~/setting/quote?accountid={0}", customerId)
+                url = String.Format("~/setting/quote?accountid={0}", lblCustomerId.Text)
                 Response.Redirect(url, False)
             End If
         Catch ex As Exception
