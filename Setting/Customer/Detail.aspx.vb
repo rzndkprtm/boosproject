@@ -1940,7 +1940,7 @@ Partial Class Setting_Customer_Detail
     Protected Sub BindDiscountData()
         ddlDiscountDataId.Items.Clear()
         Try
-            ddlDiscountDataId.DataSource = settingClass.GetDataTable("SELECT * FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS companyArray WHERE companyArray.VALUE='" & lblCompanyId.Text & "' AND Active=1 ORDER BY Name ASC")
+            ddlDiscountDataId.DataSource = settingClass.GetDataTable("SELECT * FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS companyArray WHERE companyArray.VALUE='" & lblCompanyId.Text & "' ORDER BY Name ASC")
             ddlDiscountDataId.DataTextField = "Name"
             ddlDiscountDataId.DataValueField = "Id"
             ddlDiscountDataId.DataBind()
