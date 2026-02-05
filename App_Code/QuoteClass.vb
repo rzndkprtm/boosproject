@@ -734,7 +734,7 @@ Public Class QuoteClass
 
             Dim sumItemPrice As Decimal = 0D
 
-            Dim detailData As DataTable = GetDataTable("SELECT OrderDetails.*, Products.Name AS ProductName, Designs.Name AS DesignName, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND Products.DesignId<>'16' ORDER BY CASE WHEN Designs.Type='Blinds' OR Designs.Type='Shutters' THEN 1 ELSE 2 END, OrderDetails.Id ASC")
+            Dim detailData As DataTable = GetDataTable("SELECT OrderDetails.*, Products.Name AS ProductName, Designs.Name AS DesignName, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND Products.DesignId<>'16' ORDER BY CASE WHEN Designs.Type='Blinds' OR Designs.Type='Shutters' THEN 1 ELSE 2 END, OrderDetails.Id ASC")
             For i As Integer = 0 To detailData.Rows.Count - 1
                 Dim itemId As String = detailData.Rows(i)("Id").ToString()
                 Dim room As String = detailData.Rows(i)("Room").ToString()
