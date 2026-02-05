@@ -1,7 +1,6 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 Imports System.Globalization
-Imports System.Runtime.InteropServices
 
 Partial Class Order_Detail
     Inherits Page
