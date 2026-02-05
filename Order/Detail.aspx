@@ -1807,7 +1807,7 @@
                 if (hideModal) {
                     $(`#${hideModal}`).modal("hide");
                 }
-            }, 10000);
+            }, 3000);
 
             return true;
         }
