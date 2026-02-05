@@ -68,48 +68,56 @@ Partial Class Order_Method
         Dim action As String = data.action
 
         If type = "BlindType" Then
-            Dim thisQuery As String = "SELECT * FROM Blinds CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designtype & "' AND companyArray.VALUE='" & companydetail & "' AND Active=1 ORDER BY Name ASC"
-            'If action = "view" Then
-            '    thisQuery = "SELECT * FROM Blinds CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designtype & "' AND companyArray.VALUE='" & companydetail & "' ORDER BY Name ASC"
-            'End If
+            Dim param As New List(Of SqlParameter) From {
+                New SqlParameter("@Type", type),
+                New SqlParameter("@DesignType", designtype),
+                New SqlParameter("@CompanyDetail", companydetail),
+                New SqlParameter("@Action", action)
+            }
+            Dim dt As DataTable = orderClass.GetDataTableSP("sp_GetBlindTypeForOrderDetail", param)
 
-            Dim dt As DataTable = orderClass.GetDataTable(thisQuery)
             For Each row As DataRow In dt.Rows
                 result.Add(New With {.Value = row("Id").ToString(), .Text = row("Name").ToString()})
             Next
         End If
 
         If type = "BlindTypeCS" Then
-            Dim thisQuery As String = "SELECT * FROM Blinds CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designtype & "' AND companyArray.VALUE='" & companydetail & "' AND Active=1 ORDER BY CASE WHEN Name='Standard' THEN 1 WHEN Name='Day & Night' THEN 2 WHEN Name='Top Down Bottom Up' THEN 3 ELSE 0 END ASC"
-            'If action = "view" Then
-            '    thisQuery = "SELECT * FROM Blinds CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designtype & "' AND companyArray.VALUE='" & companydetail & "' ORDER BY CASE WHEN Name='Standard' THEN 1 WHEN Name='Day & Night' THEN 2 WHEN Name='Top Down Bottom Up' THEN 3 ELSE 0 END ASC"
-            'End If
+            Dim param As New List(Of SqlParameter) From {
+                New SqlParameter("@Type", type),
+                New SqlParameter("@DesignType", designtype),
+                New SqlParameter("@CompanyDetail", companydetail),
+                New SqlParameter("@Action", action)
+            }
+            Dim dt As DataTable = orderClass.GetDataTableSP("sp_GetBlindTypeForOrderDetail", param)
 
-            Dim dt As DataTable = orderClass.GetDataTable(thisQuery)
             For Each row As DataRow In dt.Rows
                 result.Add(New With {.Value = row("Id").ToString(), .Text = row("Name").ToString()})
             Next
         End If
 
         If type = "BlindTypeRoller" Then
-            Dim thisQuery As String = "SELECT * FROM Blinds CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designtype & "' AND companyArray.VALUE='" & companydetail & "' AND Active=1 ORDER BY CASE WHEN Name='Single Blind' THEN 1 WHEN Name='Dual Blinds' THEN 2 WHEN Name='Link 2 Blinds Dependent' THEN 3 WHEN Name='Link 2 Blinds Independent' THEN 4 WHEN Name='Link 3 Blinds Dependent' THEN 5 WHEN Name='Link 3 Blinds Independent with Dependent' THEN 6 WHEN Name='DB Link 2 Blinds Dependent' THEN 7 WHEN Name='DB Link 2 Blinds Independent' THEN 8 WHEN Name='DB Link 3 Blinds Dependent' THEN 9 WHEN Name='DB Link 3 Blinds Independent with Dependent' THEN 10 WHEN Name='Wire Guide' THEN 11 WHEN Name='Full Cassette' THEN 12 WHEN Name='Semi Cassette' THEN 13 ELSE 14 END ASC"
-            'If action = "view" Then
-            '    thisQuery = "SELECT * FROM Blinds CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designtype & "' AND companyArray.VALUE='" & companydetail & "' ORDER BY CASE WHEN Name='Single Blind' THEN 1 WHEN Name='Dual Blinds' THEN 2 WHEN Name='Link 2 Blinds Dependent' THEN 3 WHEN Name='Link 2 Blinds Independent' THEN 4 WHEN Name='Link 3 Blinds Dependent' THEN 5 WHEN Name='Link 3 Blinds Independent with Dependent' THEN 6 WHEN Name='DB Link 2 Blinds Dependent' THEN 7 WHEN Name='DB Link 2 Blinds Independent' THEN 8 WHEN Name='DB Link 3 Blinds Dependent' THEN 9 WHEN Name='DB Link 3 Blinds Independent with Dependent' THEN 10 WHEN Name='Wire Guide' THEN 11 WHEN Name='Full Cassette' THEN 12 WHEN Name='Semi Cassette' THEN 13 ELSE 14 END ASC"
-            'End If
+            Dim param As New List(Of SqlParameter) From {
+                New SqlParameter("@Type", type),
+                New SqlParameter("@DesignType", designtype),
+                New SqlParameter("@CompanyDetail", companydetail),
+                New SqlParameter("@Action", action)
+            }
+            Dim dt As DataTable = orderClass.GetDataTableSP("sp_GetBlindTypeForOrderDetail", param)
 
-            Dim dt As DataTable = orderClass.GetDataTable(thisQuery)
             For Each row As DataRow In dt.Rows
                 result.Add(New With {.Value = row("Id").ToString(), .Text = row("Name").ToString()})
             Next
         End If
 
         If type = "BlindTypeShutter" Then
-            Dim thisQuery As String = "SELECT * FROM Blinds CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designtype & "' AND companyArray.VALUE='" & companydetail & "' AND Active=1 ORDER BY CASE WHEN Name='Panel Only' THEN 1 WHEN Name='Hinged' THEN 2 WHEN Name='Hinged Bi-fold' THEN 3 WHEN Name='Track Bi-fold' THEN 4 WHEN Name='Track Sliding' THEN 5 WHEN Name='Track Sliding Single Track' THEN 6 WHEN Name='Fixed' THEN 7 ELSE 8 END ASC"
-            'If action = "view" Then
-            '    thisQuery = "SELECT * FROM Blinds CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designtype & "' AND companyArray.VALUE='" & companydetail & "' ORDER BY CASE WHEN Name='Panel Only' THEN 1 WHEN Name='Hinged' THEN 2 WHEN Name='Hinged Bi-fold' THEN 3 WHEN Name='Track Bi-fold' THEN 4 WHEN Name='Track Sliding' THEN 5 WHEN Name='Track Sliding Single Track' THEN 6 WHEN Name='Fixed' THEN 7 ELSE 8 END ASC"
-            'End If
+            Dim param As New List(Of SqlParameter) From {
+                New SqlParameter("@Type", type),
+                New SqlParameter("@DesignType", designtype),
+                New SqlParameter("@CompanyDetail", companydetail),
+                New SqlParameter("@Action", action)
+            }
+            Dim dt As DataTable = orderClass.GetDataTableSP("sp_GetBlindTypeForOrderDetail", param)
 
-            Dim dt As DataTable = orderClass.GetDataTable(thisQuery)
             For Each row As DataRow In dt.Rows
                 result.Add(New With {.Value = row("Id").ToString(), .Text = row("Name").ToString()})
             Next
@@ -117,9 +125,9 @@ Partial Class Order_Method
 
         If type = "TubeType" Then
             Dim thisQuery As String = "SELECT Products.TubeType AS TextValue, ProductTubes.Name AS TextName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductTubes ON Products.TubeType=ProductTubes.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetail & "' AND Products.Active=1 GROUP BY Products.TubeType, ProductTubes.Name ORDER BY ProductTubes.Name ASC"
-            'If action = "view" Then
-            '    thisQuery = "SELECT Products.TubeType AS TextValue, ProductTubes.Name AS TextName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductTubes ON Products.TubeType=ProductTubes.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetail & "' GROUP BY Products.TubeType, ProductTubes.Name ORDER BY ProductTubes.Name ASC"
-            'End If
+            If action = "view" Then
+                thisQuery = "SELECT Products.TubeType AS TextValue, ProductTubes.Name AS TextName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductTubes ON Products.TubeType=ProductTubes.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetail & "' GROUP BY Products.TubeType, ProductTubes.Name ORDER BY ProductTubes.Name ASC"
+            End If
 
             Dim dt As DataTable = orderClass.GetDataTable(thisQuery)
             For Each row As DataRow In dt.Rows
@@ -129,9 +137,9 @@ Partial Class Order_Method
 
         If type = "ControlType" Then
             Dim thisQuery As String = "SELECT Products.ControlType AS TextValue, ProductControls.Name AS TextName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductControls ON Products.ControlType=ProductControls.Id WHERE Products.BlindId='" & blindtype & "' AND Products.TubeType='" & tubetype & "' AND companyArray.VALUE='" & companydetail & "' AND Products.Active=1 GROUP BY Products.ControlType, ProductControls.Name ORDER BY ProductControls.Name ASC"
-            'If action = "view" Then
-            '    thisQuery = "SELECT Products.ControlType AS TextValue, ProductControls.Name AS TextName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductControls ON Products.ControlType=ProductControls.Id WHERE Products.BlindId='" & blindtype & "' AND Products.TubeType='" & tubetype & "' AND companyArray.VALUE='" & companydetail & "' GROUP BY Products.ControlType, ProductControls.Name ORDER BY ProductControls.Name ASC"
-            'End If
+            If action = "view" Then
+                thisQuery = "SELECT Products.ControlType AS TextValue, ProductControls.Name AS TextName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductControls ON Products.ControlType=ProductControls.Id WHERE Products.BlindId='" & blindtype & "' AND Products.TubeType='" & tubetype & "' AND companyArray.VALUE='" & companydetail & "' GROUP BY Products.ControlType, ProductControls.Name ORDER BY ProductControls.Name ASC"
+            End If
 
             Dim dt As DataTable = orderClass.GetDataTable(thisQuery)
             For Each row As DataRow In dt.Rows
@@ -141,9 +149,9 @@ Partial Class Order_Method
 
         If type = "ColourType" Then
             Dim thisQuery As String = "SELECT Products.*, ProductColours.Name AS ColourName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetail & "' AND Products.TubeType='" & tubetype & "' AND Products.ControlType='" & controltype & "' AND Products.Active=1 ORDER BY ProductColours.Name ASC"
-            'If action = "view" Then
-            '    thisQuery = "SELECT Products.*, ProductColours.Name AS ColourName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetail & "' AND Products.TubeType='" & tubetype & "' AND Products.ControlType='" & controltype & "' ORDER BY ProductColours.Name ASC"
-            'End If
+            If action = "view" Then
+                thisQuery = "SELECT Products.*, ProductColours.Name AS ColourName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetail & "' AND Products.TubeType='" & tubetype & "' AND Products.ControlType='" & controltype & "' ORDER BY ProductColours.Name ASC"
+            End If
 
             Dim dt As DataTable = orderClass.GetDataTable(thisQuery)
             For Each row As DataRow In dt.Rows
@@ -153,9 +161,9 @@ Partial Class Order_Method
 
         If type = "ProductName" Then
             Dim thisQuery As String = "SELECT * FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetail & "' AND Products.TubeType='" & tubetype & "' AND Products.ControlType='" & controltype & "' AND Products.Active=1 ORDER BY Products.Name ASC"
-            'If action = "view" Then
-            '    thisQuery = "SELECT * FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetail & "' AND Products.TubeType='" & tubetype & "' AND Products.ControlType='" & controltype & "' ORDER BY Products.Name ASC"
-            'End If
+            If action = "view" Then
+                thisQuery = "SELECT * FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetail & "' AND Products.TubeType='" & tubetype & "' AND Products.ControlType='" & controltype & "' ORDER BY Products.Name ASC"
+            End If
 
             Dim dt As DataTable = orderClass.GetDataTable(thisQuery)
             For Each row As DataRow In dt.Rows
@@ -165,9 +173,9 @@ Partial Class Order_Method
 
         If type = "Mounting" Then
             Dim thisQuery As String = "SELECT Name FROM Mountings CROSS APPLY STRING_SPLIT(BlindId, ',') AS blindArray WHERE blindArray.VALUE='" & blindtype & "' AND Active=1 ORDER BY Name ASC"
-            'If action = "view" Then
-            '    thisQuery = "SELECT Name FROM Mountings CROSS APPLY STRING_SPLIT(BlindId, ',') AS blindArray WHERE blindArray.VALUE='" & blindtype & "' ORDER BY Name ASC"
-            'End If
+            If action = "view" Then
+                thisQuery = "SELECT Name FROM Mountings CROSS APPLY STRING_SPLIT(BlindId, ',') AS blindArray WHERE blindArray.VALUE='" & blindtype & "' ORDER BY Name ASC"
+            End If
 
             Dim dt As DataTable = orderClass.GetDataTable(thisQuery)
             For Each row As DataRow In dt.Rows

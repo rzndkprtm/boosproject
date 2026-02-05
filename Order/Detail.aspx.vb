@@ -1,6 +1,7 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 Imports System.Globalization
+Imports System.Threading.Tasks
 
 Partial Class Order_Detail
     Inherits Page
@@ -256,7 +257,16 @@ Partial Class Order_Detail
                 mailingClass.SubmitOrder_PrintingFabric(lblHeaderId.Text, finalFilePath)
             End If
 
-            'ShutterOcean()
+            Dim checkOcean As Integer = orderClass.GetItemData_Integer("SELECT COUNT(OrderDetails.Id) FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.HeaderId='" & lblHeaderId.Text & "' AND OrderDetails.Active=1 AND Products.DesignId='15'")
+            If cashSale = False AndAlso checkOcean > 0 Then
+                Dim thisId As String = lblHeaderId.Text
+
+                Task.Run(Async Function()
+                             Dim svc As New ShutterOceanService()
+                             Await svc.SendOrderAsync(thisId)
+                         End Function)
+
+            End If
 
             Dim berhasil As String = String.Format("showSuccessSwal('{0}')", lblHeaderId.Text)
             ScriptManager.RegisterStartupScript(Me, Me.GetType(), "swalSuccess", berhasil, True)
@@ -271,10 +281,6 @@ Partial Class Order_Detail
                 mailingClass.WebError(dataMailing)
             End If
         End Try
-    End Sub
-
-    Protected Async Sub ShutterOcean()
-        Dim api = Await ShutterOceanClass.SendOrderAsync(lblHeaderId.Text)
     End Sub
 
     Protected Sub btnUnsubmitOrder_Click(sender As Object, e As EventArgs)
