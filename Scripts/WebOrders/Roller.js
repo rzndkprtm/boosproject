@@ -2954,14 +2954,31 @@ function showInfo(type) {
         getBlindName(blindtype.value),
         getCompanyDetailName(companyDetail)
     ]).then(function ([blindName, companyDetailName]) {
-        if (type === "Layout") {
-            title = "Layout Information";
-            info += "";
+        if (type === "STD Roller Components") {
+            title = "STD Roller Components";
+            info = "<ul>";
+            info += "<li>38mm STD system (Up to 1810mm width) - Spline fitted fabric with chain stopper for non-continuous chain. Incase continuous chain, 2 pcs chain stoppers will be supplied as loosen parts.</li>";
+            info += "<li>45mm STD system (Over 1810mm width and under 6m2) - Spline fitted fabric with chain stopper for non-continuous chain. Incase continuous chain, 2 pcs chain stoppers will be supplied as loosen parts.</li>";
+            info += "<li>Over 6m2 not available (Please use GR system or Acmeda).</li>";
+            info += "</ul>";
         }
-        else if (type === "Roll") {
-            title = "Roll Information";
-
-            
+        else if (type === "GR Roller Components") {
+            title = "GR Roller Components";
+            info = "<ul>";
+            info += "<li>38mm GR system (Up to 1810mm width) - Spline fitted fabric no chain stopper and in continuous chain only.</li>";
+            info += "<li>45mm GR system (Over to 1810mm width and under 6m2) - Spline fitted fabric no chain stopper and in continuous chain only.</li>";
+            info += "<li>Over 6m2 use 49mm tube with spline fitted fabric, no chain stopper and in continuous chain only.</li>";
+            info += "</ul>";
+        }
+        else if (type === "Acmeda Roller Components") {
+            title = "Acmeda Roller Components";
+            info = "<ul>";
+            info += "<li>S45 Light Duty Acmeda System (Up to 1810mm width) double sided glued tape attached to the fabric - with chain stopper for non-continuous chain. Incase continuous chain, 2 pcs chain stoppers will be supplied as loosen parts.</li>";
+            info += "<li>S45 Heave Duty Acmeda System without spring booster (Over 1810mm width and less than 6m2) double-sided glued tape attached to the fabric - with chain stopper for non-continuous chain. Incase continuous chain, 2 pcs chain stoppers will be supplied as loosen parts.</li>";
+            info += "<li>S45 Heavy Duty System with spring booster (Over 6m2) double-sided glued tape attached to the fabric - with chain stopper for non-continuous chain. Incase continuous chain, 2 pcs chain stoppers will be supplied as loosen parts.</li>";
+            info += "<li>Surcharge apply for roller below 6 sqm and want to use Acmeda System.</li>";
+            info += "<li>Over 6 sqm is automatically switch to Acmeda system. Acmeda surcharge is build into price list.</li>";
+            info += "</ul>";
         }
         else if (type === "Bracket Extension") {
             title = "Bracket Extension Information";
@@ -2973,7 +2990,6 @@ function showInfo(type) {
             info += "<br />";
             info += "<b>Stainless Steel</b>. A surcharge will be applied.";
         }
-
         else if (type === "Second Chain" || type === "Third Chain") {
             title = "Chain Information";
 

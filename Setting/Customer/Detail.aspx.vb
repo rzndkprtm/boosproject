@@ -7,13 +7,12 @@ Imports System.Web.Services
 Partial Class Setting_Customer_Detail
     Inherits Page
 
-    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-    Dim enUS As CultureInfo = New CultureInfo("en-US")
-    Dim dataMailing As Object() = Nothing
-
     Dim settingClass As New SettingClass
     Dim mailingClass As New MailingClass
 
+    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim enUS As CultureInfo = New CultureInfo("en-US")
+    Dim dataMailing As Object() = Nothing
     Dim url As String = String.Empty
 
     <WebMethod(EnableSession:=True)>
@@ -1773,7 +1772,7 @@ Partial Class Setting_Customer_Detail
         Try
             If msgErrorProcessDiscount.InnerText = "" Then
                 If lblActionDiscount.Text = "Add" Then
-                    Dim designData As DataTable = settingClass.GetDataTable("SELECT * FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS companyArray WHERE Type='Blinds' AND companyArray.VALUE='" & lblCompanyId.Text & "' AND Active=1 ORDER BY Id ASC")
+                    Dim designData As DataTable = settingClass.GetDataTable("SELECT * FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS companyArray WHERE Type='Blinds' AND companyArray.VALUE='" & lblCompanyId.Text & "' ORDER BY Id ASC")
 
                     For i As Integer = 0 To designData.Rows.Count - 1
                         Dim designId As String = designData.Rows(i)("Id").ToString()

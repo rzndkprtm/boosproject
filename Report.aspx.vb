@@ -25,6 +25,20 @@ Partial Class Report
         End If
     End Sub
 
+    Protected Sub gvList_RowCreated(sender As Object, e As GridViewRowEventArgs)
+        If ddlType.SelectedValue = "Blind Orders" Then
+            If e.Row.RowType = DataControlRowType.DataRow OrElse e.Row.RowType = DataControlRowType.Header Then
+                e.Row.Cells(0).Visible = False
+
+                For i As Integer = 0 To e.Row.Cells.Count - 1
+                    If e.Row.Cells(i).Text = "CustomerName" Then
+                        e.Row.Cells(i).Text = "Customer Name"
+                    End If
+                Next
+            End If
+        End If
+    End Sub
+
     Protected Sub ddlCompany_SelectedIndexChanged(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         BindSubCompany(ddlCompany.SelectedValue)
@@ -74,11 +88,6 @@ Partial Class Report
                     End If
 
                     If ddlFile.SelectedValue = "Screen" Then
-                        Dim whereCompanyDetail As String = ""
-                        If Not String.IsNullOrEmpty(ddlSubCompany.SelectedValue) Then
-                            whereCompanyDetail = " AND c.CompanyDetailId=@CompanyDetailId "
-                        End If
-
                         Dim myCmd As New SqlCommand("sp_ProductionSummaryBlindsPivot")
                         myCmd.CommandType = CommandType.StoredProcedure
 
@@ -186,18 +195,30 @@ Partial Class Report
     End Function
 
 
-    Protected Sub gvList_RowCreated(sender As Object, e As GridViewRowEventArgs)
-        If ddlType.SelectedValue = "Blind Orders" Then
+    Protected Function GetProductionSummaryData() As DataTable
+        Dim dt As New DataTable()
 
-            If e.Row.RowType = DataControlRowType.DataRow OrElse e.Row.RowType = DataControlRowType.Header Then
-                e.Row.Cells(0).Visible = False
+        Using conn As New SqlConnection(myConn)
+            Using cmd As New SqlCommand("sp_ProductionSummaryBlindsPivot", conn)
+                cmd.CommandType = CommandType.StoredProcedure
 
-                For i As Integer = 0 To e.Row.Cells.Count - 1
-                    If e.Row.Cells(i).Text = "CustomerName" Then
-                        e.Row.Cells(i).Text = "Customer Name"
-                    End If
-                Next
-            End If
-        End If
-    End Sub
+                cmd.Parameters.AddWithValue("@StartDate", DateTime.Parse(txtStartDate.Text))
+                cmd.Parameters.AddWithValue("@EndDate", DateTime.Parse(txtEndDate.Text))
+                cmd.Parameters.AddWithValue("@CompanyId", ddlCompany.SelectedValue)
+
+                If String.IsNullOrEmpty(ddlSubCompany.SelectedValue) Then
+                    cmd.Parameters.AddWithValue("@CompanyDetailId", DBNull.Value)
+                Else
+                    cmd.Parameters.AddWithValue("@CompanyDetailId", ddlSubCompany.SelectedValue)
+                End If
+
+                Using da As New SqlDataAdapter(cmd)
+                    da.Fill(dt)
+                End Using
+            End Using
+        End Using
+
+        Return dt
+    End Function
+
 End Class
