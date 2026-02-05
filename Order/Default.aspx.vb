@@ -167,7 +167,7 @@ Partial Class Order_Default
                 Dim success As Boolean = False
                 Dim retry As Integer = 0
                 Dim maxRetry As Integer = 100
-                Dim orderId As String = ""
+                Dim orderId As String = String.Empty
 
                 Do While Not success
                     retry += 1

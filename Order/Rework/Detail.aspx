@@ -390,6 +390,11 @@
         </div>
     </div>
 
+    <div runat="server" visible="false">
+        <asp:Label runat="server" ID="lblReworkId"></asp:Label>
+        <asp:Label runat="server" ID="lblHeaderId"></asp:Label>
+    </div>
+
     <script type="text/javascript">
         [
             "modalWaiting",
