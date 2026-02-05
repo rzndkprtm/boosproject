@@ -1436,6 +1436,17 @@
                                     <li>Minimum drop : 600mm</li>
                                     <li>Maximum drop : 3200mm</li>
                                 </ul>
+                                <b>STD ROLLER COMPONENTS</b>
+                                <br />
+                                <a class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('STD Roller Components');">Read Me ...</a>
+                                <br /><br />
+                                <b>GR ROLLER COMPONENTS - No Chain Stopper</b>
+                                <br />
+                                <a class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('GR Roller Components');">Read Me ...</a>
+                                <br /><br />
+                                <b>ACMEDA ROLLER COMPONENTS</b>
+                                <br />
+                                <a class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Acmeda Roller Components');">Read Me ...</a>
                             </div>
                         </div>
                     </div>
