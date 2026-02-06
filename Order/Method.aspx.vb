@@ -4565,7 +4565,7 @@ Partial Class Order_Method
             If companyId = "3" Then
                 tubeIstilah = tubeName
                 If data.customerid = "902" OrElse data.customerid = "953" Then
-                    tubeIstilah = "Gear Reduction 45mm"
+                    tubeIstilah = "Gear Reduction 38mm"
                 End If
                 groupFabric = orderClass.GetFabricGroupLocal("Roller", data.fabrictype)
             End If
@@ -4720,7 +4720,7 @@ Partial Class Order_Method
             If companyId = "3" Then
                 tubeIstilah = tubeName
                 If data.customerid = "902" OrElse data.customerid = "953" Then
-                    tubeIstilah = "Gear Reduction 45mm"
+                    tubeIstilah = "Gear Reduction 38mm"
                 End If
                 groupFabric = orderClass.GetFabricGroupLocal("Roller", data.fabrictype)
                 groupFabricDB = orderClass.GetFabricGroupLocal("Roller", data.fabrictypeb)
@@ -4856,7 +4856,7 @@ Partial Class Order_Method
             If companyId = "3" Then
                 tubeIstilah = tubeName
                 If data.customerid = "902" OrElse data.customerid = "953" Then
-                    tubeIstilah = "Gear Reduction 45mm"
+                    tubeIstilah = "Gear Reduction 38mm"
                 End If
                 groupFabric = orderClass.GetFabricGroupLocal("Roller", data.fabrictype)
             End If
@@ -5015,7 +5015,7 @@ Partial Class Order_Method
             If companyId = "3" Then
                 tubeIstilah = tubeName
                 If data.customerid = "902" OrElse data.customerid = "953" Then
-                    tubeIstilah = "Gear Reduction 45mm"
+                    tubeIstilah = "Gear Reduction 38mm"
                 End If
                 groupFabric = orderClass.GetFabricGroupLocal("Roller", data.fabrictype)
             End If
@@ -5167,7 +5167,7 @@ Partial Class Order_Method
             If companyId = "3" Then
                 tubeIstilah = tubeName
                 If data.customerid = "902" OrElse data.customerid = "953" Then
-                    tubeIstilah = "Gear Reduction 45mm"
+                    tubeIstilah = "Gear Reduction 38mm"
                 End If
                 groupFabric = orderClass.GetFabricGroupLocal("Roller", data.fabrictype)
             End If
@@ -5349,7 +5349,7 @@ Partial Class Order_Method
             If companyId = "3" Then
                 tubeIstilah = tubeName
                 If data.customerid = "902" OrElse data.customerid = "953" Then
-                    tubeIstilah = "Gear Reduction 45mm"
+                    tubeIstilah = "Gear Reduction 38mm"
                 End If
                 groupFabric = orderClass.GetFabricGroupLocal("Roller", data.fabrictype)
             End If
@@ -5533,7 +5533,7 @@ Partial Class Order_Method
             If companyId = "3" Then
                 tubeIstilah = tubeName
                 If data.customerid = "902" OrElse data.customerid = "953" Then
-                    tubeIstilah = "Gear Reduction 45mm"
+                    tubeIstilah = "Gear Reduction 38mm"
                 End If
                 groupFabric = orderClass.GetFabricGroupLocal("Roller", data.fabrictype)
                 groupFabricDB = orderClass.GetFabricGroupLocal("Roller", data.fabrictypec)
@@ -5777,7 +5777,7 @@ Partial Class Order_Method
             If companyId = "3" Then
                 tubeIstilah = tubeName
                 If data.customerid = "902" OrElse data.customerid = "953" Then
-                    tubeIstilah = "Gear Reduction 45mm"
+                    tubeIstilah = "Gear Reduction 38mm"
                 End If
                 groupFabric = orderClass.GetFabricGroupLocal("Roller", data.fabrictype)
                 groupFabricDB = orderClass.GetFabricGroupLocal("Roller", data.fabrictypec)
@@ -5996,7 +5996,7 @@ Partial Class Order_Method
             If companyId = "3" Then
                 tubeIstilah = tubeName
                 If data.customerid = "902" OrElse data.customerid = "953" Then
-                    tubeIstilah = "Gear Reduction 45mm"
+                    tubeIstilah = "Gear Reduction 38mm"
                 End If
                 groupFabric = orderClass.GetFabricGroupLocal("Roller", data.fabrictype)
                 groupFabricDB = orderClass.GetFabricGroupLocal("Roller", data.fabrictyped)
@@ -6282,7 +6282,7 @@ Partial Class Order_Method
             If companyId = "3" Then
                 tubeIstilah = tubeName
                 If data.customerid = "902" OrElse data.customerid = "953" Then
-                    tubeIstilah = "Gear Reduction 45mm"
+                    tubeIstilah = "Gear Reduction 38mm"
                 End If
                 groupFabric = orderClass.GetFabricGroupLocal("Roller", data.fabrictype)
                 groupFabricDB = orderClass.GetFabricGroupLocal("Roller", data.fabrictyped)
