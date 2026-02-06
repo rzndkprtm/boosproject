@@ -1,6 +1,5 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
-Imports System.Drawing
 Imports System.Web.Services
 
 Partial Class Order_Method
@@ -9,24 +8,20 @@ Partial Class Order_Method
     <WebMethod>
     Public Shared Function GetOrderHeader(headerId As String) As Object
         Dim orderClass As New OrderClass
+
+        Dim row As DataRow = orderClass.GetDataRow("SELECT OrderId, CustomerId, OrderNumber, OrderName FROM OrderHeaders WHERE Id = '" & headerId & "'")
+
+        If row Is Nothing Then
+            Return Nothing
+        End If
+
         Dim dataHeader As New Dictionary(Of String, String) From {
-            {
-                "OrderId",
-                orderClass.GetItemData("SELECT OrderId FROM OrderHeaders WHERE Id='" & headerId & "'")
-            },
-            {
-                "CustomerId",
-                orderClass.GetItemData("SELECT CustomerId FROM OrderHeaders WHERE Id='" & headerId & "'")
-            },
-            {
-                "OrderNumber",
-                orderClass.GetItemData("SELECT OrderNumber FROM OrderHeaders WHERE Id='" & headerId & "'")
-            },
-            {
-                "OrderName",
-                orderClass.GetItemData("SELECT OrderName FROM OrderHeaders WHERE Id='" & headerId & "'")
-            }
+            {"OrderId", row("OrderId").ToString()},
+            {"CustomerId", row("CustomerId").ToString()},
+            {"OrderNumber", row("OrderNumber").ToString()},
+            {"OrderName", row("OrderName").ToString()}
         }
+
         Return dataHeader
     End Function
 
@@ -68,7 +63,7 @@ Partial Class Order_Method
         Dim fabrictype As String = data.fabrictype
         Dim bottomtype As String = data.bottomtype
         Dim chaincolour As String = data.chaincolour
-        Dim company As String = data.company
+        Dim companyid As String = data.companyid
         Dim companydetailid As String = data.companydetailid
         Dim action As String = data.action
 
@@ -426,7 +421,7 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "White Birch (Express)", .Text = "White Birch (Express)"})
             End If
 
-            If company = "2" AndAlso Not String.IsNullOrEmpty(blindName) Then
+            If Not String.IsNullOrEmpty(blindName) AndAlso (companydetailid = "2" OrElse companydetailid = "3") Then
                 result.Add(New With {.Value = "Apo Grey (Regular)", .Text = "Apo Grey (Regular)"})
                 result.Add(New With {.Value = "Beige (Regular)", .Text = "Beige (Regular)"})
                 result.Add(New With {.Value = "Birch White (Regular)", .Text = "Birch White (Regular)"})
@@ -480,7 +475,7 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "White Birch (Express)", .Text = "White Birch (Express)"})
             End If
 
-            If company = "2" AndAlso Not String.IsNullOrEmpty(blindName) Then
+            If Not String.IsNullOrEmpty(blindName) AndAlso (companydetailid = "2" OrElse companydetailid = "3") Then
                 result.Add(New With {.Value = "Apo Grey (Regular)", .Text = "Apo Grey (Regular)"})
                 result.Add(New With {.Value = "Beige (Regular)", .Text = "Beige (Regular)"})
                 result.Add(New With {.Value = "Birch White (Regular)", .Text = "Birch White (Regular)"})
@@ -3989,7 +3984,7 @@ Partial Class Order_Method
         If String.IsNullOrEmpty(data.width) Then Return "WIDTH IS REQUIRED !"
         If Not Integer.TryParse(data.width, width) OrElse width <= 0 Then Return "PLEASE CHECK YOUR WIDTH ORDER !"
 
-        If width < 600 Then Return "MINIMUM WIDTH IS 600MM !"
+        If width < 200 Then Return "MINIMUM WIDTH IS 200MM !"
         If companyId = "2" Then
             If width > 2400 AndAlso (blindName = "Full Cassette" OrElse blindName = "Semi Cassette") Then Return "MAXIMUM WIDTH IS 2400MM !"
             If width > 2910 Then Return "MAXIMUM WIDTH IS 2910MM !"
@@ -3998,7 +3993,7 @@ Partial Class Order_Method
         If String.IsNullOrEmpty(data.drop) Then Return "DROP IS REQUIRED !"
         If Not Integer.TryParse(data.drop, drop) OrElse drop <= 0 Then Return "PLEASE CHECK YOUR DROP ORDER !"
 
-        If drop < 500 Then Return "MINIUM DROP IS 500MM !"
+        If drop < 600 Then Return "MINIUM DROP IS 600MM !"
         If companyId = "2" Then
             If width > 2200 AndAlso (blindName = "Full Cassette" OrElse blindName = "Semi Cassette") Then Return "MAXIMUM DROP IS 2200MM !"
             If drop > 3200 Then Return "MAXIMUM DROP IS 3200MM !"
@@ -8581,9 +8576,9 @@ Partial Class Order_Method
 
     <WebMethod()>
     Public Shared Function DoorProcess(data As ProccessData) As String
-        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-
         Dim orderClass As New OrderClass
+
+        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
         Dim qty As Integer
         Dim width As Integer : Dim widthb As Integer : Dim widthc As Integer
@@ -8655,20 +8650,37 @@ Partial Class Order_Method
 
         If tubeName.Contains("Hinged") OrElse tubeName.Contains("Sliding") Then
             If String.IsNullOrEmpty(data.bugseal) Then Return "BUG SEAL IS REQUIRED !"
-            If String.IsNullOrEmpty(data.pettype) Then Return "PET DOOR TYPE IS REQUIRED !"
-            If String.IsNullOrEmpty(data.petposition) Then Return "PET DOOR POSITION IS REQUIRED !"
+            If Not String.IsNullOrEmpty(data.pettype) Then
+                If String.IsNullOrEmpty(data.petposition) Then Return "PET DOOR POSITION IS REQUIRED !"
+            End If
+            If String.IsNullOrEmpty(data.pettype) AndAlso Not String.IsNullOrEmpty(data.petposition) Then
+                Return "PET DOOR TYPE IS REQUIRED !"
+            End If
             If String.IsNullOrEmpty(data.doorcloser) Then Return "DOOR CLOSER IS REQUIRED !"
         End If
 
-        If String.IsNullOrEmpty(data.angletype) Then Return "ANGLE TYPE IS REQUIRED !"
-        If String.IsNullOrEmpty(data.anglelength) Then Return "ANGLE LENGTH IS REQUIRED !"
-        If Not Integer.TryParse(data.anglelength, anglelength) OrElse anglelength <= 0 Then Return "PLEASE CHECK YOUR ANGLE LENGTH ORDER !"
+        If Not String.IsNullOrEmpty(data.angletype) AndAlso String.IsNullOrEmpty(data.anglelength) Then
+            Return "ANGLE LENGTH IS REQUIRED !"
+        End If
+
+        If String.IsNullOrEmpty(data.angletype) AndAlso Not String.IsNullOrEmpty(data.anglelength) Then
+            Return "ANGLE TYPE IS REQUIRED !"
+        End If
+
+        If Not String.IsNullOrEmpty(data.anglelength) Then
+            If Not Integer.TryParse(data.anglelength, anglelength) OrElse anglelength <= 0 Then Return "PLEASE CHECK YOUR ANGLE LENGTH ORDER !"
+        End If
 
         If tubeName.Contains("Hinged") OrElse tubeName.Contains("Sliding") Then
             If String.IsNullOrEmpty(data.beading) Then Return "BEADING IS REQUIRED !"
 
-            If String.IsNullOrEmpty(data.jambtype) Then Return "JAMB ADAPTOR TYPE IS REQUIRED !"
-            If String.IsNullOrEmpty(data.jambposition) Then Return "JAMB ADAPTOR POSITION IS REQUIRED !"
+            If Not String.IsNullOrEmpty(data.jambtype) AndAlso String.IsNullOrEmpty(data.jambposition) Then
+                Return "JAMB ADAPTOR POSITION IS REQUIRED !"
+            End If
+
+            If String.IsNullOrEmpty(data.jambtype) AndAlso Not String.IsNullOrEmpty(data.jambposition) Then
+                Return "JAMB ADAPTOR TYPE IS REQUIRED !"
+            End If
         End If
 
         If tubeName = "Hinged Double" AndAlso String.IsNullOrEmpty(data.flushbold) Then Return "FLUSH BOLD LOCATION IS REQUIRED !"
@@ -9716,7 +9728,7 @@ Partial Class Order_Method
         Dim layoutCodeReq As New JSONList With {.type = "LayoutCodeDoor", .tubetype = tubeId, .action = action}
         Dim meshReq As New JSONList With {.type = "MeshDoor", .blindtype = blindId, .action = action}
         Dim interlockReq As New JSONList With {.type = "InterlockDoor", .tubetype = tubeId, .action = action}
-        Dim frameColourReq As New JSONList With {.type = "FrameColourDoor", .blindtype = blindId, .action = action}
+        Dim frameColourReq As New JSONList With {.type = "FrameColourDoor", .blindtype = blindId, .action = action, .companydetailid = companyDetailId}
 
         Dim result = New With {
                 .ItemData = itemDetail,
@@ -10224,7 +10236,7 @@ Public Class JSONList
     Public Property fabrictype As String
     Public Property bottomtype As String
     Public Property chaincolour As String
-    Public Property company As String
+    Public Property companyid As String
     Public Property companydetailid As String
     Public Property action As String
 End Class

@@ -246,10 +246,10 @@
                                             </div>
 
                                             <div class="row mt-3" id="divhingecolour">
-                                                <div class="col-12 col-sm-12 col-lg-4">
+                                                <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Hinge Colour</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                     <select id="hingecolour" class="form-select">
                                                         <option value=""></option>
                                                         <option value="Stainless Steel">Stainless Steel</option>
