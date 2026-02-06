@@ -898,6 +898,16 @@ Partial Class Order_Detail
                 thisConn.Close()
             End Using
 
+            If lblOrderStatus.Text = "Proforma Sent" Then
+                Dim checkOcean As Integer = orderClass.GetItemData_Integer("SELECT COUNT(OrderDetails.Id) FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.HeaderId='" & lblHeaderId.Text & "' AND OrderDetails.Active=1 AND Products.DesignId='15'")
+                Dim thisId As String = lblHeaderId.Text
+
+                Task.Run(Async Function()
+                             Dim svc As New ShutterOceanService()
+                             Await svc.SendOrderAsync(thisId)
+                         End Function)
+            End If
+
             dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), "Confirm Payment Received"}
             orderClass.Logs(dataLog)
 

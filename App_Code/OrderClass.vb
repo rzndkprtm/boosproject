@@ -1504,7 +1504,7 @@ Public Class OrderClass
                     If blindName = "Single Curtain & Track" OrElse blindName = "Double Curtain & Track" Then
                         costingDescription = String.Format("Track for Curtain ({0})", trackType)
                         If blindName = "Double Curtain & Track" Then
-                            costingDescription = String.Format("#1 Track for Curtain({0})", trackType)
+                            costingDescription = String.Format("#1 Track for Curtain ({0})", trackType)
                         End If
                         objectArray = {headerId, itemId, itemNumber, "Base", costingDescription, thisBuyAdditional, thisSellAdditional}
                         OrderCostings(objectArray)

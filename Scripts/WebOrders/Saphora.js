@@ -1024,7 +1024,7 @@ async function initSaphora() {
     }
 
     await Promise.all([
-        getOrderHeader(itemAction),
+        getOrderHeader(headerId),
         getDesignName(designId),
         getFormAction(itemAction),
         getCompanyOrder(headerId),
