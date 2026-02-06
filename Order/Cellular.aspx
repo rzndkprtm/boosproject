@@ -464,5 +464,5 @@
         </div>
     </div>
 
-    <script src='<%: ResolveUrl("~/Scripts/WebOrders/Cellular.js?v=1.0.3") %>'></script>
+    <script src='<%: ResolveUrl("~/Scripts/WebOrders/Cellular.js?v=1.1.0") %>'></script>
 </asp:Content>
