@@ -328,5 +328,5 @@
         </div>
     </div>
     
-    <script src='<%: ResolveUrl("~/Scripts/WebOrders/Privacy.js?v=1.0.3") %>'></script>
+    <script src='<%: ResolveUrl("~/Scripts/WebOrders/Privacy.js?v=1.1.0") %>'></script>
 </asp:Content>

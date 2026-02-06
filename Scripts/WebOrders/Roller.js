@@ -4,8 +4,9 @@ let headerId;
 let orderId;
 let itemId;
 let designId;
-let company;
-let companyDetail;
+let customerId;
+let companyId;
+let companyDetailId;
 let loginId;
 let roleAccess;
 let priceAccess;
@@ -249,6 +250,7 @@ function getOrderHeader(headerId) {
             dataType: "json",
             success: ({ d }) => {
                 orderId = d.OrderId || "-";
+                customerId = d.CustomerId || "-";
                 document.getElementById("orderid").innerText = d.OrderId || "-";
                 document.getElementById("ordernumber").innerText = d.OrderNumber || "-";
                 document.getElementById("ordername").innerText = d.OrderName || "-";
@@ -279,7 +281,7 @@ function getFormAction(itemAction) {
 
 function getCompanyOrder(headerId) {
     return new Promise((resolve, reject) => {
-        company = "";
+        companyId = "";
 
         if (!headerId) {
             resolve();
@@ -294,7 +296,7 @@ function getCompanyOrder(headerId) {
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (response) {
-                company = response.d.trim();
+                companyId = response.d.trim();
                 resolve();
             },
             error: function (error) {
@@ -306,7 +308,7 @@ function getCompanyOrder(headerId) {
 
 function getCompanyDetailOrder(headerId) {
     return new Promise((resolve, reject) => {
-        companyDetail = "";
+        companyDetailId = "";
 
         if (!headerId) {
             resolve();
@@ -321,7 +323,7 @@ function getCompanyDetailOrder(headerId) {
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (response) {
-                companyDetail = response.d.trim();
+                companyDetailId = response.d.trim();
                 resolve();
             },
             error: function (error) {
@@ -385,15 +387,15 @@ function getPriceAccess(loginId) {
     });
 }
 
-function getCompanyDetailName(companyDetail) {
-    if (!companyDetail) return;
+function getCompanyDetailName(companyDetailId) {
+    if (!companyDetailId) return;
 
     const type = "CompanyDetailName";
     return new Promise((resolve, reject) => {
         $.ajax({
             type: "POST",
             url: "Method.aspx/StringData",
-            data: JSON.stringify({ type: type, dataId: companyDetail }),
+            data: JSON.stringify({ type: type, dataId: companyDetailId }),
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (response) {
@@ -554,7 +556,7 @@ function bindBlindType(designType) {
             return;
         }
 
-        const listData = { type: "BlindTypeRoller", companydetail: companyDetail, designtype: designType, action: itemAction };
+        const listData = { type: "BlindTypeRoller", companydetailid: companyDetailId, designtype: designType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -618,7 +620,7 @@ function bindTubeType(blindType) {
             return;
         }
 
-        let listData = { type: "TubeType", companydetail: companyDetail, blindtype: blindType, action: itemAction };
+        let listData = { type: "TubeType", companydetailid: companyDetailId, blindtype: blindType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -682,7 +684,7 @@ function bindControlType(blindType, tubeType) {
             return;
         }
 
-        let listData = { type: "ControlType", companydetail: companyDetail, blindtype: blindType, tubetype: tubeType, action: itemAction };
+        let listData = { type: "ControlType", companydetailid: companyDetailId, blindtype: blindType, tubetype: tubeType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -745,7 +747,7 @@ function bindColourType(blindType, tubeType, controlType) {
             return;
         }
 
-        const listData = { type: "ColourType", companydetail: companyDetail, blindtype: blindType, tubetype: tubeType, controltype: controlType, action: itemAction };
+        const listData = { type: "ColourType", companydetailid: companyDetailId, blindtype: blindType, tubetype: tubeType, controltype: controlType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -862,7 +864,7 @@ function bindChainRemote(designType, blindType, controlType) {
                 chainCustom = "Cassette";
             }
 
-            const listData = { type: "ControlColour", designtype: designType, controltype: controlType, companydetail: companyDetail, customtype: chainCustom, action: itemAction };
+            const listData = { type: "ControlColour", designtype: designType, controltype: controlType, companydetailid: companyDetailId, customtype: chainCustom, action: itemAction };
 
             $.ajax({
                 type: "POST",
@@ -1216,7 +1218,7 @@ function bindFabricType(designType) {
             return;
         }
 
-        const listData = { type: "FabricTypeByDesign", designtype: designType, companydetail: companyDetail, action: itemAction };
+        const listData = { type: "FabricTypeByDesign", designtype: designType, companydetailid: companyDetailId, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -1601,7 +1603,7 @@ function bindBottomType(designType) {
             return;
         }
 
-        const listData = { type: "BottomType", designtype: designType, companydetail: companyDetail, action: itemAction };
+        const listData = { type: "BottomType", designtype: designType, companydetailid: companyDetailId, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -1990,7 +1992,7 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
             getBlindName(blindType),
             getTubeName(tubeType),
             getControlName(controlType),
-            getCompanyDetailName(companyDetail)
+            getCompanyDetailName(companyDetailId)
         ]).then(([blindName, tubeName, controlName, companyDetailName]) => {
             const divShow = [];
 
@@ -2751,8 +2753,9 @@ function process() {
         designid: designId,
         loginid: loginId,
         rolename: roleAccess,
-        companyid: company,
-        companydetailid: companyDetail
+        customerid: customerId,
+        companyid: companyId,
+        companydetailid: companyDetailId
     };
 
     fields.forEach(id => {
@@ -2835,18 +2838,18 @@ async function initRoller() {
             itemAction === "edit",
             itemAction === "copy"
         );
-        await bindItemOrder(itemId, companyDetail);
+        await bindItemOrder(itemId, companyDetailId, itemAction);
     }
 }
 
-async function bindItemOrder(itemId, companyDetailId) {
+async function bindItemOrder(itemId, companyDetailId, action) {
     try {
         document.getElementById("divloader").style.display = "";
 
         const response = await $.ajax({
             type: "POST",
             url: "Method.aspx/RollerDetail",
-            data: JSON.stringify({ itemId, companyDetailId }),
+            data: JSON.stringify({ itemId, companyDetailId, action }),
             contentType: "application/json; charset=utf-8",
             dataType: "json"
         });
@@ -2952,7 +2955,7 @@ function showInfo(type) {
 
     Promise.all([
         getBlindName(blindtype.value),
-        getCompanyDetailName(companyDetail)
+        getCompanyDetailName(companyDetailId)
     ]).then(function ([blindName, companyDetailName]) {
         if (type === "STD Roller Components") {
             title = "STD Roller Components";

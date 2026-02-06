@@ -378,5 +378,5 @@
         </div>
     </div>
 
-    <script src='<%: ResolveUrl("~/Scripts/WebOrders/Design.js?v=1.0.3") %>'></script>
+    <script src='<%: ResolveUrl("~/Scripts/WebOrders/Design.js?v=1.1.0") %>'></script>
 </asp:Content>

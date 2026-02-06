@@ -4,8 +4,9 @@ let headerId;
 let orderId;
 let itemId;
 let designId;
-let company;
-let companyDetail;
+let customerId;
+let companyId;
+let companyDetailId;
 let loginId;
 let roleAccess;
 let priceAccess;
@@ -172,6 +173,7 @@ function getOrderHeader(headerId) {
             dataType: "json",
             success: ({ d }) => {
                 orderId = d.OrderId || "-";
+                customerId = d.CustomerId || "-";
                 document.getElementById("orderid").innerText = d.OrderId || "-";
                 document.getElementById("ordernumber").innerText = d.OrderNumber || "-";
                 document.getElementById("ordername").innerText = d.OrderName || "-";
@@ -184,7 +186,7 @@ function getOrderHeader(headerId) {
 
 function getCompanyOrder(headerId) {
     return new Promise((resolve, reject) => {
-        company = "";
+        companyId = "";
 
         if (!headerId) {
             resolve();
@@ -199,7 +201,7 @@ function getCompanyOrder(headerId) {
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (response) {
-                company = response.d.trim();
+                companyId = response.d.trim();
                 resolve();
             },
             error: function (error) {
@@ -211,7 +213,7 @@ function getCompanyOrder(headerId) {
 
 function getCompanyDetailOrder(headerId) {
     return new Promise((resolve, reject) => {
-        companyDetail = "";
+        companyDetailId = "";
 
         if (!headerId) {
             resolve();
@@ -226,7 +228,7 @@ function getCompanyDetailOrder(headerId) {
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (response) {
-                companyDetail = response.d.trim();
+                companyDetailId = response.d.trim();
                 resolve();
             },
             error: function (error) {
@@ -373,7 +375,7 @@ function bindBlindType(designType) {
             return;
         }
 
-        const listData = { type: "BlindTypeShutter", companydetail: companyDetail, designtype: designType, action: itemAction };
+        const listData = { type: "BlindTypeShutter", companydetailid: companyDetailId, designtype: designType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -438,7 +440,7 @@ function bindColourType(blindType) {
             return;
         }
 
-        const listData = { type: "ColourType", blindtype: blindType, companydetail: companyDetail, tubetype: "0", controltype: "0", action: itemAction };
+        const listData = { type: "ColourType", blindtype: blindType, companydetailid: companyDetailId, tubetype: "0", controltype: "0", action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -1588,8 +1590,9 @@ function process() {
         designid: designId,
         loginid: loginId,
         rolename: roleAccess,
-        companyid: company,
-        companydetailid: companyDetail,
+        customerid: customerId,
+        companyid: companyId,
+        companydetailid: companyDetailId,
         cutout: "",
         specialshape: "",
         templateprovided: ""
@@ -1669,7 +1672,7 @@ async function initSkylineExpress() {
         bindBlindType(designId);
         loader(itemAction);
     } else if (["edit", "view", "copy"].includes(itemAction)) {
-        await bindItemOrder(itemId, companyDetail);
+        await bindItemOrder(itemId, companyDetailId, itemAction);
         controlForm(
             itemAction === "view",
             itemAction === "edit",
@@ -1678,12 +1681,12 @@ async function initSkylineExpress() {
     }
 }
 
-async function bindItemOrder(itemId, companyDetailId) {
+async function bindItemOrder(itemId, companyDetailId, action) {
     try {
         const response = await $.ajax({
             type: "POST",
             url: "Method.aspx/SkylineDetail",
-            data: JSON.stringify({ itemId, companyDetailId }),
+            data: JSON.stringify({ itemId, companyDetailId, action }),
             contentType: "application/json; charset=utf-8",
             dataType: "json"
         });
