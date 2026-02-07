@@ -256,7 +256,7 @@ Public Class MailingClass
         End Try
     End Sub
 
-    Public Sub NewOrder(headerId As String, fileDirectory As String)
+    Public Sub NewOrder(headerId As String, loginId As String, fileDirectory As String)
         Try
             If String.IsNullOrEmpty(headerId) Then Exit Sub
 
@@ -275,6 +275,8 @@ Public Class MailingClass
             Dim customerName As String = orderData("CustomerName").ToString()
             Dim companyId As String = orderData("CompanyId").ToString()
             Dim companyName As String = GetItemData("SELECT Name FROM Companys WHERE Id='" & companyId & "'")
+
+            Dim submitRole As String = GetItemData("SELECT LoginRoles.Name AS RoleName FROM CustomerLogins LEFT JOIN LoginRoles ON CustomerLogin.RoleId=LoginRoles.Id WHERE CustomerLogins.Id='" & loginId & "'")
 
             Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='New Order' AND Active=1")
             If mailData Is Nothing Then Exit Sub
@@ -298,8 +300,13 @@ Public Class MailingClass
 
             Dim mailBody As String = String.Empty
 
+            Dim submitBy As String = "A new order has been submitted by customer."
+            If Not String.IsNullOrEmpty(submitRole) AndAlso Not submitRole = "Customer" Then
+                submitBy = String.Format("A new order has been submitted by <b>{0}</b>.", submitBy.ToLower)
+            End If
+
             mailBody = "<span style='font-family: Cambria; font-size: 16px;'>"
-            mailBody &= "A new order has been submitted by customer."
+            mailBody &= submitBy
             mailBody &= "<br /><br />"
             mailBody &= "Please check and download it from the BOE for production processing."
             mailBody &= "</span>"

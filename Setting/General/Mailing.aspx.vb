@@ -289,7 +289,7 @@ Partial Class Setting_General_Mailing
                 ddlCompanyId.Items.Insert(0, New ListItem("", ""))
             End If
         Catch ex As Exception
-            MessageError(True, ex.ToString())
+            MessageError_Process(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If

@@ -3,9 +3,9 @@
 Partial Class Setting_General_Newsletter_Add
     Inherits Page
 
-    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-
     Dim settingClass As New SettingClass
+
+    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
@@ -17,6 +17,7 @@ Partial Class Setting_General_Newsletter_Add
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             BindComponentForm(ddlType.SelectedValue)
+            BindCompany()
         End If
     End Sub
 
@@ -30,6 +31,11 @@ Partial Class Setting_General_Newsletter_Add
         Try
             If txtName.Text = "" Then
                 MessageError(True, "NEWSLETTER NAME IS REQUIRED !")
+                Exit Sub
+            End If
+
+            If ddlCompany.SelectedValue = "" Then
+                MessageError(True, "COMPANY IS REQUIRED !")
                 Exit Sub
             End If
 
@@ -65,8 +71,9 @@ Partial Class Setting_General_Newsletter_Add
                 End If
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Newsletters VALUES (@Id, @Name, @Type, @Link, @Description, 0);", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Newsletters VALUES (@Id, @CompanyId, @Name, @Type, @Link, @Description, 0);", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
+                        myCmd.Parameters.AddWithValue("@CompanyId", ddlCompany.SelectedValue)
                         myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                         myCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
                         myCmd.Parameters.AddWithValue("@Link", link)
@@ -77,7 +84,7 @@ Partial Class Setting_General_Newsletter_Add
                     End Using
                 End Using
 
-                Dim dataLog As Object() = {"Newsletter", thisId, Session("LoginId").ToString(), "Newsletter Created"}
+                Dim dataLog As Object() = {"Newsletters", thisId, Session("LoginId").ToString(), "Newsletter Created"}
                 settingClass.Logs(dataLog)
 
                 Response.Redirect("~/setting/general/newsletter", False)
@@ -101,6 +108,25 @@ Partial Class Setting_General_Newsletter_Add
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
+        End Try
+    End Sub
+
+    Protected Sub BindCompany()
+        ddlCompany.Items.Clear()
+        Try
+            ddlCompany.DataSource = settingClass.GetDataTable("SELECT * FROM Companys ORDER BY Name ASC")
+            ddlCompany.DataTextField = "Name"
+            ddlCompany.DataValueField = "Id"
+            ddlCompany.DataBind()
+
+            If ddlCompany.Items.Count > 1 Then
+                ddlCompany.Items.Insert(0, New ListItem("", ""))
+            End If
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 

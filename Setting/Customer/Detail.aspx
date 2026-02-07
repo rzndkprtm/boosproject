@@ -505,7 +505,7 @@
 
                                             <asp:Button runat="server" ID="btnAddDiscountCustom" CssClass="btn btn-info" Text="Add Discount (Custom Product)" OnClick="btnAddDiscountCustom_Click" />
 
-                                            <a href="#" runat="server" id="aResetDiscount" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalResetDiscount">Send Login Credentials</a>
+                                            <a href="#" runat="server" id="aResetDiscount" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalResetDiscount">Reset Discount</a>
                                         </div>
                                     </div>
                                 </div>

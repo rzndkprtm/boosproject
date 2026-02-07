@@ -35,12 +35,21 @@
                         <div class="card-body">
                             <div class="form form-horizontal">
                                 <div class="form-body">
-                                    <div class="row">
+                                    <div class="row mb-3">
                                         <div class="col-12 col-sm-12 col-lg-3">
                                             <label>Name</label>
                                         </div>
                                         <div class="col-12 col-sm-12 col-lg-9 form-group">
                                             <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-12 col-sm-12 col-lg-3">
+                                            <label>Company</label>
+                                        </div>
+                                        <div class="col-12 col-sm-12 col-lg-5">
+                                            <asp:DropDownList runat="server" ID="ddlCompany" CssClass="form-select"></asp:DropDownList>
                                         </div>
                                     </div>
 
@@ -57,7 +66,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="row" runat="server" id="divLink">
+                                    <div class="row mb-3" runat="server" id="divLink">
                                         <div class="col-12 col-sm-12 col-lg-3">
                                             <label>Link</label>
                                         </div>
@@ -66,7 +75,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="row" runat="server" id="divFile">
+                                    <div class="row mb-3" runat="server" id="divFile">
                                         <div class="col-12 col-sm-12 col-lg-3">
                                             <label>File</label>
                                         </div>
