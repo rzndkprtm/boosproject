@@ -9763,7 +9763,7 @@ Partial Class Order_Method
         Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = "0", .controltype = "0", .companydetailid = companyDetailId, .action = action}
         Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .action = action}
         Dim meshReq As New JSONList With {.type = "MeshWindow", .blindtype = blindId, .action = action}
-        Dim frameColourReq As New JSONList With {.type = "FrameColourWindow", .blindtype = blindId, .action = action}
+        Dim frameColourReq As New JSONList With {.type = "FrameColourWindow", .blindtype = blindId, .companydetailid = companyDetailId, .action = action}
 
         Dim result = New With {
                 .ItemData = itemDetail,
