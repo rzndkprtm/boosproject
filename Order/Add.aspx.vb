@@ -6,12 +6,12 @@ Imports OfficeOpenXml
 Partial Class Order_Add
     Inherits Page
 
+    Dim orderClass As New OrderClass
+    Dim mailingClass As New MailingClass
+
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataMailing As Object() = Nothing
     Dim url As String = String.Empty
-
-    Dim orderClass As New OrderClass
-    Dim mailingClass As New MailingClass
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
@@ -2743,7 +2743,8 @@ Partial Class Order_Add
         Try
             Dim role As String = String.Empty
             If Session("RoleName") = "IT" Then role = "AND Id<>'1' AND Id<>'2'"
-            If Session("RoleName") = "Customer" Then role = "AND Id='" & Session("CustomerId").ToString() & "'"
+            If Session("RoleName") = "Customer" Then role = "AND Id='" & Session("CustomerId") & "'"
+            If Session("RoleName") = "Sales" Then role = "AND Id='" & Session("CustomerId") & "'"
 
             Dim thisQuery As String = String.Format("SELECT * FROM Customers WHERE Active=1 {0} ORDER BY Name ASC", role)
 

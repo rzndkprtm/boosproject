@@ -6,14 +6,14 @@ Imports System.Threading.Tasks
 Partial Class Order_Detail
     Inherits Page
 
+    Dim orderClass As New OrderClass
+    Dim mailingClass As New MailingClass
+
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Dim dataMailing As Object() = Nothing
     Dim dataLog As Object() = Nothing
     Dim url As String = String.Empty
-
-    Dim orderClass As New OrderClass
-    Dim mailingClass As New MailingClass
 
     Dim enUS As CultureInfo = New CultureInfo("en-US")
     Dim idIDR As New CultureInfo("id-ID")
@@ -244,7 +244,7 @@ Partial Class Order_Detail
             previewClass.BindContent(lblHeaderId.Text, finalFilePath)
 
             If cashSale = False Then
-                mailingClass.NewOrder(lblHeaderId.Text, finalFilePath)
+                mailingClass.NewOrder(lblHeaderId.Text, Session("LoginId").ToString(), finalFilePath)
             End If
 
             If cashSale = True Then
@@ -2393,6 +2393,8 @@ Partial Class Order_Detail
             End If
 
             If Session("RoleName") = "Customer Service" Then
+                divInternalNote.Visible = True
+
                 btnMoreAction.Visible = True
                 liMoreAddNote.Visible = True
                 liMoreHistoryNote.Visible = True
@@ -2419,7 +2421,7 @@ Partial Class Order_Detail
                 End If
 
                 If lblOrderStatus.Text = "New Order" Then
-                    aUnsubmitOrder.Visible = True : aCancelOrder.Visible = True
+                    aCancelOrder.Visible = True
                     aHoldOrder.Visible = True : aProductionOrder.Visible = True
 
                     aAddItem.Visible = True

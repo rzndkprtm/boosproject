@@ -79,7 +79,10 @@
                                                 <label>Order Number</label>
                                             </div>
                                             <div class="col-12 col-sm-12 col-lg-9 form-group">
-                                                <asp:TextBox runat="server" ID="txtOrderNumber" CssClass="form-control" placeholder="Order Number ..." autocomplete="off"></asp:TextBox>
+                                                <div class="input-group">
+                                                    <asp:TextBox runat="server" ID="txtOrderNumber" CssClass="form-control" placeholder="Order Number ..." autocomplete="off"></asp:TextBox>
+                                                    <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Order Number');"> ? </a>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -88,7 +91,10 @@
                                                 <label>Order Name</label>
                                             </div>
                                             <div class="col-12 col-sm-12 col-lg-9 form-group">
-                                                <asp:TextBox runat="server" ID="txtOrderName" CssClass="form-control" placeholder="Order Name ...." autocomplete="off"></asp:TextBox>
+                                                <div class="input-group">
+                                                    <asp:TextBox runat="server" ID="txtOrderName" CssClass="form-control" placeholder="Order Name ...." autocomplete="off"></asp:TextBox>
+                                                    <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Order Name');"> ? </a>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -156,4 +162,38 @@
             </div>
         </section>
     </div>
+
+    <div class="modal modal-blur fade" id="modalInfo" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <h5 class="modal-title white">Information</h5>
+                </div>
+                <div class="modal-body">
+                    <span id="spanInfo"></span>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        function showInfo(type) {
+            let info;
+
+            if (type === "Order Number") {
+                info = "<b>Order Number</b>";
+                info += "<br /><br />";
+            } else if (type === "Order Name") {
+                info = "<b>Order Name</b>";
+                info += "<br /><br />";
+            } else {
+                info = "";
+            }
+
+            document.getElementById("spanInfo").innerHTML = info;
+        }
+    </script>
 </asp:Content>

@@ -1,12 +1,11 @@
-﻿Imports System.Data
-Imports System.Data.SqlClient
+﻿Imports System.Data.SqlClient
 
 Partial Class Setting_General_Newsletter_Default
     Inherits Page
 
-    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-
     Dim settingClass As New SettingClass
+
+    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
@@ -52,21 +51,6 @@ Partial Class Setting_General_Newsletter_Default
                 Dim url As String = String.Format("~/setting/general/newsletter/preview?id={0}", dataId)
                 Dim script As String = "window.open('" & ResolveUrl(url) & "', '_blank');"
                 ClientScript.RegisterStartupScript(Me.GetType(), "previewTab", script, True)
-            ElseIf e.CommandName = "Log" Then
-                MessageError_Log(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showLog(); };"
-                Try
-                    gvListLog.DataSource = settingClass.GetDataTable("SELECT * FROM Logs WHERE DataId='" & dataId & "' AND Type='Newsletters' ORDER BY ActionDate DESC")
-                    gvListLog.DataBind()
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
-                Catch ex As Exception
-                    MessageError_Log(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError_Log(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                    End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
-                End Try
             End If
         End If
     End Sub
@@ -109,7 +93,7 @@ Partial Class Setting_General_Newsletter_Default
             If Not searchText = "" Then
                 search = "WHERE Newsletters.Id LIKE '%" & searchText.Trim() & "%' OR Newsletters.Name LIKE '%" & searchText.Trim() & "%' OR Newsletters.Description LIKE '%" & searchText.Trim() & "%'"
             End If
-            Dim thisString As String = String.Format("SELECT Newsletters.*, Companys.Name AS CompanyName CASE WHEN Newsletters.Active=1 THEN 'Yes' WHEN Newsletters.Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Newsletters LEFT JOIN Companys ON Newsletters.CompanyId=Companys.Id {0} ORDER BY Newsletters.Name ASC", search)
+            Dim thisString As String = String.Format("SELECT Newsletters.*, Companys.Name AS CompanyName, CASE WHEN Newsletters.Active=1 THEN 'Yes' WHEN Newsletters.Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Newsletters LEFT JOIN Companys ON Newsletters.CompanyId=Companys.Id {0} ORDER BY Newsletters.Name ASC", search)
 
             gvList.DataSource = settingClass.GetDataTable(thisString)
             gvList.DataBind()
@@ -126,14 +110,6 @@ Partial Class Setting_General_Newsletter_Default
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
     End Sub
-
-    Protected Sub MessageError_Log(visible As Boolean, message As String)
-        divErrorLog.Visible = visible : msgErrorLog.InnerText = message
-    End Sub
-
-    Protected Function BindTextLog(logId As String) As String
-        Return settingClass.GetTextLog(logId)
-    End Function
 
     Protected Function PageAction(action As String) As Boolean
         Try

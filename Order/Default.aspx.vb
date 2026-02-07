@@ -36,6 +36,22 @@ Partial Class Order_Default
         End If
     End Sub
 
+    Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
+        Response.Redirect("~/order/add", False)
+    End Sub
+
+    Protected Sub btnAddMe_Click(sender As Object, e As EventArgs)
+        Response.Redirect("~/order/add", False)
+    End Sub
+
+    Protected Sub btnRework_Click(sender As Object, e As EventArgs)
+        Response.Redirect("~/order/rework", False)
+    End Sub
+
+    Protected Sub btnFile_Click(sender As Object, e As EventArgs)
+        Response.Redirect("~/order/file", False)
+    End Sub
+
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlCompany.SelectedValue, ddlActive.SelectedValue)
@@ -101,18 +117,6 @@ Partial Class Order_Default
                 End Try
             End If
         End If
-    End Sub
-
-    Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
-        Response.Redirect("~/order/add", False)
-    End Sub
-
-    Protected Sub btnRework_Click(sender As Object, e As EventArgs)
-        Response.Redirect("~/order/rework", False)
-    End Sub
-
-    Protected Sub btnFile_Click(sender As Object, e As EventArgs)
-        Response.Redirect("~/order/file", False)
     End Sub
 
     Protected Sub btnStatusOrder_Click(sender As Object, e As EventArgs)
@@ -718,6 +722,7 @@ Partial Class Order_Default
             gvList.Columns(7).Visible = PageAction("Visible Created Date")
 
             btnAdd.Visible = PageAction("Add")
+            btnAddMe.Visible = PageAction("Add For Me")
             btnRework.Visible = PageAction("Rework")
             btnFile.Visible = PageAction("File")
 
@@ -822,12 +827,17 @@ Partial Class Order_Default
     Protected Function VisibleUnsubmitOrder(status As String, active As Boolean) As Boolean
         If active = True Then
             If Session("RoleName") = "Developer" AndAlso (status = "New Order" OrElse status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "In Production" OrElse status = "On Hold") Then Return True
+            If Session("RoleName") = "IT" AndAlso (status = "New Order" OrElse status = "Waiting Proforma" OrElse status = "Proforma Sent") Then Return True
+            If Session("RoleName") = "Factory Office" AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent") Then Return True
+            If Session("RoleName") = "Sales" AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent") Then Return True
+            If Session("RoleName") = "Account" AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent") Then Return True
+            If Session("RoleName") = "Customer Service" AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent") Then Return True
         End If
         Return False
     End Function
 
     Protected Function VisibleReceivePayment(status As String, active As Boolean) As Boolean
-        If active = True AndAlso status = "Proforma Sent" AndAlso (Session("RoleName") = "Developer" OrElse Session("RoleName") = "Representative" OrElse Session("RoleName") = "Account") Then
+        If active = True AndAlso status = "Proforma Sent" AndAlso (Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Sales" OrElse Session("RoleName") = "Account") Then
             Return True
         End If
         Return False
