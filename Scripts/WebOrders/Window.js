@@ -481,7 +481,7 @@ function bindFrameColour(blindType) {
             return;
         }
 
-        const listData = { type: "FrameColourWindow", blindtype: blindType, action: itemAction };
+        const listData = { type: "FrameColourWindow", companydetailid: companyDetailId, blindtype: blindType, action: itemAction };
 
         $.ajax({
             type: "POST",
