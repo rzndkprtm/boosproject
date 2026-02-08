@@ -150,7 +150,7 @@
                                                         <%# Container.DataItemIndex + 1 %>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-                                                <asp:BoundField DataField="Id" HeaderStyle-CssClass="hiddencol" ItemStyle-CssClass="hiddencol" />
+                                                <asp:BoundField DataField="Id" HeaderText="ID" />
                                                 <asp:BoundField DataField="KitId" HeaderText="KIT ID" />
                                                 <asp:BoundField DataField="VenId" HeaderText="VEN ID" />
                                                 <asp:BoundField DataField="Name" HeaderText="Name" />

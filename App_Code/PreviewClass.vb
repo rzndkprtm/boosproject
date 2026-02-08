@@ -388,8 +388,10 @@ Public Class PreviewClass
                         Dim controlLength As String = curtainData.Rows(i)("CL").ToString()
                         If controlLength = "0" Then controlLength = String.Empty
 
-                        Dim returnLength As String = curtainData.Rows(i)("RetLengthValue").ToString()
-                        If returnLength = "0" Then returnLength = String.Empty
+                        Dim leftRetLengthValue As Integer = curtainData.Rows(i)("LeftRetLengthValue")
+                        Dim rightRetLengthValue As Integer = curtainData.Rows(i)("RightRetLengthValue")
+
+                        Dim returnLengthText As String = String.Format("L : {0} - R : {1}", leftRetLengthValue, rightRetLengthValue)
 
                         Dim number As Integer = i + 1
 
@@ -408,7 +410,7 @@ Public Class PreviewClass
                         items(12, i) = curtainData.Rows(i)("StackPosition").ToString()
                         items(13, i) = curtainData.Rows(i)("ControlColour").ToString()
                         items(14, i) = controlLength
-                        items(15, i) = returnLength
+                        items(15, i) = returnLengthText
                         items(16, i) = curtainData.Rows(i)("BottomHem").ToString()
                         items(17, i) = curtainData.Rows(i)("Supply").ToString()
                         items(18, i) = curtainData.Rows(i)("Notes").ToString()
