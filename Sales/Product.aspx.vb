@@ -3,12 +3,12 @@ Imports System.Data.SqlClient
 
 Partial Class Sales_Product
     Inherits Page
+    
+    Dim salesClass As New SalesClass
+    Dim mailingClass As New MailingClass
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataMailing As Object() = Nothing
-
-    Dim salesClass As New SalesClass
-    Dim mailingClass As New MailingClass
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")

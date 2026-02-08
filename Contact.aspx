@@ -32,9 +32,7 @@
                 </div>
             </div>
         </section>
-
         
-
         <div class="container mt-4">
             <div class="mb-5">
                 <h4 class="fw-semibold mb-3">IT</h4>

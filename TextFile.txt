@@ -1,4 +1,0 @@
-﻿bigblinds.ordersblindonline.com/setting/task?action=orderactioncontext
-bigblinds.ordersblindonline.com/setting/task?action=salescosting
-bigblinds.ordersblindonline.com/setting/task?action=resetcashsaleorder
-bigblinds.ordersblindonline.com/setting/task?action=productionorder

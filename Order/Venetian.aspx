@@ -587,5 +587,6 @@
         </div>
     </div>
     
-    <script src="<%: ResolveUrl("~/Scripts/WebOrders/Venetian.js?v=1.1.0") %>"></script>
+    <script src="/Scripts/WebOrders/Venetian.js?v=1.1.0"></script>
+    <%--<script src="/Scripts/WebOrders/Venetian.js?v=1.0.0"></script>--%>
 </asp:Content>

@@ -1191,6 +1191,7 @@ function showInfo(type) {
         info = "<b>Extension Bracket</b>";
         info += "<br /><br />";
         info += "<img src='https://bigblinds.ordersblindonline.com/assets/images/products/vertical/extensionbracket.jpg' alt='' style='max - width: 100%; height: auto;' />";
+        //info += "<img src='https://ordersblindonline.com/assets/images/products/vertical/extensionbracket.jpg' alt='' style='max - width: 100%; height: auto;' />";
     }
     else if (type === "Bottom Joining") {
         info = "<b>Bottom Joining</b>";
@@ -1201,6 +1202,7 @@ function showInfo(type) {
         info = "<b>Fabric Insert</b>";
         info += "<br /><br />";
         info += "<img src='https://bigblinds.ordersblindonline.com/assets/images/products/vertical/fabricinsert.JPG' alt='' style='max - width: 100%; height: auto;' />";
+        //info += "<img src='https://ordersblindonline.com/assets/images/products/vertical/fabricinsert.JPG' alt='' style='max - width: 100%; height: auto;' />";
     }
     else if (type === "Control Length") {
         info = "Control Length Information";

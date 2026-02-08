@@ -3090,6 +3090,7 @@ function showGallery(type) {
 
     if (type === "Roll") {
         let urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/roller/roll.jpg";
+        //let urlImage = "https://ordersblindonline.com/assets/images/products/roller/roll.jpg";
         info = `<img src="${urlImage}" alt="Roll Image" style="max-width:100%;height:auto;">`;
     }
     document.getElementById("spanInfoGallery").innerHTML = info;

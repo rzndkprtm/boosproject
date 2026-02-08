@@ -68,6 +68,7 @@ Partial Class Setting_General_Newsletter_Add
                     fuFile.SaveAs(savePath)
 
                     link = String.Format("https://bigblinds.ordersblindonline.com/assets/newsletter/{0}", newFileName)
+                    'link = String.Format("https://ordersblindonline.com/assets/newsletter/{0}", newFileName)
                 End If
 
                 Using thisConn As New SqlConnection(myConn)
