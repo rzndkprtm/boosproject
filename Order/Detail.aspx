@@ -1495,7 +1495,7 @@
                         <asp:GridView runat="server" ID="gvListEditCosting" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" ShowHeaderWhenEmpty="true" DataKeyNames="Id,Type">
                             <RowStyle />
                             <Columns>
-                                <asp:BoundField DataField="Id" HeaderText="ID" ItemStyle-CssClass="hiddencol" HeaderStyle-CssClass="hiddencol" />
+                                <asp:BoundField DataField="Id" HeaderText="ID" />
                                 <asp:BoundField DataField="Type" HeaderText="Type" />
                                 <asp:BoundField DataField="Description" HeaderText="Description" />
                                 <asp:BoundField DataField="BuyPricing" HeaderText="Price (Buy)" />

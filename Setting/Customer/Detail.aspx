@@ -588,7 +588,7 @@
                                                                 <%# Container.DataItemIndex + 1 %>
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
-                                                        <asp:BoundField DataField="Id" HeaderStyle-CssClass="hiddencol" ItemStyle-CssClass="hiddencol" />
+                                                        <asp:BoundField DataField="Id" HeaderText="ID" />
                                                         <asp:TemplateField HeaderText="Product" HeaderStyle-HorizontalAlign="Center">
                                                             <ItemTemplate>
                                                                 <%# BindDetailProduct(Eval("Id").ToString()) %>
@@ -1443,7 +1443,7 @@
                                                 <%# Container.DataItemIndex + 1 %>
                                             </ItemTemplate>
                                         </asp:TemplateField>
-                                        <asp:BoundField DataField="Id" HeaderStyle-CssClass="hiddencol" ItemStyle-CssClass="hiddencol" />
+                                        <asp:BoundField DataField="Id" HeaderText="ID" />
                                         <asp:TemplateField HeaderText="Type">
                                             <ItemTemplate>
                                                 <%# PromoTitle(Eval("Type").ToString(), Eval("DataId").ToString()) %>

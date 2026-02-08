@@ -1282,12 +1282,12 @@ function showInfo(type) {
     let info;
 
     if (type === "TieBack") {
-        let img = "https://bigblinds.ordersblindonline.com/assets/images/products/tieback.jpg";
-        //let img = "https://ordersblindonline.com/assets/images/products/tieback.jpg";
+        let img = "https://bigblinds.ordersblindonline.com/assets/images/products/curtain/tieback.jpg";
+        //let img = "https://ordersblindonline.com/assets/images/products/curtain/tieback.jpg";
 
         info = "<b>Tie Back Information</b>";
         info += "<br /><br />";
-        info += `<img src="${img}" alt="Sub Type Image" style="max-width:100%;height:auto;">`;
+        info += `<img src="${img}" style="max-width:100%;height:auto;">`;
         info += "<br /><br />";
     }
     document.getElementById("spanInfo").innerHTML = info;
