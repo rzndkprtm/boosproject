@@ -293,7 +293,7 @@
                                 <div class="col-2 col-sm-2 col-lg-2">
                                     <label>Check Measure Date</label>
                                     <br />
-                                    <asp:Label runat="server" ID="lblMeasure" CssClass="font-bold"></asp:Label>
+                                    <asp:Label runat="server" ID="lblCheckMeasureDate" CssClass="font-bold"></asp:Label>
                                 </div>
                             </div>
                             
@@ -301,7 +301,7 @@
                                 <div class="col-2 col-sm-2 col-lg-2">
                                     <label>Installation Date</label>
                                     <br />
-                                    <asp:Label runat="server" ID="lblInstallation" CssClass="font-bold"></asp:Label>
+                                    <asp:Label runat="server" ID="lblInstallationDate" CssClass="font-bold"></asp:Label>
                                 </div>
                             </div>
                         </div>
@@ -1226,19 +1226,41 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-12">
-                            <div class="table-responsive">
-                                <asp:GridView ID="gvBuilderDetail" runat="server" AutoGenerateColumns="False" CssClass="table table-bordered table-hover mb-0">
-                                    <Columns>
-                                        <asp:BoundField DataField="Label" HeaderText="Field" />
-                                        <asp:TemplateField HeaderText="Edit">
-                                            <ItemTemplate>
-                                                <asp:TextBox ID="txtEditValue" runat="server" CssClass="form-control" Text='<%# Eval("EditValue") %>' TextMode='<%# If(Eval("FieldType").ToString() = "date", TextBoxMode.Date, TextBoxMode.SingleLine) %>'></asp:TextBox>
-                                            </ItemTemplate>
-                                        </asp:TemplateField>
-                                    </Columns>
-                                </asp:GridView>
-                            </div>
+                        <div class="col-6 form-group">
+                            <label class="form-label">Estimator</label>
+                            <asp:TextBox runat="server" ID="txtEstimator" CssClass="form-control" placeholder="Estimator ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                        <div class="col-6 form-group">
+                            <label class="form-label">Supervisor</label>
+                            <asp:TextBox runat="server" ID="txtSupervisor" CssClass="form-control" placeholder="Supervisor ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Address</label>
+                            <asp:TextBox runat="server" ID="txtAddress" CssClass="form-control" placeholder="Address ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6 form-group">
+                            <label class="form-label">Call Up</label>
+                            <asp:TextBox runat="server" TextMode="Date" ID="txtCallUpDate" CssClass="form-control" placeholder="Call Up ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                        <div class="col-6 form-group">
+                            <label class="form-label">Check Measure</label>
+                            <asp:TextBox runat="server" TextMode="Date" ID="txtCheckMeasureDate" CssClass="form-control" placeholder="Check Measure ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6 form-group">
+                            <label class="form-label">Installation</label>
+                            <asp:TextBox runat="server" TextMode="Date" ID="txtInstallationDate" CssClass="form-control" placeholder="Installation ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                        <div class="col-6 form-group">
+                            
                         </div>
                     </div>
                 </div>

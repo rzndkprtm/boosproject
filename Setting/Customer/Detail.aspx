@@ -400,6 +400,7 @@
                                                         <asp:BoundField DataField="FullName" HeaderText="Full Name" />
                                                         <asp:BoundField DataField="Email" HeaderText="Email" />
                                                         <asp:BoundField DataField="LastLogin" HeaderText="Last Login" DataFormatString="{0:dd MMM yyyy HH:mm:ss}" />
+                                                        <asp:BoundField DataField="DataActive" HeaderText="Active" />
                                                         <asp:TemplateField ItemStyle-Width="120px">
                                                             <ItemTemplate>
                                                                 <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
@@ -412,9 +413,6 @@
                                                                     </li>
                                                                     <li runat="server" visible='<%# PageAction("Active Login") %>'>
                                                                         <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalActiveLogin" onclick='<%# String.Format("return showActiveLogin(`{0}`, `{1}`);", Eval("Id").ToString(), Convert.ToInt32(Eval("Active"))) %>'><%# TextActive_Login(Eval("Active")) %></a>
-                                                                    </li>
-                                                                    <li runat="server" visible='<%# PageAction("Delete Login") %>'>
-                                                                        <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteLogin" onclick='<%# String.Format("return showDeleteLogin(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                                     </li>
                                                                     <li runat="server" visible='<%# PageAction("Reset Login") %>'>
                                                                         <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalResetPass" onclick='<%# String.Format("return showResetPass(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("UserName").ToString()) %>'>Reset Password</a>
@@ -1104,7 +1102,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row mb-2" runat="server" id="divAccess">
+                    <div class="row mb-2">
                         <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
                             <label class="form-label required">Role</label>
                             <asp:DropDownList runat="server" ID="ddlLoginRole" CssClass="form-select"></asp:DropDownList>
@@ -1218,24 +1216,6 @@
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnActiveLogin" CssClass="btn btn-warning" Text="Confirm" OnClick="btnActiveLogin_Click" />
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal modal-blur fade" id="modalDeleteLogin" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-danger">
-                    <h5 class="modal-title white">Delete Customer Login</h5>
-                </div>
-                <div class="modal-body text-center py-4">
-                    <asp:TextBox runat="server" ID="txtIdLoginDelete" style="display:none;"></asp:TextBox>
-                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
-                </div>
-                <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnDeleteLogin" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDeleteLogin_Click" />
                 </div>
             </div>
         </div>
@@ -1733,11 +1713,7 @@
                 title = "Enable Customer Login";
             }
             document.getElementById("titleActiveLogin").innerHTML = title;
-        }
-
-        function showDeleteLogin(id) {
-            document.getElementById("<%=txtIdLoginDelete.ClientID %>").value = id;
-        }        
+        }     
 
         function showResetPass(id, username) {
             let newPass = generateNewPassword(15);
@@ -1837,7 +1813,7 @@
             "modalProcessContact", "modalDeleteContact", "modalPrimaryContact",
             "modalProcessAddress", "modalDeleteAddress", "modalPrimaryAddress",
             "modalProcessBusiness", "modalDeleteBusiness", "modalPrimaryBusiness",
-            "modalProcessLogin", "modalInstallerAccess", "modalActiveLogin", "modalDeleteLogin", "modalResetPass", "modalDencryptPass", "modalCredentialsLogin",
+            "modalProcessLogin", "modalInstallerAccess", "modalActiveLogin", "modalResetPass", "modalDencryptPass", "modalCredentialsLogin",
             "modalProcessDiscount", "modalResetDiscount", "modalDeleteDiscount",
             "modalProcessPromo", "modalDetailPromo", "modalResetPromo", "modalDeletePromo",
             "modalResetProduct", "modalProcessProduct"
