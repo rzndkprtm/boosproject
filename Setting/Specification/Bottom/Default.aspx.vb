@@ -84,21 +84,6 @@ Partial Class Setting_Specification_Bottom_Default
                         MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
                     End If
                 End Try
-            ElseIf e.CommandName = "Log" Then
-                MessageError_Log(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showLog(); };"
-                Try
-                    gvListLogs.DataSource = settingClass.GetDataTable("SELECT * FROM Logs WHERE DataId='" & dataId & "' AND Type='Bottoms' ORDER BY ActionDate DESC")
-                    gvListLogs.DataBind()
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
-                Catch ex As Exception
-                    MessageError_Log(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError_Log(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                    End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
-                End Try
             End If
         End If
     End Sub
@@ -290,10 +275,6 @@ Partial Class Setting_Specification_Bottom_Default
         divErrorProcess.Visible = visible : msgErrorProcess.InnerText = message
     End Sub
 
-    Protected Sub MessageError_Log(visible As Boolean, message As String)
-        divErrorLog.Visible = visible : msgErrorLog.InnerText = message
-    End Sub
-
     Protected Function BindDesign(bottomId As String) As String
         If Not String.IsNullOrEmpty(bottomId) Then
             Dim myData As DataTable = settingClass.GetDataTable("SELECT Designs.Name AS DesignName FROM Bottoms CROSS APPLY STRING_SPLIT(Bottoms.DesignId, ',') AS splitArray LEFT JOIN Designs ON splitArray.VALUE=Designs.Id WHERE Bottoms.Id='" & bottomId & "' ORDER BY Designs.Id ASC")
@@ -325,10 +306,6 @@ Partial Class Setting_Specification_Bottom_Default
             End If
         End If
         Return "Error"
-    End Function
-
-    Protected Function BindTextLog(logId As String) As String
-        Return settingClass.getTextLog(logId)
     End Function
 
     Protected Function PageAction(action As String) As Boolean

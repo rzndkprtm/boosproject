@@ -5,10 +5,11 @@
 <%@ Page Language="VB" Title="Export BOE Result" ContentType="text/xml" Debug="true" %>
 
 <script runat="server">
-    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-
+    
     Dim orderClass As New OrderClass
     Dim mailingClass As New MailingClass
+
+    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Public Function GetDataTable(thisString As String) As DataTable
         Try

@@ -878,9 +878,9 @@ Partial Class Order_Method
 
     <WebMethod()>
     Public Shared Function AluminiumProcess(data As ProccessData) As String
-        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-
         Dim orderClass As New OrderClass
+
+        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
         Dim qty As Integer
         Dim width As Integer : Dim widthb As Integer
@@ -1224,9 +1224,9 @@ Partial Class Order_Method
 
     <WebMethod()>
     Public Shared Function CellularProcess(data As ProccessData) As String
-        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-
         Dim orderClass As New OrderClass
+
+        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
         Dim qty As Integer
         Dim width As Integer : Dim widthb As Integer
@@ -1484,9 +1484,9 @@ Partial Class Order_Method
 
     <WebMethod()>
     Public Shared Function CurtainProcess(data As ProccessData) As String
-        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-
         Dim orderClass As New OrderClass
+
+        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
         Dim qty As Integer
         Dim width As Integer
@@ -1861,9 +1861,9 @@ Partial Class Order_Method
 
     <WebMethod()>
     Public Shared Function DesignShadesProcess(data As ProccessData) As String
-        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-
         Dim orderClass As New OrderClass
+
+        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
         Dim qty As Integer
         Dim width As Integer
@@ -2085,9 +2085,9 @@ Partial Class Order_Method
 
     <WebMethod()>
     Public Shared Function LineaProcess(data As ProccessData) As String
-        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-
         Dim orderClass As New OrderClass
+
+        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
         Dim qty As Integer
         Dim width As Integer
@@ -2258,9 +2258,9 @@ Partial Class Order_Method
 
     <WebMethod()>
     Public Shared Function PanelGlideProcess(data As ProccessData) As String
-        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-
         Dim orderClass As New OrderClass
+
+        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
         Dim qty As Integer
         Dim width As Integer
@@ -2515,9 +2515,9 @@ Partial Class Order_Method
 
     <WebMethod()>
     Public Shared Function PelmetProcess(data As ProccessData) As String
-        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-
         Dim orderClass As New OrderClass
+
+        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
         Dim qty As Integer
         Dim width As Integer
@@ -2735,9 +2735,9 @@ Partial Class Order_Method
 
     <WebMethod()>
     Public Shared Function RomanProcess(data As ProccessData) As String
-        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-
         Dim orderClass As New OrderClass
+
+        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
         Dim qty As Integer
         Dim width As Integer : Dim drop As Integer
@@ -2975,9 +2975,9 @@ Partial Class Order_Method
 
     <WebMethod()>
     Public Shared Function PrivacyProcess(data As ProccessData) As String
-        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-
         Dim orderClass As New OrderClass
+
+        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
         Dim qty As Integer
         Dim width As Integer
@@ -3138,9 +3138,9 @@ Partial Class Order_Method
 
     <WebMethod()>
     Public Shared Function VenetianProcess(data As ProccessData) As String
-        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-
         Dim orderClass As New OrderClass
+
+        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
         Dim qty As Integer
         Dim width As Integer : Dim widthb As Integer
@@ -3529,9 +3529,9 @@ Partial Class Order_Method
 
     <WebMethod()>
     Public Shared Function VerticalProcess(data As ProccessData) As String
-        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-
         Dim orderClass As New OrderClass
+
+        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
         Dim qty As Integer : Dim qtyblade As Integer
         Dim width As Integer : Dim drop As Integer
@@ -3813,9 +3813,9 @@ Partial Class Order_Method
 
     <WebMethod()>
     Public Shared Function RollerProcess(data As ProccessData) As String
-        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-
         Dim orderClass As New OrderClass
+
+        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
         Dim qty As Integer
         Dim width As Integer
@@ -6585,12 +6585,11 @@ Partial Class Order_Method
 
     <WebMethod()>
     Public Shared Function SkylineProccess(data As ProccessData) As String
-        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-
         Dim orderClass As New OrderClass
 
-        Dim qty As Integer
+        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
+        Dim qty As Integer
         Dim width As Integer = 0
         Dim drop As Integer = 0
         Dim midrailHeight1 As Integer = 0
@@ -7382,9 +7381,9 @@ Partial Class Order_Method
 
     <WebMethod()>
     Public Shared Function EvolveProccess(data As ProccessData) As String
-        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-
         Dim orderClass As New OrderClass
+
+        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
         Dim designName As String = orderClass.GetDesignName(data.designid)
         Dim blindName As String = orderClass.GetBlindName(data.blindtype)
@@ -8099,9 +8098,9 @@ Partial Class Order_Method
 
     <WebMethod()>
     Public Shared Function SampleProcess(data As ProccessData) As String
-        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-
         Dim orderClass As New OrderClass
+
+        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
         Dim qty As Integer
         Dim markup As Integer
@@ -8201,9 +8200,9 @@ Partial Class Order_Method
 
     <WebMethod()>
     Public Shared Function SaphoraDrapeProcess(data As ProccessData) As String
-        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-
         Dim orderClass As New OrderClass
+
+        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
         Dim qty As Integer
         Dim width As Integer : Dim drop As Integer
@@ -8407,9 +8406,9 @@ Partial Class Order_Method
 
     <WebMethod()>
     Public Shared Function OutdoorProcess(data As ProccessData) As String
-        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-
         Dim orderClass As New OrderClass
+
+        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
         Dim qty As Integer
         Dim width As Integer : Dim drop As Integer
@@ -8880,9 +8879,9 @@ Partial Class Order_Method
 
     <WebMethod()>
     Public Shared Function WindowProcess(data As ProccessData) As String
-        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-
         Dim orderClass As New OrderClass
+
+        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
         Dim qty As Integer
         Dim width As Integer
@@ -9966,11 +9965,9 @@ Partial Class Order_Method
 
     <WebMethod()>
     Public Shared Function GetHistoryNote(headerId As String) As List(Of HistoryNoteDto)
-
         Dim orderClass As New OrderClass
 
-        Dim dt = orderClass.GetDataTable(
-            "SELECT OrderInternalNotes.Note, CustomerLogins.FullName, FORMAT(OrderInternalNotes.CreatedDate, 'dd MMM yyyy') AS CreatedDate FROM OrderInternalNotes INNER JOIN CustomerLogins ON OrderInternalNotes.CreatedBy = CustomerLogins.Id WHERE OrderInternalNotes.HeaderId='" & headerId & "' ORDER BY OrderInternalNotes.CreatedDate DESC")
+        Dim dt = orderClass.GetDataTable("SELECT OrderInternalNotes.Note, CustomerLogins.FullName, FORMAT(OrderInternalNotes.CreatedDate, 'dd MMM yyyy') AS CreatedDate FROM OrderInternalNotes INNER JOIN CustomerLogins ON OrderInternalNotes.CreatedBy = CustomerLogins.Id WHERE OrderInternalNotes.HeaderId='" & headerId & "' ORDER BY OrderInternalNotes.CreatedDate DESC")
 
         Dim list As New List(Of HistoryNoteDto)
 

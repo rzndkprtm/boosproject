@@ -374,5 +374,6 @@
         </div>
     </div>
 
-    <script src='<%: ResolveUrl("~/Scripts/WebOrders/Pelmet.js?v=1.1.0") %>'></script>
+    <script src="/Scripts/WebOrders/Pelmet.js?v=1.1.0"></script>
+    <%--<script src="/Scripts/WebOrders/Pelmet.js?v=1.0.0"></script>--%>
 </asp:Content>

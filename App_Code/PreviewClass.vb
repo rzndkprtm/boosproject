@@ -2387,18 +2387,18 @@ Public Class PreviewEvents
         Dim innerTable As New PdfPTable(1)
         innerTable.WidthPercentage = 100
 
-        Dim logoPath As String = HttpContext.Current.Server.MapPath("~/assets/images/logo/general.jpg")
+        Dim logoPath As String = HttpContext.Current.Server.MapPath("~/Assets/images/logo/general.jpg")
         If pageCompany = "2" Then
-            logoPath = HttpContext.Current.Server.MapPath("~/assets/images/logo/jpmdirect.jpg")
+            logoPath = HttpContext.Current.Server.MapPath("~/Assets/images/logo/jpmdirect.jpg")
         End If
         If pageCompany = "3" Then
-            logoPath = HttpContext.Current.Server.MapPath("~/assets/images/logo/accent.png")
+            logoPath = HttpContext.Current.Server.MapPath("~/Assets/images/logo/accent.png")
         End If
         If pageCompany = "4" Then
-            logoPath = HttpContext.Current.Server.MapPath("~/assets/images/logo/jpmdirect.jpg")
+            logoPath = HttpContext.Current.Server.MapPath("~/Assets/images/logo/jpmdirect.jpg")
         End If
         If pageCompany = "5" Then
-            logoPath = HttpContext.Current.Server.MapPath("~/assets/images/logo/big.JPG")
+            logoPath = HttpContext.Current.Server.MapPath("~/Assets/images/logo/big.JPG")
         End If
 
         Dim logoImage As Image = Image.GetInstance(logoPath)

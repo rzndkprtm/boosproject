@@ -2,13 +2,12 @@
 
 Partial Class Sales_Costing
     Inherits Page
-
-    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-    Dim dataMailing As Object() = Nothing
-
+    
     Dim salesClass As New SalesClass
     Dim mailingClass As New MailingClass
 
+    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim dataMailing As Object() = Nothing
     Dim enUS As CultureInfo = New CultureInfo("en-US")
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load

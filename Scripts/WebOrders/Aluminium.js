@@ -955,14 +955,18 @@ function showInfo(type) {
         info += "Minimum custom wand length is 450mm.";
     } else if (type === "First") {
         let urlImage = "https://bigblinds.ordersblindonline.com/Assets/images/products/aluminium/2on1aluminiumleft-1.png";
+        //let urlImage = "https://ordersblindonline.com/Assets/images/products/aluminium/2on1aluminiumleft-1.png";
 
         const subType = document.getElementById("subtype").value;
         if (subType === "2 on 1 Left-Left") {
             urlImage = "https://bigblinds.ordersblindonline.com/Assets/images/products/aluminium/2on1aluminiumleft-1.png";
+            //urlImage = "https://ordersblindonline.com/Assets/images/products/aluminium/2on1aluminiumleft-1.png";
         } else if (subType === "2 on 1 Right-Right") {
-            urlImage = "https://bigblinds.ordersblindonline.com/Assets/images/products/aluminium/2on1aluminiumright-1.png";
+            //urlImage = "https://bigblinds.ordersblindonline.com/Assets/images/products/aluminium/2on1aluminiumright-1.png";
+            urlImage = "https://ordersblindonline.com/Assets/images/products/aluminium/2on1aluminiumright-1.png";
         } else if (subType === "2 on 1 Left-Right") {
             urlImage = "https://bigblinds.ordersblindonline.com/Assets/images/products/aluminium/2on1aluminiumleftright-1.png";
+            //urlImage = "https://ordersblindonline.com/Assets/images/products/aluminium/2on1aluminiumleftright-1.png";
         }
 
         info = "<b>Layout Information</b>";
@@ -971,14 +975,18 @@ function showInfo(type) {
         info += "<br /><br />";
     } else if (type === "Second") {
         let urlImage = "https://bigblinds.ordersblindonline.com/Assets/images/products/aluminium/2on1aluminiumleft-1.png";
+        //let urlImage = "https://ordersblindonline.com/Assets/images/products/aluminium/2on1aluminiumleft-1.png";
 
         const subType = document.getElementById("subtype").value;
         if (subType === "2 on 1 Left-Left") {
             urlImage = "https://bigblinds.ordersblindonline.com/Assets/images/products/aluminium/2on1aluminiumleft-2.png";
+            //urlImage = "https://ordersblindonline.com/Assets/images/products/aluminium/2on1aluminiumleft-2.png";
         } else if (subType === "2 on 1 Right-Right") {
             urlImage = "https://bigblinds.ordersblindonline.com/Assets/images/products/aluminium/2on1aluminiumright-2.png";
+            //urlImage = "https://ordersblindonline.com/Assets/images/products/aluminium/2on1aluminiumright-2.png";
         } else if (subType === "2 on 1 Left-Right") {
             urlImage = "https://bigblinds.ordersblindonline.com/Assets/images/products/aluminium/2on1aluminiumleftright-2.png";
+            //urlImage = "https://ordersblindonline.com/Assets/images/products/aluminium/2on1aluminiumleftright-2.png";
         }
 
         info = "<b>Layout Information</b>";

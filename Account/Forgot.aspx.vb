@@ -2,12 +2,12 @@
 Imports System.Data.SqlClient
 
 Partial Class Account_Forgot
-    Inherits Page
-
-    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Inherits Page    
 
     Dim settingClass As New SettingClass
     Dim mailingClass As New MailingClass
+
+    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         If Not IsPostBack Then

@@ -3,13 +3,13 @@ Imports System.Data.SqlClient
 
 Partial Class Ticket_Detail
     Inherits Page
+    
+    Dim settingClass As New SettingClass
+    Dim mailingClass As New MailingClass
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
     Dim dataMailing As Object() = Nothing
-
-    Dim settingClass As New SettingClass
-    Dim mailingClass As New MailingClass
 
     Dim ticketId As String = String.Empty
 

@@ -3,12 +3,12 @@ Imports System.Data.SqlClient
 
 Public Partial Class SiteMaster
     Inherits MasterPage
+    
+    Dim settingClass As New SettingClass
+    Dim mailingClass As New MailingClass
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataMailing As Object() = Nothing
-
-    Dim settingClass As New SettingClass
-    Dim mailingClass As New MailingClass
 
     Protected Sub Page_Init(sender As Object, e As EventArgs)
         AddHandler Page.PreLoad, AddressOf master_Page_PreLoad

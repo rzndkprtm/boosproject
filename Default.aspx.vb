@@ -2,10 +2,10 @@
 
 Partial Class _Default
     Inherits Page
+    
+    Dim settingClass As New SettingClass
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-
-    Dim settingClass As New SettingClass
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")

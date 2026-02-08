@@ -341,10 +341,8 @@
             }
             document.getElementById("titleActive").innerHTML = title;
         }
-        function showLog() {
-            $("#modalLog").modal("show");
-        }
-        ["modalProcess", "modalDelete", "modalAlias", "modalLog", "modalActiveLogin"].forEach(function (id) {
+
+        ["modalProcess", "modalAlias", "modalLog", "modalActive"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
