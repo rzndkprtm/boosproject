@@ -136,7 +136,7 @@ Partial Class Order_Detail
             End If
 
             If lblCompanyDetailId.Text = "3" Then
-                Dim thisData As DataRow = orderClass.GetDataRow("SELECT Est*imator FROM OrderBuilders WHERE Id='" & lblHeaderId.Text & "'")
+                Dim thisData As DataRow = orderClass.GetDataRow("SELECT * FROM OrderBuilders WHERE Id='" & lblHeaderId.Text & "'")
                 Dim estimator As String = thisData("Estimator").ToString()
                 Dim supervisor As String = thisData("Supervisor").ToString()
                 Dim address As String = thisData("Address").ToString()
@@ -1072,59 +1072,15 @@ Partial Class Order_Detail
         MessageError_BuilderDetail(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showBuilderDetail(); };"
         Try
-            Dim updates As New Dictionary(Of String, String)()
-
-            For Each row As GridViewRow In gvBuilderDetail.Rows
-                If row.RowType = DataControlRowType.DataRow Then
-                    Dim fieldName As String = row.Cells(0).Text.Trim()
-                    Dim txtValue As TextBox = CType(row.FindControl("txtEditValue"), TextBox)
-
-                    If txtValue IsNot Nothing Then
-                        updates(fieldName) = txtValue.Text.Trim()
-                    End If
-                End If
-            Next
-
-            Dim estimatorValue As String = If(updates.ContainsKey("Estimator"), updates("Estimator"), "")
-            Dim supervisorValue As String = If(updates.ContainsKey("Supervisor"), updates("Supervisor"), "")
-            Dim addressValue As String = If(updates.ContainsKey("Address"), updates("Address"), "")
-            Dim callUpRaw As String = If(updates.ContainsKey("Call Up"), updates("Call Up"), "")
-            Dim measureRaw As String = If(updates.ContainsKey("Check Measure"), updates("Check Measure"), "")
-            Dim installationRaw As String = If(updates.ContainsKey("Installation"), updates("Installation"), "")
-
-            Dim callUpValue As Object = DBNull.Value
-            If Not String.IsNullOrWhiteSpace(callUpRaw) Then
-                Dim parsedDate As DateTime
-                If DateTime.TryParse(callUpRaw, parsedDate) Then
-                    callUpValue = parsedDate.ToString("yyyy-MM-dd")
-                End If
-            End If
-
-            Dim measureValue As Object = DBNull.Value
-            If Not String.IsNullOrWhiteSpace(measureRaw) Then
-                Dim parsedDate As DateTime
-                If DateTime.TryParse(measureRaw, parsedDate) Then
-                    measureValue = parsedDate.ToString("yyyy-MM-dd")
-                End If
-            End If
-
-            Dim installationValue As Object = DBNull.Value
-            If Not String.IsNullOrWhiteSpace(installationRaw) Then
-                Dim parsedDate As DateTime
-                If DateTime.TryParse(installationRaw, parsedDate) Then
-                    installationValue = parsedDate.ToString("yyyy-MM-dd")
-                End If
-            End If
-
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As New SqlCommand("UPDATE OrderBuilders SET Estimator=@Estimator, Supervisor=@Supervisor, Address=@Address, CallUpDate=@CallUp, CheckMeasureDate=@CheckMeasure, InstallationDate=@Installation WHERE Id=@Id", thisConn)
+                Using thisCmd As New SqlCommand("UPDATE OrderBuilders SET Estimator=@Estimator, Supervisor=@Supervisor, Address=@Address, CallUpDate=@CallUpDate, CheckMeasureDate=@CheckMeasureDate, InstallationDate=@InstallationDate WHERE Id=@Id", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
-                    thisCmd.Parameters.AddWithValue("@Estimator", estimatorValue)
-                    thisCmd.Parameters.AddWithValue("@Supervisor", supervisorValue)
-                    thisCmd.Parameters.AddWithValue("@Address", addressValue)
-                    thisCmd.Parameters.AddWithValue("@CallUp", callUpValue)
-                    thisCmd.Parameters.AddWithValue("@CheckMeasure", measureValue)
-                    thisCmd.Parameters.AddWithValue("@Installation", installationValue)
+                    thisCmd.Parameters.AddWithValue("@Estimator", txtEstimator.Text.Trim())
+                    thisCmd.Parameters.AddWithValue("@Supervisor", txtSupervisor.Text.Trim())
+                    thisCmd.Parameters.AddWithValue("@Address", txtAddress.Text.Trim())
+                    thisCmd.Parameters.AddWithValue("@CallUpDate", If(String.IsNullOrEmpty(txtCallUpDate.Text), CType(DBNull.Value, Object), txtCallUpDate.Text))
+                    thisCmd.Parameters.AddWithValue("@CheckMeasureDate", If(String.IsNullOrEmpty(txtCheckMeasureDate.Text), CType(DBNull.Value, Object), txtCheckMeasureDate.Text))
+                    thisCmd.Parameters.AddWithValue("@InstallationDate", If(String.IsNullOrEmpty(txtInstallationDate.Text), CType(DBNull.Value, Object), txtInstallationDate.Text))
 
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
@@ -2810,53 +2766,34 @@ Partial Class Order_Detail
 
             If dataBuilder IsNot Nothing Then
                 lblEstimator.Text = dataBuilder("Estimator").ToString()
+                txtEstimator.Text = dataBuilder("Estimator").ToString()
+
                 lblSupervisor.Text = dataBuilder("Supervisor").ToString()
+                txtSupervisor.Text = dataBuilder("Supervisor").ToString()
+
                 lblAddress.Text = dataBuilder("Address").ToString()
+                txtAddress.Text = dataBuilder("Address").ToString()
 
-                Dim dtDisplay As New DataTable()
-                dtDisplay.Columns.Add("Label", GetType(String))
-                dtDisplay.Columns.Add("EditValue", GetType(String))
-                dtDisplay.Columns.Add("FieldType", GetType(String))
-
-                dtDisplay.Rows.Add("Estimator", dataBuilder("Estimator").ToString(), "text")
-                dtDisplay.Rows.Add("Supervisor", dataBuilder("Supervisor").ToString(), "text")
-                dtDisplay.Rows.Add("Address", dataBuilder("Address").ToString(), "text")
-
-                Dim callUpEdit As String = ""
                 lblCallUpDate.Text = String.Empty
-                If Not IsDBNull(dataBuilder("CallUpDate")) AndAlso Not String.IsNullOrEmpty(dataBuilder("CallUpDate").ToString()) Then
-                    Dim tmp As DateTime
-                    If DateTime.TryParse(dataBuilder("CallUpDate").ToString(), tmp) Then
-                        callUpEdit = tmp.ToString("yyyy-MM-dd")
-                        lblCallUpDate.Text = tmp.ToString("dd MMM yyyy")
-                    End If
+                txtCallUpDate.Text = String.Empty
+                If Not String.IsNullOrEmpty(dataBuilder("CallUpDate").ToString()) Then
+                    lblCallUpDate.Text = Convert.ToDateTime(dataBuilder("CallUpDate")).ToString("dd MMM yyyy")
+                    txtCallUpDate.Text = Convert.ToDateTime(dataBuilder("CallUpDate")).ToString("dd MMM yyyy")
                 End If
-                dtDisplay.Rows.Add("Call Up", callUpEdit, "date")
 
-                Dim measureEdit As String = ""
-                lblMeasure.Text = String.Empty
-                If Not IsDBNull(dataBuilder("CheckMeasureDate")) AndAlso Not String.IsNullOrEmpty(dataBuilder("CheckMeasureDate").ToString()) Then
-                    Dim tmp As DateTime
-                    If DateTime.TryParse(dataBuilder("CheckMeasureDate").ToString(), tmp) Then
-                        measureEdit = tmp.ToString("yyyy-MM-dd")
-                        lblMeasure.Text = tmp.ToString("dd MMM yyyy")
-                    End If
+                lblCheckMeasureDate.Text = String.Empty
+                txtCheckMeasureDate.Text = String.Empty
+                If Not String.IsNullOrEmpty(dataBuilder("CheckMeasureDate").ToString()) Then
+                    lblCheckMeasureDate.Text = Convert.ToDateTime(dataBuilder("CheckMeasureDate")).ToString("dd MMM yyyy")
+                    txtCheckMeasureDate.Text = Convert.ToDateTime(dataBuilder("CheckMeasureDate")).ToString("dd MMM yyyy")
                 End If
-                dtDisplay.Rows.Add("Check Measure", measureEdit, "date")
 
-                Dim installationEdit As String = ""
-                lblInstallation.Text = String.Empty
-                If Not IsDBNull(dataBuilder("InstallationDate")) AndAlso Not String.IsNullOrEmpty(dataBuilder("InstallationDate").ToString()) Then
-                    Dim tmp As DateTime
-                    If DateTime.TryParse(dataBuilder("InstallationDate").ToString(), tmp) Then
-                        installationEdit = tmp.ToString("yyyy-MM-dd")
-                        lblInstallation.Text = tmp.ToString("dd MMM yyyy")
-                    End If
+                lblInstallationDate.Text = String.Empty
+                txtInstallationDate.Text = String.Empty
+                If Not String.IsNullOrEmpty(dataBuilder("InstallationDate").ToString()) Then
+                    lblInstallationDate.Text = Convert.ToDateTime(dataBuilder("InstallationDate")).ToString("dd MMM yyyy")
+                    txtInstallationDate.Text = Convert.ToDateTime(dataBuilder("InstallationDate")).ToString("dd MMM yyyy")
                 End If
-                dtDisplay.Rows.Add("Installation", installationEdit, "date")
-
-                gvBuilderDetail.DataSource = dtDisplay
-                gvBuilderDetail.DataBind()
             End If
         Catch ex As Exception
             MessageError_BuilderDetail(True, ex.ToString())
@@ -3649,6 +3586,7 @@ Partial Class Order_Detail
     Protected Function VisiblePrinting(itemId As String) As Boolean
         Try
             If Session("RoleName") = "Installer" Then Return False
+            If Session("RoleName") = "Export" Then Return False
 
             Dim thisData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Designs.Name AS DesignName, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.Id='" & itemId & "'")
 

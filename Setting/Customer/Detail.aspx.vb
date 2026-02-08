@@ -57,7 +57,7 @@ Partial Class Setting_Customer_Detail
             BindDataQuote(lblId.Text)
 
             secDetail.Visible = True
-            If Session("RoleName") = "Sales" AndAlso Session("CustomerId") = lblId.Text Then
+            If Session("CustomerId") = lblId.Text AndAlso (Session("RoleName") = "Sales" OrElse Session("RoleName") = "Customer Service" OrElse Session("RoleName") = "Account") Then
                 secDetail.Visible = False
             End If
         End If
@@ -313,10 +313,6 @@ Partial Class Setting_Customer_Detail
             HttpContext.Current.ApplicationInstance.CompleteRequest()
             Return False
         End Try
-    End Function
-
-    Protected Function BindTextLog(logId As String) As String
-        Return settingClass.getTextLog(logId)
     End Function
 
 
@@ -1166,11 +1162,9 @@ Partial Class Setting_Customer_Detail
                     lblIdLogin.Text = dataId
                     lblActionLogin.Text = "Edit"
                     titleLogin.InnerText = "Edit Customer Login"
-                    divAccess.Visible = False
                     divLoginEmail.Visible = False
                     divPassword.Visible = False
-                    If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" Then
-                        divAccess.Visible = True
+                    If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" Then
                         divLoginEmail.Visible = True
                         divPassword.Visible = True
                     End If
@@ -1239,11 +1233,9 @@ Partial Class Setting_Customer_Detail
         Try
             lblActionLogin.Text = "Add"
             titleLogin.InnerText = "Add Customer Login"
-            divAccess.Visible = False
             divLoginEmail.Visible = False
             divPassword.Visible = True
-            If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" Then
-                divAccess.Visible = True
+            If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" Then
                 divLoginEmail.Visible = True
             End If
             txtLoginPassword.Text = settingClass.GenerateNewPassword(15)
@@ -1269,23 +1261,23 @@ Partial Class Setting_Customer_Detail
 
         Session("selectedTabCustomer") = "list-login"
         Try
-            If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" Then
-                If ddlLoginRole.SelectedValue = "" Then
-                    MessageError_ProcesLogin(True, "ROLE MEMBER IS REQUIRED !")
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcessLogin", thisScript, True)
-                    Exit Sub
-                End If
-
-                If ddlLoginLevel.SelectedValue = "" Then
-                    MessageError_ProcesLogin(True, "LEVEL MEMBER IS REQUIRED !")
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcessLogin", thisScript, True)
-                    Exit Sub
-                End If
+            If ddlLoginRole.SelectedValue = "" Then
+                MessageError_ProcesLogin(True, "ROLE MEMBER IS REQUIRED !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showProcessLogin", thisScript, True)
+                Exit Sub
             End If
 
-            If Session("RoleName") = "IT" AndAlso Session("LevelName") = "Leader" Then
-                If ddlLoginRole.SelectedValue = "3" AndAlso ddlLoginLevel.SelectedValue = "1" Then
-                    MessageError_ProcesLogin(True, "YOU DO NOT HAVE PERMISSION TO ADD DATA WITH THIS ROLE AND LEVEL !")
+            If ddlLoginLevel.SelectedValue = "" Then
+                MessageError_ProcesLogin(True, "LEVEL MEMBER IS REQUIRED !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showProcessLogin", thisScript, True)
+                Exit Sub
+            End If
+
+            If ddlLoginLevel.SelectedValue = "1" Then
+                Dim checkLevel As Integer = settingClass.GetItemData_Integer("SELECT COUNT(*) FROM CustomerLogins WHERE CustomerId='" & lblId.Text & "' AND RoleId='" & ddlLoginRole.SelectedValue & "' AND LevelId='" & ddlLoginLevel.SelectedValue & "'")
+
+                If checkLevel > 1 Then
+                    MessageError_ProcesLogin(True, "PLEASE CHANGE THE LEVEL USER TO MEMBER !")
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcessLogin", thisScript, True)
                     Exit Sub
                 End If
@@ -1304,7 +1296,6 @@ Partial Class Setting_Customer_Detail
             End If
 
             Dim checkUsername As String = settingClass.GetItemData("SELECT UserName FROM CustomerLogins WHERE UserName='" + txtLoginUserName.Text + "'")
-
             If lblActionLogin.Text = "Add" Then
                 If txtLoginUserName.Text = checkUsername Then
                     MessageError_ProcesLogin(True, "USERNAME ALREADY EXIST !")
@@ -1327,10 +1318,6 @@ Partial Class Setting_Customer_Detail
                 Dim password As String = settingClass.Encrypt(txtLoginPassword.Text)
 
                 If lblActionLogin.Text = "Add" Then
-                    If Session("RoleName") = "Sales" OrElse Session("RoleName") = "Account" Then
-                        ddlLoginRole.SelectedValue = "8" : ddlLoginLevel.SelectedValue = "2"
-                    End If
-
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerLogins ORDER BY Id DESC")
                     Using thisConn As New SqlConnection(myConn)
                         Using myCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerLogins VALUES (@Id, @CustomerId, @RoleId, @LevelId, @UserName, @Password, @FullName, @Email, 0, NULL, 1, @Pricing, 1)", thisConn)
@@ -1471,45 +1458,6 @@ Partial Class Setting_Customer_Detail
         End Try
     End Sub
 
-    Protected Sub btnDeleteLogin_Click(sender As Object, e As EventArgs)
-        MessageError_Login(False, String.Empty)
-        Session("selectedTabCustomer") = "list-login"
-        Try
-            Dim thisId As String = txtIdLoginDelete.Text
-
-            Dim userName As String = settingClass.GetItemData("SELECT UserName FROM CustomerLogins WHERE Id='" & thisId & "'")
-            Dim logDescription As String = String.Format("Delete Customer Login : {0}", userName)
-            Dim dataLog As Object() = {"CustomerLogins", "", Session("LoginId"), logDescription}
-            settingClass.Logs(dataLog)
-
-            Using thisConn As New SqlConnection(myConn)
-                thisConn.Open()
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerLogins WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Logs WHERE Type='CustomerLogins' AND DataId=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                thisConn.Close()
-            End Using
-
-            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
-            Response.Redirect(url, False)
-        Catch ex As Exception
-            MessageError_Login(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Login(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnDeleteLogin_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
-            End If
-        End Try
-    End Sub
-
     Protected Sub btnResetPass_Click(sender As Object, e As EventArgs)
         MessageError_Login(False, String.Empty)
         Session("selectedTabCustomer") = "list-login"
@@ -1568,7 +1516,7 @@ Partial Class Setting_Customer_Detail
     Protected Sub BindDataLogin(customerId As String)
         MessageError_Login(False, String.Empty)
         Try
-            Dim thisQuery As String = "SELECT CustomerLogins.*, LoginRoles.Name AS RoleName, LoginLevels.Name AS LevelName FROM CustomerLogins LEFT JOIN LoginRoles ON CustomerLogins.RoleId=LoginRoles.Id LEFT JOIN LoginLevels ON CustomerLogins.LevelId=LoginLevels.Id WHERE CustomerLogins.CustomerId='" & customerId & "' ORDER BY CustomerLogins.RoleId, CustomerLogins.Id ASC"
+            Dim thisQuery As String = "SELECT CustomerLogins.*, LoginRoles.Name AS RoleName, LoginLevels.Name AS LevelName, CASE WHEN CustomerLogins.Active=1 THEN 'Yes' WHEN CustomerLogins.Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM CustomerLogins LEFT JOIN LoginRoles ON CustomerLogins.RoleId=LoginRoles.Id LEFT JOIN LoginLevels ON CustomerLogins.LevelId=LoginLevels.Id WHERE CustomerLogins.CustomerId='" & customerId & "' ORDER BY CustomerLogins.RoleId, CustomerLogins.Id ASC"
 
             gvListLogin.DataSource = settingClass.GetDataTable(thisQuery)
             gvListLogin.DataBind()
@@ -1591,17 +1539,14 @@ Partial Class Setting_Customer_Detail
         ddlLoginRole.Items.Clear()
         Try
             Dim thisQuery As String = "SELECT * FROM LoginRoles ORDER BY Name ASC"
-            If Session("RoleName") = "IT" Then
-                thisQuery = "SELECT * FROM LoginRoles WHERE Id<>'1' ORDER BY Name ASC"
-                If Session("LevelName") = "Member" Then
-                    thisQuery = "SELECT * FROM LoginRoles WHERE Id<>'1' AND Id<>'2' ORDER BY Name ASC"
+            If Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" Then
+                thisQuery = "SELECT * FROM LoginRoles WHERE Id='8' ORDER BY Name ASC"
+                If lblId.Text = "3" Then
+                    thisQuery = "SELECT * FROM LoginRoles WHERE Id<>'1' AND Id<>'2' AND Id<>'3' AND Id<>'11' ORDER BY Name ASC"
                 End If
             End If
-            If Session("RoleName") = "Factory Office" Then
-                thisQuery = "SELECT * FROM LoginRoles WHERE Id<>'1' AND Id<>'2' ORDER BY Name ASC"
-                If Session("LevelName") = "Member" Then
-                    thisQuery = "SELECT * FROM LoginRoles WHERE Id<>'1' AND Id<>'2' AND Id<>'3' ORDER BY Name ASC"
-                End If
+            If Session("RoleName") = "Sales" OrElse Session("RoleName") = "Account" Then
+                thisQuery = "SELECT * FROM LoginRoles WHERE Id='8' ORDER BY Name ASC"
             End If
 
             ddlLoginRole.DataSource = settingClass.GetDataTable(thisQuery)
