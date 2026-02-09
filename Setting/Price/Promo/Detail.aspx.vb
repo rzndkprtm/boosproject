@@ -28,6 +28,12 @@ Partial Class Setting_Price_Promo_Detail
             MessageError(False, String.Empty)
             MessageError_Process(False, String.Empty)
             BindData(lblId.Text)
+
+            BindDesignPromo()
+            BindBlindPromo()
+            BindProductPromo()
+            BindFabricPromo()
+            BindFabricColourPromo()
         End If
     End Sub
 
@@ -38,12 +44,6 @@ Partial Class Setting_Price_Promo_Detail
             lblAction.Text = "Add"
             titleProcessDetail.InnerText = "Add Promo Detail"
             ddlPromoType.Enabled = True
-
-            BindDesignPromo()
-            BindBlindPromo()
-            BindProductPromo()
-            BindFabricPromo()
-            BindFabricColourPromo()
 
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcessDetail", thisScript, True)
         Catch ex As Exception
