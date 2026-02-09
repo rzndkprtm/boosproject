@@ -41,6 +41,7 @@ Partial Class Setting_Price_Promo_Detail
 
             BindDesignPromo()
             BindBlindPromo()
+            BindProductPromo()
             BindFabricPromo()
             BindFabricColourPromo()
 
@@ -70,6 +71,7 @@ Partial Class Setting_Price_Promo_Detail
 
                     BindDesignPromo(True)
                     BindBlindPromo(True)
+                    BindProductPromo(True)
                     BindFabricPromo(True)
                     BindFabricColourPromo(True)
 
@@ -151,8 +153,10 @@ Partial Class Setting_Price_Promo_Detail
                 Dim dataId As String = String.Empty
                 If ddlPromoType.SelectedValue = "Designs" Then dataId = ddlDesignPromo.SelectedValue
                 If ddlPromoType.SelectedValue = "Blinds" Then dataId = ddlBlindPromo.SelectedValue
+                If ddlPromoType.SelectedValue = "Products" Then dataId = ddlProductPromo.SelectedValue
                 If ddlPromoType.SelectedValue = "Fabrics" Then dataId = ddlFabricPromo.SelectedValue
                 If ddlPromoType.SelectedValue = "FabricColours" Then dataId = ddlFabricColourPromo.SelectedValue
+                If ddlPromoType.SelectedValue = "FrameColours" Then dataId = ddlFrameColourPromo.SelectedValue
 
                 If lblAction.Text = "Add" Then
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM PromoDetails ORDER BY Id DESC")
@@ -312,6 +316,25 @@ Partial Class Setting_Price_Promo_Detail
         End Try
     End Sub
 
+    Protected Sub BindProductPromo(Optional isEdit As Boolean = False)
+        ddlProductPromo.Items.Clear()
+        Try
+            Dim thisString As String = "SELECT * FROM Products WHERE Active=1 ORDER BY Name ASC"
+            If isEdit = True Then
+                thisString = "SELECT * FROM Products ORDER BY Name ASC"
+            End If
+            ddlProductPromo.DataSource = settingClass.GetDataTable(thisString)
+            ddlProductPromo.DataTextField = "Name"
+            ddlProductPromo.DataValueField = "Id"
+            ddlProductPromo.DataBind()
+            If ddlProductPromo.Items.Count > 1 Then
+                ddlProductPromo.Items.Insert(0, New ListItem("", ""))
+            End If
+        Catch ex As Exception
+            ddlProductPromo.Items.Clear()
+        End Try
+    End Sub
+
     Protected Sub BindFabricPromo(Optional isEdit As Boolean = False)
         ddlFabricPromo.Items.Clear()
         Try
@@ -364,6 +387,7 @@ Partial Class Setting_Price_Promo_Detail
 
     Protected Function DiscountTitle(type As String, dataId As String) As String
         If String.IsNullOrEmpty(type) Then Return String.Empty
+        If type = "FrameColours" Then Return dataId
         Return settingClass.GetItemData(String.Format("SELECT Name FROM {0} WHERE Id='{1}'", type, dataId))
     End Function
 
