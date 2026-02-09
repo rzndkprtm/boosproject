@@ -119,99 +119,6 @@
         </section>
     </div>
 
-    <div class="modal fade text-left" id="modalProcess" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 runat="server" class="modal-title" id="titleProcess"></h4>
-                </div>
-
-                <div class="modal-body">
-                    <div class="row mb-2" runat="server" id="divErrorProcess">
-                        <div class="col-12">
-                            <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorProcess"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-7 form-group">
-                            <label class="form-label">Name</label>
-                            <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Fabric Name ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                        <div class="col-5 form-group">
-                            <label class="form-label">Name</label>
-                            <asp:DropDownList runat="server" ID="ddlType" CssClass="form-select">
-                                <asp:ListItem Value="" Text=""></asp:ListItem>
-                                <asp:ListItem Value="Blockout" Text="Blockout"></asp:ListItem>
-                                <asp:ListItem Value="Light Filtering" Text="Light Filtering"></asp:ListItem>
-                                <asp:ListItem Value="Screen" Text="Screen"></asp:ListItem>
-                            </asp:DropDownList>
-                        </div>
-                    </div>
-
-                    <div class="row mb-2">
-                        <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
-                            <label class="form-label">Group</label>
-                            <asp:DropDownList runat="server" ID="ddlGroup" CssClass="form-select">
-                                <asp:ListItem Value="" Text=""></asp:ListItem>
-                                <asp:ListItem Value="Group 1" Text="Group 1"></asp:ListItem>
-                                <asp:ListItem Value="Group 2" Text="Group 2"></asp:ListItem>
-                                <asp:ListItem Value="Group 3" Text="Group 3"></asp:ListItem>
-                                <asp:ListItem Value="Group 4" Text="Group 4"></asp:ListItem>
-                                <asp:ListItem Value="Group Express" Text="Group Express"></asp:ListItem>
-                                <asp:ListItem Value="Opaque" Text="Opaque"></asp:ListItem>
-                                <asp:ListItem Value="Semi Opaque" Text="Semi Opaque"></asp:ListItem>
-                            </asp:DropDownList>
-                        </div>
-
-                        <div class="col-12 col-sm-12 col-lg-3 mb-2 form-group">
-                            <label class="form-label">No Rail Road</label>
-                            <asp:DropDownList runat="server" ID="ddlNoRailRoad" CssClass="form-select">
-                                <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
-                                <asp:ListItem Value="0" Text="No"></asp:ListItem>
-                            </asp:DropDownList>
-                        </div>
-
-                        <div class="col-12 col-sm-12 col-lg-3 mb-2 form-group">
-                            <label class="form-label">Active</label>
-                            <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select">
-                                <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
-                                <asp:ListItem Value="0" Text="No"></asp:ListItem>
-                            </asp:DropDownList>
-                        </div>
-                    </div>
-
-                    <div class="row mb-2" runat="server" id="divDesign">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Design Name</label>
-                            <asp:ListBox runat="server" ID="lbDesign" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
-                        </div>
-                    </div>
-
-                    <div class="row mb-2" runat="server" id="divTube">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Tube Name</label>
-                            <asp:ListBox runat="server" ID="lbTube" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
-                        </div>
-                    </div>
-
-                    <div class="row mb-2" runat="server" id="divCompanyDetail">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Company Detail</label>
-                            <asp:ListBox runat="server" ID="lbCompany" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnProcess" CssClass="btn btn-primary" Text="Submit" OnClick="btnProcess_Click" />
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div class="modal fade text-center" id="modalAlias" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -291,10 +198,6 @@
             }
         });
 
-        function showProcess() {
-            $("#modalProcess").modal("show");
-        }
-
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
             $("#tblLogs tbody").html("");
@@ -342,7 +245,7 @@
             document.getElementById("titleActive").innerHTML = title;
         }
 
-        ["modalProcess", "modalAlias", "modalLog", "modalActive"].forEach(function (id) {
+        ["modalAlias", "modalLog", "modalActive"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

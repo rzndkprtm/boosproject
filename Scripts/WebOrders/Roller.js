@@ -1964,7 +1964,7 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
             "divcontrollength", "divcontrollengthb", "divcontrollengthc", "divcontrollengthd", "divcontrollengthe", "divcontrollengthf",
             "divcontrollengthvalue", "divcontrollengthvalueb", "divcontrollengthvaluec", "divcontrollengthvalued", "divcontrollengthvaluee", "divcontrollengthvaluef",
             "divcontrollengthvalue2", "divcontrollengthvalueb2", "divcontrollengthvaluec2", "divcontrollengthvalued2", "divcontrollengthvaluee2", "divcontrollengthvaluef2",
-            "divremote", "divcharger", "divextensioncable", "divsupply",
+            "divremote", "divcharger", "divextensioncable", "divsupply", "divdrycontact",
             "divchaincolour", "divchaincolourb", "divchaincolourc", "divchaincolourd", "divchaincoloure", "divchaincolourf",
             "divchainstopper", "divchainstopperb", "divchainstopperc", "divchainstopperd", "divchainstoppere", "divchainstopperf",
             "divfabric", "divfabricb", "divfabricc", "divfabricd", "divfabrice", "divfabricf",
@@ -2258,6 +2258,12 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                 divShow.push("divcharger");
                 if (companyDetailName === "BIG" || companyDetailName === "JPMD" || companyDetailName === "JPMD BP" || companyDetailName === "CWS") {
                     divShow.push("divextensioncable", "divsupply");
+                }
+            }
+
+            if (["Altus", "Sonesse 30 WF", "LSN40"].includes(controlName)) {
+                if (companyDetailName === "ACCENT" || companyDetailName === "OASIS") {
+                    divShow.push("divdrycontact");
                 }
             }
 
@@ -2595,7 +2601,7 @@ function controlForm(status, isEditItem, isCopyItem) {
         "fabriccolour", "fabriccolourb", "fabriccolourc", "fabriccolourd", "fabriccoloure", "fabriccolourf",
         "roll", "rollb", "rollc", "rolld", "rolle", "rollf",
         "controlposition", "controlpositionb", "controlpositionc", "controlpositiond", "controlpositione", "controlpositionf",
-        "remote", "charger", "extensioncable", "supply",
+        "remote", "charger", "extensioncable", "supply", "drycontact",
         "chaincolour", "chaincolourb", "chaincolourc", "chaincolourd", "chaincoloure", "chaincolourf",
         "chainstopper", "chainstopperb", "chainstopperc", "chainstopperd", "chainstoppere", "chainstopperf",
         "controllength", "controllengthb", "controllengthc", "controllengthd", "controllengthe", "controllengthf",
@@ -2668,6 +2674,7 @@ function setFormValues(itemData) {
         controlposition: "ControlPosition", controlpositionb: "ControlPositionB", controlpositionc: "ControlPositionC", controlpositiond: "ControlPositionD", controlpositione: "ControlPositionE", controlpositionf: "ControlPositionF",
         remote: "ChainId",
         charger: "Charger",
+        drycontact: "DryContact",
         extensioncable: "ExtensionCable",
         supply: "Supply",
         chaincolour: "ChainId", chaincolourb: "ChainIdB", chaincolourc: "ChainIdC", chaincolourd: "ChainIdD", chaincoloure: "ChainIdE", chaincolourf: "ChainIdF",
@@ -2730,7 +2737,7 @@ function process() {
         "fabriccolour", "fabriccolourb", "fabriccolourc", "fabriccolourd", "fabriccoloure", "fabriccolourf",
         "roll", "rollb", "rollc", "rolld", "rolle", "rollf",
         "controlposition", "controlpositionb", "controlpositionc", "controlpositiond", "controlpositione", "controlpositionf",
-        "remote", "charger", "extensioncable", "supply",
+        "remote", "charger", "extensioncable", "supply", "drycontact",
         "chaincolour", "chaincolourb", "chaincolourc", "chaincolourd", "chaincoloure", "chaincolourf",
         "chainstopper", "chainstopperb", "chainstopperc", "chainstopperd", "chainstoppere", "chainstopperf",
         "controllength", "controllengthb", "controllengthc", "controllengthd", "controllengthe", "controllengthf",

@@ -1402,6 +1402,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Detail Promo</h5>
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
                 </div>
                 <div class="modal-body">
                     <div class="row mb-2" runat="server" id="divErrorDetailPromo">

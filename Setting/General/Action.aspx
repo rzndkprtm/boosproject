@@ -62,7 +62,6 @@
                                                         <%# Container.DataItemIndex + 1 %>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-                                                <asp:BoundField DataField="Id" HeaderText="ID" />
                                                 <asp:BoundField DataField="RoleName" HeaderText="Role" />
                                                 <asp:BoundField DataField="LevelName" HeaderText="Level" />
                                                 <asp:BoundField DataField="Page" HeaderText="Page" />

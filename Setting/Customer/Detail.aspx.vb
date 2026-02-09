@@ -1983,7 +1983,8 @@ Partial Class Setting_Customer_Detail
                 MessageError_DetailPromo(False, String.Empty)
                 Dim thisScript As String = "window.onload = function() { showDetailPromo(); };"
                 Try
-                    gvListDetailPromo.DataSource = settingClass.GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & dataId & "'  ORDER BY Id DESC")
+                    Dim promoId As String = settingClass.GetItemData("SELECT PromoId FROM CustomerPromos WHERE Id='" & dataId & "'")
+                    gvListDetailPromo.DataSource = settingClass.GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
                     gvListDetailPromo.DataBind()
 
                     ClientScript.RegisterStartupScript(Me.GetType(), "showDetailPromo", thisScript, True)
@@ -2189,7 +2190,7 @@ Partial Class Setting_Customer_Detail
 
     Protected Function PromoTitle(type As String, dataId As String) As String
         If String.IsNullOrEmpty(type) Then Return String.Empty
-        'If type = "FrameColours" Then Return dataId
+        If type = "FrameColours" Then Return dataId
         Return settingClass.GetItemData(String.Format("SELECT Name FROM {0} WHERE Id='{1}'", type, dataId))
     End Function
 

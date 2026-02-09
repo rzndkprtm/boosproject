@@ -78,12 +78,12 @@ Public Partial Class SiteMaster
                 End If
 
                 If companyActive = False Then
-                    Response.Redirect("~/error", False)
+                    Response.Redirect("~/error/maintenance", False)
                     Exit Sub
                 End If
 
                 If roleActive = False Then
-                    Response.Redirect("~/error", False)
+                    Response.Redirect("~/error/maintenance", False)
                     Exit Sub
                 End If
 
