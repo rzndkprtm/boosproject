@@ -168,6 +168,8 @@ Partial Class Order_Default
                 Dim customerId As String = orderClass.GetCustomerIdByOrder(thisId)
                 Dim companyAlias As String = orderClass.GetCompanyAliasByCustomer(customerId)
 
+                Dim orderType As String = orderClass.GetItemData("SELECT OrderType FROM OrderHeaders WHERE Id='" & thisId & "'")
+
                 Dim success As Boolean = False
                 Dim retry As Integer = 0
                 Dim maxRetry As Integer = 100
@@ -183,15 +185,25 @@ Partial Class Order_Default
                     orderId = companyAlias & randomCode
                     Try
                         Using thisConn As New SqlConnection(myConn)
+                            thisConn.Open()
+
                             Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderHeaders SELECT @NewID, @OrderId, CustomerId, 'Copy ' + CAST(@NewID AS VARCHAR(20)) + ' - ' + OrderNumber, 'Copy ' + CAST(@NewID AS VARCHAR(20)) + ' - ' + OrderName, NULL, OrderType, 'Unsubmitted', NULL, CreatedBy, GETDATE(), NULL, NULL, NULL, NULL, NULL, NULL, 0, 1 FROM OrderHeaders WHERE Id=@OldId; INSERT INTO OrderQuotes VALUES(@NewID, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
                                 myCmd.Parameters.AddWithValue("@OldId", thisId)
                                 myCmd.Parameters.AddWithValue("@NewID", newIdHeader)
                                 myCmd.Parameters.AddWithValue("@OrderId", orderId)
                                 myCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
 
-                                thisConn.Open()
+
                                 myCmd.ExecuteNonQuery()
                             End Using
+
+                            Using myCmd As New SqlCommand("INSERT INTO OrderBuilders(Id) VALUES (@Id)", thisConn)
+                                myCmd.Parameters.AddWithValue("@Id", newIdHeader)
+
+                                myCmd.ExecuteNonQuery()
+                            End Using
+
+                            thisConn.Close()
                         End Using
 
                         success = True

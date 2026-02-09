@@ -137,7 +137,6 @@ Partial Class Order_Edit
                 Exit Sub
             End If
 
-
             Dim statusOrder As String = myData("Status").ToString()
             If (Session("RoleName") = "Customer") AndAlso (statusOrder = "In Production" OrElse statusOrder = "Canceled" Or statusOrder = "Completed") Then
                 url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
@@ -157,6 +156,7 @@ Partial Class Order_Edit
             txtOrderName.Text = myData("OrderName").ToString()
             txtOrderNote.Text = myData("OrderNote").ToString()
             txtOrderId.Text = myData("OrderId").ToString()
+            ddlOrderType.SelectedValue = myData("OrderType").ToString()
 
             divCustomer.Visible = False
             divCreatedBy.Visible = False

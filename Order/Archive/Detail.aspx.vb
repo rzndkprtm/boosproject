@@ -7,12 +7,12 @@ Imports iTextSharp.tool.xml
 Partial Class Order_Archive_Detail
     Inherits Page
 
+    Dim archiveClass As New ArchiveClass
+    Dim mailingClass As New MailingClass
+
     Dim dataMailing As Object() = Nothing
     Dim dataLog As Object() = Nothing
     Dim url As String = String.Empty
-
-    Dim archiveClass As New ArchiveClass
-    Dim mailingClass As New MailingClass
 
     Dim headerId As String = String.Empty
 

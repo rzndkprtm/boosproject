@@ -1302,6 +1302,10 @@ Partial Class Order_Detail
                         itemAction = "edit"
                     End If
 
+                    If lblOrderStatus.Text = "Unsubmitted" AndAlso Session("RoleName") = "Installer" Then
+                        itemAction = "view"
+                    End If
+
                     If lblOrderStatus.Text = "Quoted" AndAlso (Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Installer" OrElse Session("RoleName") = "Customer Service" OrElse Session("RoleName") = "Sales") Then
                         itemAction = "edit"
                     End If
@@ -2281,6 +2285,18 @@ Partial Class Order_Detail
                     aService.Visible = True
                 End If
 
+                If lblOrderStatus.Text = "Quoted" Then
+                    liMoreDownloadQuote.Visible = True
+                    liMoreEmailQuote.Visible = True
+                    liMoreDividerQuote.Visible = True
+
+                    btnEditHeader.Visible = True
+                    aDeleteOrder.Visible = True
+                    aSubmitOrder.Visible = True
+
+                    aAddItem.Visible = True
+                End If
+
                 If lblOrderStatus.Text = "Waiting Proforma" Then
                     aCancelOrder.Visible = True : aUnsubmitOrder.Visible = True
 
@@ -2361,7 +2377,9 @@ Partial Class Order_Detail
 
                 If lblOrderStatus.Text = "Unsubmitted" Then
                     If lblOrderType.Text = "Builder" Then aQuoteOrder.Visible = True
+                    If lblOrderType.Text = "Regular" Then aSubmitOrder.Visible = True
 
+                    btnEditHeader.Visible = True
                     aAddItem.Visible = True
                 End If
 
@@ -2371,7 +2389,8 @@ Partial Class Order_Detail
                     liMoreDividerQuote.Visible = True
 
                     btnEditHeader.Visible = True
-                    aDeleteOrder.Visible = True
+                    aCancelOrder.Visible = True
+                    aSubmitOrder.Visible = True
 
                     aAddItem.Visible = True
                 End If
@@ -2471,6 +2490,7 @@ Partial Class Order_Detail
             End If
 
             If Session("RoleName") = "Installer" Then
+                secBuilder.Visible = True
                 If lblOrderStatus.Text = "Quoted" Then
                     aSubmitOrder.Visible = True
                 End If

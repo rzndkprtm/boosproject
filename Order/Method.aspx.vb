@@ -2847,6 +2847,11 @@ Partial Class Order_Method
             data.extensioncable = String.Empty : data.supply = String.Empty
         End If
 
+        If data.companyid = "2" Then data.drycontact = String.Empty
+        If controlName = "Mercure" OrElse controlName = "Alpha 1Nm WF" OrElse controlName = "Alpha 2Nm WF" OrElse controlName = "Alpha 3Nm WF" OrElse controlName = "Chain" Then
+            data.drycontact = String.Empty
+        End If
+
         Dim linearMetre As Decimal = width / 1000
         Dim squareMetre As Decimal = width * drop / 1000000
 
@@ -2880,7 +2885,7 @@ Partial Class Order_Method
                 Dim itemId As String = orderClass.GetNewOrderItemId()
 
                 Using thisConn As SqlConnection = New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricColourId, ChainId, PriceProductGroupId, Qty, Room, Mounting, Width, [Drop], ControlPosition, ControlColour, ControlLength, ControlLengthValue, ValanceOption, Batten, Charger, ExtensionCable, Supply, Printing, LinearMetre, SquareMetre, TotalItems, Notes, MarkUp, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricColourId, @ChainId, @PriceProductGroupId, @Qty, @Room, @Mounting, @Width, @Drop, @ControlPosition, @ControlColour, @ControlLength, @ControlLengthValue, @ValanceOption, @Batten, @Charger, @ExtensionCable, @Supply, @Printing, @LinearMetre, @SquareMetre, 1, @Notes, @MarkUp, 1)", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricColourId, ChainId, PriceProductGroupId, Qty, Room, Mounting, Width, [Drop], ControlPosition, ControlColour, ControlLength, ControlLengthValue, ValanceOption, Batten, DryContact, Charger, ExtensionCable, Supply, Printing, LinearMetre, SquareMetre, TotalItems, Notes, MarkUp, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricColourId, @ChainId, @PriceProductGroupId, @Qty, @Room, @Mounting, @Width, @Drop, @ControlPosition, @ControlColour, @ControlLength, @ControlLengthValue, @ValanceOption, @Batten, @DryContact, @Charger, @ExtensionCable, @Supply, @Printing, @LinearMetre, @SquareMetre, 1, @Notes, @MarkUp, 1)", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", itemId)
                         myCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                         myCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
@@ -2899,6 +2904,7 @@ Partial Class Order_Method
                         myCmd.Parameters.AddWithValue("@ControlLengthValue", controllength)
                         myCmd.Parameters.AddWithValue("@ValanceOption", data.valanceoption)
                         myCmd.Parameters.AddWithValue("@Batten", data.batten)
+                        myCmd.Parameters.AddWithValue("@DryContact", data.drycontact)
                         myCmd.Parameters.AddWithValue("@Charger", data.charger)
                         myCmd.Parameters.AddWithValue("@ExtensionCable", data.extensioncable)
                         myCmd.Parameters.AddWithValue("@Supply", data.supply)
@@ -2927,7 +2933,7 @@ Partial Class Order_Method
             Dim itemId As String = data.itemid
 
             Using thisConn As SqlConnection = New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET ProductId=@ProductId, FabricId=@FabricId, FabricColourId=@FabricColourId, ChainId=@ChainId, PriceProductGroupId=@PriceProductGroupId, Qty=@Qty, Room=@Room, Mounting=@Mounting, Width=@Width, [Drop]=@Drop, ControlPosition=@ControlPosition, ControlColour=@ControlColour, ControlLength=@ControlLength, ControlLengthValue=@ControlLengthValue, ValanceOption=@ValanceOption, Batten=@Batten, Charger=@Charger, ExtensionCable=@ExtensionCable, Supply=@Supply, Printing=@Printing, LinearMetre=@LinearMetre, SquareMetre=@SquareMetre, TotalItems=1, Notes=@Notes, MarkUp=@MarkUp, Active=1 WHERE Id=@Id", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET ProductId=@ProductId, FabricId=@FabricId, FabricColourId=@FabricColourId, ChainId=@ChainId, PriceProductGroupId=@PriceProductGroupId, Qty=@Qty, Room=@Room, Mounting=@Mounting, Width=@Width, [Drop]=@Drop, ControlPosition=@ControlPosition, ControlColour=@ControlColour, ControlLength=@ControlLength, ControlLengthValue=@ControlLengthValue, ValanceOption=@ValanceOption, Batten=@Batten, DryContact=@DryContact, Charger=@Charger, ExtensionCable=@ExtensionCable, Supply=@Supply, Printing=@Printing, LinearMetre=@LinearMetre, SquareMetre=@SquareMetre, TotalItems=1, Notes=@Notes, MarkUp=@MarkUp, Active=1 WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", itemId)
                     myCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                     myCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
@@ -2946,6 +2952,7 @@ Partial Class Order_Method
                     myCmd.Parameters.AddWithValue("@ControlLengthValue", controllength)
                     myCmd.Parameters.AddWithValue("@ValanceOption", data.valanceoption)
                     myCmd.Parameters.AddWithValue("@Batten", data.batten)
+                    myCmd.Parameters.AddWithValue("@DryContact", data.drycontact)
                     myCmd.Parameters.AddWithValue("@Charger", data.charger)
                     myCmd.Parameters.AddWithValue("@ExtensionCable", data.extensioncable)
                     myCmd.Parameters.AddWithValue("@Supply", data.supply)
@@ -3875,11 +3882,6 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.tubetype) Then tubeName = orderClass.GetTubeName(data.tubetype)
         If Not String.IsNullOrEmpty(data.controltype) Then controlName = orderClass.GetControlName(data.controltype)
 
-        Dim companyId As String = orderClass.GetCompanyIdByOrder(data.headerid)
-        Dim customerId As String = orderClass.GetCustomerIdByOrder(data.headerid)
-        Dim companyAlias As String = orderClass.GetCompanyAliasByCustomer(customerId)
-        Dim roleName As String = orderClass.GetUserRoleName(data.loginid)
-
         Dim chainType As String = String.Empty
         Dim chainTypeB As String = String.Empty
         Dim chainTypeC As String = String.Empty
@@ -3985,7 +3987,7 @@ Partial Class Order_Method
         If Not Integer.TryParse(data.width, width) OrElse width <= 0 Then Return "PLEASE CHECK YOUR WIDTH ORDER !"
 
         If width < 200 Then Return "MINIMUM WIDTH IS 200MM !"
-        If companyId = "2" Then
+        If data.companyid = "2" Then
             If width > 2400 AndAlso (blindName = "Full Cassette" OrElse blindName = "Semi Cassette") Then Return "MAXIMUM WIDTH IS 2400MM !"
             If width > 2910 Then Return "MAXIMUM WIDTH IS 2910MM !"
         End If
@@ -3994,7 +3996,7 @@ Partial Class Order_Method
         If Not Integer.TryParse(data.drop, drop) OrElse drop <= 0 Then Return "PLEASE CHECK YOUR DROP ORDER !"
 
         If drop < 600 Then Return "MINIUM DROP IS 600MM !"
-        If companyId = "2" Then
+        If data.companyid = "2" Then
             If width > 2200 AndAlso (blindName = "Full Cassette" OrElse blindName = "Semi Cassette") Then Return "MAXIMUM DROP IS 2200MM !"
             If drop > 3200 Then Return "MAXIMUM DROP IS 3200MM !"
         End If
@@ -4002,7 +4004,7 @@ Partial Class Order_Method
         squareMetre = width * drop / 1000000
 
         If tubeName.Contains("Gear Reduction") Then
-            If companyId = "2" Then
+            If data.companyid = "2" Then
                 If tubeName = "Gear Reduction 38mm" AndAlso width > 1810 Then Return "MAXIMUM WIDTH BLIND FOR GEAR REDUCTION 38MM IS 1810MM !"
                 If squareMetre >= 6 AndAlso (tubeName = "Gear Reduction 38mm" OrElse tubeName = "Gear Reduction 45mm") Then
                     Return "YOUR BLIND AREA EXCEEDS 6 SQM.<br />PLEASE USE <b>GEAR REDUCTION 49MM</b> IF YOU WISH TO CONTINUE USING THE GEAR REDUCTION SYSTEM.<br />OUR ALTERNATIVE RECOMMENDATION:<br />ACMEDA SYSTEM: <b>ACMEDA 49MM</b><br />SUNBOSS SYSTEM: <b>SUNBOSS 43MM</b> OR <b>SUNBOSS 50MM</b>"
@@ -4061,14 +4063,14 @@ Partial Class Order_Method
             If Not Integer.TryParse(data.dropb, dropb) OrElse dropb <= 0 Then Return "PLEASE CHECK YOUR DROP FOR SECOND BLIND !"
 
             If dropb < 500 Then Return "MINIMUM SECOND DROP IS 500MM !"
-            If companyId = "2" Then
+            If data.companyid = "2" Then
                 If dropb > 3200 Then Return "MAXIMUM SECOND DROP IS 3200MM !"
             End If
 
             squareMetreB = widthb * dropb / 1000000
 
             If tubeName.Contains("Gear Reduction") Then
-                If companyId = "2" Then
+                If data.companyid = "2" Then
                     If tubeName = "Gear Reduction 38mm" AndAlso widthb > 1810 Then Return "MAXIMUM WIDTH FOR SECOND BLIND GEAR REDUCTION 38MM IS 1810MM !"
                     If squareMetreB >= 6 AndAlso (tubeName = "Gear Reduction 38mm" OrElse tubeName = "Gear Reduction 45mm") Then
                         Return "YOUR BLIND AREA EXCEEDS 6 SQM.<br />PLEASE USE <b>GEAR REDUCTION 49MM</b> IF YOU WISH TO CONTINUE USING THE GEAR REDUCTION SYSTEM.<br />OUR ALTERNATIVE RECOMMENDATION:<br />ACMEDA SYSTEM: <b>ACMEDA 49MM</b><br />SUNBOSS SYSTEM: <b>SUNBOSS 43MM</b> OR <b>SUNBOSS 50MM</b>"
@@ -4125,7 +4127,7 @@ Partial Class Order_Method
             squareMetreC = widthc * dropc / 1000000
 
             If tubeName.Contains("Gear Reduction") Then
-                If companyId = "2" Then
+                If data.companyid = "2" Then
                     If tubeName = "Gear Reduction 38mm" And widthc > 1810 Then Return "MAXIMUM WIDTH FOR SECOND BLIND GEAR REDUCTION 38MM IS 1810MM !"
                     If squareMetreC >= 6 AndAlso (tubeName = "Gear Reduction 38mm" OrElse tubeName = "Gear Reduction 45mm") Then
                         Return "YOUR BLIND AREA EXCEEDS 6 SQM.<br />PLEASE USE <b>GEAR REDUCTION 49MM</b> IF YOU WISH TO CONTINUE USING THE GEAR REDUCTION SYSTEM.<br />OUR ALTERNATIVE RECOMMENDATION:<br />ACMEDA SYSTEM: <b>ACMEDA 49MM</b><br />SUNBOSS SYSTEM: <b>SUNBOSS 43MM</b> OR <b>SUNBOSS 50MM</b>"
@@ -4189,7 +4191,7 @@ Partial Class Order_Method
             squareMetreD = widthd * dropd / 1000000
 
             If tubeName.Contains("Gear Reduction") Then
-                If companyId = "2" Then
+                If data.companyid = "2" Then
                     If tubeName = "Gear Reduction 38mm" And widthd > 1810 Then Return "MAXIMUM WIDTH FOR SECOND BLIND GEAR REDUCTION 38MM IS 1810MM !"
                     If squareMetreD >= 6 AndAlso (tubeName = "Gear Reduction 38mm" OrElse tubeName = "Gear Reduction 45mm") Then
                         Return "YOUR BLIND AREA EXCEEDS 6 SQM.<br />PLEASE USE <b>GEAR REDUCTION 49MM</b> IF YOU WISH TO CONTINUE USING THE GEAR REDUCTION SYSTEM.<br />OUR ALTERNATIVE RECOMMENDATION:<br />ACMEDA SYSTEM: <b>ACMEDA 49MM</b><br />SUNBOSS SYSTEM: <b>SUNBOSS 43MM</b> OR <b>SUNBOSS 50MM</b>"
@@ -4347,7 +4349,7 @@ Partial Class Order_Method
             squareMetre = width * drop / 1000000
 
             groupFabric = orderClass.GetFabricGroup(data.fabrictype)
-            If companyId = "3" Then
+            If data.companyid = "3" Then
                 groupFabric = orderClass.GetFabricGroupLocal("Roller", data.fabrictype)
             End If
 
@@ -4543,6 +4545,11 @@ Partial Class Order_Method
                 data.supply = String.Empty
             End If
 
+            If data.companyid = "2" Then data.drycontact = String.Empty
+            If controlName = "Alpha 1Nm WF" OrElse controlName = "Alpha 2Nm WF" OrElse controlName = "Alpha 3Nm WF" OrElse controlName = "Alpha 5Nm HW" OrElse controlName = "Mercure" OrElse controlName = "Chain" Then
+                data.drycontact = String.Empty
+            End If
+
             If Not (bottomName = "Flat" OrElse bottomName = "Flat Mohair") Then
                 data.bottomoption = String.Empty
             End If
@@ -4557,7 +4564,7 @@ Partial Class Order_Method
             If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
             groupFabric = orderClass.GetFabricGroup(data.fabrictype)
-            If companyId = "3" Then
+            If data.companyid = "3" Then
                 tubeIstilah = tubeName
                 If data.customerid = "902" OrElse data.customerid = "953" Then
                     tubeIstilah = "Gear Reduction 38mm"
@@ -4680,6 +4687,11 @@ Partial Class Order_Method
                 data.supply = String.Empty
             End If
 
+            If data.companyid = "2" Then data.drycontact = String.Empty
+            If controlName = "Alpha 1Nm WF" OrElse controlName = "Alpha 2Nm WF" OrElse controlName = "Alpha 3Nm WF" OrElse controlName = "Alpha 5Nm HW" OrElse controlName = "Mercure" OrElse controlName = "Chain" Then
+                data.drycontact = String.Empty
+            End If
+
             If String.IsNullOrEmpty(data.bottomtypeb) Then
                 data.bottomtypeb = data.bottomtype
                 data.bottomcolourb = data.bottomcolour
@@ -4712,7 +4724,7 @@ Partial Class Order_Method
             If tubeName.Contains("Sunboss") Then tubeIstilah = "Sunboss"
             If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
-            If companyId = "3" Then
+            If data.companyid = "3" Then
                 tubeIstilah = tubeName
                 If data.customerid = "902" OrElse data.customerid = "953" Then
                     tubeIstilah = "Gear Reduction 38mm"
@@ -4813,6 +4825,11 @@ Partial Class Order_Method
                 data.supply = String.Empty
             End If
 
+            If data.companyid = "2" Then data.drycontact = String.Empty
+            If controlName = "Alpha 1Nm WF" OrElse controlName = "Alpha 2Nm WF" OrElse controlName = "Alpha 3Nm WF" OrElse controlName = "Alpha 5Nm HW" OrElse controlName = "Mercure" OrElse controlName = "Chain" Then
+                data.drycontact = String.Empty
+            End If
+
             If String.IsNullOrEmpty(data.bottomtypeb) Then
                 data.bottomtypeb = data.bottomtype
                 data.bottomcolourb = data.bottomcolour
@@ -4848,7 +4865,7 @@ Partial Class Order_Method
             If tubeName.Contains("Sunboss") Then tubeIstilah = "Sunboss"
             If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
-            If companyId = "3" Then
+            If data.companyid = "3" Then
                 tubeIstilah = tubeName
                 If data.customerid = "902" OrElse data.customerid = "953" Then
                     tubeIstilah = "Gear Reduction 38mm"
@@ -4972,6 +4989,11 @@ Partial Class Order_Method
                 data.supply = String.Empty
             End If
 
+            If data.companyid = "2" Then data.drycontact = String.Empty
+            If controlName = "Alpha 1Nm WF" OrElse controlName = "Alpha 2Nm WF" OrElse controlName = "Alpha 3Nm WF" OrElse controlName = "Alpha 5Nm HW" OrElse controlName = "Mercure" OrElse controlName = "Chain" Then
+                data.drycontact = String.Empty
+            End If
+
             If String.IsNullOrEmpty(data.bottomtypeb) Then
                 data.bottomtypeb = data.bottomtype
                 data.bottomcolourb = data.bottomcolour
@@ -5007,7 +5029,7 @@ Partial Class Order_Method
             If tubeName.Contains("Sunboss") Then tubeIstilah = "Sunboss"
             If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
-            If companyId = "3" Then
+            If data.companyid = "3" Then
                 tubeIstilah = tubeName
                 If data.customerid = "902" OrElse data.customerid = "953" Then
                     tubeIstilah = "Gear Reduction 38mm"
@@ -5112,6 +5134,11 @@ Partial Class Order_Method
                 data.supply = String.Empty
             End If
 
+            If data.companyid = "2" Then data.drycontact = String.Empty
+            If controlName = "Alpha 1Nm WF" OrElse controlName = "Alpha 2Nm WF" OrElse controlName = "Alpha 3Nm WF" OrElse controlName = "Alpha 5Nm HW" OrElse controlName = "Mercure" OrElse controlName = "Chain" Then
+                data.drycontact = String.Empty
+            End If
+
             If String.IsNullOrEmpty(data.bottomtypeb) Then
                 data.bottomtypeb = data.bottomtype
                 data.bottomcolourb = data.bottomcolour
@@ -5159,7 +5186,7 @@ Partial Class Order_Method
             If tubeName.Contains("Sunboss") Then tubeIstilah = "Sunboss"
             If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
-            If companyId = "3" Then
+            If data.companyid = "3" Then
                 tubeIstilah = tubeName
                 If data.customerid = "902" OrElse data.customerid = "953" Then
                     tubeIstilah = "Gear Reduction 38mm"
@@ -5293,6 +5320,11 @@ Partial Class Order_Method
                 data.supply = String.Empty
             End If
 
+            If data.companyid = "2" Then data.drycontact = String.Empty
+            If controlName = "Alpha 1Nm WF" OrElse controlName = "Alpha 2Nm WF" OrElse controlName = "Alpha 3Nm WF" OrElse controlName = "Alpha 5Nm HW" OrElse controlName = "Mercure" OrElse controlName = "Chain" Then
+                data.drycontact = String.Empty
+            End If
+
             If String.IsNullOrEmpty(data.bottomtypeb) Then
                 data.bottomtypeb = data.bottomtype
                 data.bottomcolourb = data.bottomcolour
@@ -5341,7 +5373,7 @@ Partial Class Order_Method
             If tubeName.Contains("Sunboss") Then tubeIstilah = "Sunboss"
             If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
-            If companyId = "3" Then
+            If data.companyid = "3" Then
                 tubeIstilah = tubeName
                 If data.customerid = "902" OrElse data.customerid = "953" Then
                     tubeIstilah = "Gear Reduction 38mm"
@@ -5463,6 +5495,11 @@ Partial Class Order_Method
                 data.supply = String.Empty
             End If
 
+            If data.companyid = "2" Then data.drycontact = String.Empty
+            If controlName = "Alpha 1Nm WF" OrElse controlName = "Alpha 2Nm WF" OrElse controlName = "Alpha 3Nm WF" OrElse controlName = "Alpha 5Nm HW" OrElse controlName = "Mercure" OrElse controlName = "Chain" Then
+                data.drycontact = String.Empty
+            End If
+
             If String.IsNullOrEmpty(data.bottomtypeb) Then
                 data.bottomtypeb = data.bottomtype
                 data.bottomcolourb = data.bottomcolour
@@ -5525,7 +5562,7 @@ Partial Class Order_Method
             If tubeName.Contains("Sunboss") Then tubeIstilah = "Sunboss"
             If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
-            If companyId = "3" Then
+            If data.companyid = "3" Then
                 tubeIstilah = tubeName
                 If data.customerid = "902" OrElse data.customerid = "953" Then
                     tubeIstilah = "Gear Reduction 38mm"
@@ -5706,6 +5743,11 @@ Partial Class Order_Method
                 data.supply = String.Empty
             End If
 
+            If data.companyid = "2" Then data.drycontact = String.Empty
+            If controlName = "Alpha 1Nm WF" OrElse controlName = "Alpha 2Nm WF" OrElse controlName = "Alpha 3Nm WF" OrElse controlName = "Alpha 5Nm HW" OrElse controlName = "Mercure" OrElse controlName = "Chain" Then
+                data.drycontact = String.Empty
+            End If
+
             If String.IsNullOrEmpty(data.bottomtypeb) Then
                 data.bottomtypeb = data.bottomtype
                 data.bottomcolourb = data.bottomcolour
@@ -5769,7 +5811,7 @@ Partial Class Order_Method
             If tubeName.Contains("Sunboss") Then tubeIstilah = "Sunboss"
             If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
-            If companyId = "3" Then
+            If data.companyid = "3" Then
                 tubeIstilah = tubeName
                 If data.customerid = "902" OrElse data.customerid = "953" Then
                     tubeIstilah = "Gear Reduction 38mm"
@@ -5899,6 +5941,11 @@ Partial Class Order_Method
                 data.supply = String.Empty
             End If
 
+            If data.companyid = "2" Then data.drycontact = String.Empty
+            If controlName = "Alpha 1Nm WF" OrElse controlName = "Alpha 2Nm WF" OrElse controlName = "Alpha 3Nm WF" OrElse controlName = "Alpha 5Nm HW" OrElse controlName = "Mercure" OrElse controlName = "Chain" Then
+                data.drycontact = String.Empty
+            End If
+
             If String.IsNullOrEmpty(data.bottomtypeb) Then
                 data.bottomtypeb = data.bottomtype
                 data.bottomcolourb = data.bottomcolour
@@ -5988,7 +6035,7 @@ Partial Class Order_Method
             If tubeName.Contains("Sunboss") Then tubeIstilah = "Sunboss"
             If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
-            If companyId = "3" Then
+            If data.companyid = "3" Then
                 tubeIstilah = tubeName
                 If data.customerid = "902" OrElse data.customerid = "953" Then
                     tubeIstilah = "Gear Reduction 38mm"
@@ -6184,6 +6231,11 @@ Partial Class Order_Method
                     data.supply = String.Empty
                 End If
 
+                If data.companyid = "2" Then data.drycontact = String.Empty
+                If controlName = "Alpha 1Nm WF" OrElse controlName = "Alpha 2Nm WF" OrElse controlName = "Alpha 3Nm WF" OrElse controlName = "Alpha 5Nm HW" OrElse controlName = "Mercure" OrElse controlName = "Chain" Then
+                    data.drycontact = String.Empty
+                End If
+
                 If String.IsNullOrEmpty(data.bottomtypeb) Then
                     data.bottomtypeb = data.bottomtype
                     data.bottomcolourb = data.bottomcolour
@@ -6274,7 +6326,7 @@ Partial Class Order_Method
             If tubeName.Contains("Sunboss") Then tubeIstilah = "Sunboss"
             If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
-            If companyId = "3" Then
+            If data.companyid = "3" Then
                 tubeIstilah = tubeName
                 If data.customerid = "902" OrElse data.customerid = "953" Then
                     tubeIstilah = "Gear Reduction 38mm"
@@ -6299,7 +6351,7 @@ Partial Class Order_Method
                 Dim itemId As String = orderClass.GetNewOrderItemId()
 
                 Using thisConn As SqlConnection = New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricIdB, FabricIdC, FabricIdD, FabricIdE, FabricIdF, FabricColourId, FabricColourIdB, FabricColourIdC, FabricColourIdD, FabricColourIdE, FabricColourIdF, ChainId, ChainIdB, ChainIdC, ChainIdD, ChainIdE, ChainIdF, BottomId, BottomIdB, BottomIdC, BottomIdD, BottomIdE, BottomIdF, BottomColourId, BottomColourIdB, BottomColourIdC, BottomColourIdD, BottomColourIdE, BottomColourIdF, PriceProductGroupId, PriceProductGroupIdB, PriceProductGroupIdC, PriceProductGroupIdD, PriceProductGroupIdE, PriceProductGroupIdF, Qty, Room, Mounting, Width, WidthB, WidthC, WidthD, WidthE, WidthF, [Drop], DropB, DropC, DropD, DropE, DropF, Roll, RollB, RollC, RollD, RollE, RollF, ControlPosition, ControlPositionB, ControlPositionC, ControlPositionD, ControlPositionE, ControlPositionF, ControlLength, ControlLengthB, ControlLengthC, ControlLengthD, ControlLengthE, ControlLengthF, ControlLengthValue, ControlLengthValueB, ControlLengthValueC, ControlLengthValueD, ControlLengthValueE, ControlLengthValueF, ChainStopper, ChainStopperB, ChainStopperC, ChainStopperD, ChainStopperE, ChainStopperF, FlatOption, FlatOptionB, FlatOptionC, FlatOptionD, FlatOptionE, FlatOptionF, TopTrack, BracketSize, BracketExtension, SpringAssist, Adjusting, Charger, ExtensionCable, Supply, LinearMetre, LinearMetreB, LinearMetreC, LinearMetreD, LinearMetreE, LinearMetreF, SquareMetre, SquareMetreB, SquareMetreC, SquareMetreD, SquareMetreE, SquareMetreF, Printing, PrintingB, PrintingC, PrintingD, PrintingE, PrintingF, PrintingG, PrintingH, TotalItems, Notes, MarkUp, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricIdB, @FabricIdC, @FabricIdD, @FabricIdE, @FabricIdF, @FabricColourId, @FabricColourIdB, @FabricColourIdC, @FabricColourIdD, @FabricColourIdE, @FabricColourIdF, @ChainId, @ChainIdB, @ChainIdC, @ChainIdD, @ChainIdE, @ChainIdF, @BottomId, @BottomIdB, @BottomIdC, @BottomIdD, @BottomIdE, @BottomIdF, @BottomColourId, @BottomColourIdB, @BottomColourIdC, @BottomColourIdD, @BottomColourIdE, @BottomColourIdF, @PriceProductGroupId, @PriceProductGroupIdB, @PriceProductGroupIdC, @PriceProductGroupIdD, @PriceProductGroupIdE, @PriceProductGroupIdF, @Qty, @Room, @Mounting, @Width, @WidthB, @WidthC, @WidthD, @WidthE, @WidthF, @Drop, @DropB, @DropC, @DropD, @DropE, @DropF, @Roll, @RollB, @RollC, @RollD, @RollE, @RollF, @ControlPosition, @ControlPositionB, @ControlPositionC, @ControlPositionD, @ControlPositionE, @ControlPositionF, @ControlLength, @ControlLengthB, @ControlLengthC, @ControlLengthD, @ControlLengthE, @ControlLengthF, @ControlLengthValue, @ControlLengthValueB, @ControlLengthValueC, @ControlLengthValueD, @ControlLengthValueE, @ControlLengthValueF, @ChainStopper, @ChainStopperB, @ChainStopperC, @ChainStopperD, @ChainStopperE, @ChainStopperF, @FlatOption, @FlatOptionB, @FlatOptionC, @FlatOptionD, @FlatOptionE, @FlatOptionF, @TopTrack, @BracketSize, @BracketExtension, @SpringAssist, @Adjusting, @Charger, @ExtensionCable, @Supply, @LinearMetre, @LinearMetreB, @LinearMetreC, @LinearMetreD, @LinearMetreE, @LinearMetreF, @SquareMetre, @SquareMetreB, @SquareMetreC, @SquareMetreD, @SquareMetreE, @SquareMetreF, @Printing, @PrintingB, @PrintingC, @PrintingD, @PrintingE, @PrintingF, @PrintingG, @PrintingH, @TotalItems, @Notes, @MarkUp, 1)", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricIdB, FabricIdC, FabricIdD, FabricIdE, FabricIdF, FabricColourId, FabricColourIdB, FabricColourIdC, FabricColourIdD, FabricColourIdE, FabricColourIdF, ChainId, ChainIdB, ChainIdC, ChainIdD, ChainIdE, ChainIdF, BottomId, BottomIdB, BottomIdC, BottomIdD, BottomIdE, BottomIdF, BottomColourId, BottomColourIdB, BottomColourIdC, BottomColourIdD, BottomColourIdE, BottomColourIdF, PriceProductGroupId, PriceProductGroupIdB, PriceProductGroupIdC, PriceProductGroupIdD, PriceProductGroupIdE, PriceProductGroupIdF, Qty, Room, Mounting, Width, WidthB, WidthC, WidthD, WidthE, WidthF, [Drop], DropB, DropC, DropD, DropE, DropF, Roll, RollB, RollC, RollD, RollE, RollF, ControlPosition, ControlPositionB, ControlPositionC, ControlPositionD, ControlPositionE, ControlPositionF, ControlLength, ControlLengthB, ControlLengthC, ControlLengthD, ControlLengthE, ControlLengthF, ControlLengthValue, ControlLengthValueB, ControlLengthValueC, ControlLengthValueD, ControlLengthValueE, ControlLengthValueF, ChainStopper, ChainStopperB, ChainStopperC, ChainStopperD, ChainStopperE, ChainStopperF, FlatOption, FlatOptionB, FlatOptionC, FlatOptionD, FlatOptionE, FlatOptionF, TopTrack, BracketSize, BracketExtension, SpringAssist, Adjusting, DryContact, Charger, ExtensionCable, Supply, LinearMetre, LinearMetreB, LinearMetreC, LinearMetreD, LinearMetreE, LinearMetreF, SquareMetre, SquareMetreB, SquareMetreC, SquareMetreD, SquareMetreE, SquareMetreF, Printing, PrintingB, PrintingC, PrintingD, PrintingE, PrintingF, PrintingG, PrintingH, TotalItems, Notes, MarkUp, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricIdB, @FabricIdC, @FabricIdD, @FabricIdE, @FabricIdF, @FabricColourId, @FabricColourIdB, @FabricColourIdC, @FabricColourIdD, @FabricColourIdE, @FabricColourIdF, @ChainId, @ChainIdB, @ChainIdC, @ChainIdD, @ChainIdE, @ChainIdF, @BottomId, @BottomIdB, @BottomIdC, @BottomIdD, @BottomIdE, @BottomIdF, @BottomColourId, @BottomColourIdB, @BottomColourIdC, @BottomColourIdD, @BottomColourIdE, @BottomColourIdF, @PriceProductGroupId, @PriceProductGroupIdB, @PriceProductGroupIdC, @PriceProductGroupIdD, @PriceProductGroupIdE, @PriceProductGroupIdF, @Qty, @Room, @Mounting, @Width, @WidthB, @WidthC, @WidthD, @WidthE, @WidthF, @Drop, @DropB, @DropC, @DropD, @DropE, @DropF, @Roll, @RollB, @RollC, @RollD, @RollE, @RollF, @ControlPosition, @ControlPositionB, @ControlPositionC, @ControlPositionD, @ControlPositionE, @ControlPositionF, @ControlLength, @ControlLengthB, @ControlLengthC, @ControlLengthD, @ControlLengthE, @ControlLengthF, @ControlLengthValue, @ControlLengthValueB, @ControlLengthValueC, @ControlLengthValueD, @ControlLengthValueE, @ControlLengthValueF, @ChainStopper, @ChainStopperB, @ChainStopperC, @ChainStopperD, @ChainStopperE, @ChainStopperF, @FlatOption, @FlatOptionB, @FlatOptionC, @FlatOptionD, @FlatOptionE, @FlatOptionF, @TopTrack, @BracketSize, @BracketExtension, @SpringAssist, @Adjusting, @DryContact, @Charger, @ExtensionCable, @Supply, @LinearMetre, @LinearMetreB, @LinearMetreC, @LinearMetreD, @LinearMetreE, @LinearMetreF, @SquareMetre, @SquareMetreB, @SquareMetreC, @SquareMetreD, @SquareMetreE, @SquareMetreF, @Printing, @PrintingB, @PrintingC, @PrintingD, @PrintingE, @PrintingF, @PrintingG, @PrintingH, @TotalItems, @Notes, @MarkUp, 1)", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", itemId)
                         myCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                         myCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
@@ -6395,6 +6447,7 @@ Partial Class Order_Method
                         myCmd.Parameters.AddWithValue("@BracketExtension", data.bracketextension)
                         myCmd.Parameters.AddWithValue("@SpringAssist", data.springassist)
                         myCmd.Parameters.AddWithValue("@Adjusting", data.adjusting)
+                        myCmd.Parameters.AddWithValue("@DryContact", data.drycontact)
                         myCmd.Parameters.AddWithValue("@Charger", data.charger)
                         myCmd.Parameters.AddWithValue("@ExtensionCable", data.extensioncable)
                         myCmd.Parameters.AddWithValue("@Supply", data.supply)
@@ -6442,7 +6495,7 @@ Partial Class Order_Method
             Dim itemId As String = data.itemid
 
             Using thisConn As SqlConnection = New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET ProductId=@ProductId, FabricId=@FabricId, FabricIdB=@FabricIdB, FabricIdC=@FabricIdC, FabricIdD=@FabricIdD, FabricIdE=@FabricIdE, FabricIdF=@FabricIdF, FabricColourId=@FabricColourId, FabricColourIdB=@FabricColourIdB, FabricColourIdC=@FabricColourIdC, FabricColourIdD=@FabricColourIdD, FabricColourIdE=@FabricColourIdE, FabricColourIdF=@FabricColourIdF, ChainId=@ChainId, ChainIdB=@ChainIdB, ChainIdC=@ChainIdC, ChainIdD=@ChainIdD, ChainIdE=@ChainIdE, ChainIdF=@ChainIdF, BottomId=@BottomId, BottomIdB=@BottomIdB, BottomIdC=@BottomIdC, BottomIdD=@BottomIdD, BottomIdE=@BottomIdE, BottomIdF=@BottomIdF, BottomColourId=@BottomColourId, BottomColourIdB=@BottomColourIdB, BottomColourIdC=@BottomColourIdC, BottomColourIdD=@BottomColourIdD, BottomColourIdE=@BottomColourIdE, BottomColourIdF=@BottomColourIdF, PriceProductGroupId=@PriceProductGroupId, PriceProductGroupIdB=@PriceProductGroupIdB, PriceProductGroupIdC=@PriceProductGroupIdC, PriceProductGroupIdD=@PriceProductGroupIdD, PriceProductGroupIdE=@PriceProductGroupIdE, PriceProductGroupIdF=@PriceProductGroupIdF, Qty=@Qty, Room=@Room, Mounting=@Mounting, Width=@Width, WidthB=@WidthB, WidthC=@WidthC, WidthD=@WidthD, WidthE=@WidthE, WidthF=@WidthF, [Drop]=@Drop, DropB=@DropB, DropC=@DropC, DropD=@DropD, DropE=@DropE, DropF=@DropF, Roll=@Roll, RollB=@RollB, RollC=@RollC, RollD=@RollD, RollE=@RollE, RollF=@RollF, ControlPosition=@ControlPosition, ControlPositionB=@ControlPositionB, ControlPositionC=@ControlPositionC, ControlPositionD=@ControlPositionD, ControlPositionE=@ControlPositionE, ControlPositionF=@ControlPositionF, ControlLength=@ControlLength, ControlLengthB=@ControlLengthB, ControlLengthC=@ControlLengthC, ControlLengthD=@ControlLengthD, ControlLengthE=@ControlLengthE, ControlLengthF=@ControlLengthF, ControlLengthValue=@ControlLengthValue, ControlLengthValueB=@ControlLengthValueB, ControlLengthValueC=@ControlLengthValueC, ControlLengthValueD=@ControlLengthValueD, ControlLengthValueE=@ControlLengthValueE, ControlLengthValueF=@ControlLengthValueF, ChainStopper=@ChainStopper, ChainStopperB=@ChainStopperB, ChainStopperC=@ChainStopperC, ChainStopperD=@ChainStopperD, ChainStopperE=@ChainStopperE, ChainStopperF=@ChainStopperF, FlatOption=@FlatOption, FlatOptionB=@FlatOptionB, FlatOptionC=@FlatOptionC, FlatOptionD=@FlatOptionD, FlatOptionE=@FlatOptionE, FlatOptionF=@FlatOptionF, TopTrack=@TopTrack, BracketSize=@BracketSize, BracketExtension=@BracketExtension, SpringAssist=@SpringAssist, Adjusting=@Adjusting, Charger=@Charger, ExtensionCable=@ExtensionCable, Supply=@Supply, LinearMetre=@LinearMetre, LinearMetreB=@LinearMetreB, LinearMetreC=@LinearMetreC, LinearMetreD=@LinearMetreD, LinearMetreE=@LinearMetreE, LinearMetreF=@LinearMetreF, SquareMetre=@SquareMetre, SquareMetreB=@SquareMetreB, SquareMetreC=@SquareMetreC, SquareMetreD=@SquareMetreD, SquareMetreE=@SquareMetreE, SquareMetreF=@SquareMetreF, Printing=@Printing, PrintingB=@PrintingB, PrintingC=@PrintingC, PrintingD=@PrintingD, PrintingE=@PrintingE, PrintingF=@PrintingF, PrintingG=@PrintingG, PrintingH=@PrintingH, TotalItems=@TotalItems, Notes=@Notes, MarkUp=@MarkUp, Active=1 WHERE Id=@Id", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET ProductId=@ProductId, FabricId=@FabricId, FabricIdB=@FabricIdB, FabricIdC=@FabricIdC, FabricIdD=@FabricIdD, FabricIdE=@FabricIdE, FabricIdF=@FabricIdF, FabricColourId=@FabricColourId, FabricColourIdB=@FabricColourIdB, FabricColourIdC=@FabricColourIdC, FabricColourIdD=@FabricColourIdD, FabricColourIdE=@FabricColourIdE, FabricColourIdF=@FabricColourIdF, ChainId=@ChainId, ChainIdB=@ChainIdB, ChainIdC=@ChainIdC, ChainIdD=@ChainIdD, ChainIdE=@ChainIdE, ChainIdF=@ChainIdF, BottomId=@BottomId, BottomIdB=@BottomIdB, BottomIdC=@BottomIdC, BottomIdD=@BottomIdD, BottomIdE=@BottomIdE, BottomIdF=@BottomIdF, BottomColourId=@BottomColourId, BottomColourIdB=@BottomColourIdB, BottomColourIdC=@BottomColourIdC, BottomColourIdD=@BottomColourIdD, BottomColourIdE=@BottomColourIdE, BottomColourIdF=@BottomColourIdF, PriceProductGroupId=@PriceProductGroupId, PriceProductGroupIdB=@PriceProductGroupIdB, PriceProductGroupIdC=@PriceProductGroupIdC, PriceProductGroupIdD=@PriceProductGroupIdD, PriceProductGroupIdE=@PriceProductGroupIdE, PriceProductGroupIdF=@PriceProductGroupIdF, Qty=@Qty, Room=@Room, Mounting=@Mounting, Width=@Width, WidthB=@WidthB, WidthC=@WidthC, WidthD=@WidthD, WidthE=@WidthE, WidthF=@WidthF, [Drop]=@Drop, DropB=@DropB, DropC=@DropC, DropD=@DropD, DropE=@DropE, DropF=@DropF, Roll=@Roll, RollB=@RollB, RollC=@RollC, RollD=@RollD, RollE=@RollE, RollF=@RollF, ControlPosition=@ControlPosition, ControlPositionB=@ControlPositionB, ControlPositionC=@ControlPositionC, ControlPositionD=@ControlPositionD, ControlPositionE=@ControlPositionE, ControlPositionF=@ControlPositionF, ControlLength=@ControlLength, ControlLengthB=@ControlLengthB, ControlLengthC=@ControlLengthC, ControlLengthD=@ControlLengthD, ControlLengthE=@ControlLengthE, ControlLengthF=@ControlLengthF, ControlLengthValue=@ControlLengthValue, ControlLengthValueB=@ControlLengthValueB, ControlLengthValueC=@ControlLengthValueC, ControlLengthValueD=@ControlLengthValueD, ControlLengthValueE=@ControlLengthValueE, ControlLengthValueF=@ControlLengthValueF, ChainStopper=@ChainStopper, ChainStopperB=@ChainStopperB, ChainStopperC=@ChainStopperC, ChainStopperD=@ChainStopperD, ChainStopperE=@ChainStopperE, ChainStopperF=@ChainStopperF, FlatOption=@FlatOption, FlatOptionB=@FlatOptionB, FlatOptionC=@FlatOptionC, FlatOptionD=@FlatOptionD, FlatOptionE=@FlatOptionE, FlatOptionF=@FlatOptionF, TopTrack=@TopTrack, BracketSize=@BracketSize, BracketExtension=@BracketExtension, SpringAssist=@SpringAssist, Adjusting=@Adjusting, DryContact=@DryContact, Charger=@Charger, ExtensionCable=@ExtensionCable, Supply=@Supply, LinearMetre=@LinearMetre, LinearMetreB=@LinearMetreB, LinearMetreC=@LinearMetreC, LinearMetreD=@LinearMetreD, LinearMetreE=@LinearMetreE, LinearMetreF=@LinearMetreF, SquareMetre=@SquareMetre, SquareMetreB=@SquareMetreB, SquareMetreC=@SquareMetreC, SquareMetreD=@SquareMetreD, SquareMetreE=@SquareMetreE, SquareMetreF=@SquareMetreF, Printing=@Printing, PrintingB=@PrintingB, PrintingC=@PrintingC, PrintingD=@PrintingD, PrintingE=@PrintingE, PrintingF=@PrintingF, PrintingG=@PrintingG, PrintingH=@PrintingH, TotalItems=@TotalItems, Notes=@Notes, MarkUp=@MarkUp, Active=1 WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", itemId)
                     myCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                     myCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
@@ -6538,6 +6591,7 @@ Partial Class Order_Method
                     myCmd.Parameters.AddWithValue("@BracketExtension", data.bracketextension)
                     myCmd.Parameters.AddWithValue("@SpringAssist", data.springassist)
                     myCmd.Parameters.AddWithValue("@Adjusting", data.adjusting)
+                    myCmd.Parameters.AddWithValue("@DryContact", data.drycontact)
                     myCmd.Parameters.AddWithValue("@Charger", data.charger)
                     myCmd.Parameters.AddWithValue("@ExtensionCable", data.extensioncable)
                     myCmd.Parameters.AddWithValue("@Supply", data.supply)
@@ -10092,6 +10146,7 @@ Public Class ProccessData
     Public Property fabriccoloure As String
     Public Property fabriccolourf As String
     Public Property remote As String
+    Public Property drycontact As String
     Public Property charger As String
     Public Property extensioncable As String
     Public Property chaincolour As String

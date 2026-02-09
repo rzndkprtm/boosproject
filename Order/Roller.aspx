@@ -170,6 +170,18 @@
                                                 </div>
                                             </div>
 
+                                            <div class="row" id="divdrycontact">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Dry Contact</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-2 form-group">
+                                                    <select id="drycontact" class="form-select">
+                                                        <option value=""></option>
+                                                        <option value="Yes">Yes</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
                                             <div class="row" id="divextensioncable">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Extension Cable</label>
@@ -1622,6 +1634,6 @@
         </div>
     </div>
     
-    <script src="/Scripts/WebOrders/Roller.js?v=1.1.0"></script>
+    <script src="/Scripts/WebOrders/Roller.js?v=1.1.1"></script>
     <%--<script src="/Scripts/WebOrders/Roller.js?v=1.0.0"></script>--%>
 </asp:Content>
