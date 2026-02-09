@@ -238,8 +238,10 @@
                             <asp:DropDownList runat="server" ID="ddlPromoType" CssClass="form-select" ClientIDMode="Static" onchange="visiblePromoType()">
                                 <asp:ListItem Value="Designs" Text="Design Type"></asp:ListItem>
                                 <asp:ListItem Value="Blinds" Text="Blind Type"></asp:ListItem>
+                                <asp:ListItem Value="Products" Text="Product"></asp:ListItem>
                                 <asp:ListItem Value="Fabrics" Text="Fabric Type"></asp:ListItem>
                                 <asp:ListItem Value="FabricColours" Text="Fabric Colour"></asp:ListItem>
+                                <asp:ListItem Value="FrameColours" Text="Frame Colour"></asp:ListItem>
                             </asp:DropDownList>
                         </div>
                     </div>
@@ -258,6 +260,13 @@
                         </div>
                     </div>
 
+                    <div class="row mb-2" id="product">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Products</label>
+                            <asp:DropDownList runat="server" ID="ddlProductPromo" CssClass="form-select"></asp:DropDownList>
+                        </div>
+                    </div>
+
                     <div class="row mb-2" id="fabrictype">
                         <div class="col-12 form-group">
                             <label class="form-label">Fabric</label>
@@ -269,6 +278,17 @@
                         <div class="col-12 form-group">
                             <label class="form-label">Fabric Colour</label>
                             <asp:DropDownList runat="server" ID="ddlFabricColourPromo" CssClass="form-select"></asp:DropDownList>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2" id="framecolour">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Fabric Colour</label>
+                            <asp:DropDownList runat="server" ID="ddlFrameColourPromo" CssClass="form-select">
+                                <asp:ListItem Value="" Text=""></asp:ListItem>
+                                <asp:ListItem Value="Primrose (Express)" Text="Primrose (Express)"></asp:ListItem>
+                                <asp:ListItem Value="Primrose (Regular)" Text="Primrose (Regular)"></asp:ListItem>
+                            </asp:DropDownList>
                         </div>
                     </div>
 
@@ -395,38 +415,66 @@
 
             const designtype = document.getElementById("designtype");
             const blindtype = document.getElementById("blindtype");
+            const product = document.getElementById("product");
             const fabrictype = document.getElementById("fabrictype");
             const fabriccolour = document.getElementById("fabriccolour");
+            const framecolour = document.getElementById("framecolour");
 
             if (type === "Designs") {
                 if (designtype) designtype.style.display = "block";
                 if (blindtype) blindtype.style.display = "none";
+                if (product) product.style.display = "none";
                 if (fabrictype) fabrictype.style.display = "none";
                 if (fabriccolour) fabriccolour.style.display = "none";
+                if (framecolour) framecolour.style.display = "none";
             }
             else if (type === "Blinds") {
                 if (designtype) designtype.style.display = "none";
                 if (blindtype) blindtype.style.display = "block";
+                if (product) product.style.display = "none";
                 if (fabrictype) fabrictype.style.display = "none";
                 if (fabriccolour) fabriccolour.style.display = "none";
+                if (framecolour) framecolour.style.display = "none";
+            }
+            else if (type === "Products") {
+                if (designtype) designtype.style.display = "none";
+                if (blindtype) blindtype.style.display = "none";
+                if (product) product.style.display = "block";
+                if (fabrictype) fabrictype.style.display = "none";
+                if (fabriccolour) fabriccolour.style.display = "none";
+                if (framecolour) framecolour.style.display = "none";
             }
             else if (type === "Fabrics") {
                 if (designtype) designtype.style.display = "none";
                 if (blindtype) blindtype.style.display = "none";
+                if (product) product.style.display = "none";
                 if (fabrictype) fabrictype.style.display = "block";
                 if (fabriccolour) fabriccolour.style.display = "none";
+                if (framecolour) framecolour.style.display = "none";
             }
             else if (type === "FabricColours") {
                 if (designtype) designtype.style.display = "none";
                 if (blindtype) blindtype.style.display = "none";
+                if (product) product.style.display = "none";
                 if (fabrictype) fabrictype.style.display = "none";
                 if (fabriccolour) fabriccolour.style.display = "block";
+                if (framecolour) framecolour.style.display = "none";
+            }
+            else if (type === "FrameColours") {
+                if (designtype) designtype.style.display = "none";
+                if (blindtype) blindtype.style.display = "none";
+                if (product) product.style.display = "none";
+                if (fabrictype) fabrictype.style.display = "none";
+                if (fabriccolour) fabriccolour.style.display = "none";
+                if (framecolour) framecolour.style.display = "block";
             }
             else {
                 if (designtype) designtype.style.display = "none";
                 if (blindtype) blindtype.style.display = "none";
+                if (product) product.style.display = "none";
                 if (fabrictype) fabrictype.style.display = "none";
                 if (fabriccolour) fabriccolour.style.display = "none";
+                if (framecolour) framecolour.style.display = "none";
             }
         }
 

@@ -1254,6 +1254,20 @@ Public Class OrderClass
                 Dim productName As String = GetProductName(productId)
                 Dim tubeName As String = GetTubeName(tubeId)
 
+                Dim fabricId As String = thisData("FabricId").ToString()
+                Dim fabricIdB As String = thisData("FabricIdB").ToString()
+                Dim fabricIdC As String = thisData("FabricIdC").ToString()
+                Dim fabricIdD As String = thisData("FabricIdD").ToString()
+                Dim fabricIdE As String = thisData("FabricIdE").ToString()
+                Dim fabricIdF As String = thisData("FabricIdF").ToString()
+
+                Dim fabricColourId As String = thisData("FabricColourId").ToString()
+                Dim fabricColourIdB As String = thisData("FabricColourIdB").ToString()
+                Dim fabricColourIdC As String = thisData("FabricColourIdC").ToString()
+                Dim fabricColourIdD As String = thisData("FabricColourIdD").ToString()
+                Dim fabricColourIdE As String = thisData("FabricColourIdE").ToString()
+                Dim fabricColourIdF As String = thisData("FabricColourIdF").ToString()
+
                 Dim priceProductGroupId As String = thisData("PriceProductGroupId").ToString()
                 Dim priceProductGroupIdB As String = thisData("PriceProductGroupIdB").ToString()
                 Dim priceProductGroupIdC As String = thisData("PriceProductGroupIdC").ToString()
@@ -1296,6 +1310,7 @@ Public Class OrderClass
 
                 Dim subType As String = thisData("SubType").ToString()
                 Dim layoutCode As String = thisData("LayoutCode").ToString()
+                Dim frameColour As String = thisData("FrameColour").ToString()
 
                 Dim totalItems As Integer = thisData("TotalItems")
 
@@ -1428,6 +1443,34 @@ Public Class OrderClass
                         Next
                     End If
 
+                    If gridType = "Square Metre" Then
+                        If companyId = "3" Then
+                            If squareMetre < 1 Then thisSell = thisSell * 1
+                            If squareMetre >= 1 Then thisSell = thisSell * squareMetre
+                        End If
+                        If companyId = "2" OrElse companyId = "4" OrElse companyId = "5" Then
+                            thisSell = thisSell * squareMetre
+                        End If
+                        thisBuy = thisBuy * squareMetre
+                    End If
+
+                    If gridType = "Linear Metre" Then
+                        If companyId = "3" Then
+                            If linearMetre < 1 Then thisSell = thisSell * 1
+                            If linearMetre >= 1 Then thisSell = thisSell * linearMetre
+                        End If
+                        If companyId = "2" OrElse companyId = "4" OrElse companyId = "5" Then
+                            thisSell = thisSell * linearMetre
+                        End If
+                        thisBuy = thisBuy * linearMetre
+                    End If
+
+                    If designName = "Skyline Shutter Express" OrElse designName = "Skyline Shutter Ocean" OrElse designName = "Evolve Shutter Express" OrElse designName = "Evolve Shutter Ocean" Then
+                        If companyId = "2" OrElse companyId = "4" Then
+                            If squareMetre <= 0.75 Then thisSell = gridSell * 0.75
+                        End If
+                    End If
+
                     Dim promoData As DataTable = GetDataTable("SELECT CustomerPromos.* FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Active=1 AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     If promoData.Rows.Count > 0 Then
                         For i As Integer = 0 To promoData.Rows.Count - 1
@@ -1457,37 +1500,45 @@ Public Class OrderClass
                                             costSell = thisSell
                                         End If
                                     End If
+
+                                    If promoType = "Products" Then
+                                        If dataId = productId Then
+                                            Dim baseValue As Decimal = costSell * promoValue / 100
+
+                                            thisSell = costSell - baseValue
+                                            costSell = thisSell
+                                        End If
+                                    End If
+
+                                    If promoType = "Fabrics" AndAlso designName = "Roller Blind" Then
+                                        If dataId = fabricId Then
+                                            Dim baseValue As Decimal = costSell * promoValue / 100
+
+                                            thisSell = costSell - baseValue
+                                            costSell = thisSell
+                                        End If
+                                    End If
+
+                                    If promoType = "FabricColours" AndAlso designName = "Roller Blind" Then
+                                        If dataId = fabricColourId Then
+                                            Dim baseValue As Decimal = costSell * promoValue / 100
+
+                                            thisSell = costSell - baseValue
+                                            costSell = thisSell
+                                        End If
+                                    End If
+
+                                    If promoType = "FrameColours" AndAlso (designName = "Door" OrElse designName = "Window") Then
+                                        If dataId = frameColour Then
+                                            Dim baseValue As Decimal = costSell * promoValue / 100
+
+                                            thisSell = costSell - baseValue
+                                            costSell = thisSell
+                                        End If
+                                    End If
                                 Next
                             End If
                         Next
-                    End If
-
-                    If gridType = "Square Metre" Then
-                        If companyId = "3" Then
-                            If squareMetre < 1 Then thisSell = thisSell * 1
-                            If squareMetre >= 1 Then thisSell = thisSell * squareMetre
-                        End If
-                        If companyId = "2" OrElse companyId = "4" OrElse companyId = "5" Then
-                            thisSell = thisSell * squareMetre
-                        End If
-                        thisBuy = thisBuy * squareMetre
-                    End If
-
-                    If gridType = "Linear Metre" Then
-                        If companyId = "3" Then
-                            If linearMetre < 1 Then thisSell = thisSell * 1
-                            If linearMetre >= 1 Then thisSell = thisSell * linearMetre
-                        End If
-                        If companyId = "2" OrElse companyId = "4" OrElse companyId = "5" Then
-                            thisSell = thisSell * linearMetre
-                        End If
-                        thisBuy = thisBuy * linearMetre
-                    End If
-
-                    If designName = "Skyline Shutter Express" OrElse designName = "Skyline Shutter Ocean" OrElse designName = "Evolve Shutter Express" OrElse designName = "Evolve Shutter Ocean" Then
-                        If companyId = "2" OrElse companyId = "4" Then
-                            If squareMetre <= 0.75 Then thisSell = gridSell * 0.75
-                        End If
                     End If
 
                     Dim costingDescription As String = priceProductGroupName
@@ -1583,6 +1634,27 @@ Public Class OrderClass
                         Next
                     End If
 
+                    If gridType = "Square Metre" Then
+                        If companyId = "3" Then
+                            If squareMetre < 1 Then thisSell = thisSell * 1
+                            If squareMetre >= 1 Then thisSell = thisSell * squareMetreB
+                        End If
+                        If companyId = "2" OrElse companyId = "4" OrElse companyId = "5" Then
+                            thisSell = thisSell * squareMetreB
+                        End If
+                        thisBuy = thisBuy * squareMetreB
+                    End If
+                    If gridType = "Linear Metre" Then
+                        If companyId = "3" Then
+                            If linearMetre < 1 Then thisSell = thisSell * 1
+                            If linearMetre >= 1 Then thisSell = thisSell * linearMetreB
+                        End If
+                        If companyId = "2" OrElse companyId = "4" OrElse companyId = "5" Then
+                            thisSell = thisSell * linearMetreB
+                        End If
+                        thisBuy = thisBuy * linearMetreB
+                    End If
+
                     Dim promoData As DataTable = GetDataTable("SELECT CustomerPromos.* FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Active=1 AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     If promoData.Rows.Count > 0 Then
                         For i As Integer = 0 To promoData.Rows.Count - 1
@@ -1612,30 +1684,36 @@ Public Class OrderClass
                                             costSell = thisSell
                                         End If
                                     End If
+
+                                    If promoType = "Products" Then
+                                        If dataId = productId Then
+                                            Dim baseValue As Decimal = costSell * promoValue / 100
+
+                                            thisSell = costSell - baseValue
+                                            costSell = thisSell
+                                        End If
+                                    End If
+
+                                    If promoType = "Fabrics" AndAlso designName = "Roller Blind" Then
+                                        If dataId = fabricIdB Then
+                                            Dim baseValue As Decimal = costSell * promoValue / 100
+
+                                            thisSell = costSell - baseValue
+                                            costSell = thisSell
+                                        End If
+                                    End If
+
+                                    If promoType = "FabricColours" AndAlso designName = "Roller Blind" Then
+                                        If dataId = fabricColourIdB Then
+                                            Dim baseValue As Decimal = costSell * promoValue / 100
+
+                                            thisSell = costSell - baseValue
+                                            costSell = thisSell
+                                        End If
+                                    End If
                                 Next
                             End If
                         Next
-                    End If
-
-                    If gridType = "Square Metre" Then
-                        If companyId = "3" Then
-                            If squareMetre < 1 Then thisSell = thisSell * 1
-                            If squareMetre >= 1 Then thisSell = thisSell * squareMetreB
-                        End If
-                        If companyId = "2" OrElse companyId = "4" OrElse companyId = "5" Then
-                            thisSell = thisSell * squareMetreB
-                        End If
-                        thisBuy = thisBuy * squareMetreB
-                    End If
-                    If gridType = "Linear Metre" Then
-                        If companyId = "3" Then
-                            If linearMetre < 1 Then thisSell = thisSell * 1
-                            If linearMetre >= 1 Then thisSell = thisSell * linearMetreB
-                        End If
-                        If companyId = "2" OrElse companyId = "4" OrElse companyId = "5" Then
-                            thisSell = thisSell * linearMetreB
-                        End If
-                        thisBuy = thisBuy * linearMetreB
                     End If
 
                     Dim costingDescription As String = String.Format("#2 {0}", priceProductGroupName)
@@ -1714,6 +1792,33 @@ Public Class OrderClass
 
                                     If promoType = "Blinds" Then
                                         If dataId = blindId Then
+                                            Dim baseValue As Decimal = costSell * promoValue / 100
+
+                                            thisSell = costSell - baseValue
+                                            costSell = thisSell
+                                        End If
+                                    End If
+
+                                    If promoType = "Products" Then
+                                        If dataId = productId Then
+                                            Dim baseValue As Decimal = costSell * promoValue / 100
+
+                                            thisSell = costSell - baseValue
+                                            costSell = thisSell
+                                        End If
+                                    End If
+
+                                    If promoType = "Fabrics" AndAlso designName = "Roller Blind" Then
+                                        If dataId = fabricIdC Then
+                                            Dim baseValue As Decimal = costSell * promoValue / 100
+
+                                            thisSell = costSell - baseValue
+                                            costSell = thisSell
+                                        End If
+                                    End If
+
+                                    If promoType = "FabricColours" AndAlso designName = "Roller Blind" Then
+                                        If dataId = fabricColourIdC Then
                                             Dim baseValue As Decimal = costSell * promoValue / 100
 
                                             thisSell = costSell - baseValue
@@ -1819,6 +1924,33 @@ Public Class OrderClass
                                             costSell = thisSell
                                         End If
                                     End If
+
+                                    If promoType = "Products" Then
+                                        If dataId = productId Then
+                                            Dim baseValue As Decimal = costSell * promoValue / 100
+
+                                            thisSell = costSell - baseValue
+                                            costSell = thisSell
+                                        End If
+                                    End If
+
+                                    If promoType = "Fabrics" AndAlso designName = "Roller Blind" Then
+                                        If dataId = fabricIdD Then
+                                            Dim baseValue As Decimal = costSell * promoValue / 100
+
+                                            thisSell = costSell - baseValue
+                                            costSell = thisSell
+                                        End If
+                                    End If
+
+                                    If promoType = "FabricColours" AndAlso designName = "Roller Blind" Then
+                                        If dataId = fabricColourIdD Then
+                                            Dim baseValue As Decimal = costSell * promoValue / 100
+
+                                            thisSell = costSell - baseValue
+                                            costSell = thisSell
+                                        End If
+                                    End If
                                 Next
                             End If
                         Next
@@ -1918,6 +2050,33 @@ Public Class OrderClass
                                             costSell = thisSell
                                         End If
                                     End If
+
+                                    If promoType = "Products" Then
+                                        If dataId = productId Then
+                                            Dim baseValue As Decimal = costSell * promoValue / 100
+
+                                            thisSell = costSell - baseValue
+                                            costSell = thisSell
+                                        End If
+                                    End If
+
+                                    If promoType = "Fabrics" AndAlso designName = "Roller Blind" Then
+                                        If dataId = fabricIdE Then
+                                            Dim baseValue As Decimal = costSell * promoValue / 100
+
+                                            thisSell = costSell - baseValue
+                                            costSell = thisSell
+                                        End If
+                                    End If
+
+                                    If promoType = "FabricColours" AndAlso designName = "Roller Blind" Then
+                                        If dataId = fabricColourIdE Then
+                                            Dim baseValue As Decimal = costSell * promoValue / 100
+
+                                            thisSell = costSell - baseValue
+                                            costSell = thisSell
+                                        End If
+                                    End If
                                 Next
                             End If
                         Next
@@ -1999,6 +2158,33 @@ Public Class OrderClass
 
                                     If promoType = "Blinds" Then
                                         If dataId = blindId Then
+                                            Dim baseValue As Decimal = costSell * promoValue / 100
+
+                                            thisSell = costSell - baseValue
+                                            costSell = thisSell
+                                        End If
+                                    End If
+
+                                    If promoType = "Products" Then
+                                        If dataId = productId Then
+                                            Dim baseValue As Decimal = costSell * promoValue / 100
+
+                                            thisSell = costSell - baseValue
+                                            costSell = thisSell
+                                        End If
+                                    End If
+
+                                    If promoType = "Fabrics" AndAlso designName = "Roller Blind" Then
+                                        If dataId = fabricIdF Then
+                                            Dim baseValue As Decimal = costSell * promoValue / 100
+
+                                            thisSell = costSell - baseValue
+                                            costSell = thisSell
+                                        End If
+                                    End If
+
+                                    If promoType = "FabricColours" AndAlso designName = "Roller Blind" Then
+                                        If dataId = fabricColourIdF Then
                                             Dim baseValue As Decimal = costSell * promoValue / 100
 
                                             thisSell = costSell - baseValue
