@@ -335,7 +335,7 @@ Public Partial Class SiteMaster
             If Session("RoleName") = "Customer" Then
                 liOldOrder.Visible = True
                 liGuide.Visible = True
-                liTicket.Visible = True
+                'liTicket.Visible = True
 
                 liSettingQuote.Visible = True
             End If
