@@ -2189,7 +2189,7 @@ Partial Class Setting_Customer_Detail
 
     Protected Function PromoTitle(type As String, dataId As String) As String
         If String.IsNullOrEmpty(type) Then Return String.Empty
-        If type = "FrameColours" Then Return dataId
+        'If type = "FrameColours" Then Return dataId
         Return settingClass.GetItemData(String.Format("SELECT Name FROM {0} WHERE Id='{1}'", type, dataId))
     End Function
 
