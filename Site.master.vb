@@ -15,9 +15,14 @@ Public Partial Class SiteMaster
     End Sub
 
     Protected Sub master_Page_PreLoad(sender As Object, e As EventArgs)
-        CheckSessions()
-        MyLoad()
-        BindListNavigation()
+        CheckSessions() ' WAJIB setiap request (security)
+    End Sub
+
+    Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        If Not IsPostBack Then
+            MyLoad()              ' Load profile + session
+            BindListNavigation() ' Render menu sesuai role
+        End If
     End Sub
 
     Protected Sub linkLogout_Click(sender As Object, e As EventArgs)
