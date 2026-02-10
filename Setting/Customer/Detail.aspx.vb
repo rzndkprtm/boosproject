@@ -219,6 +219,28 @@ Partial Class Setting_Customer_Detail
         End Try
     End Sub
 
+    Protected Sub btnWelcome_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim checkPrimary As Integer = settingClass.GetItemData_Integer("SELECT COUNT(*) FROM CustomerContacts WHERE CustomerId='" & lblId.Text & "' AND [Primary]=1")
+            If checkPrimary = 0 Then
+                MessageError(True, "PRIMARY CONTACT IS REQUIRED !")
+                Exit Sub
+            End If
+
+            mailingClass.LoginCredentials(lblId.Text, Session("LoginId").ToString(), "Welcome Customer")
+            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnCredentialsLogin_Click", ex.ToString()}
+                mailingClass.WebError(dataMailing)
+            End If
+        End Try
+    End Sub
+
     Protected Sub BindData(customerId As String)
         Try
             Dim params As New List(Of SqlParameter) From {
@@ -278,6 +300,8 @@ Partial Class Setting_Customer_Detail
             End If
             aDelete.Visible = PageAction("Delete")
             aCreateOrder.Visible = PageAction("Create Order")
+            aWelcome.Visible = PageAction("Welcome Customer")
+            If customerId = "3" Then aWelcome.Visible = False
             If lblOnStop.Text = "Yes" Then aCreateOrder.Visible = False
 
             divLevelSponsor.Visible = PageAction("Visible Level Sponsor")
@@ -1490,7 +1514,7 @@ Partial Class Setting_Customer_Detail
         End Try
     End Sub
 
-    Protected Sub btnCredentialsLogin_Click(sender As Object, e As EventArgs)
+    Protected Sub btnLoginCredentials_Click(sender As Object, e As EventArgs)
         MessageError_Login(False, String.Empty)
         Session("selectedTabCustomer") = "list-login"
         Try
@@ -1500,14 +1524,14 @@ Partial Class Setting_Customer_Detail
                 Exit Sub
             End If
 
-            'mailingClass.LoginCredentials(lblId.Text, Session("LoginId").ToString())
+            mailingClass.LoginCredentials(lblId.Text, Session("LoginId").ToString(), "Login Credentials")
             url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
             Response.Redirect(url, False)
         Catch ex As Exception
             MessageError_Login(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_Login(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnCredentialsLogin_Click", ex.ToString()}
+                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnLoginCredentials_Click", ex.ToString()}
                 mailingClass.WebError(dataMailing)
             End If
         End Try
@@ -1524,7 +1548,7 @@ Partial Class Setting_Customer_Detail
             gvListLogin.Columns(5).Visible = PageAction("Visible Email Login")
 
             btnAddLogin.Visible = PageAction("Add Login")
-            aCredentialsLogin.Visible = PageAction("Credentials Login")
+            aCredentialsLogin.Visible = PageAction("Login Credentials")
         Catch ex As Exception
             MessageError_Login(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then

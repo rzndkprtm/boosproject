@@ -2542,6 +2542,7 @@ Partial Class Order_Add
 
                         Dim controlName As String = controlType
                         If controlType = "Cord" Then controlName = "Reg Cord Lock"
+                        If controlType = "Cord Lock" Then controlName = "Reg Cord Lock"
                         Dim controlId As String = orderClass.GetItemData("SELECT Id FROM ProductControls WHERE Name='" & controlName & "'")
                         If String.IsNullOrEmpty(tubeId) Then
                             MessageError(True, "PLEASE CHECK YOUR MECHANISM TYPE !")
