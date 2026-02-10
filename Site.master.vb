@@ -15,10 +15,14 @@ Public Partial Class SiteMaster
     End Sub
 
     Protected Sub master_Page_PreLoad(sender As Object, e As EventArgs)
+        'Response.Redirect("https://ordersblindonline.com/", False)
+        'Exit Sub
         CheckSessions() ' WAJIB setiap request (security)
     End Sub
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        'Response.Redirect("https://ordersblindonline.com/", False)
+        'Exit Sub
         If Not IsPostBack Then
             MyLoad()              ' Load profile + session
             BindListNavigation() ' Render menu sesuai role

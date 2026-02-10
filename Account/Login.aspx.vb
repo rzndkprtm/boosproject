@@ -9,6 +9,8 @@ Partial Class Account_Login
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        'Response.Redirect("https://ordersblindonline.com/", False)
+        'Exit Sub
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             CheckSessionStates()
