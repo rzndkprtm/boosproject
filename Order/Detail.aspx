@@ -286,22 +286,28 @@
                                     <asp:Label runat="server" ID="lblQuotedDate" CssClass="font-bold"></asp:Label>
                                 </div>
                                 <div class="col-2 col-sm-2 col-lg-2">
-                                    <label>Call Up Date</label>
+                                    <label>Call For Check Measure</label>
                                     <br />
-                                    <asp:Label runat="server" ID="lblCallUpDate" CssClass="font-bold"></asp:Label>
+                                    <asp:Label runat="server" ID="lblCallForCheckMeasure" CssClass="font-bold"></asp:Label>
                                 </div>
                                 <div class="col-2 col-sm-2 col-lg-2">
-                                    <label>Check Measure Date</label>
+                                    <label>Check Measure Due</label>
                                     <br />
-                                    <asp:Label runat="server" ID="lblCheckMeasureDate" CssClass="font-bold"></asp:Label>
+                                    <asp:Label runat="server" ID="lblCheckMeasureDue" CssClass="font-bold"></asp:Label>
                                 </div>
                             </div>
                             
                             <div class="row mb-1">
                                 <div class="col-2 col-sm-2 col-lg-2">
-                                    <label>Installation Date</label>
+                                    <label>To Be Installed</label>
                                     <br />
-                                    <asp:Label runat="server" ID="lblInstallationDate" CssClass="font-bold"></asp:Label>
+                                    <asp:Label runat="server" ID="lblToBeInstalled" CssClass="font-bold"></asp:Label>
+                                </div>
+
+                                <div class="col-2 col-sm-2 col-lg-2">
+                                    <label>Installed</label>
+                                    <br />
+                                    <asp:Label runat="server" ID="lblInstalled" CssClass="font-bold"></asp:Label>
                                 </div>
                             </div>
                         </div>
@@ -1245,22 +1251,23 @@
 
                     <div class="row">
                         <div class="col-6 form-group">
-                            <label class="form-label">Call Up</label>
-                            <asp:TextBox runat="server" TextMode="Date" ID="txtCallUpDate" CssClass="form-control" placeholder="Call Up ..." autocomplete="off"></asp:TextBox>
+                            <label class="form-label">Call For Check Measure</label>
+                            <asp:TextBox runat="server" TextMode="Date" ID="txtCallForCheckMeasure" CssClass="form-control" placeholder="Call Up ..." autocomplete="off"></asp:TextBox>
                         </div>
                         <div class="col-6 form-group">
-                            <label class="form-label">Check Measure</label>
-                            <asp:TextBox runat="server" TextMode="Date" ID="txtCheckMeasureDate" CssClass="form-control" placeholder="Check Measure ..." autocomplete="off"></asp:TextBox>
+                            <label class="form-label">Check Measure Due</label>
+                            <asp:TextBox runat="server" TextMode="Date" ID="txtCheckMeasureDue" CssClass="form-control" placeholder="Check Measure ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-6 form-group">
-                            <label class="form-label">Installation</label>
-                            <asp:TextBox runat="server" TextMode="Date" ID="txtInstallationDate" CssClass="form-control" placeholder="Installation ..." autocomplete="off"></asp:TextBox>
+                            <label class="form-label">To Be Installed</label>
+                            <asp:TextBox runat="server" TextMode="Date" ID="txtToBeInstalled" CssClass="form-control" placeholder="Installation ..." autocomplete="off"></asp:TextBox>
                         </div>
                         <div class="col-6 form-group">
-                            
+                            <label class="form-label">Installed</label>
+                            <asp:TextBox runat="server" TextMode="Date" ID="txtInstalled" CssClass="form-control" placeholder="Installed ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
                 </div>
