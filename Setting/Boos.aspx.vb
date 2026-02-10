@@ -548,7 +548,7 @@ Partial Class Setting_Boos
     End Sub
 
     Protected Sub ResetPassword()
-        Dim loginData As DataTable = settingClass.GetDataTable("SELECT * FROM CustomerLogins")
+        Dim loginData As DataTable = settingClass.GetDataTable("SELECT CustomerLogins.* FROM CustomerLogins LEFT JOIN Customers ON CustomerLogins.CustomerId=Customers.Id WHERE Customers.CompanyId='2'")
         If loginData.Rows.Count > 0 Then
             For iLogin As Integer = 0 To loginData.Rows.Count - 1
                 Dim loginId As String = loginData.Rows(iLogin)("Id").ToString()
@@ -557,7 +557,7 @@ Partial Class Setting_Boos
                 Dim newPassword As String = settingClass.Encrypt(userName)
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLogins SET Password=@Password WHERE Id=@Id", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLogins SET Password=@Password, FailedCount=0, LastLogin=NULL, ResetLogin=1 WHERE Id=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", loginId)
                         myCmd.Parameters.AddWithValue("@Password", newPassword)
 
