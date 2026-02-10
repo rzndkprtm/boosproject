@@ -39,9 +39,9 @@
                 <a href="javascript:void(0);" class="btn btn-secondary me-1" onclick="showLog('OrderHeaders', '<%= lblHeaderId.Text %>')">Log</a>
                 <asp:Button runat="server" ID="btnPreview" CssClass="btn btn-primary me-1" Text="Preview" OnClick="btnPreview_Click" />
                 <asp:Button runat="server" ID="btnEditHeader" CssClass="btn btn-secondary me-1" Text="Edit Header" OnClick="btnEditHeader_Click" />
-                <a href="#" runat="server" id="aDeleteOrder" class="btn btn-danger me-1" data-bs-toggle="modal" data-bs-target="#modalDeleteOrder">Delete</a>
+                <a href="#" runat="server" id="aDeleteOrder" class="btn btn-danger me-1" data-bs-toggle="modal" data-bs-target="#modalDeleteOrder">Delete Order</a>
                 <a href="#" runat="server" id="aQuoteOrder" class="btn btn-success me-1" data-bs-toggle="modal" data-bs-target="#modalQuoteOrder">Quote</a>
-                <a href="#" runat="server" id="aSubmitOrder" class="btn btn-success me-1" data-bs-toggle="modal" data-bs-target="#modalSubmitOrder">Submit</a>
+                <a href="#" runat="server" id="aSubmitOrder" class="btn btn-success me-1" data-bs-toggle="modal" data-bs-target="#modalSubmitOrder">Submit Order</a>
                 <a href="#" runat="server" id="aUnsubmitOrder" class="btn btn-dark me-1" data-bs-toggle="modal" data-bs-target="#modalUnsubmitOrder">Unsubmit Order</a>
                 <a href="#" runat="server" id="aCancelOrder" class="btn btn-danger me-1" data-bs-toggle="modal" data-bs-target="#modalCancelOrder">Cancel Order</a>
                 <a href="#" runat="server" id="aProductionOrder" class="btn btn-success me-1" data-bs-toggle="modal" data-bs-target="#modalProductionOrder">Production Order</a>

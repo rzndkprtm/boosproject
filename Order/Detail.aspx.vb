@@ -2212,6 +2212,18 @@ Partial Class Order_Detail
                     End If
                 End If
 
+                If lblOrderStatus.Text = "Quoted" Then
+                    liMoreDownloadQuote.Visible = True
+                    liMoreEmailQuote.Visible = True
+                    liMoreDividerQuote.Visible = True
+
+                    btnEditHeader.Visible = True
+                    aCancelOrder.Visible = True
+                    aSubmitOrder.Visible = True
+
+                    aAddItem.Visible = True : aService.Visible = True
+                End If
+
                 If lblOrderStatus.Text = "Waiting Proforma" Then
                     btnInvoice.Visible = True : aSendInvoice.Visible = True
                     liDividerInvoice.Visible = True : liUpdateInvoiceNumber.Visible = True
@@ -2295,7 +2307,7 @@ Partial Class Order_Detail
                     aDeleteOrder.Visible = True
                     aSubmitOrder.Visible = True
 
-                    aAddItem.Visible = True
+                    aAddItem.Visible = True : aService.Visible = True
                 End If
 
                 If lblOrderStatus.Text = "Waiting Proforma" Then
@@ -2393,7 +2405,7 @@ Partial Class Order_Detail
                     aCancelOrder.Visible = True
                     aSubmitOrder.Visible = True
 
-                    aAddItem.Visible = True
+                    aAddItem.Visible = True : aService.Visible = True
                 End If
 
                 If lblOrderStatus.Text = "New Order" Then
