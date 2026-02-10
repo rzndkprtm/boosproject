@@ -2033,8 +2033,6 @@ Partial Class Setting_Customer_Detail
             lblActionPromo.Text = "Add"
             titlePromo.InnerText = "Add Promo"
 
-            BindListPromo()
-
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcessPromo", thisScript, True)
         Catch ex As Exception
             MessageError_ProcessPromo(True, ex.ToString())
@@ -2179,6 +2177,8 @@ Partial Class Setting_Customer_Detail
 
             btnAddPromo.Visible = PageAction("Add Promo")
             aResetPromo.Visible = PageAction("Reset Promo")
+
+            BindListPromo()
         Catch ex As Exception
             MessageError_Promo(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
