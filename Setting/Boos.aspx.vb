@@ -51,6 +51,29 @@ Partial Class Setting_Boos
             End If
             GenerateBuilder(Request.QueryString("status").ToString())
         End If
+        If thisAction = "shipment" Then
+            If String.IsNullOrEmpty(Request.QueryString("id")) Then
+                Exit Sub
+            End If
+            If String.IsNullOrEmpty(Request.QueryString("status")) Then
+                Exit Sub
+            End If
+            Dim id As String = Request.QueryString("OrdID").ToString()
+            Dim status As String = Request.QueryString("Status").ToString()
+            Dim shipmentNumber As String = Request.QueryString("ShipmentNo").ToString()
+            Dim containerNumber As String = Request.QueryString("ContainerNo").ToString()
+            Dim courier As String = Request.QueryString("Courier").ToString()
+            Dim invoiceNumber As String = Request.QueryString("InvoiceNo").ToString()
+
+            Dim shipDateStr As String = Request.QueryString("ShipDate")
+            Dim shipDate As DateTime
+
+            If String.IsNullOrEmpty(shipDateStr) OrElse Not DateTime.TryParse(shipDateStr, shipDate) Then
+
+            End If
+
+            UpdateShipment()
+            End If
     End Sub
 
     Protected Sub GenerateBuilder(status As String)
@@ -581,5 +604,9 @@ Partial Class Setting_Boos
             End Using
         Catch ex As Exception
         End Try
+    End Sub
+
+    Protected Sub UpdateShipment()
+
     End Sub
 End Class
