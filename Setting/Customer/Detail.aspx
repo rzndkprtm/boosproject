@@ -36,6 +36,7 @@
                 <asp:Button runat="server" ID="btnEditCustomer" CssClass="btn btn-primary" Text="Edit" OnClick="btnEditCustomer_Click" />
                 <a href="#" runat="server" id="aDelete" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalDelete">Delete</a>
                 <a href="#" runat="server" id="aCreateOrder" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#modalCreateOrder">Create Order</a>
+                <a href="#" runat="server" id="aWelcome" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalWelcome">Welcome</a>
                 <a href="javascript:void(0)" class="btn btn-secondary" onclick="showLog('Customers', '<%= lblId.Text %>')">Log</a>
             </div>
         </section>
@@ -435,7 +436,7 @@
                                     <div class="row mt-3">
                                         <div class="col-12">
                                             <asp:Button runat="server" ID="btnAddLogin" CssClass="btn btn-primary" Text="Add New" OnClick="btnAddLogin_Click" />
-                                            <a href="javascript:void(0)" runat="server" id="aCredentialsLogin" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalCredentialsLogin">Send Login Credentials</a>
+                                            <a href="javascript:void(0)" runat="server" id="aCredentialsLogin" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalLoginCredentials">Send Login Credentials</a>
                                         </div>
                                     </div>
                                 </div>
@@ -754,6 +755,35 @@
                         <table class="table table-vcenter card-table" id="tblLogs">
                             <tbody></tbody>
                         </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal modal-blur fade" id="modalWelcome" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-success">
+                    <h5 class="modal-title white">Send Welcome Email</h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    Hi <b><%: Session("FullName") %></b>,<br />All login details will be sent to the primary contact email address.<br /><br />Are you sure you would like to do this?
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnWelcome" CssClass="btn btn-success" Text="Confirm" OnClick="btnWelcome_Click" OnClientClick="return showWaiting();" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade text-center" id="modalWaiting" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
                     </div>
                 </div>
             </div>
@@ -1256,7 +1286,7 @@
         </div>
     </div>
 
-    <div class="modal modal-blur fade" id="modalCredentialsLogin" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal modal-blur fade" id="modalLoginCredentials" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-danger">
@@ -1267,7 +1297,7 @@
                 </div>
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnCredentialsLogin" CssClass="btn btn-danger" Text="Confirm" OnClick="btnCredentialsLogin_Click" />
+                    <asp:Button runat="server" ID="btnLoginCredentials" CssClass="btn btn-danger" Text="Confirm" OnClick="btnLoginCredentials_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>
@@ -1651,6 +1681,18 @@
             $("#modalCreateOrder").modal("show");
         }
 
+        function showWaiting(hideModal = null) {
+            $("#modalWaiting").modal("show");
+            setTimeout(function () {
+                $("#modalWaiting").modal("hide");
+                if (hideModal) {
+                    $(`#${hideModal}`).modal("hide");
+                }
+            }, 3000);
+
+            return true;
+        }
+
         // START CUSTOMER CONTACT
         function showProcessContact() {
             $("#modalProcessContact").modal("show");
@@ -1810,11 +1852,11 @@
         }
 
         [
-            "modalDelete", "modalCreateOrder", "modalLog",
+            "modalDelete", "modalCreateOrder", "modalLog", "modalWelcome", "modalWaiting",
             "modalProcessContact", "modalDeleteContact", "modalPrimaryContact",
             "modalProcessAddress", "modalDeleteAddress", "modalPrimaryAddress",
             "modalProcessBusiness", "modalDeleteBusiness", "modalPrimaryBusiness",
-            "modalProcessLogin", "modalInstallerAccess", "modalActiveLogin", "modalResetPass", "modalDencryptPass", "modalCredentialsLogin",
+            "modalProcessLogin", "modalInstallerAccess", "modalActiveLogin", "modalResetPass", "modalDencryptPass", "modalLoginCredentials",
             "modalProcessDiscount", "modalResetDiscount", "modalDeleteDiscount",
             "modalProcessPromo", "modalDetailPromo", "modalResetPromo", "modalDeletePromo",
             "modalResetProduct", "modalProcessProduct"
