@@ -1073,14 +1073,15 @@ Partial Class Order_Detail
         Dim thisScript As String = "window.onload = function() { showBuilderDetail(); };"
         Try
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As New SqlCommand("UPDATE OrderBuilders SET Estimator=@Estimator, Supervisor=@Supervisor, Address=@Address, CallUpDate=@CallUpDate, CheckMeasureDate=@CheckMeasureDate, InstallationDate=@InstallationDate WHERE Id=@Id", thisConn)
+                Using thisCmd As New SqlCommand("UPDATE OrderBuilders SET Estimator=@Estimator, Supervisor=@Supervisor, Address=@Address, CallForCheckMeasure=@CallForCheckMeasure, CheckMeasureDue=@CheckMeasureDue, ToBeInstalled=@ToBeInstalled, Installed=@Installed WHERE Id=@Id", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
                     thisCmd.Parameters.AddWithValue("@Estimator", txtEstimator.Text.Trim())
                     thisCmd.Parameters.AddWithValue("@Supervisor", txtSupervisor.Text.Trim())
                     thisCmd.Parameters.AddWithValue("@Address", txtAddress.Text.Trim())
-                    thisCmd.Parameters.AddWithValue("@CallUpDate", If(String.IsNullOrEmpty(txtCallUpDate.Text), CType(DBNull.Value, Object), txtCallUpDate.Text))
-                    thisCmd.Parameters.AddWithValue("@CheckMeasureDate", If(String.IsNullOrEmpty(txtCheckMeasureDate.Text), CType(DBNull.Value, Object), txtCheckMeasureDate.Text))
-                    thisCmd.Parameters.AddWithValue("@InstallationDate", If(String.IsNullOrEmpty(txtInstallationDate.Text), CType(DBNull.Value, Object), txtInstallationDate.Text))
+                    thisCmd.Parameters.AddWithValue("@CallForCheckMeasure", If(String.IsNullOrEmpty(txtCallForCheckMeasure.Text), CType(DBNull.Value, Object), txtCallForCheckMeasure.Text))
+                    thisCmd.Parameters.AddWithValue("@CheckMeasureDue", If(String.IsNullOrEmpty(txtCheckMeasureDue.Text), CType(DBNull.Value, Object), txtCheckMeasureDue.Text))
+                    thisCmd.Parameters.AddWithValue("@ToBeInstalled", If(String.IsNullOrEmpty(txtToBeInstalled.Text), CType(DBNull.Value, Object), txtToBeInstalled.Text))
+                    thisCmd.Parameters.AddWithValue("@Installed", If(String.IsNullOrEmpty(txtInstalled.Text), CType(DBNull.Value, Object), txtInstalled.Text))
 
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
@@ -2794,25 +2795,32 @@ Partial Class Order_Detail
                 lblAddress.Text = dataBuilder("Address").ToString()
                 txtAddress.Text = dataBuilder("Address").ToString()
 
-                lblCallUpDate.Text = String.Empty
-                txtCallUpDate.Text = String.Empty
-                If Not String.IsNullOrEmpty(dataBuilder("CallUpDate").ToString()) Then
-                    lblCallUpDate.Text = Convert.ToDateTime(dataBuilder("CallUpDate")).ToString("dd MMM yyyy")
-                    txtCallUpDate.Text = Convert.ToDateTime(dataBuilder("CallUpDate")).ToString("dd MMM yyyy")
+                lblCallForCheckMeasure.Text = String.Empty
+                txtCallForCheckMeasure.Text = String.Empty
+                If Not String.IsNullOrEmpty(dataBuilder("CallForCheckMeasure").ToString()) Then
+                    lblCallForCheckMeasure.Text = Convert.ToDateTime(dataBuilder("CallForCheckMeasure")).ToString("dd MMM yyyy")
+                    txtCallForCheckMeasure.Text = Convert.ToDateTime(dataBuilder("CallForCheckMeasure")).ToString("dd MMM yyyy")
                 End If
 
-                lblCheckMeasureDate.Text = String.Empty
-                txtCheckMeasureDate.Text = String.Empty
-                If Not String.IsNullOrEmpty(dataBuilder("CheckMeasureDate").ToString()) Then
-                    lblCheckMeasureDate.Text = Convert.ToDateTime(dataBuilder("CheckMeasureDate")).ToString("dd MMM yyyy")
-                    txtCheckMeasureDate.Text = Convert.ToDateTime(dataBuilder("CheckMeasureDate")).ToString("dd MMM yyyy")
+                lblCheckMeasureDue.Text = String.Empty
+                txtCheckMeasureDue.Text = String.Empty
+                If Not String.IsNullOrEmpty(dataBuilder("CheckMeasureDue").ToString()) Then
+                    lblCheckMeasureDue.Text = Convert.ToDateTime(dataBuilder("CheckMeasureDue")).ToString("dd MMM yyyy")
+                    txtCheckMeasureDue.Text = Convert.ToDateTime(dataBuilder("CheckMeasureDue")).ToString("dd MMM yyyy")
                 End If
 
-                lblInstallationDate.Text = String.Empty
-                txtInstallationDate.Text = String.Empty
-                If Not String.IsNullOrEmpty(dataBuilder("InstallationDate").ToString()) Then
-                    lblInstallationDate.Text = Convert.ToDateTime(dataBuilder("InstallationDate")).ToString("dd MMM yyyy")
-                    txtInstallationDate.Text = Convert.ToDateTime(dataBuilder("InstallationDate")).ToString("dd MMM yyyy")
+                lblToBeInstalled.Text = String.Empty
+                txtToBeInstalled.Text = String.Empty
+                If Not String.IsNullOrEmpty(dataBuilder("ToBeInstalled").ToString()) Then
+                    lblToBeInstalled.Text = Convert.ToDateTime(dataBuilder("ToBeInstalled")).ToString("dd MMM yyyy")
+                    txtToBeInstalled.Text = Convert.ToDateTime(dataBuilder("ToBeInstalled")).ToString("dd MMM yyyy")
+                End If
+
+                lblInstalled.Text = String.Empty
+                txtInstalled.Text = String.Empty
+                If Not String.IsNullOrEmpty(dataBuilder("Installed").ToString()) Then
+                    lblInstalled.Text = Convert.ToDateTime(dataBuilder("Installed")).ToString("dd MMM yyyy")
+                    txtInstalled.Text = Convert.ToDateTime(dataBuilder("Installed")).ToString("dd MMM yyyy")
                 End If
             End If
         Catch ex As Exception

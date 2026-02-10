@@ -73,7 +73,7 @@ Partial Class Setting_Boos
             End If
 
             UpdateShipment()
-            End If
+        End If
     End Sub
 
     Protected Sub GenerateBuilder(status As String)
@@ -81,7 +81,7 @@ Partial Class Setting_Boos
             Dim archiveClass As New ArchiveClass
             Dim orderClass As New OrderClass
 
-            Dim headerData As DataTable = archiveClass.GetDataTable("SELECT * FROM Builders WHERE Active=1 AND Status='" & status & "'")
+            Dim headerData As DataTable = archiveClass.GetDataTable("SELECT TOP 10 * FROM Builders WHERE Active=1 AND Status='" & status & "' ORDER BY OrdID DESC")
 
             If headerData.Rows.Count > 0 Then
                 For i As Integer = 0 To headerData.Rows.Count - 1
@@ -98,14 +98,13 @@ Partial Class Setting_Boos
                     If loginName = "santi" Then createdBy = "14"
                     If loginName = "watik" Then createdBy = "13"
 
-                    Dim headerId As String = orderClass.GetNewOrderHeaderId()
                     Dim orderId As String = "JPMD" & ordId
 
                     Using thisConn As New SqlConnection(myConn)
                         thisConn.Open()
 
-                        Using myCmd As New SqlCommand("INSERT INTO bigblindsorder.dbo.OrderHeaders SELECT @Id, @OrderId, @CustomerId, StoreOrderNo, StoreCustomer, NULL, 'Builder', Status, OrdID, @CreatedBy, CreatedDate, QuotedDate, SubmittedDate, NULL, null, null, null, 0, 1 FROM db4700_weborder.dbo.Builders WHERE Status='" & status & "' AND Active=1 AND OrdID=@OrdID", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", headerId)
+                        Using myCmd As New SqlCommand("INSERT INTO bigblindsorder.dbo.OrderHeaders SELECT @Id, @OrderId, @CustomerId, StoreOrderNo, StoreCustomer, NULL, 'Builder', Status, NULL, @CreatedBy, CreatedDate, QuotedDate, SubmittedDate, NULL, NULL, NULL, NULL, 0, 1 FROM db4700_weborder.dbo.Builders WHERE Status='" & status & "' AND Active=1 AND OrdID=@OrdID", thisConn)
+                            myCmd.Parameters.AddWithValue("@Id", ordId)
                             myCmd.Parameters.AddWithValue("@OrderId", orderId)
                             myCmd.Parameters.AddWithValue("@CustomerId", customerId)
                             myCmd.Parameters.AddWithValue("@CreatedBy", createdBy)
@@ -114,8 +113,8 @@ Partial Class Setting_Boos
                             myCmd.ExecuteNonQuery()
                         End Using
 
-                        Using myCmd As New SqlCommand("INSERT INTO bigblindsorder.dbo.OrderBuilders SELECT @Id, Estimator, Supervisor, Address, CallUpDate, CMDueDate, BeInstalledDate FROM db4700_weborder.dbo.Builders WHERE Status='" & status & "' AND Active=1 AND OrdID=@OrdID", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", headerId)
+                        Using myCmd As New SqlCommand("INSERT INTO bigblindsorder.dbo.OrderBuilders SELECT @Id, Estimator, Supervisor, Address, CallUpDate, CMDueDate, BeInstalledDate, CompletedDate FROM db4700_weborder.dbo.Builders WHERE Status='" & status & "' AND Active=1 AND OrdID=@OrdID", thisConn)
+                            myCmd.Parameters.AddWithValue("@Id", ordId)
                             myCmd.Parameters.AddWithValue("@OrderId", orderId)
                             myCmd.Parameters.AddWithValue("@CustomerId", customerId)
                             myCmd.Parameters.AddWithValue("@CreatedBy", createdBy)
@@ -124,7 +123,7 @@ Partial Class Setting_Boos
                         End Using
 
                         Using myCmd As New SqlCommand("INSERT INTO OrderQuotes VALUES (@Id, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", headerId)
+                            myCmd.Parameters.AddWithValue("@Id", ordId)
 
                             myCmd.ExecuteNonQuery()
                         End Using
@@ -200,13 +199,11 @@ Partial Class Setting_Boos
                                     Dim productGroupName As String = String.Format("Roller Blind - {0} - {1}", tubeIstilah, groupFabric)
                                     priceProductGroupId = orderClass.GetPriceProductGroupId(productGroupName, designId)
 
-                                    Dim itemId As String = orderClass.GetNewOrderItemId()
-
                                     Using thisConn As SqlConnection = New SqlConnection(myConn)
                                         Using myCmd As SqlCommand = New SqlCommand("INSERT INTO bigblindsorder.dbo.OrderDetails(Id, HeaderId, ProductId, FabricId, FabricColourId, ChainId, BottomId, BottomColourId, PriceProductGroupId, Qty, Room, Mounting, Width, [Drop], Roll, ControlPosition, ControlLength, ControlLengthValue, ChainStopper, FlatOption, LinearMetre, SquareMetre, TotalItems, Notes, MarkUp, Active) SELECT @Id, @HeaderId, @ProductId, @FabricId, @FabricColourId, @ChainId, @BottomId, @BottomColourId, @PriceProductGroupId, 1, Room, Mounting, Width, [Drop], Roll, ControlPosition, 'Custom', RollerChainLength, Additional, FlatBottomOp, CAST(Width AS DECIMAL(18,4)) / 1000, (CAST(Width AS DECIMAL(18,4)) * CAST([Drop] AS DECIMAL(18,4))) / 1000000, 1, Notes, 0, 1 FROM db4700_weborder.dbo.Order_Detail WHERE OrddID=@OrddID", thisConn)
                                             myCmd.Parameters.AddWithValue("@OrddID", orddId)
-                                            myCmd.Parameters.AddWithValue("@Id", itemId)
-                                            myCmd.Parameters.AddWithValue("@HeaderId", headerId)
+                                            myCmd.Parameters.AddWithValue("@Id", orddId)
+                                            myCmd.Parameters.AddWithValue("@HeaderId", ordId)
                                             myCmd.Parameters.AddWithValue("@ProductId", productId)
                                             myCmd.Parameters.AddWithValue("@FabricId", If(String.IsNullOrEmpty(fabricId), CType(DBNull.Value, Object), fabricId))
                                             myCmd.Parameters.AddWithValue("@FabricColourId", If(String.IsNullOrEmpty(fabricColourId), CType(DBNull.Value, Object), fabricColourId))
@@ -220,9 +217,9 @@ Partial Class Setting_Boos
                                         End Using
                                     End Using
 
-                                    orderClass.ResetPriceDetail(headerId, itemId)
-                                    orderClass.CalculatePrice(headerId, itemId)
-                                    orderClass.FinalCostItem(headerId, itemId)
+                                    orderClass.ResetPriceDetail(ordId, orddId)
+                                    orderClass.CalculatePrice(ordId, orddId)
+                                    orderClass.FinalCostItem(ordId, orddId)
                                 End If
 
                                 If orderType = "Double Bracket" Then
@@ -275,13 +272,11 @@ Partial Class Setting_Boos
                                     priceProductGroupId = orderClass.GetPriceProductGroupId(productGroupName, designId)
                                     priceProductGroupIdB = orderClass.GetPriceProductGroupId(productGroupNameDB, designId)
 
-                                    Dim itemId As String = orderClass.GetNewOrderItemId()
-
                                     Using thisConn As SqlConnection = New SqlConnection(myConn)
                                         Using myCmd As SqlCommand = New SqlCommand("INSERT INTO bigblindsorder.dbo.OrderDetails(Id, HeaderId, ProductId, FabricId, FabricIdB, FabricColourId, FabricColourIdB, ChainId, ChainIdB, BottomId, BottomIdB, BottomColourId, BottomColourIdB, PriceProductGroupId, PriceProductGroupIdB, Qty, Room, Mounting, Width, WidthB, [Drop], DropB, Roll, RollB, ControlPosition, ControlPositionB, ControlLength, ControlLengthB, ControlLengthValue, ControlLengthValueB, ChainStopper, ChainStopperB, FlatOption, FlatOptionB, LinearMetre, LinearMetreB, SquareMetre, SquareMetreB, TotalItems, Notes, MarkUp, Active) SELECT @Id, @HeaderId, @ProductId, @FabricId, @FabricIdB, @FabricColourId, @FabricColourIdB, @ChainId, @ChainIdB, @BottomId, @BottomIdB, @BottomColourId, @BottomColourIdB, @PriceProductGroupId, @PriceProductGroupIdB, 1, Room, Mounting, Width, Width, [Drop], [Drop], Roll, Roll2a, ControlPosition, ControlPositionDB3b, 'Custom', 'Custom', RollerChainLength, RollerChainLength, Additional, Additional1, FlatBottomOp, FlatBottomOp, CAST(Width AS DECIMAL(18,4)) / 1000, CAST(Width AS DECIMAL(18,4)) / 1000, (CAST(Width AS DECIMAL(18,4)) * CAST([Drop] AS DECIMAL(18,4))) / 1000000, (CAST(Width AS DECIMAL(18,4)) * CAST([Drop] AS DECIMAL(18,4))) / 1000000, 2, Notes, 0, 1 FROM db4700_weborder.dbo.Order_Detail WHERE OrddID=@OrddID", thisConn)
                                             myCmd.Parameters.AddWithValue("@OrddID", orddId)
-                                            myCmd.Parameters.AddWithValue("@Id", itemId)
-                                            myCmd.Parameters.AddWithValue("@HeaderId", headerId)
+                                            myCmd.Parameters.AddWithValue("@Id", orddId)
+                                            myCmd.Parameters.AddWithValue("@HeaderId", ordId)
                                             myCmd.Parameters.AddWithValue("@ProductId", productId)
                                             myCmd.Parameters.AddWithValue("@FabricId", If(String.IsNullOrEmpty(fabricId), CType(DBNull.Value, Object), fabricId))
                                             myCmd.Parameters.AddWithValue("@FabricIdB", If(String.IsNullOrEmpty(fabricId), CType(DBNull.Value, Object), fabricId))
@@ -302,9 +297,9 @@ Partial Class Setting_Boos
                                         End Using
                                     End Using
 
-                                    orderClass.ResetPriceDetail(headerId, itemId)
-                                    orderClass.CalculatePrice(headerId, itemId)
-                                    orderClass.FinalCostItem(headerId, itemId)
+                                    orderClass.ResetPriceDetail(ordId, orddId)
+                                    orderClass.CalculatePrice(ordId, orddId)
+                                    orderClass.FinalCostItem(ordId, orddId)
                                 End If
 
                                 If orderType = "Link System Independent 2 Blinds" Then
@@ -350,13 +345,11 @@ Partial Class Setting_Boos
                                     priceProductGroupId = orderClass.GetPriceProductGroupId(productGroupName, designId)
                                     priceProductGroupIdB = orderClass.GetPriceProductGroupId(productGroupName, designId)
 
-                                    Dim itemId As String = orderClass.GetNewOrderItemId()
-
                                     Using thisConn As SqlConnection = New SqlConnection(myConn)
                                         Using myCmd As SqlCommand = New SqlCommand("INSERT INTO bigblindsorder.dbo.OrderDetails(Id, HeaderId, ProductId, FabricId, FabricIdB, FabricColourId, FabricColourIdB, ChainId, ChainIdB, BottomId, BottomIdB, BottomColourId, BottomColourIdB, PriceProductGroupId, PriceProductGroupIdB, Qty, Room, Mounting, Width, WidthB, [Drop], DropB, Roll, RollB, ControlPosition, ControlPositionB, ControlLength, ControlLengthB, ControlLengthValue, ControlLengthValueB, ChainStopper, ChainStopperB, FlatOption, FlatOptionB, LinearMetre, LinearMetreB, SquareMetre, SquareMetreB, TotalItems, Notes, MarkUp, Active) SELECT @Id, @HeaderId, @ProductId, @FabricId, @FabricIdB, @FabricColourId, @FabricColourId, @ChainId, @ChainId, @BottomId, @BottomId, @BottomColourId, @BottomColourId, @PriceProductGroupId, @PriceProductGroupIdB, 1, Room, Mounting, Width, Width2C, [Drop], [Drop], Roll, Roll, 'Left', 'Right', 'Custom', 'Custom', RollerChainLength, RollerChainLength, Additional, Additional1, FlatBottomOp, FlatBottomOp, CAST(Width AS DECIMAL(18,4)) / 1000, CAST(Width2c AS DECIMAL(18,4)) / 1000, (CAST(Width AS DECIMAL(18,4)) * CAST([Drop] AS DECIMAL(18,4))) / 1000000, (CAST(Width2c AS DECIMAL(18,4)) * CAST([Drop] AS DECIMAL(18,4))) / 1000000, 2, Notes, 0, 1 FROM db4700_weborder.dbo.Order_Detail WHERE OrddID=@OrddID", thisConn)
                                             myCmd.Parameters.AddWithValue("@OrddID", orddId)
-                                            myCmd.Parameters.AddWithValue("@Id", itemId)
-                                            myCmd.Parameters.AddWithValue("@HeaderId", headerId)
+                                            myCmd.Parameters.AddWithValue("@Id", orddId)
+                                            myCmd.Parameters.AddWithValue("@HeaderId", ordId)
                                             myCmd.Parameters.AddWithValue("@ProductId", productId)
                                             myCmd.Parameters.AddWithValue("@FabricId", If(String.IsNullOrEmpty(fabricId), CType(DBNull.Value, Object), fabricId))
                                             myCmd.Parameters.AddWithValue("@FabricIdB", If(String.IsNullOrEmpty(fabricId), CType(DBNull.Value, Object), fabricId))
@@ -372,9 +365,9 @@ Partial Class Setting_Boos
                                         End Using
                                     End Using
 
-                                    orderClass.ResetPriceDetail(headerId, itemId)
-                                    orderClass.CalculatePrice(headerId, itemId)
-                                    orderClass.FinalCostItem(headerId, itemId)
+                                    orderClass.ResetPriceDetail(ordId, orddId)
+                                    orderClass.CalculatePrice(ordId, orddId)
+                                    orderClass.FinalCostItem(ordId, orddId)
                                 End If
                             End If
 
@@ -416,13 +409,11 @@ Partial Class Setting_Boos
 
                                 Dim priceProductGroupId As String = ""
 
-                                Dim itemId As String = orderClass.GetNewOrderItemId()
-
                                 Using thisConn As SqlConnection = New SqlConnection(myConn)
                                     Using myCmd As SqlCommand = New SqlCommand("INSERT INTO bigblindsorder.dbo.OrderDetails(Id, HeaderId, ProductId, FabricId, FabricColourId, ChainId, PriceProductGroupId, Qty, QtyBlade, Room, Mounting, Width, [Drop], StackPosition, ControlPosition, ControlLength, ControlLengthValue, WandColour, WandLengthValue, FabricInsert, BottomJoining, BracketExtension, Sloping, LinearMetre, SquareMetre, TotalItems, Notes, MarkUp, Active) SELECT @Id, @HeaderId, @ProductId, @FabricId, @FabricColourId, @ChainId, @PriceProductGroupId, 1, 1, Room, Mounting, Width, [Drop], ControlOperation, ControlPosition, 'Custom', @ControlLengthValue, @WandColour, @WandLengthValue, FabricInsert, BottomJoin, Extbracket, '', CAST(Width AS DECIMAL(18,4)) / 1000, (CAST(Width2c AS DECIMAL(18,4)) * CAST([Drop] AS DECIMAL(18,4))) / 1000000, 1, Notes, 0, 1 FROM db4700_weborder.dbo.Order_Detail WHERE OrddID=@OrddID", thisConn)
-                                        myCmd.Parameters.AddWithValue("@Id", itemId)
+                                        myCmd.Parameters.AddWithValue("@Id", orddId)
                                         myCmd.Parameters.AddWithValue("@OrddID", orddId)
-                                        myCmd.Parameters.AddWithValue("@HeaderId", headerId)
+                                        myCmd.Parameters.AddWithValue("@HeaderId", ordId)
                                         myCmd.Parameters.AddWithValue("@ProductId", productId)
                                         myCmd.Parameters.AddWithValue("@FabricId", If(String.IsNullOrEmpty(fabricId), CType(DBNull.Value, Object), fabricId))
                                         myCmd.Parameters.AddWithValue("@FabricColourId", If(String.IsNullOrEmpty(fabricColourId), CType(DBNull.Value, Object), fabricColourId))
@@ -437,9 +428,9 @@ Partial Class Setting_Boos
                                     End Using
                                 End Using
 
-                                orderClass.ResetPriceDetail(headerId, itemId)
-                                orderClass.CalculatePrice(headerId, itemId)
-                                orderClass.FinalCostItem(headerId, itemId)
+                                orderClass.ResetPriceDetail(ordId, orddId)
+                                orderClass.CalculatePrice(ordId, orddId)
+                                orderClass.FinalCostItem(ordId, orddId)
                             End If
                         Next
                     End If
