@@ -12,6 +12,9 @@ Partial Class Account_Login
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             CheckSessionStates()
+
+            Dim thisScript As String = "window.onload = function() { showInfo(); };"
+            ClientScript.RegisterStartupScript(Me.GetType(), "showInfo", thisScript, True)
         End If
     End Sub
 
