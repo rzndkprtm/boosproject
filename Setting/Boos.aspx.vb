@@ -38,9 +38,6 @@ Partial Class Setting_Boos
         If thisAction = "resetpassword" Then
             ResetPassword()
         End If
-        If thisAction = "productionorder" Then
-            ProductionOrder()
-        End If
         If thisAction = "clearsession" Then
             ClearSession()
         End If
@@ -69,11 +66,32 @@ Partial Class Setting_Boos
             Dim shipDate As DateTime
 
             If String.IsNullOrEmpty(shipDateStr) OrElse Not DateTime.TryParse(shipDateStr, shipDate) Then
-
+                Exit Sub
             End If
 
-            UpdateShipment()
+            UpdateShipment(id, status, shipmentNumber, shipDate, containerNumber, courier, invoiceNumber)
         End If
+    End Sub
+
+    Protected Sub UpdateShipment(id As String, status As String, shipNumber As String, shipDate As Date, conNumber As String, courier As String, invNumber As String)
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderShipments SET ShipmentNumber=@ShipmentNumber, ShipmentDate=@ShipmentDate, ContainerNumber=@ContainerNumber, Courier=@Courier WHERE Id=@Id; UPDATE OrderHeaders SET Status=@Status WHERE Id=@Id; UPDATE OrderInvoices SET InvoiceNumber=@InvoiceNumber WHERE Id=@Id", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", id)
+                    myCmd.Parameters.AddWithValue("@ShipmentNumber", shipNumber)
+                    myCmd.Parameters.AddWithValue("@ShipmentDate", shipDate)
+                    myCmd.Parameters.AddWithValue("@ContainerNumber", conNumber)
+                    myCmd.Parameters.AddWithValue("@Courier", courier)
+                    myCmd.Parameters.AddWithValue("@Status", status)
+                    myCmd.Parameters.AddWithValue("@InvoiceNumber", invNumber)
+
+                    thisConn.Open()
+                    myCmd.ExecuteNonQuery()
+                End Using
+            End Using
+        Catch ex As Exception
+
+        End Try
     End Sub
 
     Protected Sub GenerateBuilder(status As String)
@@ -569,21 +587,6 @@ Partial Class Setting_Boos
         End If
     End Sub
 
-    Protected Sub ProductionOrder()
-        Try
-            Dim thisData As DataTable = settingClass.GetDataTable("SELECT * FROM OrderHeaders WHERE ProductionDate=CAST(GETDATE() AS DATE) AND Active=1")
-            If thisData.Rows.Count > 0 Then
-                Dim mailingClass As New MailingClass
-                For i As Integer = 0 To thisData.Rows.Count - 1
-                    Dim headerId As String = thisData.Rows(i)("Id").ToString()
-
-                    mailingClass.ProductionOrder(headerId)
-                Next
-            End If
-        Catch ex As Exception
-        End Try
-    End Sub
-
     Protected Sub ClearSession()
         Try
             Using thisConn As New SqlConnection(myConn)
@@ -597,7 +600,5 @@ Partial Class Setting_Boos
         End Try
     End Sub
 
-    Protected Sub UpdateShipment()
 
-    End Sub
 End Class
