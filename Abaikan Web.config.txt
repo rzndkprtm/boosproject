@@ -58,3 +58,21 @@ Password : 4Y_xv&nbC4Hw3fio
 https://swh17.conetix.com.au:8443/
 User : onlineor
 Password : 2%R0yy47g
+
+JPMD ACCOUNT
+bella
+fariz
+rosye
+
+CS - DE
+indra
+rosma
+
+DE
+lia --tetap pakai password ketika kelola order lokal
+watik --tetap pakai password ketika kelola order lokal
+santi --saya hold dulu ya, role untuk web masih ngambang
+
+Export
+puput
+egi --tetap pakai password ketika kelola order lokal
