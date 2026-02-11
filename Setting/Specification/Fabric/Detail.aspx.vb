@@ -23,11 +23,15 @@ Partial Class Setting_Specification_Fabric_Detail
         lblId.Text = Request.QueryString("fabricid").ToString()
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-            MessageError_Edit(False, String.Empty)
             MessageError_Process(False, String.Empty)
 
             BindData(lblId.Text)
         End If
+    End Sub
+
+    Protected Sub btnEditFabric_Click(sender As Object, e As EventArgs)
+        url = String.Format("~/setting/specification/fabric/edit?fabricid={0}", lblId.Text)
+        Response.Redirect(url, False)
     End Sub
 
     Protected Sub btnAddColour_Click(sender As Object, e As EventArgs)
@@ -77,88 +81,6 @@ Partial Class Setting_Specification_Fabric_Detail
                 End Try
             End If
         End If
-    End Sub
-
-    Protected Sub btnEdit_Click(sender As Object, e As EventArgs)
-        MessageError_Edit(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showEdit(); };"
-        Try
-            If txtName.Text = "" Then
-                MessageError_Edit(True, "FABRIC NAME IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showEdit", thisScript, True)
-                Exit Sub
-            End If
-
-            Dim designSelected As String = String.Empty
-            Dim tubeSelected As String = String.Empty
-            Dim companySelected As String = String.Empty
-
-            For Each item As ListItem In lbDesign.Items
-                If item.Selected Then
-                    designSelected += item.Value & ","
-                End If
-            Next
-            If designSelected = "" Then
-                MessageError_Process(True, "DESIGN TYPE IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-                Exit Sub
-            End If
-
-            For Each item As ListItem In lbCompany.Items
-                If item.Selected Then
-                    companySelected += item.Value & ","
-                End If
-            Next
-            If companySelected = "" Then
-                MessageError_Process(True, "COMPANY IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-                Exit Sub
-            End If
-
-            If msgErrorProcess.InnerText = "" Then
-                Dim designType As String = designSelected.Remove(designSelected.Length - 1).ToString()
-                Dim tubeType As String = String.Empty
-                If Not lbTube.SelectedValue = "" Then
-                    Dim tube As String = String.Empty
-                    For Each item As ListItem In lbTube.Items
-                        If item.Selected Then
-                            tube += item.Value & ","
-                        End If
-                    Next
-                    tubeType = tube.Remove(tube.Length - 1).ToString()
-                End If
-                Dim companyDetail As String = companySelected.Remove(companySelected.Length - 1).ToString()
-
-                Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Fabrics SET DesignId=@DesignId, TubeId=@TubeId, CompanyDetailId=@CompanyDetailId, Name=@Name, Type=@Type, [Group]=@Group, NoRailRoad=@NoRailRoad, Active=@Active WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                        myCmd.Parameters.AddWithValue("@DesignId", designType)
-                        myCmd.Parameters.AddWithValue("@TubeId", tubeType)
-                        myCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetail)
-                        myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@Group", ddlGroup.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@NoRailRoad", ddlNoRailRoad.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
-
-                        thisConn.Open()
-                        myCmd.ExecuteNonQuery()
-                    End Using
-                End Using
-
-                Dim dataLog As Object() = {"Fabrics", lblId.Text, Session("LoginId").ToString(), "Fabric Updated"}
-                settingClass.Logs(dataLog)
-
-                url = String.Format("~/setting/specification/fabric/detail?fabricid={0}", lblId.Text)
-                Response.Redirect(url, False)
-            End If
-        Catch ex As Exception
-            MessageError_Edit(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Edit(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showEdit", thisScript, True)
-        End Try
     End Sub
 
     Protected Sub btnProcess_Click(sender As Object, e As EventArgs)
@@ -240,28 +162,17 @@ Partial Class Setting_Specification_Fabric_Detail
                 Exit Sub
             End If
 
-            BindDesign()
-            BindTube()
-            BindCompanyDetail()
-
             lblName.Text = thisData("Name").ToString()
-            txtName.Text = thisData("Name").ToString()
-
             lblType.Text = thisData("Type").ToString()
-            ddlType.SelectedValue = thisData("Type").ToString()
-
             lblGroup.Text = thisData("Group").ToString()
-            ddlGroup.SelectedValue = thisData("Group").ToString()
 
             Dim norailroad As Integer = Convert.ToInt32(thisData("NoRailRoad"))
             lblNoRailRoad.Text = "Error"
-            ddlNoRailRoad.SelectedValue = norailroad
             If norailroad = 1 Then lblNoRailRoad.Text = "Yes"
             If norailroad = 0 Then lblNoRailRoad.Text = "No"
 
             Dim active As Integer = Convert.ToInt32(thisData("Active"))
             lblActive.Text = "Error"
-            ddlActive.SelectedValue = active
             If active = 1 Then lblActive.Text = "Yes"
             If active = 0 Then lblActive.Text = "No"
 
@@ -271,9 +182,6 @@ Partial Class Setting_Specification_Fabric_Detail
 
                 Dim designName As String = String.Empty
                 For Each i In designArray
-                    If Not (i.Equals(String.Empty)) Then
-                        lbDesign.Items.FindByValue(i).Selected = True
-                    End If
                     Dim thisName As String = settingClass.GetItemData("SELECT Name FROM Designs WHERE Id='" & i & "'")
                     designName &= thisName & ", "
                 Next
@@ -287,10 +195,6 @@ Partial Class Setting_Specification_Fabric_Detail
 
                 Dim tubeName As String = String.Empty
                 For Each i In tubeArray
-                    If Not (i.Equals(String.Empty)) Then
-                        lbTube.Items.FindByValue(i).Selected = True
-                    End If
-
                     Dim thisName As String = settingClass.GetItemData("SELECT Name FROM ProductTubes WHERE Id='" & i & "'")
                     tubeName &= thisName & ", "
                 Next
@@ -304,10 +208,6 @@ Partial Class Setting_Specification_Fabric_Detail
 
                 Dim companyDetailName As String = String.Empty
                 For Each i In companyArray
-                    If Not (i.Equals(String.Empty)) Then
-                        lbCompany.Items.FindByValue(i).Selected = True
-                    End If
-
                     Dim thisName As String = settingClass.GetItemData("SELECT Name FROM CompanyDetails WHERE Id='" & i & "'")
                     companyDetailName += thisName & ", "
                 Next
@@ -318,7 +218,7 @@ Partial Class Setting_Specification_Fabric_Detail
             gvList.DataSource = settingClass.GetDataTable("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM FabricColours WHERE FabricId='" & fabricId & "'")
             gvList.DataBind()
 
-            aEditFabric.Visible = PageAction("Edit")
+            btnEditFabric.Visible = PageAction("Edit")
             btnAddColour.Visible = PageAction("Add Colour")
         Catch ex As Exception
             MessageError(True, ex.ToString)
@@ -328,69 +228,8 @@ Partial Class Setting_Specification_Fabric_Detail
         End Try
     End Sub
 
-    Protected Sub BindDesign()
-        lbDesign.Items.Clear()
-        Try
-            lbDesign.DataSource = settingClass.GetDataTable("SELECT * FROM Designs ORDER BY Name ASC")
-            lbDesign.DataTextField = "Name"
-            lbDesign.DataValueField = "Id"
-            lbDesign.DataBind()
-
-            If lbDesign.Items.Count > 0 Then
-                lbDesign.Items.Insert(0, New ListItem("", ""))
-            End If
-        Catch ex As Exception
-            MessageError_Process(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
-    Protected Sub BindTube()
-        lbTube.Items.Clear()
-        Try
-            lbTube.DataSource = settingClass.GetDataTable("SELECT * FROM ProductTubes ORDER BY Name ASC")
-            lbTube.DataTextField = "Name"
-            lbTube.DataValueField = "Id"
-            lbTube.DataBind()
-
-            If lbTube.Items.Count > 0 Then
-                lbTube.Items.Insert(0, New ListItem("", ""))
-            End If
-        Catch ex As Exception
-            MessageError_Process(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
-    Protected Sub BindCompanyDetail()
-        lbCompany.Items.Clear()
-        Try
-            lbCompany.DataSource = settingClass.GetDataTable("SELECT * FROM CompanyDetails ORDER BY Name ASC")
-            lbCompany.DataTextField = "Name"
-            lbCompany.DataValueField = "Id"
-            lbCompany.DataBind()
-
-            If lbCompany.Items.Count > 0 Then
-                lbCompany.Items.Insert(0, New ListItem("", ""))
-            End If
-        Catch ex As Exception
-            MessageError_Process(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
-    End Sub
-
-    Protected Sub MessageError_Edit(visible As Boolean, message As String)
-        divErrorEdit.Visible = visible : msgErrorEdit.InnerText = message
     End Sub
 
     Protected Sub MessageError_Process(visible As Boolean, message As String)

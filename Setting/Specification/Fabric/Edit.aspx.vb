@@ -1,4 +1,5 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data
+Imports System.Data.SqlClient
 
 Partial Class Setting_Specification_Fabric_Edit
     Inherits Page
@@ -15,12 +16,16 @@ Partial Class Setting_Specification_Fabric_Edit
             Exit Sub
         End If
 
+        If String.IsNullOrEmpty(Request.QueryString("fabricid")) Then
+            Response.Redirect("~/setting/specification/fabric", False)
+            Exit Sub
+        End If
+
+        lblId.Text = Request.QueryString("fabricid").ToString()
         If Not IsPostBack Then
             MessageError(False, String.Empty)
 
-            BindDesign()
-            BindTube()
-            BindCompanyDetail()
+            BindData(lblId.Text)
         End If
     End Sub
 
@@ -70,14 +75,12 @@ Partial Class Setting_Specification_Fabric_Edit
                 End If
                 Dim companyDetail As String = companySelected.Remove(companySelected.Length - 1).ToString()
 
-                Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Fabrics ORDER BY Id DESC")
-
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Fabrics VALUES (@Id, @DesignId, @TubeId, @CompanyId, @Name, @Type, @Group, @NoRailRoad, @Active)", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", thisId)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Fabrics SET DesignId=@DesignId, TubeId=@TubeId, CompanyDetailId=@CompanyDetailId, Name=@Name, Type=@Type, [Group]=@Group, NoRailRoad=@NoRailRoad, Active=@Active WHERE Id=@Id", thisConn)
+                        myCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         myCmd.Parameters.AddWithValue("@DesignId", designType)
                         myCmd.Parameters.AddWithValue("@TubeId", tubeType)
-                        myCmd.Parameters.AddWithValue("@CompanyId", companyDetail)
+                        myCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetail)
                         myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                         myCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
                         myCmd.Parameters.AddWithValue("@Group", ddlGroup.SelectedValue)
@@ -89,10 +92,10 @@ Partial Class Setting_Specification_Fabric_Edit
                     End Using
                 End Using
 
-                Dim dataLog As Object() = {"Fabrics", thisId, Session("LoginId").ToString(), "Fabric Created"}
+                Dim dataLog As Object() = {"Fabrics", lblId.Text, Session("LoginId").ToString(), "Fabric Updated"}
                 settingClass.Logs(dataLog)
 
-                url = String.Format("~/setting/specification/fabric/detail?fabricid={0}", thisId)
+                url = String.Format("~/setting/specification/fabric/detail?fabricid={0}", lblId.Text)
                 Response.Redirect(url, False)
             End If
         Catch ex As Exception
@@ -104,7 +107,54 @@ Partial Class Setting_Specification_Fabric_Edit
     End Sub
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
-        Response.Redirect("~/setting/specification/fabric", False)
+        url = String.Format("~/setting/specification/fabric/detail?fabricid={0}", lblId.Text)
+        Response.Redirect(url, False)
+    End Sub
+
+    Protected Sub BindData(fabricId As String)
+        Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM Fabrics WHERE Id='" & fabricId & "'")
+        If thisData Is Nothing Then
+            Response.Redirect("~/setting/specification/fabric", False)
+            Exit Sub
+        End If
+
+        BindDesign()
+        BindTube()
+        BindCompanyDetail()
+
+        txtName.Text = thisData("Name").ToString()
+        ddlType.SelectedValue = thisData("Type").ToString()
+        ddlGroup.SelectedValue = thisData("Group").ToString()
+        ddlNoRailRoad.SelectedValue = Convert.ToInt32(thisData("NoRailRoad"))
+        ddlActive.SelectedValue = Convert.ToInt32(thisData("Active"))
+
+        If Not thisData("DesignId").ToString() = "" Then
+            Dim designArray() As String = thisData("DesignId").ToString().Split(",")
+            For Each i In designArray
+                If Not (i.Equals(String.Empty)) Then
+                    lbDesign.Items.FindByValue(i).Selected = True
+                End If
+            Next
+        End If
+
+        If Not thisData("TubeId").ToString() = "" Then
+            Dim tubeArray() As String = thisData("TubeId").ToString().Split(",")
+            For Each i In tubeArray
+                If Not (i.Equals(String.Empty)) Then
+                    lbTube.Items.FindByValue(i).Selected = True
+                End If
+            Next
+        End If
+
+        If Not thisData("CompanyDetailId").ToString() = "" Then
+            Dim companyArray() As String = thisData("CompanyDetailId").ToString().Split(",")
+
+            For Each i In companyArray
+                If Not (i.Equals(String.Empty)) Then
+                    lbCompany.Items.FindByValue(i).Selected = True
+                End If
+            Next
+        End If
     End Sub
 
     Protected Sub BindDesign()
