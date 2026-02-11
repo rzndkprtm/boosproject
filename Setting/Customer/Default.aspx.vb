@@ -1,15 +1,16 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 
+
 Partial Class Setting_Customer_Default
     Inherits Page
+
+    Dim settingClass As New SettingClass
+    Dim mailingClass As New MailingClass
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataMailing As Object() = Nothing
     Dim url As String = String.Empty
-
-    Dim settingClass As New SettingClass
-    Dim mailingClass As New MailingClass
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
