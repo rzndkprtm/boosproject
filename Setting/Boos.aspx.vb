@@ -131,10 +131,10 @@ Partial Class Setting_Boos
                         thisConn.Close()
                     End Using
 
-                    Dim directoryOrder As String = Server.MapPath(String.Format("~/File/Order/{0}/", orderId))
-                    If Not Directory.Exists(directoryOrder) Then
-                        Directory.CreateDirectory(directoryOrder)
-                    End If
+                    'Dim directoryOrder As String = Server.MapPath(String.Format("~/File/Order/{0}/", orderId))
+                    'If Not Directory.Exists(directoryOrder) Then
+                    '    Directory.CreateDirectory(directoryOrder)
+                    'End If
 
                     'ORDER DETAIL
                     Dim detailData As DataTable = archiveClass.GetDataTable("SELECT * FROM Order_Detail WHERE FKOrdID='" & ordId & "' AND Active=1 ORDER BY OrddID ASC")
