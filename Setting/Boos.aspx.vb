@@ -81,7 +81,7 @@ Partial Class Setting_Boos
             Dim archiveClass As New ArchiveClass
             Dim orderClass As New OrderClass
 
-            Dim headerData As DataTable = archiveClass.GetDataTable("SELECT TOP 10 * FROM Builders WHERE Active=1 AND Status='" & status & "' ORDER BY OrdID DESC")
+            Dim headerData As DataTable = archiveClass.GetDataTable("SELECT * FROM Builders WHERE Active=1 AND Status='" & status & "' ORDER BY OrdID DESC")
 
             If headerData.Rows.Count > 0 Then
                 For i As Integer = 0 To headerData.Rows.Count - 1
