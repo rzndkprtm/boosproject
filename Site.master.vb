@@ -102,19 +102,19 @@ Public Partial Class SiteMaster
                 End If
 
                 If companyId = "1" Then
-                    imgLogo.ImageUrl = "~/assets/images/logo/general.jpg"
+                    imgLogo.ImageUrl = "~/Assets/images/logo/general.jpg"
                 End If
                 If companyId = "2" Then
-                    imgLogo.ImageUrl = "~/assets/images/logo/jpmdirect.jpg"
+                    imgLogo.ImageUrl = "~/Assets/images/logo/jpmdirect.jpg"
                 End If
                 If companyId = "3" Then
-                    imgLogo.ImageUrl = "~/assets/images/logo/accent.png"
+                    imgLogo.ImageUrl = "~/Assets/images/logo/accent.png"
                 End If
                 If companyId = "4" Then
-                    imgLogo.ImageUrl = "~/assets/images/logo/general.jpg"
+                    imgLogo.ImageUrl = "~/Assets/images/logo/sunlight.jpg"
                 End If
                 If companyId = "5" Then
-                    imgLogo.ImageUrl = "~/assets/images/logo/general.jpg"
+                    imgLogo.ImageUrl = "~/Assets/images/logo/general.jpg"
                 End If
 
                 Using thisConn As New SqlConnection(myConn)
