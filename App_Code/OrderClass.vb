@@ -1716,7 +1716,7 @@ Public Class OrderClass
                         Next
                     End If
 
-                    Dim costingDescription As String = String.Format("#2 {0}", priceProductGroupName)
+                    Dim costingDescription As String = String.Format("#2 {0}", priceProductGroupNameB)
 
                     objectArray = {headerId, itemId, itemNumber, "Base", costingDescription, thisBuy, thisSell}
                     OrderCostings(objectArray)
