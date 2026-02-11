@@ -1165,8 +1165,7 @@ function showInfo(type) {
     let info;
 
     if (type === "Batten Colour") {
-        let urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/roman/battencolour.jpg";
-        //let urlImage = "https://ordersblindonline.com/assets/images/products/roman/battencolour.jpg";
+        let urlImage = "https://ordersblindonline.com/assets/images/products/roman/battencolour.jpg";
         info = `<img src="${urlImage}" alt="Sub Type Image" style="max-width:100%;height:auto;">`;
     } else if (type === "Control Length") {
 

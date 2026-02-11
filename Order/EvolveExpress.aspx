@@ -612,5 +612,5 @@
         </div>
     </div>
     
-    <script src='<%: ResolveUrl("~/Scripts/WebForms/Order/EvolveExpress.js?v=1.0.0") %>'></script>
+    <script src="/Scripts/WebOrders/EvolveExpress.js?v=2.0.0"></script>
 </asp:Content>

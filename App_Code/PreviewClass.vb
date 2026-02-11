@@ -2399,7 +2399,7 @@ Public Class PreviewEvents
             logoPath = HttpContext.Current.Server.MapPath("~/Assets/images/logo/accent.png")
         End If
         If pageCompany = "4" Then
-            logoPath = HttpContext.Current.Server.MapPath("~/Assets/images/logo/jpmdirect.jpg")
+            logoPath = HttpContext.Current.Server.MapPath("~/Assets/images/logo/sunlight.jpg")
         End If
         If pageCompany = "5" Then
             logoPath = HttpContext.Current.Server.MapPath("~/Assets/images/logo/big.JPG")

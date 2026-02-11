@@ -1118,8 +1118,7 @@ function showInfo(type) {
         info = "Layout Information";
         info += "<br /><br />";
 
-        let urlImage = "https://bigblinds.ordersblindonline.com/Assets/images/products/panelglide/layoutoption.jpg";
-        //let urlImage = "https://ordersblindonline.com/Assets/images/products/panelglide/layoutoption.jpg";
+        let urlImage = "https://ordersblindonline.com/Assets/images/products/panelglide/layoutoption.jpg";
         info += `<img src="${urlImage}" style="max-width:100%;height:auto;">`;
     } else if (type === "Layout Custom") {
         info = "Layout Custom Information";
@@ -1138,8 +1137,7 @@ function showInfo(type) {
         info += "<br />";
         info += "Maximum custom wand length is 1000mm.";
     } else if (type === "Batten Colour") {
-        let urlImage = "https://bigblinds.ordersblindonline.com/Assets/images/products/panelglide/battencolour.jpg";
-        //let urlImage = "https://ordersblindonline.com/Assets/images/products/panelglide/battencolour.jpg";
+        let urlImage = "https://ordersblindonline.com/Assets/images/products/panelglide/battencolour.jpg";
         info = `<img src="${urlImage}" style="max-width:100%;height:auto;">`;
     }
     document.getElementById("spanInfo").innerHTML = info;
