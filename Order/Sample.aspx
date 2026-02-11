@@ -238,6 +238,5 @@
         </div>
     </div>
     
-    <script src="/Scripts/WebOrders/Sample.js?v=1.1.0"></script>
-    <%--<script src="/Scripts/WebOrders/Sample.js?v=1.0.0"></script>--%>
+    <script src="/Scripts/WebOrders/Sample.js?v=2.0.0"></script>
 </asp:Content>

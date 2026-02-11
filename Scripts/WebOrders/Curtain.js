@@ -1282,8 +1282,7 @@ function showInfo(type) {
     let info;
 
     if (type === "TieBack") {
-        let img = "https://bigblinds.ordersblindonline.com/assets/images/products/curtain/tieback.jpg";
-        //let img = "https://ordersblindonline.com/assets/images/products/curtain/tieback.jpg";
+        let img = "https://ordersblindonline.com/assets/images/products/curtain/tieback.jpg";
 
         info = "<b>Tie Back Information</b>";
         info += "<br /><br />";
@@ -1297,16 +1296,13 @@ function showGallery(type) {
     let info;
 
     if (type === "Heading") {
-        let urlImage = "https://bigblinds.ordersblindonline.com/Assets/images/products/curtain/heading.jpg";
-        //let urlImage = "https://ordersblindonline.com/Assets/images/products/curtain/heading.jpg";
+        let urlImage = "https://ordersblindonline.com/Assets/images/products/curtain/heading.jpg";
         info = `<img src="${urlImage}" style="max-width:100%;height:auto;">`;
     } else if (type === "Style") {
-        let urlImage = "https://bigblinds.ordersblindonline.com/Assets/images/products/curtain/styletrack.jpg";
-        //let urlImage = "https://ordersblindonline.com/Assets/images/products/curtain/styletrack.jpg";
+        let urlImage = "https://ordersblindonline.com/Assets/images/products/curtain/styletrack.jpg";
         info = `<img src="${urlImage}" style="max-width:100%;height:auto;">`;
     } else if (type === "Commercial") {
-        let urlImage = "https://bigblinds.ordersblindonline.com/Assets/images/products/curtain/commercialtrack.jpg";
-        //let urlImage = "https://ordersblindonline.com/Assets/images/products/curtain/commercialtrack.jpg";
+        let urlImage = "https://ordersblindonline.com/Assets/images/products/curtain/commercialtrack.jpg";
         info = `<img src="${urlImage}" style="max-width:100%;height:auto;">`;
     }
     document.getElementById("spanInfoGallery").innerHTML = info;

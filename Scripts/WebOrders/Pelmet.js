@@ -923,8 +923,7 @@ function showInfo(type) {
     let info;
 
     if (type === "Batten Colour") {
-        let urlImage = "https://bigblinds.ordersblindonline.com/Assets/images/products/pelmet/timbercolour.JPG";
-        //let urlImage = "https://ordersblindonline.com/Assets/images/products/pelmet/timbercolour.JPG";
+        let urlImage = "https://ordersblindonline.com/Assets/images/products/pelmet/timbercolour.JPG";
 
         info = "Batten Colour";
         info = `<img src="${urlImage}" style="max-width:100%;height:auto;">`;
@@ -936,8 +935,7 @@ function showGallery(type) {
     let info;
 
     if (type === "Layout") {
-        let urlImage = "https://bigblinds.ordersblindonline.com/Assets/images/products/pelmet/layout.jpg";
-        //let urlImage = "https://ordersblindonline.com/Assets/images/products/pelmet/layout.jpg";
+        let urlImage = "https://ordersblindonline.com/Assets/images/products/pelmet/layout.jpg";
 
         info = `<img src="${urlImage}" style="max-width:100%;height:auto;">`;
     }

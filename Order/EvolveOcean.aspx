@@ -612,5 +612,5 @@
         </div>
     </div>
     
-    <script src='<%: ResolveUrl("~/Scripts/WebForms/Order/EvolveOcean.js?v=1.0.0") %>'></script>
+    <script src="/Scripts/WebOrders/EvolveOcean.js?v=2.0.0"></script>
 </asp:Content>

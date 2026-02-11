@@ -1138,19 +1138,15 @@ function showInfo(type) {
     } else if (type === "Second Size") {
         info = "<b>Drop Information</b>";
     } else if (type === "First") {
-        let urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/venetian/2on1venetianleft-1.png";
-        //let urlImage = "https://ordersblindonline.com/assets/images/products/venetian/2on1venetianleft-1.png";
+        let urlImage = "https://ordersblindonline.com/assets/images/products/venetian/2on1venetianleft-1.png";
 
         const subType = document.getElementById("subtype").value;
         if (subType === "2 on 1 Left-Left") {
-            urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/venetian/2on1venetianleft-1.png";
-            //urlImage = "https://ordersblindonline.com/assets/images/products/venetian/2on1venetianleft-1.png";
+            urlImage = "https://ordersblindonline.com/assets/images/products/venetian/2on1venetianleft-1.png";
         } else if (subType === "2 on 1 Right-Right") {
-            urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/venetian/2on1venetianright-1.png";
-            //urlImage = "https://ordersblindonline.com/assets/images/products/venetian/2on1venetianright-1.png";
+            urlImage = "https://ordersblindonline.com/assets/images/products/venetian/2on1venetianright-1.png";
         } else if (subType === "2 on 1 Left-Right") {
-            urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/venetian/2on1venetianleftright-1.png";
-            //urlImage = "https://ordersblindonline.com/assets/images/products/venetian/2on1venetianleftright-1.png";
+            urlImage = "https://ordersblindonline.com/assets/images/products/venetian/2on1venetianleftright-1.png";
         }
 
         info = "<b>Layout Information</b>";
@@ -1158,19 +1154,15 @@ function showInfo(type) {
         info += `<img src="${urlImage}" alt="Sub Type Image" style="max-width:100%;height:auto;">`;
         info += "<br /><br />";
     } else if (type === "Second") {
-        let urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/venetian/2on1venetianleft-1.png";
-        //let urlImage = "https://ordersblindonline.com/assets/images/products/venetian/2on1venetianleft-1.png";
+        let urlImage = "https://ordersblindonline.com/assets/images/products/venetian/2on1venetianleft-1.png";
 
         const subType = document.getElementById("subtype").value;
         if (subType === "2 on 1 Left-Left") {
-            urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/venetian/2on1venetianleft-2.png";
-            //urlImage = "https://ordersblindonline.com/assets/images/products/venetian/2on1venetianleft-2.png";
+            urlImage = "https://ordersblindonline.com/assets/images/products/venetian/2on1venetianleft-2.png";
         } else if (subType === "2 on 1 Right-Right") {
-            urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/venetian/2on1venetianright-2.png";
-            //urlImage = "https://ordersblindonline.com/assets/images/products/venetian/2on1venetianright-2.png";
+            urlImage = "https://ordersblindonline.com/assets/images/products/venetian/2on1venetianright-2.png";
         } else if (subType === "2 on 1 Left-Right") {
-            urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/venetian/2on1venetianleftright-2.png";
-            //urlImage = "https://ordersblindonline.com/assets/images/products/venetian/2on1venetianleftright-2.png";
+            urlImage = "https://ordersblindonline.com/assets/images/products/venetian/2on1venetianleftright-2.png";
         }
 
         info = "<b>Layout Information</b>";
@@ -1185,22 +1177,19 @@ function showGallery(type) {
     let info;
 
     if (type === "Basswood") {
-        let urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/venetian/basswoodgallery.jpg";
-        //let urlImage = "https://ordersblindonline.com/assets/images/products/venetian/basswoodgallery.jpg";
+        let urlImage = "https://ordersblindonline.com/assets/images/products/venetian/basswoodgallery.jpg";
 
         info = "<b>Basswood Gallery</b>";
         info += "<br /><br />";
         info += `<img src="${urlImage}" alt="Sub Type Image" style="max-width:100%;height:auto;">`;
     } else if (type === "Econo") {
-        let urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/venetian/econogallery.jpg";
-        //let urlImage = "https://ordersblindonline.com/assets/images/products/venetian/econogallery.jpg";
+        let urlImage = "https://ordersblindonline.com/assets/images/products/venetian/econogallery.jpg";
 
         info = "<b>Econo Gallery</b>";
         info += "<br /><br />";
         info += `<img src="${urlImage}" alt="Sub Type Image" style="max-width:100%;height:auto;">`;
     } else if (type === "Cordless") {
-        let urlImage = "https://bigblinds.ordersblindonline.com/assets/images/products/venetian/cordlessgallery.jpg";
-        //let urlImage = "https://ordersblindonline.com/assets/images/products/venetian/cordlessgallery.jpg";
+        let urlImage = "https://ordersblindonline.com/assets/images/products/venetian/cordlessgallery.jpg";
 
         info = "<b>Econo Cordless Gallery</b>";
         info += "<br /><br />";

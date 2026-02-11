@@ -383,6 +383,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/WebOrders/PanelGlide.js?v=1.1.0"></script>
-    <%--<script src="/Scripts/WebOrders/PanelGlide.js?v=1.0.0"></script>--%>
+    <script src="/Scripts/WebOrders/PanelGlide.js?v=2.0.0"></script>
 </asp:Content>

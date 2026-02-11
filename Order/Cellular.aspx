@@ -464,6 +464,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/WebOrders/Cellular.js?v=1.1.0"></script>
-    <%--<script src="/Scripts/WebOrders/Cellular.js?v=1.0.0"></script>--%>
+    <script src="/Scripts/WebOrders/Cellular.js?v=2.0.0"></script>
 </asp:Content>
