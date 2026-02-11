@@ -362,6 +362,6 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
-#File/
+File/
 
-#Assets/images/logo/customers
+Assets/images/logo/customers
