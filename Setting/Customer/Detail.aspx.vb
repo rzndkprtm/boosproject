@@ -886,7 +886,7 @@ Partial Class Setting_Customer_Detail
         Dim result As String = String.Empty
         If Not addressId = "" Then
             Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerAddress WHERE Id='" & addressId & "'")
-            If Not thisData IsNot Nothing Then
+            If thisData IsNot Nothing Then
                 Dim address As String = thisData("Address").ToString()
                 Dim suburb As String = thisData("Suburb").ToString()
                 Dim state As String = thisData("State").ToString()
