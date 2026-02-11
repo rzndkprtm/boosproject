@@ -1,7 +1,7 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 
-Partial Class Setting_Customer_Credentials
+Partial Class Setting_Customer_Login
     Inherits Page
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
