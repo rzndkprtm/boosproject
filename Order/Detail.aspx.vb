@@ -1294,27 +1294,69 @@ Partial Class Order_Detail
                         Exit Sub
                     End If
 
-                    Dim itemAction As String = "view"
+                    Dim itemAction As String = ""
+                    If Session("RoleName") = "Developer" Then
+                        itemAction = "edit"
+                    End If
+
+                    If Session("RoleName") = "IT" Then
+                        itemAction = "edit"
+                        If lblOrderStatus.Text = "Canceled" OrElse lblOrderStatus.Text = "Completed" Then itemAction = "view"
+                    End If
+
+                    If Session("RoleName") = "Factory Office" Then
+                        itemAction = "edit"
+                        If lblOrderStatus.Text = "Canceled" OrElse lblOrderStatus.Text = "Completed" OrElse lblOrderStatus.Text = "Shipped Out" Then
+                            itemAction = "view"
+                        End If
+                    End If
+
+                    If Session("RoleName") = "Sales" Then
+                        itemAction = "view"
+                        If lblOrderStatus.Text = "Unsubmitted" OrElse lblOrderStatus.Text = "Quoted" OrElse lblOrderStatus.Text = "Waiting Proforma" Then
+                            itemAction = "edit"
+                        End If
+                    End If
+
+                    If Session("RoleName") = "Account" Then
+                        itemAction = "view"
+                        If lblOrderStatus.Text = "Unsubmitted" OrElse lblOrderStatus.Text = "Quoted" OrElse lblOrderStatus.Text = "Waiting Proforma" OrElse lblOrderStatus.Text = "Proforma Sent" Then
+                            itemAction = "edit"
+                        End If
+                    End If
+
+                    If Session("RoleName") = "Customer Service" Then
+                        itemAction = "edit"
+                        If lblOrderStatus.Text = "Canceled" OrElse lblOrderStatus.Text = "Completed" OrElse lblOrderStatus.Text = "Shipped Out" Then
+                            itemAction = "view"
+                        End If
+                    End If
+
+                    If Session("RoleName") = "Data Entry" Then
+                        itemAction = "view"
+                        If lblOrderStatus.Text = "Unsubmitted" OrElse lblOrderStatus.Text = "Quoted" OrElse lblOrderStatus.Text = "Waiting Proforma" OrElse lblOrderStatus.Text = "Proforma Sent" Then
+                            itemAction = "edit"
+                        End If
+                    End If
+
+                    If Session("RoleName") = "Installer" Then
+                        itemAction = "view"
+                        If lblOrderStatus.Text = "Quoted" Then
+                            itemAction = "edit"
+                        End If
+                    End If
+
+                    If Session("RoleName") = "Export" Then
+                        itemAction = "view"
+                    End If
+
                     If lblOrderStatus.Text = "Unsubmitted" Then
                         itemAction = "edit"
                     End If
 
-                    If lblOrderStatus.Text = "Waiting Proforma" AndAlso (Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office") Then
-                        itemAction = "edit"
-                    End If
-
-                    If lblOrderStatus.Text = "Unsubmitted" AndAlso Session("RoleName") = "Installer" Then
-                        itemAction = "view"
-                    End If
-
-                    If lblOrderStatus.Text = "Quoted" AndAlso (Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Installer" OrElse Session("RoleName") = "Customer Service" OrElse Session("RoleName") = "Sales") Then
-                        itemAction = "edit"
-                    End If
-
-                    If lblOrderStatus.Text = "New Order" OrElse lblOrderStatus.Text = "In Production" OrElse lblOrderStatus.Text = "On Hold" Then
-                        If Session("RoleName") = "Developer" Then
-                            itemAction = "edit"
-                        End If
+                    If String.IsNullOrEmpty(itemAction) Then
+                        MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID")
+                        Exit Sub
                     End If
 
                     Dim queryString As String = String.Format("do={0}&orderid={1}&itemid={2}&dtype={3}&uid={4}", itemAction, lblHeaderId.Text, dataId, designId, Session("LoginId").ToString())

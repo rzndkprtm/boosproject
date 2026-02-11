@@ -38,7 +38,7 @@
                                         <div class="col-12 col-sm-12 col-lg-3">
                                             <label>Fabric Name</label>
                                         </div>
-                                        <div class="col-12 col-sm-12 col-lg-9 form-group">
+                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
                                             <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Fabric Name ..." autocomplete="off"></asp:TextBox>
                                         </div>
                                     </div>

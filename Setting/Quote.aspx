@@ -58,7 +58,7 @@
                                 <p class="mt-2" runat="server" id="pAddress"></p>
                             </a>
 
-                            <a href="javascript:void(0);" class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#modalAddress">
+                            <a href="javascript:void(0);" class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#modalContact">
                                 <div class="d-flex w-100 justify-content-between">
                                     <h6 class="mb-1">Section 3 - Contact</h6>
                                 </div>

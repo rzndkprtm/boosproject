@@ -24,16 +24,22 @@
     </div>
 
     <div class="page-content">
-        <section class="row">
+        <section class="row mb-3" runat="server" id="divError">
             <div class="col-12">
-                <div class="row mb-2" runat="server" id="divError">
-                    <div class="col-12">
-                        <div class="alert alert-danger">
-                            <span runat="server" id="msgError"></span>
-                        </div>
-                    </div>
+                <div class="alert alert-danger">
+                    <span runat="server" id="msgError"></span>
                 </div>
             </div>
+        </section>
+
+        <section class="row mb-4">
+            <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
+                <a href="javascript:void(0);" class="btn btn-secondary me-1" onclick="showLog('Fabrics', '<%= lblId.Text %>')">Log</a>
+                <asp:Button runat="server" ID="btnEditFabric" CssClass="btn btn-primary me-1" Text="Edit Fabric" OnClick="btnEditFabric_Click" />
+            </div>
+        </section>
+
+        <section class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-content">
@@ -89,10 +95,6 @@
                                     <asp:Label runat="server" ID="lblActive" CssClass="form-label font-bold"></asp:Label>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="card-footer">
-                            <a href="#" runat="server" id="aEditFabric" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalEdit">Edit Fabric</a>
                         </div>
                     </div>
                 </div>
@@ -158,102 +160,6 @@
                 </div>
             </div>
         </section>
-    </div>
-
-    <div class="modal fade text-left" id="modalEdit" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Edit Fabric</h4>
-                </div>
-
-                <div class="modal-body">
-                    <div class="row mb-2" runat="server" id="divErrorEdit">
-                        <div class="col-12">
-                            <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorEdit"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Name</label>
-                            <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Fabric Name ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                    </div>
-
-                    <div class="row mb-2">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Design Name</label>
-                            <asp:ListBox runat="server" ID="lbDesign" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
-                        </div>
-                    </div>
-
-                    <div class="row mb-2">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Tube Name</label>
-                            <asp:ListBox runat="server" ID="lbTube" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
-                        </div>
-                    </div>
-
-                    <div class="row mb-2">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Company Detail</label>
-                            <asp:ListBox runat="server" ID="lbCompany" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
-                        </div>
-                    </div>
-
-                    <div class="row mb-2">
-                        <div class="col-4 form-group">
-                            <label class="form-label">Type</label>
-                            <asp:DropDownList runat="server" ID="ddlType" CssClass="form-select">
-                                <asp:ListItem Value="" Text=""></asp:ListItem>
-                                <asp:ListItem Value="Blockout" Text="Blockout"></asp:ListItem>
-                                <asp:ListItem Value="Light Filtering" Text="Light Filtering"></asp:ListItem>
-                                <asp:ListItem Value="Screen" Text="Screen"></asp:ListItem>
-                            </asp:DropDownList>
-                        </div>
-
-                        <div class="col-5 form-group">
-                            <label class="form-label">Group</label>
-                            <asp:DropDownList runat="server" ID="ddlGroup" CssClass="form-select">
-                                <asp:ListItem Value="" Text=""></asp:ListItem>
-                                <asp:ListItem Value="Group 1" Text="Group 1"></asp:ListItem>
-                                <asp:ListItem Value="Group 2" Text="Group 2"></asp:ListItem>
-                                <asp:ListItem Value="Group 3" Text="Group 3"></asp:ListItem>
-                                <asp:ListItem Value="Group 4" Text="Group 4"></asp:ListItem>
-                                <asp:ListItem Value="Group Express" Text="Group Express"></asp:ListItem>
-                                <asp:ListItem Value="Opaque" Text="Opaque"></asp:ListItem>
-                                <asp:ListItem Value="Semi Opaque" Text="Semi Opaque"></asp:ListItem>
-                            </asp:DropDownList>
-                        </div>
-
-                        <div class="col-3 form-group">
-                            <label class="form-label">No Rail Road</label>
-                            <asp:DropDownList runat="server" ID="ddlNoRailRoad" CssClass="form-select">
-                                <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
-                                <asp:ListItem Value="0" Text="No"></asp:ListItem>
-                            </asp:DropDownList>
-                        </div>
-                    </div>
-
-                    <div class="row mb-2">
-                        <div class="col-3 form-group">
-                            <label class="form-label">Active</label>
-                            <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select">
-                                <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
-                                <asp:ListItem Value="0" Text="No"></asp:ListItem>
-                            </asp:DropDownList>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnEdit" CssClass="btn btn-primary" Text="Submit" OnClick="btnEdit_Click" />
-                </div>
-            </div>
-        </div>
     </div>
 
     <div class="modal fade text-left" id="modalProcess" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
@@ -399,7 +305,7 @@
             });
         }
 
-        ["modalEdit", "modalProcess", "modalLog"].forEach(function (id) {
+        ["modalProcess", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
