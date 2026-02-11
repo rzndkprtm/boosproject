@@ -1350,8 +1350,11 @@ Partial Class Order_Detail
                         itemAction = "view"
                     End If
 
-                    If lblOrderStatus.Text = "Unsubmitted" Then
-                        itemAction = "edit"
+                    If Session("RoleName") = "Customer" Then
+                        itemAction = "view"
+                        If lblOrderStatus.Text = "Unsubmitted" Then
+                            itemAction = "edit"
+                        End If
                     End If
 
                     If String.IsNullOrEmpty(itemAction) Then
