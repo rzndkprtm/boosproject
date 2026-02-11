@@ -1695,32 +1695,48 @@ Partial Class Order_Method
             linearmetre = width / 1000
         End If
 
-        Dim sellName As String = designName
-        Dim groupFabric As String = orderClass.GetFabricGroup(data.fabrictype)
-        Dim groupName As String = String.Format("{0} - {1}", designName, groupFabric)
-        If blindName = "Track Only" Then
-            groupName = String.Format("{0} - {1}", designName, data.tracktype)
-        End If
 
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid)
+
+
+
+        Dim priceProductGroup As String = String.Empty 'orderClass.GetPriceProductGroupId(groupName, data.designid)
         Dim priceProductGroupB As String = String.Empty
 
         Dim priceAdditional As String = String.Empty
         Dim priceAdditionalB As String = String.Empty
 
-        If blindName = "Single Curtain & Track" OrElse blindName = "Double Curtain & Track" Then
-            groupName = String.Format("{0} - {1}", designName, data.tracktype)
-            priceAdditional = orderClass.GetPriceProductGroupId(groupName, data.designid)
-        End If
+        If data.companyid = "2" Then
+            Dim sellName As String = designName
+            Dim groupFabric As String = orderClass.GetFabricGroup(data.fabrictype)
+            Dim groupFabricB As String = orderClass.GetFabricGroup(data.fabrictypeb)
 
-        If blindName = "Double Curtain & Track" Then
-            groupFabric = orderClass.GetFabricGroup(data.fabrictypeb)
-            groupName = String.Format("{0} - {1}", designName, groupFabric)
+            Dim groupName As String = String.Format("{0} - {1}", designName, groupFabric)
+            Dim groupNameB As String = String.Format("{0} - {1}", designName, groupFabricB)
+            Dim trackGroupName As String = String.Format("{0} - {1}", designName, data.tracktype)
+            Dim trackGroupNameB As String = String.Format("{0} - {1}", designName, data.tracktypeB)
 
-            priceProductGroupB = orderClass.GetPriceProductGroupId(groupName, data.designid)
+            If blindName = "Curtain Only" Then
+                groupNameB = String.Empty
+                trackGroupName = String.Empty
+                trackGroupNameB = String.Empty
+            End If
 
-            groupName = String.Format("{0} - {1}", designName, data.tracktypeB)
-            priceAdditionalB = orderClass.GetPriceProductGroupId(groupName, data.designid)
+            If blindName = "Single Curtain & Track" Then
+                groupNameB = String.Empty
+                trackGroupNameB = String.Empty
+            End If
+
+            If blindName = "Track Only" Then
+                groupName = String.Format("{0} - {1}", designName, data.tracktype)
+                groupNameB = String.Empty
+                trackGroupName = String.Empty
+                trackGroupNameB = String.Empty
+            End If
+
+            priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid)
+            priceProductGroupB = orderClass.GetPriceProductGroupId(groupNameB, data.designid)
+            priceAdditional = orderClass.GetPriceProductGroupId(trackGroupName, data.designid)
+            priceAdditionalB = orderClass.GetPriceProductGroupId(trackGroupNameB, data.designid)
         End If
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
