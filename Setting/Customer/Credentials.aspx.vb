@@ -1,7 +1,7 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 
-Partial Class Setting_Customer_Login
+Partial Class Setting_Customer_Credentials
     Inherits Page
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
@@ -395,7 +395,7 @@ Partial Class Setting_Customer_Login
     End Function
 
     Protected Function BindTextLog(logId As String) As String
-        Return settingClass.getTextLog(logId)
+        Return settingClass.GetTextLog(logId)
     End Function
 
     Protected Function PageAction(action As String) As Boolean
