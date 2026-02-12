@@ -831,7 +831,7 @@ Partial Class Order_Detail
                         End Using
                     End If
 
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderInvoices SET Collector=@Collector, InvoiceDate=GETDATE(), DueDate=DATEADD(DAY, 14, GETDATE()) WHERE Id=@Id;", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderInvoices SET Collector=@Collector, InvoiceDate=GETDATE(), DueDate=DATEADD(DAY, 1, GETDATE()) WHERE Id=@Id;", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
                         myCmd.Parameters.AddWithValue("@Collector", Session("LoginId").ToString())
                         myCmd.ExecuteNonQuery()
