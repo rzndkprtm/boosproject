@@ -2526,6 +2526,7 @@ Partial Class Order_Detail
                 If lblOrderType.Text = "Builder" Then aBuilder.Visible = True : secBuilder.Visible = True
 
                 divInternalNote.Visible = True
+                aFileOrder.Visible = True
 
                 If lblOrderStatus.Text = "Unsubmitted" Then
                     If lblCreatedRole.Text = Session("RoleId") Then
