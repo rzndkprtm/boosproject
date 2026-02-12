@@ -5,7 +5,7 @@
 <%@ Page Language="VB" Title="Export BOE Result" ContentType="text/xml" Debug="true" %>
 
 <script runat="server">
-    
+
     Dim orderClass As New OrderClass
     Dim mailingClass As New MailingClass
 
@@ -450,6 +450,7 @@
                 writer.WriteAttributeString("TotalItems", thisData.Rows(i)("TotalItems").ToString())
                 writer.WriteAttributeString("MarkUp", thisData.Rows(i)("MarkUp").ToString())
                 writer.WriteAttributeString("Notes", thisData.Rows(i)("Notes").ToString())
+                writer.WriteEndElement()
             End If
 
             If designName = "Roman Blind" Then
