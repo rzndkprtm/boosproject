@@ -46,7 +46,7 @@ Partial Class Account_Forgot
             Dim encryptPassword As String = settingClass.Encrypt(newPassword)
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLogins SET Password=@Password, ResetLogin=1, FailedCount=0 WHERE Id=@Id", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLogins SET Password=@Password, ResetLogin=1, FailedCount=0, Active=1 WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", loginId)
                     myCmd.Parameters.AddWithValue("@Password", encryptPassword)
 
