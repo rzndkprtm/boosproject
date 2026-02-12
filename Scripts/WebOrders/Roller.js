@@ -2401,16 +2401,16 @@ function visibleBottomColour(blindNumber, bottomType) {
             return;
         }
 
-        // show / hide
         divBottomColour.style.display = bottomType ? "" : "none";
 
-        // change label title
         if (lblBottomColour) {
-            if (bottomType === "trim") {
-                lblBottomColour.innerText = "Trim Style";
-            } else {
-                lblBottomColour.innerText = "Bottom Colour";
-            }
+            getBottomName(bottomType).then(bottomName => {
+                if (bottomName === "Trim") {
+                    lblBottomColour.innerText = "Trim Style";
+                } else {
+                    lblBottomColour.innerText = "Bottom Colour";
+                }
+            }).catch(error => { resolve(); });
         }
 
         resolve();
