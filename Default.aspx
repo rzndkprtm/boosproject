@@ -7,7 +7,7 @@
     <div class="page-content">
         <section class="row">
             <div class="col-12">
-                <div class="card">
+                <%--<div class="card">
                     <div class="card-header">
                         <h3 class="card-title">Newsletter</h3>
                     </div>
@@ -21,8 +21,8 @@
                         </div>
                     </div>
                     <div class="card-footer text-center"></div>
-                </div>
-                <asp:Image runat="server" CssClass="w-100" ID="imgNewsletter" />
+                </div>--%>
+                <asp:Image runat="server" CssClass="w-100" ID="imgNewsletter" ImageUrl="~/assets/newsletter/20260212094318.jpg" />
                 <asp:Label runat="server" ID="lblError"></asp:Label>
             </div>
         </section>
