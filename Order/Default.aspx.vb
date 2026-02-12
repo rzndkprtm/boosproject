@@ -26,11 +26,13 @@ Partial Class Order_Default
 
             BindStatusOrder()
             BindCompany()
+            BindOrderType()
 
             ddlStatus.SelectedValue = Session("OrderStatus")
             ddlCompany.SelectedValue = Session("OrderCompany")
             txtSearch.Text = Session("OrderSearch")
             ddlActive.SelectedValue = Session("OrderActive")
+            ddlType.SelectedValue = Session("OrderType")
 
             BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlCompany.SelectedValue, ddlActive.SelectedValue)
         End If
@@ -65,6 +67,10 @@ Partial Class Order_Default
     Protected Sub ddlCompany_SelectedIndexChanged(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlCompany.SelectedValue, ddlActive.SelectedValue)
+    End Sub
+
+    Protected Sub ddlType_SelectedIndexChanged(sender As Object, e As EventArgs)
+
     End Sub
 
     Protected Sub ddlActive_SelectedIndexChanged(sender As Object, e As EventArgs)
@@ -701,12 +707,28 @@ Partial Class Order_Default
         End Try
     End Sub
 
+    Protected Sub BindOrderType()
+        ddlType.Items.Clear()
+        Try
+            ddlType.Items.Add(New ListItem("Regular", "Regular"))
+            ddlType.Items.Add(New ListItem("Builder", "Builder"))
+
+            If Session("RoleName") = "Installer" Then
+                ddlStatus.Items.Clear()
+                ddlType.Items.Add(New ListItem("Builder", "Builder"))
+            End If
+        Catch ex As Exception
+            ddlStatus.Items.Clear()
+        End Try
+    End Sub
+
     Protected Sub BindDataOrder(search As String, status As String, company As String, active As String)
         Session("OrderStatus") = String.Empty
         Session("OrderCompany") = String.Empty
         Session("OrderSearch") = String.Empty
         Session("OrderActive") = String.Empty
         Try
+
             Dim params As New List(Of SqlParameter) From {
                 New SqlParameter("@Search", search),
                 New SqlParameter("@Status", status),
@@ -740,6 +762,7 @@ Partial Class Order_Default
 
             divActive.Visible = PageAction("Active")
             divCompany.Visible = PageAction("Filter Company")
+            divType.Visible = PageAction("Filter Type")
 
             If Session("RoleName") = "Customer" Then
                 Dim onStop As Boolean = orderClass.GetCustomerOnStop(Session("CustomerId").ToString())

@@ -72,6 +72,15 @@
                                     </asp:Panel>
                                 </div>
                             </div>
+
+                            <div class="row" runat="server" id="divType">
+                                <div class="col-12 col-sm-12 col-lg-3 mb-2">
+                                    <div class="input-group">
+                                        <asp:Label runat="server" CssClass="input-group-text" Text="Order Type"></asp:Label>
+                                        <asp:DropDownList runat="server" ID="ddlType" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlType_SelectedIndexChanged"></asp:DropDownList>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="card-body">
                             <div class="row mb-3">
