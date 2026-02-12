@@ -4078,7 +4078,7 @@ Partial Class Order_Method
             If String.IsNullOrEmpty(data.widthb) Then Return "WIDTH FOR SECOND BLIND IS REQUIRED !"
             If Not Integer.TryParse(data.widthb, widthb) OrElse widthb <= 0 Then Return "PLEASE CHECK YOUR WIDTH FOR SECOND BLIND !"
 
-            If widthb < 600 Then Return "MINIMUM SECOND WIDTH IS 600MM !"
+            If widthb < 200 Then Return "MINIMUM SECOND WIDTH IS 200MM !"
             If widthb > 2910 Then Return "MAXIMUM SECOND WIDTH IS 2910MM !"
 
             If String.IsNullOrEmpty(data.dropb) Then Return "DROP FOR SECOND BLIND IS REQUIRED !"

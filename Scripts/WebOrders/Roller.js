@@ -2366,16 +2366,34 @@ function visibleCustomChainLength(chainColour, chainLength, number) {
 }
 
 function visibleBottomColour(blindNumber, bottomType) {
-    return new Promise((resolve, reject) => {
-        let divBottomColour;
+    return new Promise((resolve) => {
+        let divBottomColour, lblBottomColour;
 
         switch (blindNumber) {
-            case 1: divBottomColour = document.getElementById("divbottomcolour"); break;
-            case 2: divBottomColour = document.getElementById("divbottomcolourb"); break;
-            case 3: divBottomColour = document.getElementById("divbottomcolourc"); break;
-            case 4: divBottomColour = document.getElementById("divbottomcolourd"); break;
-            case 5: divBottomColour = document.getElementById("divbottomcoloure"); break;
-            case 6: divBottomColour = document.getElementById("divbottomcolourf"); break;
+            case 1:
+                divBottomColour = document.getElementById("divbottomcolour");
+                lblBottomColour = document.getElementById("lblbottomcolour");
+                break;
+            case 2:
+                divBottomColour = document.getElementById("divbottomcolourb");
+                lblBottomColour = document.getElementById("lblbottomcolourb");
+                break;
+            case 3:
+                divBottomColour = document.getElementById("divbottomcolourc");
+                lblBottomColour = document.getElementById("lblbottomcolourc");
+                break;
+            case 4:
+                divBottomColour = document.getElementById("divbottomcolourd");
+                lblBottomColour = document.getElementById("lblbottomcolourd");
+                break;
+            case 5:
+                divBottomColour = document.getElementById("divbottomcoloure");
+                lblBottomColour = document.getElementById("lblbottomcoloure");
+                break;
+            case 6:
+                divBottomColour = document.getElementById("divbottomcolourf");
+                lblBottomColour = document.getElementById("lblbottomcolourf");
+                break;
         }
 
         if (!divBottomColour) {
@@ -2383,7 +2401,18 @@ function visibleBottomColour(blindNumber, bottomType) {
             return;
         }
 
+        // show / hide
         divBottomColour.style.display = bottomType ? "" : "none";
+
+        // change label title
+        if (lblBottomColour) {
+            if (bottomType === "trim") {
+                lblBottomColour.innerText = "Trim Style";
+            } else {
+                lblBottomColour.innerText = "Bottom Colour";
+            }
+        }
+
         resolve();
     });
 }

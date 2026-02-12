@@ -469,6 +469,7 @@ Partial Class Order_Add
                                 orderClass.Logs(dataLog)
                             End If
                         End If
+
                         If blindLower.Contains("basswood") OrElse blindLower.Contains("ultraslat") Then
                             designId = orderClass.GetItemData("SELECT Id FROM Designs WHERE Name='Venetian Blind'")
 
@@ -520,10 +521,6 @@ Partial Class Order_Add
                             If Not validMounting.Contains(mounting) Then
                                 MessageError(True, "PLEASE CHECK YOUR MOUNTING DATA !")
                                 Exit For
-                            End If
-
-                            If mounting = "Face Fit" OrElse mounting = "Reveal Fit" Then
-                                mounting = String.Format("Opening Size {0}", mounting)
                             End If
 
                             If String.IsNullOrEmpty(colour) Then
@@ -620,11 +617,11 @@ Partial Class Order_Add
 
                             valanceSize = "Standard"
                             valanceSizeValue = width - 1
-                            If mounting = "Make Size Reveal Fit" Then
+                            If mounting = "Reveal Fit" Then
                                 valanceSizeValue = width + 9
                             End If
 
-                            If mounting = "Make Size Face Fit" OrElse mounting = "Make Size Face Fit" Then
+                            If mounting = "Face Fit" Then
                                 valanceSizeValue = width + 20
                             End If
 
@@ -649,7 +646,7 @@ Partial Class Order_Add
                             End If
 
                             If Not returnPosition = "None" Then
-                                If mounting = "Opening Size Face Fit" OrElse mounting = "Make Size Face Fit" Then
+                                If mounting = "Face Fit" Then
                                     returnLength = "Standard"
                                     returnLengthValue = 70
                                     If blindType.Contains("Ultraslat") Then returnLengthValue = 77
@@ -665,7 +662,7 @@ Partial Class Order_Add
                                     End If
                                 End If
 
-                                If mounting = "Opening Size Reveal Fit" OrElse mounting = "Make Size Reveal Fit" Then
+                                If mounting = "Reveal Fi" Then
                                     returnLength = "Custom"
                                     returnLengthText = returnLengthText.Replace("mm", "")
 
@@ -698,7 +695,7 @@ Partial Class Order_Add
                                         myCmd.Parameters.AddWithValue("@ProductId", productId)
                                         myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
                                         myCmd.Parameters.AddWithValue("@Room", room)
-                                        myCmd.Parameters.AddWithValue("@Mounting", mounting)
+                                        myCmd.Parameters.AddWithValue("@Mounting", "Opening Size " & mounting)
                                         myCmd.Parameters.AddWithValue("@SubType", subType)
                                         myCmd.Parameters.AddWithValue("@ControlPosition", controlPosition)
                                         myCmd.Parameters.AddWithValue("@TilterPosition", tilterPosition)
@@ -1611,6 +1608,8 @@ Partial Class Order_Add
                             Exit For
                         End If
 
+
+
                         If blindName = "Dual Blinds" OrElse blindType = "Double: Linked (4 Blinds)" OrElse blindType = "Double: Linked (6 Blinds)" Then
                             If String.IsNullOrEmpty(fabricTypeDB) Then
                                 MessageError(True, "SECOND FABRIC TYPE IS REQUIRED !")
@@ -1904,6 +1903,7 @@ Partial Class Order_Add
 
                             If blindName = "Dual Blinds" Then
                                 fabricIdB = fabricIdDB
+                                fabricColourIdB = fabricColourDB
 
                                 groupFabric = orderClass.GetFabricGroup(fabricId)
                                 Dim groupFabricDB As String = orderClass.GetFabricGroup(fabricIdB)
@@ -1913,6 +1913,8 @@ Partial Class Order_Add
 
                                 width = widthData
                                 widthB = widthDataB
+                                drop = dropData
+                                dropB = dropData
 
                                 If controlText = "L - L" Then
                                     controlPosition = "Left" : controlPositionB = "Left"
