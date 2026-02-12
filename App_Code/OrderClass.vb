@@ -1416,6 +1416,7 @@ Public Class OrderClass
                     Dim costBuyAdditional As Decimal = gridBuyAdditional
 
                     thisSell = costSell
+
                     thisSellAdditional = costSellAdditional
 
                     thisBuy = costBuy
@@ -1431,9 +1432,15 @@ Public Class OrderClass
                             If discountType = "Designs" Then
                                 If dataId = designId Then
                                     Dim baseValue As Decimal = costSell * discountValue / 100
+                                    If designName = "Roller Blind" AndAlso (tubeName.Contains("Gear Reduction") OrElse tubeName.Contains("Sunboss") OrElse tubeName = "Standard") Then
+                                        baseValue = (costSell - 7) * discountValue / 100
+                                    End If
                                     Dim additionalValue As Decimal = costSellAdditional * discountValue / 100
 
                                     thisSell = costSell - baseValue
+                                    If designName = "Roller Blind" AndAlso (tubeName.Contains("Gear Reduction") OrElse tubeName.Contains("Sunboss") OrElse tubeName = "Standard") Then
+                                        thisSell = (costSell - 7) - baseValue + 7
+                                    End If
                                     thisSellAdditional = gridSellAdditional - additionalValue
 
                                     costSell = thisSell
@@ -1622,9 +1629,16 @@ Public Class OrderClass
                             If discountType = "Product" Then
                                 If dataId = designId Then
                                     Dim baseValue As Decimal = costSell * discountValue / 100
+                                    If designName = "Roller Blind" AndAlso (tubeName.Contains("Gear Reduction") OrElse tubeName.Contains("Sunboss") OrElse tubeName = "Standard") Then
+                                        baseValue = (costSell - 7) * discountValue / 100
+                                    End If
+
                                     Dim additionalValue As Decimal = costSellAdditional * discountValue / 100
 
                                     thisSell = costSell - baseValue
+                                    If designName = "Roller Blind" AndAlso (tubeName.Contains("Gear Reduction") OrElse tubeName.Contains("Sunboss") OrElse tubeName = "Standard") Then
+                                        thisSell = (costSell - 7) - baseValue + 7
+                                    End If
                                     thisSellAdditional = gridSellAdditional - additionalValue
 
                                     costSell = thisSell
@@ -1761,8 +1775,14 @@ Public Class OrderClass
                             If discountType = "Product" Then
                                 If dataId = designId Then
                                     Dim baseValue As Decimal = costSell * discountValue / 100
+                                    If designName = "Roller Blind" AndAlso (tubeName.Contains("Gear Reduction") OrElse tubeName.Contains("Sunboss") OrElse tubeName = "Standard") Then
+                                        baseValue = (costSell - 7) * discountValue / 100
+                                    End If
 
                                     thisSell = costSell - baseValue
+                                    If designName = "Roller Blind" AndAlso (tubeName.Contains("Gear Reduction") OrElse tubeName.Contains("Sunboss") OrElse tubeName = "Standard") Then
+                                        thisSell = (costSell - 7) - baseValue + 7
+                                    End If
                                     costSell = thisSell
                                 End If
                             End If
