@@ -22,7 +22,7 @@
                     </div>
                     <div class="card-footer text-center"></div>
                 </div>--%>
-                <asp:Image runat="server" CssClass="w-100" ID="imgNewsletter" ImageUrl="~/assets/newsletter/20260212094318.jpg" />
+                <asp:Image runat="server" CssClass="w-100" ID="imgNewsletter" ImageUrl="~/assets/newsletter/Shutter.jpg" />
                 <asp:Label runat="server" ID="lblError"></asp:Label>
             </div>
         </section>
