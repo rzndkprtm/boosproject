@@ -576,7 +576,6 @@ Public Class MailingClass
         Dim myMail As New MailMessage
 
         Dim subject As String = String.Format("{0} - {1} - {2} - New Order # {3}", customerName, orderNumber, orderName, orderId)
-
         myMail.Subject = subject
         myMail.From = New MailAddress(mailServer, mailAlias)
 
@@ -608,16 +607,23 @@ Public Class MailingClass
             Next
         End If
 
-        If Not mailBcc = "" Then
-            Dim thisArray() As String = mailBcc.Split(";")
-            Dim thisMail As String = String.Empty
-            For Each thisMail In thisArray
-                myMail.Bcc.Add(thisMail)
+        For Each ccEmail As String In ccSet
+            If Not String.IsNullOrWhiteSpace(ccEmail) Then
+                myMail.CC.Add(ccEmail)
+            End If
+        Next
+
+        If Not String.IsNullOrWhiteSpace(mailBcc) Then
+            For Each thisMail As String In mailBcc.Split(";"c)
+                If Not String.IsNullOrWhiteSpace(thisMail) Then
+                    myMail.Bcc.Add(thisMail.Trim())
+                End If
             Next
         End If
 
         myMail.Body = mailBody
         myMail.IsBodyHtml = True
+
         Dim smtpClient As New SmtpClient()
         smtpClient.Host = mailHost
         smtpClient.Port = mailPort
@@ -631,6 +637,7 @@ Public Class MailingClass
         Else
             smtpClient.UseDefaultCredentials = mailDefaultCredentials
         End If
+
         smtpClient.Send(myMail)
     End Sub
 
