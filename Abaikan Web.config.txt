@@ -59,20 +59,227 @@ https://swh17.conetix.com.au:8443/
 User : onlineor
 Password : 2%R0yy47g
 
-JPMD ACCOUNT
-bella
-fariz
-rosye
+ALTER PROCEDURE [dbo].[sp_OrderList]
+    @Search NVARCHAR(100),
+    @Status NVARCHAR(50),
+    @Company NVARCHAR(50),
+    @Active NVARCHAR(10),
 
-CS - DE
-indra
-rosma
+    @RoleName NVARCHAR(50),
+    @LevelName NVARCHAR(50),
+    @CustomerLevel NVARCHAR(50),
 
-DE
-lia --tetap pakai password ketika kelola order lokal
-watik --tetap pakai password ketika kelola order lokal
-santi --saya hold dulu ya, role untuk web masih ngambang
+    @CustomerId NVARCHAR(50),
+    @LoginId NVARCHAR(50),
+    @CompanyId NVARCHAR(50),
+    @RoleId NVARCHAR(50),
+    @OrderType NVARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON;
 
-Export
-puput
-egi --tetap pakai password ketika kelola order lokal
+    DECLARE 
+        @byActive NVARCHAR(MAX) = 'WHERE OrderHeaders.Active = ''' + @Active + '''',
+        @byRole NVARCHAR(MAX) = '',
+        @byCompany NVARCHAR(MAX) = '',
+        @byInstaller NVARCHAR(MAX) = '',
+        @byStatus NVARCHAR(MAX) = '',
+        @byText NVARCHAR(MAX) = '',
+        @byOrder NVARCHAR(MAX) = 'ORDER BY OrderHeaders.SubmittedDate DESC',
+        @byOrderType NVARCHAR(MAX) = '',
+        @area NVARCHAR(100),
+        @sql NVARCHAR(MAX);
+
+    -- Company
+    IF ISNULL(@Company,'') <> ''
+        SET @byCompany = 'AND Customers.CompanyId = ''' + @Company + '''';
+
+    -- Status
+    IF ISNULL(@Status,'') <> ''
+        SET @byStatus = 'AND OrderHeaders.Status = ''' + @Status + '''';
+
+    -- Order Type
+    IF ISNULL(@OrderType,'') <> ''
+        SET @byOrderType = 'AND OrderHeaders.OrderType = ''' + @OrderType + '''';
+
+    -- Search
+    IF ISNULL(@Search,'') <> ''
+        SET @byText = '
+        AND (
+            OrderHeaders.Id LIKE ''%' + @Search + '%'' OR
+            OrderHeaders.OrderId LIKE ''%' + @Search + '%'' OR
+            OrderHeaders.OrderNumber LIKE ''%' + @Search + '%'' OR
+            OrderHeaders.OrderName LIKE ''%' + @Search + '%'' OR
+            OrderHeaders.CustomerId LIKE ''%' + @Search + '%'' OR
+            Customers.Name LIKE ''%' + @Search + '%''
+        )';
+
+    /* ================= ROLE LOGIC ================= */
+
+    -- Factory Office
+    IF @RoleName = 'Factory Office'
+    BEGIN
+        SET @byRole = '';
+        SET @byStatus = '';
+        SET @byOrder = 'ORDER BY OrderHeaders.SubmittedDate DESC';
+
+        IF ISNULL(@Status,'') <> ''
+        BEGIN
+            SET @byStatus = 'AND OrderHeaders.Status = ''' + @Status + '''';
+            SET @byOrder = 'ORDER BY OrderHeaders.Id DESC';
+        END
+    END
+
+    -- Customer
+    IF @RoleName = 'Customer'
+    BEGIN
+        SET @byRole = 'AND OrderHeaders.CustomerId = ''' + @CustomerId + '''';
+
+        IF @LevelName = 'Member'
+            SET @byRole = 'AND OrderHeaders.CreatedBy = ''' + @LoginId + '''';
+
+        IF @CustomerLevel = 'Sponsor' AND @LevelName = 'Leader'
+            SET @byRole = '
+                AND (
+                    OrderHeaders.CustomerId = ''' + @CustomerId + ''' 
+                    OR Customers.SponsorId = ''' + @CustomerId + '''
+                )';
+
+        SET @byOrder = 'ORDER BY OrderHeaders.Id DESC';
+        SET @byStatus = '';
+
+        IF ISNULL(@Status,'') <> ''
+            SET @byStatus = 'AND OrderHeaders.Status = ''' + @Status + '''';
+    END
+
+    -- Sales
+    IF @RoleName = 'Sales'
+    BEGIN
+        SET @byRole = 'AND Customers.CompanyId = ''' + @CompanyId + '''';
+
+        IF @LevelName = 'Member'
+            SET @byRole = 'AND (Customers.Operator = ''' + @LoginId + ''' OR OrderHeaders.CreatedBy = ''' + @LoginId + ''')';
+
+        SET @byStatus = '';
+        SET @byOrder = 'ORDER BY OrderHeaders.SubmittedDate DESC';
+
+        IF ISNULL(@Status,'') <> ''
+        BEGIN
+            SET @byStatus = 'AND OrderHeaders.Status = ''' + @Status + '''';
+            SET @byOrder = 'ORDER BY OrderHeaders.Id DESC';
+        END
+    END
+
+    -- Account
+    IF @RoleName = 'Account'
+    BEGIN
+        SET @byRole = 'AND Customers.CompanyId = ''' + @CompanyId + '''';
+        SET @byStatus = '';
+        SET @byOrder = 'ORDER BY OrderHeaders.SubmittedDate DESC';
+
+        IF ISNULL(@Status,'') <> ''
+        BEGIN
+            SET @byStatus = 'AND OrderHeaders.Status = ''' + @Status + '''';
+            SET @byOrder = 'ORDER BY OrderHeaders.Id DESC';
+        END
+    END
+
+    -- Customer Service
+    IF @RoleName = 'Customer Service'
+    BEGIN
+        SET @byRole = 'AND Customers.CompanyId = ''' + @CompanyId + '''';
+        SET @byStatus = '';
+        SET @byOrder = 'ORDER BY OrderHeaders.SubmittedDate DESC';
+
+        IF ISNULL(@Status,'') <> ''
+        BEGIN
+            SET @byStatus = 'AND OrderHeaders.Status = ''' + @Status + '''';
+            SET @byOrder = 'ORDER BY OrderHeaders.Id DESC';
+        END
+    END
+
+    -- Data Entry
+    IF @RoleName = 'Data Entry'
+    BEGIN
+        SET @byRole = '
+            AND Customers.CompanyId = ''' + @CompanyId + '''
+            AND CustomerLogins.RoleId = ''' + @RoleId + '''';
+
+        IF @CompanyId = '1'
+            SET @byRole = '';
+
+        SET @byStatus = '';
+
+        IF ISNULL(@Status,'') <> ''
+            SET @byStatus = 'AND OrderHeaders.Status = ''' + @Status + '''';
+    END
+
+    -- Export
+    IF @RoleName = 'Export'
+    BEGIN
+        SET @byRole = 'AND Customers.CompanyId = ''' + @CompanyId + '''';
+        IF @CompanyId = '1'
+            SET @byRole = '';
+
+        SET @byStatus = '
+            AND (
+                OrderHeaders.Status = ''In Production'' OR
+                OrderHeaders.Status = ''Shipped Out'' OR
+                OrderHeaders.Status = ''Completed''
+            )';
+
+        IF ISNULL(@Status,'') <> ''
+            SET @byStatus = 'AND OrderHeaders.Status = ''' + @Status + '''';
+    END
+
+    -- Installer
+    IF @RoleName = 'Installer'
+    BEGIN
+        -- Installer selalu Builder
+        SET @byOrderType = 'AND OrderHeaders.OrderType = ''Builder''';
+
+        -- Installer tidak pakai byRole
+        SET @byRole = '';
+
+        SELECT @area = Area
+        FROM InstallerAccess
+        WHERE Id = @LoginId;
+
+        SET @byInstaller = 'AND Customers.Area IN (''' + @area + ''')';
+        SET @byStatus = 'AND OrderHeaders.Status = ''Quoted''';
+
+        IF ISNULL(@Status,'') <> ''
+            SET @byStatus = 'AND OrderHeaders.Status = ''' + @Status + '''';
+
+        SET @byOrder = 'ORDER BY OrderHeaders.Id DESC';
+    END
+
+    /* ================= FINAL QUERY ================= */
+
+    SET @sql = '
+    SELECT OrderHeaders.*,
+        OrderShipments.ShipmentNumber,
+        OrderShipments.ShipmentDate,
+        OrderShipments.ContainerNumber,
+        OrderShipments.Courier,
+        Customers.Name AS CustomerName,
+        Customers.CompanyId AS CompanyId,
+        Companys.Name AS CompanyName,
+        CustomerLogins.RoleId AS CreatedRole
+    FROM OrderHeaders
+    LEFT JOIN Customers ON OrderHeaders.CustomerId = Customers.Id
+    LEFT JOIN Companys ON Customers.CompanyId = Companys.Id
+    LEFT JOIN OrderShipments ON OrderHeaders.Id = OrderShipments.Id
+    LEFT JOIN CustomerLogins ON OrderHeaders.CreatedBy = CustomerLogins.Id
+    LEFT JOIN LoginRoles ON CustomerLogins.RoleId = LoginRoles.Id
+    ' + @byActive + ' ' 
+      + @byRole + ' ' 
+      + @byCompany + ' ' 
+      + @byInstaller + ' ' 
+      + @byStatus + ' ' 
+      + @byOrderType + ' ' 
+      + @byText + ' ' 
+      + @byOrder;
+
+    EXEC sp_executesql @sql;
+END
