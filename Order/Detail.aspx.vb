@@ -2528,6 +2528,10 @@ Partial Class Order_Detail
                 divInternalNote.Visible = True
                 aFileOrder.Visible = True
 
+                liMoreDownloadQuote.Visible = True
+                liMoreEmailQuote.Visible = True
+                liMoreDividerQuote.Visible = True
+
                 If lblOrderStatus.Text = "Unsubmitted" Then
                     If lblCreatedRole.Text = Session("RoleId") Then
                         btnEditHeader.Visible = True
@@ -2538,7 +2542,6 @@ Partial Class Order_Detail
                         If lblOrderType.Text = "Regular" Then aSubmitOrder.Visible = True
                         If lblOrderType.Text = "Builder" Then aQuoteOrder.Visible = True
                     End If
-
                 End If
 
                 If lblOrderStatus.Text = "Quoted" Then
