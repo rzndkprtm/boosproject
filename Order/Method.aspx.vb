@@ -3999,7 +3999,10 @@ Partial Class Order_Method
 
         If Not blindName = "Full Cassette" AndAlso Not blindName = "Semi Cassette" Then
             If String.IsNullOrEmpty(data.bottomtype) Then Return "BOTTOM RAIL TYPE IS REQUIRED !"
-            If String.IsNullOrEmpty(data.bottomcolour) Then Return "BOTTOM RAIL COLOUR IS REQUIRED !"
+            If String.IsNullOrEmpty(data.bottomcolour) Then
+                If bottomName = "Trim" Then Return "BOTTOM TRIM STYLE IS REQUIRED !"
+                Return "BOTTOM RAIL COLOUR IS REQUIRED !"
+            End If
             If bottomName = "Flat" Then
                 If String.IsNullOrEmpty(data.bottomoption) Then Return "BOTTOM OPTION FOR BOTTOM FLAT IS REQUIRED !"
             End If
@@ -4071,7 +4074,10 @@ Partial Class Order_Method
 
         If blindName = "Dual Blinds" OrElse blindName = "Link 2 Blinds Dependent" OrElse blindName = "Link 2 Blinds Independent" OrElse blindName = "Link 3 Blinds Dependent" OrElse blindName = "Link 3 Blinds Independent with Dependent" OrElse blindName = "Link 4 Blinds Independent with Dependent" OrElse blindName = "DB Link 2 Blinds Dependent" OrElse blindName = "DB Link 2 Blinds Independent" OrElse blindName = "DB Link 3 Blinds Dependent" OrElse blindName = "DB Link 3 Blinds Independent with Dependent" Then
             If Not String.IsNullOrEmpty(data.bottomtypeb) Then
-                If String.IsNullOrEmpty(data.bottomcolourb) Then Return "BOTTOM COLOUR FOR SECOND BLIND IS REQUIRED !"
+                If String.IsNullOrEmpty(data.bottomcolourb) Then
+                    If bottomNameB = "Trim" Then Return "BOTTOM TRIM STYLE FOR SECOND BLIND IS REQUIRED !"
+                    Return "BOTTOM COLOUR FOR SECOND BLIND IS REQUIRED !"
+                End If
                 If bottomNameB = "Flat" AndAlso String.IsNullOrEmpty(data.bottomoptionb) Then Return "FLAT BOTTOM FOR SECOND BLIND IS REQUIRED !"
             End If
 
@@ -4136,7 +4142,10 @@ Partial Class Order_Method
 
         If blindName = "Link 3 Blinds Dependent" OrElse blindName = "Link 3 Blinds Independent with Dependent" OrElse blindName = "Link 4 Blinds Independent with Dependent" OrElse blindName = "DB Link 2 Blinds Dependent" OrElse blindName = "DB Link 2 Blinds Independent" OrElse blindName = "DB Link 3 Blinds Dependent" OrElse blindName = "DB Link 3 Blinds Independent with Dependent" Then
             If Not String.IsNullOrEmpty(data.bottomtypec) Then
-                If String.IsNullOrEmpty(data.bottomcolourc) Then Return "BOTTOM COLOUR FOR THIRD BLIND IS REQUIRED !"
+                If String.IsNullOrEmpty(data.bottomcolourc) Then
+                    If bottomNameC = "Trim" Then Return "BOTTOM TRIM STYLE FOR THIRD BLIND IS REQUIRED !"
+                    Return "BOTTOM COLOUR FOR THIRD BLIND IS REQUIRED !"
+                End If
                 If bottomNameC = "Flat" AndAlso String.IsNullOrEmpty(data.bottomoptionc) Then Return "FLAT BOTTOM FOR THIRD BLIND IS REQUIRED !"
             End If
 
@@ -4200,7 +4209,10 @@ Partial Class Order_Method
 
         If blindName = "DB Link 2 Blinds Dependent" OrElse blindName = "DB Link 2 Blinds Independent" OrElse blindName = "DB Link 3 Blinds Dependent" OrElse blindName = "DB Link 3 Blinds Independent with Dependent" Then
             If Not String.IsNullOrEmpty(data.bottomtyped) Then
-                If String.IsNullOrEmpty(data.bottomcolourd) Then Return "BOTTOM COLOUR FOR FOURTH BLIND IS REQUIRED !"
+                If String.IsNullOrEmpty(data.bottomcolourd) Then
+                    If bottomNameD = "Trim" Then Return "BOTTOM TRIM STYLE FOR FOURTH BLIND IS REQUIRED !"
+                    Return "BOTTOM COLOUR FOR FOURTH BLIND IS REQUIRED !"
+                End If
                 If bottomNameD = "Flat" AndAlso String.IsNullOrEmpty(data.bottomoptiond) Then Return "FLAT BOTTOM FOR FOURTH BLIND IS REQUIRED !"
             End If
 
@@ -4226,7 +4238,10 @@ Partial Class Order_Method
         ' START FIFTH BLIND
         If blindName = "DB Link 3 Blinds Dependent" OrElse blindName = "DB Link 3 Blinds Independent with Dependent" Then
             If Not String.IsNullOrEmpty(data.bottomtypee) Then
-                If String.IsNullOrEmpty(data.bottomcoloure) Then Return "BOTTOM COLOUR FOR FIFTH BLIND IS REQUIRED !"
+                If String.IsNullOrEmpty(data.bottomcoloure) Then
+
+                    Return "BOTTOM COLOUR FOR FIFTH BLIND IS REQUIRED !"
+                End If
                 If bottomNameE = "Flat" Then Return "FLAT BOTTOM FOR FIFTH BLIND IS REQUIRED !"
             End If
 
