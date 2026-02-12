@@ -34,7 +34,7 @@ Partial Class Order_Default
             ddlActive.SelectedValue = Session("OrderActive")
             ddlType.SelectedValue = Session("OrderType")
 
-            BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlCompany.SelectedValue, ddlActive.SelectedValue)
+            BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlCompany.SelectedValue, ddlType.SelectedValue, ddlActive.SelectedValue)
         End If
     End Sub
 
@@ -56,33 +56,34 @@ Partial Class Order_Default
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
-        BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlCompany.SelectedValue, ddlActive.SelectedValue)
+        BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlCompany.SelectedValue, ddlType.SelectedValue, ddlActive.SelectedValue)
     End Sub
 
     Protected Sub ddlStatus_SelectedIndexChanged(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
-        BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlCompany.SelectedValue, ddlActive.SelectedValue)
+        BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlCompany.SelectedValue, ddlType.SelectedValue, ddlActive.SelectedValue)
     End Sub
 
     Protected Sub ddlCompany_SelectedIndexChanged(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
-        BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlCompany.SelectedValue, ddlActive.SelectedValue)
+        BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlCompany.SelectedValue, ddlType.SelectedValue, ddlActive.SelectedValue)
     End Sub
 
     Protected Sub ddlType_SelectedIndexChanged(sender As Object, e As EventArgs)
-
+        MessageError(False, String.Empty)
+        BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlCompany.SelectedValue, ddlType.SelectedValue, ddlActive.SelectedValue)
     End Sub
 
     Protected Sub ddlActive_SelectedIndexChanged(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
-        BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlCompany.SelectedValue, ddlActive.SelectedValue)
+        BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlCompany.SelectedValue, ddlType.SelectedValue, ddlActive.SelectedValue)
     End Sub
 
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
         MessageError(False, String.Empty)
         Try
             gvList.PageIndex = e.NewPageIndex
-            BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlCompany.SelectedValue, ddlActive.SelectedValue)
+            BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlCompany.SelectedValue, ddlType.SelectedValue, ddlActive.SelectedValue)
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -714,15 +715,15 @@ Partial Class Order_Default
             ddlType.Items.Add(New ListItem("Builder", "Builder"))
 
             If Session("RoleName") = "Installer" Then
-                ddlStatus.Items.Clear()
+                ddlType.Items.Clear()
                 ddlType.Items.Add(New ListItem("Builder", "Builder"))
             End If
         Catch ex As Exception
-            ddlStatus.Items.Clear()
+            ddlType.Items.Clear()
         End Try
     End Sub
 
-    Protected Sub BindDataOrder(search As String, status As String, company As String, active As String)
+    Protected Sub BindDataOrder(search As String, status As String, company As String, orderType As String, active As String)
         Session("OrderStatus") = String.Empty
         Session("OrderCompany") = String.Empty
         Session("OrderSearch") = String.Empty
@@ -740,7 +741,8 @@ Partial Class Order_Default
                 New SqlParameter("@CustomerId", Session("CustomerId").ToString()),
                 New SqlParameter("@LoginId", Session("LoginId").ToString()),
                 New SqlParameter("@CompanyId", Session("CompanyId").ToString()),
-                New SqlParameter("@RoleId", Session("RoleId").ToString())
+                New SqlParameter("@RoleId", Session("RoleId").ToString()),
+                New SqlParameter("@OrderType", orderType)
             }
 
             Dim thisData As DataTable = orderClass.GetDataTableSP("sp_OrderList", params)
