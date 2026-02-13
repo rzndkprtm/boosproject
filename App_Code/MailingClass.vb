@@ -815,6 +815,12 @@ Public Class MailingClass
         mailBody &= "<br /><br />"
         mailBody &= "Please find attached the payment invoice for your order. We kindly ask you to proceed with the payment in accordance with the details provided in the invoice."
         mailBody &= "<br /><br />"
+
+        mailBody &= "If you would like to make payment by credit card, please refer to the link below:"
+        mailBody &= "<br />"
+        mailBody &= "<a href='https://pay.b2bpay.com.au/JPMDi'>https://pay.b2bpay.com.au/JPMDi</a>"
+
+        mailBody &= "<br /><br />"
         mailBody &= "Once the payment has been completed, please send your payment confirmation to the following email address:"
         mailBody &= "<br />"
         mailBody &= "<a href='mailto:invoice@jpmdirect.com.au'>invoice@jpmdirect.com.au</a>"
