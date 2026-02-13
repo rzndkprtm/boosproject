@@ -184,7 +184,7 @@ Public Class InvoiceClass
                 Dim invDate As Date = Convert.ToDateTime(headerData("InvoiceDate"))
                 issueDate = invDate.ToString("dd MMM yyyy")
 
-                Dim dueDt As Date = invDate.AddDays(30)
+                Dim dueDt As Date = invDate.AddDays(1)
                 dueDate = dueDt.ToString("dd MMM yyyy")
             End If
 
