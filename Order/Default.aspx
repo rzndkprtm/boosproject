@@ -56,7 +56,7 @@
                                 </div>
 
                                 <div class="col-12 col-sm-12 col-lg-3 mb-2">
-                                    <div class="input-group" runat="server" id="divCompany">
+                                    <div class="input-group" runat="server" id="divType">
                                         <span class="input-group-text">Order Type</span>
                                         <asp:DropDownList runat="server" ID="ddlType" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlType_SelectedIndexChanged"></asp:DropDownList>
                                     </div>
@@ -73,7 +73,7 @@
                                 </div>
                             </div>
 
-                            <div class="row mb-1" runat="server" id="divType">
+                            <div class="row mb-1" runat="server" id="divCompany">
                                 <div class="col-12 col-sm-12 col-lg-3 mb-2">
                                     <div class="input-group">
                                         <span class="input-group-text">Company</span>
