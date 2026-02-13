@@ -1438,6 +1438,7 @@ Partial Class Order_Detail
                     gvListEditCosting.DataSource = orderClass.GetDataTable(queryDetailsPrice)
                     gvListEditCosting.DataBind()
 
+                    gvListEditCosting.Columns(1).Visible = False
                     gvListEditCosting.Columns(3).Visible = False
                     gvListEditCosting.Columns(4).Visible = False
 
