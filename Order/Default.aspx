@@ -50,15 +50,15 @@
                             <div class="row">
                                 <div class="col-12 col-sm-12 col-lg-3 mb-2">
                                     <div class="input-group">
-                                        <asp:Label runat="server" CssClass="input-group-text" Text="Status"></asp:Label>
+                                        <span class="input-group-text">Status</span>
                                         <asp:DropDownList runat="server" ID="ddlStatus" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlStatus_SelectedIndexChanged"></asp:DropDownList>
                                     </div>
                                 </div>
 
                                 <div class="col-12 col-sm-12 col-lg-3 mb-2">
                                     <div class="input-group" runat="server" id="divCompany">
-                                        <asp:Label runat="server" CssClass="input-group-text" Text="Company"></asp:Label>
-                                        <asp:DropDownList runat="server" ID="ddlCompany" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCompany_SelectedIndexChanged"></asp:DropDownList>
+                                        <span class="input-group-text">Order Type</span>
+                                        <asp:DropDownList runat="server" ID="ddlType" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlType_SelectedIndexChanged"></asp:DropDownList>
                                     </div>
                                 </div>
 
@@ -73,11 +73,11 @@
                                 </div>
                             </div>
 
-                            <div class="row" runat="server" id="divType">
+                            <div class="row mb-1" runat="server" id="divType">
                                 <div class="col-12 col-sm-12 col-lg-3 mb-2">
                                     <div class="input-group">
-                                        <asp:Label runat="server" CssClass="input-group-text" Text="Order Type"></asp:Label>
-                                        <asp:DropDownList runat="server" ID="ddlType" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlType_SelectedIndexChanged"></asp:DropDownList>
+                                        <span class="input-group-text">Company</span>
+                                        <asp:DropDownList runat="server" ID="ddlCompany" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCompany_SelectedIndexChanged"></asp:DropDownList>
                                     </div>
                                 </div>
                             </div>
