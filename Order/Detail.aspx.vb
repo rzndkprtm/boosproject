@@ -2595,7 +2595,7 @@ Partial Class Order_Detail
     Protected Sub BindBlindTypeService()
         ddlBlindService.Items.Clear()
         Try
-            ddlBlindService.DataSource = orderClass.GetDataTable("SELECT * FROM Products WHERE DesignId='16' ORDER BY Name ASC")
+            ddlBlindService.DataSource = orderClass.GetDataTable("SELECT * FROM Products WHERE DesignId='16' AND Active=1 ORDER BY Name ASC")
             ddlBlindService.DataTextField = "Name"
             ddlBlindService.DataValueField = "Id"
             ddlBlindService.DataBind()

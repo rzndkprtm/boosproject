@@ -801,6 +801,8 @@
                     End If
 
                     If String.IsNullOrEmpty(kitId) OrElse String.IsNullOrEmpty(kitIdB) Then Continue For
+                    If String.IsNullOrEmpty(boeFabricId) Then Continue For
+                    If String.IsNullOrEmpty(boeFabricIdB) Then Continue For
 
                     Dim flatOption As String = thisData.Rows(i)("FlatOption").ToString()
                     Dim flatOptionB As String = thisData.Rows(i)("FlatOptionB").ToString()
@@ -853,6 +855,12 @@
                     kitId = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND BlindStatus='Control'")
                     kitIdB = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND BlindStatus='End'")
 
+                    Dim webFabricIdB As String = thisData.Rows(i)("FabricColourIdB").ToString()
+                    Dim boeFabricIdB As String = GetItemData("SELECT BoeId FROM FabricColours WHERE Id='" & webFabricIdB & "'")
+
+                    Dim bottomColourIdB As String = thisData.Rows(i)("BottomColourIdB").ToString()
+                    Dim boeBottomIdB As String = GetItemData("SELECT BoeId FROM BottomColours WHERE Id='" & bottomColourIdB & "'")
+
                     Dim kitName As String = String.Empty
 
                     If tubeName = "Standard" AndAlso controlName = "Chain" Then
@@ -877,6 +885,8 @@
                     End If
 
                     If String.IsNullOrEmpty(kitId) OrElse String.IsNullOrEmpty(kitIdB) Then Continue For
+                    If String.IsNullOrEmpty(boeFabricId) Then Continue For
+                    If String.IsNullOrEmpty(boeFabricIdB) Then Continue For
 
                     Dim flatOption As String = thisData.Rows(i)("FlatOption").ToString()
                     Dim flatOptionB As String = thisData.Rows(i)("FlatOptionB").ToString()
@@ -886,12 +896,6 @@
 
                     If flatOptionB = "Fabric on Back" Then flatOptionB = "Fabric on back"
                     If flatOptionB = "Fabric on Front" Then flatOptionB = "Fabric on front"
-
-                    Dim webFabricIdB As String = thisData.Rows(i)("FabricColourIdB").ToString()
-                    Dim boeFabricIdB As String = GetItemData("SELECT BoeId FROM FabricColours WHERE Id='" & webFabricIdB & "'")
-
-                    Dim bottomColourIdB As String = thisData.Rows(i)("BottomColourIdB").ToString()
-                    Dim boeBottomIdB As String = GetItemData("SELECT BoeId FROM BottomColours WHERE Id='" & bottomColourIdB & "'")
 
                     writer.WriteStartElement("OrderDetails")
                     writer.WriteAttributeString("OrddID", thisData.Rows(i)("Id").ToString())
@@ -1095,7 +1099,7 @@
                     writer.WriteEndElement()
                 End If
 
-                If blindName = "Link 3 Blinds Independent width Independent" Then
+                If blindName = "Link 3 Blinds Independent with Dependent" Then
                     kitId = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND BlindStatus='Control'")
                     kitIdB = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND BlindStatus='Middle'")
                     kitIdC = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND BlindStatus='End'")
