@@ -379,7 +379,7 @@ Partial Class Order_Detail
         MessageError(False, String.Empty)
         Try
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='In Production', ProductionDate=GETDATE(), DownloadBOE=1 WHERE Id=@Id; INSERT INTO OrderShipments(Id) VALUES (@Id)", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='In Production', ProductionDate=GETDATE(), DownloadBOE=1 WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
 
                     thisConn.Open()
@@ -396,7 +396,22 @@ Partial Class Order_Detail
                 salesClass.RefreshData()
             End If
 
-            mailingClass.ProductionOrder(lblHeaderId.Text)
+            Dim shipmentString As String = "INSERT INTO OrderShipments(Id) VALUES (@Id)"
+            If lblOrderStatus.Text = "Shipped Out" Then
+                shipmentString = "UPDATE OrderShipments SET ShipmentNumber=NULL, ShipmentDate=NULL, ContainerNumber=NULL, Courier=NULL WHERE Id=@Id"
+            End If
+            Using thisConn As New SqlConnection(myConn)
+                Using myCmd As SqlCommand = New SqlCommand(shipmentString, thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
+
+                    thisConn.Open()
+                    myCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            If lblOrderStatus.Text = "Payment Received" OrElse lblOrderStatus.Text = "New Order" Then
+                mailingClass.ProductionOrder(lblHeaderId.Text)
+            End If
 
             url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
             Response.Redirect(url, False)
@@ -1532,6 +1547,9 @@ Partial Class Order_Detail
                     salesClass.RefreshData()
                 End If
 
+                dataLog = {"OrderDetails", newItemId, Session("LoginId"), "Add Service"}
+                orderClass.Logs(dataLog)
+
                 url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
                 Response.Redirect(url, False)
             End If
@@ -1573,7 +1591,7 @@ Partial Class Order_Detail
                 IO.Directory.Delete(folderPath, True)
             End If
 
-            Dim dataLog As Object() = {"OrderDetails", thisId, Session("LoginId"), "Delete Order Item"}
+            dataLog = {"OrderDetails", thisId, Session("LoginId"), "Delete Order Item"}
             orderClass.Logs(dataLog)
 
             If lblCompanyId.Text = "2" AndAlso (lblOrderStatus.Text = "In Production" OrElse lblOrderStatus.Text = "On Hold") Then
