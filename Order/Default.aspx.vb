@@ -765,6 +765,9 @@ Partial Class Order_Default
             divActive.Visible = PageAction("Active")
             divCompany.Visible = PageAction("Filter Company")
             divType.Visible = PageAction("Filter Type")
+            If Session("RoleName") = "Sales" AndAlso Session("LevelName") = "Member" AndAlso Session("UserName") = "felicity" Then
+                divType.Visible = True
+            End If
 
             If Session("RoleName") = "Customer" Then
                 Dim onStop As Boolean = orderClass.GetCustomerOnStop(Session("CustomerId").ToString())
