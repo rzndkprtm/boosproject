@@ -4390,7 +4390,7 @@ Partial Class Order_Method
                 groupFabric = orderClass.GetFabricGroupLocal("Roller", data.fabrictype)
             End If
 
-            Dim tubeIstilah As String = "Standard"
+            Dim tubeIstilah As String = "STD / GR"
 
             Dim groupName As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabric)
             priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid)
@@ -4492,7 +4492,7 @@ Partial Class Order_Method
 
             groupFabric = orderClass.GetFabricGroup(data.fabrictype)
 
-            Dim tubeIstilah As String = "Standard"
+            Dim tubeIstilah As String = "STD / GR"
 
             Dim groupName As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabric)
             priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid)
