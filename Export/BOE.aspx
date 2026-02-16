@@ -425,6 +425,7 @@
                     layoutCode = thisData.Rows(i)("LayoutCodeCustom").ToString()
                 End If
 
+                writer.WriteStartElement("OrderDetails")
                 writer.WriteAttributeString("BlindType", "Panel Glide")
                 writer.WriteAttributeString("OrderType", blindName)
                 writer.WriteAttributeString("TubeName", tubeName)
@@ -437,6 +438,7 @@
                 writer.WriteAttributeString("Tracks", thisData.Rows(i)("TrackType").ToString())
                 writer.WriteAttributeString("Panel", thisData.Rows(i)("TrackType").ToString())
                 writer.WriteAttributeString("WandLength", thisData.Rows(i)("WandLengthValue").ToString())
+                writer.WriteEndElement()
             End If
 
             If designName = "Pelmet" Then
@@ -1229,6 +1231,21 @@
                 writer.WriteAttributeString("ControlLength", thisData.Rows(i)("ControlLength").ToString())
                 writer.WriteAttributeString("FabricID", boeFabricId)
 
+                writer.WriteAttributeString("TotalItems", thisData.Rows(i)("TotalItems").ToString())
+                writer.WriteAttributeString("MarkUp", thisData.Rows(i)("MarkUp").ToString())
+                writer.WriteAttributeString("Notes", thisData.Rows(i)("Notes").ToString())
+                writer.WriteEndElement()
+            End If
+
+            If designName = "Skyline Shutter Express" Then
+                writer.WriteStartElement("OrderDetails")
+                writer.WriteAttributeString("OrddID", thisData.Rows(i)("Id").ToString())
+                writer.WriteAttributeString("FKOrdID", thisData.Rows(i)("HeaderId").ToString())
+                writer.WriteAttributeString("Qty", thisData.Rows(i)("Qty").ToString())
+                writer.WriteAttributeString("Room", thisData.Rows(i)("Room").ToString())
+                writer.WriteAttributeString("Mounting", thisData.Rows(i)("Mounting").ToString())
+                writer.WriteAttributeString("Width", thisData.Rows(i)("Width").ToString())
+                writer.WriteAttributeString("Drop", thisData.Rows(i)("Drop").ToString())
                 writer.WriteAttributeString("TotalItems", thisData.Rows(i)("TotalItems").ToString())
                 writer.WriteAttributeString("MarkUp", thisData.Rows(i)("MarkUp").ToString())
                 writer.WriteAttributeString("Notes", thisData.Rows(i)("Notes").ToString())
