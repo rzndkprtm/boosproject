@@ -26,7 +26,7 @@ Partial Class Report_Default
 
     Protected Sub ddlCompany_SelectedIndexChanged(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
-        BindCustomer()
+        BindCustomer(ddlCompany.SelectedValue)
     End Sub
 
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
@@ -47,7 +47,7 @@ Partial Class Report_Default
             End If
 
             If msgError.InnerText = "" Then
-                BindData(ddlStatus.SelectedValue, txtStartDate.Text, txtEndDate.Text)
+                BindData(ddlStatus.SelectedValue, txtStartDate.Text, txtEndDate.Text, ddlCompany.SelectedValue, ddlCustomer.SelectedValue)
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -61,12 +61,14 @@ Partial Class Report_Default
         Response.Redirect("~/", False)
     End Sub
 
-    Protected Sub BindData(status As String, dStart As Date, dEnd As Date)
+    Protected Sub BindData(status As String, dStart As Date, dEnd As Date, companyId As String, customerId As String)
         Try
             Dim params As New List(Of SqlParameter) From {
                 New SqlParameter("@Status", status),
                 New SqlParameter("@DateFrom", dStart),
-                New SqlParameter("@DateTo", dEnd)
+                New SqlParameter("@DateTo", dEnd),
+                New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(companyId), CType(DBNull.Value, Object), companyId)),
+                New SqlParameter("@CustomerId", If(String.IsNullOrEmpty(customerId), CType(DBNull.Value, Object), customerId))
             }
 
             Dim thisData As DataTable = reportClass.GetDataTableSP("sp_TotalItemsPerDesign", params)
@@ -107,17 +109,20 @@ Partial Class Report_Default
         End Try
     End Sub
 
-    Protected Sub BindCustomer(Optional company As String = "")
+    Protected Sub BindCustomer(company As String)
         Try
-            Dim thisString As String = "SELECT * FROM Customers WHERE Active=1 ORDER BY Name ASC"
             If Not String.IsNullOrEmpty(company) Then
-                thisString = "SELECT * FROM Customers WHERE CompanyId = '" & company & "' ORDER BY Name ASC"
-            End If
+                Dim thisString As String = "SELECT * FROM Customers WHERE CompanyId = '" & company & "' ORDER BY Name ASC"
 
-            ddlCustomer.DataSource = reportClass.GetDataTable(thisString)
-            ddlCustomer.DataTextField = "Name"
-            ddlCustomer.DataValueField = "Id"
-            ddlCustomer.DataBind()
+                ddlCustomer.DataSource = reportClass.GetDataTable(thisString)
+                ddlCustomer.DataTextField = "Name"
+                ddlCustomer.DataValueField = "Id"
+                ddlCustomer.DataBind()
+
+                If ddlCustomer.Items.Count > 0 Then
+                    ddlCustomer.Items.Insert(0, New ListItem("", ""))
+                End If
+            End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
