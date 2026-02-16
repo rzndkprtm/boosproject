@@ -542,7 +542,7 @@
                                     <li class="mt-3">
                                         Styletrack
                                         <br />
-                                        <a class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalGallery" onclick="return showGallery('Track');">Detail Gallery</a>
+                                        <a class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalGallery" onclick="return showGallery('Style');">Detail Gallery</a>
                                     </li>
                                 </ol>
                             </div>
