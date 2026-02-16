@@ -96,17 +96,8 @@
                                     <div class="col-12 col-sm-12 col-lg-3">
                                         <label class="form-label">By Customer</label>
                                     </div>
-                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                    <div class="col-12 col-sm-12 col-lg-9 form-group">
                                         <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="form-select"></asp:DropDownList>
-                                    </div>
-                                </div>
-
-                                <div class="row" runat="server" id="divArea">
-                                    <div class="col-12 col-sm-12 col-lg-3">
-                                        <label class="form-label">By Area</label>
-                                    </div>
-                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
-                                        <asp:DropDownList runat="server" ID="ddlArea" CssClass="form-select"></asp:DropDownList>
                                     </div>
                                 </div>
                             </div>
