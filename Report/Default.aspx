@@ -88,7 +88,7 @@
                                         <label class="form-label">By Company</label>
                                     </div>
                                     <div class="col-12 col-sm-12 col-lg-6 form-group">
-                                        <asp:DropDownList runat="server" ID="ddlCompany" CssClass="form-select"></asp:DropDownList>
+                                        <asp:DropDownList runat="server" ID="ddlCompany" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCompany_SelectedIndexChanged"></asp:DropDownList>
                                     </div>
                                 </div>
 
