@@ -21,6 +21,11 @@
     </div>
 
     <div class="page-content">
+        <section class="row mb-4">
+            <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
+                <asp:Button runat="server" ID="btnEditHeader" CssClass="btn btn-secondary" Text="Create PDF" />
+            </div>
+        </section>
         <section class="row mb-3" runat="server" id="divError">
             <div class="col-12">
                 <div class="alert alert-danger">
@@ -43,12 +48,10 @@
                                     <div class="col-12 col-sm-12 col-lg-3">
                                         <label class="form-label">Status</label>
                                     </div>
-                                    <div class="col-12 col-sm-12 col-lg-5 form-group">
+                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
                                         <asp:DropDownList runat="server" ID="ddlStatus" CssClass="form-select">
                                             <asp:ListItem Value="" Text=""></asp:ListItem>
-                                            <asp:ListItem Value="Unsubmitted" Text="Unsubmitted"></asp:ListItem>
-                                            <asp:ListItem Value="New Order" Text="New Order"></asp:ListItem>
-                                            <asp:ListItem Value="Waiting Proforma" Text="Waiting Proforma"></asp:ListItem>
+                                            <asp:ListItem Value="Submitted" Text="Submitted"></asp:ListItem>
                                             <asp:ListItem Value="In Production" Text="In Production"></asp:ListItem>
                                         </asp:DropDownList>
                                     </div>
@@ -56,13 +59,54 @@
 
                                 <div class="row">
                                     <div class="col-12 col-sm-12 col-lg-3">
-                                        <label class="form-label">Date</label>
+                                        <label class="form-label">From Date</label>
                                     </div>
-                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                    <div class="col-12 col-sm-12 col-lg-5 form-group">
                                         <asp:TextBox runat="server" ID="txtStartDate" CssClass="form-control" TextMode="Date"></asp:TextBox>
                                     </div>
-                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-12 col-sm-12 col-lg-3">
+                                        <label class="form-label">To Date</label>
+                                    </div>
+                                    <div class="col-12 col-sm-12 col-lg-5 form-group">
                                         <asp:TextBox runat="server" ID="txtEndDate" CssClass="form-control" TextMode="Date"></asp:TextBox>
+                                    </div>
+                                </div>
+
+                                <div class="row mt-3">
+                                    <div class="col-12">
+                                        <div class="divider divider-left-center">
+                                            <div class="divider-text">Custom Data</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row" runat="server" id="divCompany">
+                                    <div class="col-12 col-sm-12 col-lg-3">
+                                        <label class="form-label">By Company</label>
+                                    </div>
+                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                        <asp:DropDownList runat="server" ID="ddlCompany" CssClass="form-select"></asp:DropDownList>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-12 col-sm-12 col-lg-3">
+                                        <label class="form-label">By Customer</label>
+                                    </div>
+                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                        <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="form-select"></asp:DropDownList>
+                                    </div>
+                                </div>
+
+                                <div class="row" runat="server" id="divArea">
+                                    <div class="col-12 col-sm-12 col-lg-3">
+                                        <label class="form-label">By Area</label>
+                                    </div>
+                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                        <asp:DropDownList runat="server" ID="ddlArea" CssClass="form-select"></asp:DropDownList>
                                     </div>
                                 </div>
                             </div>
