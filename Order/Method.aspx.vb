@@ -8990,6 +8990,9 @@ Partial Class Order_Method
         Dim topplasticqty As Integer
         Dim markup As Integer
 
+        Dim linearMetre As Decimal = 0D
+        Dim squareMetre As Decimal = 0D
+
         Dim designName As String = String.Empty
         Dim blindName As String = String.Empty
 
@@ -9014,6 +9017,9 @@ Partial Class Order_Method
 
         If String.IsNullOrEmpty(data.drop) Then Return "DROP IS REQUIRED !"
         If Not Integer.TryParse(data.drop, drop) OrElse drop <= 0 Then Return "PLEASE CHECK YOUR DROP ORDER !"
+
+        linearMetre = width / 1000
+        squareMetre = width * drop / 1000000
 
         If blindName = "Flyscreen" OrElse blindName = "Safety" OrElse blindName = "Security" Then
             If String.IsNullOrEmpty(data.meshtype) Then Return "MESH TYPE IS REQUIRED !"
@@ -9066,8 +9072,8 @@ Partial Class Order_Method
             data.brace = String.Empty
         End If
 
-        Dim linearMetre As Decimal = width / 1000
-        Dim squareMetre As Decimal = width * drop / 1000000
+        linearMetre = width / 1000
+        squareMetre = width * drop / 1000000
 
         Dim factory As String = String.Empty
         If data.framecolour.Contains("Express") Then factory = "Express"

@@ -170,11 +170,11 @@ Partial Class Setting_Specification_Design
                             myCmd.ExecuteNonQuery()
                         End Using
 
-                        Using myCmd As New SqlCommand("DECLARE @Id NVARCHAR(MAX)=@NewId; UPDATE CustomerProductAccess SET DesignId=CASE WHEN DesignId IS NULL OR LTRIM(RTRIM(DesignId))='' THEN @NewId WHEN ',' + DesignId + ',' LIKE '%,' + @NewId + ',%' THEN DesignId ELSE DesignId + ',' + @NewId END;", thisConn)
-                            myCmd.Parameters.AddWithValue("@NewId", thisId)
+                        'Using myCmd As New SqlCommand("DECLARE @Id NVARCHAR(MAX)=@NewId; UPDATE CustomerProductAccess SET DesignId=CASE WHEN DesignId IS NULL OR LTRIM(RTRIM(DesignId))='' THEN @NewId WHEN ',' + DesignId + ',' LIKE '%,' + @NewId + ',%' THEN DesignId ELSE DesignId + ',' + @NewId END;", thisConn)
+                        '    myCmd.Parameters.AddWithValue("@NewId", thisId)
 
-                            myCmd.ExecuteNonQuery()
-                        End Using
+                        '    myCmd.ExecuteNonQuery()
+                        'End Using
 
                         thisConn.Close()
                     End Using
