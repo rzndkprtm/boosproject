@@ -37,7 +37,6 @@
         <section class="row mb-4">
             <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
                 <a href="javascript:void(0);" class="btn btn-secondary me-1" onclick="showLog('OrderHeaders', '<%= lblHeaderId.Text %>')">Log</a>
-                <%--<asp:Button runat="server" ID="btnPreview" CssClass="btn btn-primary me-1" Text="Preview" OnClick="btnPreview_Click" />--%>
                 <asp:Button runat="server" ID="btnPreview" CssClass="btn btn-primary me-1" Text="Preview" />
                 <asp:Button runat="server" ID="btnEditHeader" CssClass="btn btn-secondary me-1" Text="Edit Header" OnClick="btnEditHeader_Click" />
                 <a href="#" runat="server" id="aDeleteOrder" class="btn btn-danger me-1" data-bs-toggle="modal" data-bs-target="#modalDeleteOrder">Delete Order</a>
@@ -100,8 +99,6 @@
                     </li>                    
                     <li runat="server" id="liMoreHistoryNote">
                         <a href="javascript:void(0)" class="dropdown-item" onclick="showHistoryNote('<%= lblHeaderId.Text %>')">History Note</a>
-
-                        <%--<asp:LinkButton runat="server" ID="linkHistoryNote" CssClass="dropdown-item" Text="History Note" OnClick="linkHistoryNote_Click"></asp:LinkButton>--%>
                     </li>
                 </ul>
             </div>
@@ -1532,7 +1529,6 @@
                                         <asp:TextBox runat="server" ID="txtDescriptionPrice" CssClass="form-control" Text='<%# Eval("Description") %>'></asp:TextBox>
                                     </ItemTemplate>
                                 </asp:TemplateField>
-                                <asp:BoundField DataField="SellPricing" HeaderText="Price (Sell)" />
                                 <asp:TemplateField HeaderText="New Price (Sell)" ItemStyle-Width="150px">
                                     <ItemTemplate>
                                         <div class="input-group">

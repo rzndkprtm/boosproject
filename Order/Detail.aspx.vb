@@ -3355,7 +3355,7 @@ Partial Class Order_Detail
         End If
 
         If designName = "Additional" Then
-            result = productName
+            result = orderClass.GetItemData("SELECT Description FROM OrderCostings WHERE HeaderId='" & lblHeaderId.Text & "' AND ItemId='" & itemId & "' AND Number='1' AND Type='Base'")
         End If
         Return result
     End Function

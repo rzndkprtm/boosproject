@@ -1732,6 +1732,9 @@ Partial Class Order_Add
 
                         If controlType = "Motorized" OrElse controlType = "Motorised" Then
                             controlType = motorType
+                            If motorType = "Altus 40" Then
+                                controlType = "Altus"
+                            End If
                             chainName = "No Remote"
                         End If
 
