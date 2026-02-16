@@ -18,7 +18,15 @@ Partial Class Report_Default
 
             txtStartDate.Text = Now.ToString("yyyy-mm-dd")
             txtEndDate.Text = Now.ToString("yyyy-mm-dd")
+
+            BindCompany()
+            BindCustomer(ddlCustomer.SelectedValue)
         End If
+    End Sub
+
+    Protected Sub ddlCompany_SelectedIndexChanged(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        BindCustomer()
     End Sub
 
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
@@ -65,6 +73,51 @@ Partial Class Report_Default
 
             gvList.DataSource = thisData
             gvList.DataBind()
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindCompany()
+        ddlCompany.Items.Clear()
+        ddlCompany.Enabled = True
+        Try
+            Dim thisString As String = "SELECT * FROM Companys WHERE Active=1 ORDER BY Name ASC"
+            ddlCompany.DataSource = reportClass.GetDataTable(thisString)
+            ddlCompany.DataTextField = "Name"
+            ddlCompany.DataValueField = "Id"
+            ddlCompany.DataBind()
+
+            If ddlCompany.Items.Count > 0 Then
+                ddlCompany.Items.Insert(0, New ListItem("", ""))
+            End If
+
+            If Session("RoleName") = "Sales" OrElse Session("RoleName") = "Customer Service" Then
+                ddlCompany.SelectedValue = Session("CompanyId").ToString()
+                ddlCompany.Enabled = False
+            End If
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindCustomer(Optional company As String = "")
+        Try
+            Dim thisString As String = "SELECT * FROM Customers WHERE Active=1 ORDER BY Name ASC"
+            If Not String.IsNullOrEmpty(company) Then
+                thisString = "SELECT * FROM Customers WHERE CompanyId = '" & company & "' ORDER BY Name ASC"
+            End If
+
+            ddlCustomer.DataSource = reportClass.GetDataTable(thisString)
+            ddlCustomer.DataTextField = "Name"
+            ddlCustomer.DataValueField = "Id"
+            ddlCustomer.DataBind()
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
