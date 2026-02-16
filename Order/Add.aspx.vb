@@ -284,7 +284,10 @@ Partial Class Order_Add
                     If designType = "Venetian" Then
                         Dim blindLower As String = blindType.ToLower()
 
-                        If blindLower = "aluminium" Then
+                        MessageError(True, blindLower)
+                        Exit For
+
+                        If blindLower.Contains("aluminium") Then
                             designId = orderClass.GetItemData("SELECT Id FROM Designs WHERE Name='Aluminium Blind'")
 
                             Dim subType As String = "Single"
