@@ -426,6 +426,11 @@
                 End If
 
                 writer.WriteStartElement("OrderDetails")
+                writer.WriteAttributeString("OrddID", thisData.Rows(i)("Id").ToString())
+                writer.WriteAttributeString("FKOrdID", thisData.Rows(i)("HeaderId").ToString())
+                writer.WriteAttributeString("Qty", thisData.Rows(i)("Qty").ToString())
+                writer.WriteAttributeString("Room", thisData.Rows(i)("Room").ToString())
+                writer.WriteAttributeString("Mounting", thisData.Rows(i)("Mounting").ToString())
                 writer.WriteAttributeString("BlindType", "Panel Glide")
                 writer.WriteAttributeString("OrderType", blindName)
                 writer.WriteAttributeString("TubeName", tubeName)
