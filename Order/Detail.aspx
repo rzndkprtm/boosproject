@@ -1507,7 +1507,7 @@
     </div>
 
     <div class="modal modal-blur fade" id="modalEditCosting" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-full modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Edit Costing</h5>
@@ -1527,14 +1527,9 @@
                             <Columns>
                                 <asp:BoundField DataField="Id" HeaderText="ID" />
                                 <asp:BoundField DataField="Type" HeaderText="Type" />
-                                <asp:BoundField DataField="Description" HeaderText="Description" />
-                                <asp:BoundField DataField="BuyPricing" HeaderText="Price (Buy)" />
-                                <asp:TemplateField HeaderText="New Price (Buy)" ItemStyle-Width="150px">
+                                <asp:TemplateField HeaderText="Description">
                                     <ItemTemplate>
-                                        <div class="input-group">
-                                            <span runat="server" id="spanEditBuyPrice" class="input-group-text">$</span>
-                                            <asp:TextBox runat="server" ID="txtNewBuyPrice" CssClass="form-control" Text='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:0.##}", Eval("BuyPrice")) %>'></asp:TextBox>
-                                        </div>
+                                        <asp:TextBox runat="server" ID="txtDescriptionPrice" CssClass="form-control" Text='<%# Eval("Description") %>'></asp:TextBox>
                                     </ItemTemplate>
                                 </asp:TemplateField>
                                 <asp:BoundField DataField="SellPricing" HeaderText="Price (Sell)" />
