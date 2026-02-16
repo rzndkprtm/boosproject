@@ -196,6 +196,31 @@ Partial Class Setting_Customer_Detail
         End Try
     End Sub
 
+    Protected Sub btnRecalculate_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim dataOrder As DataTable = settingClass.GetDataTable("SELECT * FROM OrderHeaders WHERE CustomerId='" & lblId.Text & "' AND Active=1 AND (Status = 'Unsubmitted' OR Status='Waiting Proforma')")
+            If Not dataOrder.Rows.Count = 0 Then
+                Dim orderClass As New OrderClass
+                For i As Integer = 0 To dataOrder.Rows.Count - 1
+                    Dim orderId As String = dataOrder.Rows(i)("Id").ToString()
+
+                    orderClass.CalculatePriceByOrder(orderId)
+                Next
+            End If
+
+            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnRecalculate_Click", ex.ToString()}
+                mailingClass.WebError(dataMailing)
+            End If
+        End Try
+    End Sub
+
     Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
@@ -229,6 +254,7 @@ Partial Class Setting_Customer_Detail
             End If
 
             mailingClass.LoginCredentials(lblId.Text, Session("LoginId").ToString(), "Welcome Customer")
+
             url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
             Response.Redirect(url, False)
         Catch ex As Exception
@@ -300,6 +326,7 @@ Partial Class Setting_Customer_Detail
             End If
             aDelete.Visible = PageAction("Delete")
             aCreateOrder.Visible = PageAction("Create Order")
+            aRecalculate.Visible = PageAction("Recalculate Order")
             aWelcome.Visible = PageAction("Welcome Customer")
             If customerId = "3" Then aWelcome.Visible = False
             If lblOnStop.Text = "Yes" Then aCreateOrder.Visible = False

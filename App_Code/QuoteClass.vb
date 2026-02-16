@@ -176,10 +176,10 @@ Public Class QuoteClass
         Return cell
     End Function
 
-    Public Sub BindContent(headerId As String, filePath As String)
-        Using fs As New FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite)
+    Public Function BindContent(headerId As String) As Byte()
+        Using ms As New MemoryStream()
             Dim doc As New Document(PageSize.A4, 36, 36, 110, 180)
-            Dim writer As PdfWriter = PdfWriter.GetInstance(doc, fs)
+            Dim writer As PdfWriter = PdfWriter.GetInstance(doc, ms)
 
             Dim headerData As DataRow = GetDataRow("SELECT OrderHeaders.*, OrderInvoices.InvoiceNumber AS InvoiceNumber, OrderInvoices.InvoiceDate AS InvoiceDate, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, Customers.CompanyDetailId AS CompanyDetailId FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id LEFT JOIN OrderInvoices ON OrderHeaders.Id=OrderInvoices.Id WHERE OrderHeaders.Id='" & headerId & "'")
 
@@ -188,8 +188,19 @@ Public Class QuoteClass
             Dim customerName As String = headerData("CustomerName").ToString()
             Dim orderNumber As String = headerData("OrderNumber").ToString()
             Dim orderName As String = headerData("OrderName").ToString()
+            Dim orderType As String = headerData("OrderType").ToString()
             Dim companyId As String = headerData("CompanyId").ToString()
             Dim companyDetailId As String = headerData("CompanyDetailId").ToString()
+
+            Dim estimator As String = String.Empty
+            Dim supervisor As String = String.Empty
+            If orderType = "Builder" Then
+                Dim builderData As DataRow = GetDataRow("SELECT * FROM OrderBuilders WHERE Id='" & headerId & "'")
+                If builderData IsNot Nothing Then
+                    estimator = builderData("Estimator").ToString()
+                    supervisor = builderData("Supervisor").ToString()
+                End If
+            End If
 
             Dim invoiceNumber As String = headerData("InvoiceNumber").ToString()
 
@@ -311,6 +322,16 @@ Public Class QuoteClass
             leftTable.AddCell(CreateCell(":", alignV:=Element.ALIGN_TOP))
             leftTable.AddCell(CreateCell(orderName, alignV:=Element.ALIGN_TOP))
 
+            If orderType = "Builder" Then
+                leftTable.AddCell(CreateCell("Estimator", isBold:=True, alignV:=Element.ALIGN_TOP))
+                leftTable.AddCell(CreateCell(":", alignV:=Element.ALIGN_TOP))
+                leftTable.AddCell(CreateCell(estimator, alignV:=Element.ALIGN_TOP))
+
+                leftTable.AddCell(CreateCell("Supervisor", isBold:=True, alignV:=Element.ALIGN_TOP))
+                leftTable.AddCell(CreateCell(":", alignV:=Element.ALIGN_TOP))
+                leftTable.AddCell(CreateCell(supervisor, alignV:=Element.ALIGN_TOP))
+            End If
+
             leftTable.AddCell(CreateCell("Issue Date", isBold:=True, alignV:=Element.ALIGN_TOP))
             leftTable.AddCell(CreateCell(":"))
             leftTable.AddCell(CreateCell(issueDate))
@@ -357,8 +378,6 @@ Public Class QuoteClass
             table.AddCell(CreateCellDetail("Description", True))
             table.AddCell(CreateCellDetail("Qty", True, Element.ALIGN_CENTER))
             table.AddCell(CreateCellDetail("Unit Price", True, Element.ALIGN_RIGHT))
-
-            'Dim detailData As DataTable = GetDataTable("SELECT OrderDetails.Id, OrderDetails.Qty, Designs.Name AS DesignName, Blinds.Name AS BlindName, OrderDetails.FabricColourId AS FabricColour, OrderDetails.TrackType AS TrackType, OrderDetails.TrackColour AS TrackColour, OrderDetails.Width AS Width, OrderDetails.[Drop] AS Height, OrderDetails.FrameColour AS FrameColour, OrderDetails.DoorCutOut AS DoorCutOut, OrderDetails.SquareMetre AS SQM, OrderDetails.LinearMetre AS LM, Products.Name AS ProductName, Products.InvoiceName AS InvoiceName, 1 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 UNION ALL SELECT OrderDetails.Id, OrderDetails.Qty, Designs.Name AS DesignName, Blinds.Name AS BlindName, OrderDetails.FabricColourIdB AS FabricColour, OrderDetails.TrackTypeB AS TrackType, OrderDetails.TrackColourB AS TrackColour, OrderDetails.WidthB AS Width, OrderDetails.DropB AS Height, OrderDetails.FrameColour AS FrameColour, OrderDetails.DoorCutOut AS DoorCutOut, OrderDetails.SquareMetreB AS SQM, OrderDetails.LinearMetreB AS LM, Products.Name AS ProductName, Products.InvoiceName AS InvoiceName, 2 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND (((Designs.Name='Aluminium Blind' OR Designs.Name='Venetian Blind') AND (OrderDetails.SubType LIKE '%2 on 1%' OR OrderDetails.SubType LIKE '%3 on 1%')) OR (Designs.Name='Roller Blind' AND (Blinds.Name='Dual Blinds' OR Blinds.Name='Link 2 Blinds Dependent' OR Blinds.Name='Link 2 Blinds Independent' OR Blinds.Name='Link 3 Blinds Dependent' OR Blinds.Name='Link 3 Blinds Independent with Dependent' OR Blinds.Name='DB Link 2 Blinds Dependent' OR Blinds.Name='DB Link 2 Blinds Independent' OR Blinds.Name='DB Link 3 Blinds Dependent' OR Blinds.Name='DB Link 3 Blinds Independent with Dependent')) OR (Designs.Name='Cellular Shades' AND Blinds.Name='Day & Night') OR (Designs.Name='Curtain' AND Blinds.Name='Double Curtain & Track')) UNION ALL SELECT OrderDetails.Id, OrderDetails.Qty, Designs.Name AS DesignName, Blinds.Name AS BlindName, OrderDetails.FabricColourIdC AS FabricColour, NULL AS TrackType, NULL AS TrackColour, OrderDetails.WidthC AS Width, OrderDetails.DropC AS Height, OrderDetails.FrameColour AS FrameColour, OrderDetails.DoorCutOut AS DoorCutOut, OrderDetails.SquareMetreC AS SQM, OrderDetails.LinearMetreC AS LM, Products.Name AS ProductName, Products.InvoiceName AS InvoiceName, 3 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND (Designs.Name='Roller Blind' AND (Blinds.Name='Link 3 Blinds Dependent' OR Blinds.Name='Link 3 Blinds Independent with Dependent' OR Blinds.Name='DB Link 2 Blinds Dependent' OR Blinds.Name='DB Link 2 Blinds Independent' OR Blinds.Name='DB Link 3 Blinds Independent' OR Blinds.Name='DB Link 3 Blinds Independent with Dependent')) UNION ALL SELECT OrderDetails.Id, OrderDetails.Qty, Designs.Name AS DesignName, Blinds.Name AS BlindName, OrderDetails.FabricColourIdD AS FabricColour, NULL AS TrackType, NULL AS TrackColour, OrderDetails.WidthD AS Width, OrderDetails.DropD AS Height, OrderDetails.FrameColour AS FrameColour, OrderDetails.DoorCutOut AS DoorCutOut, OrderDetails.SquareMetreD AS SQM, OrderDetails.LinearMetreD AS LM, Products.Name AS ProductName, Products.InvoiceName AS InvoiceName, 4 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND (Designs.Name='Roller Blind' AND (Blinds.Name='DB Link 2 Blinds Dependent' OR Blinds.Name='DB Link 2 Blinds Independent' OR Blinds.Name='DB Link 3 Blinds Independent' OR Blinds.Name='DB Link 3 Blinds Independent with Dependent')) UNION ALL SELECT OrderDetails.Id, OrderDetails.Qty, Designs.Name AS DesignName, Blinds.Name AS BlindName, OrderDetails.FabricColourIdE AS FabricColour, NULL AS TrackType, NULL AS TrackColour, OrderDetails.WidthE AS Width, OrderDetails.DropE AS Height, OrderDetails.FrameColour AS FrameColour, OrderDetails.DoorCutOut AS DoorCutOut, OrderDetails.SquareMetreE AS SQM, OrderDetails.LinearMetreE AS LM, Products.Name AS ProductName, Products.InvoiceName AS InvoiceName, 5 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND (Designs.Name='Roller Blind' AND (Blinds.Name='DB Link 3 Blinds Independent' OR Blinds.Name='DB Link 3 Blinds Independent with Dependent')) UNION ALL SELECT OrderDetails.Id, OrderDetails.Qty, Designs.Name AS DesignName, Blinds.Name AS BlindName, OrderDetails.FabricColourIdF AS FabricColour, NULL AS TrackType, NULL AS TrackColour, OrderDetails.WidthF AS Width, OrderDetails.DropF AS Height, OrderDetails.FrameColour AS FrameColour, OrderDetails.DoorCutOut AS DoorCutOut, OrderDetails.SquareMetreF AS SQM, OrderDetails.LinearMetreF AS LM, Products.Name AS ProductName, Products.InvoiceName AS InvoiceName, 6 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND (Designs.Name='Roller Blind' AND (Blinds.Name='DB Link 3 Blinds Independent' OR Blinds.Name='DB Link 3 Blinds Independent with Dependent')) ORDER BY OrderDetails.Id, Item ASC;")
 
             Dim params As New List(Of SqlParameter) From {
                 New SqlParameter("@HeaderId", headerId)
@@ -532,13 +551,15 @@ Public Class QuoteClass
 
             doc.Add(table)
             doc.Close()
-        End Using
-    End Sub
 
-    Public Sub BindContentCustomer(headerId As String, filePath As String)
-        Using fs As New FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite)
+            Return ms.ToArray()
+        End Using
+    End Function
+
+    Public Function BindContentCustomer(headerId As String) As Byte()
+        Using ms As New MemoryStream()
             Dim doc As New Document(PageSize.A4, 36, 36, 110, 180)
-            Dim writer As PdfWriter = PdfWriter.GetInstance(doc, fs)
+            Dim writer As PdfWriter = PdfWriter.GetInstance(doc, ms)
 
             Dim headerData As DataRow = GetDataRow("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id='" & headerId & "'")
 
@@ -1183,8 +1204,10 @@ Public Class QuoteClass
 
             doc.Add(table)
             doc.Close()
+
+            Return ms.ToArray()
         End Using
-    End Sub
+    End Function
 End Class
 
 Public Class QuoteEvents

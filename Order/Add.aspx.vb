@@ -640,10 +640,10 @@ Partial Class Order_Add
                                 Exit For
                             End If
 
-                            If returnPosition = "None" AndAlso Not String.IsNullOrEmpty(returnLengthText) Then
-                                MessageError(True, "VALANCE RETURN LENGTH IS NOT REQUIRED !")
-                                Exit For
-                            End If
+                            'If returnPosition = "None" AndAlso (Not String.IsNullOrEmpty(returnLengthText) OrElse returnLengthText <> "0") Then
+                            '    MessageError(True, "VALANCE RETURN LENGTH IS NOT REQUIRED !")
+                            '    Exit For
+                            'End If
 
                             If Not returnPosition = "None" Then
                                 If mounting = "Face Fit" Then
@@ -1196,7 +1196,6 @@ Partial Class Order_Add
                         Dim bracketExtension As String = (sheetDetail.Cells(row, 21).Text & "").Trim()
                         Dim notes As String = (sheetDetail.Cells(row, 22).Text & "").Trim()
 
-
                         Dim chainId As String = String.Empty
                         Dim controlLength As String = String.Empty
                         Dim controlLengthValue As Integer = 0
@@ -1608,8 +1607,6 @@ Partial Class Order_Add
                             Exit For
                         End If
 
-
-
                         If blindName = "Dual Blinds" OrElse blindType = "Double: Linked (4 Blinds)" OrElse blindType = "Double: Linked (6 Blinds)" Then
                             If String.IsNullOrEmpty(fabricTypeDB) Then
                                 MessageError(True, "SECOND FABRIC TYPE IS REQUIRED !")
@@ -1903,7 +1900,7 @@ Partial Class Order_Add
 
                             If blindName = "Dual Blinds" Then
                                 fabricIdB = fabricIdDB
-                                fabricColourIdB = fabricColourDB
+                                fabricColourIdB = fabricColourIdDB
 
                                 groupFabric = orderClass.GetFabricGroup(fabricId)
                                 Dim groupFabricDB As String = orderClass.GetFabricGroup(fabricIdB)

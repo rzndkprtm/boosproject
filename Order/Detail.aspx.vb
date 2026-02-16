@@ -32,45 +32,12 @@ Partial Class Order_Detail
 
         lblHeaderId.Text = Request.QueryString("orderid").ToString()
         If Not IsPostBack Then
+            btnPreview.OnClientClick = "window.open('view?boosid=" & lblHeaderId.Text & "','_blank'); return false;"
+
             AllMessageError(False, String.Empty)
             BindDataOrder(lblHeaderId.Text)
             BindBlindTypeService()
         End If
-    End Sub
-
-    Protected Sub btnPreview_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showPreview(); };"
-        Try
-            If gvListItem.Rows.Count = 0 Then
-                MessageError(True, "PLEASE ADD MINIMAL 1 ITEM ORDER !")
-                Exit Sub
-            End If
-
-            Dim previewClass As New PreviewClass
-            Dim filePath As String = "~/File/Preview/"
-            Dim todayString As String = DateTime.Now.ToString("ddMMyyyyHHmmss")
-            Dim fileName As String = String.Format("{0}_{1}.pdf", lblOrderId.Text, todayString)
-
-            Dim finalFilePath As String = Server.MapPath(filePath & fileName)
-            previewClass.BindContent(lblHeaderId.Text, finalFilePath)
-
-            Dim documentFile As String = "~/File/Preview/" & fileName
-            framePreview.Attributes("src") = "../Handler/PDF.ashx?document=" & documentFile
-
-            ClientScript.RegisterStartupScript(Me.GetType(), "showPreview", thisScript, True)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                If Session("RoleName") = "Customer" Then
-                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
-                End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnPreview_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showPreview", thisScript, True)
-        End Try
     End Sub
 
     Protected Sub btnEditHeader_Click(sender As Object, e As EventArgs)
@@ -235,26 +202,16 @@ Partial Class Order_Detail
             dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), "Order Submitted"}
             orderClass.Logs(dataLog)
 
-            Dim previewClass As New PreviewClass
-            Dim filePath As String = "~/File/Preview/"
-            Dim todayString As String = DateTime.Now.ToString("ddMMyyyyHHmmss")
-            Dim fileName As String = String.Format("{0}_{1}.pdf", lblOrderId.Text, todayString)
-
-            Dim finalFilePath As String = Server.MapPath(filePath & fileName)
-            previewClass.BindContent(lblHeaderId.Text, finalFilePath)
-
             If cashSale = False Then
-                mailingClass.NewOrder(lblHeaderId.Text, Session("LoginId").ToString(), finalFilePath)
+                mailingClass.NewOrder(lblHeaderId.Text, Session("LoginId").ToString())
             End If
-
             If cashSale = True Then
-                mailingClass.NewOrder_Proforma(lblHeaderId.Text, finalFilePath)
+                mailingClass.NewOrder_Proforma(lblHeaderId.Text)
             End If
 
             Dim checkPrinting As Integer = orderClass.GetItemData_Integer("SELECT COUNT(*) FROM OrderDetails WHERE HeaderId='" & lblHeaderId.Text & "' AND (NULLIF(LTRIM(RTRIM(Printing)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingB)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingC)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingD)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingE)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingF)),'') IS NOT NULL)")
-
             If checkPrinting > 0 Then
-                mailingClass.SubmitOrder_PrintingFabric(lblHeaderId.Text, finalFilePath)
+                mailingClass.NewOrder_PrintingFabric(lblHeaderId.Text)
             End If
 
             Dim checkOcean As Integer = orderClass.GetItemData_Integer("SELECT COUNT(OrderDetails.Id) FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.HeaderId='" & lblHeaderId.Text & "' AND OrderDetails.Active=1 AND Products.DesignId='15'")
@@ -781,16 +738,14 @@ Partial Class Order_Detail
             End If
 
             Dim quoteClass As New QuoteClass
-            Dim todayString As String = DateTime.Now.ToString("ddMMyyyyHHmmss")
-            Dim fileName As String = String.Format("Quote_{0}_{1}.pdf", lblOrderId.Text, todayString)
-            Dim pdfFilePath As String = Server.MapPath("~/File/Quote/" & fileName)
+            Dim pdfBytes As Byte() = quoteClass.BindContentCustomer(lblHeaderId.Text)
 
-            quoteClass.BindContentCustomer(lblHeaderId.Text, pdfFilePath)
-
+            Response.Clear()
             Response.ContentType = "application/pdf"
-            Response.AddHeader("Content-Disposition", "attachment; filename=""" & fileName & """")
-            Response.TransmitFile(pdfFilePath)
-            HttpContext.Current.ApplicationInstance.CompleteRequest()
+            Response.AddHeader("Content-Disposition", "attachment; filename=Quote" & lblOrderId.Text & ".pdf")
+            Response.BinaryWrite(pdfBytes)
+            Response.Flush()
+            Response.End()
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -855,22 +810,7 @@ Partial Class Order_Detail
                     thisConn.Close()
                 End Using
 
-                Dim todayString As String = DateTime.Now.ToString("ddMMyyyyHHmmss")
-
-                Dim previewClass As New PreviewClass
-                Dim pathPreview As String = "~/File/Preview/"
-                Dim namePreview As String = String.Format("{0}_{1}.pdf", lblOrderId.Text, todayString)
-
-                Dim pdfPreview As String = Server.MapPath(pathPreview & namePreview)
-                previewClass.BindContent(lblHeaderId.Text, pdfPreview)
-
-                Dim invoiceClass As New InvoiceClass
-                Dim nameInvoice As String = String.Format("{0}_{1}.pdf", lblInvoiceNumber.Text, todayString)
-
-                Dim pdfInvoice As String = Server.MapPath(String.Format("~/File/Invoice/{0}", nameInvoice))
-                invoiceClass.BindContent(lblHeaderId.Text, pdfInvoice)
-
-                mailingClass.SendInvoice(lblHeaderId.Text, pdfPreview, pdfInvoice, Session("LoginId").ToString(), txtSendInvoiceTo.Text, ccCustomer, txtSendInvoiceCCStaff.Text)
+                mailingClass.SendInvoice(lblHeaderId.Text, Session("LoginId").ToString(), txtSendInvoiceTo.Text, ccCustomer, txtSendInvoiceCCStaff.Text)
 
                 dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), "Send Invoice"}
                 orderClass.Logs(dataLog)
@@ -948,16 +888,14 @@ Partial Class Order_Detail
         Dim thisScript As String = "window.onload = function() { showPreview(); };"
         Try
             Dim invoiceClass As New InvoiceClass
-            Dim todayString As String = DateTime.Now.ToString("ddMMyyyyHHmmss")
-            Dim fileName As String = String.Format("{0}_{1}.pdf", lblInvoiceNumber.Text, todayString)
-            Dim pdfFilePath As String = Server.MapPath("~/File/Invoice/" & fileName)
+            Dim pdfBytes As Byte() = invoiceClass.BindContent(lblHeaderId.Text)
 
-            invoiceClass.BindContent(lblHeaderId.Text, pdfFilePath)
-
+            Response.Clear()
             Response.ContentType = "application/pdf"
-            Response.AddHeader("Content-Disposition", "attachment; filename=""" & fileName & """")
-            Response.TransmitFile(pdfFilePath)
-            HttpContext.Current.ApplicationInstance.CompleteRequest()
+            Response.AddHeader("Content-Disposition", "attachment; filename=INV-" & lblInvoiceNumber.Text & ".pdf")
+            Response.BinaryWrite(pdfBytes)
+            Response.Flush()
+            Response.End()
         Catch ex As Exception
             MessageError_Preview(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -1156,16 +1094,14 @@ Partial Class Order_Detail
             End If
 
             Dim quoteClass As New QuoteClass
-            Dim todayString As String = DateTime.Now.ToString("ddMMyyyyHHmmss")
-            Dim fileName As String = String.Format("Quote_{0}_{1}.pdf", lblOrderId.Text, todayString)
-            Dim pdfFilePath As String = Server.MapPath("~/File/Quote/" & fileName)
+            Dim pdfBytes As Byte() = quoteClass.BindContent(lblHeaderId.Text)
 
-            quoteClass.BindContent(lblHeaderId.Text, pdfFilePath)
-
+            Response.Clear()
             Response.ContentType = "application/pdf"
-            Response.AddHeader("Content-Disposition", "attachment; filename=""" & fileName & """")
-            Response.TransmitFile(pdfFilePath)
-            HttpContext.Current.ApplicationInstance.CompleteRequest()
+            Response.AddHeader("Content-Disposition", "attachment; filename=Quote" & lblOrderId.Text & ".pdf")
+            Response.BinaryWrite(pdfBytes)
+            Response.Flush()
+            Response.End()
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -1207,22 +1143,7 @@ Partial Class Order_Detail
             End If
 
             If msgErrorMoreEmailQuote.InnerText = "" Then
-                Dim todayString As String = DateTime.Now.ToString("ddMMyyyyHHmmss")
-
-                Dim previewClass As New PreviewClass
-                Dim pathPreview As String = "~/File/Preview/"
-                Dim namePreview As String = String.Format("{0}_{1}.pdf", lblOrderId.Text, todayString)
-
-                Dim pdfPreview As String = Server.MapPath(pathPreview & namePreview)
-                previewClass.BindContent(lblHeaderId.Text, pdfPreview)
-
-                Dim quoteClass As New QuoteClass
-                Dim quoteName As String = String.Format("QUOTE-{0}_{1}.pdf", lblOrderId.Text, todayString)
-
-                Dim pdfQuote As String = Server.MapPath(String.Format("~/File/Quote/{0}", quoteName))
-                quoteClass.BindContent(lblHeaderId.Text, pdfQuote)
-
-                mailingClass.SentQuote(lblHeaderId.Text, pdfPreview, pdfQuote, Session("LoginId").ToString(), txtEmailQuoteTo.Text, ccCustomer, txtEmailQuoteCCStaff.Text)
+                mailingClass.SentQuote(lblHeaderId.Text, Session("LoginId").ToString(), txtEmailQuoteTo.Text, ccCustomer, txtEmailQuoteCCStaff.Text)
 
                 url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
                 Response.Redirect(url, False)
@@ -3761,6 +3682,10 @@ Partial Class Order_Detail
 
         If Session("RoleName") = "Customer Service" Then
             If lblOrderStatus.Text = "Quoted" Then result = True
+        End If
+
+        If Session("RoleName") = "Data Entry" AndAlso lblOrderType.Text = "Builder" Then
+            result = True
         End If
 
         Return result

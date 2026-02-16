@@ -144,8 +144,8 @@ Public Class PreviewClass
         Return result
     End Function
 
-    Public Sub BindContent(headerId As String, filePath As String)
-        Using fs As New FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite)
+    Public Function BindContent(headerId As String) As Byte()
+        Using ms As New MemoryStream()
             Dim headerData As DataRow = GetDataRow("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, Customers.CompanyDetailId AS CompanyDetailId FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id='" & headerId & "'")
             Dim customerId As String = headerData("CustomerId").ToString()
             Dim customerName As String = headerData("CustomerName").ToString()
@@ -171,7 +171,7 @@ Public Class PreviewClass
             If totalItems > 1 Then pageTotalItem = String.Format("{0} Items", totalItems)
 
             Dim doc As New Document(PageSize.A4, 20, 20, 135, 50)
-            Dim writer As PdfWriter = PdfWriter.GetInstance(doc, fs)
+            Dim writer As PdfWriter = PdfWriter.GetInstance(doc, ms)
 
             Dim pageEvent As New PreviewEvents() With {
                 .PageOrderId = orderId, .PageOrderDate = orderDate,
@@ -2344,9 +2344,9 @@ Public Class PreviewClass
             pageEvent.PageTotalItem = pageTotalItem
 
             doc.Close()
-            writer.Close()
+            Return ms.ToArray()
         End Using
-    End Sub
+    End Function
 End Class
 
 Public Class PreviewEvents
