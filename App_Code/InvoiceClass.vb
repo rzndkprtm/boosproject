@@ -382,6 +382,10 @@ Public Class InvoiceClass
                 Dim invoiceName As String = detailData.Rows(i)("InvoiceName").ToString()
                 Dim itemDescription As String = invoiceName
 
+                If designName = "Additional" Then
+                    itemDescription = GetItemData("SELECT Description FROM OrderCostings WHERE HeaderId='" & headerId & "' AND ItemId='" & itemId & "' AND Number='" & itemNumber & "' AND Type='Base'")
+                End If
+
                 If designName = "Aluminium Blind" OrElse designName = "Privacy Venetian" OrElse designName = "Venetian Blind" OrElse designName = "Skyline Shutter Express" OrElse designName = "Skyline Shutter Ocean" Then
                     itemDescription = String.Format("{0} {1} {2}", invoiceName, size, squareMetreText)
                 End If

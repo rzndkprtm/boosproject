@@ -1375,13 +1375,6 @@ Partial Class Order_Detail
                     gvListEditCosting.DataBind()
 
                     gvListEditCosting.Columns(0).Visible = False
-                    gvListEditCosting.Columns(3).Visible = False
-                    gvListEditCosting.Columns(4).Visible = False
-
-                    If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse (Session("RoleName") = "Sales" AndAlso Session("LevelName") = "Leader") Then
-                        gvListEditCosting.Columns(3).Visible = True
-                        gvListEditCosting.Columns(4).Visible = True
-                    End If
 
                     ClientScript.RegisterStartupScript(Me.GetType(), "showEditCosting", thisScript, True)
                 Catch ex As Exception
@@ -1553,37 +1546,34 @@ Partial Class Order_Detail
                             If row.RowType = DataControlRowType.DataRow Then
                                 Dim costingId As String = gvListEditCosting.DataKeys(row.RowIndex).Values("Id").ToString()
 
-                                Dim txtNewBuyPrice As TextBox = CType(row.FindControl("txtNewBuyPrice"), TextBox)
+                                Dim txtDescription As TextBox = CType(row.FindControl("txtDescriptionPrice"), TextBox)
+                                Dim newDescription As String = txtDescription.Text
+                                Dim oldDescription As String = String.Empty
+
                                 Dim txtNewSellPrice As TextBox = CType(row.FindControl("txtNewSellPrice"), TextBox)
-
-                                Dim newBuy As Decimal = 0
                                 Dim newSell As Decimal = 0
-
-                                Decimal.TryParse(txtNewBuyPrice.Text, NumberStyles.Any, CultureInfo.CurrentCulture, newBuy)
                                 Decimal.TryParse(txtNewSellPrice.Text, NumberStyles.Any, CultureInfo.CurrentCulture, newSell)
 
-                                Dim oldBuy As Decimal = 0
                                 Dim oldSell As Decimal = 0
 
-                                Using cmdOld As New SqlCommand("SELECT BuyPrice, SellPrice FROM OrderCostings WHERE Id=@Id", thisConn, tran)
+                                Using cmdOld As New SqlCommand("SELECT * FROM OrderCostings WHERE Id=@Id", thisConn, tran)
                                     cmdOld.Parameters.AddWithValue("@Id", costingId)
 
                                     Using rd = cmdOld.ExecuteReader()
                                         If rd.Read() Then
-                                            oldBuy = If(IsDBNull(rd("BuyPrice")), 0D, Convert.ToDecimal(rd("BuyPrice")))
                                             oldSell = If(IsDBNull(rd("SellPrice")), 0D, Convert.ToDecimal(rd("SellPrice")))
+                                            oldDescription = rd("Description").ToString()
                                         End If
                                     End Using
                                 End Using
 
-                                If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse (Session("RoleName") = "Sales" AndAlso Session("LevelName") = "Leader") Then
-                                    If oldBuy <> newBuy Then
-                                        Using cmd As New SqlCommand("UPDATE OrderCostings SET BuyPrice=@BuyPrice WHERE Id=@Id", thisConn, tran)
-                                            cmd.Parameters.AddWithValue("@Id", costingId)
-                                            cmd.Parameters.Add("@BuyPrice", SqlDbType.Decimal).Value = newBuy
-                                            cmd.ExecuteNonQuery()
-                                        End Using
-                                    End If
+
+                                If oldDescription <> newDescription Then
+                                    Using cmd As New SqlCommand("UPDATE OrderCostings SET Description=@Description WHERE Id=@Id", thisConn, tran)
+                                        cmd.Parameters.AddWithValue("@Id", costingId)
+                                        cmd.Parameters.AddWithValue("@Description", newDescription)
+                                        cmd.ExecuteNonQuery()
+                                    End Using
                                 End If
 
                                 If oldSell <> newSell Then

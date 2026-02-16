@@ -940,6 +940,7 @@ Public Class MailingClass
         Dim orderId As String = orderData("OrderId").ToString()
         Dim orderNumber As String = orderData("OrderNumber").ToString()
         Dim orderName As String = orderData("OrderName").ToString()
+        Dim invoiceNumber As String = orderData("InvoiceNumber").ToString()
 
         Dim customerName As String = orderData("CustomerName").ToString()
         Dim customerOperator As String = orderData("Operator").ToString()
@@ -1052,7 +1053,7 @@ Public Class MailingClass
                                       "application/pdf"))
 
         myMail.Attachments.Add(New Attachment(New MemoryStream(pdfInvoice),
-                                      "INV-" & orderId & ".pdf",
+                                      invoiceNumber & ".pdf",
                                       "application/pdf"))
 
         Dim smtpClient As New SmtpClient()
