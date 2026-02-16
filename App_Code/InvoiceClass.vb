@@ -162,10 +162,10 @@ Public Class InvoiceClass
         Return cell
     End Function
 
-    Public Sub BindContent(headerId As String, filePath As String)
-        Using fs As New FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite)
+    Public Function BindContent(headerId As String) As Byte()
+        Using ms As New MemoryStream()
             Dim doc As New Document(PageSize.A4, 36, 36, 110, 180)
-            Dim writer As PdfWriter = PdfWriter.GetInstance(doc, fs)
+            Dim writer As PdfWriter = PdfWriter.GetInstance(doc, ms)
 
             Dim headerData As DataRow = GetDataRow("SELECT OrderHeaders.*, OrderInvoices.InvoiceNumber AS InvoiceNumber, OrderInvoices.InvoiceDate AS InvoiceDate, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, Customers.CompanyDetailId AS CompanyDetailId FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id LEFT JOIN OrderInvoices ON OrderHeaders.Id=OrderInvoices.Id WHERE OrderHeaders.Id='" & headerId & "'")
 
@@ -503,8 +503,10 @@ Public Class InvoiceClass
 
             doc.Add(table)
             doc.Close()
+
+            Return ms.ToArray()
         End Using
-    End Sub
+    End Function
 End Class
 
 Public Class InvoiceEvents

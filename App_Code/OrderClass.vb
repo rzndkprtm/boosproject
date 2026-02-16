@@ -47,7 +47,6 @@ Public Class OrderClass
         Return Nothing
     End Function
 
-
     Public Function GetDataTable(thisString As String) As DataTable
         Try
             Using thisConn As New SqlConnection(myConn)
