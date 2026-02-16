@@ -892,7 +892,7 @@ Partial Class Order_Add
                         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, designId)
                         Dim priceProductGroupB As String = String.Empty
 
-                        If blindType = "Day & Night" OrElse blindType = "TDBU" Then
+                        If blindType = "Day & Night" OrElse blindType = "Top Down Bottom Up" Then
                             controlPosition = "Both Sides"
                         End If
 

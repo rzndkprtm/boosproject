@@ -8737,7 +8737,6 @@ Partial Class Order_Method
         If blindName = "Flyscreen" AndAlso String.IsNullOrEmpty(data.triplelock) Then Return "TRIPLE LOCK IS REQUIRED !"
 
         If tubeName.Contains("Hinged") OrElse tubeName.Contains("Sliding") Then
-            If String.IsNullOrEmpty(data.bugseal) Then Return "BUG SEAL IS REQUIRED !"
             If Not String.IsNullOrEmpty(data.pettype) Then
                 If String.IsNullOrEmpty(data.petposition) Then Return "PET DOOR POSITION IS REQUIRED !"
             End If
@@ -8759,9 +8758,9 @@ Partial Class Order_Method
             If Not Integer.TryParse(data.anglelength, anglelength) OrElse anglelength <= 0 Then Return "PLEASE CHECK YOUR ANGLE LENGTH ORDER !"
         End If
 
-        If tubeName.Contains("Hinged") OrElse tubeName.Contains("Sliding") Then
-            If String.IsNullOrEmpty(data.beading) Then Return "BEADING IS REQUIRED !"
+        If tubeName.Contains("Hinged") AndAlso String.IsNullOrEmpty(data.beading) Then Return "BEADING IS REQUIRED !"
 
+        If tubeName.Contains("Hinged") OrElse tubeName.Contains("Sliding") Then
             If Not String.IsNullOrEmpty(data.jambtype) AndAlso String.IsNullOrEmpty(data.jambposition) Then
                 Return "JAMB ADAPTOR POSITION IS REQUIRED !"
             End If
@@ -8774,20 +8773,20 @@ Partial Class Order_Method
         If tubeName = "Hinged Double" AndAlso String.IsNullOrEmpty(data.flushbold) Then Return "FLUSH BOLD LOCATION IS REQUIRED !"
 
         If tubeName = "Sliding Single" OrElse tubeName = "Sliding Double" OrElse tubeName = "Sliding Stacker" Then
-            If String.IsNullOrEmpty(data.interlocktype) Then Return "INTERLOCK TYPE IS REQUIRED !"
-            If String.IsNullOrEmpty(data.toptrack) Then Return "TOP TRACK TYPE IS REQUIRED !"
-            If String.IsNullOrEmpty(data.toptracklength) Then Return "TOP TRACK LENGTH IS REQUIRED !"
-            If Not Integer.TryParse(data.toptracklength, toptracklength) OrElse toptracklength <= 0 Then Return "PLEASE CHECK YOUR TOP TRACK LENGTH ORDER !"
+            If Not String.IsNullOrEmpty(data.toptrack) Then
+                If String.IsNullOrEmpty(data.toptracklength) Then Return "TOP TRACK LENGTH IS REQUIRED !"
+                If Not Integer.TryParse(data.toptracklength, toptracklength) OrElse toptracklength <= 0 Then Return "PLEASE CHECK YOUR TOP TRACK LENGTH ORDER !"
+            End If
 
-            If String.IsNullOrEmpty(data.bottomtrack) Then Return "BOTTOM TRACK TYPE IS REQUIRED !"
-            If String.IsNullOrEmpty(data.toptracklength) Then Return "BOTTOM TRACK LENGTH IS REQUIRED !"
-            If Not Integer.TryParse(data.bottomtracklength, bottomtracklength) OrElse bottomtracklength <= 0 Then Return "PLEASE CHECK YOUR BOTTOM TRACK LENGTH ORDER !"
+            If Not String.IsNullOrEmpty(data.bottomtrack) Then
+                If String.IsNullOrEmpty(data.toptracklength) Then Return "BOTTOM TRACK LENGTH IS REQUIRED !"
+                If Not Integer.TryParse(data.bottomtracklength, bottomtracklength) OrElse bottomtracklength <= 0 Then Return "PLEASE CHECK YOUR BOTTOM TRACK LENGTH ORDER !"
+            End If
 
-            If String.IsNullOrEmpty(data.receivertype) Then Return "RECEIVER CHANNEL TYPE IS REQUIRED !"
-            If String.IsNullOrEmpty(data.receiverlength) Then Return "RECEIVER CHANNEL LENGTH IS REQUIRED !"
-            If Not Integer.TryParse(data.receiverlength, receiverlength) OrElse receiverlength <= 0 Then Return "PLEASE CHECK YOUR RECEIVER CHANNEL LENGTH ORDER !"
-
-            If String.IsNullOrEmpty(data.slidingqty) Then Return "SLIDING ROLLER QTY IS REQUIRED !"
+            If Not String.IsNullOrEmpty(data.receivertype) Then
+                If String.IsNullOrEmpty(data.receiverlength) Then Return "RECEIVER CHANNEL LENGTH IS REQUIRED !"
+                If Not Integer.TryParse(data.receiverlength, receiverlength) OrElse receiverlength <= 0 Then Return "PLEASE CHECK YOUR RECEIVER CHANNEL LENGTH ORDER !"
+            End If
         End If
 
         If Not String.IsNullOrEmpty(data.notes) Then
@@ -8810,6 +8809,14 @@ Partial Class Order_Method
         If blindName = "Flyscreen" AndAlso (tubeName = "Hinged Single" OrElse tubeName = "" OrElse tubeName = "Screen Only") Then
             data.handletype = String.Empty
         End If
+
+        If tubeName.Contains("Sliding") Then
+            data.beading = String.Empty
+        End If
+
+        If String.IsNullOrEmpty(data.toptrack) Then toptracklength = 0
+        If String.IsNullOrEmpty(data.bottomtrack) Then bottomtracklength = 0
+        If String.IsNullOrEmpty(data.receivertype) Then receiverlength = 0
 
         Dim linearMetre As Decimal = width / 1000
         Dim squareMetre As Decimal = width * drop / 1000000

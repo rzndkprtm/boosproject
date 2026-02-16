@@ -1570,6 +1570,7 @@ Public Class OrderClass
                     If totalItems > 1 AndAlso Not (designName = "Skyline Shutter Express" OrElse designName = "Skyline Shutter Ocean" OrElse designName = "Evolve Shutter Express" OrElse designName = "Evolve Shutter Ocean") Then
                         costingDescription = String.Format("#1 {0}", priceProductGroupName)
                     End If
+
                     If designName = "Door" AndAlso (tubeName = "Hinged Double" OrElse tubeName = "Sliding Double") Then
                         costingDescription = String.Format("#1 {0}", priceProductGroupName)
                     End If
