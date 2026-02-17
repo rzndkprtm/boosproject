@@ -1031,6 +1031,114 @@ Public Class PreviewClass
             End Try
             'End ROLLER BLIND
 
+            ' START ROLLER HORIZON
+            Try
+                Dim params As New List(Of SqlParameter) From {
+                    New SqlParameter("@HeaderId", headerId)
+                }
+                Dim horizonData As DataTable = GetDataTableSP("sp_GetRollerHorizonData", params)
+
+                If horizonData.Rows.Count > 0 Then
+                    pageEvent.PageTitle = "Roller"
+                    pageEvent.PageTitle2 = "Horizon"
+                    Dim table As New PdfPTable(7)
+                    table.WidthPercentage = 100
+
+                    Dim items(20, horizonData.Rows.Count - 1) As String
+
+                    For i As Integer = 0 To horizonData.Rows.Count - 1
+                        Dim number As Integer = i + 1
+
+                        Dim blindName As String = horizonData.Rows(i)("BlindName").ToString()
+                        Dim blindAlias As String = horizonData.Rows(i)("BlindAlias").ToString()
+
+                        Dim tubeType As String = horizonData.Rows(i)("TubeType").ToString()
+
+                        Dim tubeName As String = GetItemData("SELECT Name FROM ProductTubes WHERE Id='" & horizonData.Rows(i)("TubeType").ToString() & "'")
+                        Dim tubeAlias As String = GetItemData("SELECT Alias FROM ProductTubes WHERE Id='" & horizonData.Rows(i)("TubeType").ToString() & "'")
+                        Dim controlName As String = GetItemData("SELECT Name FROM ProductControls WHERE Id='" & horizonData.Rows(i)("ControlType").ToString() & "'")
+                        Dim controlAlias As String = GetItemData("SELECT Name FROM ProductControls WHERE Id='" & horizonData.Rows(i)("ControlType").ToString() & "'")
+                        Dim colourName As String = GetItemData("SELECT Name FROM ProductColours WHERE Id='" & horizonData.Rows(i)("ColourType").ToString() & "'")
+
+                        Dim fabricType As String = GetItemData("SELECT Name FROM Fabrics WHERE Id='" & horizonData.Rows(i)("FabricId").ToString() & "'")
+                        Dim fabricColour As String = GetItemData("SELECT Colour FROM FabricColours WHERE Id='" & horizonData.Rows(i)("FabricColourId").ToString() & "'")
+
+                        Dim chainName As String = GetItemData("SELECT Name FROM Chains WHERE Id='" & horizonData.Rows(i)("ChainId").ToString() & "'")
+
+                        Dim chainLength As String = String.Empty
+                        Dim chainLengthValue As Integer = horizonData.Rows(i)("ControlLengthValue")
+                        If chainLengthValue > 0 Then
+                            chainLength = horizonData.Rows(i)("ControlLengthValue").ToString()
+                        End If
+
+                        Dim bottomType As String = GetItemData("SELECT Name FROM Bottoms WHERE Id='" & horizonData.Rows(i)("BottomId").ToString() & "'")
+                        Dim bottomColour As String = GetItemData("SELECT Colour FROM BottomColours WHERE Id='" & horizonData.Rows(i)("BottomColourId").ToString() & "'")
+
+                        Dim rollerType As String = blindAlias
+
+                        items(0, i) = "Item : " & number
+                        items(1, i) = horizonData.Rows(i)("Room").ToString()
+                        items(2, i) = horizonData.Rows(i)("Mounting").ToString()
+                        items(3, i) = "Horizon"
+                        items(4, i) = "38mm"
+                        items(5, i) = controlName
+                        items(6, i) = colourName
+                        items(7, i) = fabricType
+                        items(8, i) = fabricColour
+                        items(9, i) = horizonData.Rows(i)("Roll").ToString()
+                        items(10, i) = horizonData.Rows(i)("Width").ToString()
+                        items(11, i) = horizonData.Rows(i)("Drop").ToString()
+                        items(12, i) = horizonData.Rows(i)("ControlPosition").ToString()
+                        items(13, i) = chainName
+                        items(14, i) = horizonData.Rows(i)("ChainStopper").ToString()
+                        items(15, i) = chainLength
+                        items(16, i) = bottomType
+                        items(17, i) = bottomColour
+                        items(18, i) = horizonData.Rows(i)("PrintingImage").ToString()
+                        items(19, i) = horizonData.Rows(i)("Notes").ToString()
+                    Next
+
+                    For i As Integer = 0 To items.GetLength(1) - 1 Step 6
+                        If i > 0 Then doc.NewPage()
+
+                        Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
+                        Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
+
+                        Dim headers As String() = {"", "Location", "Mounting", "Roller Type", "Tube Type", "Control Type", "Bracket Colour", "Fabric Type", "Fabric Colour", "Roll Direction", "Width (mm)", "Drop (mm)", "Control Position", "Chain Type", "Chain Stopper", "Chain Length", "Bottom Type", "Bottom Colour", "Fabric Printing", "Notes"}
+
+                        For row As Integer = 0 To headers.Length - 1
+                            Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
+                            cellHeader.HorizontalAlignment = Element.ALIGN_RIGHT
+                            cellHeader.VerticalAlignment = Element.ALIGN_MIDDLE
+                            cellHeader.BackgroundColor = New BaseColor(200, 200, 200)
+                            cellHeader.MinimumHeight = 20
+                            table.AddCell(cellHeader)
+
+                            For col As Integer = i To Math.Min(i + 5, items.GetLength(1) - 1)
+                                Dim cellContent As New PdfPCell(New Phrase(items(row, col), fontContent))
+                                cellContent.HorizontalAlignment = Element.ALIGN_CENTER
+                                cellContent.VerticalAlignment = Element.ALIGN_MIDDLE
+                                cellContent.MinimumHeight = 20
+                                table.AddCell(cellContent)
+                            Next
+
+                            For col As Integer = items.GetLength(1) To i + 5
+                                Dim emptyCell As New PdfPCell(New Phrase("", fontContent))
+                                emptyCell.HorizontalAlignment = Element.ALIGN_CENTER
+                                emptyCell.VerticalAlignment = Element.ALIGN_MIDDLE
+                                emptyCell.MinimumHeight = 20
+                                table.AddCell(emptyCell)
+                            Next
+                        Next
+                        doc.Add(table)
+                        table.DeleteBodyRows()
+                        doc.NewPage()
+                    Next
+                End If
+            Catch ex As Exception
+            End Try
+            'End ROLLER HORIZON
+
             ' START ROMAN BLIND
             Try
                 Dim params As New List(Of SqlParameter) From {

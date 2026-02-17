@@ -319,22 +319,10 @@
                                 <b>LIMITATIONS</b>
                                 <ul>
                                     <li>Minimum width : 200mm</li>
-                                    <li>Minimum width for motorised : 700mm</li>
-                                    <li>Maximum width : 3000mm</li>
+                                    <li>Maximum width : 2410mm</li>
                                     <li>Minimum drop : 600mm</li>
-                                    <li>Maximum drop : 3200mm</li>
+                                    <li>Maximum drop : 2500mm</li>
                                 </ul>
-                                <b>STD ROLLER COMPONENTS</b>
-                                <br />
-                                <a class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('STD Roller Components');">Read Me ...</a>
-                                <br /><br />
-                                <b>GR ROLLER COMPONENTS - No Chain Stopper</b>
-                                <br />
-                                <a class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('GR Roller Components');">Read Me ...</a>
-                                <br /><br />
-                                <b>ACMEDA ROLLER COMPONENTS</b>
-                                <br />
-                                <a class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Acmeda Roller Components');">Read Me ...</a>
                             </div>
                         </div>
                     </div>
@@ -393,5 +381,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/WebOrders/Horizon.js?v=1.0.0"></script>
+    <script src="/Scripts/WebOrders/Horizon.js?v=1.1.0"></script>
 </asp:Content>
