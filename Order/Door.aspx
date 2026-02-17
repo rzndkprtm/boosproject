@@ -226,7 +226,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3 mb-1">
                                                     <label>Handle Length</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                     <div class="input-group">
                                                         <input type="number" id="handlelength" class="form-control" autocomplete="off" placeholder="Length ...." />
                                                         <span class="input-group-text">mm</span>
@@ -292,7 +292,6 @@
                                                     <select id="doorcloser" class="form-select">
                                                         <option value=""></option>
                                                         <option value="Yes">Yes</option>
-                                                        <option value="No">No</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -580,5 +579,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/WebOrders/Door.js?v=2.0.1"></script>
+    <script src="/Scripts/WebOrders/Door.js?v=2.0.2"></script>
 </asp:Content>
