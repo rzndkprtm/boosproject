@@ -8982,19 +8982,15 @@ Partial Class Order_Method
             End If
         End If
 
-        If Not String.IsNullOrEmpty(data.angletype) AndAlso String.IsNullOrEmpty(data.anglelength) Then
-            Return "ANGLE LENGTH IS REQUIRED !"
-        End If
-
-        If String.IsNullOrEmpty(data.angletype) AndAlso Not String.IsNullOrEmpty(data.anglelength) Then
-            Return "ANGLE TYPE IS REQUIRED !"
+        If Not String.IsNullOrEmpty(data.angletype) Then
+            If String.IsNullOrEmpty(data.anglelength) Then Return "ANGLE LENGTH IS REQUIRED !"
         End If
 
         If Not String.IsNullOrEmpty(data.anglelength) Then
+            If String.IsNullOrEmpty(data.angletype) Then Return "ANGLE TYPE IS REQUIRED OR PLEASE REMOVE THE ANGLE LENGTH DATA !"
             If Not Integer.TryParse(data.anglelength, anglelength) OrElse anglelength <= 0 Then Return "PLEASE CHECK YOUR ANGLE LENGTH ORDER !"
+            If anglelength > 5000 Then Return "MAXIMUM ANGLE LENGTH IS 5000MM"
         End If
-
-        If tubeName.Contains("Hinged") AndAlso String.IsNullOrEmpty(data.beading) Then Return "BEADING IS REQUIRED !"
 
         If tubeName.Contains("Hinged") OrElse tubeName.Contains("Sliding") Then
             If Not String.IsNullOrEmpty(data.jambtype) AndAlso String.IsNullOrEmpty(data.jambposition) Then

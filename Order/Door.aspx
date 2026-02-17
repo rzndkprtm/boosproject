@@ -313,7 +313,7 @@
                                                     </select>
                                                     <span class="text-muted">* Type</span>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                     <div class="input-group">
                                                         <input type="number" id="anglelength" class="form-control" autocomplete="off" placeholder="Length ...." />
                                                         <span class="input-group-text">mm</span>
