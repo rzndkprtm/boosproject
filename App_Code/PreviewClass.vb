@@ -1094,7 +1094,7 @@ Public Class PreviewClass
                         items(15, i) = chainLength
                         items(16, i) = bottomType
                         items(17, i) = bottomColour
-                        items(18, i) = horizonData.Rows(i)("PrintingImage").ToString()
+                        items(18, i) = horizonData.Rows(i)("Printing").ToString()
                         items(19, i) = horizonData.Rows(i)("Notes").ToString()
                     Next
 

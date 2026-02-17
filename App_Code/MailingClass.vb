@@ -664,6 +664,9 @@ Public Class MailingClass
         Dim orderData As DataRow = GetDataRow("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id='" & headerId & "'")
         If orderData Is Nothing Then Exit Sub
 
+        Dim previewClass As New PreviewClass
+        Dim pdfBytes As Byte() = previewClass.BindContent(headerId)
+
         Dim customerId As String = orderData("CustomerId").ToString()
         Dim orderId As String = orderData("OrderId").ToString()
         Dim orderNumber As String = orderData("OrderNumber").ToString()
@@ -774,6 +777,10 @@ Public Class MailingClass
 
         myMail.Body = mailBody
         myMail.IsBodyHtml = True
+
+        Dim ms As New MemoryStream(pdfBytes)
+        Dim attach As New Attachment(ms, "ORDER-" & orderId & ".pdf", "application/pdf")
+        myMail.Attachments.Add(attach)
 
         Dim smtpClient As New SmtpClient()
         smtpClient.Host = mailHost
