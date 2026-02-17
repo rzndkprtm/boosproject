@@ -1,5 +1,5 @@
 ﻿
 Partial Class Order_Horizon
-    Inherits System.Web.UI.Page
+    Inherits Page
 
 End Class
