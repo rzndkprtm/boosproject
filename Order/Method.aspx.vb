@@ -6795,7 +6795,7 @@ Partial Class Order_Method
         squareMetre = width * drop / 1000000
 
         groupFabric = orderClass.GetFabricGroup(data.fabrictype)
-        Dim priceName As String = String.Format("{0} - Horizon - {1}", designName, groupFabric)
+        Dim priceName As String = String.Format("{0} - {1}", designName, groupFabric)
         priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid)
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
