@@ -1262,6 +1262,44 @@
 
                 If String.IsNullOrEmpty(kitId) Then Continue For
             End If
+
+            If designName = "Roller Horizon" Then
+                Dim webFabricId As String = thisData.Rows(i)("FabricColourId").ToString()
+                Dim boeFabricId As String = GetItemData("SELECT BoeId FROM FabricColours WHERE Id='" & webFabricId & "'")
+
+                Dim chainId As String = thisData.Rows(i)("ChainId").ToString()
+                Dim boeChainId As String = GetItemData("SELECT BoeId FROM Chains WHERE Id='" & chainId & "'")
+
+                Dim bottomColourId As String = thisData.Rows(i)("BottomColourId").ToString()
+                Dim boeBottomId As String = GetItemData("SELECT BoeId FROM BottomColours WHERE Id='" & bottomColourId & "'")
+
+                Dim kitId As String = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "'")
+
+                If String.IsNullOrEmpty(kitId) Then Continue For
+                If String.IsNullOrEmpty(boeFabricId) Then Continue For
+
+                writer.WriteStartElement("OrderDetails")
+                writer.WriteAttributeString("OrddID", thisData.Rows(i)("Id").ToString())
+                writer.WriteAttributeString("FKOrdID", thisData.Rows(i)("HeaderId").ToString())
+                writer.WriteAttributeString("Qty", thisData.Rows(i)("Qty").ToString())
+                writer.WriteAttributeString("Room", thisData.Rows(i)("Room").ToString())
+                writer.WriteAttributeString("Mounting", thisData.Rows(i)("Mounting").ToString())
+                writer.WriteAttributeString("BlindType", "Roller")
+                writer.WriteAttributeString("OrderType", "Regular Chain")
+                writer.WriteAttributeString("IDHK", kitId)
+                writer.WriteAttributeString("IDChain", boeChainId)
+                writer.WriteAttributeString("RollerChainLength", thisData.Rows(i)("ControlLengthValue").ToString())
+                writer.WriteAttributeString("Additional", thisData.Rows(i)("ChainStopper").ToString())
+                writer.WriteAttributeString("FabricID", boeFabricId)
+                writer.WriteAttributeString("IDBottomRail", boeBottomId)
+                writer.WriteAttributeString("FlatBottomOp", String.Empty)
+                writer.WriteAttributeString("ControlPosition", thisData.Rows(i)("ControlPosition").ToString())
+                writer.WriteAttributeString("RollDirection", thisData.Rows(i)("Roll").ToString())
+                writer.WriteAttributeString("Width", thisData.Rows(i)("Width").ToString())
+                writer.WriteAttributeString("Drop", thisData.Rows(i)("Drop").ToString())
+                writer.WriteAttributeString("Notes", thisData.Rows(i)("Notes").ToString())
+                writer.WriteEndElement()
+            End If
         Next
         writer.WriteEndElement()
         writer.WriteEndDocument()

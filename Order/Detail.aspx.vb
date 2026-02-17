@@ -32,12 +32,41 @@ Partial Class Order_Detail
 
         lblHeaderId.Text = Request.QueryString("orderid").ToString()
         If Not IsPostBack Then
-            btnPreview.OnClientClick = "window.open('view?boosid=" & lblHeaderId.Text & "','_blank'); return false;"
+            'btnPreview.OnClientClick = "window.open('view?boosid=" & lblHeaderId.Text & "','_blank'); return false;"
 
             AllMessageError(False, String.Empty)
             BindDataOrder(lblHeaderId.Text)
             BindBlindTypeService()
         End If
+    End Sub
+
+    Protected Sub btnPreview_Click(sender As Object, e As EventArgs)
+        Try
+            If gvListItem.Rows.Count = 0 Then
+                MessageError(True, "PLEASE ADD MINIMAL 1 ITEM ORDER !")
+                Exit Sub
+            End If
+
+            Dim previewClass As New PreviewClass
+            Dim pdfBytes As Byte() = previewClass.BindContent(lblHeaderId.Text)
+
+            Response.Clear()
+            Response.ContentType = "application/pdf"
+            Response.AddHeader("Content-Disposition", "attachment; filename=ORDER-" & lblOrderId.Text & ".pdf")
+            Response.BinaryWrite(pdfBytes)
+            Response.Flush()
+            Response.End()
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                If Session("RoleName") = "Customer" Then
+                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
+                End If
+                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnPreview_Click", ex.ToString()}
+                mailingClass.WebError(dataMailing)
+            End If
+        End Try
     End Sub
 
     Protected Sub btnEditHeader_Click(sender As Object, e As EventArgs)
@@ -3354,6 +3383,10 @@ Partial Class Order_Detail
         End If
 
         If designName = "Outdoor" Then
+            result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
+        End If
+
+        If designName = "Roller Horizon" Then
             result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
         End If
 

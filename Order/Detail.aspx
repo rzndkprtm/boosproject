@@ -36,8 +36,7 @@
 
         <section class="row mb-4">
             <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
-                <a href="javascript:void(0);" class="btn btn-secondary me-1" onclick="showLog('OrderHeaders', '<%= lblHeaderId.Text %>')">Log</a>
-                <asp:Button runat="server" ID="btnPreview" CssClass="btn btn-primary me-1" Text="Preview" />
+                <asp:Button runat="server" ID="btnPreview" CssClass="btn btn-primary me-1" Text="Download PDF" OnClick="btnPreview_Click" />
                 <asp:Button runat="server" ID="btnEditHeader" CssClass="btn btn-secondary me-1" Text="Edit Header" OnClick="btnEditHeader_Click" />
                 <a href="#" runat="server" id="aDeleteOrder" class="btn btn-danger me-1" data-bs-toggle="modal" data-bs-target="#modalDeleteOrder">Delete Order</a>
                 <a href="#" runat="server" id="aQuoteOrder" class="btn btn-success me-1" data-bs-toggle="modal" data-bs-target="#modalQuoteOrder">Quote</a>
@@ -101,6 +100,8 @@
                         <a href="javascript:void(0)" class="dropdown-item" onclick="showHistoryNote('<%= lblHeaderId.Text %>')">History Note</a>
                     </li>
                 </ul>
+
+                <a href="javascript:void(0);" class="btn btn-secondary me-1" onclick="showLog('OrderHeaders', '<%= lblHeaderId.Text %>')">Log</a>
             </div>
         </section>
 

@@ -1,4 +1,4 @@
-﻿let designIdOri = "12";
+﻿let designIdOri = "24";
 let itemAction;
 let headerId;
 let orderId;
@@ -34,7 +34,7 @@ $("#controltype").on("change", function () {
     const tubetype = document.getElementById("tubetype").value;
 
     bindColourType(blindtype, tubetype, $(this).val());
-    bindChain(designId, blindtype, $(this).val());
+    bindChain(designId, $(this).val());
 });
 
 $("#colourtype").on("change", function () {
@@ -519,7 +519,7 @@ function bindControlType(blindType, tubeType) {
             const selectedValue = controltype.value || "";
             Promise.all([
                 bindColourType(blindType, tubeType, selectedValue),
-                bindChain(designId, blindType, selectedValue)
+                bindChain(designId, selectedValue)
             ]).then(resolve).catch(reject);
             return;
         }
@@ -557,13 +557,13 @@ function bindControlType(blindType, tubeType) {
                     const selectedValue = controltype.value || "";
                     Promise.all([
                         bindColourType(blindType, tubeType, selectedValue),
-                        bindChainRemote(designId, blindType, selectedValue)
+                        bindChain(designId, selectedValue)
                     ]).then(resolve).catch(reject);
                 } else {
                     const selectedValue = controltype.value || "";
                     Promise.all([
                         bindColourType(blindType, tubeType, selectedValue),
-                        bindChainRemote(designId, blindType, selectedValue)
+                        bindChain(designId, selectedValue)
                     ]).then(resolve).catch(reject);
                 }
             },
@@ -683,65 +683,57 @@ function bindMounting(blindType) {
     });
 }
 
-function bindChain(designType, blindType, controlType) {
+function bindChain(designType, controlType) {
     return new Promise((resolve, reject) => {
-        const typeIds = ["chaincolour"];
+        const chaincolour = document.getElementById("chaincolour");
+        chaincolour.innerHTML = "";
 
-        typeIds.forEach(id => {
-            const select = document.getElementById(id);
-            if (select) select.innerHTML = "";
-        });
-
-        if (!designType || !blindType || !controlType) {
+        if (!designType || !controlType) {
             resolve();
             return;
         }
 
-        let chainCustom = "";
+        const listData = { type: "ControlColour", designtype: designType, controltype: controlType, companydetailid: companyDetailId, action: itemAction };
 
-        getBlindName(blindType).then(blindName => {
-            if (blindName === "Full Cassette" || blindName === "Semi Cassette") {
-                chainCustom = "Cassette";
-            }
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/ListData",
+            data: JSON.stringify({ data: listData }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (Array.isArray(response.d)) {
+                    chaincolour.innerHTML = "";
 
-            const listData = { type: "ControlColour", designtype: designType, controltype: controlType, companydetailid: companyDetailId, customtype: chainCustom, action: itemAction };
-
-            $.ajax({
-                type: "POST",
-                url: "Method.aspx/ListData",
-                data: JSON.stringify({ data: listData }),
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function (response) {
-                    if (Array.isArray(response.d)) {
-                        const hasMultiple = response.d.length > 1;
-
-                        response.d.forEach((item, index) => {
-                            const option = document.createElement("option");
-                            option.value = item.Value;
-                            option.text = item.Text;
-
-                            typeIds.forEach(id => {
-                                const select = document.getElementById(id);
-                                if (select) {
-                                    if (index === 0 && hasMultiple) {
-                                        const defaultOption = document.createElement("option");
-                                        defaultOption.text = "";
-                                        defaultOption.value = "";
-                                        select.add(defaultOption);
-                                    }
-                                    select.add(option.cloneNode(true));
-                                }
-                            });
-                        });
+                    if (response.d.length > 1) {
+                        const defaultOption = document.createElement("option");
+                        defaultOption.text = "";
+                        defaultOption.value = "";
+                        chaincolour.add(defaultOption);
                     }
-                    resolve();
-                },
-                error: function (error) {
-                    reject(error);
+
+                    response.d.forEach(function (item) {
+                        const option = document.createElement("option");
+                        option.value = item.Value;
+                        option.text = item.Text;
+                        chaincolour.add(option);
+                    });
+
+                    if (response.d.length === 1) {
+                        chaincolour.selectedIndex = 0;
+                    }
+
+                    const selectedValue = chaincolour.value || "";
+                    Promise.resolve(
+                        bindFabricColour(selectedValue)
+                    ).then(resolve).catch(reject);
                 }
-            });
-        }).catch(error => reject(error));
+                resolve();
+            },
+            error: function (error) {
+                reject(error);
+            }
+        });
     });
 }
 
@@ -767,7 +759,7 @@ function bindChainStopper(chainColour) {
                 if (Array.isArray(response.d)) {
                     chainstopper.innerHTML = "";
 
-                    if (response.d.length > 1) {
+                    if (response.d.length > 0) {
                         const defaultOption = document.createElement("option");
                         defaultOption.text = "";
                         defaultOption.value = "";
@@ -796,20 +788,14 @@ function bindChainStopper(chainColour) {
 
 function bindFabricType(designType) {
     return new Promise((resolve, reject) => {
-        const typeIds = ["fabrictype"];
-        const bindFunctions = [bindFabricColour, bindFabricColourB, bindFabricColourC, bindFabricColourD, bindFabricColourE, bindFabricColourF];
-
-        typeIds.forEach(id => {
-            const select = document.getElementById(id);
-            if (select) select.innerHTML = "";
-        });
+        const fabrictype = document.getElementById("fabrictype");
+        fabrictype.innerHTML = "";
 
         if (!designType) {
-            const bindPromises = typeIds.map((id, idx) => {
-                const val = document.getElementById(id)?.value || "";
-                return bindFunctions[idx](val);
-            });
-            Promise.all(bindPromises).then(resolve).catch(reject);
+            const selectedValue = fabrictype.value || "";
+            Promise.resolve(
+                bindFabricColour(selectedValue)
+            ).then(resolve).catch(reject);
             return;
         }
 
@@ -823,46 +809,35 @@ function bindFabricType(designType) {
             dataType: "json",
             success: function (response) {
                 if (Array.isArray(response.d)) {
-                    const hasMultiple = response.d.length > 1;
+                    fabrictype.innerHTML = "";
 
-                    response.d.forEach((item, index) => {
+                    if (response.d.length > 1) {
+                        const defaultOption = document.createElement("option");
+                        defaultOption.text = "";
+                        defaultOption.value = "";
+                        fabrictype.add(defaultOption);
+                    }
+
+                    response.d.forEach(function (item) {
                         const option = document.createElement("option");
                         option.value = item.Value;
                         option.text = item.Text;
-
-                        typeIds.forEach(id => {
-                            const select = document.getElementById(id);
-                            if (select) {
-                                if (index === 0 && hasMultiple) {
-                                    const defaultOption = document.createElement("option");
-                                    defaultOption.text = "";
-                                    defaultOption.value = "";
-                                    select.add(defaultOption);
-                                }
-                                select.add(option.cloneNode(true));
-                            }
-                        });
+                        fabrictype.add(option);
                     });
 
                     if (response.d.length === 1) {
-                        typeIds.forEach(id => {
-                            const select = document.getElementById(id);
-                            if (select) select.selectedIndex = 0;
-                        });
+                        fabrictype.selectedIndex = 0;
                     }
 
-                    const bindPromises = typeIds.map((id, idx) => {
-                        const val = document.getElementById(id)?.value || "";
-                        return bindFunctions[idx](val);
-                    });
-
-                    Promise.all(bindPromises).then(resolve).catch(reject);
+                    const selectedValue = fabrictype.value || "";
+                    Promise.resolve(
+                        bindFabricColour(selectedValue)
+                    ).then(resolve).catch(reject);
                 } else {
-                    const bindPromises = typeIds.map((id, idx) => {
-                        const val = document.getElementById(id)?.value || "";
-                        return bindFunctions[idx](val);
-                    });
-                    Promise.all(bindPromises).then(resolve).catch(reject);
+                    const selectedValue = fabrictype.value || "";
+                    Promise.resolve(
+                        bindFabricColour(selectedValue)
+                    ).then(resolve).catch(reject);
                 }
             },
             error: function (error) {
@@ -923,33 +898,14 @@ function bindFabricColour(fabricType) {
 
 function bindBottomType(designType) {
     return new Promise((resolve, reject) => {
-        const typeIds = ["bottomtype"];
-        const bindFunctions = [bindBottomColour, bindBottomColourB, bindBottomColourC, bindBottomColourD, bindBottomColourE, bindBottomColourF];
-        const visibleFunctions = typeIds.map((_, i) => (val) => visibleFlatBottom(val, i + 1));
-
-        typeIds.forEach(id => {
-            const select = document.getElementById(id);
-            if (select) select.innerHTML = "";
-        });
-
-        const callBottomVisibility = (idx, val) => {
-            const blindNumber = idx + 1;
-            return Promise.all([
-                visibleFunctions[idx](val),
-                visibleBottomColour(blindNumber, val)
-            ]);
-        };
-
-        const callBindAndVisibility = (dataValue) => {
-            return typeIds.map((id, idx) => {
-                const val = document.getElementById(id)?.value || "";
-                return bindFunctions[idx](dataValue, val)
-                    .then(() => callBottomVisibility(idx, val));
-            });
-        };
+        const bottomtype = document.getElementById("bottomtype");
+        bottomtype.innerHTML = "";
 
         if (!designType) {
-            Promise.all(callBindAndVisibility("")).then(resolve).catch(reject);
+            const selectedValue = bottomtype.value || "";
+            Promise.resolve(
+                bindBottomColour(selectedValue)
+            ).then(resolve).catch(reject);
             return;
         }
 
@@ -963,37 +919,35 @@ function bindBottomType(designType) {
             dataType: "json",
             success: function (response) {
                 if (Array.isArray(response.d)) {
-                    const hasMultiple = response.d.length > 1;
+                    bottomtype.innerHTML = "";
 
-                    response.d.forEach((item, index) => {
+                    if (response.d.length > 1) {
+                        const defaultOption = document.createElement("option");
+                        defaultOption.text = "";
+                        defaultOption.value = "";
+                        bottomtype.add(defaultOption);
+                    }
+
+                    response.d.forEach(function (item) {
                         const option = document.createElement("option");
                         option.value = item.Value;
                         option.text = item.Text;
-
-                        typeIds.forEach(id => {
-                            const select = document.getElementById(id);
-                            if (select) {
-                                if (index === 0 && hasMultiple) {
-                                    const defaultOption = document.createElement("option");
-                                    defaultOption.text = "";
-                                    defaultOption.value = "";
-                                    select.add(defaultOption);
-                                }
-                                select.add(option.cloneNode(true));
-                            }
-                        });
+                        bottomtype.add(option);
                     });
 
                     if (response.d.length === 1) {
-                        typeIds.forEach(id => {
-                            const select = document.getElementById(id);
-                            if (select) select.selectedIndex = 0;
-                        });
+                        bottomtype.selectedIndex = 0;
                     }
 
-                    Promise.all(callBindAndVisibility(designType)).then(resolve).catch(reject);
+                    const selectedValue = bottomtype.value || "";
+                    Promise.resolve(
+                        bindBottomColour(selectedValue)
+                    ).then(resolve).catch(reject);
                 } else {
-                    Promise.all(callBindAndVisibility(designType)).then(resolve).catch(reject);
+                    const selectedValue = bottomtype.value || "";
+                    Promise.resolve(
+                        bindBottomColour(selectedValue)
+                    ).then(resolve).catch(reject);
                 }
             },
             error: function (error) {
@@ -1088,10 +1042,8 @@ function visibleCustomChainLength(chainLength) {
 
         if (chainLength === "Custom") {
             thisDiv.style.display = "";
-            resolve();
-        } else {
-            resolve();
         }
+        resolve();
     });
 }
 
@@ -1130,8 +1082,7 @@ function controlForm(status, isEditItem, isCopyItem) {
     const inputs = [
         "blindtype", "tubetype", "controltype", "colourtype", "qty", "room", "mounting",
         "fabrictype", "fabriccolour", "roll", "controlposition",
-        "chaincolour", "chainstopper", "controllength", "controllengthvalue", "bottomtype", "bottomcolour",
-        "width", "drop", "markup", "notes", "printing",
+        "chaincolour", "chainstopper", "controllength", "controllengthvalue", "bottomtype", "bottomcolour", "width", "drop", "markup", "notes", "printing",
     ];
 
     inputs.forEach(id => {
@@ -1144,7 +1095,7 @@ function controlForm(status, isEditItem, isCopyItem) {
         }
 
         if (isEditItem) {
-            if (id === "qty" || id === "blindtype") {
+            if (id === "qty" || id === "blindtype" || id === "tubetype" || id === "controltype") {
                 el.disabled = true;
             } else {
                 el.disabled = false;
@@ -1169,7 +1120,6 @@ function setFormValues(itemData) {
         fabriccolour: "FabricColourId",
         roll: "Roll",
         controlposition: "ControlPosition",
-        
         chaincolour: "ChainId",
         chainstopper: "ChainStopper",
         controllength: "ControlLength",
@@ -1217,7 +1167,7 @@ function process() {
     toggleButtonState(true, "Processing...");
 
     const fields = [
-        "blindtype", "tubetype", "controltype", "colourtype", "qty", "room", "mounting", "fabrictype", "fabriccolour", "roll", "controlposition", "chaincolour", "controllength", "bottomtype", "bottomcolour", "width", "drop", "markup", "notes", "printing"
+        "blindtype", "tubetype", "controltype", "colourtype", "qty", "room", "mounting", "fabrictype", "fabriccolour", "roll", "controlposition", "chaincolour", "chainstopper", "controllength", "controllengthvalue", "bottomtype", "bottomcolour", "width", "drop", "markup", "notes", "printing"
     ];
 
     const formData = {
@@ -1261,7 +1211,7 @@ function process() {
     });
 }
 
-async function initRoller() {
+async function initHorizon() {
     const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get("boos");
     if (!sessionId) return redirectOrder();
@@ -1305,6 +1255,7 @@ async function initRoller() {
         visibleDetail("", "", "", "");
         controlForm(false);
         bindBlindType(designId);
+        bindFabricType(designId);
         bindBottomType(designId);
         loader(itemAction)
     } else if (["edit", "view", "copy"].includes(itemAction)) {
@@ -1323,7 +1274,7 @@ async function bindItemOrder(itemId, companyDetailId, action) {
 
         const response = await $.ajax({
             type: "POST",
-            url: "Method.aspx/RollerDetail",
+            url: "Method.aspx/HorizonDetail",
             data: JSON.stringify({ itemId, companyDetailId, action }),
             contentType: "application/json; charset=utf-8",
             dataType: "json"
@@ -1354,6 +1305,22 @@ async function bindItemOrder(itemId, companyDetailId, action) {
     } catch (error) {
         document.getElementById("divloader").style.display = "none";
     }
+}
+
+function showInfo(type) {
+    let title;
+    let info;
+}
+
+function redirectOrder() {
+    window.location.replace("/order");
+}
+
+function updateLinkDetail(myId) {
+    const link = document.getElementById("orderDetail");
+    if (!link || !headerId) return;
+
+    link.href = `/order/detail?orderid=${myId}`;
 }
 
 document.getElementById("modalSuccess").addEventListener("hide.bs.modal", function () {

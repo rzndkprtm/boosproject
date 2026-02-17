@@ -356,7 +356,7 @@ function bindBlindType(designType) {
 
 function bindTubeType(blindType) {
     return new Promise((resolve, reject) => {
-        const contrtubetypeoltype = document.getElementById("tubetype");
+        const tubetype = document.getElementById("tubetype");
         tubetype.innerHTML = "";
 
         if (!blindType) {
