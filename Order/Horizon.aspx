@@ -80,7 +80,7 @@
                                             <div class="col-12 col-sm-12 col-lg-3">
                                                 <label>Blind Type</label>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-8 form-group">
+                                            <div class="col-12 col-sm-12 col-lg-5 form-group">
                                                 <select id="blindtype" class="form-select"></select>
                                             </div>
                                         </div>
@@ -89,7 +89,7 @@
                                             <div class="col-12 col-sm-12 col-lg-3">
                                                 <label>Tube Type</label>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                 <select id="tubetype" class="form-select"></select>
                                             </div>
                                         </div>
