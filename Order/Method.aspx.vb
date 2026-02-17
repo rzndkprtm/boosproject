@@ -1,6 +1,7 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 Imports System.Web.Services
+Imports Org.BouncyCastle.Asn1.Ntt
 
 Partial Class Order_Method
     Inherits Page
@@ -9244,34 +9245,54 @@ Partial Class Order_Method
         linearMetre = width / 1000
         squareMetre = width * drop / 1000000
 
-        If blindName = "Flyscreen" OrElse blindName = "Safety" OrElse blindName = "Security" Then
-            If String.IsNullOrEmpty(data.meshtype) Then Return "MESH TYPE IS REQUIRED !"
-        End If
-
+        If String.IsNullOrEmpty(data.meshtype) Then Return "MESH TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.framecolour) Then Return "FRAME COLOUR IS REQUIRED !"
 
-        If blindName = "Standard" OrElse blindName = "Flyscreen" OrElse blindName = "Safety" Then
-            If String.IsNullOrEmpty(data.brace) Then Return "BRACE / JOINER HEIGHT IS REQUIRED !"
+        If Not String.IsNullOrEmpty(data.angletype) Then
+            If String.IsNullOrEmpty(data.anglelength) Then Return "ANGLE LENGTH IS REQUIRED !"
+            If String.IsNullOrEmpty(data.angleqty) Then Return "ANGLE QTY IS REQUIRED !"
         End If
 
-        If String.IsNullOrEmpty(data.angletype) Then Return "ANGLE TYPE IS REQUIRED !"
-        If String.IsNullOrEmpty(data.anglelength) Then Return "ANGLE LENGTH IS REQUIRED !"
-        If Not Integer.TryParse(data.anglelength, anglelength) OrElse anglelength <= 0 Then Return "PLEASE CHECK YOUR ANGLE LENGTH ORDER !"
-        If String.IsNullOrEmpty(data.angleqty) Then Return "ANGLE QTY IS REQUIRED !"
-        If Not Integer.TryParse(data.angleqty, angleqty) OrElse angleqty <= 0 Then Return "PLEASE CHECK YOUR ANGLE QTY ORDER !"
+        If Not String.IsNullOrEmpty(data.anglelength) Then
+            If String.IsNullOrEmpty(data.angletype) Then Return "ANGLE TYPE IS REQUIRED OR PLEASE REMOVE THE ANGLE LENGTH DATA !"
+            If Not Integer.TryParse(data.anglelength, anglelength) OrElse anglelength <= 0 Then Return "PLEASE CHECK YOUR ANGLE LENGTH ORDER !"
+            If anglelength > 5000 Then Return "MAXIMUM ANGLE IS 5000MM !"
+        End If
+
+        If Not String.IsNullOrEmpty(data.angleqty) Then
+            If String.IsNullOrEmpty(data.angletype) Then Return "ANGLE TYPE IS REQUIRED OR PLEASE REMOVE THE ANGLE QTY DATA !"
+            If Not Integer.TryParse(data.angleqty, angleqty) OrElse angleqty <= 0 Then Return "PLEASE CHECK YOUR ANGLE QTY ORDER !"
+            If angleqty > 10 Then Return "MAXIMUM ANGLE QTY IS 10 QTY !"
+        End If
 
         If blindName = "Flyscreen" Then
-            If String.IsNullOrEmpty(data.porthole) Then Return "SCREEN PORT HOLE IS REQUIRED !"
-            If String.IsNullOrEmpty(data.plungerpin) Then Return "PLUNGER PIN IS REQUIRED !"
-            If String.IsNullOrEmpty(data.swivelcolour) Then Return "SWIVEL CLIP COLOUR IS REQUIRED !"
-            If String.IsNullOrEmpty(data.swivelqty) Then Return "SWIVEL CLIP QTY FOR 1.6MM IS REQUIRED !"
-            If Not Integer.TryParse(data.swivelqty, swivelqty) OrElse swivelqty <= 0 Then Return "PLEASE CHECK YOUR SWIVEL CLIP QTY FOR 1.6MM ORDER !"
-            If String.IsNullOrEmpty(data.swivelqtyb) Then Return "SWIVEL CLIP QTY FOR 11MM IS REQUIRED !"
-            If Not Integer.TryParse(data.swivelqtyb, swivelqtyb) OrElse swivelqtyb <= 0 Then Return "PLEASE CHECK YOUR SWIVEL CLIP QTY FOR 11MM ORDER !"
-            If String.IsNullOrEmpty(data.springqty) Then Return "SPRING CLIP QTY IS REQUIRED !"
-            If Not Integer.TryParse(data.springqty, springqty) OrElse springqty <= 0 Then Return "PLEASE CHECK YOUR SPRING CLIP QTY ORDER !"
-            If String.IsNullOrEmpty(data.topplasticqty) Then Return "TOP CLIP PLASTIC QTY IS REQUIRED !"
-            If Not Integer.TryParse(data.topplasticqty, topplasticqty) OrElse topplasticqty <= 0 Then Return "PLEASE CHECK YOUR TOP CLIP PLASTIC QTY ORDER !"
+            If Not String.IsNullOrEmpty(data.swivelcolour) Then
+                If String.IsNullOrEmpty(data.swivelqty) Then Return "SWIVEL CLIP QTY FOR 1.6MM IS REQUIRED !"
+                If String.IsNullOrEmpty(data.swivelqtyb) Then Return "SWIVEL CLIP QTY FOR 11MM IS REQUIRED !"
+            End If
+
+            If Not String.IsNullOrEmpty(data.swivelqty) Then
+                If String.IsNullOrEmpty(data.swivelcolour) Then Return "SWIVEL CLIP COLOUR IS REQUIRED !"
+
+                If Not Integer.TryParse(data.swivelqty, swivelqty) OrElse swivelqty <= 0 Then Return "PLEASE CHECK YOUR SWIVEL CLIP QTY FOR 1.6MM ORDER !"
+                If swivelqty > 10 Then Return "MAXIMUM SWIVEL CLIP QTY FOR 1.6MM IS 10 QTY !"
+            End If
+
+            If Not String.IsNullOrEmpty(data.swivelqtyb) Then
+                If String.IsNullOrEmpty(data.swivelcolour) Then Return "SWIVEL CLIP COLOUR IS REQUIRED !"
+                If Not Integer.TryParse(data.swivelqtyb, swivelqtyb) OrElse swivelqtyb <= 0 Then Return "PLEASE CHECK YOUR SWIVEL CLIP QTY FOR 11MM ORDER !"
+                If swivelqtyb > 10 Then Return "MAXIMUM SWIVEL CLIP QTY FOR 11MM IS 10 QTY !"
+            End If
+
+            If Not String.IsNullOrEmpty(data.springqty) Then
+                If Not Integer.TryParse(data.springqty, springqty) OrElse springqty <= 0 Then Return "PLEASE CHECK YOUR SPRING CLIP QTY ORDER !"
+                If springqty > 10 Then Return "MAXIMUM SPRING CLIP QTY IS 10 QTY !"
+            End If
+
+            If Not String.IsNullOrEmpty(data.topplasticqty) Then
+                If Not Integer.TryParse(data.topplasticqty, topplasticqty) OrElse topplasticqty <= 0 Then Return "PLEASE CHECK YOUR TOP CLIP PLASTIC QTY ORDER !"
+                If topplasticqty > 10 Then Return "MAXIMUM TOP CLIP PLASTIC QTY IS 10 QTY !"
+            End If
         End If
 
         If Not String.IsNullOrEmpty(data.notes) Then

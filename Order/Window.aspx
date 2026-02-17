@@ -170,7 +170,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3 mb-1">
                                                     <label>Brace / Joiner Height</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-5 form-group">
                                                     <select id="brace" class="form-select">
                                                         <option value=""></option>
                                                         <option value="Centre of Horizontal">Centre of Horizontal</option>
@@ -201,7 +201,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3 mb-1">
                                                     <label>Angle Length</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                     <div class="input-group">
                                                         <input type="number" id="anglelength" class="form-control" autocomplete="off" placeholder="Length ...." />
                                                         <span class="input-group-text">mm</span>
@@ -213,7 +213,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3 mb-1">
                                                     <label>Angle Qty</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-2 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
                                                     <input type="number" id="angleqty" class="form-control" autocomplete="off" placeholder="Qty ...." />
                                                 </div>
                                             </div>
@@ -277,11 +277,11 @@
                                                 </div>
                                             </div>
 
-                                            <div class="row" id="divspringqty">
+                                            <div class="row mt-3" id="divspringqty">
                                                 <div class="col-12 col-sm-12 col-lg-3 mb-1">
                                                     <label>Spring Clip Qty</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                     <input type="number" id="springqty" class="form-control" autocomplete="off" placeholder="Qty ...." />
                                                 </div>
                                             </div>
@@ -289,7 +289,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3 mb-1">
                                                     <label>Top Clip Plastic Qty</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                     <input type="number" id="topplasticqty" class="form-control" autocomplete="off" placeholder="Qty ...." />
                                                 </div>
                                             </div>
