@@ -1,7 +1,6 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 Imports System.Web.Services
-Imports Org.BouncyCastle.Asn1.Ntt
 
 Partial Class Order_Method
     Inherits Page
@@ -126,8 +125,15 @@ Partial Class Order_Method
 
         If type = "TubeType" Then
             Dim thisQuery As String = "SELECT Products.TubeType AS TextValue, ProductTubes.Name AS TextName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductTubes ON Products.TubeType=ProductTubes.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Products.Active=1 GROUP BY Products.TubeType, ProductTubes.Name ORDER BY ProductTubes.Name ASC"
+            If blindtype = "73" OrElse blindtype = "74" OrElse blindtype = "75" OrElse blindtype = "76" Then
+                thisQuery = "SELECT Products.TubeType AS TextValue, ProductTubes.Name AS TextName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductTubes ON Products.TubeType=ProductTubes.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Products.Active=1 GROUP BY Products.TubeType, ProductTubes.Name ORDER BY CASE WHEN ProductTubes.Name = 'Hinged Single' THEN 0 WHEN ProductTubes.Name = 'Hinged Double' THEN 1 WHEN ProductTubes.Name = 'Sliding Single' THEN 2 WHEN ProductTubes.Name = 'Sliding Double' THEN 3 WHEN ProductTubes.Name = 'Sliding Stacker' THEN 4 ELSE 5 END ASC"
+            End If
             If action = "view" Then
                 thisQuery = "SELECT Products.TubeType AS TextValue, ProductTubes.Name AS TextName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductTubes ON Products.TubeType=ProductTubes.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetailid & "' GROUP BY Products.TubeType, ProductTubes.Name ORDER BY ProductTubes.Name ASC"
+
+                If blindtype = "73" OrElse blindtype = "74" OrElse blindtype = "75" OrElse blindtype = "76" Then
+                    thisQuery = "SELECT Products.TubeType AS TextValue, ProductTubes.Name AS TextName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductTubes ON Products.TubeType=ProductTubes.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetailid & "' GROUP BY Products.TubeType, ProductTubes.Name ORDER BY CASE WHEN ProductTubes.Name = 'Hinged Single' THEN 0 WHEN ProductTubes.Name = 'Hinged Double' THEN 1 WHEN ProductTubes.Name = 'Sliding Single' THEN 2 WHEN ProductTubes.Name = 'Sliding Double' THEN 3 WHEN ProductTubes.Name = 'Sliding Stacker' THEN 4 ELSE 5 END ASC"
+                End If
             End If
 
             Dim dt As DataTable = orderClass.GetDataTable(thisQuery)
@@ -348,12 +354,26 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "RA", .Text = "RA"})
             End If
             If tubeName = "Sliding Double" Then
-                result.Add(New With {.Value = "AL", .Text = "AL"})
-                result.Add(New With {.Value = "RA", .Text = "RA"})
+                result.Add(New With {.Value = "RA-L", .Text = "RA-L"})
+                result.Add(New With {.Value = "R-AL", .Text = "R-AL"})
             End If
             If tubeName = "Sliding Stacker" Then
-                result.Add(New With {.Value = "AL", .Text = "AL"})
-                result.Add(New With {.Value = "RA", .Text = "RA"})
+                result.Add(New With {.Value = "RRA", .Text = "RRA"})
+                result.Add(New With {.Value = "ALL", .Text = "ALL"})
+                result.Add(New With {.Value = "FRA", .Text = "FRA"})
+                result.Add(New With {.Value = "ALF", .Text = "ALF"})
+                result.Add(New With {.Value = "RRRA", .Text = "RRRA"})
+                result.Add(New With {.Value = "ALLL", .Text = "ALLL"})
+                result.Add(New With {.Value = "FRRA", .Text = "FRRA"})
+                result.Add(New With {.Value = "ALLF", .Text = "ALLF"})
+                result.Add(New With {.Value = "RRA-LL", .Text = "RRA-LL"})
+                result.Add(New With {.Value = "RR-ALL", .Text = "RR-ALL"})
+                result.Add(New With {.Value = "FRA-LF", .Text = "FRA-LF"})
+                result.Add(New With {.Value = "FR-ALF", .Text = "FR-ALF"})
+                result.Add(New With {.Value = "RRRA-LLL", .Text = "RRRA-LLL"})
+                result.Add(New With {.Value = "RRR-ALLL", .Text = "RRR-ALLL"})
+                result.Add(New With {.Value = "FRRA-LLF", .Text = "FRRA-LLF"})
+                result.Add(New With {.Value = "FRR-ALLF", .Text = "FRR-ALLF"})
             End If
         End If
 
@@ -8947,18 +8967,11 @@ Partial Class Order_Method
             If String.IsNullOrEmpty(data.layoutcode) Then Return "LAYOUT CODE IS REQUIRED !"
         End If
 
-        If String.IsNullOrEmpty(data.midrailposition) Then Return "MIDRAIL POSITION IS REQUIRED !"
-
-        If blindName = "Flyscreen" AndAlso (tubeName = "Sliding Single" OrElse tubeName = "Sliding Double" OrElse tubeName = "Sliding Stacker") Then
-            If String.IsNullOrEmpty(data.handletype) Then Return "HANDLE TYPE IS REQUIRED !"
-        End If
-
         If tubeName.Contains("Hinged") OrElse tubeName.Contains("Sliding") Then
+            If String.IsNullOrEmpty(data.midrailposition) Then Return "MIDRAIL POSITION IS REQUIRED !"
             If String.IsNullOrEmpty(data.handlelength) Then Return "HANDLE LENGTH IS REQUIRED !"
             If Not Integer.TryParse(data.handlelength, handlelength) OrElse handlelength <= 0 Then Return "PLEASE CHECK YOUR HANDLE LENGTH ORDER !"
         End If
-
-        If blindName = "Flyscreen" AndAlso String.IsNullOrEmpty(data.triplelock) Then Return "TRIPLE LOCK IS REQUIRED !"
 
         If tubeName.Contains("Hinged") OrElse tubeName.Contains("Sliding") Then
             If Not String.IsNullOrEmpty(data.pettype) Then
@@ -8967,7 +8980,6 @@ Partial Class Order_Method
             If String.IsNullOrEmpty(data.pettype) AndAlso Not String.IsNullOrEmpty(data.petposition) Then
                 Return "PET DOOR TYPE IS REQUIRED !"
             End If
-            If String.IsNullOrEmpty(data.doorcloser) Then Return "DOOR CLOSER IS REQUIRED !"
         End If
 
         If Not String.IsNullOrEmpty(data.angletype) AndAlso String.IsNullOrEmpty(data.anglelength) Then

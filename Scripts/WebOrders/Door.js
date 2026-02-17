@@ -757,15 +757,15 @@ function bindComponentForm(blindType, tubeType, colourType) {
                 }
             } else if (blindName === "Flyscreen") {
                 if (tubeName === "Hinged Single") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divtriplelock");
+                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor");
                 } else if (tubeName === "Hinged Double") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divflushbold", "divtriplelock");
+                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divflushbold");
                 } else if (tubeName === "Sliding Single") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty", "divhandletype", "divtriplelock");
+                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty", "divhandletype");
                 } else if (tubeName === "Sliding Double") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty", "divhandletype", "divtriplelock");
+                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty", "divhandletype");
                 } else if (tubeName === "Sliding Stacker") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty", "divhandletype", "divtriplelock");
+                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty", "divhandletype");
                 }
             } else if (blindName === "Security") {
                 if (tubeName === "Hinged Single") {
