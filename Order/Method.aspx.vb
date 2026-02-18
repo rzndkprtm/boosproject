@@ -527,6 +527,7 @@ Partial Class Order_Method
 
         If type = "InterlockDoor" Then
             Dim tubeName As String = orderClass.GetTubeName(tubetype)
+            result.Add(New With {.Value = "", .Text = ""})
             If tubeName = "Sliding Single" Then
                 result.Add(New With {.Value = "HD3 Offset (5mm)", .Text = "HD3 Offset (5mm)"})
                 result.Add(New With {.Value = "HD2 Flat (1.5mm)", .Text = "HD2 Flat (1.5mm)"})
