@@ -265,6 +265,18 @@
 
                                     <div class="row mt-3">
                                         <div class="col-12 col-sm-12 col-lg-3">
+                                            <label>Dust Cover</label>
+                                        </div>
+                                        <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                            <select id="supply" class="form-select">
+                                                <option value=""></option>
+                                                <option value="Yes">Yes</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mt-3">
+                                        <div class="col-12 col-sm-12 col-lg-3">
                                             <label>Special Information</label>
                                         </div>
                                         <div class="col-12 col-sm-12 col-lg-9 form-group">
@@ -374,5 +386,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/WebOrders/Pelmet.js?v=2.0.0"></script>
+    <script src="/Scripts/WebOrders/Pelmet.js?v=2.0.1"></script>
 </asp:Content>
