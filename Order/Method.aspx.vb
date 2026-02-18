@@ -2685,7 +2685,7 @@ Partial Class Order_Method
                 Dim itemId As String = orderClass.GetNewOrderItemId()
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricColourId, PriceProductGroupId, PriceProductGroupIdB, PriceProductGroupIdC, Qty, Room, Mounting, Width, WidthB, WidthC, [Drop], DropB, DropC, LayoutCode, Batten, ReturnPosition, ReturnLengthValue, ReturnLengthValueB, LinearMetre, LinearMetreB, LinearMetreC, TotalItems, Notes, MarkUp, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricColourId, @PriceProductGroupId, @PriceProductGroupIdB, @PriceProductGroupIdC, @Qty, @Room, @Mounting, @Width, @WidthB, @WidthC, 0, 0, 0, @LayoutCode, @Batten, @ReturnPosition, @ReturnLengthValue, @ReturnLengthValueB, @LinearMetre, @LinearMetreB, @LinearMetreC, @TotalItems, @Notes, @MarkUp, 1)", thisConn)
+                    Using myCmd As New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricColourId, PriceProductGroupId, PriceProductGroupIdB, PriceProductGroupIdC, Qty, Room, Mounting, Width, WidthB, WidthC, [Drop], DropB, DropC, LayoutCode, Batten, ReturnPosition, ReturnLengthValue, ReturnLengthValueB, Supply, LinearMetre, LinearMetreB, LinearMetreC, TotalItems, Notes, MarkUp, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricColourId, @PriceProductGroupId, @PriceProductGroupIdB, @PriceProductGroupIdC, @Qty, @Room, @Mounting, @Width, @WidthB, @WidthC, 0, 0, 0, @LayoutCode, @Batten, @ReturnPosition, @ReturnLengthValue, @ReturnLengthValueB, @LinearMetre, @LinearMetreB, @LinearMetreC, @TotalItems, @Notes, @MarkUp, 1)", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", itemId)
                         myCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                         myCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
@@ -2705,6 +2705,7 @@ Partial Class Order_Method
                         myCmd.Parameters.AddWithValue("@ReturnLengthValue", rlvalue)
                         myCmd.Parameters.AddWithValue("@ReturnLengthValueB", rlvalueb)
                         myCmd.Parameters.AddWithValue("@Batten", data.batten)
+                        myCmd.Parameters.AddWithValue("@Supply", data.supply)
                         myCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
                         myCmd.Parameters.AddWithValue("@LinearMetreB", linearMetreB)
                         myCmd.Parameters.AddWithValue("@LinearMetreC", linearMetreC)
@@ -2731,7 +2732,7 @@ Partial Class Order_Method
             Dim itemId As String = data.itemid
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As New SqlCommand("UPDATE OrderDetails SET ProductId=@ProductId, FabricId=@FabricId, FabricColourId=@FabricColourId, PriceProductGroupId=@PriceProductGroupId, PriceProductGroupIdB=@PriceProductGroupIdB, PriceProductGroupIdC=@PriceProductGroupIdC, Qty=@Qty, Room=@Room, Mounting=@Mounting, Width=@Width, WidthB=@WidthB, WidthC=@WidthC, [Drop]=0, DropB=0, DropC=0, LayoutCode=@LayoutCode, Batten=@Batten, ReturnPosition=@ReturnPosition, ReturnLengthValue=@ReturnLengthValue, ReturnLengthValueB=@ReturnLengthValueB, LinearMetre=@LinearMetre, LinearMetreB=@LinearMetreB, LinearMetreC=@LinearMetreC, TotalItems=@TotalItems, Notes=@Notes, MarkUp=@MarkUp, Active=1 WHERE Id=@Id", thisConn)
+                Using myCmd As New SqlCommand("UPDATE OrderDetails SET ProductId=@ProductId, FabricId=@FabricId, FabricColourId=@FabricColourId, PriceProductGroupId=@PriceProductGroupId, PriceProductGroupIdB=@PriceProductGroupIdB, PriceProductGroupIdC=@PriceProductGroupIdC, Qty=@Qty, Room=@Room, Mounting=@Mounting, Width=@Width, WidthB=@WidthB, WidthC=@WidthC, [Drop]=0, DropB=0, DropC=0, LayoutCode=@LayoutCode, Batten=@Batten, ReturnPosition=@ReturnPosition, ReturnLengthValue=@ReturnLengthValue, ReturnLengthValueB=@ReturnLengthValueB, Supply=@Supply, LinearMetre=@LinearMetre, LinearMetreB=@LinearMetreB, LinearMetreC=@LinearMetreC, TotalItems=@TotalItems, Notes=@Notes, MarkUp=@MarkUp, Active=1 WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", itemId)
                     myCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                     myCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
@@ -2751,6 +2752,7 @@ Partial Class Order_Method
                     myCmd.Parameters.AddWithValue("@ReturnLengthValue", rlvalue)
                     myCmd.Parameters.AddWithValue("@ReturnLengthValueB", rlvalueb)
                     myCmd.Parameters.AddWithValue("@Batten", data.batten)
+                    myCmd.Parameters.AddWithValue("@Supply", data.supply)
                     myCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
                     myCmd.Parameters.AddWithValue("@LinearMetreB", linearMetreB)
                     myCmd.Parameters.AddWithValue("@LinearMetreC", linearMetreC)
@@ -4033,7 +4035,7 @@ Partial Class Order_Method
         If Not Integer.TryParse(data.width, width) OrElse width <= 0 Then Return "PLEASE CHECK YOUR WIDTH ORDER !"
 
         If width < 200 Then Return "MINIMUM WIDTH IS 200MM !"
-        If data.companyid = "2" Then
+        If data.companyid = "2" AndAlso data.rolename = "Customer" Then
             If width > 2400 AndAlso (blindName = "Full Cassette" OrElse blindName = "Semi Cassette") Then Return "MAXIMUM WIDTH IS 2400MM !"
             If width > 2910 Then Return "MAXIMUM WIDTH IS 2910MM !"
         End If
@@ -4042,7 +4044,7 @@ Partial Class Order_Method
         If Not Integer.TryParse(data.drop, drop) OrElse drop <= 0 Then Return "PLEASE CHECK YOUR DROP ORDER !"
 
         If drop < 600 Then Return "MINIUM DROP IS 600MM !"
-        If data.companyid = "2" Then
+        If data.companyid = "2" AndAlso data.rolename = "Customer" Then
             If width > 2200 AndAlso (blindName = "Full Cassette" OrElse blindName = "Semi Cassette") Then Return "MAXIMUM DROP IS 2200MM !"
             If drop > 3200 Then Return "MAXIMUM DROP IS 3200MM !"
         End If
@@ -8967,56 +8969,76 @@ Partial Class Order_Method
             If String.IsNullOrEmpty(data.layoutcode) Then Return "LAYOUT CODE IS REQUIRED !"
         End If
 
-        If tubeName.Contains("Hinged") OrElse tubeName.Contains("Sliding") Then
+        If blindName = "Flyscreen" AndAlso (tubeName.Contains("Hinged") OrElse tubeName.Contains("Sliding")) Then
             If String.IsNullOrEmpty(data.midrailposition) Then Return "MIDRAIL POSITION IS REQUIRED !"
-            If String.IsNullOrEmpty(data.handlelength) Then Return "HANDLE LENGTH IS REQUIRED !"
-            If Not Integer.TryParse(data.handlelength, handlelength) OrElse handlelength <= 0 Then Return "PLEASE CHECK YOUR HANDLE LENGTH ORDER !"
         End If
 
         If tubeName.Contains("Hinged") OrElse tubeName.Contains("Sliding") Then
+            If Not String.IsNullOrEmpty(data.midrailposition) Then
+                If String.IsNullOrEmpty(data.handlelength) Then Return "HANDLE LENGTH IS REQUIRED !"
+            End If
+
+            If Not String.IsNullOrEmpty(data.handlelength) Then
+                If String.IsNullOrEmpty(data.midrailposition) Then Return "MIDRAIL POSITION IS REQUIRED !"
+
+                If Not Integer.TryParse(data.handlelength, handlelength) OrElse handlelength <= 0 Then Return "PLEASE CHECK YOUR HANDLE LENGTH ORDER !"
+            End If
+
             If Not String.IsNullOrEmpty(data.pettype) Then
                 If String.IsNullOrEmpty(data.petposition) Then Return "PET DOOR POSITION IS REQUIRED !"
             End If
-            If String.IsNullOrEmpty(data.pettype) AndAlso Not String.IsNullOrEmpty(data.petposition) Then
-                Return "PET DOOR TYPE IS REQUIRED !"
+
+            If Not String.IsNullOrEmpty(data.petposition) Then
+                If String.IsNullOrEmpty(data.pettype) Then Return "PET DOOR TYPE IS REQUIRED OR CLEAR THE PET DOOR POSITION SELECTION"
+            End If
+
+            If Not String.IsNullOrEmpty(data.angletype) Then
+                If String.IsNullOrEmpty(data.anglelength) Then Return "ANGLE LENGTH IS REQUIRED !"
+            End If
+
+            If Not String.IsNullOrEmpty(data.anglelength) Then
+                If String.IsNullOrEmpty(data.angletype) Then Return "ANGLE TYPE IS REQUIRED OR PLEASE REMOVE THE ANGLE LENGTH DATA !"
+
+                If Not Integer.TryParse(data.anglelength, anglelength) OrElse anglelength <= 0 Then Return "PLEASE CHECK YOUR ANGLE LENGTH ORDER !"
+                If anglelength > 5000 Then Return "MAXIMUM ANGLE LENGTH IS 5000MM"
+            End If
+
+            If Not String.IsNullOrEmpty(data.jambtype) Then
+                If String.IsNullOrEmpty(data.jambposition) Then Return "JAMB ADAPTOR POSITION IS REQUIRED !"
+            End If
+
+            If Not String.IsNullOrEmpty(data.jambposition) Then
+                If String.IsNullOrEmpty(data.jambtype) Then Return "JAMB ADAPTOR TYPE IS REQUIRED !"
             End If
         End If
 
-        If Not String.IsNullOrEmpty(data.angletype) Then
-            If String.IsNullOrEmpty(data.anglelength) Then Return "ANGLE LENGTH IS REQUIRED !"
-        End If
-
-        If Not String.IsNullOrEmpty(data.anglelength) Then
-            If String.IsNullOrEmpty(data.angletype) Then Return "ANGLE TYPE IS REQUIRED OR PLEASE REMOVE THE ANGLE LENGTH DATA !"
-            If Not Integer.TryParse(data.anglelength, anglelength) OrElse anglelength <= 0 Then Return "PLEASE CHECK YOUR ANGLE LENGTH ORDER !"
-            If anglelength > 5000 Then Return "MAXIMUM ANGLE LENGTH IS 5000MM"
-        End If
-
-        If tubeName.Contains("Hinged") OrElse tubeName.Contains("Sliding") Then
-            If Not String.IsNullOrEmpty(data.jambtype) AndAlso String.IsNullOrEmpty(data.jambposition) Then
-                Return "JAMB ADAPTOR POSITION IS REQUIRED !"
-            End If
-
-            If String.IsNullOrEmpty(data.jambtype) AndAlso Not String.IsNullOrEmpty(data.jambposition) Then
-                Return "JAMB ADAPTOR TYPE IS REQUIRED !"
-            End If
-        End If
-
-        If tubeName = "Hinged Double" AndAlso String.IsNullOrEmpty(data.flushbold) Then Return "FLUSH BOLD LOCATION IS REQUIRED !"
-
-        If tubeName = "Sliding Single" OrElse tubeName = "Sliding Double" OrElse tubeName = "Sliding Stacker" Then
+        If tubeName.Contains("Sliding") Then
             If Not String.IsNullOrEmpty(data.toptrack) Then
                 If String.IsNullOrEmpty(data.toptracklength) Then Return "TOP TRACK LENGTH IS REQUIRED !"
-                If Not Integer.TryParse(data.toptracklength, toptracklength) OrElse toptracklength <= 0 Then Return "PLEASE CHECK YOUR TOP TRACK LENGTH ORDER !"
+            End If
+
+            If Not String.IsNullOrEmpty(data.toptracklength) Then
+                If String.IsNullOrEmpty(data.toptrack) Then Return "TOP TRACK IS REQUIRED OR PLEASE REMOVE THE TOP TRACK LENGTH DATA !"
             End If
 
             If Not String.IsNullOrEmpty(data.bottomtrack) Then
                 If String.IsNullOrEmpty(data.toptracklength) Then Return "BOTTOM TRACK LENGTH IS REQUIRED !"
+            End If
+
+            If Not String.IsNullOrEmpty(data.bottomtracklength) Then
+                If String.IsNullOrEmpty(data.bottomtrack) Then Return "BOTTOM TRACK IS REQUIRED OR REMOVE THE BOTTOM TRACK LENGTH DATA !"
                 If Not Integer.TryParse(data.bottomtracklength, bottomtracklength) OrElse bottomtracklength <= 0 Then Return "PLEASE CHECK YOUR BOTTOM TRACK LENGTH ORDER !"
             End If
 
             If Not String.IsNullOrEmpty(data.receivertype) Then
                 If String.IsNullOrEmpty(data.receiverlength) Then Return "RECEIVER CHANNEL LENGTH IS REQUIRED !"
+            End If
+
+            If Not String.IsNullOrEmpty(data.receiverlength) Then
+                If String.IsNullOrEmpty(data.receivertype) Then
+                    Return "RECEIVER CHANNEL IS REQUIRED OR REMOVE THE RECEIVER CHANNEL LENGTH DATA !"
+                End If
+
                 If Not Integer.TryParse(data.receiverlength, receiverlength) OrElse receiverlength <= 0 Then Return "PLEASE CHECK YOUR RECEIVER CHANNEL LENGTH ORDER !"
             End If
         End If
@@ -9030,6 +9052,23 @@ Partial Class Order_Method
 
         If Not String.IsNullOrEmpty(data.markup) Then
             If Not Integer.TryParse(data.markup, markup) OrElse markup < 0 Then Return "PLEASE CHECK YOUR MARK UP ORDER !"
+        End If
+
+        If blindName = "Screen Only" Then
+            data.midrailposition = String.Empty
+            data.handletype = String.Empty : handlelength = 0
+            data.bugseal = String.Empty
+            data.pettype = String.Empty : data.petposition = String.Empty
+            data.doorcloser = String.Empty
+            data.angletype = String.Empty : anglelength = String.Empty
+            data.beading = String.Empty
+            data.jambtype = String.Empty : data.jambposition = String.Empty
+            data.interlocktype = String.Empty
+            data.toptrack = String.Empty : toptracklength = 0
+            data.bottomtrack = String.Empty : bottomtracklength = 0
+            data.receivertype = String.Empty : receiverlength = 0
+            data.slidingqty = String.Empty
+            data.flushbold = String.Empty
         End If
 
         If Not tubeName = "Hinged Double" Then data.flushbold = String.Empty
