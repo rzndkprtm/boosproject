@@ -9016,6 +9016,7 @@ Partial Class Order_Method
         If tubeName.Contains("Sliding") Then
             If Not String.IsNullOrEmpty(data.toptrack) Then
                 If String.IsNullOrEmpty(data.toptracklength) Then Return "TOP TRACK LENGTH IS REQUIRED !"
+                If Not Integer.TryParse(data.toptracklength, toptracklength) OrElse toptracklength <= 0 Then Return "PLEASE CHECK YOUR TOP TRACK LENGTH ORDER !"
             End If
 
             If Not String.IsNullOrEmpty(data.toptracklength) Then
