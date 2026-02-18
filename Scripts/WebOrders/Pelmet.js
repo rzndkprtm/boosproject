@@ -621,7 +621,7 @@ function controlForm(status, isEditItem, isCopyItem) {
         "qty", "room", "mounting",
         "fabrictype", "fabriccolour", "batten",
         "layoutcode", "width", "widthb", "widthc",
-        "returnposition", "returnlengthvalue", "returnlengthvalueb",
+        "returnposition", "returnlengthvalue", "returnlengthvalueb", "supply",
         "notes", "markup"
     ];
 
@@ -657,6 +657,7 @@ function setFormValues(itemData) {
         returnposition: "ReturnPosition",
         returnlengthvalue: "ReturnLengthValue",
         returnlengthvalueb: "ReturnLengthValueB",
+        supply: "Supply",
         notes: "Notes",
         markup: "MarkUp"
     };
@@ -774,7 +775,7 @@ function process() {
         "qty", "room", "mounting",
         "fabrictype", "fabriccolour", "batten",
         "layoutcode", "width", "widthb", "widthc",
-        "returnposition", "returnlengthvalue", "returnlengthvalueb",
+        "returnposition", "returnlengthvalue", "returnlengthvalueb", "supply",
         "notes", "markup"
     ];
 

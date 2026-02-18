@@ -722,7 +722,7 @@ function bindComponentForm(blindType, tubeType, colourType) {
         const detail = document.getElementById("divdetail");
         const markup = document.getElementById("divmarkup");
         const divsToHide = [
-            "divlayoutcode", "divhandletype", "divhandlelength", "divtriplelock", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divflushbold", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty"
+            "divlayoutcode", "divmidrailposition", "divhandletype", "divhandlelength", "divtriplelock", "divbugseal", "divpetdoor", "divdoorcloser", "divangle", "divbeading", "divjambadaptor", "divflushbold", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty"
         ].map(id => document.getElementById(id));
 
         const toggleDisplay = (el, show) => {
@@ -745,13 +745,13 @@ function bindComponentForm(blindType, tubeType, colourType) {
 
             if (blindName === "Safety") {
                 if (tubeName === "Hinged Single") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor");
+                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divmidrailposition", "divangle");
                 } else if (tubeName === "Hinged Double") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divflushbold");
+                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divflushbold", "divmidrailposition", "divangle");
                 } else if (tubeName === "Sliding Single") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty");
+                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty", "divmidrailposition", "divangle");
                 } else if (tubeName === "Sliding Double") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty");
+                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty", "divmidrailposition", "divangle");
                 } else if (tubeName === "Sliding Stacker") {
                     divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty");
                 }

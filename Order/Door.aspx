@@ -195,7 +195,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="row mt-3">
+                                            <div class="row mt-3" id="divmidrailposition">
                                                 <div class="col-12 col-sm-12 col-lg-3 mb-1">
                                                     <label>Midrail Position</label>
                                                 </div>
@@ -296,7 +296,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="row mt-3">
+                                            <div class="row mt-3" id="divangle">
                                                 <div class="col-12 col-sm-12 col-lg-3 mb-1">
                                                     <label>Angle</label>
                                                 </div>
