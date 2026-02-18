@@ -166,7 +166,7 @@ Public Class PreviewClass
             Dim orderName As String = headerData("OrderName").ToString()
             Dim orderNote As String = headerData("OrderNote").ToString()
 
-            Dim totalItems As Integer = GetItemData_Integer("SELECT SUM(CASE WHEN Designs.Type='Blinds' THEN OrderDetails.TotalItems ELSE OrderDetails.Qty END) AS TotalItem FROM OrderDetails INNER JOIN Products ON OrderDetails.ProductId=Products.Id INNER JOIN Designs ON Products.DesignId=Designs.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1")
+            Dim totalItems As Integer = GetItemData_Integer("SELECT SUM(CASE WHEN Designs.Type='Blinds' THEN OrderDetails.TotalItems ELSE OrderDetails.Qty END) AS TotalItem FROM OrderDetails INNER JOIN Products ON OrderDetails.ProductId=Products.Id INNER JOIN Designs ON Products.DesignId=Designs.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND Products.DesignId <> '16'")
             Dim pageTotalItem As String = String.Format("{0} Item", totalItems)
             If totalItems > 1 Then pageTotalItem = String.Format("{0} Items", totalItems)
 
@@ -736,7 +736,7 @@ Public Class PreviewClass
                     Dim table As New PdfPTable(7)
                     table.WidthPercentage = 100
 
-                    Dim items(15, pelmetData.Rows.Count - 1) As String
+                    Dim items(16, pelmetData.Rows.Count - 1) As String
 
                     For i As Integer = 0 To pelmetData.Rows.Count - 1
                         Dim number As Integer = i + 1
@@ -755,7 +755,8 @@ Public Class PreviewClass
                         items(11, i) = pelmetData.Rows(i)("ReturnPosition").ToString()
                         items(12, i) = pelmetData.Rows(i)("ReturnLengthValue").ToString()
                         items(13, i) = pelmetData.Rows(i)("ReturnLengthValueB").ToString()
-                        items(14, i) = pelmetData.Rows(i)("Notes").ToString()
+                        items(14, i) = pelmetData.Rows(i)("Supply").ToString()
+                        items(15, i) = pelmetData.Rows(i)("Notes").ToString()
                     Next
 
                     For i As Integer = 0 To items.GetLength(1) - 1 Step 6
@@ -764,7 +765,7 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Mounting", "Pelmet Type", "Fabric Type", "Fabric Colour", "Batten Colour", "Pelmet Layout", "Width (mm)", "2nd Width (mm)", "3rd Width (mm)", "Return Position", "Return Length (L)", "Return Length (R)", "Notes"}
+                        Dim headers As String() = {"", "Location", "Mounting", "Pelmet Type", "Fabric Type", "Fabric Colour", "Batten Colour", "Pelmet Layout", "Width (mm)", "2nd Width (mm)", "3rd Width (mm)", "Return Position", "Return Length (L)", "Return Length (R)", "Dust Cover", "Notes"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
