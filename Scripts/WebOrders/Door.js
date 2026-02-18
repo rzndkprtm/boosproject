@@ -757,39 +757,39 @@ function bindComponentForm(blindType, tubeType, colourType) {
                 }
             } else if (blindName === "Flyscreen") {
                 if (tubeName === "Hinged Single") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor");
+                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divmidrailposition", "divangle");
                 } else if (tubeName === "Hinged Double") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divflushbold");
+                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divflushbold", "divmidrailposition", "divangle");
                 } else if (tubeName === "Sliding Single") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty", "divhandletype");
+                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty", "divhandletype", "divmidrailposition", "divangle");
                 } else if (tubeName === "Sliding Double") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty", "divhandletype");
+                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty", "divhandletype", "divmidrailposition", "divangle");
                 } else if (tubeName === "Sliding Stacker") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty", "divhandletype");
+                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty", "divhandletype", "divmidrailposition", "divangle");
                 }
             } else if (blindName === "Security") {
                 if (tubeName === "Hinged Single") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor");
+                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divmidrailposition", "divangle");
                 } else if (tubeName === "Hinged Double") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divflushbold");
+                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divflushbold", "divmidrailposition", "divangle");
                 } else if (tubeName === "Sliding Single") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty");
+                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty", "divmidrailposition", "divangle");
                 } else if (tubeName === "Sliding Double") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty");
+                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty", "divmidrailposition", "divangle");
                 } else if (tubeName === "Sliding Stacker") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty");
+                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty", "divmidrailposition", "divangle");
                 }
             } else if (blindName === "Standard") {
                 if (tubeName === "Hinged Single") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor");
+                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divmidrailposition", "divangle");
                 } else if (tubeName === "Hinged Double") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divflushbold");
+                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divflushbold", "divmidrailposition", "divangle");
                 } else if (tubeName === "Sliding Single") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty");
+                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty", "divmidrailposition", "divangle");
                 } else if (tubeName === "Sliding Double") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty");
+                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty", "divmidrailposition", "divangle");
                 } else if (tubeName === "Sliding Stacker") {
-                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty");
+                    divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty", "divmidrailposition", "divangle");
                 }
             }
 
