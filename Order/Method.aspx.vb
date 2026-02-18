@@ -420,14 +420,14 @@ Partial Class Order_Method
         If type = "FrameColourDoor" Then
             Dim blindName As String = orderClass.GetBlindName(blindtype)
             If blindName = "Safety" Then
-                result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
+                'result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
                 result.Add(New With {.Value = "Monument (Express)", .Text = "Monument (Express)"})
                 result.Add(New With {.Value = "Primrose (Express)", .Text = "Primrose (Express)"})
                 result.Add(New With {.Value = "White (Express)", .Text = "White (Express)"})
                 result.Add(New With {.Value = "White Birch (Express)", .Text = "White Birch (Express)"})
             End If
             If blindName = "Standard" Then
-                result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
+                'result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
                 result.Add(New With {.Value = "Monument (Express)", .Text = "Monument (Express)"})
                 result.Add(New With {.Value = "Primrose (Express)", .Text = "Primrose (Express)"})
                 result.Add(New With {.Value = "White (Express)", .Text = "White (Express)"})
@@ -435,13 +435,13 @@ Partial Class Order_Method
             End If
             If blindName = "Security" Then
                 result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
-                result.Add(New With {.Value = "Monument (Express)", .Text = "Monument (Express)"})
+                'result.Add(New With {.Value = "Monument (Express)", .Text = "Monument (Express)"})
                 result.Add(New With {.Value = "Primrose (Express)", .Text = "Primrose (Express)"})
                 result.Add(New With {.Value = "White (Express)", .Text = "White (Express)"})
                 result.Add(New With {.Value = "White Birch (Express)", .Text = "White Birch (Express)"})
             End If
             If blindName = "Flyscreen" Then
-                result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
+                'result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
                 result.Add(New With {.Value = "Monument (Express)", .Text = "Monument (Express)"})
                 result.Add(New With {.Value = "Primrose (Express)", .Text = "Primrose (Express)"})
                 result.Add(New With {.Value = "White (Express)", .Text = "White (Express)"})
@@ -475,13 +475,13 @@ Partial Class Order_Method
             Dim blindName As String = orderClass.GetBlindName(blindtype)
             If blindName = "Safety" Then
                 result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
-                result.Add(New With {.Value = "Monument (Express)", .Text = "Monument (Express)"})
+                'result.Add(New With {.Value = "Monument (Express)", .Text = "Monument (Express)"})
                 result.Add(New With {.Value = "Primrose (Express)", .Text = "Primrose (Express)"})
                 result.Add(New With {.Value = "White (Express)", .Text = "White (Express)"})
                 result.Add(New With {.Value = "White Birch (Express)", .Text = "White Birch (Express)"})
             End If
             If blindName = "Standard" Then
-                result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
+                'result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
                 result.Add(New With {.Value = "Monument (Express)", .Text = "Monument (Express)"})
                 result.Add(New With {.Value = "Primrose (Express)", .Text = "Primrose (Express)"})
                 result.Add(New With {.Value = "White (Express)", .Text = "White (Express)"})
@@ -489,14 +489,14 @@ Partial Class Order_Method
             End If
             If blindName = "Security" Then
                 result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
-                result.Add(New With {.Value = "Monument (Express)", .Text = "Monument (Express)"})
+                'result.Add(New With {.Value = "Monument (Express)", .Text = "Monument (Express)"})
                 result.Add(New With {.Value = "Primrose (Express)", .Text = "Primrose (Express)"})
                 result.Add(New With {.Value = "White (Express)", .Text = "White (Express)"})
-                result.Add(New With {.Value = "White Birch (Express)", .Text = "White Birch (Express)"})
+                'result.Add(New With {.Value = "White Birch (Express)", .Text = "White Birch (Express)"})
             End If
             If blindName = "Flyscreen" Then
                 result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
-                result.Add(New With {.Value = "Monument (Express)", .Text = "Monument (Express)"})
+                'result.Add(New With {.Value = "Monument (Express)", .Text = "Monument (Express)"})
                 result.Add(New With {.Value = "Primrose (Express)", .Text = "Primrose (Express)"})
                 result.Add(New With {.Value = "White (Express)", .Text = "White (Express)"})
                 result.Add(New With {.Value = "White Birch (Express)", .Text = "White Birch (Express)"})
