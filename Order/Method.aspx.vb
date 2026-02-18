@@ -9024,7 +9024,7 @@ Partial Class Order_Method
             End If
 
             If Not String.IsNullOrEmpty(data.bottomtrack) Then
-                If String.IsNullOrEmpty(data.toptracklength) Then Return "BOTTOM TRACK LENGTH IS REQUIRED !"
+                If String.IsNullOrEmpty(data.bottomtracklength) Then Return "BOTTOM TRACK LENGTH IS REQUIRED !"
             End If
 
             If Not String.IsNullOrEmpty(data.bottomtracklength) Then
