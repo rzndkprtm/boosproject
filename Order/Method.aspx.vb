@@ -221,14 +221,14 @@ Partial Class Order_Method
         End If
 
         If type = "FabricColour" Then
-            Dim thisQuery As String = "SELECT * FROM FabricColours WHERE FabricId='" & fabrictype & "' AND Active=1 ORDER BY Colour ASC"
+            Dim thisQuery As String = "SELECT * FROM FabricColours WHERE FabricId='" & fabrictype & "' AND Active=1 ORDER BY CASE WHEN Factory='Express' THEN 1 ELSE 2 END, Colour ASC"
             If action = "view" Then
-                thisQuery = "SELECT * FROM FabricColours WHERE FabricId='" & fabrictype & "' ORDER BY Colour ASC"
+                thisQuery = "SELECT * FROM FabricColours WHERE FabricId='" & fabrictype & "' ORDER BY CASE WHEN Factory='Express' THEN 1 ELSE 2 END, Colour ASC"
             End If
             If companydetailid = "4" OrElse companydetailid = "5" Then
-                thisQuery = "SELECT * FROM FabricColours WHERE FabricId='" & fabrictype & "' AND Factory='Express' AND Active=1 ORDER BY Colour ASC"
+                thisQuery = "SELECT * FROM FabricColours WHERE FabricId='" & fabrictype & "' AND Factory='Express' AND Active=1 ORDER BY CASE WHEN Factory='Express' THEN 1 ELSE 2 END, Colour ASC"
                 If action = "view" Then
-                    thisQuery = "SELECT * FROM FabricColours WHERE FabricId='" & fabrictype & "' AND Factory='Express' ORDER BY Colour ASC"
+                    thisQuery = "SELECT * FROM FabricColours WHERE FabricId='" & fabrictype & "' AND Factory='Express' ORDER BY CASE WHEN Factory='Express' THEN 1 ELSE 2 END, Colour ASC"
                 End If
             End If
 
