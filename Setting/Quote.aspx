@@ -65,7 +65,7 @@
                                 <p class="mt-2" runat="server" id="pContact"></p>
                             </a>
 
-                            <a href="javascript:void(0);" class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#modalAddress">
+                            <a href="javascript:void(0);" class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#modalTerms">
                                 <div class="d-flex w-100 justify-content-between">
                                     <h6 class="mb-1">Section 4 - Terms & Conditions</h6>
                                 </div>
