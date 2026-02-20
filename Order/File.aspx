@@ -35,7 +35,7 @@
         </section>
 
         <section class="row">
-            <div class="col-8">
+            <div class="col-12 col-sm-12 col-lg-8">
                 <div class="card">
                     <div class="card-content">
                         <div class="card-header">

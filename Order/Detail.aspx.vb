@@ -32,7 +32,7 @@ Partial Class Order_Detail
 
         lblHeaderId.Text = Request.QueryString("orderid").ToString()
         If Not IsPostBack Then
-            'btnPreview.OnClientClick = "window.open('view?boosid=" & lblHeaderId.Text & "','_blank'); return false;"
+            btnPreview.OnClientClick = "window.open('view?boosid=" & lblHeaderId.Text & "','_blank'); return false;"
 
             AllMessageError(False, String.Empty)
             BindDataOrder(lblHeaderId.Text)
@@ -40,7 +40,7 @@ Partial Class Order_Detail
         End If
     End Sub
 
-    Protected Sub btnPreview_Click(sender As Object, e As EventArgs)
+    Protected Sub btnDownlaod_Click(sender As Object, e As EventArgs)
         Try
             If gvListItem.Rows.Count = 0 Then
                 MessageError(True, "PLEASE ADD MINIMAL 1 ITEM ORDER !")
@@ -63,7 +63,7 @@ Partial Class Order_Detail
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnPreview_Click", ex.ToString()}
+                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnDownlaod_Click", ex.ToString()}
                 mailingClass.WebError(dataMailing)
             End If
         End Try

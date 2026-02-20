@@ -36,7 +36,16 @@
 
         <section class="row mb-4">
             <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
-                <asp:Button runat="server" ID="btnPreview" CssClass="btn btn-primary me-1" Text="Download PDF" OnClick="btnPreview_Click" />
+                <button class="btn btn-primary dropdown-toggle me-1" type="button" data-bs-toggle="dropdown" aria-expanded="false">Generate PDF</button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <asp:Button runat="server" ID="btnPreview" CssClass="dropdown-item" Text="Preview" />
+                    </li>
+                    <li>
+                        <asp:Button runat="server" ID="btnDownlaod" CssClass="dropdown-item" Text="Download" OnClick="btnDownlaod_Click" />
+                    </li>
+                </ul>
+                
                 <asp:Button runat="server" ID="btnEditHeader" CssClass="btn btn-secondary me-1" Text="Edit Header" OnClick="btnEditHeader_Click" />
                 <a href="#" runat="server" id="aDeleteOrder" class="btn btn-danger me-1" data-bs-toggle="modal" data-bs-target="#modalDeleteOrder">Delete Order</a>
                 <a href="#" runat="server" id="aQuoteOrder" class="btn btn-success me-1" data-bs-toggle="modal" data-bs-target="#modalQuoteOrder">Quote</a>
