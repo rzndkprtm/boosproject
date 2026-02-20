@@ -119,14 +119,7 @@
                     <div class="card-content">
                         <div class="card-body">
                             <div class="table-responsive">
-                                <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center">
-                                    <RowStyle />
-                                    <Columns>
-                                        <asp:BoundField DataField="DesignName" HeaderText="Product" />
-                                        <asp:BoundField DataField="TotalItems" HeaderText="Total Items" />
-                                    </Columns>
-                                    <AlternatingRowStyle BackColor="White" />
-                                </asp:GridView>
+                                <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover" AutoGenerateColumns="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center"></asp:GridView>
                             </div>
                         </div>
                     </div>
