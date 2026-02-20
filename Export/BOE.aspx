@@ -1300,6 +1300,24 @@
                 writer.WriteAttributeString("Notes", thisData.Rows(i)("Notes").ToString())
                 writer.WriteEndElement()
             End If
+
+            If designName = "Door" OrElse designName = "Window" Then
+                Dim frameColour As String = thisData.Rows(i)("FrameColour").ToString()
+                If frameColour.Contains("Regular") Then Continue For
+
+                writer.WriteStartElement("OrderDetails")
+                writer.WriteAttributeString("OrddID", thisData.Rows(i)("Id").ToString())
+                writer.WriteAttributeString("FKOrdID", thisData.Rows(i)("HeaderId").ToString())
+                writer.WriteAttributeString("Qty", thisData.Rows(i)("Qty").ToString())
+                writer.WriteAttributeString("Room", thisData.Rows(i)("Room").ToString())
+                writer.WriteAttributeString("Mounting", thisData.Rows(i)("Mounting").ToString())
+                writer.WriteAttributeString("Width", thisData.Rows(i)("Width").ToString())
+                writer.WriteAttributeString("Drop", thisData.Rows(i)("Drop").ToString())
+                writer.WriteAttributeString("TotalItems", thisData.Rows(i)("TotalItems").ToString())
+                writer.WriteAttributeString("MarkUp", thisData.Rows(i)("MarkUp").ToString())
+                writer.WriteAttributeString("Notes", thisData.Rows(i)("Notes").ToString())
+                writer.WriteEndElement()
+            End If
         Next
         writer.WriteEndElement()
         writer.WriteEndDocument()
