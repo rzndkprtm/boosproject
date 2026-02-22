@@ -67,6 +67,9 @@
                     <li>
                         <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDownloadQuote">Download Quote</a>
                     </li>
+                    <li>
+                        <asp:Button runat="server" ID="btnPreviewQuote" CssClass="dropdown-item" Text="Preview Quote" />
+                    </li>
                 </ul>
 
                 <button class="btn btn-primary dropdown-toggle me-1" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnInvoice">invoice</button>
