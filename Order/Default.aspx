@@ -128,6 +128,10 @@
                                                                  <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`);", Eval("Id").ToString(), "Unsubmit Order") %>'>Unsubmit Order</a>
                                                              </li>
 
+                                                             <li runat="server" visible='<%# VisibleNewOrder(Eval("Status").ToString(), Eval("Active")) %>'>
+                                                                 <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`);", Eval("Id").ToString(), "New Order") %>'>New Order</a>
+                                                             </li>
+
                                                              <li runat="server" visible='<%# VisibleProductionOrder(Eval("Status").ToString(), Eval("Active")) %>'>
                                                                  <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`);", Eval("Id").ToString(), "Production Order") %>'>Production Order</a>
                                                              </li>

@@ -80,6 +80,9 @@
                     <li>
                         <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDownloadInvoice">Download Invoice</a>
                     </li>
+                    <li>
+                        <asp:Button runat="server" ID="btnPreviewInvoice" CssClass="dropdown-item" Text="Preview Invoice" />
+                    </li>
                     <li runat="server" id="liDividerInvoice"><hr class="dropdown-divider"></li>
                     <li runat="server" id="liUpdateInvoiceNumber">
                         <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalInvoiceNumber">Update Invoice Number</a>
@@ -107,6 +110,10 @@
                     </li>                    
                     <li runat="server" id="liMoreHistoryNote">
                         <a href="javascript:void(0)" class="dropdown-item" onclick="showHistoryNote('<%= lblHeaderId.Text %>')">History Note</a>
+                    </li>
+                    <li runat="server" id="liMoreDividerRePrice"><hr class="dropdown-divider"></li>
+                    <li runat="server" id="liMoreRePrice">
+                        <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalRecalculate">Re Price Order</a>
                     </li>
                 </ul>
 
@@ -1561,6 +1568,24 @@
         </div>
     </div>
 
+    <div class="modal modal-blur fade" id="modalRecalculate" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title white">Recalculate Price</h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    Hi <b><%: Session("FullName") %></b>,<br />
+                    Teks
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnRecalculate" CssClass="btn btn-warning" Text="Confirm" OnClick="btnRecalculate_Click" OnClientClick="return showWaiting();" />
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade text-center" id="modalWaiting" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -1615,7 +1640,7 @@
             "modalSendInvoice", "modalReceivePayment", "modalDownloadInvoice", "modalInvoiceNumber", "modalInvoiceData",
             "modalDetailQuote", "modalDownloadQuote",
             "modalMoreDownloadQuote", "modalMoreEmailQuote",
-            "modalAddNote", "modalHistoryNote",
+            "modalAddNote", "modalHistoryNote", "modalRecalculate",
             "modalAddItem", "modalDeleteItem", "modalCosting", "modalEditCosting"
         ].forEach(id => {
             document.getElementById(id).addEventListener("hide.bs.modal", () => {

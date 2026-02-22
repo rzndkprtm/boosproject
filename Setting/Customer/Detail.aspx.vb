@@ -1768,7 +1768,7 @@ Partial Class Setting_Customer_Detail
         Try
             If msgErrorProcessDiscount.InnerText = "" Then
                 If lblActionDiscount.Text = "Add" Then
-                    Dim designData As DataTable = settingClass.GetDataTable("SELECT * FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS companyArray WHERE Type='Blinds' AND companyArray.VALUE='" & lblCompanyId.Text & "' ORDER BY Id ASC")
+                    Dim designData As DataTable = settingClass.GetDataTable("SELECT * FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS companyArray CROSS APPLY STRING_SPLIT(AppliesTo, ',') AS applyArray WHERE applyArray.VALUE='Discounts' AND companyArray.VALUE='" & lblCompanyId.Text & "' ORDER BY Id ASC")
 
                     For i As Integer = 0 To designData.Rows.Count - 1
                         Dim designId As String = designData.Rows(i)("Id").ToString()
@@ -1935,7 +1935,7 @@ Partial Class Setting_Customer_Detail
     Protected Sub BindDiscountData()
         ddlDiscountDataId.Items.Clear()
         Try
-            ddlDiscountDataId.DataSource = settingClass.GetDataTable("SELECT * FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS companyArray WHERE companyArray.VALUE='" & lblCompanyId.Text & "' ORDER BY Name ASC")
+            ddlDiscountDataId.DataSource = settingClass.GetDataTable("SELECT * FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS companyArray CROSS APPLY STRING_SPLIT(AppliesTo, ',') AS applyArray WHERE companyArray.VALUE='" & lblCompanyId.Text & "' AND applyArray.VALUE='Discounts' ORDER BY Name ASC")
             ddlDiscountDataId.DataTextField = "Name"
             ddlDiscountDataId.DataValueField = "Id"
             ddlDiscountDataId.DataBind()
