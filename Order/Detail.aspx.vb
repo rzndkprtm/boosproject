@@ -34,6 +34,7 @@ Partial Class Order_Detail
         If Not IsPostBack Then
             btnPreview.OnClientClick = "window.open('view?action=jobsheet&boosid=" & lblHeaderId.Text & "','_blank'); return false;"
             btnPreviewInvoice.OnClientClick = "window.open('view?action=invoice&boosid=" & lblHeaderId.Text & "','_blank'); return false;"
+            btnPreviewQuote.OnClientClick = "window.open('view?action=quote&boosid=" & lblHeaderId.Text & "','_blank'); return false;"
 
             AllMessageError(False, String.Empty)
             BindDataOrder(lblHeaderId.Text)

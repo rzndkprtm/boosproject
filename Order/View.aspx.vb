@@ -10,7 +10,7 @@ Partial Class Order_View
             If String.IsNullOrEmpty(headerId) OrElse String.IsNullOrEmpty(action) Then Exit Sub
             If action = "jobsheet" Then JobSheet(headerId)
             If action = "invoice" Then Invoice(headerId)
-
+            If action = "quote" Then QuoteCustomer(headerId)
         End If
     End Sub
 
@@ -37,6 +37,22 @@ Partial Class Order_View
             Response.Clear()
             Response.ContentType = "application/pdf"
             Response.AddHeader("Content-Disposition", "inline; filename=INVOICE-" & headerId & ".pdf")
+            Response.BinaryWrite(pdfBytes)
+            Response.Flush()
+            Response.End()
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
+    Protected Sub QuoteCustomer(headerId As String)
+        Try
+            Dim quoteClass As New QuoteClass
+            Dim pdfBytes As Byte() = quoteClass.BindContentCustomer(headerId)
+
+            Response.Clear()
+            Response.ContentType = "application/pdf"
+            Response.AddHeader("Content-Disposition", "inline; filename=QUOTE-" & headerId & ".pdf")
             Response.BinaryWrite(pdfBytes)
             Response.Flush()
             Response.End()
