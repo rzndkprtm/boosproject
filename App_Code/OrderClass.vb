@@ -1216,7 +1216,7 @@ Public Class OrderClass
 
     Public Sub CalculatePriceByOrder(headerId As String)
         Try
-            Dim thisData As DataTable = GetDataTable("SELECT * FROM OrderDetails WHERE HeaderId='" & headerId & "' AND Active=1")
+            Dim thisData As DataTable = GetDataTable("SELECT OrderDetails.* FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND Designs.Type<>'Additional'")
             If Not thisData.Rows.Count = 0 Then
                 For i As Integer = 0 To thisData.Rows.Count - 1
                     Dim itemId As String = thisData.Rows(i)("Id").ToString()
@@ -2514,9 +2514,13 @@ Public Class OrderClass
     ' SHUTTER
     Public Function CountMultiLayout(input As String, substrings As String()) As Integer
         Dim count As Integer = 0
-        For Each substring In substrings
-            count += input.Split(substring).Length - 1
-        Next
+        Try
+            For Each substring In substrings
+                count += input.Split(substring).Length - 1
+            Next
+        Catch ex As Exception
+            count = 0
+        End Try
         Return count
     End Function
 

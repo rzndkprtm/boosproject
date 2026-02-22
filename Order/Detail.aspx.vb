@@ -32,7 +32,8 @@ Partial Class Order_Detail
 
         lblHeaderId.Text = Request.QueryString("orderid").ToString()
         If Not IsPostBack Then
-            btnPreview.OnClientClick = "window.open('view?boosid=" & lblHeaderId.Text & "','_blank'); return false;"
+            btnPreview.OnClientClick = "window.open('view?action=jobsheet&boosid=" & lblHeaderId.Text & "','_blank'); return false;"
+            btnPreviewInvoice.OnClientClick = "window.open('view?action=invoice&boosid=" & lblHeaderId.Text & "','_blank'); return false;"
 
             AllMessageError(False, String.Empty)
             BindDataOrder(lblHeaderId.Text)
@@ -1664,6 +1665,23 @@ Partial Class Order_Detail
         End Try
     End Sub
 
+    Protected Sub btnRecalculate_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            orderClass.CalculatePriceByOrder(lblHeaderId.Text)
+
+            url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnRecalculate_Click", ex.ToString()}
+                mailingClass.WebError(dataMailing)
+            End If
+        End Try
+    End Sub
+
     Protected Sub BindDataOrder(headerId As String)
         Try
             Dim params As New List(Of SqlParameter) From {
@@ -1784,6 +1802,8 @@ Partial Class Order_Detail
             liMoreDividerQuote.Visible = False
             liMoreAddNote.Visible = False
             liMoreHistoryNote.Visible = False
+            liMoreDividerRePrice.Visible = False
+            liMoreRePrice.Visible = False
 
             aAddItem.Visible = False
             aService.Visible = False
@@ -1799,6 +1819,8 @@ Partial Class Order_Detail
                 btnMoreAction.Visible = True
                 liMoreAddNote.Visible = True
                 liMoreHistoryNote.Visible = True
+                liMoreDividerRePrice.Visible = True
+                liMoreRePrice.Visible = True
 
                 aFileOrder.Visible = True
 
@@ -1957,6 +1979,8 @@ Partial Class Order_Detail
                 If lblOrderStatus.Text = "Unsubmitted" Then
                     liMoreDownloadQuote.Visible = True
                     liMoreEmailQuote.Visible = True
+                    liMoreDividerRePrice.Visible = True
+                    liMoreRePrice.Visible = True
 
                     liMoreDividerQuote.Visible = True
                     If lblOrderType.Text = "Regular" Then aSubmitOrder.Visible = True
@@ -1972,6 +1996,9 @@ Partial Class Order_Detail
                     btnInvoice.Visible = True : aSendInvoice.Visible = True
                     liDividerInvoice.Visible = True : liUpdateInvoiceNumber.Visible = True
 
+                    liMoreDividerRePrice.Visible = True
+                    liMoreRePrice.Visible = True
+
                     btnEditHeader.Visible = True
                     aUnsubmitOrder.Visible = True : aCancelOrder.Visible = True
 
@@ -1981,6 +2008,9 @@ Partial Class Order_Detail
                 If lblOrderStatus.Text = "Proforma Sent" Then
                     btnInvoice.Visible = True : aSendInvoice.Visible = True
                     liDividerInvoice.Visible = True : liUpdateInvoiceNumber.Visible = True
+
+                    liMoreDividerRePrice.Visible = True
+                    liMoreRePrice.Visible = True
 
                     aUnsubmitOrder.Visible = True : aCancelOrder.Visible = True
                 End If
@@ -2083,6 +2113,8 @@ Partial Class Order_Detail
                     liMoreDownloadQuote.Visible = True
                     liMoreEmailQuote.Visible = True
                     liMoreDividerQuote.Visible = True
+                    liMoreDividerRePrice.Visible = True
+                    liMoreRePrice.Visible = True
 
                     If lblOrderType.Text = "Regular" Then aSubmitOrder.Visible = True
                     If lblOrderType.Text = "Builder" Then aQuoteOrder.Visible = True
@@ -2096,6 +2128,8 @@ Partial Class Order_Detail
                     liMoreDividerQuote.Visible = True
                     liMoreAddNote.Visible = True
                     liMoreHistoryNote.Visible = True
+                    liMoreDividerRePrice.Visible = True
+                    liMoreRePrice.Visible = True
 
                     btnInvoice.Visible = True : aSendInvoice.Visible = True
 
@@ -2111,6 +2145,8 @@ Partial Class Order_Detail
                     liMoreDividerQuote.Visible = True
                     liMoreAddNote.Visible = True
                     liMoreHistoryNote.Visible = True
+                    liMoreDividerRePrice.Visible = True
+                    liMoreRePrice.Visible = True
 
                     btnInvoice.Visible = True : aSendInvoice.Visible = True : aReceivePayment.Visible = True
                 End If
@@ -2202,6 +2238,8 @@ Partial Class Order_Detail
                     liMoreDividerQuote.Visible = True
                     liMoreDownloadQuote.Visible = True
                     liMoreEmailQuote.Visible = True
+                    liMoreDividerRePrice.Visible = True
+                    liMoreRePrice.Visible = True
 
                     If lblOrderType.Text = "Regular" Then
                         If Session("LoginId") = lblCreatedBy.Text Then
@@ -2223,6 +2261,8 @@ Partial Class Order_Detail
                     liMoreDownloadQuote.Visible = True
                     liMoreEmailQuote.Visible = True
                     liMoreDividerQuote.Visible = True
+                    liMoreDividerRePrice.Visible = True
+                    liMoreRePrice.Visible = True
 
                     btnEditHeader.Visible = True
                     aCancelOrder.Visible = True
@@ -2234,6 +2274,8 @@ Partial Class Order_Detail
                 If lblOrderStatus.Text = "Waiting Proforma" Then
                     btnInvoice.Visible = True : aSendInvoice.Visible = True
                     liDividerInvoice.Visible = True : liUpdateInvoiceNumber.Visible = True
+                    liMoreDividerRePrice.Visible = True
+                    liMoreRePrice.Visible = True
 
                     aUnsubmitOrder.Visible = True : aCancelOrder.Visible = True
 
@@ -2296,6 +2338,8 @@ Partial Class Order_Detail
                     liMoreDividerQuote.Visible = True
                     liMoreDownloadQuote.Visible = True
                     liMoreEmailQuote.Visible = True
+                    liMoreDividerRePrice.Visible = True
+                    liMoreRePrice.Visible = True
 
                     If Session("LoginId") = lblCreatedBy.Text Then
                         btnEditHeader.Visible = True
@@ -2322,6 +2366,9 @@ Partial Class Order_Detail
 
                     btnInvoice.Visible = True : aSendInvoice.Visible = True
                     liDividerInvoice.Visible = True : liUpdateInvoiceNumber.Visible = True
+
+                    liMoreDividerRePrice.Visible = True
+                    liMoreRePrice.Visible = True
 
                     aUnsubmitOrder.Visible = True : aCancelOrder.Visible = True
 

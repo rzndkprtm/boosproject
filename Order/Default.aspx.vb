@@ -107,6 +107,7 @@ Partial Class Order_Default
                     Session("OrderStatus") = ddlStatus.SelectedValue
                     Session("OrderCompany") = ddlCompany.SelectedValue
                     Session("OrderActive") = ddlActive.SelectedValue
+                    Session("OrderType") = ddlType.SelectedValue
 
                     url = String.Format("~/order/detail?orderid={0}", dataId)
 
@@ -165,6 +166,7 @@ Partial Class Order_Default
                 Session("OrderCompany") = ddlCompany.SelectedValue
                 Session("OrderSearch") = txtSearch.Text
                 Session("OrderActive") = ddlActive.SelectedValue
+                Session("OrderType") = ddlType.SelectedValue
 
                 Response.Redirect("~/order", False)
             End If
@@ -282,6 +284,29 @@ Partial Class Order_Default
                 Session("OrderCompany") = ddlCompany.SelectedValue
                 Session("OrderSearch") = txtSearch.Text
                 Session("OrderActive") = ddlActive.SelectedValue
+                Session("OrderType") = ddlType.SelectedValue
+
+                Response.Redirect("~/order", False)
+            End If
+
+            If thisStatus = "New Order" Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='New Order' WHERE Id=@Id; INSERT INTO OrderShipments(Id) VALUES (@Id)", thisConn)
+                        myCmd.Parameters.AddWithValue("@Id", thisId)
+
+                        thisConn.Open()
+                        myCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                Dim dataLog As Object() = {"OrderHeaders", thisId, Session("LoginId"), "New Order"}
+                orderClass.Logs(dataLog)
+
+                Session("OrderStatus") = ddlStatus.SelectedValue
+                Session("OrderCompany") = ddlCompany.SelectedValue
+                Session("OrderSearch") = txtSearch.Text
+                Session("OrderActive") = ddlActive.SelectedValue
+                Session("OrderType") = ddlType.SelectedValue
 
                 Response.Redirect("~/order", False)
             End If
@@ -312,6 +337,7 @@ Partial Class Order_Default
                 Session("OrderCompany") = ddlCompany.SelectedValue
                 Session("OrderSearch") = txtSearch.Text
                 Session("OrderActive") = ddlActive.SelectedValue
+                Session("OrderType") = ddlType.SelectedValue
 
                 Response.Redirect("~/order", False)
             End If
@@ -333,6 +359,7 @@ Partial Class Order_Default
                 Session("OrderCompany") = ddlCompany.SelectedValue
                 Session("OrderSearch") = txtSearch.Text
                 Session("OrderActive") = ddlActive.SelectedValue
+                Session("OrderType") = ddlType.SelectedValue
 
                 Response.Redirect("~/order", False)
             End If
@@ -364,6 +391,7 @@ Partial Class Order_Default
                 Session("OrderCompany") = ddlCompany.SelectedValue
                 Session("OrderSearch") = txtSearch.Text
                 Session("OrderActive") = ddlActive.SelectedValue
+                Session("OrderType") = ddlType.SelectedValue
 
                 Response.Redirect("~/order", False)
             End If
@@ -548,6 +576,7 @@ Partial Class Order_Default
             Session("OrderCompany") = ddlCompany.SelectedValue
             Session("OrderSearch") = txtSearch.Text
             Session("OrderActive") = ddlActive.SelectedValue
+            Session("OrderType") = ddlType.SelectedValue
 
             Response.Redirect("~/order", False)
         Catch ex As Exception
@@ -872,6 +901,11 @@ Partial Class Order_Default
             If Session("RoleName") = "Account" AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent") Then Return True
             If Session("RoleName") = "Customer Service" AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent") Then Return True
         End If
+        Return False
+    End Function
+
+    Protected Function VisibleNewOrder(status As String, active As String) As Boolean
+        If active = True AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent") AndAlso (Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Account") Then Return True
         Return False
     End Function
 
