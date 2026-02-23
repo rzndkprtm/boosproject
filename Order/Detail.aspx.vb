@@ -2929,9 +2929,7 @@ Partial Class Order_Detail
             gvListOrderFile.DataBind()
 
             divUploadAction.Visible = False
-            If lblOrderType.Text = "Builder" AndAlso (lblOrderStatus.Text = "Unsubmitted" OrElse lblOrderStatus.Text = "Quoted") Then
-                divUploadAction.Visible = True
-            End If
+            If lblOrderType.Text = "Builder" Then divUploadAction.Visible = True
 
         Catch ex As Exception
             MessageError_FileOrder(True, ex.ToString())
