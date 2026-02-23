@@ -346,7 +346,9 @@ Partial Class Order_Detail
                     salesClass.RefreshData()
                 End If
 
-                dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), "Order Canceled"}
+                Dim descLog As String = String.Format("Order Canceled | {0}", txtCancelDescription.Text.Trim())
+
+                dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), descLog}
                 orderClass.Logs(dataLog)
 
                 url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
@@ -2070,7 +2072,7 @@ Partial Class Order_Detail
                     If lblOrderPaid.Text = "" Then aSendInvoice.Visible = True
                     liDividerInvoice.Visible = True : liUpdateInvoiceData.Visible = True
 
-                    aProductionOrder.Visible = True : aCancelOrder.Visible = True
+                    aUnHoldOrder.Visible = True : aCancelOrder.Visible = True
 
                     If lblOrderPaid.Text = "" Then
                         aAddItem.Visible = True : aService.Visible = True
@@ -2195,7 +2197,7 @@ Partial Class Order_Detail
                     If lblOrderPaid.Text = "" Then aSendInvoice.Visible = True
                     liDividerInvoice.Visible = True : liUpdateInvoiceData.Visible = True
 
-                    aProductionOrder.Visible = True : aCancelOrder.Visible = True
+                    aUnHoldOrder.Visible = True : aCancelOrder.Visible = True
 
                     If lblOrderPaid.Text = "" Then
                         aAddItem.Visible = True : aService.Visible = True
@@ -2485,7 +2487,7 @@ Partial Class Order_Detail
                 End If
 
                 If lblOrderStatus.Text = "On Hold" Then
-                    aProductionOrder.Visible = True
+                    aUnHoldOrder.Visible = True
                 End If
 
                 If lblOrderStatus.Text = "Shipped Out" OrElse lblOrderStatus.Text = "Completed" Then
