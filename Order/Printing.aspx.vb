@@ -4,10 +4,10 @@ Imports System.Data.SqlClient
 Partial Class Order_Printing
     Inherits Page
 
-    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-
     Dim orderClass As New OrderClass
     Dim mailingClass As New MailingClass
+
+    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Dim dataMailing As Object() = Nothing
     Dim dataLog As Object() = Nothing
@@ -422,7 +422,7 @@ Partial Class Order_Printing
                         If lblStatus.Text = "Unsubmitted" Then aUpload.Visible = True
 
                         If Not String.IsNullOrEmpty(printing) Then
-                            imgPrinting.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printing)
+                            imgPrinting.ImageUrl = String.Format("~/File/Order/{0}/{1}?v={2}", lblOrderId.Text, printing, DateTime.Now.Ticks)
                             If lblStatus.Text = "Unsubmitted" Then aDelete.Visible = True
                         End If
                     End If
@@ -441,11 +441,11 @@ Partial Class Order_Printing
                         End If
 
                         If Not String.IsNullOrEmpty(printing) Then
-                            imgPrinting.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printing)
+                            imgPrinting.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printing, DateTime.Now.Ticks)
                             If lblStatus.Text = "Unsubmitted" Then aDelete.Visible = True
                         End If
                         If Not String.IsNullOrEmpty(printingb) Then
-                            imgPrintingB.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printingb)
+                            imgPrintingB.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printingb, DateTime.Now.Ticks)
                             If lblStatus.Text = "Unsubmitted" Then aDeleteB.Visible = True
                         End If
                     End If
@@ -455,14 +455,14 @@ Partial Class Order_Printing
                     If width <= 1510 OrElse drop <= 1510 Then
                         aPrinting.Visible = True : divPrinting.Visible = True
                         If Not String.IsNullOrEmpty(printing) Then
-                            imgPrinting.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printing)
+                            imgPrinting.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printing, DateTime.Now.Ticks)
                             If lblStatus.Text = "Unsubmitted" Then aDelete.Visible = True
                         End If
                     End If
                     If widthB <= 1510 OrElse dropB <= 1510 Then
                         aPrintingB.Visible = True : divPrintingB.Visible = True
                         If Not String.IsNullOrEmpty(printingb) Then
-                            imgPrintingB.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printingb)
+                            imgPrintingB.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printingb, DateTime.Now.Ticks)
                             If lblStatus.Text = "Unsubmitted" Then aDeleteB.Visible = True
                         End If
                     End If
@@ -481,7 +481,7 @@ Partial Class Order_Printing
                     If width <= 1510 OrElse drop <= 1510 Then
                         aPrinting.Visible = True : divPrinting.Visible = True
                         If Not String.IsNullOrEmpty(printing) Then
-                            imgPrinting.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printing)
+                            imgPrinting.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printing, DateTime.Now.Ticks)
 
                             If lblStatus.Text = "Unsubmitted" Then aDelete.Visible = True
                         End If
@@ -489,14 +489,14 @@ Partial Class Order_Printing
                     If widthB <= 1510 OrElse dropB <= 1510 Then
                         aPrintingB.Visible = True : divPrintingB.Visible = True
                         If Not String.IsNullOrEmpty(printingb) Then
-                            imgPrintingB.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printingb)
+                            imgPrintingB.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printingb, DateTime.Now.Ticks)
                         End If
                         If lblStatus.Text = "Unsubmitted" Then aDeleteB.Visible = True
                     End If
                     If widthC <= 1510 OrElse dropC <= 1510 Then
                         aPrintingC.Visible = True : divPrintingC.Visible = True
                         If Not String.IsNullOrEmpty(printingc) Then
-                            imgPrintingC.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printingc)
+                            imgPrintingC.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printingc, DateTime.Now.Ticks)
                         End If
                         If lblStatus.Text = "Unsubmitted" Then aDeleteC.Visible = True
                     End If
@@ -525,7 +525,7 @@ Partial Class Order_Printing
                     If lblStatus.Text = "Unsubmitted" Then aUpload.Visible = True
 
                     If Not String.IsNullOrEmpty(printing) Then
-                        imgPrinting.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printing)
+                        imgPrinting.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printing, DateTime.Now.Ticks)
                         If lblStatus.Text = "Unsubmitted" Then aDelete.Visible = True
                     End If
                 End If
