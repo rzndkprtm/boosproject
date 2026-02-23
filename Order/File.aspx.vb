@@ -78,11 +78,12 @@ Partial Class Order_File
             If Directory.Exists(path) Then
                 For Each dir As String In Directory.GetDirectories(path)
                     Dim folderName As String = New DirectoryInfo(dir).Name
+                    Dim files = Directory.GetFiles(dir)
 
-                    If String.IsNullOrEmpty(search) OrElse
-                   folderName.ToLower().Contains(search.ToLower()) Then
+                    If (String.IsNullOrEmpty(search) OrElse
+                    folderName.ToLower().Contains(search.ToLower())) _
+                    AndAlso files.Length > 0 Then
 
-                        Dim files = Directory.GetFiles(dir)
                         Dim row = dt.NewRow()
                         row("FolderName") = folderName
                         row("FileCount") = files.Length
