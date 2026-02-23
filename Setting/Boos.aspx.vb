@@ -1,6 +1,5 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
-Imports System.IO
 
 Partial Class Setting_Boos
     Inherits Page
@@ -49,7 +48,7 @@ Partial Class Setting_Boos
             GenerateBuilder(Request.QueryString("status").ToString())
         End If
         If thisAction = "shipment" Then
-            If String.IsNullOrEmpty(Request.QueryString("id")) Then
+            If String.IsNullOrEmpty(Request.QueryString("OrdID")) Then
                 Exit Sub
             End If
             If String.IsNullOrEmpty(Request.QueryString("status")) Then
@@ -69,29 +68,32 @@ Partial Class Setting_Boos
                 Exit Sub
             End If
 
+            'https://ordersblindonline.com/setting/boos?action=shipment&OrdID=270051&Status=Shipped%20Out&ShipmentNo=xxx&ContainerNo=xxx&Courier=xxx&InvoiceNo=xxx&ShipDate=2026-02-23
+
             UpdateShipment(id, status, shipmentNumber, shipDate, containerNumber, courier, invoiceNumber)
         End If
     End Sub
 
     Protected Sub UpdateShipment(id As String, status As String, shipNumber As String, shipDate As Date, conNumber As String, courier As String, invNumber As String)
-        Try
-            Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderShipments SET ShipmentNumber=@ShipmentNumber, ShipmentDate=@ShipmentDate, ContainerNumber=@ContainerNumber, Courier=@Courier WHERE Id=@Id; UPDATE OrderHeaders SET Status=@Status WHERE Id=@Id; UPDATE OrderInvoices SET InvoiceNumber=@InvoiceNumber WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", id)
-                    myCmd.Parameters.AddWithValue("@ShipmentNumber", shipNumber)
-                    myCmd.Parameters.AddWithValue("@ShipmentDate", shipDate)
-                    myCmd.Parameters.AddWithValue("@ContainerNumber", conNumber)
-                    myCmd.Parameters.AddWithValue("@Courier", courier)
-                    myCmd.Parameters.AddWithValue("@Status", status)
-                    myCmd.Parameters.AddWithValue("@InvoiceNumber", invNumber)
+        'Try
 
-                    thisConn.Open()
-                    myCmd.ExecuteNonQuery()
-                End Using
+        'Catch ex As Exception
+        'End Try
+
+        Using thisConn As New SqlConnection(myConn)
+            Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderShipments SET ShipmentNumber=@ShipmentNumber, ShipmentDate=@ShipmentDate, ContainerNumber=@ContainerNumber, Courier=@Courier WHERE Id=@Id; UPDATE OrderHeaders SET Status=@Status WHERE Id=@Id; UPDATE OrderInvoices SET InvoiceNumber=@InvoiceNumber WHERE Id=@Id", thisConn)
+                myCmd.Parameters.AddWithValue("@Id", id)
+                myCmd.Parameters.AddWithValue("@ShipmentNumber", shipNumber)
+                myCmd.Parameters.AddWithValue("@ShipmentDate", shipDate)
+                myCmd.Parameters.AddWithValue("@ContainerNumber", conNumber)
+                myCmd.Parameters.AddWithValue("@Courier", courier)
+                myCmd.Parameters.AddWithValue("@Status", status)
+                myCmd.Parameters.AddWithValue("@InvoiceNumber", invNumber)
+
+                thisConn.Open()
+                myCmd.ExecuteNonQuery()
             End Using
-        Catch ex As Exception
-
-        End Try
+        End Using
     End Sub
 
     Protected Sub GenerateBuilder(status As String)

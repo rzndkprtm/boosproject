@@ -828,9 +828,11 @@
                                             </ItemTemplate>
                                         </asp:TemplateField>
                                         <asp:BoundField DataField="FileName" HeaderText="File Name" />
-                                        <asp:TemplateField HeaderText="Action" ItemStyle-Width="130px">
+                                        <asp:TemplateField HeaderText="Action" ItemStyle-Width="180px">
                                             <ItemTemplate>
                                                 <a class="btn btn-sm btn-info" href='<%# ResolveUrl("~/Handler/Download.ashx?folder=" & Eval("FolderName") & "&file=" & Eval("FileName")) %>'>Download</a>
+
+                                                <asp:LinkButton ID="btnDelete" runat="server" CssClass="btn btn-sm btn-danger" CommandName="DeleteFile" CommandArgument='<%# Eval("FileName") %>' OnClientClick="return confirm('Are you sure want to delete this file?');">Delete</asp:LinkButton>
                                             </ItemTemplate>
                                         </asp:TemplateField>
                                     </Columns>
