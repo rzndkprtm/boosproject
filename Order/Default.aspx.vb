@@ -1,6 +1,7 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 Imports System.IO
+Imports System.Threading.Tasks
 
 Partial Class Order_Default
     Inherits Page
@@ -383,6 +384,14 @@ Partial Class Order_Default
 
                     thisConn.Close()
                 End Using
+
+                Dim checkOcean As Integer = orderClass.GetItemData_Integer("SELECT COUNT(OrderDetails.Id) FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.HeaderId='" & thisId & "' AND OrderDetails.Active=1 AND Products.DesignId='15'")
+                If checkOcean > 0 Then
+                    Task.Run(Async Function()
+                                 Dim svc As New ShutterOceanService()
+                                 Await svc.SendOrderAsync(thisId)
+                             End Function)
+                End If
 
                 Dim dataLog As Object() = {"OrderHeaders", thisId, Session("LoginId"), "Confirm Payment Received"}
                 orderClass.Logs(dataLog)
