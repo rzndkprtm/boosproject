@@ -4044,7 +4044,7 @@ Partial Class Order_Method
         If String.IsNullOrEmpty(data.drop) Then Return "DROP IS REQUIRED !"
         If Not Integer.TryParse(data.drop, drop) OrElse drop <= 0 Then Return "PLEASE CHECK YOUR DROP ORDER !"
 
-        If drop < 600 Then Return "MINIUM DROP IS 600MM !"
+        If drop < 200 Then Return "MINIUM DROP IS 200MM !"
         If data.companyid = "2" AndAlso data.rolename = "Customer" Then
             If width > 2200 AndAlso (blindName = "Full Cassette" OrElse blindName = "Semi Cassette") Then Return "MAXIMUM DROP IS 2200MM !"
             If drop > 3200 Then Return "MAXIMUM DROP IS 3200MM !"
