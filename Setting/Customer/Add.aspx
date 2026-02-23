@@ -80,12 +80,13 @@
                                             <label class="form-label">Area</label>
                                             <asp:DropDownList runat="server" ID="ddlArea" CssClass="form-select">
                                                 <asp:ListItem Value="" Text=""></asp:ListItem>
-                                                <asp:ListItem Value="BP" Text="BP"></asp:ListItem>
+                                                <asp:ListItem Value="NSW" Text="NSW"></asp:ListItem>
                                                 <asp:ListItem Value="NSW 1" Text="NSW 1"></asp:ListItem>
                                                 <asp:ListItem Value="NSW 2" Text="NSW 2"></asp:ListItem>
                                                 <asp:ListItem Value="QLD" Text="QLD"></asp:ListItem>
                                                 <asp:ListItem Value="SA" Text="SA"></asp:ListItem>
                                                 <asp:ListItem Value="TAS" Text="TAS"></asp:ListItem>
+                                                <asp:ListItem Value="VIC" Text="VIC"></asp:ListItem>
                                                 <asp:ListItem Value="VIC 1" Text="VIC 1"></asp:ListItem>
                                                 <asp:ListItem Value="VIC 2" Text="VIC 2"></asp:ListItem>
                                                 <asp:ListItem Value="WA" Text="WA"></asp:ListItem>
