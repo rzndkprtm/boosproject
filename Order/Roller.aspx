@@ -343,7 +343,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                
+                                            
                                             <div class="row" id="divbottomcolour">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label id="lblbottomcolour">Bottom Colour</label>
@@ -357,7 +357,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Flat Bottom</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                     <select id="bottomoption" class="form-select">
                                                         <option value=""></option>
                                                         <option value="Fabric on Back">Fabric on Back</option>
@@ -553,7 +553,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Flat Bottom</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                     <select id="bottomoptionb" class="form-select">
                                                         <option value=""></option>
                                                         <option value="Fabric on back">Fabric on Back</option>
@@ -741,7 +741,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Flat Bottom</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                     <select id="bottomoptionc" class="form-select">
                                                         <option value=""></option>
                                                         <option value="Fabric on back">Fabric on Back</option>
@@ -927,7 +927,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Flat Bottom</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                     <select id="bottomoptiond" class="form-select">
                                                         <option value=""></option>
                                                         <option value="Fabric on back">Fabric on Back</option>
@@ -1108,7 +1108,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Flat Bottom</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                     <select id="bottomoptione" class="form-select">
                                                         <option value=""></option>
                                                         <option value="Fabric on back">Fabric on Back</option>
@@ -1288,7 +1288,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Flat Bottom</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                     <select id="bottomoptionf" class="form-select">
                                                         <option value=""></option>
                                                         <option value="Fabric on back">Fabric on Back</option>
@@ -1634,5 +1634,5 @@
         </div>
     </div>
     
-    <script src="/Scripts/WebOrders/Roller.js?v=2.0.2"></script>
+    <script src="/Scripts/WebOrders/Roller.js?v=2.0.3"></script>
 </asp:Content>

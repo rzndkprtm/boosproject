@@ -26,7 +26,6 @@ $("#tubetype").on("change", function () {
     const blindtype = document.getElementById("blindtype").value;
 
     bindControlType(blindtype, $(this).val());
-    bindFabricType(designId);
 });
 
 $("#controltype").on("change", function () {
@@ -72,28 +71,28 @@ $("#fabrictypef").on("change", function () {
 $("#bottomtype").on("change", function () {
     bindBottomColour($(this).val());
 
-    visibleBottomColour(1, $(this).val());
+    teksBottomColour(1, $(this).val());
     visibleFlatBottom($(this).val(), 1);
 });
 
 $("#bottomtypeb").on("change", function () {
     bindBottomColourB($(this).val());
 
-    visibleBottomColour(2, $(this).val());
+    teksBottomColour(2, $(this).val());
     visibleFlatBottom($(this).val(), 2);
 });
 
 $("#bottomtypec").on("change", function () {
     bindBottomColourC($(this).val());
 
-    visibleBottomColour(3, $(this).val());
+    teksBottomColour(3, $(this).val());
     visibleFlatBottom($(this).val(), 3);
 });
 
 $("#bottomtyped").on("change", function () {
     bindBottomColourD($(this).val());
 
-    visibleBottomColour(4, $(this).val());
+    teksBottomColour(4, $(this).val());
     visibleFlatBottom($(this).val(), 4);
 });
 
@@ -1586,7 +1585,7 @@ function bindBottomType(designType) {
             const blindNumber = idx + 1;
             return Promise.all([
                 visibleFunctions[idx](val),
-                visibleBottomColour(blindNumber, val)
+                teksBottomColour(blindNumber, val)
             ]);
         };
 
@@ -2019,7 +2018,7 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
             const textsixth = document.getElementById("textsixth");
 
             if (blindName === "Single Blind") {
-                divShow.push("divfabric", "divroll", "divcontrolposition", "divbottomtype", "divsize");
+                divShow.push("divfabric", "divroll", "divcontrolposition", "divbottomtype", "divbottomcolour", "divsize");
                 if (companyDetailName === "ACCENT") {
                     divShow.push("divtoptrack");
                 }
@@ -2040,9 +2039,9 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                     "divdbfront", "divdbback",
                     "divfirstend", "divsecondend",
                     "divfabric", "divroll", "divcontrolposition",
-                    "divbottomtype", "divsize",
+                    "divbottomtype", "divbottomcolour", "divsize",
                     "divfabricb", "divrollb", "divcontrolpositionb",
-                    "divbottomtypeb", "divsizeb"
+                    "divbottomtypeb", "divbottomcolourb", "divsizeb"
                 );
                 textdbfront.innerHTML = "FIRST ROLLER";
                 textdbback.innerHTML = "SECOND ROLLER";
@@ -2053,8 +2052,8 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                     "divlinkdepfirst", "divfirstend",
                     "divlinkdepsecond", "divsecondend",
                     "divfabric", "divroll", "divcontrolposition",
-                    "divbottomtype", "divsize",
-                    "divbottomtypeb", "divsizeb"
+                    "divbottomtype", "divbottomcolour", "divsize",
+                    "divbottomtypeb", "divbottomcolourb", "divsizeb"
                 );
                 if (["Gear Reduction 38mm", "Gear Reduction 45mm", "Gear Reduction 49mm"].includes(tubeName)) {
                     divShow.push("divbracketextension");
@@ -2067,8 +2066,8 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                     "divlinkindfirst", "divfirstend",
                     "divlinkindsecond", "divsecondend",
                     "divfabric", "divroll",
-                    "divbottomtype", "divsize",
-                    "divbottomtypeb", "divsizeb"
+                    "divbottomtype", "divbottomcolour", "divsize",
+                    "divbottomtypeb", "divbottomcolourb", "divsizeb"
                 );
                 if (["Gear Reduction 38mm", "Gear Reduction 45mm", "Gear Reduction 49mm"].includes(tubeName)) {
                     divShow.push("divbracketextension");
@@ -2082,9 +2081,9 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                     "divlinkdepsecond", "divsecondend",
                     "divlinkdepthird", "divthirdend",
                     "divfabric", "divroll", "divcontrolposition",
-                    "divbottomtype", "divsize",
-                    "divbottomtypeb", "divsizeb",
-                    "divbottomtypec", "divsizec"
+                    "divbottomtype", "divbottomcolour", "divsize",
+                    "divbottomtypeb", "divbottomcolourb", "divsizeb",
+                    "divbottomtypec", "divbottomcolourc", "divsizec"
                 );
                 if (["Gear Reduction 38mm", "Gear Reduction 45mm", "Gear Reduction 49mm"].includes(tubeName)) {
                     divShow.push("divbracketextension");
@@ -2099,9 +2098,9 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                     "divlinkindsecond", "divsecondend",
                     "divlinkindthird", "divthirdend",
                     "divfabric", "divroll", "divcontrolposition",
-                    "divbottomtype", "divsize",
-                    "divbottomtypeb", "divsizeb",
-                    "divbottomtypec", "divsizec"
+                    "divbottomtype", "divbottomcolour", "divsize",
+                    "divbottomtypeb", "divbottomcolourb", "divsizeb",
+                    "divbottomtypec", "divbottomcolourc", "divsizec"
                 );
                 if (["Gear Reduction 38mm", "Gear Reduction 45mm", "Gear Reduction 49mm"].includes(tubeName)) {
                     divShow.push("divbracketextension");
@@ -2121,11 +2120,11 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                     "divlinkdepfourth", "divfourthend",
                     "divthird",
                     "divfabric", "divroll", "divcontrolposition",
-                    "divbottomtype", "divsize",
-                    "divbottomtypeb", "divsizeb",
+                    "divbottomtype", "divbottomcolour", "divsize",
+                    "divbottomtypeb", "divbottomcolourb", "divsizeb",
                     "divfabricc", "divrollc", "divcontrolpositionc",
-                    "divbottomtypec", "divsizec",
-                    "divbottomtyped", "divsized"
+                    "divbottomtypec", "divbottomcolourc", "divsizec",
+                    "divbottomtyped", "divbottomcolourd", "divsized"
                 );
                 textdbfront.innerHTML = "ROLLER - FIRST SIDE";
                 textlinkdepfirst.innerHTML = "First Blind / Control Blind / Blind No 1";
@@ -2145,11 +2144,11 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                     "divlinkindfourth", "divfourthend",
                     "divthird",
                     "divfabric", "divroll",
-                    "divbottomtype", "divsize",
-                    "divbottomtypeb", "divsizeb",
+                    "divbottomtype", "divbottomcolour", "divsize",
+                    "divbottomtypeb", "divbottomcolourb", "divsizeb",
                     "divfabricc", "divrollc",
-                    "divbottomtypec", "divsizec",
-                    "divbottomtyped", "divsized"
+                    "divbottomtypec", "divbottomcolourc", "divsizec",
+                    "divbottomtyped", "divbottomcolourd", "divsized"
                 );
                 textdbfront.innerHTML = "ROLLER - FIRST SIDE";
                 textlinkindfirst.innerHTML = "First Blind / Blind No 1";
@@ -2171,13 +2170,13 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                     "divlinkdepsixth", "divsixthend",
                     "divfourth",
                     "divfabric", "divroll", "divcontrolposition",
-                    "divbottomtype", "divsize",
-                    "divbottomtypeb", "divsizeb",
-                    "divbottomtypec", "divsizec",
+                    "divbottomtype", "divbottomcolour", "divsize",
+                    "divbottomtypeb", "divbottomcolourb", "divsizeb",
+                    "divbottomtypec", "divbottomcolourc", "divsizec",
                     "divfabricd", "divrolld", "divcontrolpositiond",
-                    "divbottomtyped", "divsized",
-                    "divbottomtypee", "divsizee",
-                    "divbottomtypef", "divsizef"
+                    "divbottomtyped", "divbottomcolourd", "divsized",
+                    "divbottomtypee", "divbottomcoloure", "divsizee",
+                    "divbottomtypef", "divbottomcolourf", "divsizef"
                 );
                 textdbfront.innerHTML = "ROLLER - FIRST SIDE";
                 textlinkdepfirst.innerHTML = "First Blind / Control Blind / Blind No 1";
@@ -2201,13 +2200,13 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                     "divlinkindsixth", "divsixthend",
                     "divfourth",
                     "divfabric", "divroll", "divcontrolposition",
-                    "divbottomtype", "divsize",
-                    "divbottomtypeb", "divsizeb",
-                    "divbottomtypec", "divsizec",
+                    "divbottomtype", "divbottomcolour", "divsize",
+                    "divbottomtypeb", "divbottomcolourb", "divsizeb",
+                    "divbottomtypec", "divbottomcolourc", "divsizec",
                     "divfabricd", "divrolld", "divcontrolpositiond",
-                    "divbottomtyped", "divsized",
-                    "divbottomtypee", "divsizee",
-                    "divbottomtypef", "divsizef"
+                    "divbottomtyped", "divbottomcolourd", "divsized",
+                    "divbottomtypee", "divbottomcoloure", "divsizee",
+                    "divbottomtypef", "divbottomcolourf", "divsizef"
                 );
                 textdbfront.innerHTML = "ROLLER - FIRST SIDE";
                 textlinkindfirst.innerHTML = "First Blind / Ind Control Blind / Blind No 1";
@@ -2218,6 +2217,10 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                 textlinkindfourth.innerHTML = "Fourth Blind / Ind Control Blind / Blind No 4";
                 textlinkindfifth.innerHTML = "Fifth Blind / Middle Blind / Blind No 5";
                 textlinkindsixth.innerHTML = "Sixth Blind / End Blind / Blind No 6";
+            }
+
+            if (itemAction === "edit" || itemAction === "view" || itemAction === "copy") {
+                triggerFlatBottom();
             }
 
             if (tubeName === "Sunboss 43mm" || tubeName === "Sunboss 50mm") {
@@ -2365,43 +2368,30 @@ function visibleCustomChainLength(chainColour, chainLength, number) {
     });
 }
 
-function visibleBottomColour(blindNumber, bottomType) {
+function teksBottomColour(blindNumber, bottomType) {
     return new Promise((resolve) => {
-        let divBottomColour, lblBottomColour;
+        let lblBottomColour;
 
         switch (blindNumber) {
             case 1:
-                divBottomColour = document.getElementById("divbottomcolour");
                 lblBottomColour = document.getElementById("lblbottomcolour");
                 break;
             case 2:
-                divBottomColour = document.getElementById("divbottomcolourb");
                 lblBottomColour = document.getElementById("lblbottomcolourb");
                 break;
             case 3:
-                divBottomColour = document.getElementById("divbottomcolourc");
                 lblBottomColour = document.getElementById("lblbottomcolourc");
                 break;
             case 4:
-                divBottomColour = document.getElementById("divbottomcolourd");
                 lblBottomColour = document.getElementById("lblbottomcolourd");
                 break;
             case 5:
-                divBottomColour = document.getElementById("divbottomcoloure");
                 lblBottomColour = document.getElementById("lblbottomcoloure");
                 break;
             case 6:
-                divBottomColour = document.getElementById("divbottomcolourf");
                 lblBottomColour = document.getElementById("lblbottomcolourf");
                 break;
         }
-
-        if (!divBottomColour) {
-            resolve();
-            return;
-        }
-
-        divBottomColour.style.display = bottomType ? "" : "none";
 
         if (lblBottomColour) {
             getBottomName(bottomType).then(bottomName => {
@@ -2446,6 +2436,22 @@ function visibleFlatBottom(bottomType, number) {
             resolve();
         });
     });
+}
+
+function triggerFlatBottom() {
+    let bottomtype = $("#bottomtype").val();
+    let bottomtypeb = $("#bottomtypeb").val();
+    let bottomtypec = $("#bottomtypec").val();
+    let bottomtyped = $("#bottomtyped").val();
+    let bottomtypee = $("#bottomtypee").val();
+    let bottomtypef = $("#bottomtypef").val();
+
+    visibleFlatBottom(bottomtype, 1);
+    visibleFlatBottom(bottomtypeb, 2);
+    visibleFlatBottom(bottomtypec, 3);
+    visibleFlatBottom(bottomtyped, 4);
+    visibleFlatBottom(bottomtypee, 5);
+    visibleFlatBottom(bottomtypef, 6);
 }
 
 function otomatisWidth(blindType, blindNumber, width) {
@@ -2867,6 +2873,7 @@ async function initRoller() {
         controlForm(false);
         bindBlindType(designId);
         bindBottomType(designId);
+        bindFabricType(designId);
         loader(itemAction)
     } else if (["edit", "view", "copy"].includes(itemAction)) {
         controlForm(
@@ -2945,33 +2952,33 @@ async function bindItemOrder(itemId, companyDetailId, action) {
 
         visibleDetail(data.ItemData.BlindType, data.ItemData.TubeType, data.ItemData.ControlType, data.ItemData.ProductId);
 
-        visibleBottomColour(1, data.ItemData.BottomId);
+        teksBottomColour(1, data.ItemData.BottomId);
         visibleFlatBottom(data.ItemData.BottomId, 1);
         visibleChainStopperLength(data.ItemData.ControlType, data.ItemData.ChainId, 1);
         visibleCustomChainLength(data.ItemData.ChainId, data.ItemData.ControlLength, 1);
 
         let visiblePromises = [
-            visibleBottomColour(2, data.ItemData.BottomIdB),
+            teksBottomColour(2, data.ItemData.BottomIdB),
             visibleFlatBottom(data.ItemData.BottomIdB, 2),
             visibleChainStopperLength(data.ItemData.ControlType, data.ItemData.ChainIdB, 2),
             visibleCustomChainLength(data.ItemData.ChainIdB, data.ItemData.ControlLengthB, 2),
 
-            visibleBottomColour(3, data.ItemData.BottomIdC),
+            teksBottomColour(3, data.ItemData.BottomIdC),
             visibleFlatBottom(data.ItemData.BottomIdC, 3),
             visibleChainStopperLength(data.ItemData.ControlType, data.ItemData.ChainIdC, 3),
             visibleCustomChainLength(data.ItemData.ChainIdC, data.ItemData.ControlLengthC, 3),
 
-            visibleBottomColour(4, data.ItemData.BottomIdD),
+            teksBottomColour(4, data.ItemData.BottomIdD),
             visibleFlatBottom(data.ItemData.BottomIdD, 4),
             visibleChainStopperLength(data.ItemData.ControlType, data.ItemData.ChainIdD, 4),
             visibleCustomChainLength(data.ItemData.ChainIdD, data.ItemData.ControlLengthD, 4),
 
-            visibleBottomColour(5, data.ItemData.BottomIdE),
+            teksBottomColour(5, data.ItemData.BottomIdE),
             visibleFlatBottom(data.ItemData.BottomIdE, 5),
             visibleChainStopperLength(data.ItemData.ControlType, data.ItemData.ChainIdE, 5),
             visibleCustomChainLength(data.ItemData.ChainIdE, data.ItemData.ControlLengthE, 5),
 
-            visibleBottomColour(6, data.ItemData.BottomIdF),
+            teksBottomColour(6, data.ItemData.BottomIdF),
             visibleFlatBottom(data.ItemData.BottomIdF, 6),
             visibleChainStopperLength(data.ItemData.ControlType, data.ItemData.ChainIdF, 6),
             visibleCustomChainLength(data.ItemData.ChainIdF, data.ItemData.ControlLengthF, 6)

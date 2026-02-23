@@ -1027,7 +1027,7 @@ Partial Class Order_Detail
     Protected Sub gvListOrderFile_RowCommand(sender As Object, e As GridViewCommandEventArgs)
         Try
             Dim fileName As String = e.CommandArgument.ToString()
-            Dim directoryPath As String = Server.MapPath(String.Format("~/File/Builder/{0}/", lblOrderId.Text))
+            Dim directoryPath As String = Server.MapPath(String.Format("~/File/Order/{0}/", lblOrderId.Text))
             Dim filePath As String = IO.Path.Combine(directoryPath, fileName)
 
             Select Case e.CommandName
@@ -2930,7 +2930,6 @@ Partial Class Order_Detail
 
             divUploadAction.Visible = False
             If lblOrderType.Text = "Builder" Then divUploadAction.Visible = True
-
         Catch ex As Exception
             MessageError_FileOrder(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
