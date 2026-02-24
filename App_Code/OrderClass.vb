@@ -1421,7 +1421,7 @@ Public Class OrderClass
                     thisBuy = costBuy
                     thisBuyAdditional = costBuyAdditional
 
-                    Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
+                    Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END ASC")
                     If discountData.Rows.Count > 0 Then
                         For i As Integer = 0 To discountData.Rows.Count - 1
                             Dim discountType As String = discountData.Rows(i)("Type").ToString()
@@ -1638,7 +1638,7 @@ Public Class OrderClass
                     thisBuy = costBuy
                     thisBuyAdditional = costBuyAdditional
 
-                    Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
+                    Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END ASC")
                     If discountData.Rows.Count > 0 Then
                         For i As Integer = 0 To discountData.Rows.Count - 1
                             Dim discountType As String = discountData.Rows(i)("Type").ToString()
@@ -1803,7 +1803,7 @@ Public Class OrderClass
                     thisSell = costSell
                     thisBuy = costBuy
 
-                    Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
+                    Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END ASC")
                     If discountData.Rows.Count > 0 Then
                         For i As Integer = 0 To discountData.Rows.Count - 1
                             Dim discountType As String = discountData.Rows(i)("Type").ToString()
@@ -1951,7 +1951,7 @@ Public Class OrderClass
                     thisSell = costSell
                     thisBuy = costBuy
 
-                    Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
+                    Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END ASC")
                     If discountData.Rows.Count > 0 Then
                         For i As Integer = 0 To discountData.Rows.Count - 1
                             Dim discountType As String = discountData.Rows(i)("Type").ToString()
@@ -2099,7 +2099,7 @@ Public Class OrderClass
                     thisSell = costSell
                     thisBuy = costBuy
 
-                    Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
+                    Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END ASC")
                     If discountData.Rows.Count > 0 Then
                         For i As Integer = 0 To discountData.Rows.Count - 1
                             Dim discountType As String = discountData.Rows(i)("Type").ToString()
@@ -2235,7 +2235,7 @@ Public Class OrderClass
                     thisSell = costSell
                     thisBuy = costBuy
 
-                    Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
+                    Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END ASC")
                     If discountData.Rows.Count > 0 Then
                         For i As Integer = 0 To discountData.Rows.Count - 1
                             Dim discountType As String = discountData.Rows(i)("Type").ToString()
