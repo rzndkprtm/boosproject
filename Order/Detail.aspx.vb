@@ -608,9 +608,16 @@ Partial Class Order_Detail
                     End Using
                 End Using
 
+                Dim directory As String = Server.MapPath(String.Format("~/File/Rework/{0}/", reworkId))
+                If Not IO.Directory.Exists(directory) Then
+                    IO.Directory.CreateDirectory(directory)
+                End If
+
                 dataLog = {"OrderReworks", reworkId, Session("LoginId").ToString(), "Order Rework Created"}
                 orderClass.Logs(dataLog)
             End If
+
+
 
             For Each selectedId As String In selectedIds
                 Dim reworkDetailId As String = orderClass.GetNewOrderReworkDetailId()
@@ -626,7 +633,7 @@ Partial Class Order_Detail
                     End Using
                 End Using
 
-                Dim directoryOrder As String = Server.MapPath(String.Format("~/File/Rework/{0}/", reworkDetailId))
+                Dim directoryOrder As String = Server.MapPath(String.Format("~/File/Rework/{0}/{1}", reworkId, reworkDetailId))
                 If Not IO.Directory.Exists(directoryOrder) Then
                     IO.Directory.CreateDirectory(directoryOrder)
                 End If
