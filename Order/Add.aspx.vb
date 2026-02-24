@@ -1367,6 +1367,13 @@ Partial Class Order_Add
                         If msgError.InnerText = "" Then
                             Dim totalItems As Integer = 1
 
+                            If bracketExtension = "Standard Bracket" Then
+                                bracketExtension = String.Empty
+                            End If
+                            If bracketExtension = "Extension Bracket" Then
+                                bracketExtension = "Yes"
+                            End If
+
                             Dim groupName As String = String.Format("Vertical - {0} - {1}", blindType, tubeName)
                             Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, designId)
 

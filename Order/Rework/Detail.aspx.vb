@@ -71,7 +71,7 @@ Partial Class Order_Rework_Detail
                 Dim category As String = itemRework.Rows(i)("Category").ToString()
                 Dim description As String = itemRework.Rows(i)("Description").ToString()
 
-                Dim folderPath As String = Server.MapPath(String.Format("~/File/Rework/{0}", id))
+                Dim folderPath As String = Server.MapPath(String.Format("~/File/Rework/{0}/{1}", lblReworkId.Text, id))
 
                 If String.IsNullOrEmpty(category) Then
                     MessageError(True, String.Format("CATEGORY IS REQUIRED FOR ITEM ID : {0} !", itemId))
@@ -99,12 +99,6 @@ Partial Class Order_Rework_Detail
                         myCmd.ExecuteNonQuery()
                     End Using
                 End Using
-
-                Dim filePath As String = "~/File/Rework/Zip/"
-                Dim fileName As String = CreateReworkZip(lblReworkId.Text)
-                Dim finalFilePath As String = Server.MapPath(filePath & fileName)
-
-                mailingClass.ReworkOrder(lblReworkId.Text, finalFilePath)
 
                 Dim dataLog As Object() = {"OrderReworks", lblReworkId.Text, Session("LoginId").ToString(), "Rework Submitted"}
                 orderClass.Logs(dataLog)
@@ -262,7 +256,9 @@ Partial Class Order_Rework_Detail
 
             Dim gv As GridView = CType(e.Item.FindControl("gvFiles"), GridView)
 
-            Dim folderPath As String = Server.MapPath("~/File/Rework/" & itemId)
+            Dim stringPath As String = String.Format("~/File/Rework/{0}/{1}", lblReworkId.Text, itemId)
+
+            Dim folderPath As String = Server.MapPath(stringPath)
             Dim dt As New DataTable()
             dt.Columns.Add("FileName")
             dt.Columns.Add("FilePath")
@@ -271,7 +267,8 @@ Partial Class Order_Rework_Detail
                 For Each filePath As String In Directory.GetFiles(folderPath)
                     Dim dr As DataRow = dt.NewRow()
                     dr("FileName") = Path.GetFileName(filePath)
-                    dr("FilePath") = ResolveUrl("~/File/Rework/" & itemId & "/" & Path.GetFileName(filePath))
+                    Dim stringFilePath As String = String.Format("~/File/Rework/{0}/{1}/{2}", lblReworkId.Text, itemId, Path.GetFileName(filePath))
+                    dr("FilePath") = ResolveUrl(stringFilePath)
                     dt.Rows.Add(dr)
                 Next
             End If
@@ -298,44 +295,15 @@ Partial Class Order_Rework_Detail
         End If
     End Sub
 
-    Protected Sub btnCategory_Click(sender As Object, e As EventArgs)
+    Protected Sub UpdateItem_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim thisId As String = txtCategoryId.Text
+            Dim thisId As String = txtDetailId.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderReworkDetails SET Category=@Category WHERE Id=@Id", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderReworkDetails SET Category=@Category, Description=@Description WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", thisId)
                     myCmd.Parameters.AddWithValue("@Category", ddlCategory.SelectedValue)
-
-                    thisConn.Open()
-                    myCmd.ExecuteNonQuery()
-                End Using
-            End Using
-
-            url = String.Format("~/order/rework/detail?reworkid={0}", lblReworkId.Text)
-            Response.Redirect(url, False)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                If Session("RoleName") = "Customer" Then
-                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
-                End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnCategory_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
-            End If
-        End Try
-    End Sub
-
-    Protected Sub btnDescription_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        Try
-            Dim thisId As String = txtDescriptionId.Text
-
-            Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderReworkDetails SET Description=@Description WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
                     myCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
 
                     thisConn.Open()
@@ -352,7 +320,7 @@ Partial Class Order_Rework_Detail
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnDescription_Click", ex.ToString()}
+                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "UpdateItem_Click", ex.ToString()}
                 mailingClass.WebError(dataMailing)
             End If
         End Try
@@ -363,7 +331,7 @@ Partial Class Order_Rework_Detail
         Try
             Dim thisId As String = txtUploadId.Text
 
-            Dim folderPath As String = Server.MapPath(String.Format("~/File/Rework/{0}", thisId))
+            Dim folderPath As String = Server.MapPath(String.Format("~/File/Rework/{0}/{1}", lblReworkId.Text, thisId))
 
             If Not Directory.Exists(folderPath) Then
                 Directory.CreateDirectory(folderPath)
@@ -490,6 +458,7 @@ Partial Class Order_Rework_Detail
 
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
+        divErrorB.Visible = visible : msgErrorB.InnerText = message
     End Sub
 
     Protected Function VisibleDetailRework() As Boolean
