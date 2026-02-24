@@ -47,7 +47,7 @@ Partial Class Guide_Detail
             Dim pdfName As String = thisData("File").ToString()
             If Not String.IsNullOrEmpty(pdfName) Then
                 Dim linkFile As String = String.Format("~/Assets/tutorial/{0}", thisData("File").ToString())
-                embedPDF.Attributes("src") = ResolveUrl("~/Handler/PDF.ashx?document=" & linkFile)
+                embedPDF.Attributes("src") = linkFile
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
