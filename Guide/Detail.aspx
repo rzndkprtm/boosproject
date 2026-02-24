@@ -69,7 +69,7 @@
                                 <div class="tab-pane fade" id="list-file" role="tabpanel" aria-labelledby="listFile">
                                     <div class="row mt-3">
                                         <div class="col-12">
-                                            <iframe runat="server" id="frmPdf" width="100%" height="1120" title="Reza"></iframe>
+                                            <embed runat="server" id="embedPDF" src="~/Assets/document/rework.pdf" type="application/pdf" width="100%" height="600px" />
                                         </div>
                                     </div>
                                 </div>
