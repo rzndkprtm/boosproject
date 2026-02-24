@@ -44,10 +44,8 @@ Partial Class Guide_Detail
                 frmVideo.Attributes("src") = videoName
             End If
 
-            Dim pdfName As String = thisData("File").ToString()
-            If Not String.IsNullOrEmpty(pdfName) Then
-                Dim linkFile As String = String.Format("~/Assets/tutorial/{0}", thisData("File").ToString())
-                embedPDF.Attributes("src") = linkFile
+            If Not String.IsNullOrEmpty(thisData("File").ToString()) Then
+                embedPDF.Attributes("src") = thisData("File").ToString()
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
