@@ -34,6 +34,12 @@
             </div>
         </section>
 
+        <section class="row mb-3">
+            <div class="col-12 d-flex justify-content-end flex-wrap gap-2">
+                <a runat="server" id="aCreate" class="btn btn-primary" href="#" data-bs-toggle="modal" data-bs-target="#modalCreate">Create Rework</a>
+            </div>
+        </section>
+
         <section class="row">
             <div class="col-12">
                 <div class="card">
@@ -162,6 +168,34 @@
         </div>
     </div>
 
+    <div class="modal fade text-left" id="modalCreate" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <h5 class="modal-title white">Create Rework</h5>
+                </div>
+
+                <div class="modal-body text-left py-4">
+                    <ol>
+                        <li>
+                            Please open the <a runat="server" href="~/order">Order page</a> and locate your order (<i>The order status must already be Shipped Out or Completed</i>).
+                        </li>
+                        <li>Click on the order. On the detail page, find the <b>Rework Order</b> button and click it.
+                        </li>
+                        <li>
+                            Select the item you would like to rework, then follow the next steps by filling in the category, description, and uploading the required file.
+                        </li>
+                    </ol>
+                </div>
+
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                    <a runat="server" href="~/order" class="btn btn-primary">Go To Order Page</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', function () {
             const gv = document.getElementById('<%= gvList.ClientID %>');
@@ -186,7 +220,7 @@
             }
         });
 
-        ["modalLog"].forEach(function (id) {
+        ["modalLog", "modalCreate"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

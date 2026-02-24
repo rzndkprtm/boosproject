@@ -29,7 +29,6 @@ Partial Class Order_Rework_Detail
         lblReworkId.Text = Request.QueryString("reworkid").ToString()
         If Not IsPostBack Then
             AllMessageError(False, String.Empty)
-
             BindDataRework(lblReworkId.Text)
         End If
     End Sub
@@ -45,7 +44,6 @@ Partial Class Order_Rework_Detail
                     myCmd.ExecuteNonQuery()
                 End Using
             End Using
-
             url = String.Format("~/order/rework/detail?reworkid={0}", lblReworkId.Text)
             Response.Redirect(url, False)
         Catch ex As Exception
@@ -99,6 +97,8 @@ Partial Class Order_Rework_Detail
                         myCmd.ExecuteNonQuery()
                     End Using
                 End Using
+
+                mailingClass.ReworkOrder(lblReworkId.Text)
 
                 Dim dataLog As Object() = {"OrderReworks", lblReworkId.Text, Session("LoginId").ToString(), "Rework Submitted"}
                 orderClass.Logs(dataLog)
@@ -168,8 +168,6 @@ Partial Class Order_Rework_Detail
                     End If
                 End Try
             Loop
-
-
 
             dataLog = {"OrderHeaders", newHeaderId, Session("LoginId").ToString(), "Order Created | Rework Approved"}
             orderClass.Logs(dataLog)

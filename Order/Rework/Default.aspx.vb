@@ -17,7 +17,6 @@
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-
             BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlActive.SelectedValue)
         End If
     End Sub
@@ -152,6 +151,7 @@
             gvList.DataBind()
             gvList.Columns(1).Visible = PageAction("Visible ID")
 
+            aCreate.Visible = PageAction("Create")
             divActive.Visible = PageAction("Active")
         Catch ex As Exception
             MessageError(True, ex.ToString())

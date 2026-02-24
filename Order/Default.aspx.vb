@@ -150,7 +150,7 @@ Partial Class Order_Default
                 Using thisConn As New SqlConnection(myConn)
                     thisConn.Open()
 
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Active=0 WHERE Id=@Id", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Active=0, DownloadBOE=0 WHERE Id=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
                         myCmd.ExecuteNonQuery()
                     End Using
@@ -203,7 +203,6 @@ Partial Class Order_Default
                                 myCmd.Parameters.AddWithValue("@OrderId", orderId)
                                 myCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
 
-
                                 myCmd.ExecuteNonQuery()
                             End Using
 
@@ -217,7 +216,6 @@ Partial Class Order_Default
                         End Using
 
                         success = True
-
                     Catch exSql As SqlException
                         If exSql.Number = 2601 OrElse exSql.Number = 2627 Then
                             success = False
@@ -345,7 +343,7 @@ Partial Class Order_Default
 
             If thisStatus = "Hold Order" Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='On Hold', OnHoldDate=GETDATE() WHERE Id=@Id; DELETE FROM OrderShipments WHERE Id=@Id;", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='On Hold', OnHoldDate=GETDATE(), DownloadBOE=0 WHERE Id=@Id; DELETE FROM OrderShipments WHERE Id=@Id;", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
 
                         thisConn.Open()
@@ -407,7 +405,7 @@ Partial Class Order_Default
 
             If thisStatus = "Complete Order" Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Completed', CompletedDate=GETDATE() WHERE Id=@Id", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Completed', DownloadBOE=0 CompletedDate=GETDATE() WHERE Id=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
 
                         thisConn.Open()

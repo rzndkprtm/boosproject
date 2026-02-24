@@ -1082,8 +1082,8 @@ Public Class MailingClass
 
 
 
-    Public Sub ReworkOrder(reworkId As String, fileDirectory As String)
-        If String.IsNullOrEmpty(reworkId) OrElse String.IsNullOrEmpty(fileDirectory) Then Exit Sub
+    Public Sub ReworkOrder(reworkId As String)
+        If String.IsNullOrEmpty(reworkId) Then Exit Sub
 
         Dim reworkData As DataRow = GetDataRow("SELECT OrderReworks.*, CustomerLogins.FullName AS CreatedFullName, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, OrderHeaders.OrderId AS OrderId, OrderHeaders.OrderNumber AS OrderNumber, OrderHeaders.OrderName AS OrderName, OrderHeaders.CustomerId AS CustomerId, OrderHeaders.OrderId FROM OrderReworks LEFT JOIN OrderHeaders ON OrderReworks.HeaderId=OrderHeaders.Id LEFT JOIN CustomerLogins ON OrderReworks.CreatedBy=CustomerLogins.Id LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderReworks.Id='" & reworkId & "'")
         If reworkData Is Nothing Then Exit Sub
@@ -1188,7 +1188,6 @@ Public Class MailingClass
 
         myMail.Body = mailBody
         myMail.IsBodyHtml = True
-        myMail.Attachments.Add(New Attachment(fileDirectory))
         Dim smtpClient As New SmtpClient()
         smtpClient.Host = mailHost
         smtpClient.Port = mailPort

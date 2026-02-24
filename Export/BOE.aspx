@@ -77,7 +77,7 @@
 
         If type = "header" Then
             If action = "download" Then
-                Dim thisQuery As String = String.Format("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.DebtorCode AS DebtorCode, CustomerLogins.UserName AS UserName FROM OrderHeaders INNER JOIN Customers ON OrderHeaders.CustomerId=Customers.Id INNER JOIN CustomerLogins ON OrderHeaders.CreatedBy=CustomerLogins.Id WHERE OrderHeaders.Active=1 {0} {1} ORDER BY OrderHeaders.Id ASC", stringCompany, stringStatus)
+                Dim thisQuery As String = String.Format("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.DebtorCode AS DebtorCode, CustomerLogins.UserName AS UserName FROM OrderHeaders INNER JOIN Customers ON OrderHeaders.CustomerId=Customers.Id INNER JOIN CustomerLogins ON OrderHeaders.CreatedBy=CustomerLogins.Id WHERE OrderHeaders.Active=1 AND (OrderHeaders.Status='Unsubmitted' OR OrderHeaders.Status='Payment Received' OR OrderHeaders.Status='New Order') {0} {1} ORDER BY OrderHeaders.Id ASC", stringCompany, stringStatus)
 
                 Dim thisData As DataTable = GetDataTable(thisQuery)
                 If thisData.Rows.Count > 0 Then
@@ -107,17 +107,6 @@
                             salesClass.RefreshData()
                         End If
 
-                        'Dim checkPrinting As Integer = orderClass.GetItemData_Integer("SELECT COUNT(*) FROM OrderDetails WHERE HeaderId='" & headerId & "' AND (NULLIF(LTRIM(RTRIM(Printing)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingB)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingC)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingD)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingE)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingF)),'') IS NOT NULL)")
-
-                        'If checkPrinting > 0 Then
-                        '    Dim sourceFolder As String = Server.MapPath(String.Format("~/File/Printing/{0}", headerId))
-                        '    Dim zipPath As String = Server.MapPath(String.Format("~/File/Printing/{0}.zip", orderId))
-
-                        '    If IO.File.Exists(zipPath) Then IO.File.Delete(zipPath)
-                        '    ZipFile.CreateFromDirectory(sourceFolder, zipPath, CompressionLevel.Fastest, True)
-
-                        '    mailingClass.SubmitOrder_PrintingFabric(headerId, finalFilePath, zipPath)
-                        'End If
                         mailingClass.ProductionOrder(headerId)
                     Next
                 End If
