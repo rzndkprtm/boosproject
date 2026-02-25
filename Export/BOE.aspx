@@ -1237,7 +1237,7 @@
                         kitIdD = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "' AND BlindStatus='End'")
                     End If
 
-                    If String.IsNullOrEmpty(kitId) OrElse String.IsNullOrEmpty(kitIdB) OrElse String.IsNullOrEmpty(kitIdC) OrElse String.IsNullOrEmpty(kitIdD) Then Continue For
+                    'If String.IsNullOrEmpty(kitId) OrElse String.IsNullOrEmpty(kitIdB) OrElse String.IsNullOrEmpty(kitIdC) OrElse String.IsNullOrEmpty(kitIdD) Then Continue For
 
                     Dim webFabricIdB As String = thisData.Rows(i)("FabricColourIdB").ToString()
                     Dim webFabricIdC As String = thisData.Rows(i)("FabricColourIdC").ToString()
