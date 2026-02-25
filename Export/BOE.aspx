@@ -697,8 +697,8 @@
                 If blindName = "Link 2 Blinds Independent" Then orderType = "Link System Independent 2 Blinds"
                 If blindName = "Link 3 Blinds Dependent" Then orderType = "Link System Dependent 3 Blinds"
                 If blindName = "Link 3 Blinds Independent with Dependent" Then orderType = "Link System Independent 3 Blinds"
-                If blindName = "DB & Link 2 Blinds Dependent" Then orderType = "Double and Link System Dependent"
-                If blindName = "DB & Link 2 Blinds Independent" Then orderType = "Double and Link System Independent"
+                If blindName = "DB Link 2 Blinds Dependent" Then orderType = "Double and Link System Dependent"
+                If blindName = "DB Link 2 Blinds Independent" Then orderType = "Double and Link System Independent"
 
                 Dim kitId As String = String.Empty
                 Dim kitIdB As String = String.Empty
@@ -1237,7 +1237,7 @@
                         kitIdD = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "' AND BlindStatus='End'")
                     End If
 
-                    'If String.IsNullOrEmpty(kitId) OrElse String.IsNullOrEmpty(kitIdB) OrElse String.IsNullOrEmpty(kitIdC) OrElse String.IsNullOrEmpty(kitIdD) Then Continue For
+                    If String.IsNullOrEmpty(kitId) OrElse String.IsNullOrEmpty(kitIdB) OrElse String.IsNullOrEmpty(kitIdC) OrElse String.IsNullOrEmpty(kitIdD) Then Continue For
 
                     Dim webFabricIdB As String = thisData.Rows(i)("FabricColourIdB").ToString()
                     Dim webFabricIdC As String = thisData.Rows(i)("FabricColourIdC").ToString()
