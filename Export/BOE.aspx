@@ -697,8 +697,8 @@
                 If blindName = "Link 2 Blinds Independent" Then orderType = "Link System Independent 2 Blinds"
                 If blindName = "Link 3 Blinds Dependent" Then orderType = "Link System Dependent 3 Blinds"
                 If blindName = "Link 3 Blinds Independent with Dependent" Then orderType = "Link System Independent 3 Blinds"
-                If blindName = "Dual & Link 2 Blinds Dependent" Then orderType = "Double and Link System Dependent"
-                If blindName = "Dual & Link 2 Blinds Independent" Then orderType = "Double and Link System Independent"
+                If blindName = "DB & Link 2 Blinds Dependent" Then orderType = "Double and Link System Dependent"
+                If blindName = "DB & Link 2 Blinds Independent" Then orderType = "Double and Link System Independent"
 
                 Dim kitId As String = String.Empty
                 Dim kitIdB As String = String.Empty
@@ -1200,11 +1200,11 @@
                     writer.WriteEndElement()
                 End If
 
-                If blindName = "Dual & Link 2 Blinds Dependent" Then
+                If blindName = "DB & Link 2 Blinds Dependent" Then
 
                 End If
 
-                If blindName = "Dual & Link 2 Blinds Independent" Then
+                If blindName = "DB Link 2 Blinds Independent" Then
                     kitId = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND BlindStatus='Control'")
                     kitIdB = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND BlindStatus='End'")
                     kitIdC = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND BlindStatus='Control'")
