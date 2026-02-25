@@ -6124,6 +6124,8 @@ Partial Class Order_Method
 
             data.fabrictypec = data.fabrictype : data.fabriccolourc = data.fabriccolour
             data.rollc = data.roll
+            data.controlpositionc = "Right"
+            If data.controlposition = "Right" Then data.controlpositionc = "Left"
 
             data.fabrictypee = data.fabrictyped : data.fabriccoloure = data.fabriccolourd
             data.rolle = data.rolld : data.controlpositione = String.Empty
@@ -6132,6 +6134,8 @@ Partial Class Order_Method
 
             data.fabrictypef = data.fabrictyped : data.fabriccolourf = data.fabriccolourd
             data.rollf = data.rolld
+            data.controlpositionf = "Right"
+            If data.controlpositiond = "Right" Then data.controlpositionf = "Left"
 
             data.printingb = String.Empty
             data.printingc = String.Empty
