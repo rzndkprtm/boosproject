@@ -4292,7 +4292,7 @@ Partial Class Order_Method
         If blindName = "DB Link 3 Blinds Dependent" OrElse blindName = "DB Link 3 Blinds Independent with Dependent" Then
             If Not String.IsNullOrEmpty(data.bottomtypef) Then
                 If String.IsNullOrEmpty(data.bottomcolourf) Then Return "BOTTOM COLOUR FOR SIXTH BLIND IS REQUIRED !"
-                If bottomNameF = "Flat" Then Return "FLAT BOTTOM FOR SIXTH BLIND IS REQUIRED !"
+                If bottomNameF = "Flat" AndAlso String.IsNullOrEmpty(data.bottomoptionf) Then Return "FLAT BOTTOM FOR SIXTH BLIND IS REQUIRED !"
             End If
 
             If String.IsNullOrEmpty(data.widthf) Then Return "WIDTH FOR SIXTH BLIND IS REQUIRED !"
