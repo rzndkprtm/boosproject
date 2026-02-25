@@ -473,8 +473,12 @@ Partial Class Order_Add
                         If blindLower.Contains("basswood") OrElse blindLower.Contains("ultraslat") Then
                             designId = orderClass.GetItemData("SELECT Id FROM Designs WHERE Name='Venetian Blind'")
 
-                            Dim blindName As String = Regex.Replace(blindType, "\bVenetian\b", "", RegexOptions.IgnoreCase).Trim()
-                            blindName = Regex.Replace(blindName, "\s+", " ")
+
+                            Dim blindName As String = blindType
+                            If ddlCustomer.SelectedValue = "127" Then
+                                blindName = Regex.Replace(blindType, "\bVenetian\b", "", RegexOptions.IgnoreCase).Trim()
+                                blindName = Regex.Replace(blindName, "\s+", " ")
+                            End If
 
                             Dim subType As String = "Single"
                             Dim qty As Integer = If(String.IsNullOrWhiteSpace(sheetDetail.Cells(row, 3).Text), 0, CInt(sheetDetail.Cells(row, 3).Text))
@@ -662,7 +666,7 @@ Partial Class Order_Add
                                     End If
                                 End If
 
-                                If mounting = "Reveal Fi" Then
+                                If mounting = "Reveal Fi" OrElse mounting = "Opening Size Reveal Fit" Then
                                     returnLength = "Custom"
                                     returnLengthText = returnLengthText.Replace("mm", "")
 
@@ -678,6 +682,9 @@ Partial Class Order_Add
                                 Dim customName As String = blindName
                                 If blindName = "Ultraslat 50mm" Then customName = "Econo 50mm"
                                 If blindName = "Ultraslat 63mm" Then customName = "Econo 63mm"
+
+                                Dim finalMounting As String = mounting
+                                If ddlCustomer.SelectedValue = "127" Then finalMounting = "Opening Size " & mounting
 
                                 Dim groupName As String = String.Format("Venetian Blind - {0}", customName)
 
@@ -695,7 +702,7 @@ Partial Class Order_Add
                                         myCmd.Parameters.AddWithValue("@ProductId", productId)
                                         myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
                                         myCmd.Parameters.AddWithValue("@Room", room)
-                                        myCmd.Parameters.AddWithValue("@Mounting", "Opening Size " & mounting)
+                                        myCmd.Parameters.AddWithValue("@Mounting", finalMounting)
                                         myCmd.Parameters.AddWithValue("@SubType", subType)
                                         myCmd.Parameters.AddWithValue("@ControlPosition", controlPosition)
                                         myCmd.Parameters.AddWithValue("@TilterPosition", tilterPosition)
