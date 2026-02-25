@@ -52,6 +52,8 @@
                                                 <asp:ListItem Value="Blockout" Text="Blockout"></asp:ListItem>
                                                 <asp:ListItem Value="Light Filtering" Text="Light Filtering"></asp:ListItem>
                                                 <asp:ListItem Value="Screen" Text="Screen"></asp:ListItem>
+                                                <asp:ListItem Value="Sheer" Text="Sheer"></asp:ListItem>
+                                                <asp:ListItem Value="Coated" Text="Coated"></asp:ListItem>
                                             </asp:DropDownList>
                                         </div>
                                     </div>
@@ -91,6 +93,8 @@
                                                 <asp:ListItem Value="Group 3" Text="Group 3"></asp:ListItem>
                                                 <asp:ListItem Value="Group 4" Text="Group 4"></asp:ListItem>
                                                 <asp:ListItem Value="Group Express" Text="Group Express"></asp:ListItem>
+                                                <asp:ListItem Value="Curtain Express 1" Text="Curtain Express 1"></asp:ListItem>
+                                                <asp:ListItem Value="Curtain Express 2" Text="Curtain Express 2"></asp:ListItem>
                                                 <asp:ListItem Value="Opaque" Text="Opaque"></asp:ListItem>
                                                 <asp:ListItem Value="Semi Opaque" Text="Semi Opaque"></asp:ListItem>
                                             </asp:DropDownList>
