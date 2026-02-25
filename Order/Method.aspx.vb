@@ -1731,11 +1731,7 @@ Partial Class Order_Method
             linearmetre = width / 1000
         End If
 
-
-
-
-
-        Dim priceProductGroup As String = String.Empty 'orderClass.GetPriceProductGroupId(groupName, data.designid)
+        Dim priceProductGroup As String = String.Empty
         Dim priceProductGroupB As String = String.Empty
 
         Dim priceAdditional As String = String.Empty
