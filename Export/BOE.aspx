@@ -697,6 +697,8 @@
                 If blindName = "Link 2 Blinds Independent" Then orderType = "Link System Independent 2 Blinds"
                 If blindName = "Link 3 Blinds Dependent" Then orderType = "Link System Dependent 3 Blinds"
                 If blindName = "Link 3 Blinds Independent with Dependent" Then orderType = "Link System Independent 3 Blinds"
+                If blindName = "Dual & Link 2 Blinds Dependent" Then orderType = "Double and Link System Dependent"
+                If blindName = "Dual & Link 2 Blinds Independent" Then orderType = "Double and Link System Independent"
 
                 Dim kitId As String = String.Empty
                 Dim kitIdB As String = String.Empty
@@ -1197,7 +1199,144 @@
                     writer.WriteAttributeString("Notes", thisData.Rows(i)("Notes").ToString())
                     writer.WriteEndElement()
                 End If
+
+                If blindName = "Dual & Link 2 Blinds Dependent" Then
+
+                End If
+
+                If blindName = "Dual & Link 2 Blinds Independent" Then
+                    kitId = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND BlindStatus='Control'")
+                    kitIdB = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND BlindStatus='End'")
+                    kitIdC = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND BlindStatus='Control'")
+                    kitIdD = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND BlindStatus='End'")
+
+                    Dim kitName As String = String.Empty
+
+                    If tubeName = "Standard" AndAlso controlName = "Chain" Then
+                        kitName = String.Format("{0} (LD)", productName)
+
+                        Dim width As Integer = thisData.Rows(i)("Width")
+                        Dim widthB As Integer = thisData.Rows(i)("WidthB")
+
+                        If width > 1810 OrElse widthB > 1810 Then kitName = String.Format("{0} (HD)", productName)
+
+                        kitId = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "' AND BlindStatus='Control'")
+                        kitIdB = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "' AND BlindStatus='End'")
+                        kitIdC = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "' AND BlindStatus='Control'")
+                        kitIdD = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "' AND BlindStatus='End'")
+                    End If
+
+                    If tubeName = "Acmeda 49mm" AndAlso controlName = "Chain" Then
+                        kitName = productName
+                        If springAssist = "Yes" Then
+                            kitName = String.Format("{0} (Spring Assist)", productName)
+                        End If
+                        kitId = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "' AND BlindStatus='Control'")
+                        kitIdB = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "' AND BlindStatus='End'")
+                        kitIdC = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "' AND BlindStatus='Control'")
+                        kitIdD = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "' AND BlindStatus='End'")
+                    End If
+
+                    If String.IsNullOrEmpty(kitId) OrElse String.IsNullOrEmpty(kitIdB) OrElse String.IsNullOrEmpty(kitIdC) OrElse String.IsNullOrEmpty(kitIdD) Then Continue For
+
+                    Dim webFabricIdB As String = thisData.Rows(i)("FabricColourIdB").ToString()
+                    Dim webFabricIdC As String = thisData.Rows(i)("FabricColourIdC").ToString()
+                    Dim webFabricIdD As String = thisData.Rows(i)("FabricColourIdD").ToString()
+
+                    Dim boeFabricIdB As String = GetItemData("SELECT BoeId FROM FabricColours WHERE Id='" & webFabricIdB & "'")
+                    Dim boeFabricIdC As String = GetItemData("SELECT BoeId FROM FabricColours WHERE Id='" & webFabricIdC & "'")
+                    Dim boeFabricIdD As String = GetItemData("SELECT BoeId FROM FabricColours WHERE Id='" & webFabricIdD & "'")
+
+                    Dim chainIdB As String = thisData.Rows(i)("ChainIdB").ToString()
+                    Dim chainIdC As String = thisData.Rows(i)("ChainIdC").ToString()
+                    Dim chainIdD As String = thisData.Rows(i)("ChainIdD").ToString()
+
+                    Dim boeChainIdB As String = GetItemData("SELECT BoeId FROM Chains WHERE Id='" & chainIdB & "'")
+                    Dim boeChainIdC As String = GetItemData("SELECT BoeId FROM Chains WHERE Id='" & chainIdC & "'")
+                    Dim boeChainIdD As String = GetItemData("SELECT BoeId FROM Chains WHERE Id='" & chainIdD & "'")
+
+                    Dim bottomColourIdB As String = thisData.Rows(i)("BottomColourIdB").ToString()
+                    Dim bottomColourIdC As String = thisData.Rows(i)("BottomColourIdC").ToString()
+                    Dim bottomColourIdD As String = thisData.Rows(i)("BottomColourIdD").ToString()
+
+                    Dim boeBottomIdB As String = GetItemData("SELECT BoeId FROM BottomColours WHERE Id='" & bottomColourIdB & "'")
+                    Dim boeBottomIdC As String = GetItemData("SELECT BoeId FROM BottomColours WHERE Id='" & bottomColourIdC & "'")
+                    Dim boeBottomIdD As String = GetItemData("SELECT BoeId FROM BottomColours WHERE Id='" & bottomColourIdD & "'")
+
+                    Dim flatOption As String = thisData.Rows(i)("FlatOption").ToString()
+                    Dim flatOptionB As String = thisData.Rows(i)("FlatOptionB").ToString()
+                    Dim flatOptionC As String = thisData.Rows(i)("FlatOptionC").ToString()
+                    Dim flatOptionD As String = thisData.Rows(i)("FlatOptionD").ToString()
+
+                    If flatOption = "Fabric on Back" Then flatOption = "Fabric on back"
+                    If flatOption = "Fabric on Front" Then flatOption = "Fabric on front"
+
+                    If flatOptionB = "Fabric on Back" Then flatOptionB = "Fabric on back"
+                    If flatOptionB = "Fabric on Front" Then flatOptionB = "Fabric on front"
+
+                    If flatOptionC = "Fabric on Back" Then flatOptionC = "Fabric on back"
+                    If flatOptionC = "Fabric on Front" Then flatOptionC = "Fabric on front"
+
+                    If flatOptionD = "Fabric on Back" Then flatOptionD = "Fabric on back"
+                    If flatOptionD = "Fabric on Front" Then flatOptionD = "Fabric on front"
+
+                    writer.WriteStartElement("OrderDetails")
+                    writer.WriteAttributeString("OrddID", thisData.Rows(i)("Id").ToString())
+                    writer.WriteAttributeString("FKOrdID", thisData.Rows(i)("HeaderId").ToString())
+                    writer.WriteAttributeString("Qty", thisData.Rows(i)("Qty").ToString())
+                    writer.WriteAttributeString("Room", thisData.Rows(i)("Room").ToString())
+                    writer.WriteAttributeString("Mounting", thisData.Rows(i)("Mounting").ToString())
+                    writer.WriteAttributeString("BlindType", "Roller")
+                    writer.WriteAttributeString("OrderType", orderType)
+                    writer.WriteAttributeString("IDHK", kitId)
+                    writer.WriteAttributeString("IDHK2", kitIdB)
+                    writer.WriteAttributeString("IDHK3", kitIdC)
+                    writer.WriteAttributeString("IDHK4", kitIdD)
+                    writer.WriteAttributeString("NumOfBlind", "4")
+
+                    writer.WriteAttributeString("IDChain", boeChainId)
+                    writer.WriteAttributeString("IDChain_LinkSysIdp", boeChainIdB)
+                    writer.WriteAttributeString("IDChain_LSIdpDouble3rd", boeChainIdC)
+                    writer.WriteAttributeString("IDChain_LSIdpDouble4th", boeChainIdD)
+
+                    writer.WriteAttributeString("RollerChainLength", thisData.Rows(i)("ControlLengthValue").ToString())
+                    writer.WriteAttributeString("RolChainLength2c", thisData.Rows(i)("ControlLengthValueB").ToString())
+                    writer.WriteAttributeString("Chain_LSIdpDouble3rd", thisData.Rows(i)("ControlLengthValueC").ToString())
+                    writer.WriteAttributeString("Chain_LSIdpDouble4th", thisData.Rows(i)("ControlLengthValueD").ToString())
+
+                    writer.WriteAttributeString("Additional", thisData.Rows(i)("ChainStopper").ToString())
+                    writer.WriteAttributeString("Additional1", thisData.Rows(i)("ChainStopperB").ToString())
+                    writer.WriteAttributeString("Additional2", thisData.Rows(i)("ChainStopperC").ToString())
+                    writer.WriteAttributeString("Additional3", thisData.Rows(i)("ChainStopperD").ToString())
+
+                    writer.WriteAttributeString("FabricID", boeFabricId)
+                    writer.WriteAttributeString("FabricID_LinkSysIdp", boeFabricIdB)
+                    writer.WriteAttributeString("FabricID_LSIdpDouble3rd", boeFabricIdC)
+                    writer.WriteAttributeString("FabricID_LSIdpDouble4th", boeFabricIdD)
+                    writer.WriteAttributeString("IDBottomRail", boeBottomId)
+                    writer.WriteAttributeString("IDBottomRail_LinkSysIdp", boeBottomIdB)
+                    writer.WriteAttributeString("IDBottomRail_LSIdpDouble3rd", boeBottomIdC)
+                    writer.WriteAttributeString("IDBottomRail_LSIdpDouble4th", boeBottomIdD)
+                    writer.WriteAttributeString("FlatBottomOp", flatOption)
+                    writer.WriteAttributeString("FlatBottomOp2c", flatOption)
+                    writer.WriteAttributeString("FlatBottomOpDB3c", flatOptionC)
+                    writer.WriteAttributeString("FlatBottomOp4c", flatOptionD)
+                    writer.WriteAttributeString("ControlPosition", thisData.Rows(i)("ControlPosition").ToString())
+                    writer.WriteAttributeString("ControlPosition_LSDouble3rd", thisData.Rows(i)("ControlPositionC").ToString())
+                    writer.WriteAttributeString("RollDirection", thisData.Rows(i)("Roll").ToString())
+                    writer.WriteAttributeString("Roll_LSDouble3rd", thisData.Rows(i)("RollC").ToString())
+                    writer.WriteAttributeString("Width", thisData.Rows(i)("Width").ToString())
+                    writer.WriteAttributeString("Width2c", thisData.Rows(i)("WidthB").ToString())
+                    writer.WriteAttributeString("Drop", thisData.Rows(i)("Drop").ToString())
+                    writer.WriteAttributeString("Panel", thisData.Rows(i)("BracketSize").ToString())
+                    writer.WriteAttributeString("Notes", thisData.Rows(i)("Notes").ToString())
+                    writer.WriteEndElement()
+                End If
             End If
+
+
+
+
 
             If designName = "Outdoor" Then
                 Dim kitId As String = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "'")
