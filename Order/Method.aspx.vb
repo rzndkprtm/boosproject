@@ -3728,10 +3728,10 @@ Partial Class Order_Method
             data.sloping = String.Empty
 
             If tubeName = "127mm" Then
-                width = qtyblade * 79 : If qtyblade < 6 Then width = 472
+                width = qtyblade * 115 : If qtyblade < 6 Then width = 472
             End If
             If tubeName = "89mm" Then
-                width = qtyblade * 115 : If qtyblade < 5 Then width = 591
+                width = qtyblade * 79 : If qtyblade < 5 Then width = 591
             End If
         End If
 
