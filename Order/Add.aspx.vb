@@ -1518,6 +1518,10 @@ Partial Class Order_Add
                             If controlText = "II - II" Then blindName = "DB Link 2 Blinds Independent"
                             If controlText = "CS - CS" OrElse controlText = "CS - SC" OrElse controlText = "SC - SC" OrElse controlText = "SC - CS" Then blindName = "DB Link 2 Blinds Dependent"
                         End If
+                        If blindType = "Double: Linked (6 Blinds)" Then
+                            If controlText = "CSI - CSI" OrElse controlText = "ISC - ISC" Then blindName = "DB Link 3 Blinds Independent"
+                            If controlText = "CSS - CSS" Or controlText = "SSC - SSC" Then blindName = "DB Link 3 Blinds Dependent"
+                        End If
 
                         designId = orderClass.GetItemData("SELECT Id FROM Designs WHERE Name='Roller Blind'")
                         If String.IsNullOrEmpty(designId) Then
