@@ -93,8 +93,8 @@
                                                 <asp:ListItem Value="Group 3" Text="Group 3"></asp:ListItem>
                                                 <asp:ListItem Value="Group 4" Text="Group 4"></asp:ListItem>
                                                 <asp:ListItem Value="Group Express" Text="Group Express"></asp:ListItem>
-                                                <asp:ListItem Value="Curtain Express 1" Text="Curtain Express 1"></asp:ListItem>
-                                                <asp:ListItem Value="Curtain Express 2" Text="Curtain Express 2"></asp:ListItem>
+                                                <asp:ListItem Value="Group 1 (Express)" Text="Group 1 (Express)"></asp:ListItem>
+                                                <asp:ListItem Value="Group 2 (Express)" Text="Group 2 (Express)"></asp:ListItem>
                                                 <asp:ListItem Value="Opaque" Text="Opaque"></asp:ListItem>
                                                 <asp:ListItem Value="Semi Opaque" Text="Semi Opaque"></asp:ListItem>
                                             </asp:DropDownList>

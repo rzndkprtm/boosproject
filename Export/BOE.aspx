@@ -430,7 +430,7 @@
                 writer.WriteAttributeString("Baton", thisData.Rows(i)("Batten").ToString())
                 writer.WriteAttributeString("LayoutCode", layoutCode)
                 writer.WriteAttributeString("Tracks", thisData.Rows(i)("TrackType").ToString())
-                writer.WriteAttributeString("Panel", thisData.Rows(i)("TrackType").ToString())
+                writer.WriteAttributeString("Panel", thisData.Rows(i)("PanelQty").ToString())
                 writer.WriteAttributeString("WandLength", thisData.Rows(i)("WandLengthValue").ToString())
                 writer.WriteEndElement()
             End If
@@ -442,7 +442,6 @@
                 writer.WriteAttributeString("Qty", thisData.Rows(i)("Qty").ToString())
                 writer.WriteAttributeString("Room", thisData.Rows(i)("Room").ToString())
                 writer.WriteAttributeString("Mounting", thisData.Rows(i)("Mounting").ToString())
-
                 writer.WriteAttributeString("TotalItems", thisData.Rows(i)("TotalItems").ToString())
                 writer.WriteAttributeString("MarkUp", thisData.Rows(i)("MarkUp").ToString())
                 writer.WriteAttributeString("Notes", thisData.Rows(i)("Notes").ToString())
@@ -1499,10 +1498,6 @@
                     writer.WriteEndElement()
                 End If
             End If
-
-
-
-
 
             If designName = "Outdoor" Then
                 Dim kitId As String = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "'")
