@@ -1939,7 +1939,7 @@ Partial Class Order_Add
                                 Dim groupNameDB As String = String.Format("Roller Blind - STD / GR - {0}", groupFabricDB)
 
                                 width = widthData
-                                widthB = widthDataB
+                                widthB = widthData
                                 drop = dropData
                                 dropB = dropData
 
