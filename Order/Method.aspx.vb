@@ -4268,7 +4268,7 @@ Partial Class Order_Method
 
                     Return "BOTTOM COLOUR FOR FIFTH BLIND IS REQUIRED !"
                 End If
-                If bottomNameE = "Flat" AndAlso String.IsNullOrEmpty(data.bottomoptione_ Then Return "FLAT BOTTOM FOR FIFTH BLIND IS REQUIRED !"
+                If bottomNameE = "Flat" AndAlso String.IsNullOrEmpty(data.bottomoptione) Then Return "FLAT BOTTOM FOR FIFTH BLIND IS REQUIRED !"
             End If
 
             If String.IsNullOrEmpty(data.widthe) Then Return "WIDTH FOR FIFTH BLIND IS REQUIRED !"
