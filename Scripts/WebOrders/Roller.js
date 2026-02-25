@@ -97,12 +97,13 @@ $("#bottomtyped").on("change", function () {
 });
 
 $("#bottomtypee").on("change", function () {
-    bindBottomColourE(designId, $(this).val());
+    
+    bindBottomColourE($(this).val());
     visibleFlatBottom($(this).val(), 5);
 });
 
 $("#bottomtypef").on("change", function () {
-    bindBottomColourF(designId, $(this).val());
+    bindBottomColourF($(this).val());
     visibleFlatBottom($(this).val(), 6);
 });
 
