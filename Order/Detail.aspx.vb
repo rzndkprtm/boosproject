@@ -2567,6 +2567,10 @@ Partial Class Order_Detail
                     btnMoreAction.Visible = True
                     liMoreAddNote.Visible = True
                     liMoreHistoryNote.Visible = True
+
+                    If lblOrderType.Text = "Builder" Then
+                        aAddItem.Visible = True
+                    End If
                 End If
             End If
 
