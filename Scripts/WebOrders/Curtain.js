@@ -646,14 +646,13 @@ function bindTrackType(heading) {
         const tracktype = document.getElementById("tracktype");
         tracktype.innerHTML = "";
 
-        if (!heading) {
-            const selectedValue = tracktype.value || "";
-            Promise.all([
-                bindTrackColour(selectedValue)
-            ]).then(resolve).catch(reject);
-        }
+        const safeHeading = heading || "";
 
-        const listData = { type: "CurtainTrackType", customtype: heading, action: itemAction };
+        const listData = {
+            type: "CurtainTrackType",
+            customtype: safeHeading,
+            action: itemAction
+        };
 
         $.ajax({
             type: "POST",
@@ -662,13 +661,13 @@ function bindTrackType(heading) {
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (response) {
+
                 if (Array.isArray(response.d)) {
-                    tracktype.innerHTML = "";
 
                     if (response.d.length > 1) {
                         const defaultOption = document.createElement("option");
-                        defaultOption.text = "";
                         defaultOption.value = "";
+                        defaultOption.text = "";
                         tracktype.add(defaultOption);
                     }
 
@@ -682,22 +681,19 @@ function bindTrackType(heading) {
                     if (response.d.length === 1) {
                         tracktype.selectedIndex = 0;
                     }
-
-                    const selectedValue = tracktype.value || "";
-                    Promise.all([
-                        bindTrackColour(selectedValue)
-                    ]).then(resolve).catch(reject);
-                } else {
-                    const selectedValue = tracktype.value || "";
-                    Promise.all([
-                        bindTrackColour(selectedValue)
-                    ]).then(resolve).catch(reject);
                 }
+
+                const selectedValue = tracktype.value || "";
+
+                bindTrackColour(selectedValue)
+                    .then(resolve)
+                    .catch(reject);
             },
             error: function (error) {
                 reject(error);
             }
         });
+
     });
 }
 
@@ -706,14 +702,13 @@ function bindTrackTypeB(heading) {
         const tracktypeb = document.getElementById("tracktypeb");
         tracktypeb.innerHTML = "";
 
-        if (!heading) {
-            const selectedValue = tracktypeb.value || "";
-            Promise.all([
-                bindTrackColourB(selectedValue)
-            ]).then(resolve).catch(reject);
-        }
+        const safeHeading = heading || "";
 
-        const listData = { type: "CurtainTrackType", customtype: heading, action: itemAction };
+        const listData = {
+            type: "CurtainTrackType",
+            customtype: safeHeading,
+            action: itemAction
+        };
 
         $.ajax({
             type: "POST",
@@ -722,13 +717,13 @@ function bindTrackTypeB(heading) {
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (response) {
+
                 if (Array.isArray(response.d)) {
-                    tracktypeb.innerHTML = "";
 
                     if (response.d.length > 1) {
                         const defaultOption = document.createElement("option");
-                        defaultOption.text = "";
                         defaultOption.value = "";
+                        defaultOption.text = "";
                         tracktypeb.add(defaultOption);
                     }
 
@@ -742,22 +737,19 @@ function bindTrackTypeB(heading) {
                     if (response.d.length === 1) {
                         tracktypeb.selectedIndex = 0;
                     }
-
-                    const selectedValue = tracktypeb.value || "";
-                    Promise.all([
-                        bindTrackColourB(selectedValue)
-                    ]).then(resolve).catch(reject);
-                } else {
-                    const selectedValue = tracktypeb.value || "";
-                    Promise.all([
-                        bindTrackColourB(selectedValue)
-                    ]).then(resolve).catch(reject);
                 }
+
+                const selectedValue = tracktypeb.value || "";
+
+                bindTrackColour(selectedValue)
+                    .then(resolve)
+                    .catch(reject);
             },
             error: function (error) {
                 reject(error);
             }
         });
+
     });
 }
 

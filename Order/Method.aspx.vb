@@ -299,16 +299,14 @@ Partial Class Order_Method
         End If
 
         If type = "CurtainTrackType" Then
-            If Not String.IsNullOrEmpty(customtype) Then
-                'result.Add(New With {.Value = "Express Track", .Text = "Express Track"})
-                result.Add(New With {.Value = "Styletrack", .Text = "Styletrack"})
-                result.Add(New With {.Value = "Commercial", .Text = "Commercial"})
+            'result.Add(New With {.Value = "Express Track", .Text = "Express Track"})
+            result.Add(New With {.Value = "Styletrack", .Text = "Styletrack"})
+            result.Add(New With {.Value = "Commercial", .Text = "Commercial"})
 
-                If customtype = "S-Wave" Then
-                    result.Clear()
-                    'result.Add(New With {.Value = "Express Track", .Text = "Express Track"})
-                    result.Add(New With {.Value = "Commercial", .Text = "Commercial"})
-                End If
+            If customtype = "S-Wave" Then
+                result.Clear()
+                'result.Add(New With {.Value = "Express Track", .Text = "Express Track"})
+                result.Add(New With {.Value = "Commercial", .Text = "Commercial"})
             End If
         End If
 
