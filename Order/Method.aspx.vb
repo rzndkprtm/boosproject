@@ -2614,7 +2614,7 @@ Partial Class Order_Method
         End If
         If width > 9999 Then Return "MAXIMUM WIDTH IS 9999MM !"
 
-        If data.layoutcode = "B" OrElse data.layoutcode = "C" Then
+        If data.layoutcode = "B" OrElse data.layoutcode = "C" OrElse data.layoutcode = "D" Then
             If String.IsNullOrEmpty(data.widthb) Then Return "SECOND WIDTH IS REQUIRED !"
             If Not Integer.TryParse(data.widthb, widthb) OrElse widthb <= 0 Then Return "PLEASE CHECK YOUR SECOND WIDTH ORDER !"
             If width + widthb > 9999 Then Return "MAXIMUM TOTAL WIDTH IS 9999MM !"
@@ -2660,6 +2660,7 @@ Partial Class Order_Method
         End If
 
         If data.layoutcode = "D" Then
+            linearMetreB = widthb / 1000
             linearMetreC = widthc / 1000
             totalItems = 3
         End If
