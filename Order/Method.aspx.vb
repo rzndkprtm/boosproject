@@ -7192,18 +7192,17 @@ Partial Class Order_Method
         If designName = "Skyline Shutter Ocean" AndAlso roleName = "Customer" Then
             If String.IsNullOrEmpty(data.samesizepanel) Then
                 If blindName = "Hinged" OrElse blindName = "Hinged Bi-fold" Then
-                    Dim pemisah As Char() = {"T"c, "C"c, "B"c, "G"c}
 
+                    Dim pemisah As Char() = {"T"c, "C"c, "B"c, "G"c}
                     Dim gaps As Integer() = {gap1, gap2, gap3, gap4, gap5}
                     Dim totalWidth As Integer = width
 
                     Dim sections As New List(Of String)
                     Dim startIndex As Integer = 0
-                    Dim totalPemisah As Integer = 0
 
+                    ' ====== PARSING SECTION BERDASARKAN PEMISAH ======
                     For i As Integer = 1 To layoutCode.Length - 1
                         If pemisah.Contains(layoutCode(i)) Then
-                            totalPemisah += 1
                             sections.Add(layoutCode.Substring(startIndex, i - startIndex + 1))
                             startIndex = i
                         End If
@@ -7213,44 +7212,170 @@ Partial Class Order_Method
                         sections.Add(layoutCode.Substring(startIndex))
                     End If
 
-                    Dim sumGapUsed As Integer = 0
+                    ' ====== HITUNG JUMLAH PEMISAH ======
+                    Dim totalSeparator As Integer = layoutCode.Count(Function(c) pemisah.Contains(c))
 
+                    Dim lastPosition As Integer = 0
+
+                    ' ====== VALIDASI & PERHITUNGAN ======
                     For idx As Integer = 0 To sections.Count - 1
+
+                        Dim sectionWidth As Integer
+
+                        ' ===============================
+                        ' SECTION YANG PUNYA GAP (ABSOLUTE POSITION)
+                        ' ===============================
+                        If idx < totalSeparator Then
+
+                            Dim currentPosition As Integer = gaps(idx)
+
+                            If currentPosition <= 0 Then
+                                Return String.Format("GAP {0} IS REQUIRED !", idx + 1)
+                            End If
+
+                            If currentPosition >= totalWidth Then
+                                Return String.Format("GAP {0} MUST BE LESS THAN TOTAL WIDTH !", idx + 1)
+                            End If
+
+                            If currentPosition <= lastPosition Then
+                                Return String.Format("GAP {0} MUST BE GREATER THAN GAP {1} !", idx + 1, idx)
+                            End If
+
+                            ' Lebar section = posisi sekarang - posisi sebelumnya
+                            sectionWidth = currentPosition - lastPosition
+
+                            lastPosition = currentPosition
+
+                        Else
+                            ' ===============================
+                            ' SECTION TERAKHIR
+                            ' ===============================
+                            sectionWidth = totalWidth - lastPosition
+
+                            If sectionWidth <= 0 Then
+                                Return "INVALID GAP POSITION. TOTAL WIDTH EXCEEDED !"
+                            End If
+                        End If
+
+
+                        ' ===============================
+                        ' CEK PANEL COUNT
+                        ' ===============================
                         Dim section As String = sections(idx)
                         Dim panelCount As Integer = section.Count(Function(ch) "LRFM".Contains(ch))
 
-                        Dim currentGap As Integer
-
-                        If idx = sections.Count - 1 Then
-                            currentGap = totalWidth - sumGapUsed
-                        Else
-                            currentGap = If(idx < gaps.Length, gaps(idx), 0)
-                            sumGapUsed += currentGap
+                        If panelCount <= 0 Then
+                            Return String.Format("INVALID PANEL CONFIGURATION IN SECTION {0}", idx + 1)
                         End If
 
-                        If currentGap <= 0 Then
-                            Return String.Format("GAP 1 IS REQUIRED !", idx + 1)
-                            Exit For
-                        End If
-
-                        Dim dataGap As Object() = {blindName, "Gap", currentGap, data.mounting, section, data.frametype, data.frameleft, data.frameright, panelCount}
+                        ' ===============================
+                        ' HITUNG DEDUCTION
+                        ' ===============================
+                        Dim dataGap As Object() = {
+                            blindName,
+                            "Gap",
+                            sectionWidth,
+                            data.mounting,
+                            section,
+                            data.frametype,
+                            data.frameleft,
+                            data.frameright,
+                            panelCount
+                        }
 
                         Dim widthDeduct As Decimal = orderClass.WidthDeductShutter(dataGap)
+                        Dim finalPanelWidth As Decimal = widthDeduct / panelCount
 
-                        If widthDeduct / panelCount < 200 Then
-                            Return String.Format("MINIMUM PANEL WIDTH IS 200MM.<br />FINAL PANEL WIDTH IN SECTION {0} IS {1} !", idx + 1, widthDeduct)
-                            Exit For
+                        ' ===============================
+                        ' VALIDASI MIN MAX
+                        ' ===============================
+                        If finalPanelWidth < 200 Then
+                            Return String.Format(
+                                "MINIMUM PANEL WIDTH IS 200MM.<br />FINAL PANEL WIDTH IN SECTION {0} IS {1}MM !",
+                                idx + 1,
+                                Math.Round(finalPanelWidth, 2)
+                            )
                         End If
-                        If blindName = "Hinged Bi-fold" AndAlso widthDeduct / panelCount > 650 Then
-                            Return String.Format("MAXIMUM PANEL WIDTH FOR HINGED BI-FOLD IS 650MM.<br />FINAL PANEL WIDTH IN SECTION {0} IS {1} !", idx + 1, widthDeduct)
-                            Exit For
+
+                        If blindName = "Hinged Bi-fold" AndAlso finalPanelWidth > 650 Then
+                            Return String.Format(
+                                "MAXIMUM PANEL WIDTH FOR HINGED BI-FOLD IS 650MM.<br />FINAL PANEL WIDTH IN SECTION {0} IS {1}MM !",
+                                idx + 1,
+                                Math.Round(finalPanelWidth, 2)
+                            )
                         End If
-                        If widthDeduct / panelCount > 900 Then
-                            Return String.Format("MAXIMUM PANEL WIDTH IS 900MM.<br />FINAL PANEL WIDTH IN SECTION {0} IS {1} !", idx + 1, widthDeduct)
-                            Exit For
+
+                        If finalPanelWidth > 900 Then
+                            Return String.Format(
+                                "MAXIMUM PANEL WIDTH IS 900MM.<br />FINAL PANEL WIDTH IN SECTION {0} IS {1}MM !",
+                                idx + 1,
+                                Math.Round(finalPanelWidth, 2)
+                            )
                         End If
+
                     Next
+
                 End If
+                'If blindName = "Hinged" OrElse blindName = "Hinged Bi-fold" Then
+                '    Dim pemisah As Char() = {"T"c, "C"c, "B"c, "G"c}
+
+                '    Dim gaps As Integer() = {gap1, gap2, gap3, gap4, gap5}
+                '    Dim totalWidth As Integer = width
+
+                '    Dim sections As New List(Of String)
+                '    Dim startIndex As Integer = 0
+                '    Dim totalPemisah As Integer = 0
+
+                '    For i As Integer = 1 To layoutCode.Length - 1
+                '        If pemisah.Contains(layoutCode(i)) Then
+                '            totalPemisah += 1
+                '            sections.Add(layoutCode.Substring(startIndex, i - startIndex + 1))
+                '            startIndex = i
+                '        End If
+                '    Next
+
+                '    If startIndex < layoutCode.Length Then
+                '        sections.Add(layoutCode.Substring(startIndex))
+                '    End If
+
+                '    Dim sumGapUsed As Integer = 0
+
+                '    For idx As Integer = 0 To sections.Count - 1
+                '        Dim section As String = sections(idx)
+                '        Dim panelCount As Integer = section.Count(Function(ch) "LRFM".Contains(ch))
+
+                '        Dim currentGap As Integer
+
+                '        If idx = sections.Count - 1 Then
+                '            currentGap = totalWidth - sumGapUsed
+                '        Else
+                '            currentGap = If(idx < gaps.Length, gaps(idx), 0)
+                '            sumGapUsed += currentGap
+                '        End If
+
+                '        'If currentGap <= 0 Then
+                '        '    Return String.Format("GAP {0} IS REQUIRED !", idx + 1)
+                '        '    Exit For
+                '        'End If
+
+                '        Dim dataGap As Object() = {blindName, "Gap", currentGap, data.mounting, section, data.frametype, data.frameleft, data.frameright, panelCount}
+
+                '        Dim widthDeduct As Decimal = orderClass.WidthDeductShutter(dataGap)
+
+                '        If widthDeduct / panelCount < 200 Then
+                '            Return String.Format("MINIMUM PANEL WIDTH IS 200MM.<br />FINAL PANEL WIDTH IN SECTION {0} IS {1} !", idx + 1, widthDeduct)
+                '            Exit For
+                '        End If
+                '        If blindName = "Hinged Bi-fold" AndAlso widthDeduct / panelCount > 650 Then
+                '            Return String.Format("MAXIMUM PANEL WIDTH FOR HINGED BI-FOLD IS 650MM.<br />FINAL PANEL WIDTH IN SECTION {0} IS {1} !", idx + 1, widthDeduct)
+                '            Exit For
+                '        End If
+                '        If widthDeduct / panelCount > 900 Then
+                '            Return String.Format("MAXIMUM PANEL WIDTH IS 900MM.<br />FINAL PANEL WIDTH IN SECTION {0} IS {1} !", idx + 1, widthDeduct)
+                '            Exit For
+                '        End If
+                '    Next
+                'End If
             End If
         End If
 
