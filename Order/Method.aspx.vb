@@ -426,7 +426,7 @@ Partial Class Order_Method
         If type = "FrameColourDoor" Then
             Dim blindName As String = orderClass.GetBlindName(blindtype)
             If blindName = "Safety" Then
-                result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
+                'result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
                 result.Add(New With {.Value = "Monument (Express)", .Text = "Monument (Express)"})
                 result.Add(New With {.Value = "Primrose (Express)", .Text = "Primrose (Express)"})
                 result.Add(New With {.Value = "White (Express)", .Text = "White (Express)"})
