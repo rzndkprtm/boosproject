@@ -436,13 +436,30 @@
             End If
 
             If designName = "Pelmet" Then
+                Dim kitId As String = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "'")
+                Dim webFabricId As String = thisData.Rows(i)("FabricColourId").ToString()
+                Dim boeFabricId As String = GetItemData("SELECT BoeId FROM FabricColours WHERE Id='" & webFabricId & "'")
+
+                If String.IsNullOrEmpty(kitId) OrElse String.IsNullOrEmpty(boeFabricId) Then Continue For
+
+                Dim drop As String = String.Empty
+                If tubeName = "Pelmet 140mm" Then drop = "140"
+                If tubeName = "Pelmet 200mm" Then drop = "140"
+
                 writer.WriteStartElement("OrderDetails")
                 writer.WriteAttributeString("OrddID", thisData.Rows(i)("Id").ToString())
                 writer.WriteAttributeString("FKOrdID", thisData.Rows(i)("HeaderId").ToString())
                 writer.WriteAttributeString("Qty", thisData.Rows(i)("Qty").ToString())
                 writer.WriteAttributeString("Room", thisData.Rows(i)("Room").ToString())
+                writer.WriteAttributeString("IDHK", kitId)
+                writer.WriteAttributeString("FabricID", boeFabricId)
                 writer.WriteAttributeString("Width", thisData.Rows(i)("Width").ToString())
+                writer.WriteAttributeString("Drop", drop)
                 writer.WriteAttributeString("Mounting", thisData.Rows(i)("Mounting").ToString())
+                writer.WriteAttributeString("Baton", thisData.Rows(i)("Batten").ToString())
+                writer.WriteAttributeString("ValancePosition", thisData.Rows(i)("ReturnPosition").ToString())
+                writer.WriteAttributeString("ValanceReturnSize", thisData.Rows(i)("ReturnLengthValue").ToString())
+                writer.WriteAttributeString("ControlLength2", thisData.Rows(i)("ReturnLengthValueB").ToString())
                 writer.WriteAttributeString("TotalItems", thisData.Rows(i)("TotalItems").ToString())
                 writer.WriteAttributeString("MarkUp", thisData.Rows(i)("MarkUp").ToString())
                 writer.WriteAttributeString("Notes", thisData.Rows(i)("Notes").ToString())
