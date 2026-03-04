@@ -1,7 +1,7 @@
 ﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Costing.aspx.vb" Inherits="Sales_Costing" MasterPageFile="~/Site.master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Sales Costing" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
-    <asp:Timer runat="server" ID="tmrTicket" Interval="10000" OnTick="tmrTicket_Tick" />
+    <asp:Timer runat="server" ID="tmrTicket" Interval="100000" OnTick="tmrTicket_Tick" />
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
