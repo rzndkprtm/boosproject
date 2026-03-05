@@ -66,51 +66,12 @@
                 </div>
             </div>
         </div>
-
-        <div class="modal modal-blur fade" id="modalInfo" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header bg-info">
-                        <h5 class="modal-title white">Information</h5>
-                    </div>
-                    <div class="modal-body">
-                        <span>
-                            Dear Customer,
-                            <br /><br />
-                            If you have already logged in before, please disregard this information.
-                            <br /><br />
-                            We would like to inform you that we have made minor updates to our online ordering system.
-                            <br /><br />
-                            To log in, please use the username you already have.<br />
-                            Your initial password is the same as your username.
-                            <br /><br />
-                            Example:
-                            <br />
-                            <b>Username: mylogin
-                            <br />
-                            Password: mylogin</b>
-                            <br /><br />
-                            If you have forgotten your username, please contact our Customer Service team for assistance.
-                            <br /><br />
-                            Thank you for your cooperation. Should you have any questions, please do not hesitate to contact us.
-                        </span>
-                    </div>
-                    <div class="modal-footer">
-                        <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+        
         <div runat="server" visible="false">
             <asp:Label runat="server" ID="lblDeviceId"></asp:Label>
         </div>
 
         <script type="text/javascript">
-            function showInfo() {
-                $("#modalInfo").modal("show");
-            }
-
             function togglePassword() {
                 var password = document.getElementById('<%= txtPassword.ClientID %>');
                 var checkBox = document.getElementById('chkShowPass');
@@ -121,13 +82,6 @@
                     password.type = "password";
                 }
             }
-
-            ["modalInfo"].forEach(id => {
-                document.getElementById(id).addEventListener("hide.bs.modal", () => {
-                    document.activeElement.blur();
-                    document.body.focus();
-                });
-            });
         </script>
     </form>
 </body>

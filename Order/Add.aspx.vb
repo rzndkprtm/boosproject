@@ -7,10 +7,8 @@ Partial Class Order_Add
     Inherits Page
 
     Dim orderClass As New OrderClass
-    Dim mailingClass As New MailingClass
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-    Dim dataMailing As Object() = Nothing
     Dim url As String = String.Empty
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -191,8 +189,6 @@ Partial Class Order_Add
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnSubmit_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -644,11 +640,6 @@ Partial Class Order_Add
                                 Exit For
                             End If
 
-                            'If returnPosition = "None" AndAlso (Not String.IsNullOrEmpty(returnLengthText) OrElse returnLengthText <> "0") Then
-                            '    MessageError(True, "VALANCE RETURN LENGTH IS NOT REQUIRED !")
-                            '    Exit For
-                            'End If
-
                             If Not returnPosition = "None" Then
                                 If mounting = "Face Fit" Then
                                     returnLength = "Standard"
@@ -666,11 +657,11 @@ Partial Class Order_Add
                                     End If
                                 End If
 
-                                If mounting = "Reveal Fi" OrElse mounting = "Opening Size Reveal Fit" Then
+                                If mounting = "Reveal Fit" OrElse mounting = "Opening Size Reveal Fit" Then
                                     returnLength = "Custom"
                                     returnLengthText = returnLengthText.Replace("mm", "")
 
-                                    If Not Integer.TryParse(returnLengthText, returnLengthValue) OrElse returnLengthValue < 0 Then
+                                    If Not Integer.TryParse(returnLengthText, returnLengthValue) OrElse returnLengthValue <= 0 Then
                                         MessageError(True, "VALANCE RETURN LENGTH IS REQUIRED !")
                                         Exit For
                                     End If
@@ -1276,12 +1267,6 @@ Partial Class Order_Add
                             End If
                         End If
 
-                        Dim validFabricInsert As String() = {"No", "Yes"}
-                        If Not validFabricInsert.Contains(fabricInsert) Then
-                            MessageError(True, "PLEASE CHECK YOUR FABRIC INSERT !")
-                            Exit For
-                        End If
-
                         Dim fabricId As String = String.Empty
                         Dim fabricColourId As String = String.Empty
 
@@ -1338,7 +1323,6 @@ Partial Class Order_Add
                             End If
                             If controlType = "Chain" Then
                                 controlLengthValue = Math.Ceiling(drop * 2 / 3)
-                                If controlLengthValue > 1000 Then controlLengthValue = 1000
                             End If
 
                             If Not String.IsNullOrEmpty(controlLengthText) AndAlso Not controlLengthText.ToLower().Contains("standard") AndAlso Not controlLengthText.ToLower().Contains("std") Then
@@ -1400,6 +1384,8 @@ Partial Class Order_Add
                             End If
 
                             If bottomJoining = "Sewn" Then bottomJoining = "Sewn In"
+
+                            If Not fabricInsert = "Yes" Then fabricInsert = "No"
 
                             Dim itemId As String = orderClass.GetNewOrderItemId()
 
@@ -1750,9 +1736,8 @@ Partial Class Order_Add
 
                         If controlType = "Motorized" OrElse controlType = "Motorised" Then
                             controlType = motorType
-                            If motorType = "Altus 40" Then
-                                controlType = "Altus"
-                            End If
+                            If motorType = "Altus 40" Then controlType = "Altus"
+                            If motorType = "Sonesse 30" Then controlType = "Sonesse 30 WF"
                             chainName = "No Remote"
                         End If
 
@@ -2762,8 +2747,6 @@ Partial Class Order_Add
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindComponentForm", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -2791,8 +2774,6 @@ Partial Class Order_Add
             If Session("RoleName") = "Developer" Then
                 MessageError(True, ex.ToString())
             End If
-            dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindDataCustomer", ex.ToString()}
-            mailingClass.WebError(dataMailing)
         End Try
     End Sub
 
@@ -2814,8 +2795,6 @@ Partial Class Order_Add
             If Session("RoleName") = "Developer" Then
                 MessageError(True, ex.ToString())
             End If
-            dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindDataLogin", ex.ToString()}
-            mailingClass.WebError(dataMailing)
         End Try
     End Sub
 

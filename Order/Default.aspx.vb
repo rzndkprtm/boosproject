@@ -7,11 +7,10 @@ Partial Class Order_Default
     Inherits Page
 
     Dim orderClass As New OrderClass
-    Dim mailingClass As New MailingClass
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-    Dim dataMailing As Object() = Nothing
     Dim url As String = String.Empty
+    Dim dataLog As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
@@ -92,8 +91,6 @@ Partial Class Order_Default
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "gvList_PageIndexChanging", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -120,8 +117,6 @@ Partial Class Order_Default
                         If Session("RoleName") = "Customer" Then
                             MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                         End If
-                        dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "linkDetail_Click", ex.ToString()}
-                        mailingClass.WebError(dataMailing)
                     End If
                 End Try
             End If
@@ -135,7 +130,7 @@ Partial Class Order_Default
             Dim thisStatus As String = txtStatusOrder.Text
 
             If thisStatus = "Delete Order" Then
-                Dim dataLog As Object() = {"OrderHeaders", thisId, Session("LoginId").ToString(), "Order Deleted"}
+                dataLog = {"OrderHeaders", thisId, Session("LoginId").ToString(), "Order Deleted"}
                 orderClass.Logs(dataLog)
 
                 Dim detailData As DataTable = orderClass.GetDataTable("SELECT * FROM OrderDetails WHERE HeaderId='" & thisId & "' AND Active=1 ORDER BY Id ASC")
@@ -206,11 +201,13 @@ Partial Class Order_Default
                                 myCmd.ExecuteNonQuery()
                             End Using
 
-                            Using myCmd As New SqlCommand("INSERT INTO OrderBuilders(Id) VALUES (@Id)", thisConn)
-                                myCmd.Parameters.AddWithValue("@Id", newIdHeader)
+                            If orderType = "Builder" Then
+                                Using myCmd As New SqlCommand("INSERT INTO OrderBuilders(Id) VALUES (@Id)", thisConn)
+                                    myCmd.Parameters.AddWithValue("@Id", newIdHeader)
 
-                                myCmd.ExecuteNonQuery()
-                            End Using
+                                    myCmd.ExecuteNonQuery()
+                                End Using
+                            End If
 
                             thisConn.Close()
                         End Using
@@ -225,7 +222,7 @@ Partial Class Order_Default
                     End Try
                 Loop
 
-                Dim dataLog As Object() = {"OrderHeaders", newIdHeader, Session("LoginId").ToString(), "Order Created | Copy"}
+                dataLog = {"OrderHeaders", newIdHeader, Session("LoginId").ToString(), "Order Created | Copy"}
                 orderClass.Logs(dataLog)
 
                 Dim thisHeader As DataTable = orderClass.GetDataTable("SELECT * FROM OrderDetails WHERE HeaderId='" & thisId & "' AND Active=1")
@@ -246,7 +243,6 @@ Partial Class Order_Default
                                 myCmd.ExecuteNonQuery()
                             End Using
                         End Using
-
 
                         orderClass.ResetPriceDetail(newIdHeader, newIdDetail)
                         orderClass.CalculatePrice(newIdHeader, newIdDetail)
@@ -276,7 +272,7 @@ Partial Class Order_Default
                     End Using
                 End Using
 
-                Dim dataLog As Object() = {"OrderHeaders", thisId, Session("LoginId"), "Order Unsubmitted"}
+                dataLog = {"OrderHeaders", thisId, Session("LoginId"), "Order Unsubmitted"}
                 orderClass.Logs(dataLog)
 
                 Session("OrderStatus") = ddlStatus.SelectedValue
@@ -298,7 +294,7 @@ Partial Class Order_Default
                     End Using
                 End Using
 
-                Dim dataLog As Object() = {"OrderHeaders", thisId, Session("LoginId"), "New Order"}
+                dataLog = {"OrderHeaders", thisId, Session("LoginId"), "New Order"}
                 orderClass.Logs(dataLog)
 
                 Session("OrderStatus") = ddlStatus.SelectedValue
@@ -321,7 +317,7 @@ Partial Class Order_Default
                     End Using
                 End Using
 
-                Dim dataLog As Object() = {"OrderHeaders", thisId, Session("LoginId"), "Order In Production"}
+                dataLog = {"OrderHeaders", thisId, Session("LoginId"), "Order In Production"}
                 orderClass.Logs(dataLog)
 
                 ' SALES
@@ -330,6 +326,7 @@ Partial Class Order_Default
                     salesClass.RefreshData()
                 End If
 
+                Dim mailingClass As New MailingClass
                 mailingClass.ProductionOrder(thisId)
 
                 Session("OrderStatus") = ddlStatus.SelectedValue
@@ -351,7 +348,7 @@ Partial Class Order_Default
                     End Using
                 End Using
 
-                Dim dataLog As Object() = {"OrderHeaders", thisId, Session("LoginId"), "Order On Hold"}
+                dataLog = {"OrderHeaders", thisId, Session("LoginId"), "Order On Hold"}
                 orderClass.Logs(dataLog)
 
                 Session("OrderStatus") = ddlStatus.SelectedValue
@@ -391,7 +388,7 @@ Partial Class Order_Default
                              End Function)
                 End If
 
-                Dim dataLog As Object() = {"OrderHeaders", thisId, Session("LoginId"), "Confirm Payment Received"}
+                dataLog = {"OrderHeaders", thisId, Session("LoginId"), "Confirm Payment Received"}
                 orderClass.Logs(dataLog)
 
                 Session("OrderStatus") = ddlStatus.SelectedValue
@@ -413,7 +410,7 @@ Partial Class Order_Default
                     End Using
                 End Using
 
-                Dim dataLog As Object() = {"OrderHeaders", thisId, Session("LoginId"), "Order Completed"}
+                dataLog = {"OrderHeaders", thisId, Session("LoginId"), "Order Completed"}
                 orderClass.Logs(dataLog)
 
                 Response.Redirect("~/order", False)
@@ -438,8 +435,6 @@ Partial Class Order_Default
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnStatusOrder_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -468,7 +463,7 @@ Partial Class Order_Default
                 End Using
 
                 Dim descLog As String = String.Format("Order Canceled. Reason : {0}", txtCancelDescription.Text.Trim())
-                Dim dataLog As Object() = {"OrderHeaders", thisId, Session("LoginId"), descLog}
+                dataLog = {"OrderHeaders", thisId, Session("LoginId"), descLog}
                 orderClass.Logs(dataLog)
 
                 Response.Redirect("~/order", False)
@@ -477,8 +472,6 @@ Partial Class Order_Default
             MessageError_CancelOrder(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_CancelOrder(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnCancelOrder_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showCancelOrder", thisScript, True)
         End Try
@@ -528,7 +521,7 @@ Partial Class Order_Default
                     End Using
                 End Using
 
-                Dim dataLog As Object() = {"OrderHeaders", thisId, Session("LoginId"), "Order Shipped"}
+                dataLog = {"OrderHeaders", thisId, Session("LoginId"), "Order Shipped"}
                 orderClass.Logs(dataLog)
 
                 Response.Redirect("~/order", False)
@@ -538,8 +531,6 @@ Partial Class Order_Default
             MessageError_ShipmentOrder(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_ShipmentOrder(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnShipmentOrder_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showShipmentOrder", thisScript, True)
         End Try
@@ -550,7 +541,7 @@ Partial Class Order_Default
         Try
             Dim thisId As String = txtIdRestore.Text
 
-            Dim dataLog As Object() = {"OrderHeaders", thisId, Session("LoginId").ToString(), "Order Restored"}
+            dataLog = {"OrderHeaders", thisId, Session("LoginId").ToString(), "Order Restored"}
             orderClass.Logs(dataLog)
 
             Dim detailData As DataTable = orderClass.GetDataTable("SELECT * FROM OrderDetails WHERE HeaderId='" & thisId & "' AND Active=0 ORDER BY Id ASC")
@@ -593,8 +584,6 @@ Partial Class Order_Default
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnSubmitRestore_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -634,7 +623,6 @@ Partial Class Order_Default
                 ddlStatus.Items.Add(New ListItem("Waiting Proforma", "Waiting Proforma"))
                 ddlStatus.Items.Add(New ListItem("Proforma Sent", "Proforma Sent"))
                 ddlStatus.Items.Add(New ListItem("Payment Received", "Payment Received"))
-                ddlStatus.Items.Add(New ListItem("Approved Rework", "Approved Rework"))
                 ddlStatus.Items.Add(New ListItem("In Production", "In Production"))
                 ddlStatus.Items.Add(New ListItem("On Hold", "On Hold"))
                 ddlStatus.Items.Add(New ListItem("Shipped Out", "Shipped Out"))
@@ -649,7 +637,6 @@ Partial Class Order_Default
                 ddlStatus.Items.Add(New ListItem("Waiting Proforma", "Waiting Proforma"))
                 ddlStatus.Items.Add(New ListItem("Proforma Sent", "Proforma Sent"))
                 ddlStatus.Items.Add(New ListItem("Payment Received", "Payment Received"))
-                ddlStatus.Items.Add(New ListItem("Approved Rework", "Approved Rework"))
                 ddlStatus.Items.Add(New ListItem("In Production", "In Production"))
                 ddlStatus.Items.Add(New ListItem("On Hold", "On Hold"))
                 ddlStatus.Items.Add(New ListItem("Shipped Out", "Shipped Out"))
@@ -664,7 +651,6 @@ Partial Class Order_Default
                 ddlStatus.Items.Add(New ListItem("Waiting Proforma", "Waiting Proforma"))
                 ddlStatus.Items.Add(New ListItem("Proforma Sent", "Proforma Sent"))
                 ddlStatus.Items.Add(New ListItem("Payment Received", "Payment Received"))
-                ddlStatus.Items.Add(New ListItem("Approved Rework", "Approved Rework"))
                 ddlStatus.Items.Add(New ListItem("In Production", "In Production"))
                 ddlStatus.Items.Add(New ListItem("On Hold", "On Hold"))
                 ddlStatus.Items.Add(New ListItem("Shipped Out", "Shipped Out"))
@@ -679,7 +665,6 @@ Partial Class Order_Default
                 ddlStatus.Items.Add(New ListItem("Waiting Proforma", "Waiting Proforma"))
                 ddlStatus.Items.Add(New ListItem("Proforma Sent", "Proforma Sent"))
                 ddlStatus.Items.Add(New ListItem("Payment Received", "Payment Received"))
-                ddlStatus.Items.Add(New ListItem("Approved Rework", "Approved Rework"))
                 ddlStatus.Items.Add(New ListItem("In Production", "In Production"))
                 ddlStatus.Items.Add(New ListItem("On Hold", "On Hold"))
                 ddlStatus.Items.Add(New ListItem("Shipped Out", "Shipped Out"))
@@ -693,7 +678,6 @@ Partial Class Order_Default
                 ddlStatus.Items.Add(New ListItem("Waiting Proforma", "Waiting Proforma"))
                 ddlStatus.Items.Add(New ListItem("Proforma Sent", "Proforma Sent"))
                 ddlStatus.Items.Add(New ListItem("Payment Received", "Payment Received"))
-                ddlStatus.Items.Add(New ListItem("Approved Rework", "Approved Rework"))
                 ddlStatus.Items.Add(New ListItem("In Production", "In Production"))
                 ddlStatus.Items.Add(New ListItem("On Hold", "On Hold"))
                 ddlStatus.Items.Add(New ListItem("Shipped Out", "Shipped Out"))
@@ -815,8 +799,6 @@ Partial Class Order_Default
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindDataOrder", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub

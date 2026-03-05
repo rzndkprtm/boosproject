@@ -31,9 +31,11 @@
     <div class="page-content">
         <section class="row mb-4">
             <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
-                
+                <a href="#" runat="server" id="aSubmitRework" class="btn btn-success me-1" data-bs-toggle="modal" data-bs-target="#modalSubmitRework">Submit</a>
+                <a href="#" runat="server" id="aCancelRework" class="btn btn-danger me-1" data-bs-toggle="modal" data-bs-target="#modalCancelRework">Cancel</a>
                 <a href="#" runat="server" id="aApproveRework" class="btn btn-success me-1" data-bs-toggle="modal" data-bs-target="#modalApproveRework">Approve</a>
                 <a href="#" runat="server" id="aRejectRework" class="btn btn-danger me-1" data-bs-toggle="modal" data-bs-target="#modalRejectRework">Reject</a>
+                <a runat="server" href="~/order/rework" class="btn btn-secondary me-1">Close</a>
             </div>
         </section>
 
@@ -114,11 +116,6 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="card-footer">
-                                <a href="#" runat="server" id="aSubmitRework" class="btn btn-success me-1" data-bs-toggle="modal" data-bs-target="#modalSubmitRework">Submit</a>
-                                <a href="#" runat="server" id="aCancelRework" class="btn btn-danger me-1" data-bs-toggle="modal" data-bs-target="#modalCancelRework">Cancel</a>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -129,14 +126,7 @@
                         <div class="card">
                             <div class="card-content">
                                 <div class="card-header">
-                                    <div class="row">
-                                        <div class="col-7">
-                                            <h3 class="card-title">Your Item</h3>
-                                        </div>
-                                        <div class="col-5 d-flex justify-content-end">
-                                            <asp:Button runat="server" ID="btnAddItem" CssClass="btn btn-primary" Text="Add Item" OnClick="btnAddItem_Click" />
-                                        </div>
-                                    </div>
+                                    <h3 class="card-title">Your Item</h3>
                                 </div>
 
                                 <div class="card-body">
@@ -288,6 +278,8 @@
                         <div class="col-12 form-group">
                             <label class="form-label">Category</label>
                             <asp:DropDownList runat="server" ID="ddlCategory" CssClass="form-select">
+                                <asp:ListItem Value="" Text=""></asp:ListItem>
+                                <asp:ListItem Value="Customer Error" Text="Customer Error"></asp:ListItem>
                                 <asp:ListItem Value="Product Fault" Text="Product Fault"></asp:ListItem>
                                 <asp:ListItem Value="Warranty Issue" Text="Warranty Issue"></asp:ListItem>
                                 <asp:ListItem Value="Freight Damage to Customer" Text="Freight Damage to Customer"></asp:ListItem>

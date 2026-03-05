@@ -50,6 +50,7 @@
                 <a href="#" runat="server" id="aDeleteOrder" class="btn btn-danger me-1" data-bs-toggle="modal" data-bs-target="#modalDeleteOrder">Delete Order</a>
                 <a href="#" runat="server" id="aQuoteOrder" class="btn btn-success me-1" data-bs-toggle="modal" data-bs-target="#modalQuoteOrder">Quote</a>
                 <a href="#" runat="server" id="aSubmitOrder" class="btn btn-success me-1" data-bs-toggle="modal" data-bs-target="#modalSubmitOrder">Submit Order</a>
+                <a href="#" runat="server" id="aNewOrder" class="btn btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modalNewOrder">New Order</a>
                 <a href="#" runat="server" id="aUnsubmitOrder" class="btn btn-dark me-1" data-bs-toggle="modal" data-bs-target="#modalUnsubmitOrder">Unsubmit Order</a>
                 <a href="#" runat="server" id="aCancelOrder" class="btn btn-danger me-1" data-bs-toggle="modal" data-bs-target="#modalCancelOrder">Cancel Order</a>
                 <a href="#" runat="server" id="aProductionOrder" class="btn btn-success me-1" data-bs-toggle="modal" data-bs-target="#modalProductionOrder">Production Order</a>
@@ -629,6 +630,23 @@
         </div>
     </div>
 
+    <div class="modal fade text-center" id="modalNewOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title white">New Order</h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnNewOrder" CssClass="btn btn-warning" Text="Confirm" OnClick="btnNewOrder_Click" OnClientClick="return showWaiting();" />
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade text-center" id="modalUnsubmitOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -681,7 +699,7 @@
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-success">
-                    <h5 class="modal-title white">Generate Order</h5>
+                    <h5 class="modal-title white">Production Order</h5>
                 </div>
                 <div class="modal-body text-center py-4">
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
@@ -908,7 +926,7 @@
                 </div>
                 <div class="modal-footer ">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnReworkOrder" CssClass="btn btn-danger" Text="Submit" OnClick="btnReworkOrder_Click" OnClientClick="return showWaiting();" />
+                    <asp:Button runat="server" ID="btnReworkOrder" CssClass="btn btn-danger" Text="Next" OnClick="btnReworkOrder_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>
@@ -1545,13 +1563,8 @@
                             <RowStyle />
                             <Columns>
                                 <asp:BoundField DataField="Id" HeaderText="ID" />
-                                <asp:BoundField DataField="Type" HeaderText="Type" />
-                                <asp:TemplateField HeaderText="Description">
-                                    <ItemTemplate>
-                                        <asp:TextBox runat="server" ID="txtDescriptionPrice" CssClass="form-control" Text='<%# Eval("Description") %>'></asp:TextBox>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                                <asp:TemplateField HeaderText="New Price (Sell)" ItemStyle-Width="150px">
+                                <asp:BoundField DataField="Description" HeaderText="Description" />
+                                <asp:TemplateField HeaderText="New Price (Sell)" ItemStyle-Width="180px">
                                     <ItemTemplate>
                                         <div class="input-group">
                                             <span runat="server" id="spanEditSellPrice" class="input-group-text">$</span>

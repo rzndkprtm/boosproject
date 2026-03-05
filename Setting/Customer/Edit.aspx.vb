@@ -3,12 +3,10 @@ Imports System.Data.SqlClient
 
 Partial Class Setting_Customer_Edit
     Inherits Page
+
     Dim settingClass As New SettingClass
-    Dim mailingClass As New MailingClass
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-    Dim dataMailing As Object() = Nothing
-
 
     Dim url As String = String.Empty
 
@@ -111,8 +109,13 @@ Partial Class Setting_Customer_Edit
             End If
 
             If msgError.InnerText = "" Then
+                Dim operatorReps As String = String.Empty
+                If Not String.IsNullOrEmpty(lbOperator.SelectedValue) Then
+                    operatorReps = String.Join(",", lbOperator.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
+                End If
+
                 If Not ddlCompany.SelectedValue = "2" Then
-                    ddlArea.SelectedValue = "" : ddlOperator.SelectedValue = ""
+                    ddlArea.SelectedValue = "" : operatorReps = String.Empty
                 End If
 
                 Dim sponsorId As String = ddlSponsor.SelectedValue
@@ -130,7 +133,7 @@ Partial Class Setting_Customer_Edit
                         myCmd.Parameters.AddWithValue("@Company", If(String.IsNullOrEmpty(ddlCompany.SelectedValue), CType(DBNull.Value, Object), ddlCompany.SelectedValue))
                         myCmd.Parameters.AddWithValue("@CompanyDetail", If(String.IsNullOrEmpty(ddlCompanyDetail.SelectedValue), CType(DBNull.Value, Object), ddlCompanyDetail.SelectedValue))
                         myCmd.Parameters.AddWithValue("@Area", ddlArea.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@Operator", If(String.IsNullOrEmpty(ddlOperator.SelectedValue), CType(DBNull.Value, Object), ddlOperator.SelectedValue))
+                        myCmd.Parameters.AddWithValue("@Operator", operatorReps)
                         myCmd.Parameters.AddWithValue("@PriceGroup", ddlPriceGroup.SelectedValue)
                         myCmd.Parameters.AddWithValue("@ShutterPriceGroup", ddlPriceGroupShutter.SelectedValue)
                         myCmd.Parameters.AddWithValue("@DoorPriceGroupId", ddlPriceGroupDoor.SelectedValue)
@@ -155,8 +158,6 @@ Partial Class Setting_Customer_Edit
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnSubmit_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -193,7 +194,17 @@ Partial Class Setting_Customer_Edit
             ddlCompany.SelectedValue = myData("CompanyId").ToString()
             ddlCompanyDetail.SelectedValue = myData("CompanyDetailId").ToString()
             ddlArea.SelectedValue = myData("Area").ToString()
-            ddlOperator.SelectedValue = myData("Operator").ToString()
+            If Not myData("Operator").ToString() = "" Then
+                Dim operatorArray() As String = myData("Operator").ToString().Split(",")
+                For Each i In operatorArray
+                    If Not String.IsNullOrEmpty(i) Then
+                        Dim item = lbOperator.Items.FindByValue(i)
+                        If item IsNot Nothing Then
+                            item.Selected = True
+                        End If
+                    End If
+                Next
+            End If
             ddlPriceGroup.SelectedValue = myData("PriceGroupId").ToString()
             ddlPriceGroupShutter.SelectedValue = myData("ShutterPriceGroupId").ToString()
             ddlPriceGroupDoor.SelectedValue = myData("DoorPriceGroupId").ToString()
@@ -208,8 +219,6 @@ Partial Class Setting_Customer_Edit
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindData", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -229,8 +238,6 @@ Partial Class Setting_Customer_Edit
             ddlSponsor.Items.Clear()
             If Not Session("RoleName") = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindSponsor", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -263,8 +270,6 @@ Partial Class Setting_Customer_Edit
             ddlCompany.Items.Clear()
             If Not Session("RoleName") = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindCompany", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -286,35 +291,31 @@ Partial Class Setting_Customer_Edit
             ddlCompanyDetail.Items.Clear()
             If Not Session("RoleName") = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindCompanyDetail", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
 
     Private Sub BindOperator()
-        ddlOperator.Items.Clear()
+        lbOperator.Items.Clear()
         Try
-            ddlOperator.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerLogins WHERE RoleId='4' ORDER BY UserName ASC")
-            ddlOperator.DataTextField = "FullName"
-            ddlOperator.DataValueField = "Id"
-            ddlOperator.DataBind()
+            lbOperator.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerLogins WHERE RoleId='4' AND LevelId='2' ORDER BY UserName ASC")
+            lbOperator.DataTextField = "FullName"
+            lbOperator.DataValueField = "Id"
+            lbOperator.DataBind()
 
-            If ddlOperator.Items.Count > 0 Then
-                ddlOperator.Items.Insert(0, New ListItem("", ""))
+            If lbOperator.Items.Count > 0 Then
+                lbOperator.Items.Insert(0, New ListItem("", ""))
             End If
 
-            ddlOperator.Enabled = True
+            lbOperator.Enabled = True
             If Session("RoleName") = "Sales" AndAlso Session("LevelName") = "Member" Then
-                ddlOperator.SelectedValue = Session("LoginId").ToString()
-                ddlOperator.Enabled = False
+                lbOperator.SelectedValue = Session("LoginId").ToString()
+                lbOperator.Enabled = False
             End If
         Catch ex As Exception
-            ddlOperator.Items.Clear()
+            lbOperator.Items.Clear()
             If Not Session("RoleName") = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindOperator", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -336,8 +337,6 @@ Partial Class Setting_Customer_Edit
             ddlPriceGroup.Items.Clear()
             If Not Session("RoleName") = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindPriceGroup", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -359,8 +358,6 @@ Partial Class Setting_Customer_Edit
             ddlPriceGroupShutter.Items.Clear()
             If Not Session("RoleName") = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindPriceGroup_Shutter", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -382,8 +379,6 @@ Partial Class Setting_Customer_Edit
             ddlPriceGroupDoor.Items.Clear()
             If Not Session("RoleName") = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindPriceGroup_Door", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -405,7 +400,7 @@ Partial Class Setting_Customer_Edit
         ddlCompany.BackColor = Drawing.Color.Empty
         ddlCompanyDetail.BackColor = Drawing.Color.Empty
         ddlArea.BackColor = Drawing.Color.Empty
-        ddlOperator.BackColor = Drawing.Color.Empty
+        lbOperator.BackColor = Drawing.Color.Empty
         ddlOnStop.BackColor = Drawing.Color.Empty
         ddlCashSale.BackColor = Drawing.Color.Empty
         ddlPriceGroup.BackColor = Drawing.Color.Empty

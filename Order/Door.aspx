@@ -197,7 +197,7 @@
 
                                             <div class="row mt-3" id="divmidrailposition">
                                                 <div class="col-12 col-sm-12 col-lg-3 mb-1">
-                                                    <label>Midrail Position</label>
+                                                    <label>Midrail</label>
                                                 </div>
                                                 <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                     <select id="midrailposition" class="form-select">
@@ -224,7 +224,7 @@
 
                                             <div class="row" id="divhandlelength">
                                                 <div class="col-12 col-sm-12 col-lg-3 mb-1">
-                                                    <label>Handle Length</label>
+                                                    <label>Handle Height</label>
                                                 </div>
                                                 <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                     <div class="input-group">

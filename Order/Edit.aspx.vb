@@ -5,10 +5,8 @@ Partial Class Order_Edit
     Inherits Page
 
     Dim orderClass As New OrderClass
-    Dim mailingClass As New MailingClass
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-    Dim dataMailing As Object() = Nothing
     Dim url As String = String.Empty
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -114,8 +112,6 @@ Partial Class Order_Edit
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnSubmit_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -194,8 +190,6 @@ Partial Class Order_Edit
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindDataHeader", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -230,8 +224,6 @@ Partial Class Order_Edit
             If Session("RoleName") = "Developer" Then
                 MessageError(True, ex.ToString())
             End If
-            dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindDataCustomer", ex.ToString()}
-            mailingClass.WebError(dataMailing)
         End Try
     End Sub
 
@@ -253,8 +245,6 @@ Partial Class Order_Edit
             If Session("RoleName") = "Developer" Then
                 MessageError(True, ex.ToString())
             End If
-            dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindDataLogin", ex.ToString()}
-            mailingClass.WebError(dataMailing)
         End Try
     End Sub
 

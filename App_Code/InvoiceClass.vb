@@ -48,6 +48,21 @@ Public Class InvoiceClass
         End Try
     End Function
 
+    Public Function GetDataTableSP(spName As String, params As List(Of SqlParameter)) As DataTable
+        Dim dt As New DataTable()
+        Using conn As New SqlConnection(myConn)
+            Using cmd As New SqlCommand(spName, conn)
+                cmd.CommandType = CommandType.StoredProcedure
+                cmd.Parameters.AddRange(params.ToArray())
+
+                Using da As New SqlDataAdapter(cmd)
+                    da.Fill(dt)
+                End Using
+            End Using
+        End Using
+        Return dt
+    End Function
+
     Protected Function GetItemData(thisString As String) As String
         Dim result As String = String.Empty
         Try
@@ -111,55 +126,113 @@ Public Class InvoiceClass
     End Function
 
     Private Function CreateCell(text As String, Optional isBold As Boolean = False, Optional alignV As Integer = Element.ALIGN_MIDDLE) As PdfPCell
-        Dim style As Integer = If(isBold, Font.BOLD, Font.NORMAL)
-        Dim thisFont As New Font(Font.FontFamily.TIMES_ROMAN, 10, style)
-        Dim lines As Integer = text.Split({vbLf, vbCrLf}, StringSplitOptions.None).Length
-        Dim lineHeight As Single = 13
-        Dim calculatedHeight As Single = lines * lineHeight
+        Try
+            Dim style As Integer = If(isBold, Font.BOLD, Font.NORMAL)
+            Dim thisFont As New Font(Font.FontFamily.TIMES_ROMAN, 10, style)
 
-        Dim cell As New PdfPCell(New Phrase(text, thisFont))
-        cell.Border = 0
-        cell.HorizontalAlignment = Element.ALIGN_LEFT
-        cell.VerticalAlignment = alignV
-        cell.MinimumHeight = calculatedHeight
-        cell.PaddingBottom = 6
-        Return cell
+            If text Is Nothing Then text = String.Empty
+
+            Dim lines As Integer = text.Split({vbLf, vbCrLf}, StringSplitOptions.None).Length
+            Dim lineHeight As Single = 13
+            Dim calculatedHeight As Single = lines * lineHeight
+
+            Dim cell As New PdfPCell(New Phrase(text, thisFont))
+            cell.Border = 0
+            cell.HorizontalAlignment = Element.ALIGN_LEFT
+            cell.VerticalAlignment = alignV
+            cell.MinimumHeight = calculatedHeight
+            cell.PaddingBottom = 6
+
+            Return cell
+        Catch ex As Exception
+            Dim fallbackFont As New Font(Font.FontFamily.TIMES_ROMAN, 10, Font.NORMAL)
+            Dim fallbackCell As New PdfPCell(New Phrase("", fallbackFont))
+            fallbackCell.Border = 0
+            fallbackCell.HorizontalAlignment = Element.ALIGN_LEFT
+            fallbackCell.VerticalAlignment = alignV
+            fallbackCell.MinimumHeight = 13
+            fallbackCell.PaddingBottom = 6
+
+            Return fallbackCell
+        End Try
     End Function
 
     Private Function CreateCellDetail(text As String, Optional isBold As Boolean = False, Optional alignH As Integer = Element.ALIGN_LEFT) As PdfPCell
-        Dim style As Integer = If(isBold, Font.BOLD, Font.NORMAL)
-        Dim thisFont As New Font(Font.FontFamily.TIMES_ROMAN, 10, style)
-        Dim lines As Integer = text.Split({vbLf, vbCrLf}, StringSplitOptions.None).Length
-        Dim lineHeight As Single = 16
-        Dim calculatedHeight As Single = lines * lineHeight
+        If text Is Nothing Then text = String.Empty
 
-        Dim cell As New PdfPCell(New Phrase(text, thisFont))
+        Dim normalFont As New Font(Font.FontFamily.TIMES_ROMAN, 10, If(isBold, Font.BOLD, Font.NORMAL))
+        Dim italicFont As New Font(Font.FontFamily.TIMES_ROMAN, 10, Font.ITALIC)
+
+        Dim paragraph As New Paragraph()
+
+        Dim currentIndex As Integer = 0
+
+        While currentIndex < text.Length
+            Dim startItalic As Integer = text.IndexOf("<i>", currentIndex)
+
+            If startItalic = -1 Then
+                paragraph.Add(New Chunk(text.Substring(currentIndex), normalFont))
+                Exit While
+            End If
+
+            If startItalic > currentIndex Then
+                paragraph.Add(New Chunk(text.Substring(currentIndex, startItalic - currentIndex), normalFont))
+            End If
+
+            Dim endItalic As Integer = text.IndexOf("</i>", startItalic)
+
+            If endItalic = -1 Then
+                paragraph.Add(New Chunk(text.Substring(startItalic), normalFont))
+                Exit While
+            End If
+
+            Dim italicText As String = text.Substring(startItalic + 3, endItalic - (startItalic + 3))
+            paragraph.Add(New Chunk(italicText, italicFont))
+
+            currentIndex = endItalic + 4
+        End While
+
+        Dim cell As New PdfPCell(paragraph)
         cell.Border = Rectangle.BOTTOM_BORDER
         cell.BorderWidthBottom = 0.5F
         cell.HorizontalAlignment = alignH
         cell.VerticalAlignment = Element.ALIGN_MIDDLE
-        cell.MinimumHeight = calculatedHeight
         cell.PaddingBottom = 6
+
         Return cell
     End Function
 
     Private Function CreateCellTotal(text As String, Optional isBold As Boolean = False) As PdfPCell
-        Dim style As Integer = If(isBold, Font.BOLD, Font.NORMAL)
-        Dim thisFont As New Font(Font.FontFamily.TIMES_ROMAN, 12, style)
+        Try
+            If text Is Nothing Then text = String.Empty
 
-        Dim lines As Integer = Regex.Split(text, "\r\n|\r|\n").Length
-        Dim lineHeight As Single = 22
-        Dim calculatedHeight As Single = lines * lineHeight
+            Dim style As Integer = If(isBold, Font.BOLD, Font.NORMAL)
+            Dim thisFont As New Font(Font.FontFamily.TIMES_ROMAN, 12, style)
 
-        Dim cell As New PdfPCell(New Phrase(text, thisFont))
-        cell.Border = Rectangle.NO_BORDER
-        cell.BorderWidthBottom = 0.15F
-        cell.HorizontalAlignment = Element.ALIGN_RIGHT
-        cell.VerticalAlignment = Element.ALIGN_MIDDLE
-        cell.MinimumHeight = calculatedHeight
-        cell.PaddingBottom = 8
+            Dim lines As Integer = Regex.Split(text, "\r\n|\r|\n").Length
+            Dim lineHeight As Single = 22
+            Dim calculatedHeight As Single = lines * lineHeight
 
-        Return cell
+            Dim cell As New PdfPCell(New Phrase(text, thisFont))
+            cell.Border = Rectangle.NO_BORDER
+            cell.BorderWidthBottom = 0.15F
+            cell.HorizontalAlignment = Element.ALIGN_RIGHT
+            cell.VerticalAlignment = Element.ALIGN_MIDDLE
+            cell.MinimumHeight = calculatedHeight
+            cell.PaddingBottom = 8
+
+            Return cell
+        Catch ex As Exception
+            Dim fallbackFont As New Font(Font.FontFamily.TIMES_ROMAN, 12, Font.NORMAL)
+            Dim fallbackCell As New PdfPCell(New Phrase("", fallbackFont))
+            fallbackCell.Border = Rectangle.NO_BORDER
+            fallbackCell.HorizontalAlignment = Element.ALIGN_RIGHT
+            fallbackCell.VerticalAlignment = Element.ALIGN_MIDDLE
+            fallbackCell.MinimumHeight = 22
+            fallbackCell.PaddingBottom = 8
+
+            Return fallbackCell
+        End Try
     End Function
 
     Public Function BindContent(headerId As String) As Byte()
@@ -227,27 +300,14 @@ Public Class InvoiceClass
             End If
 
             If companyId = "3" Then
-                invoiceFrom = "Accent At Home"
-                invoiceFrom &= vbCrLf
-                invoiceFrom &= "Attention: Yudi Tjan"
-                invoiceFrom &= vbCrLf
-                invoiceFrom &= vbCrLf
-                invoiceFrom &= "Ground Floor, 97-99 Bathrust St,"
-                invoiceFrom &= vbCrLf
-                invoiceFrom &= "Sydney NSW 2000"
-                invoiceFrom &= vbCrLf
-                invoiceFrom &= "Indonesia"
-            End If
-
-            If companyId = "5" Then
                 invoiceFrom = "PT Bumi Indah Global"
                 invoiceFrom &= vbCrLf
                 invoiceFrom &= "Attention: Yudi Tjan"
                 invoiceFrom &= vbCrLf
                 invoiceFrom &= vbCrLf
-                invoiceFrom &= "Ground Floor, 97-99 Bathrust St,"
+                invoiceFrom &= "xxxxxx"
                 invoiceFrom &= vbCrLf
-                invoiceFrom &= "Sydney NSW 2000"
+                invoiceFrom &= "xxxxx"
                 invoiceFrom &= vbCrLf
                 invoiceFrom &= "Indonesia"
             End If
@@ -256,7 +316,7 @@ Public Class InvoiceClass
 
             Dim sumPrice As Decimal = GetItemData_Decimal("SELECT SUM(SellPrice) AS SumPrice FROM OrderCostings WHERE HeaderId='" & headerId & "' AND Type='Final'")
             Dim gst As Decimal = sumPrice * 10 / 100
-            If companyId = "1" OrElse companyId = "3" Then
+            If companyId = "3" Then
                 gst = sumPrice * 11 / 100
             End If
             Dim finaltotal As Decimal = sumPrice + gst
@@ -288,13 +348,13 @@ Public Class InvoiceClass
             leftTable.AddCell(CreateCell(""))
             leftTable.AddCell(CreateCell(invoiceTo, False, Element.ALIGN_TOP))
 
-            leftTable.AddCell(CreateCell("Invoice Number", True))
+            leftTable.AddCell(CreateCell("Invoice Number", True, Element.ALIGN_TOP))
             leftTable.AddCell(CreateCell(""))
-            leftTable.AddCell(CreateCell(invoiceNumber))
+            leftTable.AddCell(CreateCell(invoiceNumber, False, Element.ALIGN_TOP))
 
             leftTable.AddCell(CreateCell("Reference", True, Element.ALIGN_TOP))
             leftTable.AddCell(CreateCell(""))
-            leftTable.AddCell(CreateCell(reference))
+            leftTable.AddCell(CreateCell(orderId, False, Element.ALIGN_TOP))
 
             leftTable.AddCell(CreateCell("ABN", True))
             leftTable.AddCell(CreateCell(""))
@@ -351,12 +411,18 @@ Public Class InvoiceClass
             table.AddCell(CreateCellDetail("Qty", True, Element.ALIGN_CENTER))
             table.AddCell(CreateCellDetail("Unit Price", True, Element.ALIGN_RIGHT))
 
-            Dim detailData As DataTable = GetDataTable("SELECT OrderDetails.Id, OrderDetails.Qty, Designs.Name AS DesignName, Blinds.Name AS BlindName, OrderDetails.FabricColourId AS FabricColour, OrderDetails.TrackType AS TrackType, OrderDetails.TrackColour AS TrackColour, OrderDetails.Width AS Width, OrderDetails.[Drop] AS Height, OrderDetails.FrameColour AS FrameColour, OrderDetails.DoorCutOut AS DoorCutOut, OrderDetails.SquareMetre AS SQM, OrderDetails.LinearMetre AS LM, Products.Name AS ProductName, Products.InvoiceName AS InvoiceName, 1 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 UNION ALL SELECT OrderDetails.Id, OrderDetails.Qty, Designs.Name AS DesignName, Blinds.Name AS BlindName, OrderDetails.FabricColourIdB AS FabricColour, OrderDetails.TrackTypeB AS TrackType, OrderDetails.TrackColourB AS TrackColour, OrderDetails.WidthB AS Width, OrderDetails.DropB AS Height, OrderDetails.FrameColour AS FrameColour, OrderDetails.DoorCutOut AS DoorCutOut, OrderDetails.SquareMetreB AS SQM, OrderDetails.LinearMetreB AS LM, Products.Name AS ProductName, Products.InvoiceName AS InvoiceName, 2 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND (((Designs.Name='Aluminium Blind' OR Designs.Name='Venetian Blind') AND (OrderDetails.SubType LIKE '%2 on 1%' OR OrderDetails.SubType LIKE '%3 on 1%')) OR (Designs.Name = 'Cellular Shades' AND Blinds.Name='Day & Night') OR (Designs.Name='Roller Blind' AND (Blinds.Name='Dual Blinds' OR Blinds.Name='Link 2 Blinds Dependent' OR Blinds.Name='Link 2 Blinds Independent' OR Blinds.Name='Link 3 Blinds Dependent' OR Blinds.Name='Link 3 Blinds Independent with Dependent' OR Blinds.Name='DB Link 2 Blinds Dependent' OR Blinds.Name='DB Link 2 Blinds Independent')) OR (Designs.Name='Curtain' AND Blinds.Name='Double Curtain & Track')) UNION ALL SELECT OrderDetails.Id, OrderDetails.Qty, Designs.Name AS DesignName, Blinds.Name AS BlindName, OrderDetails.FabricColourIdC AS FabricColour, NULL AS TrackType, NULL AS TrackColour, OrderDetails.WidthC AS Width, OrderDetails.DropC AS Height, OrderDetails.FrameColour AS FrameColour, OrderDetails.DoorCutOut AS DoorCutOut, OrderDetails.SquareMetreC AS SQM, OrderDetails.LinearMetreC AS LM, Products.Name AS ProductName, Products.InvoiceName AS InvoiceName, 3 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND (Designs.Name='Roller Blind' AND (Blinds.Name='Link 3 Blinds Dependent' OR Blinds.Name='Link 3 Blinds Independent with Dependent' OR Blinds.Name='DB Link 2 Blinds Dependent' OR Blinds.Name='DB Link 2 Blinds Independent')) UNION ALL SELECT OrderDetails.Id, OrderDetails.Qty, Designs.Name AS DesignName, Blinds.Name AS BlindName, OrderDetails.FabricColourIdD AS FabricColour, NULL AS TrackType, NULL AS TrackColour, OrderDetails.WidthD AS Width, OrderDetails.DropD AS Height, OrderDetails.FrameColour AS FrameColour, OrderDetails.DoorCutOut AS DoorCutOut, OrderDetails.SquareMetreD AS SQM, OrderDetails.LinearMetreD AS LM, Products.Name AS ProductName, Products.InvoiceName AS InvoiceName, 4 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND (Designs.Name='Roller Blind' AND (Blinds.Name='DB Link 2 Blinds Dependent' OR Blinds.Name='DB Link 2 Blinds Independent')) UNION ALL SELECT OrderDetails.Id, OrderDetails.Qty, Designs.Name AS DesignName, Blinds.Name AS BlindName, OrderDetails.FabricColourIdE AS FabricColour, NULL AS TrackType, NULL AS TrackColour, OrderDetails.WidthE AS Width, OrderDetails.DropE AS Height, OrderDetails.FrameColour AS FrameColour, OrderDetails.DoorCutOut AS DoorCutOut, OrderDetails.SquareMetreE AS SQM, OrderDetails.LinearMetreE AS LM, Products.Name AS ProductName, Products.InvoiceName AS InvoiceName, 5 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND (Designs.Name='Roller Blind' AND (Blinds.Name='DB Link 3 Blinds Dependent' OR Blinds.Name='DB Link 3 Blinds Independent with Dependent')) UNION ALL SELECT OrderDetails.Id, OrderDetails.Qty, Designs.Name AS DesignName, Blinds.Name AS BlindName, OrderDetails.FabricColourIdF AS FabricColour, NULL AS TrackType, NULL AS TrackColour, OrderDetails.WidthF AS Width, OrderDetails.DropF AS Height, OrderDetails.FrameColour AS FrameColour, OrderDetails.DoorCutOut AS DoorCutOut, OrderDetails.SquareMetreF AS SQM, OrderDetails.LinearMetreF AS LM, Products.Name AS ProductName, Products.InvoiceName AS InvoiceName, 6 AS Item FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND (Designs.Name='Roller Blind' AND (Blinds.Name='DB Link 3 Blinds Dependent' OR Blinds.Name='DB Link 3 Blinds Independent with Dependent')) ORDER BY OrderDetails.Id, Item ASC;")
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@HeaderId", headerId)
+            }
+
+            Dim detailData As DataTable = GetDataTableSP("sp_GetOrderDetailData_Invoice", params)
+
             For i As Integer = 0 To detailData.Rows.Count - 1
                 Dim itemId As String = detailData.Rows(i)("Id").ToString()
                 Dim itemNumber As Integer = detailData.Rows(i)("Item").ToString()
 
                 Dim designName As String = detailData.Rows(i)("DesignName").ToString()
+                Dim designType As String = detailData.Rows(i)("DesignType").ToString()
                 Dim blindName As String = detailData.Rows(i)("BlindName").ToString()
                 Dim fabricColourId As String = detailData.Rows(i)("FabricColour").ToString()
                 Dim width As String = detailData.Rows(i)("Width").ToString()
@@ -457,26 +523,34 @@ Public Class InvoiceClass
                     itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, fabricColourName, size, squareMetreText)
                 End If
 
-                Dim pricingData As DataTable = GetDataTable("SELECT * FROM OrderCostings WHERE HeaderId='" & headerId & "' AND ItemId='" & itemId & "' AND Number='" & itemNumber & "' AND Type='Surcharge'")
-                If pricingData.Rows.Count > 0 Then
-                    For iPricing As Integer = 0 To pricingData.Rows.Count - 1
-                        Dim pricingDesc As String = pricingData.Rows(iPricing)("Description").ToString()
-                        If itemNumber = "1" Then pricingDesc = pricingDesc.Replace("#1 ", "")
-                        If itemNumber = "2" Then pricingDesc = pricingDesc.Replace("#2 ", "")
-                        If itemNumber = "3" Then pricingDesc = pricingDesc.Replace("#3 ", "")
-                        If itemNumber = "4" Then pricingDesc = pricingDesc.Replace("#4 ", "")
-                        If itemNumber = "5" Then pricingDesc = pricingDesc.Replace("#5 ", "")
-                        If itemNumber = "6" Then pricingDesc = pricingDesc.Replace("#6 ", "")
+                Dim checkNote As String = GetItemData("SELECT Description FROM OrderCostings WHERE HeaderId='" & headerId & "' AND ItemId='" & itemId & "' AND Type='Note'")
+                If Not String.IsNullOrEmpty(checkNote) Then
+                    itemDescription &= vbCrLf
+                    itemDescription &= String.Format("* <i>{0}</i>", checkNote)
+                End If
 
-                        itemDescription &= vbCrLf
-                        itemDescription &= pricingDesc
-                    Next
+                If designType = "Blinds" OrElse designType = "Shutters" Then
+                    Dim pricingData As DataTable = GetDataTable("SELECT * FROM OrderCostings WHERE HeaderId='" & headerId & "' AND ItemId='" & itemId & "' AND Number='" & itemNumber & "' AND Type='Surcharge'")
+                    If pricingData.Rows.Count > 0 Then
+                        For iPricing As Integer = 0 To pricingData.Rows.Count - 1
+                            Dim pricingDesc As String = pricingData.Rows(iPricing)("Description").ToString()
+                            If itemNumber = "1" Then pricingDesc = pricingDesc.Replace("#1 ", "")
+                            If itemNumber = "2" Then pricingDesc = pricingDesc.Replace("#2 ", "")
+                            If itemNumber = "3" Then pricingDesc = pricingDesc.Replace("#3 ", "")
+                            If itemNumber = "4" Then pricingDesc = pricingDesc.Replace("#4 ", "")
+                            If itemNumber = "5" Then pricingDesc = pricingDesc.Replace("#5 ", "")
+                            If itemNumber = "6" Then pricingDesc = pricingDesc.Replace("#6 ", "")
+
+                            itemDescription &= vbCrLf
+                            itemDescription &= pricingDesc
+                        Next
+                    End If
                 End If
 
                 Dim finalCost As Decimal = GetItemData_Decimal("SELECT SUM(SellPrice) FROM OrderCostings WHERE HeaderId='" & headerId & "' AND ItemId='" & itemId & "' AND Number='" & itemNumber & "'")
 
                 Dim finalCostText As String = finalCost.ToString("N2", enUS)
-                If companyId = "1" OrElse companyId = "3" Then
+                If companyId = "3" Then
                     finalCostText = finalCost.ToString("N2", idIDR)
                 End If
 
@@ -492,7 +566,7 @@ Public Class InvoiceClass
             Dim textGST As String = "Total GST 10%"
             Dim textTotal As String = String.Format("AUD {0}", finalTotalText)
 
-            If companyId = "3" OrElse companyId = "5" Then
+            If companyId = "3" Then
                 textGST = "Total GST 11%"
                 textTotal = String.Format("RP {0}", finalTotalText)
             End If
@@ -538,10 +612,7 @@ Public Class InvoiceEvents
             imagePath = HttpContext.Current.Server.MapPath("~/assets/images/logo/jpmdirect.jpg")
         End If
         If companyId = "3" Then
-            imagePath = HttpContext.Current.Server.MapPath("~/assets/images/logo/accent.png")
-        End If
-        If companyId = "5" Then
-            imagePath = HttpContext.Current.Server.MapPath("~/assets/images/logo/big.JPG")
+            imagePath = HttpContext.Current.Server.MapPath("~/assets/images/logo/big.jpg")
         End If
 
         Dim img As Image = Image.GetInstance(imagePath)

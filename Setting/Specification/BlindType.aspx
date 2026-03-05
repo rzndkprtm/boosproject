@@ -80,6 +80,9 @@
                                                             <li runat="server" visible='<%# PageAction("Detail") %>'>
                                                                 <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                             </li>
+                                                            <li runat="server" visible='<%# PageAction("Active") %>'>
+                                                                <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalActive" onclick='<%# String.Format("return showActive(`{0}`, `{1}`);", Eval("Id").ToString(), Convert.ToInt32(Eval("Active"))) %>'><%# TextActive(Eval("Active")) %></a>
+                                                            </li>
                                                             <li>
                                                                 <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('Blinds', '<%# Eval("Id") %>')">Log</a>
                                                             </li>
@@ -169,6 +172,25 @@
         </div>
     </div>
 
+    <div class="modal modal-blur fade" id="modalActive" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <h5 class="modal-title white" id="titleActive"></h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <asp:TextBox runat="server" ID="txtIdActive" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtActive" style="display:none;"></asp:TextBox>
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnActive" CssClass="btn btn-primary" Text="Confirm" OnClick="btnActive_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal modal-blur fade" id="modalLog" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -217,6 +239,19 @@
             $("#modalProcess").modal("show");
         }
 
+        function showActive(id, active) {
+            document.getElementById("<%=txtIdActive.ClientID %>").value = id;
+            document.getElementById("<%=txtActive.ClientID %>").value = active;
+
+            let title = "";
+            if (active === "1") {
+                title = "Disable Blind Type";
+            } else {
+                title = "Enable Blind Type";
+            }
+            document.getElementById("titleActive").innerHTML = title;
+        }
+
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
             $("#tblLogs tbody").html("");
@@ -251,7 +286,7 @@
             });
         }
 
-        ["modalProcess", "modalLog"].forEach(function (id) {
+        ["modalProcess", "modalLog", "modalActive"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

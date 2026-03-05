@@ -204,6 +204,8 @@
         </div>
     </div>
 
+    <asp:HiddenField runat="server" ID="hiddenLoginId" />
+
     <script type="text/javascript">
         function showName() {
             $("#modalName").modal("show");

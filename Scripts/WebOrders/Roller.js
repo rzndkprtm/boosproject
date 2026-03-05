@@ -18,22 +18,23 @@ $("#cancel").on("click", () => window.location.href = `/order/detail?orderid=${h
 $("#vieworder").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
 
 $("#blindtype").on("change", function () {
+    bindControlType($(this).val());
     bindTubeType($(this).val());
     bindMounting($(this).val());
 });
 
-$("#tubetype").on("change", function () {
-    const blindtype = document.getElementById("blindtype").value;
-
-    bindControlType(blindtype, $(this).val());
-});
-
 $("#controltype").on("change", function () {
     const blindtype = document.getElementById("blindtype").value;
-    const tubetype = document.getElementById("tubetype").value;
 
-    bindColourType(blindtype, tubetype, $(this).val());
+    bindTubeType(blindtype, $(this).val());    
     bindChainRemote(designId, blindtype, $(this).val());
+});
+
+$("#tubetype").on("change", function () {
+    const blindtype = document.getElementById("blindtype").value;
+    const controltype = document.getElementById("controltype").value;
+
+    bindColourType(blindtype, controltype, $(this).val());
 });
 
 $("#colourtype").on("change", function () {
@@ -606,85 +607,21 @@ function bindBlindType(designType) {
     });
 }
 
-function bindTubeType(blindType) {
-    return new Promise((resolve, reject) => {
-        const tubetype = document.getElementById("tubetype");
-        tubetype.innerHTML = "";
-
-        if (!blindType) {
-            const selectedValue = tubetype.value || "";
-            Promise.all([
-                bindControlType(blindType, selectedValue),
-                bindFabricType(designId)
-            ]).then(resolve).catch(reject);
-            return;
-        }
-
-        let listData = { type: "TubeType", companydetailid: companyDetailId, blindtype: blindType, action: itemAction };
-
-        $.ajax({
-            type: "POST",
-            url: "Method.aspx/ListData",
-            data: JSON.stringify({ data: listData }),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (response) {
-                if (Array.isArray(response.d)) {
-                    tubetype.innerHTML = "";
-
-                    if (response.d.length > 1) {
-                        const defaultOption = document.createElement("option");
-                        defaultOption.text = "";
-                        defaultOption.value = "";
-                        tubetype.add(defaultOption);
-                    }
-
-                    response.d.forEach(function (item) {
-                        const option = document.createElement("option");
-                        option.value = item.Value;
-                        option.text = item.Text;
-                        tubetype.add(option);
-                    });
-
-                    if (response.d.length === 1) {
-                        tubetype.selectedIndex = 0;
-                    }
-
-                    const selectedValue = tubetype.value || "";
-                    Promise.all([
-                        bindControlType(blindType, selectedValue),
-                        bindFabricType(designId)
-                    ]).then(resolve).catch(reject);
-                } else {
-                    const selectedValue = tubetype.value || "";
-                    Promise.all([
-                        bindControlType(blindType, selectedValue),
-                        bindFabricType(designId)
-                    ]).then(resolve).catch(reject);
-                }
-            },
-            error: function (error) {
-                reject(error);
-            }
-        });
-    });
-}
-
-function bindControlType(blindType, tubeType) {
+function bindControlType(blindType) {
     return new Promise((resolve, reject) => {
         const controltype = document.getElementById("controltype");
         controltype.innerHTML = "";
 
-        if (!blindType || !tubeType) {
+        if (!blindType) {
             const selectedValue = controltype.value || "";
             Promise.all([
-                bindColourType(blindType, tubeType, selectedValue),
+                bindTubeType(blindType, selectedValue),
                 bindChainRemote(designId, blindType, selectedValue)
             ]).then(resolve).catch(reject);
             return;
         }
 
-        let listData = { type: "ControlType", companydetailid: companyDetailId, blindtype: blindType, tubetype: tubeType, action: itemAction };
+        let listData = { type: "ControlTypeRoller", companydetailid: companyDetailId, blindtype: blindType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -716,13 +653,13 @@ function bindControlType(blindType, tubeType) {
 
                     const selectedValue = controltype.value || "";
                     Promise.all([
-                        bindColourType(blindType, tubeType, selectedValue),
+                        bindTubeType(blindType, selectedValue),
                         bindChainRemote(designId, blindType, selectedValue)
                     ]).then(resolve).catch(reject);
                 } else {
                     const selectedValue = controltype.value || "";
                     Promise.all([
-                        bindColourType(blindType, tubeType, selectedValue),
+                        bindTubeType(blindType, selectedValue),
                         bindChainRemote(designId, blindType, selectedValue)
                     ]).then(resolve).catch(reject);
                 }
@@ -733,6 +670,69 @@ function bindControlType(blindType, tubeType) {
         });
     });
 }
+
+function bindTubeType(blindType, controlType) {
+    return new Promise((resolve, reject) => {
+        const tubetype = document.getElementById("tubetype");
+        tubetype.innerHTML = "";
+
+        if (!blindType || !controlType) {
+            const selectedValue = tubetype.value || "";
+            Promise.all([
+                bindColourType(blindType, controlType, selectedValue)
+            ]).then(resolve).catch(reject);
+            return;
+        }
+
+        let listData = { type: "TubeTypeRoller", companydetailid: companyDetailId, blindtype: blindType, controltype:controlType, action: itemAction };
+
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/ListData",
+            data: JSON.stringify({ data: listData }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (Array.isArray(response.d)) {
+                    tubetype.innerHTML = "";
+
+                    if (response.d.length > 1) {
+                        const defaultOption = document.createElement("option");
+                        defaultOption.text = "";
+                        defaultOption.value = "";
+                        tubetype.add(defaultOption);
+                    }
+
+                    response.d.forEach(function (item) {
+                        const option = document.createElement("option");
+                        option.value = item.Value;
+                        option.text = item.Text;
+                        tubetype.add(option);
+                    });
+
+                    if (response.d.length === 1) {
+                        tubetype.selectedIndex = 0;
+                    }
+
+                    const selectedValue = tubetype.value || "";
+                    Promise.all([
+                        bindColourType(blindType, controlType, selectedValue),
+                    ]).then(resolve).catch(reject);
+                } else {
+                    const selectedValue = tubetype.value || "";
+                    Promise.all([
+                        bindColourType(blindType, controlType, selectedValue)
+                    ]).then(resolve).catch(reject);
+                }
+            },
+            error: function (error) {
+                reject(error);
+            }
+        });
+    });
+}
+
+
 
 function bindColourType(blindType, tubeType, controlType) {
     return new Promise((resolve, reject) => {
@@ -2742,13 +2742,13 @@ function setFormValues(itemData) {
         el.value = value || "";
     });
 
-    if (itemAction === "copy") {
-        const resetFields = ["room", "notes"];
-        resetFields.forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.value = "";
-        });
-    }
+    //if (itemAction === "copy") {
+    //    const resetFields = ["room", "notes"];
+    //    resetFields.forEach(id => {
+    //        const el = document.getElementById(id);
+    //        if (el) el.value = "";
+    //    });
+    //}
 }
 
 function fillSelect(selector, list, selected = null) {
@@ -2901,8 +2901,8 @@ async function bindItemOrder(itemId, companyDetailId, action) {
         const data = response.d;
 
         fillSelect("#blindtype", data.BlindTypes);
-        fillSelect("#tubetype", data.TubeTypes);
         fillSelect("#controltype", data.ControlTypes);
+        fillSelect("#tubetype", data.TubeTypes);        
         fillSelect("#colourtype", data.ColourTypes);
         fillSelect("#mounting", data.Mountings);
 

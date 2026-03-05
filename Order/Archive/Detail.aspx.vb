@@ -8,9 +8,7 @@ Partial Class Order_Archive_Detail
     Inherits Page
 
     Dim archiveClass As New ArchiveClass
-    Dim mailingClass As New MailingClass
 
-    Dim dataMailing As Object() = Nothing
     Dim dataLog As Object() = Nothing
     Dim url As String = String.Empty
 
@@ -57,8 +55,6 @@ Partial Class Order_Archive_Detail
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindDataOrder", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -347,8 +343,6 @@ Partial Class Order_Archive_Detail
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindDataOrder", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub

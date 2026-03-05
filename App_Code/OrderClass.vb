@@ -65,16 +65,23 @@ Public Class OrderClass
 
     Public Function GetDataTableSP(spName As String, params As List(Of SqlParameter)) As DataTable
         Dim dt As New DataTable()
-        Using conn As New SqlConnection(myConn)
-            Using cmd As New SqlCommand(spName, conn)
-                cmd.CommandType = CommandType.StoredProcedure
-                cmd.Parameters.AddRange(params.ToArray())
+        Try
+            Using conn As New SqlConnection(myConn)
+                Using cmd As New SqlCommand(spName, conn)
+                    cmd.CommandType = CommandType.StoredProcedure
 
-                Using da As New SqlDataAdapter(cmd)
-                    da.Fill(dt)
+                    If params IsNot Nothing AndAlso params.Count > 0 Then
+                        cmd.Parameters.AddRange(params.ToArray())
+                    End If
+
+                    Using da As New SqlDataAdapter(cmd)
+                        da.Fill(dt)
+                    End Using
                 End Using
             End Using
-        End Using
+        Catch ex As Exception
+            dt = New DataTable()
+        End Try
         Return dt
     End Function
 
@@ -696,6 +703,28 @@ Public Class OrderClass
         Return result
     End Function
 
+    Public Function GetControlType(controlId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(controlId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using myCmd As New SqlCommand("SELECT Type FROM ProductControls WHERE Id=@Id", thisConn)
+                        myCmd.Parameters.AddWithValue("@Id", controlId)
+
+                        thisConn.Open()
+                        Dim obj = myCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
     Public Function GetColourName(colourId As String) As String
         Dim result As String = String.Empty
         Try
@@ -920,7 +949,6 @@ Public Class OrderClass
         Try
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As New SqlCommand("SELECT TOP 1 Id FROM OrderHeaders ORDER BY Id DESC", thisConn)
-
                     thisConn.Open()
 
                     Dim lastId As Object = myCmd.ExecuteScalar()
@@ -942,7 +970,6 @@ Public Class OrderClass
         Try
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As New SqlCommand("SELECT TOP 1 Id FROM OrderDetails ORDER BY Id DESC", thisConn)
-
                     thisConn.Open()
 
                     Dim lastId As Object = myCmd.ExecuteScalar()
@@ -964,7 +991,6 @@ Public Class OrderClass
         Try
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As New SqlCommand("SELECT TOP 1 Id FROM OrderReworks ORDER BY Id DESC", thisConn)
-
                     thisConn.Open()
 
                     Dim lastId As Object = myCmd.ExecuteScalar()
@@ -986,7 +1012,6 @@ Public Class OrderClass
         Try
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As New SqlCommand("SELECT TOP 1 Id FROM OrderReworkDetails ORDER BY Id DESC", thisConn)
-
                     thisConn.Open()
 
                     Dim lastId As Object = myCmd.ExecuteScalar()
@@ -1068,6 +1093,28 @@ Public Class OrderClass
         Return result
     End Function
 
+    Public Function GetCustomerMinimum(customerId As String) As Boolean
+        Dim result As Boolean = True
+        Try
+            If Not String.IsNullOrEmpty(customerId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using myCmd As New SqlCommand("SELECT MinSurcharge FROM Customers WHERE Id=@Id", thisConn)
+                        myCmd.Parameters.AddWithValue("@Id", customerId)
+                        thisConn.Open()
+
+                        Dim obj = myCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = True
+        End Try
+        Return result
+    End Function
+
     Public Function GetTotalItemOrder(headerId As String) As Integer
         Dim result As String = 0
         Try
@@ -1111,10 +1158,10 @@ Public Class OrderClass
 
 
     ' PRICING
-    Public Function GetGridPrice(data As Object()) As Decimal
-        Dim result As Decimal = 0D
-        Try
-            Dim productGroupId As String = Convert.ToString(data(0))
+
+    Public Function GetGridPrice(data As Object()) As DataRow
+        'Try
+        Dim productGroupId As String = Convert.ToString(data(0))
             Dim priceGroupId As String = Convert.ToString(data(1))
             Dim drop As Integer = Convert.ToInt32(data(2))
             Dim width As Integer = Convert.ToInt32(data(3))
@@ -1125,58 +1172,25 @@ Public Class OrderClass
                 If width > 0 AndAlso width < 1000 Then width = 1000
             End If
 
-            Using thisConn As New SqlConnection(myConn)
-                thisConn.Open()
-                Using myCmd As New SqlCommand(String.Format("SELECT TOP 1 Price FROM PriceBases WHERE ProductGroupId='{0}' AND PriceGroupId='{1}' AND Height>={2} AND Width>={3} AND Category='{4}' AND Price>=0 ORDER BY Height, Width, Price ASC", productGroupId, priceGroupId, drop, width, category), thisConn)
-                    Using rdResult = myCmd.ExecuteReader
-                        If rdResult.HasRows Then
-                            While rdResult.Read
-                                result = rdResult.Item(0)
-                            End While
-                        End If
-                    End Using
-                End Using
-                thisConn.Close()
-            End Using
-        Catch ex As Exception
-            result = 1
-        End Try
-        Return result
-    End Function
-
-    Public Function GetGridMethod(data As Object()) As String
-        Dim result As String = String.Empty
-        Try
-            Dim productGroupId As String = Convert.ToString(data(0))
-            Dim priceGroupId As String = Convert.ToString(data(1))
-            Dim drop As Integer = Convert.ToInt32(data(2))
-            Dim width As Integer = Convert.ToInt32(data(3))
-            Dim category As String = Convert.ToString(data(4))
-
-            If priceGroupId = "5" OrElse priceGroupId = "19" Then
-                If drop > 0 AndAlso drop < 1000 Then drop = 1000
-                If width > 0 AndAlso width < 1000 Then width = 1000
-            End If
+            Dim thisString As String = String.Format("SELECT TOP 1 * FROM PriceBases WHERE ProductGroupId='{0}' AND PriceGroupId='{1}' AND Height>='{2}' AND Width>='{3}' AND Category='{4}' AND Price>=0 ORDER BY Height, Width, Price, Conditional ASC", productGroupId, priceGroupId, drop, width, category)
 
             Using thisConn As New SqlConnection(myConn)
-                thisConn.Open()
-                Using myCmd As New SqlCommand(String.Format("SELECT TOP 1 Method FROM PriceBases WHERE ProductGroupId='{0}' AND PriceGroupId='{1}' AND Height>={2} AND Width>={3} AND Category='{4}' AND Price>=0 ORDER BY Height, Width, Price ASC", productGroupId, priceGroupId, drop, width, category), thisConn)
-                    Using rdResult = myCmd.ExecuteReader
-                        If rdResult.HasRows Then
-                            While rdResult.Read
-                                result = rdResult.Item(0).ToString()
-                            End While
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using thisAdapter As New SqlDataAdapter(thisCmd)
+                        Dim dt As New DataTable()
+                        thisAdapter.Fill(dt)
+
+                        If dt.Rows.Count > 0 Then
+                            Return dt.Rows(0)
                         Else
-                            result = String.Empty
+                            Return Nothing
                         End If
                     End Using
                 End Using
-                thisConn.Close()
             End Using
-        Catch ex As Exception
-            result = String.Empty
-        End Try
-        Return result
+        'Catch ex As Exception
+        '    Return Nothing
+        'End Try
     End Function
 
     Public Sub ResetPriceDetail(headerId As String, itemId As String)
@@ -1286,6 +1300,9 @@ Public Class OrderClass
                 Dim priceAdditional As String = thisData("PriceAdditional").ToString()
                 Dim priceAdditionalB As String = thisData("PriceAdditionalB").ToString()
 
+                Dim priceAdditionalName As String = GetPriceProductGroupName(priceAdditional)
+                Dim priceAdditionalNameB As String = GetPriceProductGroupName(priceAdditionalB)
+
                 Dim width As String = thisData("Width").ToString()
                 Dim widthB As String = thisData("WidthB").ToString()
                 Dim widthC As String = thisData("widthC").ToString()
@@ -1375,40 +1392,62 @@ Public Class OrderClass
                 If Not String.IsNullOrEmpty(priceProductGroupId) Then
                     itemNumber = 1
 
-                    objectArray = {priceProductGroupId, priceGroup, drop, width, "Sell"}
+                    Dim sellArray As Object() = {priceProductGroupId, priceGroup, drop, width, "Sell"}
                     If designName = "Skyline Shutter Express" OrElse designName = "Skyline Shutter Ocean" OrElse designName = "Evolve Shutter Express" OrElse designName = "Evolve Shutter Ocean" Then
-                        objectArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Sell"}
+                        sellArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Sell"}
                     End If
                     If designName = "Window" OrElse designName = "Door" Then
-                        objectArray = {priceProductGroupId, doorPriceGroup, drop, width, "Sell"}
+                        sellArray = {priceProductGroupId, doorPriceGroup, drop, width, "Sell"}
                     End If
 
-                    Dim gridType As String = GetGridMethod(objectArray)
+                    Dim dataPriceSell As DataRow = GetGridPrice(sellArray)
+                    Dim gridSellMethod As String = String.Empty
+                    Dim gridSellPrice As Decimal = 0D
+                    Dim gridSellConditional As String = String.Empty
 
-                    Dim gridSell As Decimal = GetGridPrice(objectArray)
-                    Dim gridSellAdditional As Decimal = 0
+                    If dataPriceSell IsNot Nothing Then
+                        gridSellMethod = dataPriceSell("Method").ToString()
+                        If Not IsDBNull(dataPriceSell("Price")) Then
+                            gridSellPrice = Convert.ToDecimal(dataPriceSell("Price"))
+                        End If
+                        gridSellConditional = dataPriceSell("Conditional").ToString()
+                    End If
 
+                    Dim gridSellAdditional As Decimal = 0D
                     If Not String.IsNullOrEmpty(priceAdditional) Then
-                        objectArray = {priceAdditional, priceGroup, 0, width, "Sell"}
-                        gridSellAdditional = GetGridPrice(objectArray)
+                        Dim additionalArray As Object() = {priceAdditional, priceGroup, 0, width, "Sell"}
+                        Dim addData As DataRow = GetGridPrice(additionalArray)
+                        If addData IsNot Nothing Then
+                            gridSellAdditional = addData("Price")
+                        End If
                     End If
 
-                    objectArray = {priceProductGroupId, priceGroup, drop, width, "Buy"}
+                    Dim buyArray As Object() = {priceProductGroupId, priceGroup, drop, width, "Buy"}
                     If designName = "Skyline Shutter Express" OrElse designName = "Skyline Shutter Ocean" OrElse designName = "Evolve Shutter Express" OrElse designName = "Evolve Shutter Ocean" Then
-                        objectArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Buy"}
+                        buyArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Buy"}
                     End If
                     If designName = "Window" OrElse designName = "Door" Then
-                        objectArray = {priceProductGroupId, doorPriceGroup, drop, width, "Buy"}
+                        buyArray = {priceProductGroupId, doorPriceGroup, drop, width, "Buy"}
                     End If
-                    Dim gridBuy As Decimal = GetGridPrice(objectArray)
 
-                    Dim gridBuyAdditional As Decimal = 0
+                    Dim dataPriceBuy As DataRow = GetGridPrice(buyArray)
+                    Dim gridBuy As Decimal = 0D
+                    If dataPriceBuy IsNot Nothing Then
+                        If Not IsDBNull(dataPriceBuy("Price")) Then
+                            gridBuy = Convert.ToDecimal(dataPriceBuy("Price"))
+                        End If
+                    End If
+
+                    Dim gridBuyAdditional As Decimal = 0D
                     If Not String.IsNullOrEmpty(priceAdditional) Then
-                        objectArray = {priceAdditional, priceGroup, 0, width, "Buy"}
-                        gridBuyAdditional = GetGridPrice(objectArray)
+                        Dim additionalArray As Object() = {priceAdditional, priceGroup, 0, width, "Buy"}
+                        Dim addData As DataRow = GetGridPrice(additionalArray)
+                        If addData IsNot Nothing Then
+                            gridBuyAdditional = addData("Price")
+                        End If
                     End If
 
-                    Dim costSell As Decimal = gridSell
+                    Dim costSell As Decimal = gridSellPrice
                     Dim costSellAdditional As Decimal = gridSellAdditional
 
                     Dim costBuy As Decimal = gridBuy
@@ -1430,14 +1469,21 @@ Public Class OrderClass
 
                             If discountType = "Designs" Then
                                 If dataId = designId Then
+                                    If designName = "Panel Glide" AndAlso (blindName = "Panel Only" OrElse blindName = "Track Only") Then
+                                        Continue For
+                                    End If
+                                    If designName = "Vertical" AndAlso (blindName = "Slat Only" OrElse blindName = "Track Only") Then
+                                        Continue For
+                                    End If
                                     Dim baseValue As Decimal = costSell * discountValue / 100
-                                    If designName = "Roller Blind" AndAlso (tubeName.Contains("Gear Reduction") OrElse tubeName.Contains("Sunboss") OrElse tubeName = "Standard") Then
+                                    If gridSellConditional = "STD / GR $7" Then
                                         baseValue = (costSell - 7) * discountValue / 100
                                     End If
+
                                     Dim additionalValue As Decimal = costSellAdditional * discountValue / 100
 
                                     thisSell = costSell - baseValue
-                                    If designName = "Roller Blind" AndAlso (tubeName.Contains("Gear Reduction") OrElse tubeName.Contains("Sunboss") OrElse tubeName = "Standard") Then
+                                    If gridSellConditional = "STD / GR $7" Then
                                         thisSell = (costSell - 7) - baseValue + 7
                                     End If
                                     thisSellAdditional = gridSellAdditional - additionalValue
@@ -1450,13 +1496,13 @@ Public Class OrderClass
                             If discountType = "PriceProductGroups" Then
                                 If dataId = priceProductGroupId Then
                                     Dim baseValue As Decimal = costSell * discountValue / 100
-                                    If designName = "Roller Blind" AndAlso (tubeName.Contains("Gear Reduction") OrElse tubeName.Contains("Sunboss") OrElse tubeName = "Standard") Then
+                                    If gridSellConditional = "STD / GR $7" Then
                                         baseValue = (costSell - 7) * discountValue / 100
                                     End If
                                     Dim additionalValue As Decimal = costSellAdditional * discountValue / 100
 
                                     thisSell = costSell - baseValue
-                                    If designName = "Roller Blind" AndAlso (tubeName.Contains("Gear Reduction") OrElse tubeName.Contains("Sunboss") OrElse tubeName = "Standard") Then
+                                    If gridSellConditional = "STD / GR $7" Then
                                         thisSell = (costSell - 7) - baseValue + 7
                                     End If
                                     thisSellAdditional = gridSellAdditional - additionalValue
@@ -1468,31 +1514,31 @@ Public Class OrderClass
                         Next
                     End If
 
-                    If gridType = "Square Metre" Then
-                        If companyId = "3" Then
+                    If gridSellMethod = "Square Metre" Then
+                        If companyDetailId = "2" OrElse companyDetailId = "3" OrElse companyDetailId = "4" OrElse companyDetailId = "8" Then
+                            thisSell = thisSell * squareMetre
+                        End If
+                        If companyDetailId = "5" OrElse companyDetailId = "6" Then
                             If squareMetre < 1 Then thisSell = thisSell * 1
                             If squareMetre >= 1 Then thisSell = thisSell * squareMetre
-                        End If
-                        If companyId = "2" OrElse companyId = "4" OrElse companyId = "5" Then
-                            thisSell = thisSell * squareMetre
                         End If
                         thisBuy = thisBuy * squareMetre
                     End If
 
-                    If gridType = "Linear Metre" Then
-                        If companyId = "3" Then
+                    If gridSellMethod = "Linear Metre" Then
+                        If companyDetailId = "2" OrElse companyDetailId = "3" OrElse companyDetailId = "4" OrElse companyDetailId = "8" Then
+                            thisSell = thisSell * linearMetre
+                        End If
+                        If companyDetailId = "5" OrElse companyDetailId = "6" Then
                             If linearMetre < 1 Then thisSell = thisSell * 1
                             If linearMetre >= 1 Then thisSell = thisSell * linearMetre
-                        End If
-                        If companyId = "2" OrElse companyId = "4" OrElse companyId = "5" Then
-                            thisSell = thisSell * linearMetre
                         End If
                         thisBuy = thisBuy * linearMetre
                     End If
 
                     If designName = "Skyline Shutter Express" OrElse designName = "Skyline Shutter Ocean" OrElse designName = "Evolve Shutter Express" OrElse designName = "Evolve Shutter Ocean" Then
-                        If companyId = "2" OrElse companyId = "4" Then
-                            If squareMetre <= 0.75 Then thisSell = gridSell * 0.75
+                        If companyDetailId = "2" OrElse companyDetailId = "3" OrElse companyDetailId = "4" Then
+                            If squareMetre <= 0.75 Then thisSell = gridSellPrice * 0.75
                         End If
                     End If
 
@@ -1538,8 +1584,17 @@ Public Class OrderClass
                                     If promoType = "Fabrics" AndAlso designName = "Roller Blind" Then
                                         If dataId = fabricId Then
                                             Dim baseValue As Decimal = costSell * promoValue / 100
+                                            If designName = "Roller Blind" Then
+
+                                            End If
+                                            If gridSellConditional = "STD / GR $7" Then
+                                                baseValue = (costSell - 7) * promoValue / 100
+                                            End If
 
                                             thisSell = costSell - baseValue
+                                            If gridSellConditional = "STD / GR $7" Then
+                                                thisSell = (costSell - 7) - baseValue + 7
+                                            End If
                                             costSell = thisSell
                                         End If
                                     End If
@@ -1547,8 +1602,13 @@ Public Class OrderClass
                                     If promoType = "FabricColours" AndAlso designName = "Roller Blind" Then
                                         If dataId = fabricColourId Then
                                             Dim baseValue As Decimal = costSell * promoValue / 100
-
+                                            If gridSellConditional = "STD / GR $7" Then
+                                                baseValue = (costSell - 7) * promoValue / 100
+                                            End If
                                             thisSell = costSell - baseValue
+                                            If gridSellConditional = "STD / GR $7" Then
+                                                thisSell = (costSell - 7) - baseValue + 7
+                                            End If
                                             costSell = thisSell
                                         End If
                                     End If
@@ -1575,26 +1635,23 @@ Public Class OrderClass
                         costingDescription = String.Format("#1 {0}", priceProductGroupName)
                     End If
 
-                    objectArray = {headerId, itemId, itemNumber, "Base", costingDescription, thisBuy, thisSell}
-                    OrderCostings(objectArray)
+                    Dim costingArray As Object() = {headerId, itemId, itemNumber, "Base", costingDescription, thisBuy, thisSell}
+                    OrderCostings(costingArray)
 
-                    If blindName = "Single Curtain & Track" OrElse blindName = "Double Curtain & Track" Then
-                        costingDescription = String.Format("Track for Curtain ({0})", trackType)
-                        If blindName = "Double Curtain & Track" Then
-                            costingDescription = String.Format("#1 Track for Curtain ({0})", trackType)
-                        End If
-                        objectArray = {headerId, itemId, itemNumber, "Base", costingDescription, thisBuyAdditional, thisSellAdditional}
-                        OrderCostings(objectArray)
+                    If designName = "Curtain" AndAlso blindName = "Complete Set" Then
+                        costingDescription = priceAdditionalName
+                        costingArray = {headerId, itemId, itemNumber, "Base", costingDescription, thisBuyAdditional, thisSellAdditional}
+                        OrderCostings(costingArray)
                     End If
 
-                    objectArray = {headerId, itemId, itemNumber, priceGroup}
+                    costingArray = {headerId, itemId, itemNumber, priceGroup}
                     If designName = "Skyline Shutter Express" OrElse designName = "Skyline Shutter Ocean" OrElse designName = "Evolve Shutter Express" OrElse designName = "Evolve Shutter Ocean" Then
-                        objectArray = {headerId, itemId, itemNumber, shutterPriceGroup}
+                        costingArray = {headerId, itemId, itemNumber, shutterPriceGroup}
                     End If
                     If designName = "Window" OrElse designName = "Door" Then
-                        objectArray = {headerId, itemId, itemNumber, doorPriceGroup}
+                        costingArray = {headerId, itemId, itemNumber, doorPriceGroup}
                     End If
-                    CalculateCharge(objectArray)
+                    CalculateCharge(costingArray)
                 End If
 
                 If Not String.IsNullOrEmpty(priceProductGroupIdB) Then
@@ -1605,38 +1662,33 @@ Public Class OrderClass
                         objectArray = {priceProductGroupIdB, doorPriceGroup, drop, width, "Sell"}
                     End If
 
-                    Dim gridType As String = GetGridMethod(objectArray)
-                    Dim gridSell As Decimal = GetGridPrice(objectArray)
-                    Dim gridSellAdditional As Decimal = 0
+                    Dim dataPriceSell As DataRow = GetGridPrice(objectArray)
+                    Dim gridSellMethod As String = String.Empty
+                    Dim gridSellPrice As Decimal = 0D
+                    Dim gridSellConditional As String = String.Empty
 
-                    If Not String.IsNullOrEmpty(priceAdditionalB) Then
-                        objectArray = {priceAdditionalB, priceGroup, 0, widthB, "Sell"}
-                        gridSellAdditional = GetGridPrice(objectArray)
+                    If Not dataPriceSell Is Nothing Then
+                        gridSellMethod = dataPriceSell("Method").ToString()
+                        gridSellPrice = dataPriceSell("Price")
+                        gridSellConditional = dataPriceSell("Conditional").ToString()
                     End If
 
                     objectArray = {priceProductGroupIdB, priceGroup, dropB, widthB, "Buy"}
                     If designName = "Door" Then
                         objectArray = {priceProductGroupIdB, doorPriceGroup, drop, width, "Buy"}
                     End If
-                    Dim gridBuy As Decimal = GetGridPrice(objectArray)
-                    Dim gridBuyAdditional As Decimal = 0
 
-                    If Not String.IsNullOrEmpty(priceAdditionalB) Then
-                        objectArray = {priceAdditionalB, priceGroup, 0, widthB, "Buy"}
-                        gridBuyAdditional = GetGridPrice(objectArray)
+                    Dim dataPriceBuy As DataRow = GetGridPrice(objectArray)
+                    Dim gridBuy As Decimal = 0D
+                    If Not dataPriceBuy Is Nothing Then
+                        gridBuy = dataPriceBuy("Price")
                     End If
 
-                    Dim costSell As Decimal = gridSell
-                    Dim costSellAdditional As Decimal = gridSellAdditional
-
+                    Dim costSell As Decimal = gridSellPrice
                     Dim costBuy As Decimal = gridBuy
-                    Dim costBuyAdditional As Decimal = gridBuyAdditional
 
                     thisSell = costSell
-                    thisSellAdditional = costSellAdditional
-
                     thisBuy = costBuy
-                    thisBuyAdditional = costBuyAdditional
 
                     Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END ASC")
                     If discountData.Rows.Count > 0 Then
@@ -1648,61 +1700,53 @@ Public Class OrderClass
                             If discountType = "Designs" Then
                                 If dataId = designId Then
                                     Dim baseValue As Decimal = costSell * discountValue / 100
-                                    If designName = "Roller Blind" AndAlso (tubeName.Contains("Gear Reduction") OrElse tubeName.Contains("Sunboss") OrElse tubeName = "Standard") Then
+                                    If gridSellConditional = "STD / GR $7" Then
                                         baseValue = (costSell - 7) * discountValue / 100
                                     End If
 
-                                    Dim additionalValue As Decimal = costSellAdditional * discountValue / 100
-
                                     thisSell = costSell - baseValue
-                                    If designName = "Roller Blind" AndAlso (tubeName.Contains("Gear Reduction") OrElse tubeName.Contains("Sunboss") OrElse tubeName = "Standard") Then
+                                    If gridSellConditional = "STD / GR $7" Then
                                         thisSell = (costSell - 7) - baseValue + 7
                                     End If
-                                    thisSellAdditional = gridSellAdditional - additionalValue
 
                                     costSell = thisSell
-                                    costSellAdditional = thisSellAdditional
                                 End If
                             End If
 
                             If discountType = "PriceProductGroups" Then
                                 If dataId = priceProductGroupIdB Then
                                     Dim baseValue As Decimal = costSell * discountValue / 100
-                                    If designName = "Roller Blind" AndAlso (tubeName.Contains("Gear Reduction") OrElse tubeName.Contains("Sunboss") OrElse tubeName = "Standard") Then
+                                    If gridSellConditional = "STD / GR $7" Then
                                         baseValue = (costSell - 7) * discountValue / 100
                                     End If
-                                    Dim additionalValue As Decimal = costSellAdditional * discountValue / 100
 
                                     thisSell = costSell - baseValue
-                                    If designName = "Roller Blind" AndAlso (tubeName.Contains("Gear Reduction") OrElse tubeName.Contains("Sunboss") OrElse tubeName = "Standard") Then
+                                    If gridSellConditional = "STD / GR $7" Then
                                         thisSell = (costSell - 7) - baseValue + 7
                                     End If
-                                    thisSellAdditional = gridSellAdditional - additionalValue
-
                                     costSell = thisSell
-                                    costSellAdditional = thisSellAdditional
                                 End If
                             End If
                         Next
                     End If
 
-                    If gridType = "Square Metre" Then
-                        If companyId = "3" Then
+                    If gridSellMethod = "Square Metre" Then
+                        If companyDetailId = "2" OrElse companyDetailId = "3" OrElse companyDetailId = "4" OrElse companyDetailId = "8" Then
+                            thisSell = thisSell * squareMetreB
+                        End If
+                        If companyDetailId = "5" OrElse companyDetailId = "6" Then
                             If squareMetre < 1 Then thisSell = thisSell * 1
                             If squareMetre >= 1 Then thisSell = thisSell * squareMetreB
                         End If
-                        If companyId = "2" OrElse companyId = "4" OrElse companyId = "5" Then
-                            thisSell = thisSell * squareMetreB
-                        End If
                         thisBuy = thisBuy * squareMetreB
                     End If
-                    If gridType = "Linear Metre" Then
-                        If companyId = "3" Then
+                    If gridSellMethod = "Linear Metre" Then
+                        If companyDetailId = "2" OrElse companyDetailId = "3" OrElse companyDetailId = "4" OrElse companyDetailId = "8" Then
+                            thisSell = thisSell * linearMetreB
+                        End If
+                        If companyDetailId = "5" OrElse companyDetailId = "6" Then
                             If linearMetre < 1 Then thisSell = thisSell * 1
                             If linearMetre >= 1 Then thisSell = thisSell * linearMetreB
-                        End If
-                        If companyId = "2" OrElse companyId = "4" OrElse companyId = "5" Then
-                            thisSell = thisSell * linearMetreB
                         End If
                         thisBuy = thisBuy * linearMetreB
                     End If
@@ -1773,12 +1817,6 @@ Public Class OrderClass
                     objectArray = {headerId, itemId, itemNumber, "Base", costingDescription, thisBuy, thisSell}
                     OrderCostings(objectArray)
 
-                    If blindName = "Double Curtain & Track" Then
-                        costingDescription = String.Format("#2 Track for Curtain ({0})", trackTypeb)
-                        objectArray = {headerId, itemId, itemNumber, "Base", costingDescription, thisBuyAdditional, thisSellAdditional}
-                        OrderCostings(objectArray)
-                    End If
-
                     objectArray = {headerId, itemId, itemNumber, priceGroup}
                     If designName = "Door" Then
                         objectArray = {headerId, itemId, itemNumber, doorPriceGroup}
@@ -1791,13 +1829,25 @@ Public Class OrderClass
 
                     objectArray = {priceProductGroupIdC, priceGroup, dropC, widthC, "Sell"}
 
-                    Dim gridType As String = GetGridMethod(objectArray)
-                    Dim gridSell As Decimal = GetGridPrice(objectArray)
+                    Dim dataPriceSell As DataRow = GetGridPrice(objectArray)
+                    Dim gridSellMethod As String = String.Empty
+                    Dim gridSellPrice As Decimal = 0D
+                    Dim gridSellConditional As String = String.Empty
+
+                    If Not dataPriceSell Is Nothing Then
+                        gridSellMethod = dataPriceSell("Method").ToString()
+                        gridSellPrice = dataPriceSell("Price")
+                        gridSellConditional = dataPriceSell("Conditional").ToString()
+                    End If
 
                     objectArray = {priceProductGroupIdC, priceGroup, dropC, widthC, "Buy"}
-                    Dim gridBuy As Decimal = GetGridPrice(objectArray)
+                    Dim dataPriceBuy As DataRow = GetGridPrice(objectArray)
+                    Dim gridBuy As Decimal = 0D
+                    If Not dataPriceBuy Is Nothing Then
+                        gridBuy = dataPriceBuy("Price")
+                    End If
 
-                    Dim costSell As Decimal = gridSell
+                    Dim costSell As Decimal = gridSellPrice
                     Dim costBuy As Decimal = gridBuy
 
                     thisSell = costSell
@@ -1813,12 +1863,12 @@ Public Class OrderClass
                             If discountType = "Designs" Then
                                 If dataId = designId Then
                                     Dim baseValue As Decimal = costSell * discountValue / 100
-                                    If designName = "Roller Blind" AndAlso (tubeName.Contains("Gear Reduction") OrElse tubeName.Contains("Sunboss") OrElse tubeName = "Standard") Then
+                                    If gridSellConditional = "STD / GR $7" Then
                                         baseValue = (costSell - 7) * discountValue / 100
                                     End If
 
                                     thisSell = costSell - baseValue
-                                    If designName = "Roller Blind" AndAlso (tubeName.Contains("Gear Reduction") OrElse tubeName.Contains("Sunboss") OrElse tubeName = "Standard") Then
+                                    If gridSellConditional = "STD / GR $7" Then
                                         thisSell = (costSell - 7) - baseValue + 7
                                     End If
                                     costSell = thisSell
@@ -1828,12 +1878,12 @@ Public Class OrderClass
                             If discountType = "PriceProductGroups" Then
                                 If dataId = priceProductGroupId Then
                                     Dim baseValue As Decimal = costSell * discountValue / 100
-                                    If designName = "Roller Blind" AndAlso (tubeName.Contains("Gear Reduction") OrElse tubeName.Contains("Sunboss") OrElse tubeName = "Standard") Then
+                                    If gridSellConditional = "STD / GR $7" Then
                                         baseValue = (costSell - 7) * discountValue / 100
                                     End If
 
                                     thisSell = costSell - baseValue
-                                    If designName = "Roller Blind" AndAlso (tubeName.Contains("Gear Reduction") OrElse tubeName.Contains("Sunboss") OrElse tubeName = "Standard") Then
+                                    If gridSellConditional = "STD / GR $7" Then
                                         thisSell = (costSell - 7) - baseValue + 7
                                     End If
 
@@ -1904,21 +1954,21 @@ Public Class OrderClass
                         Next
                     End If
 
-                    If gridType = "Square Metre" Then
-                        If companyId = "2" OrElse companyId = "4" OrElse companyId = "5" Then
-                            thisSell = thisSell * squareMetreC
-                        End If
-                        If companyId = "3" Then
+                    If gridSellMethod = "Square Metre" Then
+                        If companyDetailId = "2" OrElse companyDetailId = "3" OrElse companyDetailId = "4" OrElse companyDetailId = "8" Then
                             If squareMetreC < 1 Then thisSell = thisSell * 1
                             If squareMetreC >= 1 Then thisSell = thisSell * squareMetreC
                         End If
+                        If companyDetailId = "5" OrElse companyDetailId = "6" Then
+                            thisSell = thisSell * squareMetreC
+                        End If
                         thisBuy = thisBuy * squareMetreD
                     End If
-                    If gridType = "Linear Metre" Then
-                        If companyId = "2" OrElse companyId = "4" OrElse companyId = "5" Then
+                    If gridSellMethod = "Linear Metre" Then
+                        If companyDetailId = "2" OrElse companyDetailId = "3" OrElse companyDetailId = "4" OrElse companyDetailId = "8" Then
                             thisSell = thisSell * linearMetreC
                         End If
-                        If companyId = "3" Then
+                        If companyDetailId = "5" OrElse companyDetailId = "6" Then
                             If linearMetreC < 1 Then thisSell = thisSell * 1
                             If linearMetreC < 1 Then thisSell = thisSell * thisSell = thisSell * linearMetreC
                         End If
@@ -1938,14 +1988,25 @@ Public Class OrderClass
                     itemNumber = 4
 
                     objectArray = {priceProductGroupIdD, priceGroup, dropD, widthD, "Sell"}
+                    Dim dataPriceSell As DataRow = GetGridPrice(objectArray)
+                    Dim gridSellMethod As String = String.Empty
+                    Dim gridSellPrice As Decimal = 0D
+                    Dim gridSellConditional As String = String.Empty
 
-                    Dim gridType As String = GetGridMethod(objectArray)
-                    Dim gridSell As Decimal = GetGridPrice(objectArray)
+                    If Not dataPriceSell Is Nothing Then
+                        gridSellMethod = dataPriceSell("Method").ToString()
+                        gridSellPrice = dataPriceSell("Price")
+                        gridSellConditional = dataPriceSell("Conditional").ToString()
+                    End If
 
                     objectArray = {priceProductGroupIdD, priceGroup, dropD, widthD, "Buy"}
-                    Dim gridBuy As Decimal = GetGridPrice(objectArray)
+                    Dim dataPriceBuy As DataRow = GetGridPrice(objectArray)
+                    Dim gridBuy As Decimal = 0D
+                    If Not dataPriceBuy Is Nothing Then
+                        gridBuy = dataPriceBuy("Price")
+                    End If
 
-                    Dim costSell As Decimal = gridSell
+                    Dim costSell As Decimal = gridSellPrice
                     Dim costBuy As Decimal = gridBuy
 
                     thisSell = costSell
@@ -1976,12 +2037,12 @@ Public Class OrderClass
                             If discountType = "PriceProductGroups" Then
                                 If dataId = priceProductGroupIdD Then
                                     Dim baseValue As Decimal = costSell * discountValue / 100
-                                    If designName = "Roller Blind" AndAlso (tubeName.Contains("Gear Reduction") OrElse tubeName.Contains("Sunboss") OrElse tubeName = "Standard") Then
+                                    If gridSellConditional = "STD / GR $7" Then
                                         baseValue = (costSell - 7) * discountValue / 100
                                     End If
 
                                     thisSell = costSell - baseValue
-                                    If designName = "Roller Blind" AndAlso (tubeName.Contains("Gear Reduction") OrElse tubeName.Contains("Sunboss") OrElse tubeName = "Standard") Then
+                                    If gridSellConditional = "STD / GR $7" Then
                                         thisSell = (costSell - 7) - baseValue + 7
                                     End If
 
@@ -2052,21 +2113,21 @@ Public Class OrderClass
                         Next
                     End If
 
-                    If gridType = "Square Metre" Then
-                        If companyId = "2" OrElse companyId = "4" OrElse companyId = "5" Then
+                    If gridSellMethod = "Square Metre" Then
+                        If companyDetailId = "2" OrElse companyDetailId = "3" OrElse companyDetailId = "4" OrElse companyDetailId = "8" Then
                             thisSell = thisSell * squareMetreD
                         End If
-                        If companyId = "3" Then
+                        If companyDetailId = "5" OrElse companyDetailId = "6" Then
                             If squareMetreD < 1 Then thisSell = thisSell * 1
                             If squareMetreD >= 1 Then thisSell = thisSell * squareMetreD
                         End If
                         thisBuy = thisBuy * squareMetreD
                     End If
-                    If gridType = "Linear Metre" Then
-                        If companyId = "2" OrElse companyId = "4" OrElse companyId = "5" Then
+                    If gridSellMethod = "Linear Metre" Then
+                        If companyDetailId = "2" OrElse companyDetailId = "3" OrElse companyDetailId = "4" OrElse companyDetailId = "8" Then
                             thisSell = thisSell * linearMetreD
                         End If
-                        If companyId = "3" Then
+                        If companyDetailId = "5" OrElse companyDetailId = "6" Then
                             If linearMetreD < 1 Then thisSell = thisSell * 1
                             If linearMetreD >= 1 Then thisSell = thisSell * linearMetreD
                         End If
@@ -2087,13 +2148,26 @@ Public Class OrderClass
 
                     objectArray = {priceProductGroupIdE, priceGroup, dropE, widthE, "Sell"}
 
-                    Dim gridType As String = GetGridMethod(objectArray)
-                    Dim gridSell As Decimal = GetGridPrice(objectArray)
+                    Dim dataPriceSell As DataRow = GetGridPrice(objectArray)
+                    Dim gridSellMethod As String = String.Empty
+                    Dim gridSellPrice As Decimal = 0D
+                    Dim gridSellConditional As String = String.Empty
+
+                    If Not dataPriceSell Is Nothing Then
+                        gridSellMethod = dataPriceSell("Method").ToString()
+                        gridSellPrice = dataPriceSell("Price")
+                        gridSellConditional = dataPriceSell("Conditional").ToString()
+                    End If
 
                     objectArray = {priceProductGroupIdE, priceGroup, dropE, widthE, "Buy"}
-                    Dim gridBuy As Decimal = GetGridPrice(objectArray)
 
-                    Dim costSell As Decimal = gridSell
+                    Dim dataPriceBuy As DataRow = GetGridPrice(objectArray)
+                    Dim gridBuy As Decimal = 0D
+                    If Not dataPriceBuy Is Nothing Then
+                        gridBuy = dataPriceBuy("Price")
+                    End If
+
+                    Dim costSell As Decimal = gridSellPrice
                     Dim costBuy As Decimal = gridBuy
 
                     thisSell = costSell
@@ -2109,12 +2183,12 @@ Public Class OrderClass
                             If discountType = "Designs" Then
                                 If dataId = designId Then
                                     Dim baseValue As Decimal = costSell * discountValue / 100
-                                    If designName = "Roller Blind" AndAlso (tubeName.Contains("Gear Reduction") OrElse tubeName.Contains("Sunboss") OrElse tubeName = "Standard") Then
+                                    If gridSellConditional = "STD / GR $7" Then
                                         baseValue = (costSell - 7) * discountValue / 100
                                     End If
 
                                     thisSell = costSell - baseValue
-                                    If designName = "Roller Blind" AndAlso (tubeName.Contains("Gear Reduction") OrElse tubeName.Contains("Sunboss") OrElse tubeName = "Standard") Then
+                                    If gridSellConditional = "STD / GR $7" Then
                                         thisSell = (costSell - 7) - baseValue + 7
                                     End If
                                     costSell = thisSell
@@ -2124,12 +2198,12 @@ Public Class OrderClass
                             If discountType = "PriceProductGroups" Then
                                 If dataId = priceProductGroupId Then
                                     Dim baseValue As Decimal = costSell * discountValue / 100
-                                    If designName = "Roller Blind" AndAlso (tubeName.Contains("Gear Reduction") OrElse tubeName.Contains("Sunboss") OrElse tubeName = "Standard") Then
+                                    If gridSellConditional = "STD / GR $7" Then
                                         baseValue = (costSell - 7) * discountValue / 100
                                     End If
 
                                     thisSell = costSell - baseValue
-                                    If designName = "Roller Blind" AndAlso (tubeName.Contains("Gear Reduction") OrElse tubeName.Contains("Sunboss") OrElse tubeName = "Standard") Then
+                                    If gridSellConditional = "STD / GR $7" Then
                                         thisSell = (costSell - 7) - baseValue + 7
                                     End If
 
@@ -2200,12 +2274,24 @@ Public Class OrderClass
                         Next
                     End If
 
-                    If gridType = "Square Metre" Then
-                        thisSell = thisSell * squareMetreE
+                    If gridSellMethod = "Square Metre" Then
+                        If companyDetailId = "2" OrElse companyDetailId = "3" OrElse companyDetailId = "4" OrElse companyDetailId = "8" Then
+                            thisSell = thisSell * squareMetreE
+                        End If
+                        If companyDetailId = "5" OrElse companyDetailId = "6" Then
+                            If squareMetreE < 1 Then thisSell = thisSell * 1
+                            If squareMetreE >= 1 Then thisSell = thisSell * squareMetreE
+                        End If
                         thisBuy = thisBuy * squareMetreE
                     End If
-                    If gridType = "Linear Metre" Then
-                        thisSell = thisSell * linearMetreE
+                    If gridSellMethod = "Linear Metre" Then
+                        If companyDetailId = "2" OrElse companyDetailId = "3" OrElse companyDetailId = "4" OrElse companyDetailId = "8" Then
+                            thisSell = thisSell * linearMetreE
+                        End If
+                        If companyDetailId = "5" OrElse companyDetailId = "6" Then
+                            If linearMetreE < 1 Then thisSell = thisSell * 1
+                            If linearMetreE >= 1 Then thisSell = thisSell * linearMetreE
+                        End If
                         thisBuy = thisBuy * linearMetreE
                     End If
 
@@ -2223,13 +2309,25 @@ Public Class OrderClass
 
                     objectArray = {priceProductGroupIdF, priceGroup, dropF, widthF, "Sell"}
 
-                    Dim gridType As String = GetGridMethod(objectArray)
-                    Dim gridSell As Decimal = GetGridPrice(objectArray)
+                    Dim dataPriceSell As DataRow = GetGridPrice(objectArray)
+                    Dim gridSellMethod As String = String.Empty
+                    Dim gridSellPrice As Decimal = 0D
+                    Dim gridSellConditional As String = String.Empty
+
+                    If Not dataPriceSell Is Nothing Then
+                        gridSellMethod = dataPriceSell("Method").ToString()
+                        gridSellPrice = dataPriceSell("Price")
+                        gridSellConditional = dataPriceSell("Conditional").ToString()
+                    End If
 
                     objectArray = {priceProductGroupIdF, priceGroup, dropF, widthF, "Buy"}
-                    Dim gridBuy As Decimal = GetGridPrice(objectArray)
+                    Dim dataPriceBuy As DataRow = GetGridPrice(objectArray)
+                    Dim gridBuy As Decimal = 0D
+                    If Not dataPriceBuy Is Nothing Then
+                        gridBuy = dataPriceBuy("Price")
+                    End If
 
-                    Dim costSell As Decimal = gridSell
+                    Dim costSell As Decimal = gridSellPrice
                     Dim costBuy As Decimal = gridBuy
 
                     thisSell = costSell
@@ -2245,12 +2343,12 @@ Public Class OrderClass
                             If discountType = "Designs" Then
                                 If dataId = designId Then
                                     Dim baseValue As Decimal = costSell * discountValue / 100
-                                    If designName = "Roller Blind" AndAlso (tubeName.Contains("Gear Reduction") OrElse tubeName.Contains("Sunboss") OrElse tubeName = "Standard") Then
+                                    If gridSellConditional = "STD / GR $7" Then
                                         baseValue = (costSell - 7) * discountValue / 100
                                     End If
 
                                     thisSell = costSell - baseValue
-                                    If designName = "Roller Blind" AndAlso (tubeName.Contains("Gear Reduction") OrElse tubeName.Contains("Sunboss") OrElse tubeName = "Standard") Then
+                                    If gridSellConditional = "STD / GR $7" Then
                                         thisSell = (costSell - 7) - baseValue + 7
                                     End If
                                     costSell = thisSell
@@ -2260,12 +2358,12 @@ Public Class OrderClass
                             If discountType = "PriceProductGroups" Then
                                 If dataId = priceProductGroupId Then
                                     Dim baseValue As Decimal = costSell * discountValue / 100
-                                    If designName = "Roller Blind" AndAlso (tubeName.Contains("Gear Reduction") OrElse tubeName.Contains("Sunboss") OrElse tubeName = "Standard") Then
+                                    If gridSellConditional = "STD / GR $7" Then
                                         baseValue = (costSell - 7) * discountValue / 100
                                     End If
 
                                     thisSell = costSell - baseValue
-                                    If designName = "Roller Blind" AndAlso (tubeName.Contains("Gear Reduction") OrElse tubeName.Contains("Sunboss") OrElse tubeName = "Standard") Then
+                                    If gridSellConditional = "STD / GR $7" Then
                                         thisSell = (costSell - 7) - baseValue + 7
                                     End If
 
@@ -2336,12 +2434,25 @@ Public Class OrderClass
                         Next
                     End If
 
-                    If gridType = "Square Metre" Then
-                        thisSell = thisSell * squareMetreE
+                    If gridSellMethod = "Square Metre" Then
+                        If companyDetailId = "2" OrElse companyDetailId = "3" OrElse companyDetailId = "4" OrElse companyDetailId = "8" Then
+                            thisSell = thisSell * squareMetreE
+                        End If
+                        If companyDetailId = "5" OrElse companyDetailId = "6" Then
+                            If squareMetreE < 1 Then thisSell = thisSell * 1
+                            If squareMetreE >= 1 Then thisSell = thisSell * squareMetreE
+                        End If
+
                         thisBuy = thisBuy * squareMetreE
                     End If
-                    If gridType = "Linear Metre" Then
-                        thisSell = thisSell * linearMetreE
+                    If gridSellMethod = "Linear Metre" Then
+                        If companyDetailId = "2" OrElse companyDetailId = "3" OrElse companyDetailId = "4" OrElse companyDetailId = "8" Then
+                            thisSell = thisSell * linearMetreE
+                        End If
+                        If companyDetailId = "5" OrElse companyDetailId = "6" Then
+                            If linearMetreE < 1 Then thisSell = thisSell * 1
+                            If linearMetreE >= 1 Then thisSell = thisSell * linearMetreE
+                        End If
                         thisBuy = thisBuy * linearMetreE
                     End If
 
@@ -2433,6 +2544,36 @@ Public Class OrderClass
         End Try
     End Sub
 
+    Public Sub OrderCostings_Note(data As Object())
+        Try
+            If data.Length = 7 Then
+                Dim headerId As String = Convert.ToString(data(0))
+                Dim itemId As String = Convert.ToString(data(1))
+                Dim number As Integer = Convert.ToInt32(data(2))
+                Dim type As String = Convert.ToString(data(3))
+                Dim desc As String = Convert.ToString(data(4))
+                Dim buyPrice As Decimal = Convert.ToDecimal(data(5))
+                Dim sellPrice As Decimal = Convert.ToDecimal(data(6))
+
+                Using thisConn As SqlConnection = New SqlConnection(myConn)
+                    Using myCmd As SqlCommand = New SqlCommand("DELETE FROM OrderCostings WHERE HeaderId=@HeaderId AND ItemId=@ItemId AND Type=@Type; INSERT INTO OrderCostings VALUES(NEWID(), @HeaderId, @ItemId, @Number, @Type, @Description, @BuyPrice, @SellPrice)", thisConn)
+                        myCmd.Parameters.AddWithValue("@HeaderId", headerId)
+                        myCmd.Parameters.AddWithValue("@ItemId", itemId)
+                        myCmd.Parameters.AddWithValue("@Number", number)
+                        myCmd.Parameters.AddWithValue("@Type", type)
+                        myCmd.Parameters.AddWithValue("@Description", desc)
+                        myCmd.Parameters.AddWithValue("@BuyPrice", buyPrice)
+                        myCmd.Parameters.AddWithValue("@SellPrice", sellPrice)
+
+                        thisConn.Open()
+                        myCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+        End Try
+    End Sub
+
     Public Sub Logs(data As Object())
         Try
             If data.Length = 4 Then
@@ -2472,7 +2613,7 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(orderId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Dim query As String = "SELECT COUNT(*) FROM OrderReworks WHERE HeaderIdNew=@HeaderId AND Active=1"
+                    Dim query As String = "SELECT COUNT(*) FROM OrderReworks WHERE HeaderId=@HeaderId AND (Status='Unsubmitted' OR Status='Pending Approval' OR Status='Approved') AND Active=1"
                     Using myCmd As New SqlCommand(query, thisConn)
                         myCmd.Parameters.AddWithValue("@HeaderId", orderId)
                         thisConn.Open()
@@ -2484,28 +2625,6 @@ Public Class OrderClass
             End If
         Catch ex As Exception
             result = False
-        End Try
-        Return result
-    End Function
-
-    Public Function CheckRework(headerId As String) As Integer
-        Dim result As Integer = 0
-        Try
-            If Not String.IsNullOrEmpty(headerId) Then
-                Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT COUNT(*) FROM OrderReworks WHERE HeaderId='" & headerId & "' AND (Status='Pending Approval' OR Status='Approved') AND Active=1", thisConn)
-                        myCmd.Parameters.AddWithValue("@OrderId", headerId)
-
-                        thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
-                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
-                            result = obj
-                        End If
-                    End Using
-                End Using
-            End If
-        Catch ex As Exception
-            result = 0
         End Try
         Return result
     End Function
@@ -2525,16 +2644,26 @@ Public Class OrderClass
     End Function
 
     Public Function CheckStringLayoutD(layout As String) As Boolean
-        For i As Integer = 0 To layout.Length - 1
-            If layout(i) = "D"c Then
-                Dim hasDashBefore As Boolean = (i > 0 AndAlso layout(i - 1) = "-"c)
-                Dim hasDashAfter As Boolean = (i < layout.Length - 1 AndAlso layout(i + 1) = "-"c)
-                If Not (hasDashBefore Or hasDashAfter) Then
-                    Return False
-                End If
+        Try
+            If String.IsNullOrEmpty(layout) Then
+                Return False
             End If
-        Next
-        Return True
+
+            For i As Integer = 0 To layout.Length - 1
+                If layout(i) = "D"c Then
+                    Dim hasDashBefore As Boolean = (i > 0 AndAlso layout(i - 1) = "-"c)
+                    Dim hasDashAfter As Boolean = (i < layout.Length - 1 AndAlso layout(i + 1) = "-"c)
+
+                    If Not (hasDashBefore Or hasDashAfter) Then
+                        Return False
+                    End If
+                End If
+            Next
+
+            Return True
+        Catch ex As Exception
+            Return False
+        End Try
     End Function
 
     Public Function GetPanelQty(data As String()) As Integer

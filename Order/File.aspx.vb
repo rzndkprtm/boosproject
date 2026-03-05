@@ -5,9 +5,6 @@ Imports System.IO.Compression
 Partial Class Order_File
     Inherits Page
 
-    Dim mailingClass As New MailingClass
-    Dim dataMailing As Object() = Nothing
-
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
         If pageAccess = False Then
@@ -56,8 +53,6 @@ Partial Class Order_File
                         If Session("RoleName") = "Customer" Then
                             MessageError_DetailFile(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                         End If
-                        dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "linkDetail_Click", ex.ToString()}
-                        mailingClass.WebError(dataMailing)
                     End If
                     ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
                 End Try

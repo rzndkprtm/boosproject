@@ -147,8 +147,6 @@ Partial Class Ticket_Default
                 If Session("RoleName") = "Customer" Then
                     MessageError_Process(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnProcess_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         End Try
@@ -166,8 +164,6 @@ Partial Class Ticket_Default
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "gvList_PageIndexChanging", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -208,8 +204,6 @@ Partial Class Ticket_Default
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindDataTicket", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub

@@ -1,6 +1,8 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
+Imports System.Threading
 Imports System.Web.Services
+Imports System.Xml.XPath
 
 Partial Class Order_Method
     Inherits Page
@@ -142,6 +144,30 @@ Partial Class Order_Method
             Next
         End If
 
+        If type = "ControlTypeRoller" Then
+            Dim thisQuery As String = "SELECT Products.ControlType AS TextValue, ProductControls.Name AS TextName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductControls ON Products.ControlType=ProductControls.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Products.Active=1 GROUP BY Products.ControlType, ProductControls.Name ORDER BY ProductControls.Name ASC"
+            If action = "view" Then
+                thisQuery = "SELECT Products.ControlType AS TextValue, ProductControls.Name AS TextName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductControls ON Products.ControlType=ProductControls.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetailid & "' GROUP BY Products.ControlType, ProductControls.Name ORDER BY ProductControls.Name ASC"
+            End If
+
+            Dim dt As DataTable = orderClass.GetDataTable(thisQuery)
+            For Each row As DataRow In dt.Rows
+                result.Add(New With {.Value = row("TextValue").ToString(), .Text = row("TextName").ToString()})
+            Next
+        End If
+
+        If type = "TubeTypeRoller" Then
+            Dim thisQuery As String = "SELECT ProductTubes.Id, Products.TubeType AS TextValue, ProductTubes.Name AS TextName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductTubes ON Products.TubeType=ProductTubes.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Products.ControlType='" & controltype & "' AND Products.Active=1 GROUP BY ProductTubes.Id, Products.TubeType, ProductTubes.Name ORDER BY ProductTubes.Id ASC"
+            If action = "view" Then
+                thisQuery = "SELECT ProductTubes.Id, Products.TubeType AS TextValue, ProductTubes.Name AS TextName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductTubes ON Products.TubeType=ProductTubes.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Products.ControlType='" & controltype & "' GROUP BY ProductTubes.Id, Products.TubeType, ProductTubes.Name ORDER BY ProductTubes.Id ASC"
+            End If
+
+            Dim dt As DataTable = orderClass.GetDataTable(thisQuery)
+            For Each row As DataRow In dt.Rows
+                result.Add(New With {.Value = row("TextValue").ToString(), .Text = row("TextName").ToString()})
+            Next
+        End If
+
         If type = "ControlType" Then
             Dim thisQuery As String = "SELECT Products.ControlType AS TextValue, ProductControls.Name AS TextName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductControls ON Products.ControlType=ProductControls.Id WHERE Products.BlindId='" & blindtype & "' AND Products.TubeType='" & tubetype & "' AND companyArray.VALUE='" & companydetailid & "' AND Products.Active=1 GROUP BY Products.ControlType, ProductControls.Name ORDER BY ProductControls.Name ASC"
             If action = "view" Then
@@ -205,7 +231,7 @@ Partial Class Order_Method
         If type = "FabricTypeByDesign" Then
             Dim thisQuery As String = "SELECT * FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Active=1 ORDER BY Name ASC"
             If designtype = "3" Then
-                thisQuery = "SELECT * FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Active=1 ORDER BY CASE WHEN [Group]='Group Express' THEN 1 ELSE 2 END, Name ASC"
+                thisQuery = "SELECT * FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Active=1 ORDER BY CASE WHEN [Group] LIKE '%Express%' THEN 1 ELSE 2 END, Name ASC"
             End If
             If action = "view" Then
                 thisQuery = "SELECT * FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' ORDER BY Name ASC"
@@ -225,10 +251,10 @@ Partial Class Order_Method
             If action = "view" Then
                 thisQuery = "SELECT * FROM FabricColours WHERE FabricId='" & fabrictype & "' ORDER BY CASE WHEN Factory='Express' THEN 1 ELSE 2 END, Colour ASC"
             End If
-            If companydetailid = "4" OrElse companydetailid = "5" Then
-                thisQuery = "SELECT * FROM FabricColours WHERE FabricId='" & fabrictype & "' AND Factory='Express' AND Active=1 ORDER BY CASE WHEN Factory='Express' THEN 1 ELSE 2 END, Colour ASC"
+            If companyid = "3" Then
+                thisQuery = "SELECT * FROM FabricColours WHERE FabricId='" & fabrictype & "' AND Factory='Express' AND Active=1 ORDER BY Colour ASC"
                 If action = "view" Then
-                    thisQuery = "SELECT * FROM FabricColours WHERE FabricId='" & fabrictype & "' AND Factory='Express' ORDER BY CASE WHEN Factory='Express' THEN 1 ELSE 2 END, Colour ASC"
+                    thisQuery = "SELECT * FROM FabricColours WHERE FabricId='" & fabrictype & "' AND Factory='Express' ORDER BY Colour ASC"
                 End If
             End If
 
@@ -299,13 +325,13 @@ Partial Class Order_Method
         End If
 
         If type = "CurtainTrackType" Then
-            'result.Add(New With {.Value = "Express Track", .Text = "Express Track"})
+            result.Add(New With {.Value = "Express Track", .Text = "Express Track"})
             result.Add(New With {.Value = "Styletrack", .Text = "Styletrack"})
             result.Add(New With {.Value = "Commercial", .Text = "Commercial"})
 
             If customtype = "S-Wave" Then
                 result.Clear()
-                'result.Add(New With {.Value = "Express Track", .Text = "Express Track"})
+                result.Add(New With {.Value = "Express Track", .Text = "Express Track"})
                 result.Add(New With {.Value = "Commercial", .Text = "Commercial"})
             End If
         End If
@@ -317,11 +343,23 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "Matt Satin", .Text = "Matt Satin"})
                 result.Add(New With {.Value = "White", .Text = "White"})
 
-                'If customtype = "Express Track" Then
-                '    result.Clear()
-                '    result.Add(New With {.Value = "Black", .Text = "Black"})
-                '    result.Add(New With {.Value = "White", .Text = "White"})
-                'End If
+                If customtype = "Express Track" Then
+                    result.Clear()
+                    result.Add(New With {.Value = "Black", .Text = "Black"})
+                    result.Add(New With {.Value = "White", .Text = "White"})
+                End If
+            End If
+        End If
+
+        If type = "CurtainTrackDraw" Then
+            If Not String.IsNullOrEmpty(customtype) Then
+                result.Add(New With {.Value = "Flick Stick", .Text = "Flick Stick"})
+                result.Add(New With {.Value = "Hand", .Text = "Hand"})
+
+                If customtype = "Express Track" Then
+                    result.Clear()
+                    result.Add(New With {.Value = "Hand", .Text = "Hand"})
+                End If
             End If
         End If
 
@@ -950,16 +988,19 @@ Partial Class Order_Method
 
         If String.IsNullOrEmpty(data.width) Then Return "WIDTH IS REQUIRED !"
         If Not Integer.TryParse(data.width, width) OrElse width <= 0 Then Return "PLEASE CHECK YOUR WIDTH ORDER !"
-
-        If width < 200 Then Return "MINIMUM WIDTH IS 200MM !"
-        If data.subtype.Contains("2 on 1") AndAlso width < 300 Then Return "MINIMUM WIDTH IS 300MM !"
+        If data.rolename = "Customer" OrElse data.rolename = "Installer" Then
+            If width < 200 Then Return "MINIMUM WIDTH IS 200MM !"
+            If data.subtype.Contains("2 on 1") AndAlso width < 300 Then Return "MINIMUM WIDTH IS 300MM !"
+        End If
         If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
             If width > 3010 Then Return "MAXIMUM WIDTH IS 3010MM !"
         End If
 
         If String.IsNullOrEmpty(data.drop) Then Return "DROP IS REQUIRED !"
         If Not Integer.TryParse(data.drop, drop) OrElse drop <= 0 Then Return "PLEASE CHECK YOUR DROP ORDER !"
-        If drop < 250 Then Return "MINIMUM DROP IS 250MM !"
+        If data.rolename = "Customer" AndAlso data.rolename = "Installer" Then
+            If drop < 250 Then Return "MINIMUM DROP IS 250MM !"
+        End If
         If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
             If drop > 3200 Then Return "MAXIMUM DROP IS 3200MM !"
         End If
@@ -985,7 +1026,7 @@ Partial Class Order_Method
                 If data.subtype = "2 on 1 Left-Right" Then Return "FIRST CORD LENGTH VALUE IS REQUIRED !"
                 Return "CORD LENGTH VALUE IS REQUIRED !"
             End If
-            If Not Integer.TryParse(data.controllengthvalue, controllength) OrElse controllength < 0 Then
+            If Not Integer.TryParse(data.controllengthvalue, controllength) OrElse controllength <= 0 Then
                 If data.subtype = "2 on 1 Left-Right" Then Return "PLEASE CHECK YOUR FIRST CORD LENGTH ORDER !"
                 Return "PLEASE CHECK YOUR CORD LENGTH ORDER !"
             End If
@@ -1003,7 +1044,7 @@ Partial Class Order_Method
                     Return "WAND LENGTH VALUE IS REQUIRED !"
                 End If
                 If Not String.IsNullOrEmpty(data.wandlengthvalue) Then
-                    If Not Integer.TryParse(data.wandlengthvalue, wandlength) OrElse wandlength < 0 Then
+                    If Not Integer.TryParse(data.wandlengthvalue, wandlength) OrElse wandlength <= 0 Then
                         If data.subtype = "2 on 1 Left-Right" Then Return "PLEASE CHECK YOUR FIRST WAND LENGTH ORDER !"
                         Return "PLEASE CHECK YOUR WAND LENGTH ORDER !"
                     End If
@@ -1014,7 +1055,10 @@ Partial Class Order_Method
         If data.subtype.Contains("2 on 1") Then
             If String.IsNullOrEmpty(data.widthb) Then Return "SECOND WIDTH IS REQUIRED !"
             If Not Integer.TryParse(data.widthb, widthb) OrElse widthb <= 0 Then Return "PLEASE CHECK YOUR SECOND WIDTH ORDER !"
-            If widthb < 300 Then Return "MINIMUM WIDTH FOR SECOND BLIND IS 300MM !"
+            If data.rolename = "Customer" OrElse data.rolename = "Installer" Then
+                If widthb < 300 Then Return "MINIMUM WIDTH FOR SECOND BLIND IS 300MM !"
+            End If
+
             If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
                 Dim totalWidth As Integer = width + widthb
                 If totalWidth > 3010 Then Return "TOTAL WIDTH COULDN'T MORE THAN 3010MM !"
@@ -1022,7 +1066,9 @@ Partial Class Order_Method
 
             If String.IsNullOrEmpty(data.dropb) Then Return "SECOND DROP IS REQUIRED !"
             If Not Integer.TryParse(data.dropb, dropb) OrElse dropb <= 0 Then Return "PLEASE CHECK YOUR SECOND DROP ORDER !"
-            If dropb < 250 Then Return "MINIMUM DROP IS 250MM !"
+            If data.rolename = "Customer" OrElse data.rolename = "Installer" Then
+                If dropb < 250 Then Return "MINIMUM DROP IS 250MM !"
+            End If
             If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
                 If dropb > 3200 Then Return "MAXIMUM DROP FOR SECOND DROP IS 3200MM !"
             End If
@@ -1031,7 +1077,7 @@ Partial Class Order_Method
 
             If data.controllengthb = "Custom" Then
                 If String.IsNullOrEmpty(data.controllengthvalueb) Then Return "SECOND CORD LENGTH VALUL IS REQUIRED !"
-                If Not Integer.TryParse(data.controllengthvalueb, controllengthb) OrElse controllengthb < 0 Then Return "PLEASE CHECK YOUR SECOND CORD LENGTH ORDER !"
+                If Not Integer.TryParse(data.controllengthvalueb, controllengthb) OrElse controllengthb <= 0 Then Return "PLEASE CHECK YOUR SECOND CORD LENGTH ORDER !"
             End If
         End If
 
@@ -1040,7 +1086,7 @@ Partial Class Order_Method
             If data.wandlengthb = "Custom" Then
                 If String.IsNullOrEmpty(data.wandlengthvalueb) Then Return "SECOND WAND LENGTH VALUL IS REQUIRED !"
                 If Not String.IsNullOrEmpty(data.wandlengthvalueb) Then
-                    If Not Integer.TryParse(data.wandlengthvalueb, wandlengthb) OrElse wandlengthb < 0 Then Return "PLEASE CHECK YOUR SECOND WAND LENGTH ORDER !"
+                    If Not Integer.TryParse(data.wandlengthvalueb, wandlengthb) OrElse wandlengthb <= 0 Then Return "PLEASE CHECK YOUR SECOND WAND LENGTH ORDER !"
                 End If
             End If
         End If
@@ -1330,9 +1376,7 @@ Partial Class Order_Method
             If String.IsNullOrEmpty(data.controllength) Then Return "CORD LENGTH IS REQUIRED !"
             If data.controllength = "Custom" Then
                 If String.IsNullOrEmpty(data.controllengthvalue) Then Return "CORD LENGTH VALUE IS REQUIRED !"
-                If Not Integer.TryParse(data.controllengthvalue, clvalue) OrElse clvalue < 0 Then Return "PLEASE CHECK YOUR CORD LENGTH ORDER !"
-                Dim stdLength As Integer = Math.Ceiling(drop * 2 / 3)
-                If clvalue < stdLength Then Return String.Format("MINIMUM CORD LENGTH IS {0}MM !", stdLength)
+                If Not Integer.TryParse(data.controllengthvalue, clvalue) OrElse clvalue <= 0 Then Return "PLEASE CHECK YOUR CORD LENGTH ORDER !"
             End If
         End If
 
@@ -1357,8 +1401,10 @@ Partial Class Order_Method
 
         If blindName = "Day & Night" Then
             widthb = width : dropb = drop
+
             linearMetreB = width / 1000
             squareMetreB = widthb * dropb / 1000000
+
             totalItems = 2
         End If
 
@@ -1496,18 +1542,11 @@ Partial Class Order_Method
 
         Dim qty As Integer
         Dim width As Integer
-        Dim widthb As Integer
         Dim drop As Integer
-        Dim dropb As Integer
         Dim controllength As Integer
-        Dim controllengthb As Integer
-        Dim returnlength As Integer
-        Dim returnlengthb As Integer
 
         Dim linearmetre As Decimal
-        Dim linearmetreb As Decimal
         Dim squaremetre As Decimal
-        Dim squaremetreb As Decimal
 
         Dim totalitems As Integer = 1
 
@@ -1534,45 +1573,33 @@ Partial Class Order_Method
             Return "ROOM TO INSTALL IS REQUIRED AND MUST NOT CONTAIN: , & ` ' &= &+"
         End If
 
-        If blindName = "Single Curtain & Track" OrElse blindName = "Double Curtain & Track" OrElse blindName = "Curtain Only" Then
+        If blindName = "Complete Set" OrElse blindName = "Curtain Only" Then
             If String.IsNullOrEmpty(data.mounting) Then Return "FITTING IS REQUIRED !"
-        End If
-
-        If blindName = "Single Curtain & Track" OrElse blindName = "Double Curtain & Track" OrElse blindName = "Curtain Only" Then
             If String.IsNullOrEmpty(data.heading) Then Return "CURTAIN HEADING IS REQUIRED !"
         End If
-
-        If blindName = "Single Curtain & Track" OrElse blindName = "Double Curtain & Track" OrElse blindName = "Curtain Only" OrElse blindName = "Fabric Only" Then
+        If blindName = "Complete Set" OrElse blindName = "Curtain Only" OrElse blindName = "Fabric Only" Then
             If String.IsNullOrEmpty(data.fabrictype) Then Return "FABRIC TYPE IS REQUIRED !"
             If String.IsNullOrEmpty(data.fabriccolour) Then Return "FABRIC COLOUR IS REQUIRED !"
         End If
-
-        If blindName = "Single Curtain & Track" OrElse blindName = "Double Curtain & Track" OrElse blindName = "Track Only" Then
+        If blindName = "Complete Set" OrElse blindName = "Track Only" Then
             If String.IsNullOrEmpty(data.tracktype) Then Return "TRACK TYPE IS REQUIRED !"
             If String.IsNullOrEmpty(data.trackcolour) Then Return "TRACK COLOUR IS REQUIRED !"
             If String.IsNullOrEmpty(data.trackdraw) Then Return "TRACK DRAW IS REQUIRED !"
-            If String.IsNullOrEmpty(data.stackposition) Then Return "STACK POSITION IS REQUIRED !"
         End If
-
-        If blindName = "Single Curtain & Track" OrElse blindName = "Double Curtain & Track" OrElse blindName = "Track Only" OrElse blindName = "Curtain Only" Then
+        If blindName = "Complete Set" OrElse blindName = "Track Only" OrElse blindName = "Curtain Only" Then
             If String.IsNullOrEmpty(data.stackposition) Then Return "STACK POSITION IS REQUIRED !"
         End If
 
         If String.IsNullOrEmpty(data.width) Then Return "WIDTH IS REQUIRED !"
         If Not Integer.TryParse(data.width, width) OrElse width <= 0 Then Return "PLEASE CHECK YOUR WIDTH ORDER !"
 
-        If blindName = "Single Curtain & Track" OrElse blindName = "Double Curtain & Track" OrElse blindName = "Curtain Only" OrElse blindName = "Track Only" Then
-            If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
-                If width < 600 Then Return "MINIMUM WIDTH IS 600MM !"
-                If width > 6000 Then Return "MAXIMUM WIDTH IS 6000MM !"
-            End If
+        If data.rolename = "Customer" OrElse data.rolename = "Installer" Then
+            If width < 600 Then Return "MINIMUM WIDTH IS 600MM !"
+            If blindName = "Fabric Only" AndAlso width > 2800 Then Return "MAXIMUM WIDTH IS 2800MM !"
+            If width > 6000 Then Return "MAXIMUM WIDTH IS 6000MM !"
         End If
 
-        If blindName = "Fabric Only" Then
-            If width > 2800 Then Return "MAXIMUM WIDTH IS 2800MM !"
-        End If
-
-        If blindName = "Single Curtain & Track" OrElse blindName = "Double Curtain & Track" OrElse blindName = "Curtain Only" OrElse blindName = "Fabric Only" Then
+        If blindName = "Complete Set" OrElse blindName = "Curtain Only" OrElse blindName = "Fabric Only" Then
             If String.IsNullOrEmpty(data.drop) Then Return "DROP IS REQUIRED !"
             If Not Integer.TryParse(data.drop, drop) OrElse drop <= 0 Then Return "PLEASE CHECK YOUR DROP ORDER !"
             If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
@@ -1587,36 +1614,7 @@ Partial Class Order_Method
             If Not Integer.TryParse(data.controllength, controllength) OrElse controllength <= 0 Then Return "PLEASE CHECK YOUR CONTROL LENGTH ORDER !"
         End If
 
-        If blindName = "Double Curtain & Track" Then
-            If String.IsNullOrEmpty(data.headingb) Then Return "SECOND CURTAIN HEADING IS REQUIRED !"
-            If String.IsNullOrEmpty(data.fabrictypeb) Then Return "SECOND FABRIC TYPE IS REQUIRED !"
-            If String.IsNullOrEmpty(data.fabriccolourb) Then Return "SECOND FABRIC COLOUR IS REQUIRED !"
-            If String.IsNullOrEmpty(data.tracktypeB) Then Return "SECOND TRACK TYPE IS REQUIRED !"
-            If String.IsNullOrEmpty(data.trackcolourb) Then Return "SECOND TRACK COLOUR IS REQUIRED !"
-            If String.IsNullOrEmpty(data.trackdrawb) Then Return "SECOND TRACK DRAW IS REQUIRED !"
-            If String.IsNullOrEmpty(data.stackpositionb) Then Return "SECOND STACK POSITION IS REQUIRED !"
-
-            If data.trackdraw = "Flick Stick" Then
-                If String.IsNullOrEmpty(data.controlcolourb) Then Return "SECOND CONTROL COLOUR IS REQUIRED !"
-                If String.IsNullOrEmpty(data.controllengthb) Then Return "SECOND CONTROL LENGTH IS REQUIRED !"
-                If Not Integer.TryParse(data.controllengthb, controllengthb) OrElse controllengthb <= 0 Then Return "PLEASE CHECK YOUR SECOND CONTROL LENGTH ORDER !"
-            End If
-
-            If String.IsNullOrEmpty(data.widthb) Then Return "SECOND WIDTH IS REQUIRED !"
-            If Not Integer.TryParse(data.widthb, widthb) OrElse widthb <= 0 Then Return "PLEASE CHECK YOUR SECOND WIDTH WIDTH ORDER !"
-
-            If String.IsNullOrEmpty(data.dropb) Then Return "SECOND DROP IS REQUIRED !"
-            If Not Integer.TryParse(data.dropb, dropb) OrElse dropb <= 0 Then Return "PLEASE CHECK YOUR SECOND DROP ORDER !"
-        End If
-
-        If Not String.IsNullOrEmpty(data.returnlengthvalue) Then
-            If Not Integer.TryParse(data.returnlengthvalue, returnlength) OrElse returnlength <= 0 Then Return "PLEASE CHECK YOUR RETURN LENGTH (LEFT) ORDER !"
-        End If
-        If Not String.IsNullOrEmpty(data.returnlengthvalueb) Then
-            If Not Integer.TryParse(data.returnlengthvalueb, returnlengthb) OrElse returnlengthb <= 0 Then Return "PLEASE CHECK YOUR RETURN LENGTH (RIGHT) ORDER !"
-        End If
-
-        If blindName = "Single Curtain & Track" OrElse blindName = "Double Curtain & Track" OrElse blindName = "Curtain Only" Then
+        If blindName = "Complete Set" OrElse blindName = "Curtain Only" Then
             If String.IsNullOrEmpty(data.bottomhem) Then Return "BOTTOM HEM IS REQUIRED !"
         End If
 
@@ -1631,116 +1629,66 @@ Partial Class Order_Method
             If Not Integer.TryParse(data.markup, markup) OrElse markup < 0 Then Return "PLEASE CHECK YOUR MARK UP ORDER !"
         End If
 
-        If blindName = "Fabric Only" Then
-            data.heading = String.Empty : data.headingb = String.Empty
-            data.fabrictypeb = String.Empty : data.fabriccolourb = String.Empty
-            data.tracktype = String.Empty : data.trackcolour = String.Empty
-            data.tracktypeB = String.Empty : data.trackcolourb = String.Empty
-            data.trackdraw = String.Empty : data.trackdrawb = String.Empty
-            data.controlcolour = String.Empty : controllength = 0
-            data.controlcolourb = String.Empty : controllengthb = 0
-            data.stackposition = String.Empty : data.stackpositionb = String.Empty
-            widthb = 0 : dropb = 0
-
-            linearmetre = width / 1000
-            squaremetre = Math.Ceiling(width * drop / 1000000)
-        End If
-
-        If blindName = "Single Curtain & Track" Then
-            data.headingb = String.Empty
-            data.fabrictypeb = String.Empty : data.fabriccolourb = String.Empty
-            data.tracktypeB = String.Empty : data.trackcolourb = String.Empty
-            data.trackdrawb = String.Empty
-            data.stackpositionb = String.Empty
+        If blindName = "Complete Set" Then
             If Not data.trackdraw = "Flick Stick" Then
                 data.controlcolour = String.Empty : controllength = 0
             End If
-            data.controlcolourb = String.Empty : controllengthb = 0
-            widthb = 0 : dropb = 0
 
             linearmetre = width / 1000
             squaremetre = Math.Ceiling(width * drop / 1000000)
         End If
 
-        If blindName = "Double Curtain & Track" Then
-            totalitems = 2
+        If blindName = "Fabric Only" Then
+            data.heading = String.Empty
+            data.tracktype = String.Empty : data.trackcolour = String.Empty
+            data.trackdraw = String.Empty
+            data.controlcolour = String.Empty : controllength = 0
+            data.stackposition = String.Empty
 
             linearmetre = width / 1000
             squaremetre = Math.Ceiling(width * drop / 1000000)
-
-            linearmetreb = widthb / 1000
-            squaremetreb = Math.Ceiling(widthb * dropb / 1000000)
         End If
 
         If blindName = "Curtain Only" Then
-            data.headingb = String.Empty
-            data.fabrictypeb = String.Empty : data.fabriccolourb = String.Empty
             data.tracktype = String.Empty : data.trackcolour = String.Empty
-            data.tracktypeB = String.Empty : data.trackcolourb = String.Empty
-            data.trackdraw = String.Empty : data.trackdrawb = String.Empty
+            data.trackdraw = String.Empty
             data.controlcolour = String.Empty : controllength = 0
-            data.controlcolourb = String.Empty : controllengthb = 0
-            data.stackpositionb = String.Empty
-            widthb = 0 : dropb = 0
 
             linearmetre = width / 1000
             squaremetre = Math.Ceiling(width * drop / 1000000)
         End If
 
         If blindName = "Track Only" Then
-            data.heading = String.Empty : data.headingb = String.Empty
             data.fabrictype = String.Empty : data.fabriccolour = String.Empty
-            data.fabrictypeb = String.Empty : data.fabriccolourb = String.Empty
-            data.tracktypeB = String.Empty : data.trackcolourb = String.Empty
-            data.trackdrawb = String.Empty
-            data.stackpositionb = String.Empty
             If Not data.trackdraw = "Flick Stick" Then
                 data.controlcolour = String.Empty : controllength = 0
             End If
-            data.controlcolourb = String.Empty : controllengthb = 0
-            drop = 0 : widthb = 0 : dropb = 0
+            drop = 0
 
             linearmetre = width / 1000
         End If
 
         Dim priceProductGroup As String = String.Empty
-        Dim priceProductGroupB As String = String.Empty
-
         Dim priceAdditional As String = String.Empty
-        Dim priceAdditionalB As String = String.Empty
 
         If data.companyid = "2" Then
             Dim sellName As String = designName
             Dim groupFabric As String = orderClass.GetFabricGroup(data.fabrictype)
-            Dim groupFabricB As String = orderClass.GetFabricGroup(data.fabrictypeb)
 
             Dim groupName As String = String.Format("{0} - {1}", designName, groupFabric)
-            Dim groupNameB As String = String.Format("{0} - {1}", designName, groupFabricB)
             Dim trackGroupName As String = String.Format("{0} - {1}", designName, data.tracktype)
-            Dim trackGroupNameB As String = String.Format("{0} - {1}", designName, data.tracktypeB)
 
             If blindName = "Curtain Only" Then
-                groupNameB = String.Empty
                 trackGroupName = String.Empty
-                trackGroupNameB = String.Empty
-            End If
-
-            If blindName = "Single Curtain & Track" Then
-                groupNameB = String.Empty
-                trackGroupNameB = String.Empty
             End If
 
             If blindName = "Track Only" Then
                 groupName = String.Format("{0} - {1}", designName, data.tracktype)
-                groupNameB = String.Empty
                 trackGroupName = String.Empty
-                trackGroupNameB = String.Empty
             End If
 
             priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid)
-            priceProductGroupB = orderClass.GetPriceProductGroupId(groupNameB, data.designid)
             priceAdditional = orderClass.GetPriceProductGroupId(trackGroupName, data.designid)
-            priceAdditionalB = orderClass.GetPriceProductGroupId(trackGroupNameB, data.designid)
         End If
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
@@ -1748,49 +1696,32 @@ Partial Class Order_Method
                 Dim itemId As String = orderClass.GetNewOrderItemId()
 
                 Using thisConn As SqlConnection = New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricIdB, FabricColourId, FabricColourIdB, PriceProductGroupId, PriceProductGroupIdB, PriceAdditional, PriceAdditionalB, Qty, Room, Mounting, Width, WidthB, [Drop], DropB, Heading, HeadingB, TrackType, TrackTypeB, TrackColour, TrackColourB, TrackDraw, TrackDrawB, StackPosition, StackPositionB, ControlColour, ControlColourB, ControlLengthValue, ControlLengthValueB, ReturnLengthValue, ReturnLengthValueB, BottomHem, Supply, LinearMetre, LinearMetreB, SquareMetre, SquareMetreB, TotalItems, Notes, MarkUp, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricIdB, @FabricColourId, @FabricColourIdB, @PriceProductGroupId, @PriceProductGroupIdB, @PriceAdditional, @PriceAdditionalB, @Qty, @Room, @Mounting, @Width, @WidthB, @Drop, @DropB, @Heading, @HeadingB, @TrackType, @TrackTypeB, @TrackColour, @TrackColourB, @TrackDraw, @TrackDrawB, @StackPosition, @StackPositionB, @ControlColour, @ControlColourB, @ControlLengthValue, @ControlLengthValueB, @ReturnLengthValue, @ReturnLengthValueB, @BottomHem, @Supply, @LinearMetre, @LinearMetre, @SquareMetre, @SquareMetreB, @TotalItems, @Notes, @MarkUp, 1)", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricColourId, PriceProductGroupId, PriceAdditional,  Qty, Room, Mounting, Width, [Drop], Heading, TrackType,  TrackColour, TrackDraw, StackPosition, ControlColour, ControlLengthValue, BottomHem, Supply, LinearMetre, SquareMetre, TotalItems, Notes, MarkUp, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricColourId, @PriceProductGroupId, @PriceAdditional, @Qty, @Room, @Mounting, @Width, @Drop, @Heading, @TrackType, @TrackColour, @TrackDraw, @StackPosition, @ControlColour, @ControlLengthValue, @BottomHem, @Supply, @LinearMetre, @SquareMetre, @TotalItems, @Notes, @MarkUp, 1)", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", itemId)
                         myCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                         myCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                         myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
-                        myCmd.Parameters.AddWithValue("@PriceProductGroupIdB", If(String.IsNullOrEmpty(priceProductGroupB), CType(DBNull.Value, Object), priceProductGroupB))
                         myCmd.Parameters.AddWithValue("@PriceAdditional", If(String.IsNullOrEmpty(priceAdditional), CType(DBNull.Value, Object), priceAdditional))
-                        myCmd.Parameters.AddWithValue("@PriceAdditionalB", If(String.IsNullOrEmpty(priceAdditionalB), CType(DBNull.Value, Object), priceAdditionalB))
                         myCmd.Parameters.AddWithValue("@Qty", "1")
                         myCmd.Parameters.AddWithValue("@FabricId", If(String.IsNullOrEmpty(data.fabrictype), CType(DBNull.Value, Object), data.fabrictype))
-                        myCmd.Parameters.AddWithValue("@FabricIdB", If(String.IsNullOrEmpty(data.fabrictypeb), CType(DBNull.Value, Object), data.fabrictypeb))
                         myCmd.Parameters.AddWithValue("@FabricColourId", If(String.IsNullOrEmpty(data.fabriccolour), CType(DBNull.Value, Object), data.fabriccolour))
-                        myCmd.Parameters.AddWithValue("@FabricColourIdB", If(String.IsNullOrEmpty(data.fabriccolourb), CType(DBNull.Value, Object), data.fabriccolourb))
 
                         myCmd.Parameters.AddWithValue("@Room", data.room)
                         myCmd.Parameters.AddWithValue("@Mounting", data.mounting)
 
                         myCmd.Parameters.AddWithValue("@Width", width)
-                        myCmd.Parameters.AddWithValue("@WidthB", widthb)
                         myCmd.Parameters.AddWithValue("@Drop", drop)
-                        myCmd.Parameters.AddWithValue("@DropB", dropb)
                         myCmd.Parameters.AddWithValue("@Heading", data.heading)
-                        myCmd.Parameters.AddWithValue("@HeadingB", data.headingb)
                         myCmd.Parameters.AddWithValue("@TrackType", data.tracktype)
-                        myCmd.Parameters.AddWithValue("@TrackTypeB", data.tracktypeB)
                         myCmd.Parameters.AddWithValue("@TrackColour", data.trackcolour)
-                        myCmd.Parameters.AddWithValue("@TrackColourB", data.trackcolourb)
                         myCmd.Parameters.AddWithValue("@TrackDraw", data.trackdraw)
-                        myCmd.Parameters.AddWithValue("@TrackDrawB", data.trackdrawb)
                         myCmd.Parameters.AddWithValue("@StackPosition", data.stackposition)
-                        myCmd.Parameters.AddWithValue("@StackPositionB", data.stackpositionb)
                         myCmd.Parameters.AddWithValue("@ControlColour", data.controlcolour)
-                        myCmd.Parameters.AddWithValue("@ControlColourB", data.controlcolourb)
                         myCmd.Parameters.AddWithValue("@ControlLengthValue", controllength)
-                        myCmd.Parameters.AddWithValue("@ControlLengthValueB", controllengthb)
-                        myCmd.Parameters.AddWithValue("@ReturnLengthValue", returnlength)
-                        myCmd.Parameters.AddWithValue("@ReturnLengthValueB", returnlengthb)
                         myCmd.Parameters.AddWithValue("@BottomHem", data.bottomhem)
                         myCmd.Parameters.AddWithValue("@Supply", data.tieback)
                         myCmd.Parameters.AddWithValue("@LinearMetre", linearmetre)
-                        myCmd.Parameters.AddWithValue("@LinearMetreB", linearmetreb)
                         myCmd.Parameters.AddWithValue("@SquareMetre", squaremetre)
-                        myCmd.Parameters.AddWithValue("@SquareMetreB", squaremetreb)
                         myCmd.Parameters.AddWithValue("@TotalItems", totalitems)
                         myCmd.Parameters.AddWithValue("@Notes", data.notes)
                         myCmd.Parameters.AddWithValue("@MarkUp", markup)
@@ -1814,49 +1745,30 @@ Partial Class Order_Method
             Dim itemId As String = data.itemid
 
             Using thisConn As SqlConnection = New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET ProductId=@ProductId, FabricId=@FabricId, FabricIdB=@FabricIdB, FabricColourId=@FabricColourId, FabricColourIdB=@FabricColourIdB, PriceProductGroupId=@PriceProductGroupId, PriceProductGroupIdB=@PriceProductGroupIdB, PriceAdditional=@PriceAdditional, PriceAdditionalB=@PriceAdditionalB, Qty=@Qty, Room=@Room, Mounting=@Mounting, Width=@Width, WidthB=@WidthB, [Drop]=@Drop, DropB=@DropB, Heading=@Heading, HeadingB=@HeadingB, TrackType=@TrackType, TrackTypeB=@TrackTypeB, TrackColour=@TrackColour, TrackColourB=@TrackColourB, TrackDraw=@TrackDraw, TrackDrawB=@TrackDrawB, StackPosition=@StackPosition, StackPositionB=@StackPositionB, ControlColour=@ControlColour, ControlColourB=@ControlColourB, ControlLengthValue=@ControlLengthValue, ControlLengthValueB=@ControlLengthValueB, ReturnLengthValue=@ReturnLengthValue, ReturnLengthValueB=@ReturnLengthValue, BottomHem=@BottomHem, Supply=@Supply, LinearMetre=@LinearMetre, LinearMetreB=@LinearMetreB, SquareMetre=@SquareMetre, SquareMetreB=@SquareMetreB, TotalItems=@TotalItems, Notes=@Notes, MarkUp=@MarkUp, Active=1 WHERE Id=@Id", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET ProductId=@ProductId, FabricId=@FabricId, FabricColourId=@FabricColourId, PriceProductGroupId=@PriceProductGroupId, PriceAdditional=@PriceAdditional, Qty=@Qty, Room=@Room, Mounting=@Mounting, Width=@Width, [Drop]=@Drop, Heading=@Heading, TrackType=@TrackType, TrackColour=@TrackColour, TrackDraw=@TrackDraw, StackPosition=@StackPosition, ControlColour=@ControlColour, ControlLengthValue=@ControlLengthValue, BottomHem=@BottomHem, Supply=@Supply, LinearMetre=@LinearMetre, SquareMetre=@SquareMetre, TotalItems=@TotalItems, Notes=@Notes, MarkUp=@MarkUp, Active=1 WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", itemId)
                     myCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                     myCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                     myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
-                    myCmd.Parameters.AddWithValue("@PriceProductGroupIdB", If(String.IsNullOrEmpty(priceProductGroupB), CType(DBNull.Value, Object), priceProductGroupB))
                     myCmd.Parameters.AddWithValue("@PriceAdditional", If(String.IsNullOrEmpty(priceAdditional), CType(DBNull.Value, Object), priceAdditional))
-                    myCmd.Parameters.AddWithValue("@PriceAdditionalB", If(String.IsNullOrEmpty(priceAdditionalB), CType(DBNull.Value, Object), priceAdditionalB))
                     myCmd.Parameters.AddWithValue("@Qty", "1")
                     myCmd.Parameters.AddWithValue("@FabricId", If(String.IsNullOrEmpty(data.fabrictype), CType(DBNull.Value, Object), data.fabrictype))
-                    myCmd.Parameters.AddWithValue("@FabricIdB", If(String.IsNullOrEmpty(data.fabrictypeb), CType(DBNull.Value, Object), data.fabrictypeb))
                     myCmd.Parameters.AddWithValue("@FabricColourId", If(String.IsNullOrEmpty(data.fabriccolour), CType(DBNull.Value, Object), data.fabriccolour))
-                    myCmd.Parameters.AddWithValue("@FabricColourIdB", If(String.IsNullOrEmpty(data.fabriccolourb), CType(DBNull.Value, Object), data.fabriccolourb))
-
                     myCmd.Parameters.AddWithValue("@Room", data.room)
                     myCmd.Parameters.AddWithValue("@Mounting", data.mounting)
-
                     myCmd.Parameters.AddWithValue("@Width", width)
-                    myCmd.Parameters.AddWithValue("@WidthB", widthb)
                     myCmd.Parameters.AddWithValue("@Drop", drop)
-                    myCmd.Parameters.AddWithValue("@DropB", dropb)
                     myCmd.Parameters.AddWithValue("@Heading", data.heading)
-                    myCmd.Parameters.AddWithValue("@HeadingB", data.headingb)
                     myCmd.Parameters.AddWithValue("@TrackType", data.tracktype)
-                    myCmd.Parameters.AddWithValue("@TrackTypeB", data.tracktypeB)
                     myCmd.Parameters.AddWithValue("@TrackColour", data.trackcolour)
-                    myCmd.Parameters.AddWithValue("@TrackColourB", data.trackcolourb)
                     myCmd.Parameters.AddWithValue("@TrackDraw", data.trackdraw)
-                    myCmd.Parameters.AddWithValue("@TrackDrawB", data.trackdrawb)
                     myCmd.Parameters.AddWithValue("@StackPosition", data.stackposition)
-                    myCmd.Parameters.AddWithValue("@StackPositionB", data.stackpositionb)
                     myCmd.Parameters.AddWithValue("@ControlColour", data.controlcolour)
-                    myCmd.Parameters.AddWithValue("@ControlColourB", data.controlcolourb)
                     myCmd.Parameters.AddWithValue("@ControlLengthValue", controllength)
-                    myCmd.Parameters.AddWithValue("@ControlLengthValueB", controllengthb)
-                    myCmd.Parameters.AddWithValue("@ReturnLengthValue", returnlength)
-                    myCmd.Parameters.AddWithValue("@ReturnLengthValueB", returnlengthb)
                     myCmd.Parameters.AddWithValue("@BottomHem", data.bottomhem)
                     myCmd.Parameters.AddWithValue("@Supply", data.tieback)
                     myCmd.Parameters.AddWithValue("@LinearMetre", linearmetre)
-                    myCmd.Parameters.AddWithValue("@LinearMetreB", linearmetreb)
                     myCmd.Parameters.AddWithValue("@SquareMetre", squaremetre)
-                    myCmd.Parameters.AddWithValue("@SquareMetreB", squaremetreb)
                     myCmd.Parameters.AddWithValue("@TotalItems", totalitems)
                     myCmd.Parameters.AddWithValue("@Notes", data.notes)
                     myCmd.Parameters.AddWithValue("@MarkUp", markup)
@@ -1922,15 +1834,19 @@ Partial Class Order_Method
 
         If String.IsNullOrEmpty(data.width) Then Return "WIDTH IS REQUIRED !"
         If Not Integer.TryParse(data.width, width) OrElse width <= 0 Then Return "PLEASE CHECK YOUR WIDTH ORDER !"
-        If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
+        If data.rolename = "Customer" OrElse data.rolename = "Installer" Then
             If width < 500 Then Return "MINIMUM WIDTH IS 500MM !"
+        End If
+        If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
             If width > 2910 Then Return "MAXIMUM WIDTH IS 2910MM !"
         End If
 
         If String.IsNullOrEmpty(data.drop) Then Return "DROP IS REQUIRED !"
         If Not Integer.TryParse(data.drop, drop) OrElse drop <= 0 Then Return "PLEASE CHECK YOUR DROP ORDER !"
-        If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
+        If data.rolename = "Customer" OrElse data.rolename = "Installer" Then
             If drop < 600 Then Return "MINIMUM DROP IS 600MM !"
+        End If
+        If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
             If drop > 2700 Then Return "MINIMUM DROP IS 2700MM !"
         End If
 
@@ -1953,24 +1869,13 @@ Partial Class Order_Method
         If data.controllength = "Custom" Then
             If controlName = "Chain" Then
                 If String.IsNullOrEmpty(data.chainlengthvalue) Then Return "CHAIN LENGTH VALUE IS REQUIRED !"
-                If Not Integer.TryParse(data.chainlengthvalue, controllength) OrElse controllength < 0 Then Return "PLEASE CHECK YOUR CHAIN LENGTH VALUE ORDER !"
-
-                Dim thisStandard As Integer = Math.Ceiling(drop * 2 / 3)
-                If controllength < thisStandard Then
-                    If controlName = "Chain" Then
-                        Dim thisAlert As Integer = 750
-                        If thisStandard > 750 Then thisAlert = 1000
-                        If thisStandard > 1000 Then thisAlert = 1200
-                        If thisStandard > 1200 Then thisAlert = 1500
-                        Return String.Format("MINIMUM CONTROL LENGTH IS {0}MM !", thisAlert)
-                    End If
-                    Return String.Format("MINIMUM CONTROL LENGTH IS {0}MM !", controllength)
-                End If
+                If Not Integer.TryParse(data.chainlengthvalue, controllength) OrElse controllength <= 0 Then Return "PLEASE CHECK YOUR CHAIN LENGTH VALUE ORDER !"
             End If
 
             If controlName = "Wand" Then
                 If String.IsNullOrEmpty(data.wandlengthvalue) Then Return "WAND LENGTH VALUE IS REQUIRED !"
-                If Not Integer.TryParse(data.wandlengthvalue, controllength) OrElse controllength < 0 Then Return "PLEASE CHECK YOUR WAND LENGTH VALUE ORDER !"
+                If Not Integer.TryParse(data.wandlengthvalue, controllength) OrElse controllength <= 0 Then Return "PLEASE CHECK YOUR WAND LENGTH VALUE ORDER !"
+                If controllength > 1000 Then Return "MAXIMUM WAND LENGTH IS 1000MM !"
             End If
         End If
 
@@ -2000,12 +1905,15 @@ Partial Class Order_Method
 
         If controlName = "Wand" Then
             data.chaincolour = String.Empty
-            If data.controllength = "Standard" Then controllength = Math.Ceiling(drop * 2 / 3)
+            If data.controllength = "Standard" Then
+                controllength = Math.Ceiling(drop * 2 / 3)
+                If controllength > 1000 Then controllength = 1000
+            End If
 
-            If data.stackposition = "Stack Right" Then data.controlposition = "Left"
-            If data.stackposition = "Stack Left" Then data.controlposition = "Right"
-            If data.stackposition = "Stack Split" Then data.controlposition = "Middle"
-            If data.stackposition = "Stack Centre" Then data.controlposition = "Left and Right"
+            If data.stackposition = "Right" Then data.controlposition = "Left"
+            If data.stackposition = "Left" Then data.controlposition = "Right"
+            If data.stackposition = "Split" Then data.controlposition = "Middle"
+            If data.stackposition = "Centre" Then data.controlposition = "Left and Right"
         End If
 
         linearMetre = width / 1000
@@ -2142,21 +2050,21 @@ Partial Class Order_Method
 
         If String.IsNullOrEmpty(data.width) Then Return "WIDTH IS REQUIRED !"
         If Not Integer.TryParse(data.width, width) OrElse width <= 0 Then Return "PLEASE CHECK YOUR WIDTH ORDER !"
-        If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
+        If data.rolename = "Customer" OrElse data.rolename = "Installer" Then
             If width < 600 Then Return "MINIMUM WIDTH IS 600MM !"
+        End If
+        If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
             If width > 2910 Then Return "MAXIMUM WIDTH IS 2910MM !"
         End If
 
         If String.IsNullOrEmpty(data.brackettype) Then Return "BRACKET TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.isblindin) Then Return "IS BLIND IN IS REQUIRED !"
 
-        If Not String.IsNullOrEmpty(data.returnposition) AndAlso String.IsNullOrEmpty(data.returnlength) Then
-            Return "RETURN LENGTH IS REQUIRED !"
-        End If
+        If Not String.IsNullOrEmpty(data.returnposition) AndAlso String.IsNullOrEmpty(data.returnlength) Then Return "RETURN LENGTH IS REQUIRED !"
 
         If data.returnlength = "Custom" Then
             If String.IsNullOrEmpty(data.returnlengthvalue) Then Return "RETURN LENGTH VALUE IS REQUIRED !"
-            If Not Integer.TryParse(data.returnlengthvalue, rlValue) OrElse rlValue < 0 Then Return "PLEASE CHECK YOUR RETURN LENGTH VALUE ORDER !"
+            If Not Integer.TryParse(data.returnlengthvalue, rlValue) OrElse rlValue <= 0 Then Return "PLEASE CHECK YOUR RETURN LENGTH VALUE ORDER !"
         End If
 
         If Not String.IsNullOrEmpty(data.notes) Then
@@ -2180,9 +2088,7 @@ Partial Class Order_Method
                 rlValue = 145
                 If width > 2410 Then rlValue = 180
             End If
-            If data.brackettype = "Panel Screen - 3 Tracks" OrElse data.brackettype = "Panel Screen - 4 Tracks" Then
-                rlValue = 160
-            End If
+            If data.brackettype = "Panel Screen - 3 Tracks" OrElse data.brackettype = "Panel Screen - 4 Tracks" Then rlValue = 160
             If data.brackettype = "Panel Screen - 5 Tracks" Then rlValue = 170
             If data.brackettype = "Vertical" Then rlValue = 120
             If data.brackettype = "Vertical with Extention" Then rlValue = 190
@@ -2326,16 +2232,20 @@ Partial Class Order_Method
 
         If String.IsNullOrEmpty(data.width) Then Return "WIDTH IS REQUIRED !"
         If Not Integer.TryParse(data.width, width) OrElse width <= 0 Then Return "PLEASE CHECK YOUR WIDTH ORDER !"
-        If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
+        If data.rolename = "Customer" OrElse data.rolename = "Installer" Then
             If width < 610 Then Return "MINIMUM WIDTH IS 610MM !"
+        End If
+        If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
             If width > 5410 Then Return "MAXIMUM WIDTH IS 5410MM !"
         End If
 
         If blindName = "Complete Set" OrElse blindName = "Panel Only" Then
             If String.IsNullOrEmpty(data.drop) Then Return "DROP IS REQUIRED !"
             If Not Integer.TryParse(data.drop, drop) OrElse drop <= 0 Then Return "PLEASE CHECK YOUR DROP ORDER !"
-            If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
+            If data.rolename = "Customer" OrElse data.rolename = "Installer" Then
                 If drop < 600 Then Return "MINIMUM DROP IS 600MM !"
+            End If
+            If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
                 If drop > 3200 Then Return "MAXIMUM DROP IS 3200MM !"
             End If
         End If
@@ -2349,10 +2259,7 @@ Partial Class Order_Method
         If blindName = "Complete Set" AndAlso data.wandlength = "Custom" Then
             If String.IsNullOrEmpty(data.wandlengthvalue) Then Return "WAND LENGTH VALUE IS REQUIRED !"
             If Not Integer.TryParse(data.wandlengthvalue, wandlength) OrElse wandlength <= 0 Then Return "WAND LENGTH VALUE IS REQUIRED !"
-
-            Dim thisStandard As Integer = Math.Ceiling(drop * 2 / 3)
-            If thisStandard > 1000 Then thisStandard = 1000
-            If wandlength < thisStandard Then Return String.Format("MINIMUM WAND LENGTH IS {0}MM !", thisStandard)
+            If wandlength > 1000 Then Return "MAXIMUM WAND LENGTH IS 1000MM !"
         End If
 
         If blindName = "Track Only" Then
@@ -2433,7 +2340,7 @@ Partial Class Order_Method
 
         ' FOR PRICING
         Dim groupFabric As String = orderClass.GetFabricGroup(data.fabrictype)
-        If data.companyid = "3" Then
+        If data.companydetailid = "5" OrElse data.companydetailid = "6" Then
             groupFabric = orderClass.GetFabricGroupLocal("Panel", data.fabrictype)
         End If
         Dim groupName As String = String.Format("{0} - {1} - {2} - {3}", designName, blindName, tubeName, groupFabric)
@@ -2582,7 +2489,7 @@ Partial Class Order_Method
         If String.IsNullOrEmpty(data.width) Then Return "WIDTH IS REQUIRED !"
         If Not Integer.TryParse(data.width, width) OrElse width <= 0 Then Return "PLEASE CHECK YOUR WIDTH ORDER !"
         If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
-
+            If width <= 0 Then Return "PLEASE CHECK YOUR WIDTH ORDER !"
         End If
         If width > 9999 Then Return "MAXIMUM WIDTH IS 9999MM !"
 
@@ -2794,21 +2701,22 @@ Partial Class Order_Method
 
         If String.IsNullOrEmpty(data.width) Then Return "WIDTH IS REQUIRED !"
         If Not Integer.TryParse(data.width, width) OrElse width <= 0 Then Return "PLEASE CHECK YOUR WIDTH ORDER !"
-        If controlName = "Chain" OrElse controlName = "Reg Cord Lock" OrElse controlName = "Cord Lock" Then
-            If width < 360 Then Return "MINIMUM WIDTH IS 360MM !"
-        End If
-        If controlName = "Alpha 1Nm WF" OrElse controlName = "Alpha 2Nm WF" OrElse controlName = "Alpha 3Nm WF" OrElse controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "Sonesse 30 WF" Then
-            If width < 700 Then Return "MINIMUM WIDTH FOR MOTORISED IS 700MM !"
-        End If
-
         If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
+            If controlName = "Chain" OrElse controlName = "Reg Cord Lock" OrElse controlName = "Cord Lock" Then
+                If width < 360 Then Return "MINIMUM WIDTH IS 360MM !"
+            End If
+
+            If controlName = "Alpha 1Nm WF" OrElse controlName = "Alpha 2Nm WF" OrElse controlName = "Alpha 3Nm WF" OrElse controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "Sonesse 30 WF" Then
+                If width < 700 Then Return "MINIMUM WIDTH FOR MOTORISED IS 700MM !"
+            End If
+
             If width > 2910 Then Return "MAXIMUM WIDTH IS 2910MM !"
         End If
 
         If String.IsNullOrEmpty(data.drop) Then Return "DROP IS REQUIRED !"
         If Not Integer.TryParse(data.drop, drop) OrElse drop <= 0 Then Return "PLEASE CHECK YOUR DROP ORDER !"
-        If drop < 600 Then Return "MINIMUM DROP IS 600MM !"
         If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
+            If drop < 600 Then Return "MINIMUM DROP IS 600MM !"
             If drop > 3200 Then Return "MAXIMUM DROP IS 3200MM !"
         End If
 
@@ -2820,7 +2728,7 @@ Partial Class Order_Method
         End If
         If controlName.Contains("Cord Lock") AndAlso String.IsNullOrEmpty(data.controlcolour) Then Return "CORD COLOUR IS REQUIRED !"
 
-        If controlName = "Chain" OrElse controlName = "Reg Cord Lock" Then
+        If controlName = "Chain" OrElse controlName = "Cord Lock" OrElse controlName = "Reg Cord Lock" Then
             If String.IsNullOrEmpty(data.controllength) Then
                 If controlName = "Chain" Then Return "CHAIN LENGTH IS REQUIRED"
                 If controlName.Contains("Cord Lock") Then Return "CORD LENGTH IS REQUIRED !"
@@ -2831,7 +2739,7 @@ Partial Class Order_Method
                     If String.IsNullOrEmpty(data.chainlengthvalue) Then Return "CHAIN LENGTH VALUE IS REQUIRED !"
                     If Not Integer.TryParse(data.chainlengthvalue, controllength) OrElse controllength <= 0 Then Return "PLEASE CHECK YOUR CHAIN LENGTH VALUE ORDER !"
                 End If
-                If controlName = "Reg Cord Lock" Then
+                If controlName = "Reg Cord Lock" OrElse controlName = "Cord Lock" Then
                     If String.IsNullOrEmpty(data.cordlengthvalue) Then Return "CORD LENGTH VALUE IS REQUIRED !"
                     If Not Integer.TryParse(data.cordlengthvalue, controllength) OrElse controllength <= 0 Then Return "PLEASE CHECK YOUR CORD LENGTH VALUE ORDER !"
                 End If
@@ -2879,7 +2787,7 @@ Partial Class Order_Method
         Dim squareMetre As Decimal = width * drop / 1000000
 
         Dim groupFabric As String = orderClass.GetFabricGroup(data.fabrictype)
-        If data.companyid = "3" Then
+        If data.companydetailid = "5" OrElse data.companydetailid = "6" Then
             groupFabric = orderClass.GetFabricGroupLocal("Roman", data.fabrictype)
         End If
 
@@ -3039,14 +2947,18 @@ Partial Class Order_Method
 
         If String.IsNullOrEmpty(data.width) Then Return "WIDTH IS REQUIRED !"
         If Not Integer.TryParse(data.width, width) OrElse width <= 0 Then Return "PLEASE CHECK YOUR WIDTH ORDER !"
-        If width < 450 Then Return "MINIMUM WIDTH IS 450MM !"
+        If data.rolename = "Customer" OrElse data.rolename = "Installer" Then
+            If width < 450 Then Return "MINIMUM WIDTH IS 450MM !"
+        End If
         If data.companyid = "2" OrElse (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
             If width > 2400 Then Return "MAXIMUM WIDTH IS 2400MM !"
         End If
 
         If String.IsNullOrEmpty(data.drop) Then Return "DROP IS REQUIRED !"
         If Not Integer.TryParse(data.drop, drop) OrElse drop <= 0 Then Return "PLEASE CHECK YOUR DROP ORDER !"
-        If drop < 200 Then Return "MINIMUM DROP IS 200MM !"
+        If data.rolename = "Customer" OrElse data.rolename = "Installer" Then
+            If drop < 200 Then Return "MINIMUM DROP IS 200MM !"
+        End If
         If data.companyid = "2" OrElse (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
             If drop > 2400 Then Return "MAXIMUM DROP IS 2400MM !"
         End If
@@ -3055,13 +2967,7 @@ Partial Class Order_Method
 
         If data.controllength = "Custom" Then
             If String.IsNullOrEmpty(data.controllengthvalue) Then Return "CORD LENGTH VALUE IS REQUIRED !"
-            If Not Integer.TryParse(data.controllengthvalue, controllength) OrElse controllength < 0 Then
-                Return "PLEASE CHECK YOUR CORD LENGTH ORDER !"
-            End If
-
-            Dim thisStandard As Integer = Math.Ceiling(drop * 2 / 3)
-            If thisStandard < 550 Then thisStandard = 550
-            If controllength < thisStandard Then Return String.Format("MINIMUM CORD LENGTH IS {0}MM !", thisStandard)
+            If Not Integer.TryParse(data.controllengthvalue, controllength) OrElse controllength <= 0 Then Return "PLEASE CHECK YOUR CORD LENGTH ORDER !"
         End If
 
         If Not String.IsNullOrEmpty(data.notes) Then
@@ -3266,11 +3172,7 @@ Partial Class Order_Method
 
             If data.controllength = "Custom" Then
                 If String.IsNullOrEmpty(data.controllengthvalue) Then Return "CONTROL LENGTH VALUE IS REQUIRED !"
-                If Not Integer.TryParse(data.controllengthvalue, clvalue) OrElse clvalue < 0 Then Return "PLEASE CHECK YOUR CORD LENGTH ORDER !"
-
-                Dim thisStandard As Integer = Math.Ceiling(drop * 2 / 3)
-                If thisStandard < 550 Then thisStandard = 550
-                If clvalue < thisStandard Then Return String.Format("MINIMUM CORD LENGTH IS {0}MM !", thisStandard)
+                If Not Integer.TryParse(data.controllengthvalue, clvalue) OrElse clvalue <= 0 Then Return "PLEASE CHECK YOUR CORD LENGTH ORDER !"
             End If
         End If
 
@@ -3291,11 +3193,7 @@ Partial Class Order_Method
             If data.controllengthb = "Custom" Then
                 If String.IsNullOrEmpty(data.controllengthvalueb) Then Return "SECOND CORD LENGTH VALUE IS REQUIRED !"
                 If Not String.IsNullOrEmpty(data.controllengthvalueb) Then
-                    If Not Integer.TryParse(data.controllengthvalueb, clvalueb) OrElse clvalueb < 0 Then Return "PLEASE CHECK YOUR SECOND CORD LENGTH ORDER !"
-
-                    Dim thisStandard As Integer = Math.Ceiling(dropb * 2 / 3)
-                    If thisStandard < 550 Then thisStandard = 550
-                    If clvalueb < thisStandard Then Return String.Format("MINIMUM SECOND CORD LENGTH IS {0}MM !", thisStandard)
+                    If Not Integer.TryParse(data.controllengthvalueb, clvalueb) OrElse clvalueb <= 0 Then Return "PLEASE CHECK YOUR SECOND CORD LENGTH ORDER !"
                 End If
             End If
         End If
@@ -3304,14 +3202,14 @@ Partial Class Order_Method
         If String.IsNullOrEmpty(data.valancesize) Then Return "VALANCE SIZE IS REQUIRED !"
         If data.valancesize = "Custom" Then
             If String.IsNullOrEmpty(data.valancesizevalue) Then Return "VALANCE SIZE VALUE IS REQUIRED !"
-            If Not Integer.TryParse(data.valancesizevalue, vsvalue) OrElse vsvalue < 0 Then Return "PLEASE CHECK YOUR VALANCE SIZE VALUE ORDER !"
+            If Not Integer.TryParse(data.valancesizevalue, vsvalue) OrElse vsvalue <= 0 Then Return "PLEASE CHECK YOUR VALANCE SIZE VALUE ORDER !"
         End If
 
         If Not String.IsNullOrEmpty(data.returnposition) Then
             If String.IsNullOrEmpty(data.returnlength) Then Return "VALANCE RETURN LENGTH IS REQUIRED !"
             If data.returnlength = "Custom" Then
                 If String.IsNullOrEmpty(data.returnlengthvalue) Then Return "VALANCE RETURN LENGTH VALUE IS REQUIRED !"
-                If Not Integer.TryParse(data.returnlengthvalue, rlvalue) OrElse rlvalue < 0 Then Return "PLEASE CHECK YOUR VALANCE RETURN LENGTH VALUE ORDER !"
+                If Not Integer.TryParse(data.returnlengthvalue, rlvalue) OrElse rlvalue <= 0 Then Return "PLEASE CHECK YOUR VALANCE RETURN LENGTH VALUE ORDER !"
             End If
         End If
 
@@ -3640,22 +3538,20 @@ Partial Class Order_Method
             If String.IsNullOrEmpty(data.controllength) Then Return "CONTROL LENGTH IS REQUIRED !"
             If data.controllength = "Custom" Then
                 If String.IsNullOrEmpty(data.controllengthvalue) Then Return "CONTROL LENGTH VALUE IS REQUIRED !"
-                If Not Integer.TryParse(data.controllengthvalue, controllength) OrElse controllength < 0 Then Return "PLEASE CHECK YOUR CONTROL LENGTH ORDER !"
+                If Not Integer.TryParse(data.controllengthvalue, controllength) OrElse controllength <= 0 Then Return "PLEASE CHECK YOUR CONTROL LENGTH ORDER !"
 
-                Dim thisStandard As Integer = Math.Ceiling(drop * 2 / 3)
-                If thisStandard > 1000 Then thisStandard = 1000
-                If controllength < thisStandard Then
-                    If thisStandard = 1000 Then Return "MINIMUM CONTROL LENGTH IS 1000MM !"
-                    Return String.Format("CONTROL LENGTH MUST BE BETWEEN {0}MM - 1000MM !", thisStandard)
+                If controlName = "Wand" Then
+                    Dim thisStandard As Integer = Math.Ceiling(drop * 2 / 3)
+                    If controllength > 1000 Then Return "MAXIMUM WAND LENGTH IS 1000MM !"
                 End If
-                If controllength > 1000 Then Return "MAXIMUM CONTROL LENGTH IS 1000MM !"
             End If
         End If
 
         If blindName = "Track Only" Then
             If String.IsNullOrEmpty(data.controllengthvalue) Then Return "CONTROL LENGTH VALUE IS REQUIRED !"
-            If Not Integer.TryParse(data.controllengthvalue, controllength) OrElse controllength < 0 Then Return "PLEASE CHECK YOUR CONTROL LENGTH ORDER !"
-            If controllength > 1000 Then Return "MAXIMUM CONTROL LENGTH IS 1000MM !"
+            If Not Integer.TryParse(data.controllengthvalue, controllength) OrElse controllength <= 0 Then Return "PLEASE CHECK YOUR CONTROL LENGTH ORDER !"
+
+            If controlName = "Wand" Then Return "MAXIMUM WAND LENGTH IS 1000MM !"
         End If
 
         If blindName = "Complete Set" OrElse blindName = "Slat Only" Then
@@ -3677,7 +3573,6 @@ Partial Class Order_Method
             qtyblade = 0
             If data.controllength = "Standard" Then
                 controllength = Math.Ceiling(drop * 2 / 3)
-                If controllength > 1000 Then controllength = 1000
             End If
             If controlName = "Chain" Then
                 data.wandcolour = String.Empty
@@ -3685,6 +3580,7 @@ Partial Class Order_Method
             If controlName = "Wand" Then
                 data.chaincolour = String.Empty
                 wandlength = controllength
+                If controllength > 1000 Then wandlength = 1000
 
                 If data.stackposition = "Left" Then data.controlposition = "Right"
                 If data.stackposition = "Right" Then data.controlposition = "Left"
@@ -3899,11 +3795,13 @@ Partial Class Order_Method
         Dim blindName As String = String.Empty
         Dim tubeName As String = String.Empty
         Dim controlName As String = String.Empty
+        Dim controlType As String = String.Empty
 
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
         If Not String.IsNullOrEmpty(data.tubetype) Then tubeName = orderClass.GetTubeName(data.tubetype)
         If Not String.IsNullOrEmpty(data.controltype) Then controlName = orderClass.GetControlName(data.controltype)
+        If Not String.IsNullOrEmpty(data.controltype) Then controlType = orderClass.GetControlType(data.controltype)
 
         Dim chainType As String = String.Empty
         Dim chainTypeB As String = String.Empty
@@ -3946,9 +3844,7 @@ Partial Class Order_Method
         End If
 
         If String.IsNullOrEmpty(data.mounting) Then Return "MOUNTING IS REQUIRED !"
-        If controlName = "Alpha 1Nm WF" OrElse controlName = "Alpha 2Nm WF" OrElse controlName = "Alpha 3Nm WF" OrElse controlName = "Alpha 5Nm HW" OrElse controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "Sonesse 30 WF" OrElse controlName = "LSN40" Then
-            If String.IsNullOrEmpty(data.remote) Then Return "REMOTE TYPE IS REQUIRED !"
-        End If
+        If controlType = "Motorised" AndAlso String.IsNullOrEmpty(data.remote) Then Return "REMOTE TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.fabrictype) Then Return "FABRIC TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.fabriccolour) Then Return "FABRIC COLOUR IS REQUIRED !"
         If String.IsNullOrEmpty(data.roll) Then Return "ROLL DIRECTION IS REQUIRED !"
@@ -3973,28 +3869,6 @@ Partial Class Order_Method
                     If String.IsNullOrEmpty(data.controllengthvalue) Then Return "CHAIN LENGTH VALUE IS REQUIRED !"
                     If Not Integer.TryParse(data.controllengthvalue, controllength) OrElse controllength <= 0 Then Return "PLEASE CHECK YOUR CHAIN LENGTH VALUE ORDER !"
                 End If
-                Dim minimumControlLength As Integer = Math.Ceiling(drop * 2 / 3)
-                If tubeName.Contains("Gear Reduction") AndAlso chainType = "Non Continuous" Then
-                    minimumControlLength = Math.Ceiling((drop * 3 / 4) + 80)
-                End If
-                If controllength < minimumControlLength Then
-                    If chainType = "Continuous" Then
-                        Return "MINIMUM CHAIN LENGTH IS 500MM !"
-                        If minimumControlLength > 500 AndAlso minimumControlLength < 750 Then
-                            Return "MINIMUM CHAIN LENGTH IS 750MM !"
-                        End If
-                        If minimumControlLength > 750 AndAlso minimumControlLength < 1000 Then
-                            Return "MINIMUM CHAIN LENGTH IS 1000MM !"
-                        End If
-                        If minimumControlLength > 1000 AndAlso minimumControlLength < 1200 Then
-                            Return "MINIMUM CHAIN LENGTH IS 1200MM !"
-                        End If
-                        If minimumControlLength > 1200 Then
-                            Return "MINIMUM CHAIN LENGTH IS 1500MM !"
-                        End If
-                    End If
-                    Return String.Format("MINIMUM CHAIN LENGTH IS {0}MM !", minimumControlLength)
-                End If
             End If
         End If
 
@@ -4004,16 +3878,17 @@ Partial Class Order_Method
                 If bottomName = "Trim" Then Return "BOTTOM TRIM STYLE IS REQUIRED !"
                 Return "BOTTOM RAIL COLOUR IS REQUIRED !"
             End If
-            If bottomName = "Flat" Then
-                If String.IsNullOrEmpty(data.bottomoption) Then Return "BOTTOM OPTION FOR BOTTOM FLAT IS REQUIRED !"
-            End If
+            If bottomName = "Flat" AndAlso String.IsNullOrEmpty(data.bottomoption) Then Return "BOTTOM OPTION FOR BOTTOM FLAT IS REQUIRED !"
         End If
 
         If String.IsNullOrEmpty(data.width) Then Return "WIDTH IS REQUIRED !"
         If Not Integer.TryParse(data.width, width) OrElse width <= 0 Then Return "PLEASE CHECK YOUR WIDTH ORDER !"
 
-        If width < 200 Then Return "MINIMUM WIDTH IS 200MM !"
-        If data.companyid = "2" AndAlso data.rolename = "Customer" Then
+        If data.rolename = "Customer" OrElse data.rolename = "Installer" Then
+            If width < 200 Then Return "MINIMUM WIDTH IS 200MM !"
+            If controlType = "Motorised" AndAlso width < 700 Then Return "MINIMUM WIDTH FOR MOTORISED IS 700MM !"
+        End If
+        If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
             If width > 2400 AndAlso (blindName = "Full Cassette" OrElse blindName = "Semi Cassette") Then Return "MAXIMUM WIDTH IS 2400MM !"
             If width > 2910 Then Return "MAXIMUM WIDTH IS 2910MM !"
         End If
@@ -4021,8 +3896,10 @@ Partial Class Order_Method
         If String.IsNullOrEmpty(data.drop) Then Return "DROP IS REQUIRED !"
         If Not Integer.TryParse(data.drop, drop) OrElse drop <= 0 Then Return "PLEASE CHECK YOUR DROP ORDER !"
 
-        If drop < 200 Then Return "MINIUM DROP IS 200MM !"
-        If data.companyid = "2" AndAlso data.rolename = "Customer" Then
+        If data.rolename = "Customer" OrElse data.rolename = "Installer" Then
+            If drop < 200 Then Return "MINIMUM DROP IS 200MM !"
+        End If
+        If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
             If width > 2200 AndAlso (blindName = "Full Cassette" OrElse blindName = "Semi Cassette") Then Return "MAXIMUM DROP IS 2200MM !"
             If drop > 3200 Then Return "MAXIMUM DROP IS 3200MM !"
         End If
@@ -4084,8 +3961,10 @@ Partial Class Order_Method
 
             If String.IsNullOrEmpty(data.widthb) Then Return "WIDTH FOR SECOND BLIND IS REQUIRED !"
             If Not Integer.TryParse(data.widthb, widthb) OrElse widthb <= 0 Then Return "PLEASE CHECK YOUR WIDTH FOR SECOND BLIND !"
-
-            If widthb < 200 Then Return "MINIMUM SECOND WIDTH IS 200MM !"
+            If data.rolename = "Customer" OrElse data.rolename = "Installer" Then
+                If widthb < 200 Then Return "MINIMUM SECOND WIDTH IS 200MM !"
+                If controlType = "Motorised" AndAlso widthb < 700 Then Return "MINIMUM SECOND WIDTH FOR MOTORISED IS 700MM !"
+            End If
             If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
                 If widthb > 2910 Then Return "MAXIMUM SECOND WIDTH IS 2910MM !"
             End If
@@ -4093,8 +3972,10 @@ Partial Class Order_Method
             If String.IsNullOrEmpty(data.dropb) Then Return "DROP FOR SECOND BLIND IS REQUIRED !"
             If Not Integer.TryParse(data.dropb, dropb) OrElse dropb <= 0 Then Return "PLEASE CHECK YOUR DROP FOR SECOND BLIND !"
 
-            If dropb < 500 Then Return "MINIMUM SECOND DROP IS 500MM !"
-            If data.companyid = "2" Then
+            If data.rolename = "Customer" OrElse data.rolename = "Installer" Then
+                If dropb < 500 Then Return "MINIMUM SECOND DROP IS 500MM !"
+            End If
+            If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
                 If dropb > 3200 Then Return "MAXIMUM SECOND DROP IS 3200MM !"
             End If
 
@@ -4154,6 +4035,7 @@ Partial Class Order_Method
 
             If String.IsNullOrEmpty(data.widthc) Then Return "WIDTH FOR THIRD BLIND IS REQUIRED !"
             If Not Integer.TryParse(data.widthc, widthc) OrElse widthc <= 0 Then Return "PLEASE CHECK YOUR WIDTH FOR THIRD BLIND !"
+            If widthc < 200 Then Return "MINIMUM WIDTH FOR THIRD BLIND IS 200MM !"
 
             If String.IsNullOrEmpty(data.dropc) Then Return "DROP FOR THIRD BLIND IS REQUIRED !"
             If Not Integer.TryParse(data.dropc, dropc) OrElse dropc <= 0 Then Return "PLEASE CHECK YOUR DROP FOR THIRD BLIND !"
@@ -4389,7 +4271,7 @@ Partial Class Order_Method
             squareMetre = width * drop / 1000000
 
             groupFabric = orderClass.GetFabricGroup(data.fabrictype)
-            If data.companyid = "3" Then
+            If data.companydetailid = "5" AndAlso data.companydetailid = "6" Then
                 groupFabric = orderClass.GetFabricGroupLocal("Roller", data.fabrictype)
             End If
 
@@ -4494,6 +4376,9 @@ Partial Class Order_Method
             squareMetre = width * drop / 1000000
 
             groupFabric = orderClass.GetFabricGroup(data.fabrictype)
+            If data.companydetailid = "5" AndAlso data.companydetailid = "6" Then
+                groupFabric = orderClass.GetFabricGroupLocal("Roller", data.fabrictype)
+            End If
 
             Dim tubeIstilah As String = "STD / GR"
 
@@ -4548,7 +4433,7 @@ Partial Class Order_Method
 
             data.adjusting = String.Empty
 
-            If controlName = "Alpha 1Nm WF" OrElse controlName = "Alpha 2Nm WF" OrElse controlName = "Alpha 3Nm WF" OrElse controlName = "Alpha 5Nm HW" OrElse controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "Sonesse 30 WF" OrElse controlName = "LSN40" Then
+            If controlType = "Motorised" Then
                 data.chaincolour = data.remote
                 data.chainstopper = String.Empty
                 data.controllength = String.Empty
@@ -4606,11 +4491,17 @@ Partial Class Order_Method
                 If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
             End If
             If data.companyid = "3" Then
-                tubeIstilah = tubeName
-                If data.customerid = "902" OrElse data.customerid = "953" Then
-                    tubeIstilah = "Gear Reduction 38mm"
+                If data.companydetailid = "5" OrElse data.companydetailid = "6" Then
+                    tubeIstilah = tubeName
+                    If data.customerid = "902" OrElse data.customerid = "953" Then
+                        tubeIstilah = "Gear Reduction 38mm"
+                    End If
+                    groupFabric = orderClass.GetFabricGroupLocal("Roller", data.fabrictype)
                 End If
-                groupFabric = orderClass.GetFabricGroupLocal("Roller", data.fabrictype)
+                If data.companydetailid = "8" Then
+                    tubeIstilah = "STD / GR"
+                    If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
+                End If
             End If
 
             Dim priceName As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabric)
@@ -4663,7 +4554,7 @@ Partial Class Order_Method
                 data.printingb = String.Empty
             End If
 
-            If controlName = "Alpha 1Nm WF" OrElse controlName = "Alpha 2Nm WF" OrElse controlName = "Alpha 3Nm WF" OrElse controlName = "Alpha 5Nm HW" OrElse controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "Sonesse 30 WF" OrElse controlName = "LSN40" Then
+            If controlType = "Motorised" Then
                 data.chaincolour = data.remote
                 data.chainstopper = String.Empty : data.chainstopperb = String.Empty
                 data.controllength = String.Empty : data.controllengthb = String.Empty
@@ -4757,21 +4648,30 @@ Partial Class Order_Method
 
             totalItems = 2
 
-            groupFabric = orderClass.GetFabricGroup(data.fabrictype)
-            groupFabricDB = orderClass.GetFabricGroup(data.fabrictypeb)
-
             Dim tubeIstilah As String = String.Empty
             If data.companyid = "2" Then
                 tubeIstilah = "STD / GR"
                 If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
+
+                groupFabric = orderClass.GetFabricGroup(data.fabrictype)
+                groupFabricDB = orderClass.GetFabricGroup(data.fabrictypeb)
             End If
             If data.companyid = "3" Then
-                tubeIstilah = tubeName
-                If data.customerid = "902" OrElse data.customerid = "953" Then
-                    tubeIstilah = "Gear Reduction 38mm"
+                If data.companydetailid = "5" OrElse data.companydetailid = "6" Then
+                    tubeIstilah = tubeName
+                    If data.customerid = "902" OrElse data.customerid = "953" Then
+                        tubeIstilah = "Gear Reduction 38mm"
+                    End If
+                    groupFabric = orderClass.GetFabricGroupLocal("Roller", data.fabrictype)
+                    groupFabricDB = orderClass.GetFabricGroupLocal("Roller", data.fabrictypeb)
                 End If
-                groupFabric = orderClass.GetFabricGroupLocal("Roller", data.fabrictype)
-                groupFabricDB = orderClass.GetFabricGroupLocal("Roller", data.fabrictypeb)
+                If data.companydetailid = "8" Then
+                    tubeIstilah = "STD / GR"
+                    If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
+
+                    groupFabric = orderClass.GetFabricGroup(data.fabrictype)
+                    groupFabricDB = orderClass.GetFabricGroup(data.fabrictypeb)
+                End If
             End If
 
             Dim priceName As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabric)
@@ -4831,7 +4731,7 @@ Partial Class Order_Method
                 data.printingb = String.Empty
             End If
 
-            If controlName = "Alpha 1Nm WF" OrElse controlName = "Alpha 2Nm WF" OrElse controlName = "Alpha 3Nm WF" OrElse controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "Sonesse 30 WF" OrElse controlName = "LSN40" Then
+            If controlType = "Motorised" Then
                 data.chaincolour = data.remote
                 data.chainstopper = String.Empty
                 data.controllength = String.Empty
@@ -4899,19 +4799,27 @@ Partial Class Order_Method
 
             totalItems = 2
 
-            groupFabric = orderClass.GetFabricGroup(data.fabrictype)
-
             Dim tubeIstilah As String = String.Empty
             If data.companyid = "2" Then
                 tubeIstilah = "STD / GR"
                 If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
+
+                groupFabric = orderClass.GetFabricGroup(data.fabrictype)
             End If
             If data.companyid = "3" Then
-                tubeIstilah = tubeName
-                If data.customerid = "902" OrElse data.customerid = "953" Then
-                    tubeIstilah = "Gear Reduction 38mm"
+                If data.companydetailid = "5" OrElse data.companydetailid = "6" Then
+                    tubeIstilah = tubeName
+                    If data.customerid = "902" OrElse data.customerid = "953" Then
+                        tubeIstilah = "Gear Reduction 38mm"
+                    End If
+                    groupFabric = orderClass.GetFabricGroupLocal("Roller", data.fabrictype)
                 End If
-                groupFabric = orderClass.GetFabricGroupLocal("Roller", data.fabrictype)
+                If data.companydetailid = "8" Then
+                    tubeIstilah = "STD / GR"
+                    If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
+
+                    groupFabric = orderClass.GetFabricGroup(data.fabrictype)
+                End If
             End If
 
             Dim priceName As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabric)
@@ -4967,7 +4875,7 @@ Partial Class Order_Method
                 data.printingb = String.Empty
             End If
 
-            If controlName = "Alpha 1Nm WF" OrElse controlName = "Alpha 2Nm WF" OrElse controlName = "Alpha 3Nm WF" OrElse controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "Sonesse 30 WF" OrElse controlName = "LSN40" Then
+            If controlType = "Motorised" Then
                 data.chaincolour = data.remote
                 data.chaincolourb = String.Empty
                 data.chainstopper = String.Empty : data.chainstopperb = String.Empty
@@ -5063,19 +4971,28 @@ Partial Class Order_Method
 
             totalItems = 2
 
-            groupFabric = orderClass.GetFabricGroup(data.fabrictype)
-
             Dim tubeIstilah As String = String.Empty
             If data.companyid = "2" Then
                 tubeIstilah = "STD / GR"
                 If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
+
+                groupFabric = orderClass.GetFabricGroup(data.fabrictype)
             End If
             If data.companyid = "3" Then
-                tubeIstilah = tubeName
-                If data.customerid = "902" OrElse data.customerid = "953" Then
-                    tubeIstilah = "Gear Reduction 38mm"
+                If data.companydetailid = "5" OrElse data.companydetailid = "6" Then
+                    tubeIstilah = tubeName
+                    If data.customerid = "902" OrElse data.customerid = "953" Then
+                        tubeIstilah = "Gear Reduction 38mm"
+                    End If
+                    groupFabric = orderClass.GetFabricGroupLocal("Roller", data.fabrictype)
                 End If
-                groupFabric = orderClass.GetFabricGroupLocal("Roller", data.fabrictype)
+
+                If data.companydetailid = "8" Then
+                    tubeIstilah = "STD / GR"
+                    If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
+
+                    groupFabric = orderClass.GetFabricGroup(data.fabrictype)
+                End If
             End If
 
             Dim priceName As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabric)
@@ -5139,7 +5056,7 @@ Partial Class Order_Method
                 data.printingc = String.Empty
             End If
 
-            If controlName = "Alpha 1Nm WF" OrElse controlName = "Alpha 2Nm WF" OrElse controlName = "Alpha 3Nm WF" OrElse controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "Sonesse 30 WF" OrElse controlName = "LSN40" Then
+            If controlType = "Motorised" Then
                 data.chaincolour = data.remote
                 data.chainstopper = String.Empty
                 data.controllength = String.Empty
@@ -5219,19 +5136,29 @@ Partial Class Order_Method
 
             totalItems = 3
 
-            groupFabric = orderClass.GetFabricGroup(data.fabrictype)
+
 
             Dim tubeIstilah As String = String.Empty
             If data.companyid = "2" Then
                 tubeIstilah = "STD / GR"
                 If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
+
+                groupFabric = orderClass.GetFabricGroup(data.fabrictype)
             End If
             If data.companyid = "3" Then
-                tubeIstilah = tubeName
-                If data.customerid = "902" OrElse data.customerid = "953" Then
-                    tubeIstilah = "Gear Reduction 38mm"
+                If data.companydetailid = "5" OrElse data.companydetailid = "6" Then
+                    tubeIstilah = tubeName
+                    If data.customerid = "902" OrElse data.customerid = "953" Then
+                        tubeIstilah = "Gear Reduction 38mm"
+                    End If
+                    groupFabric = orderClass.GetFabricGroupLocal("Roller", data.fabrictype)
                 End If
-                groupFabric = orderClass.GetFabricGroupLocal("Roller", data.fabrictype)
+                If data.companydetailid = "8" Then
+                    tubeIstilah = "STD / GR"
+                    If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
+
+                    groupFabric = orderClass.GetFabricGroup(data.fabrictype)
+                End If
             End If
 
             Dim priceName As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabric)
@@ -5298,7 +5225,7 @@ Partial Class Order_Method
                 data.printingc = String.Empty
             End If
 
-            If controlName = "Alpha 1Nm WF" OrElse controlName = "Alpha 2Nm WF" OrElse controlName = "Alpha 3Nm WF" OrElse controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "Sonesse 30 WF" OrElse controlName = "LSN40" Then
+            If controlType = "Motorised" Then
                 data.chaincolour = data.remote
                 data.chainstopper = String.Empty : data.chainstopperc = String.Empty
                 data.controllength = String.Empty : data.controllengthc = String.Empty
@@ -5405,19 +5332,30 @@ Partial Class Order_Method
 
             totalItems = 3
 
-            groupFabric = orderClass.GetFabricGroup(data.fabrictype)
+
 
             Dim tubeIstilah As String = String.Empty
             If data.companyid = "2" Then
                 tubeIstilah = "STD / GR"
                 If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
+
+                groupFabric = orderClass.GetFabricGroup(data.fabrictype)
             End If
             If data.companyid = "3" Then
-                tubeIstilah = tubeName
-                If data.customerid = "902" OrElse data.customerid = "953" Then
-                    tubeIstilah = "Gear Reduction 38mm"
+                If data.companydetailid = "5" OrElse data.companydetailid = "6" Then
+                    tubeIstilah = tubeName
+                    If data.customerid = "902" OrElse data.customerid = "953" Then
+                        tubeIstilah = "Gear Reduction 38mm"
+                    End If
+                    groupFabric = orderClass.GetFabricGroupLocal("Roller", data.fabrictype)
                 End If
-                groupFabric = orderClass.GetFabricGroupLocal("Roller", data.fabrictype)
+
+                If data.companydetailid = "8" Then
+                    tubeIstilah = "STD / GR"
+                    If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
+
+                    groupFabric = orderClass.GetFabricGroup(data.fabrictype)
+                End If
             End If
 
             Dim priceName As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabric)
@@ -5596,11 +5534,11 @@ Partial Class Order_Method
             groupFabricDB = orderClass.GetFabricGroup(data.fabrictypec)
 
             Dim tubeIstilah As String = String.Empty
-            If data.companyid = "2" Then
+            If data.companydetailid = "2" OrElse data.companydetailid = "3" OrElse data.companydetailid = "4" OrElse data.companydetailid = "8" Then
                 tubeIstilah = "STD / GR"
                 If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
             End If
-            If data.companyid = "3" Then
+            If data.companydetailid = "5" AndAlso data.companydetailid = "6" Then
                 tubeIstilah = tubeName
                 If data.customerid = "902" OrElse data.customerid = "953" Then
                     tubeIstilah = "Gear Reduction 38mm"
@@ -5845,11 +5783,11 @@ Partial Class Order_Method
             groupFabricDB = orderClass.GetFabricGroup(data.fabrictypec)
 
             Dim tubeIstilah As String = String.Empty
-            If data.companyid = "2" Then
+            If data.companydetailid = "2" OrElse data.companydetailid = "3" OrElse data.companydetailid = "4" OrElse data.companydetailid = "8" Then
                 tubeIstilah = "STD / GR"
                 If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
             End If
-            If data.companyid = "3" Then
+            If data.companydetailid = "5" AndAlso data.companydetailid = "6" Then
                 tubeIstilah = tubeName
                 If data.customerid = "902" OrElse data.customerid = "953" Then
                     tubeIstilah = "Gear Reduction 38mm"
@@ -6069,11 +6007,11 @@ Partial Class Order_Method
             groupFabricDB = orderClass.GetFabricGroup(data.fabrictyped)
 
             Dim tubeIstilah As String = String.Empty
-            If data.companyid = "2" Then
+            If data.companydetailid = "2" OrElse data.companydetailid = "3" OrElse data.companydetailid = "4" OrElse data.companydetailid = "8" Then
                 tubeIstilah = "STD / GR"
                 If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
             End If
-            If data.companyid = "3" Then
+            If data.companydetailid = "5" AndAlso data.companydetailid = "6" Then
                 tubeIstilah = tubeName
                 If data.customerid = "902" OrElse data.customerid = "953" Then
                     tubeIstilah = "Gear Reduction 38mm"
@@ -6364,11 +6302,11 @@ Partial Class Order_Method
             groupFabricDB = orderClass.GetFabricGroup(data.fabrictyped)
 
             Dim tubeIstilah As String = String.Empty
-            If data.companyid = "2" Then
+            If data.companydetailid = "2" OrElse data.companydetailid = "3" OrElse data.companydetailid = "4" OrElse data.companydetailid = "8" Then
                 tubeIstilah = "STD / GR"
                 If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
             End If
-            If data.companyid = "3" Then
+            If data.companydetailid = "5" AndAlso data.companydetailid = "6" Then
                 tubeIstilah = tubeName
                 If data.customerid = "902" OrElse data.customerid = "953" Then
                     tubeIstilah = "Gear Reduction 38mm"
@@ -6742,10 +6680,6 @@ Partial Class Order_Method
                     If String.IsNullOrEmpty(data.controllengthvalue) Then Return "CHAIN LENGTH VALUE IS REQUIRED !"
                     If Not Integer.TryParse(data.controllengthvalue, controllength) OrElse controllength <= 0 Then Return "PLEASE CHECK YOUR CHAIN LENGTH VALUE ORDER !"
                 End If
-                Dim minimumControlLength As Integer = Math.Ceiling(drop * 2 / 3)
-                If controllength < minimumControlLength Then
-                    Return String.Format("MINIMUM CHAIN LENGTH IS {0}MM !", minimumControlLength)
-                End If
             End If
         End If
 
@@ -6755,14 +6689,18 @@ Partial Class Order_Method
         If String.IsNullOrEmpty(data.width) Then Return "WIDTH IS REQUIRED !"
         If Not Integer.TryParse(data.width, width) OrElse width <= 0 Then Return "PLEASE CHECK YOUR WIDTH ORDER !"
 
-        If width < 200 Then Return "MINIMUM WIDTH IS 200MM !"
-        If width > 2410 Then Return "MAXIMUM WIDTH IS 2410MM !"
+        If data.companyid = "2" AndAlso data.rolename = "Customer" Then
+            If width < 200 Then Return "MINIMUM WIDTH IS 200MM !"
+            If width > 2410 Then Return "MAXIMUM WIDTH IS 2410MM !"
+        End If
 
         If String.IsNullOrEmpty(data.drop) Then Return "DROP IS REQUIRED !"
         If Not Integer.TryParse(data.drop, drop) OrElse drop <= 0 Then Return "PLEASE CHECK YOUR DROP ORDER !"
 
-        If drop < 600 Then Return "MINIUM DROP IS 600MM !"
-        If drop > 2500 Then Return "MAXIMUM DROP IS 2500MM !"
+        If data.companyid = "2" AndAlso data.rolename = "Customer" Then
+            If drop < 600 Then Return "MINIUM DROP IS 600MM !"
+            If drop > 2500 Then Return "MAXIMUM DROP IS 2500MM !"
+        End If
 
         squareMetre = width * drop / 1000000
 
@@ -7644,9 +7582,7 @@ Partial Class Order_Method
         End If
 
         Dim groupName As String = String.Empty
-        If designName = "Skyline Shutter Express" Then
-            groupName = designName
-        End If
+        If designName = "Skyline Shutter Express" Then groupName = designName
 
         If designName = "Skyline Shutter Ocean" Then
             groupName = designName
@@ -8683,14 +8619,18 @@ Partial Class Order_Method
 
         If String.IsNullOrEmpty(data.width) Then Return "WIDTH IS REQUIRED !"
         If Not Integer.TryParse(data.width, width) OrElse width <= 0 Then Return "PLEASE CHECK YOUR WIDTH ORDER !"
-        If width < 300 Then Return "MINIMUM WIDTH IS 300MM !"
+        If data.rolename = "Customer" OrElse data.rolename = "Installer" Then
+            If width < 300 Then Return "MINIMUM WIDTH IS 300MM !"
+        End If
         If data.companyid = "2" OrElse (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
             If width > 5799 Then Return "MAXIMUM WIDTH IS 5799"
         End If
 
         If String.IsNullOrEmpty(data.drop) Then Return "DROP IS REQUIRED !"
         If Not Integer.TryParse(data.drop, drop) OrElse drop <= 0 Then Return "PLEASE CHECK YOUR DROP ORDER !"
-        If drop < 300 Then Return "MINIMUM DROP IS 300MM !"
+        If data.rolename = "Customer" OrElse data.rolename = "Installer" Then
+            If drop < 300 Then Return "MINIMUM DROP IS 300MM !"
+        End If
         If data.companyid = "2" OrElse (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
             If drop > 3050 Then Return "MAXIMUM DROP IS 3050MM !"
         End If
@@ -8711,7 +8651,7 @@ Partial Class Order_Method
 
         If data.controllength = "Custom" Then
             If String.IsNullOrEmpty(data.controllengthvalue) Then Return "CONTROL LENGTH VALUE IS REQUIRED !"
-            If Not Integer.TryParse(data.controllengthvalue, controllength) OrElse controllength < 0 Then Return "PLEASE CHECK YOUR CONTROL LENGTH ORDER !"
+            If Not Integer.TryParse(data.controllengthvalue, controllength) OrElse controllength <= 0 Then Return "PLEASE CHECK YOUR CONTROL LENGTH ORDER !"
 
             Dim thisStandard As Integer = Math.Ceiling(drop * 2 / 3)
             If thisStandard > 1000 Then thisStandard = 1000
@@ -9080,21 +9020,19 @@ Partial Class Order_Method
             If String.IsNullOrEmpty(data.layoutcode) Then Return "LAYOUT CODE IS REQUIRED !"
         End If
 
-        If blindName = "Flyscreen" AndAlso (tubeName.Contains("Hinged") OrElse tubeName.Contains("Sliding")) Then
-            If String.IsNullOrEmpty(data.midrailposition) Then Return "MIDRAIL POSITION IS REQUIRED !"
+        If Not String.IsNullOrEmpty(data.midrailposition) Then
+            If String.IsNullOrEmpty(data.handlelength) Then Return "HANDLE HEIGHT IS REQUIRED !"
+
+            If Not Integer.TryParse(data.handlelength, handlelength) OrElse handlelength <= 0 Then Return "PLEASE CHECK YOUR HANDLE HEIGHT ORDER !"
+        End If
+
+        If Not String.IsNullOrEmpty(data.handlelength) Then
+            If String.IsNullOrEmpty(data.midrailposition) Then Return "MIDRAIL IS REQUIRED !"
+
+            If Not Integer.TryParse(data.handlelength, handlelength) OrElse handlelength <= 0 Then Return "PLEASE CHECK YOUR HANDLE HEIGHT ORDER !"
         End If
 
         If tubeName.Contains("Hinged") OrElse tubeName.Contains("Sliding") Then
-            If Not String.IsNullOrEmpty(data.midrailposition) Then
-                If String.IsNullOrEmpty(data.handlelength) Then Return "HANDLE LENGTH IS REQUIRED !"
-            End If
-
-            If Not String.IsNullOrEmpty(data.handlelength) Then
-                If String.IsNullOrEmpty(data.midrailposition) Then Return "MIDRAIL POSITION IS REQUIRED !"
-
-                If Not Integer.TryParse(data.handlelength, handlelength) OrElse handlelength <= 0 Then Return "PLEASE CHECK YOUR HANDLE LENGTH ORDER !"
-            End If
-
             If Not String.IsNullOrEmpty(data.pettype) Then
                 If String.IsNullOrEmpty(data.petposition) Then Return "PET DOOR POSITION IS REQUIRED !"
             End If
@@ -9675,13 +9613,9 @@ Partial Class Order_Method
         Dim tubeId As String = detailData("TubeType").ToString()
         Dim controlId As String = detailData("ControlType").ToString()
         Dim fabricId As String = detailData("FabricId").ToString()
-        Dim fabricIdB As String = detailData("FabricIdB").ToString()
 
         Dim heading As String = detailData("Heading").ToString()
-        Dim headingB As String = detailData("HeadingB").ToString()
-
         Dim trackType As String = detailData("TrackType").ToString()
-        Dim trackTypeB As String = detailData("TrackTypeB").ToString()
 
         Dim itemDetail As New Dictionary(Of String, Object)
         For Each col As DataColumn In detailData.Table.Columns
@@ -9689,24 +9623,15 @@ Partial Class Order_Method
         Next
 
         Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetailid = companyDetailId, .action = action}
-
         Dim colourReq As New JSONList With {.type = "ProductName", .blindtype = blindId, .tubetype = "0", .controltype = "0", .companydetailid = companyDetailId, .action = action}
-
         Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .action = action}
 
         Dim fabricReq As New JSONList With {.type = "FabricTypeByDesign", .designtype = designId, .companydetailid = companyDetailId, .action = action}
-
         Dim fabricColourReq As New JSONList With {.type = "FabricColour", .fabrictype = fabricId, .action = action}
 
-        Dim fabricColourReqB As New JSONList With {.type = "FabricColour", .fabrictype = fabricIdB, .action = action}
-
         Dim trackTypeReq As New JSONList With {.type = "CurtainTrackType", .customtype = heading, .action = action}
-
-        Dim trackTypeReqB As New JSONList With {.type = "CurtainTrackType", .customtype = headingB, .action = action}
-
         Dim trackColourReq As New JSONList With {.type = "CurtainTrackColour", .customtype = trackType, .action = action}
-
-        Dim trackColourReqB As New JSONList With {.type = "CurtainTrackColour", .customtype = trackTypeB, .action = action}
+        Dim trackDrawReq As New JSONList With {.type = "CurtainTrackDraw", .customtype = trackType, .action = action}
 
         Dim result = New With {
                 .ItemData = itemDetail,
@@ -9715,11 +9640,9 @@ Partial Class Order_Method
                 .Mountings = ListData(mountingReq),
                 .Fabrics = ListData(fabricReq),
                 .FabricColours = ListData(fabricColourReq),
-                .FabricColoursB = ListData(fabricColourReqB),
                 .TrackTypes = ListData(trackTypeReq),
-                .TrackTypesB = ListData(trackTypeReqB),
                 .TrackColours = ListData(trackColourReq),
-                .TrackColoursB = ListData(trackColourReqB)
+                .TrackDraws = ListData(trackDrawReq)
             }
         Return result
     End Function
@@ -9921,8 +9844,8 @@ Partial Class Order_Method
         Next
 
         Dim blindReq As New JSONList With {.type = "BlindTypeRoller", .designtype = designId, .companydetailid = companyDetailId, .action = action}
-        Dim tubeReq As New JSONList With {.type = "TubeType", .blindtype = blindId, .companydetailid = companyDetailId, .action = action}
-        Dim controlReq As New JSONList With {.type = "ControlType", .blindtype = blindId, .tubetype = tubeId, .companydetailid = companyDetailId, .action = action}
+        Dim controlReq As New JSONList With {.type = "ControlTypeRoller", .blindtype = blindId, .companydetailid = companyDetailId, .action = action}
+        Dim tubeReq As New JSONList With {.type = "TubeTypeRoller", .blindtype = blindId, .companydetailid = companyDetailId, .controltype = controlId, .action = action}
         Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .action = action}
 
         Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .action = action}
@@ -10696,7 +10619,6 @@ Public Class ProccessData
     Public Property fabricinsert As String
     Public Property bottomjoining As String
     Public Property heading As String
-    Public Property headingb As String
     Public Property bottomhem As String
     Public Property tieback As String
     Public Property panelqty As String

@@ -85,7 +85,15 @@
                                                     <select id="blindtype" class="form-select"></select>
                                                     <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalLayout">Info</a>
                                                 </div>
-                                    
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-12 col-sm-12 col-lg-3">
+                                                <label>Control Type</label>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                <select id="controltype" class="form-select"></select>
                                             </div>
                                         </div>
 
@@ -101,14 +109,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="row">
-                                            <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Control Type</label>
-                                            </div>
-                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                                <select id="controltype" class="form-select"></select>
-                                            </div>
-                                        </div>
+                                        
 
                                         <div class="row">
                                             <div class="col-12 col-sm-12 col-lg-3">
@@ -1634,5 +1635,5 @@
         </div>
     </div>
     
-    <script src="/Scripts/WebOrders/Roller.js?v=2.0.4"></script>
+    <script src="/Scripts/WebOrders/Roller.js?v=2.0.5"></script>
 </asp:Content>

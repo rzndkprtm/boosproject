@@ -5,11 +5,8 @@ Partial Class Order_Printing
     Inherits Page
 
     Dim orderClass As New OrderClass
-    Dim mailingClass As New MailingClass
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-
-    Dim dataMailing As Object() = Nothing
     Dim dataLog As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -537,8 +534,6 @@ Partial Class Order_Printing
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindData", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub

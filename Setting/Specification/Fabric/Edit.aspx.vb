@@ -112,49 +112,56 @@ Partial Class Setting_Specification_Fabric_Edit
     End Sub
 
     Protected Sub BindData(fabricId As String)
-        Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM Fabrics WHERE Id='" & fabricId & "'")
-        If thisData Is Nothing Then
-            Response.Redirect("~/setting/specification/fabric", False)
-            Exit Sub
-        End If
+        Try
+            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM Fabrics WHERE Id='" & fabricId & "'")
+            If thisData Is Nothing Then
+                Response.Redirect("~/setting/specification/fabric", False)
+                Exit Sub
+            End If
 
-        BindDesign()
-        BindTube()
-        BindCompanyDetail()
+            BindDesign()
+            BindTube()
+            BindCompanyDetail()
 
-        txtName.Text = thisData("Name").ToString()
-        ddlType.SelectedValue = thisData("Type").ToString()
-        ddlGroup.SelectedValue = thisData("Group").ToString()
-        ddlNoRailRoad.SelectedValue = Convert.ToInt32(thisData("NoRailRoad"))
-        ddlActive.SelectedValue = Convert.ToInt32(thisData("Active"))
+            txtName.Text = thisData("Name").ToString()
+            ddlType.SelectedValue = thisData("Type").ToString()
+            ddlGroup.SelectedValue = thisData("Group").ToString()
+            ddlNoRailRoad.SelectedValue = Convert.ToInt32(thisData("NoRailRoad"))
+            ddlActive.SelectedValue = Convert.ToInt32(thisData("Active"))
 
-        If Not thisData("DesignId").ToString() = "" Then
-            Dim designArray() As String = thisData("DesignId").ToString().Split(",")
-            For Each i In designArray
-                If Not (i.Equals(String.Empty)) Then
-                    lbDesign.Items.FindByValue(i).Selected = True
-                End If
-            Next
-        End If
+            If Not thisData("DesignId").ToString() = "" Then
+                Dim designArray() As String = thisData("DesignId").ToString().Split(",")
+                For Each i In designArray
+                    If Not (i.Equals(String.Empty)) Then
+                        lbDesign.Items.FindByValue(i).Selected = True
+                    End If
+                Next
+            End If
 
-        If Not thisData("TubeId").ToString() = "" Then
-            Dim tubeArray() As String = thisData("TubeId").ToString().Split(",")
-            For Each i In tubeArray
-                If Not (i.Equals(String.Empty)) Then
-                    lbTube.Items.FindByValue(i).Selected = True
-                End If
-            Next
-        End If
+            If Not thisData("TubeId").ToString() = "" Then
+                Dim tubeArray() As String = thisData("TubeId").ToString().Split(",")
+                For Each i In tubeArray
+                    If Not (i.Equals(String.Empty)) Then
+                        lbTube.Items.FindByValue(i).Selected = True
+                    End If
+                Next
+            End If
 
-        If Not thisData("CompanyDetailId").ToString() = "" Then
-            Dim companyArray() As String = thisData("CompanyDetailId").ToString().Split(",")
+            If Not thisData("CompanyDetailId").ToString() = "" Then
+                Dim companyArray() As String = thisData("CompanyDetailId").ToString().Split(",")
 
-            For Each i In companyArray
-                If Not (i.Equals(String.Empty)) Then
-                    lbCompany.Items.FindByValue(i).Selected = True
-                End If
-            Next
-        End If
+                For Each i In companyArray
+                    If Not (i.Equals(String.Empty)) Then
+                        lbCompany.Items.FindByValue(i).Selected = True
+                    End If
+                Next
+            End If
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
     End Sub
 
     Protected Sub BindDesign()

@@ -221,6 +221,38 @@ Partial Class Setting_Specification_BlindType
         End Try
     End Sub
 
+    Protected Sub btnActive_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim thisId As String = txtIdActive.Text
+
+            Dim active As Integer = 1
+            If txtIdActive.Text = "1" Then : active = 0 : End If
+
+            Using thisConn As New SqlConnection(myConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE Blinds SET Active=@Active WHERE Id=@Id", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", thisId)
+                    myCmd.Parameters.AddWithValue("@Active", active)
+
+                    thisConn.Open()
+                    myCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Dim activeDesc As String = "Blind Type Has Been Activated"
+            If active = 0 Then activeDesc = "Blind Type Has Been Deactivated"
+
+            dataLog = {"Blinds", thisId, Session("LoginId").ToString(), activeDesc}
+            settingClass.Logs(dataLog)
+
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
     Protected Sub BindDesign(Optional isEdit As Boolean = False)
         ddlDesign.Items.Clear()
         Try
@@ -274,6 +306,11 @@ Partial Class Setting_Specification_BlindType
     Protected Sub MessageError_Process(visible As Boolean, message As String)
         divErrorProcess.Visible = visible : msgErrorProcess.InnerText = message
     End Sub
+
+    Protected Function TextActive(active As Boolean) As String
+        If active = True Then Return "Inactive"
+        Return "Active"
+    End Function
 
     Protected Function BindCompanyDetail(blindId As String) As String
         If Not String.IsNullOrEmpty(blindId) Then

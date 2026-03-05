@@ -84,95 +84,6 @@ Public Class MailingClass
         Return result
     End Function
 
-    Public Sub WebError(data As Object())
-        Try
-            Dim loginId As String = Convert.ToString(data(0))
-            Dim companyId As String = Convert.ToString(data(1))
-            Dim page As String = Convert.ToString(data(2))
-            Dim action As String = Convert.ToString(data(3))
-            Dim description As String = Convert.ToString(data(4))
-
-            Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='Web Error' AND Active=1")
-
-            If mailData Is Nothing Then Exit Sub
-
-            Dim mailServer As String = mailData("Server").ToString()
-            Dim mailHost As String = mailData("Host").ToString()
-            Dim mailPort As String = mailData("Port").ToString()
-
-            Dim mailAccount As String = mailData("Account").ToString()
-            Dim mailPassword As String = mailData("Password").ToString()
-            Dim mailAlias As String = mailData("Alias").ToString()
-            Dim mailSubject As String = mailData("Subject").ToString()
-
-            Dim mailTo As String = mailData("To").ToString()
-            If String.IsNullOrEmpty(mailTo) Then mailTo = "reza@bigblinds.co.id"
-            Dim mailCc As String = mailData("Cc").ToString()
-            Dim mailBcc As String = mailData("Bcc").ToString()
-
-            Dim mailNetworkCredentials As Boolean = mailData("NetworkCredentials")
-            Dim mailDefaultCredentials As Boolean = mailData("DefaultCredentials")
-            Dim mailEnableSSL As Boolean = mailData("EnableSSL")
-
-            Dim userName As String = GetItemData("SELECT FullName FROM CustomerLogins WHERE Id='" & loginId & "'")
-
-            Dim mailBody As String = String.Empty
-
-            mailBody = "Hi Team, there's an error."
-            mailBody &= "<br /><br />"
-            mailBody &= "Web Page : " & page
-            mailBody &= "<br />"
-            mailBody &= "Action : " & action
-            mailBody &= "<br />"
-            mailBody &= "Users : " & loginId & " | " & userName
-            mailBody &= "<br /><br />"
-            mailBody &= "Error Message : "
-            mailBody &= "<br />"
-            mailBody &= description
-
-            Using myMail As New MailMessage()
-                myMail.Subject = mailSubject
-                myMail.From = New MailAddress(mailServer, mailAlias)
-                myMail.To.Add(mailTo)
-
-                If Not mailCc = "" Then
-                    Dim thisArray() As String = mailCc.Split(";")
-                    Dim thisMail As String = String.Empty
-                    For Each thisMail In thisArray
-                        myMail.CC.Add(thisMail)
-                    Next
-                End If
-
-                If Not mailBcc = "" Then
-                    Dim thisArray() As String = mailBcc.Split(";")
-                    Dim thisMail As String = String.Empty
-                    For Each thisMail In thisArray
-                        myMail.Bcc.Add(thisMail)
-                    Next
-                End If
-
-                myMail.Body = mailBody
-                myMail.IsBodyHtml = True
-                Dim smtpClient As New SmtpClient()
-                smtpClient.Host = mailHost
-                smtpClient.EnableSsl = mailEnableSSL
-                Dim NetworkCredl As New NetworkCredential()
-                NetworkCredl.UserName = mailAccount
-                NetworkCredl.Password = mailPassword
-                smtpClient.UseDefaultCredentials = mailDefaultCredentials
-                smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network
-
-                If mailNetworkCredentials = True Then
-                    smtpClient.Credentials = NetworkCredl
-                End If
-
-                smtpClient.Port = mailPort
-                smtpClient.Send(myMail)
-            End Using
-        Catch ex As Exception
-        End Try
-    End Sub
-
     Public Sub MailUnshipment(fileDirectory As String)
         Try
             Dim mailData As DataRow = GetDataRow("SELECT TOP 1 * FROM Mailings WHERE Active = 1 AND Name = 'In Production - Unshipment'")
@@ -475,7 +386,7 @@ Public Class MailingClass
         myMail.Subject = String.Format(subject)
         myMail.From = New MailAddress(mailServer, mailAlias)
 
-        If Not mailTo = "" Then
+        If Not String.IsNullOrEmpty(mailTo) Then
             Dim thisArray() As String = mailTo.Split(";")
             Dim thisMail As String = String.Empty
             For Each thisMail In thisArray
@@ -483,7 +394,7 @@ Public Class MailingClass
             Next
         End If
 
-        If Not mailCc = "" Then
+        If Not String.IsNullOrEmpty(mailCc) Then
             Dim thisArray() As String = mailCc.Split(";")
             Dim thisMail As String = String.Empty
             For Each thisMail In thisArray
@@ -491,7 +402,7 @@ Public Class MailingClass
             Next
         End If
 
-        If Not mailBcc = "" Then
+        If Not String.IsNullOrEmpty(mailBcc) Then
             Dim thisArray() As String = mailBcc.Split(";")
             Dim thisMail As String = String.Empty
             For Each thisMail In thisArray
@@ -611,7 +522,7 @@ Public Class MailingClass
         myMail.Subject = subject
         myMail.From = New MailAddress(mailServer, mailAlias)
 
-        If Not mailTo = "" Then
+        If Not String.IsNullOrEmpty(mailTo) Then
             Dim thisArray() As String = mailTo.Split(";")
             Dim thisMail As String = String.Empty
             For Each thisMail In thisArray
@@ -619,7 +530,7 @@ Public Class MailingClass
             Next
         End If
 
-        If Not mailCc = "" Then
+        If Not String.IsNullOrEmpty(mailCc) Then
             Dim thisArray() As String = mailCc.Split(";")
             Dim thisMail As String = String.Empty
             For Each thisMail In thisArray
@@ -627,7 +538,7 @@ Public Class MailingClass
             Next
         End If
 
-        If Not mailBcc = "" Then
+        If Not String.IsNullOrEmpty(mailBcc) Then
             Dim thisArray() As String = mailBcc.Split(";")
             Dim thisMail As String = String.Empty
             For Each thisMail In thisArray
@@ -817,12 +728,9 @@ Public Class MailingClass
         Dim orderName As String = orderData("OrderName").ToString()
 
         Dim customerName As String = orderData("CustomerName").ToString()
-        Dim customerOperator As String = orderData("Operator").ToString()
 
         Dim companyId As String = orderData("CompanyId").ToString()
         Dim companyName As String = GetItemData("SELECT Name FROM Companys WHERE Id='" & companyId & "'")
-
-        Dim operatorEmail As String = GetItemData("SELECT Email FROM CustomerLogins WHERE Id='" & customerOperator & "'")
 
         Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='Send Quote' AND Active=1")
         If mailData Is Nothing Then Exit Sub
@@ -894,7 +802,7 @@ Public Class MailingClass
                 If Not String.IsNullOrEmpty(thisMail.Trim()) Then myMail.CC.Add(thisMail.Trim())
             Next
         End If
-        If Not String.IsNullOrEmpty(operatorEmail) Then myMail.CC.Add(operatorEmail)
+
         If Not String.IsNullOrEmpty(ccStaff) Then myMail.CC.Add(ccStaff)
 
         If Not String.IsNullOrEmpty(mailBcc) Then
@@ -903,16 +811,25 @@ Public Class MailingClass
             Next
         End If
 
+        If companyId = "2" Then
+            Dim operatorEmail As String = GetItemData("SELECT ISNULL(STRING_AGG(CustomerLogins.Email, ';'), '') FROM Customers OUTER APPLY STRING_SPLIT(Customers.Operator, ',') operatorArray LEFT JOIN CustomerLogins ON CustomerLogins.Id = TRY_CAST(operatorArray.value AS INT) WHERE Customers.Id='" & customerId & "';")
+
+            If Not String.IsNullOrEmpty(operatorEmail) Then
+                Dim emailList() As String = operatorEmail.Split(";"c)
+
+                For Each email As String In emailList
+                    If Not String.IsNullOrWhiteSpace(email) Then
+                        myMail.CC.Add(email.Trim())
+                    End If
+                Next
+            End If
+        End If
+
         myMail.IsBodyHtml = True
         myMail.Body = mailBody
 
-        myMail.Attachments.Add(New Attachment(New MemoryStream(pdfOrder),
-                                      "ORDER-" & orderId & ".pdf",
-                                      "application/pdf"))
-
-        myMail.Attachments.Add(New Attachment(New MemoryStream(pdfQuote),
-                                      "QUOTE-" & orderId & ".pdf",
-                                      "application/pdf"))
+        myMail.Attachments.Add(New Attachment(New MemoryStream(pdfOrder), "ORDER-" & orderId & ".pdf", "application/pdf"))
+        myMail.Attachments.Add(New Attachment(New MemoryStream(pdfQuote), "QUOTE-" & orderId & ".pdf", "application/pdf"))
 
         Dim smtpClient As New SmtpClient()
         smtpClient.Host = mailHost
@@ -950,12 +867,9 @@ Public Class MailingClass
         Dim invoiceNumber As String = orderData("InvoiceNumber").ToString()
 
         Dim customerName As String = orderData("CustomerName").ToString()
-        Dim customerOperator As String = orderData("Operator").ToString()
 
         Dim companyId As String = orderData("CompanyId").ToString()
         Dim companyName As String = GetItemData("SELECT Name FROM Companys WHERE Id='" & companyId & "'")
-
-        Dim operatorEmail As String = GetItemData("SELECT Email FROM CustomerLogins WHERE Id='" & customerOperator & "'")
 
         Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='Send Invoice' AND Active=1")
         If mailData Is Nothing Then Exit Sub
@@ -1043,8 +957,21 @@ Public Class MailingClass
                 If Not String.IsNullOrEmpty(thisMail.Trim()) Then myMail.CC.Add(thisMail.Trim())
             Next
         End If
-        If Not String.IsNullOrEmpty(operatorEmail) Then myMail.CC.Add(operatorEmail)
         If Not String.IsNullOrEmpty(ccStaff) Then myMail.CC.Add(ccStaff)
+
+        If companyId = "2" Then
+            Dim operatorEmail As String = GetItemData("SELECT ISNULL(STRING_AGG(CustomerLogins.Email, ';'), '') FROM Customers OUTER APPLY STRING_SPLIT(Customers.Operator, ',') operatorArray LEFT JOIN CustomerLogins ON CustomerLogins.Id = TRY_CAST(operatorArray.value AS INT) WHERE Customers.Id='" & customerId & "';")
+
+            If Not String.IsNullOrEmpty(operatorEmail) Then
+                Dim emailList() As String = operatorEmail.Split(";"c)
+
+                For Each email As String In emailList
+                    If Not String.IsNullOrWhiteSpace(email) Then
+                        myMail.CC.Add(email.Trim())
+                    End If
+                Next
+            End If
+        End If
 
         If Not String.IsNullOrEmpty(mailBcc) Then
             For Each thisMail In mailBcc.Split(";"c)
@@ -1055,13 +982,8 @@ Public Class MailingClass
         myMail.IsBodyHtml = True
         myMail.Body = mailBody
 
-        myMail.Attachments.Add(New Attachment(New MemoryStream(pdfOrder),
-                                      "ORDER-" & orderId & ".pdf",
-                                      "application/pdf"))
-
-        myMail.Attachments.Add(New Attachment(New MemoryStream(pdfInvoice),
-                                      invoiceNumber & ".pdf",
-                                      "application/pdf"))
+        myMail.Attachments.Add(New Attachment(New MemoryStream(pdfOrder), "ORDER-" & orderId & ".pdf", "application/pdf"))
+        myMail.Attachments.Add(New Attachment(New MemoryStream(pdfInvoice), invoiceNumber & ".pdf", "application/pdf"))
 
         Dim smtpClient As New SmtpClient()
         smtpClient.Host = mailHost
@@ -1080,263 +1002,269 @@ Public Class MailingClass
         smtpClient.Send(myMail)
     End Sub
 
-
-
     Public Sub ReworkOrder(reworkId As String)
-        If String.IsNullOrEmpty(reworkId) Then Exit Sub
+        Try
+            If String.IsNullOrEmpty(reworkId) Then Exit Sub
 
-        Dim reworkData As DataRow = GetDataRow("SELECT OrderReworks.*, CustomerLogins.FullName AS CreatedFullName, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, OrderHeaders.OrderId AS OrderId, OrderHeaders.OrderNumber AS OrderNumber, OrderHeaders.OrderName AS OrderName, OrderHeaders.CustomerId AS CustomerId, OrderHeaders.OrderId FROM OrderReworks LEFT JOIN OrderHeaders ON OrderReworks.HeaderId=OrderHeaders.Id LEFT JOIN CustomerLogins ON OrderReworks.CreatedBy=CustomerLogins.Id LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderReworks.Id='" & reworkId & "'")
-        If reworkData Is Nothing Then Exit Sub
+            Dim reworkData As DataRow = GetDataRow("SELECT OrderReworks.*, CustomerLogins.FullName AS CreatedFullName, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, OrderHeaders.OrderId AS OrderId, OrderHeaders.OrderNumber AS OrderNumber, OrderHeaders.OrderName AS OrderName, OrderHeaders.CustomerId AS CustomerId, OrderHeaders.OrderId FROM OrderReworks LEFT JOIN OrderHeaders ON OrderReworks.HeaderId=OrderHeaders.Id LEFT JOIN CustomerLogins ON OrderReworks.CreatedBy=CustomerLogins.Id LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderReworks.Id='" & reworkId & "'")
+            If reworkData Is Nothing Then Exit Sub
 
-        Dim customerId As String = reworkData("CustomerId").ToString()
-        Dim customerName As String = reworkData("CustomerName").ToString()
-        Dim orderId As String = reworkData("OrderId").ToString()
-        Dim orderNumber As String = reworkData("OrderNumber").ToString()
-        Dim orderName As String = reworkData("OrderName").ToString()
-        Dim requestedBy As String = reworkData("CreatedFullName").ToString()
+            Dim customerId As String = reworkData("CustomerId").ToString()
+            Dim customerName As String = reworkData("CustomerName").ToString()
+            Dim orderId As String = reworkData("OrderId").ToString()
+            Dim orderNumber As String = reworkData("OrderNumber").ToString()
+            Dim orderName As String = reworkData("OrderName").ToString()
+            Dim requestedBy As String = reworkData("CreatedFullName").ToString()
 
-        Dim companyId As String = GetItemData("SELECT CompanyId FROM Customers WHERE Id='" & customerId & "'")
-        Dim companyName As String = GetItemData("SELECT Name FROM Companys WHERE Id='" & companyId & "'")
+            Dim companyId As String = GetItemData("SELECT CompanyId FROM Customers WHERE Id='" & customerId & "'")
+            Dim companyName As String = GetItemData("SELECT Name FROM Companys WHERE Id='" & companyId & "'")
 
-        Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='Rework Order' AND Active=1")
-        If mailData Is Nothing Then Exit Sub
+            Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='Rework Order' AND Active=1")
+            If mailData Is Nothing Then Exit Sub
 
-        Dim mailServer As String = mailData("Server").ToString()
-        Dim mailHost As String = mailData("Host").ToString()
-        Dim mailPort As Integer = mailData("Port")
+            Dim mailServer As String = mailData("Server").ToString()
+            Dim mailHost As String = mailData("Host").ToString()
+            Dim mailPort As Integer = mailData("Port")
 
-        Dim mailAccount As String = mailData("Account").ToString()
-        Dim mailPassword As String = mailData("Password").ToString()
-        Dim mailAlias As String = mailData("Alias").ToString()
-        Dim mailSubject As String = mailData("Subject").ToString()
+            Dim mailAccount As String = mailData("Account").ToString()
+            Dim mailPassword As String = mailData("Password").ToString()
+            Dim mailAlias As String = mailData("Alias").ToString()
+            Dim mailSubject As String = mailData("Subject").ToString()
 
-        Dim mailTo As String = mailData("To").ToString()
-        Dim mailCc As String = mailData("Cc").ToString()
-        Dim mailBcc As String = mailData("Bcc").ToString()
+            Dim mailTo As String = mailData("To").ToString()
+            Dim mailCc As String = mailData("Cc").ToString()
+            Dim mailBcc As String = mailData("Bcc").ToString()
 
-        Dim mailNetworkCredentials As Boolean = mailData("NetworkCredentials")
-        Dim mailDefaultCredentials As Boolean = mailData("DefaultCredentials")
-        Dim mailEnableSSL As Boolean = mailData("EnableSSL")
+            Dim mailNetworkCredentials As Boolean = mailData("NetworkCredentials")
+            Dim mailDefaultCredentials As Boolean = mailData("DefaultCredentials")
+            Dim mailEnableSSL As Boolean = mailData("EnableSSL")
 
-        Dim mailBody As String = String.Empty
+            Dim mailBody As String = String.Empty
 
-        mailBody = "<span style='font-family: Cambria; font-size: 16px;'>"
-        mailBody &= "Hi Team,"
-        mailBody &= "<br />"
-        mailBody &= "We have just received a new rework request."
-        mailBody &= "<br /><br />"
-        mailBody &= "Rework Details:"
-        mailBody &= "</span>"
+            mailBody = "<span style='font-family: Cambria; font-size: 16px;'>"
+            mailBody &= "Hi Team,"
+            mailBody &= "<br />"
+            mailBody &= "We have just received a new rework request."
+            mailBody &= "<br /><br />"
+            mailBody &= "Rework Details:"
+            mailBody &= "</span>"
 
-        mailBody &= "<br /><br />"
+            mailBody &= "<br /><br />"
 
-        mailBody &= "<table cellpadding='3' cellspacing='0' style='font-family:Cambria; font-size: 16px;'>"
-        mailBody &= "<tr><td valign='top'>Company</td><td valign='top'>:</td><td valign='top'><b>" & companyName & "</b></td></tr>"
-        mailBody &= "<tr><td valign='top'>Customer Name</td><td valign='top'>:</td><td valign='top'><b>" & customerName & "</b></td></tr>"
-        mailBody &= "<tr><td valign='top'>Order #</td><td valign='top'>:</td><td valign='top'><b>" & orderId & "</b></td></tr>"
-        mailBody &= "<tr><td valign='top'>Order Number</td><td valign='top'>:</td><td valign='top'><b>" & orderNumber & "</b></td></tr>"
-        mailBody &= "<tr><td valign='top'>Order Name</td><td valign='top'>:</td><td valign='top'><b>" & orderName & "</b></td></tr>"
-        mailBody &= "<tr><td valign='top'>Requested By</td><td valign='top'>:</td><td valign='top'><b>" & requestedBy & "</b></td></tr>"
-        mailBody &= "</table>"
+            mailBody &= "<table cellpadding='3' cellspacing='0' style='font-family:Cambria; font-size: 16px;'>"
+            mailBody &= "<tr><td valign='top'>Company</td><td valign='top'>:</td><td valign='top'><b>" & companyName & "</b></td></tr>"
+            mailBody &= "<tr><td valign='top'>Customer Name</td><td valign='top'>:</td><td valign='top'><b>" & customerName & "</b></td></tr>"
+            mailBody &= "<tr><td valign='top'>Order #</td><td valign='top'>:</td><td valign='top'><b>" & orderId & "</b></td></tr>"
+            mailBody &= "<tr><td valign='top'>Order Number</td><td valign='top'>:</td><td valign='top'><b>" & orderNumber & "</b></td></tr>"
+            mailBody &= "<tr><td valign='top'>Order Name</td><td valign='top'>:</td><td valign='top'><b>" & orderName & "</b></td></tr>"
+            mailBody &= "<tr><td valign='top'>Requested By</td><td valign='top'>:</td><td valign='top'><b>" & requestedBy & "</b></td></tr>"
+            mailBody &= "</table>"
 
-        mailBody &= "<br /><br />"
+            mailBody &= "<br /><br />"
 
-        mailBody &= "<span style='font-family: Cambria; font-size: 16px;'>"
-        mailBody &= "Please check it on the online ordering portal and proceed with the next step — either <b>Approve</b> or <b>Reject</b> the request."
-        mailBody &= "</span>"
+            mailBody &= "<span style='font-family: Cambria; font-size: 16px;'>"
+            mailBody &= "Please check it on the online ordering portal and proceed with the next step — either <b>Approve</b> or <b>Reject</b> the request."
+            mailBody &= "</span>"
 
-        mailBody &= "<br /><br /><br />"
+            mailBody &= "<br /><br /><br />"
 
-        mailBody &= "<span style='font-family: Cambria; font-size:16px;'>Kind Regards,</span>"
-        mailBody &= "<br /><br /><br />"
-        mailBody &= "<span style='font-family: Cambria; font-size:16px;font-weight: bold;'>Reza Andika Pratama</span><span style='font-family: Cambria; font-size:16px;'> | Developer</span>"
-        mailBody &= "<br />"
-        mailBody &= "<span style='font-family: Cambria; font-size:16px;color:red;'>E</span><span style='font-family: Cambria; font-size:16px;'> : reza@bigblinds.co.id</span>"
-        mailBody &= "<br />"
-        mailBody &= "<span style='font-family: Cambria; font-size:16px;color:red;'>P</span><span style='font-family: Cambria; font-size:16px;'> : 0852-1504-3355</span>"
+            mailBody &= "<span style='font-family: Cambria; font-size:16px;'>Kind Regards,</span>"
+            mailBody &= "<br /><br /><br />"
+            mailBody &= "<span style='font-family: Cambria; font-size:16px;font-weight: bold;'>Reza Andika Pratama</span><span style='font-family: Cambria; font-size:16px;'> | Developer</span>"
+            mailBody &= "<br />"
+            mailBody &= "<span style='font-family: Cambria; font-size:16px;color:red;'>E</span><span style='font-family: Cambria; font-size:16px;'> : reza@bigblinds.co.id</span>"
+            mailBody &= "<br />"
+            mailBody &= "<span style='font-family: Cambria; font-size:16px;color:red;'>P</span><span style='font-family: Cambria; font-size:16px;'> : 0852-1504-3355</span>"
 
-        Dim myMail As New MailMessage
+            Dim myMail As New MailMessage
 
-        Dim subject As String = String.Format("{0} - {1} - {2} - Rework Order # {3}", customerName, orderNumber, orderName, orderId)
+            Dim subject As String = String.Format("{0} - {1} - {2} - Rework Order # {3}", customerName, orderNumber, orderName, orderId)
 
-        myMail.Subject = subject
-        myMail.From = New MailAddress(mailServer, mailAlias)
+            myMail.Subject = subject
+            myMail.From = New MailAddress(mailServer, mailAlias)
 
-        If Not mailTo = "" Then
-            Dim thisArray() As String = mailTo.Split(";")
-            Dim thisMail As String = String.Empty
-            For Each thisMail In thisArray
-                myMail.To.Add(thisMail)
-            Next
-        End If
+            If Not mailTo = "" Then
+                Dim thisArray() As String = mailTo.Split(";")
+                Dim thisMail As String = String.Empty
+                For Each thisMail In thisArray
+                    myMail.To.Add(thisMail)
+                Next
+            End If
 
-        If Not mailCc = "" Then
-            Dim thisArray() As String = mailCc.Split(";")
-            Dim thisMail As String = String.Empty
-            For Each thisMail In thisArray
-                myMail.CC.Add(thisMail)
-            Next
-        End If
+            If Not mailCc = "" Then
+                Dim thisArray() As String = mailCc.Split(";")
+                Dim thisMail As String = String.Empty
+                For Each thisMail In thisArray
+                    myMail.CC.Add(thisMail)
+                Next
+            End If
 
-        If Not mailBcc = "" Then
-            Dim thisArray() As String = mailBcc.Split(";")
-            Dim thisMail As String = String.Empty
-            For Each thisMail In thisArray
-                myMail.Bcc.Add(thisMail)
-            Next
-        End If
+            If Not mailBcc = "" Then
+                Dim thisArray() As String = mailBcc.Split(";")
+                Dim thisMail As String = String.Empty
+                For Each thisMail In thisArray
+                    myMail.Bcc.Add(thisMail)
+                Next
+            End If
 
-        myMail.Body = mailBody
-        myMail.IsBodyHtml = True
-        Dim smtpClient As New SmtpClient()
-        smtpClient.Host = mailHost
-        smtpClient.Port = mailPort
-        smtpClient.EnableSsl = mailEnableSSL
-        smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network
-        smtpClient.Timeout = 120000
+            myMail.Body = mailBody
+            myMail.IsBodyHtml = True
+            Dim smtpClient As New SmtpClient()
+            smtpClient.Host = mailHost
+            smtpClient.Port = mailPort
+            smtpClient.EnableSsl = mailEnableSSL
+            smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network
+            smtpClient.Timeout = 120000
 
-        If mailNetworkCredentials Then
-            smtpClient.UseDefaultCredentials = False
-            smtpClient.Credentials = New NetworkCredential(mailAccount, mailPassword)
-        Else
-            smtpClient.UseDefaultCredentials = mailDefaultCredentials
-        End If
-        smtpClient.Send(myMail)
+            If mailNetworkCredentials Then
+                smtpClient.UseDefaultCredentials = False
+                smtpClient.Credentials = New NetworkCredential(mailAccount, mailPassword)
+            Else
+                smtpClient.UseDefaultCredentials = mailDefaultCredentials
+            End If
+            smtpClient.Send(myMail)
+        Catch ex As Exception
+
+        End Try
     End Sub
 
     Public Sub ReworkApprove(reworkId As String)
-        If String.IsNullOrEmpty(reworkId) Then Exit Sub
+        Try
+            If String.IsNullOrEmpty(reworkId) Then Exit Sub
 
-        Dim orderData As DataRow = GetDataRow("SELECT OrderReworks.*, CustomerLogins.FullName AS CreatedFullName, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, OrderHeaders.OrderId AS OrderId, OrderHeaders.OrderNumber AS OrderNumber, OrderHeaders.OrderName AS OrderName, OrderHeaders.CustomerId AS CustomerId, OrderHeaders.OrderId FROM OrderReworks LEFT JOIN OrderHeaders ON OrderReworks.HeaderId=OrderHeaders.Id LEFT JOIN CustomerLogins ON OrderReworks.CreatedBy=CustomerLogins.Id LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderReworks.Id='" & reworkId & "'")
+            Dim orderData As DataRow = GetDataRow("SELECT OrderReworks.*, CustomerLogins.FullName AS CreatedFullName, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, OrderHeaders.OrderId AS OrderId, OrderHeaders.OrderNumber AS OrderNumber, OrderHeaders.OrderName AS OrderName, OrderHeaders.CustomerId AS CustomerId, OrderHeaders.OrderId FROM OrderReworks LEFT JOIN OrderHeaders ON OrderReworks.HeaderId=OrderHeaders.Id LEFT JOIN CustomerLogins ON OrderReworks.CreatedBy=CustomerLogins.Id LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderReworks.Id='" & reworkId & "'")
 
-        If orderData Is Nothing Then Exit Sub
+            If orderData Is Nothing Then Exit Sub
 
-        Dim customerId As String = orderData("CustomerId").ToString()
-        Dim customerName As String = orderData("CustomerName").ToString()
+            Dim customerId As String = orderData("CustomerId").ToString()
+            Dim customerName As String = orderData("CustomerName").ToString()
 
-        Dim orderId As String = orderData("OrderId").ToString()
-        Dim orderNumber As String = orderData("OrderNumber").ToString()
-        Dim orderName As String = orderData("OrderName").ToString()
+            Dim orderId As String = orderData("OrderId").ToString()
+            Dim orderNumber As String = orderData("OrderNumber").ToString()
+            Dim orderName As String = orderData("OrderName").ToString()
 
-        Dim headerIdNew As String = orderData("HeaderIdNew").ToString()
+            Dim headerIdNew As String = orderData("HeaderIdNew").ToString()
 
-        Dim orderNewData As DataRow = GetDataRow("SELECT * FROM OrderHeaders WHERE Id='" & headerIdNew & "'")
-        Dim orderIdNew As String = orderNewData("OrderId").ToString()
-        Dim orderNumberNew As String = orderNewData("OrderNumber").ToString()
-        Dim orderNameNew As String = orderNewData("OrderName").ToString()
+            Dim orderNewData As DataRow = GetDataRow("SELECT * FROM OrderHeaders WHERE Id='" & headerIdNew & "'")
+            Dim orderIdNew As String = orderNewData("OrderId").ToString()
+            Dim orderNumberNew As String = orderNewData("OrderNumber").ToString()
+            Dim orderNameNew As String = orderNewData("OrderName").ToString()
 
-        Dim companyId As String = orderNewData("CompanyId").ToString()
-        Dim companyName As String = GetItemData("SELECT Name FROM Companys WHERE Id='" & companyId & "'")
+            Dim companyId As String = orderNewData("CompanyId").ToString()
+            Dim companyName As String = GetItemData("SELECT Name FROM Companys WHERE Id='" & companyId & "'")
 
-        Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='Rework Approved' AND Active=1")
-        If mailData Is Nothing Then Exit Sub
+            Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='Rework Approved' AND Active=1")
+            If mailData Is Nothing Then Exit Sub
 
-        Dim mailServer As String = mailData("Server").ToString()
-        Dim mailHost As String = mailData("Host").ToString()
-        Dim mailPort As Integer = mailData("Port")
+            Dim mailServer As String = mailData("Server").ToString()
+            Dim mailHost As String = mailData("Host").ToString()
+            Dim mailPort As Integer = mailData("Port")
 
-        Dim mailAccount As String = mailData("Account").ToString()
-        Dim mailPassword As String = mailData("Password").ToString()
-        Dim mailAlias As String = mailData("Alias").ToString()
-        Dim mailSubject As String = mailData("Subject").ToString()
+            Dim mailAccount As String = mailData("Account").ToString()
+            Dim mailPassword As String = mailData("Password").ToString()
+            Dim mailAlias As String = mailData("Alias").ToString()
+            Dim mailSubject As String = mailData("Subject").ToString()
 
-        Dim mailTo As String = mailData("To").ToString()
-        Dim mailCc As String = mailData("Cc").ToString()
-        Dim mailBcc As String = mailData("Bcc").ToString()
+            Dim mailTo As String = mailData("To").ToString()
+            Dim mailCc As String = mailData("Cc").ToString()
+            Dim mailBcc As String = mailData("Bcc").ToString()
 
-        Dim mailNetworkCredentials As Boolean = mailData("NetworkCredentials")
-        Dim mailDefaultCredentials As Boolean = mailData("DefaultCredentials")
-        Dim mailEnableSSL As Boolean = mailData("EnableSSL")
+            Dim mailNetworkCredentials As Boolean = mailData("NetworkCredentials")
+            Dim mailDefaultCredentials As Boolean = mailData("DefaultCredentials")
+            Dim mailEnableSSL As Boolean = mailData("EnableSSL")
 
-        Dim customerMail As DataTable = GetDataTable("SELECT Email FROM CustomerContacts CROSS APPLY STRING_SPLIT(Tags, ',') AS thisArray WHERE CustomerId='" & customerId & "' AND thisArray.VALUE='Confirming'")
-        If customerMail.Rows.Count = 0 Then Exit Sub
+            Dim customerMail As DataTable = GetDataTable("SELECT Email FROM CustomerContacts CROSS APPLY STRING_SPLIT(Tags, ',') AS thisArray WHERE CustomerId='" & customerId & "' AND thisArray.VALUE='Confirming'")
+            If customerMail.Rows.Count = 0 Then Exit Sub
 
-        Dim mailBody As String = String.Empty
+            Dim mailBody As String = String.Empty
 
-        mailBody = "<span style='font-family: Cambria; font-size: 16px;'>"
-        mailBody &= String.Format("Hi <b>{0}</b>,", customerName)
-        mailBody &= "<br /><br />"
-        mailBody &= "The rework request you submitted has been approved for processing."
-        mailBody &= "<br /><br />"
-        mailBody &= "We have created a new job in the online ordering portal with the following details:"
-        mailBody &= "</span>"
+            mailBody = "<span style='font-family: Cambria; font-size: 16px;'>"
+            mailBody &= String.Format("Hi <b>{0}</b>,", customerName)
+            mailBody &= "<br /><br />"
+            mailBody &= "The rework request you submitted has been approved for processing."
+            mailBody &= "<br /><br />"
+            mailBody &= "We have created a new job in the online ordering portal with the following details:"
+            mailBody &= "</span>"
 
-        mailBody &= "<br /><br />"
+            mailBody &= "<br /><br />"
 
-        mailBody &= "<table cellpadding='5' cellspacing='0' style='font-family:Cambria; font-size:16px; border-collapse:collapse; border:1px solid #000;'>"
-        mailBody &= "<tr style='background-color:#f0f0f0;'>"
-        mailBody &= "<td style='font-weight:bold; border:1px solid #000;'>Data</td>"
-        mailBody &= "<td style='font-weight:bold; border:1px solid #000;'>Original Order</td>"
-        mailBody &= "<td style='font-weight:bold; border:1px solid #000;'>New Order (Rework)</td>"
-        mailBody &= "</tr>"
+            mailBody &= "<table cellpadding='5' cellspacing='0' style='font-family:Cambria; font-size:16px; border-collapse:collapse; border:1px solid #000;'>"
+            mailBody &= "<tr style='background-color:#f0f0f0;'>"
+            mailBody &= "<td style='font-weight:bold; border:1px solid #000;'>Data</td>"
+            mailBody &= "<td style='font-weight:bold; border:1px solid #000;'>Original Order</td>"
+            mailBody &= "<td style='font-weight:bold; border:1px solid #000;'>New Order (Rework)</td>"
+            mailBody &= "</tr>"
 
-        mailBody &= "<tr><td style='border:1px solid #000;'>Customer Name</td><td style='border:1px solid #000;'>" & customerName & "</td><td style='border:1px solid #000;'>" & customerName & "</td></tr>"
-        mailBody &= "<tr><td style='border:1px solid #000;'>Order ID</td><td style='border:1px solid #000;'>" & orderId & "</td><td style='border:1px solid #000;'>" & orderIdNew & "</td></tr>"
-        mailBody &= "<tr><td style='border:1px solid #000;'>Order Number</td><td style='border:1px solid #000;'>" & orderNumber & "</td><td style='border:1px solid #000;'>" & orderNumberNew & "</td></tr>"
-        mailBody &= "<tr><td style='border:1px solid #000;'>Order Name</td><td style='border:1px solid #000;'>" & orderName & "</td><td style='border:1px solid #000;'>" & orderNameNew & "</td></tr>"
-        mailBody &= "</table>"
+            mailBody &= "<tr><td style='border:1px solid #000;'>Customer Name</td><td style='border:1px solid #000;'>" & customerName & "</td><td style='border:1px solid #000;'>" & customerName & "</td></tr>"
+            mailBody &= "<tr><td style='border:1px solid #000;'>Order ID</td><td style='border:1px solid #000;'>" & orderId & "</td><td style='border:1px solid #000;'>" & orderIdNew & "</td></tr>"
+            mailBody &= "<tr><td style='border:1px solid #000;'>Order Number</td><td style='border:1px solid #000;'>" & orderNumber & "</td><td style='border:1px solid #000;'>" & orderNumberNew & "</td></tr>"
+            mailBody &= "<tr><td style='border:1px solid #000;'>Order Name</td><td style='border:1px solid #000;'>" & orderName & "</td><td style='border:1px solid #000;'>" & orderNameNew & "</td></tr>"
+            mailBody &= "</table>"
 
-        mailBody &= "<br /><br />"
+            mailBody &= "<br /><br />"
 
-        mailBody &= "<span style='font-family: Cambria; font-size:16px;'>Kind Regards,</span>"
-        mailBody &= "<br /><br /><br />"
-        If companyId = "2" Then
-            mailBody &= "<span style='font-family: Cambria; font-size:16px;'>Customer Service</span>"
-            mailBody &= "<br />"
-            mailBody &= "<span style='font-family: Cambria; font-size:16px; font-weight: bold;'>" & companyName & "</span>"
-        End If
-        If companyId = "3" Then
-            mailBody &= "<span style='font-family: Cambria; font-size:16px;font-weight: bold;'>Reza Andika Pratama</span><span style='font-family: Cambria; font-size:16px;'> | Developer</span>"
-            mailBody &= "<br />"
-            mailBody &= "<span style='font-family: Cambria; font-size:16px;font-weight: bold;'>E</span><span style='font-family: Cambria; font-size:16px;'> : reza@bigblinds.co.id</span>"
-            mailBody &= "<br />"
-            mailBody &= "<span style='font-family: Cambria; font-size:16px;font-weight: bold;'>P</span><span style='font-family: Cambria; font-size:16px;'> : 0852-1504-3355</span>"
-        End If
+            mailBody &= "<span style='font-family: Cambria; font-size:16px;'>Kind Regards,</span>"
+            mailBody &= "<br /><br /><br />"
+            If companyId = "2" Then
+                mailBody &= "<span style='font-family: Cambria; font-size:16px;'>Customer Service</span>"
+                mailBody &= "<br />"
+                mailBody &= "<span style='font-family: Cambria; font-size:16px; font-weight: bold;'>" & companyName & "</span>"
+            End If
+            If companyId = "3" Then
+                mailBody &= "<span style='font-family: Cambria; font-size:16px;font-weight: bold;'>Reza Andika Pratama</span><span style='font-family: Cambria; font-size:16px;'> | Developer</span>"
+                mailBody &= "<br />"
+                mailBody &= "<span style='font-family: Cambria; font-size:16px;font-weight: bold;'>E</span><span style='font-family: Cambria; font-size:16px;'> : reza@bigblinds.co.id</span>"
+                mailBody &= "<br />"
+                mailBody &= "<span style='font-family: Cambria; font-size:16px;font-weight: bold;'>P</span><span style='font-family: Cambria; font-size:16px;'> : 0852-1504-3355</span>"
+            End If
 
-        Dim myMail As New MailMessage
+            Dim myMail As New MailMessage
 
-        myMail.Subject = String.Format("{0} Original Order {1}", mailSubject, orderId)
-        myMail.From = New MailAddress(mailServer, mailAlias)
+            myMail.Subject = String.Format("{0} Original Order {1}", mailSubject, orderId)
+            myMail.From = New MailAddress(mailServer, mailAlias)
 
-        If customerMail.Rows.Count > 0 Then
-            For i As Integer = 0 To customerMail.Rows.Count - 1
-                Dim thisEmail As String = customerMail.Rows(i)("Email").ToString()
-                myMail.To.Add(thisEmail)
-            Next
-        End If
+            If customerMail.Rows.Count > 0 Then
+                For i As Integer = 0 To customerMail.Rows.Count - 1
+                    Dim thisEmail As String = customerMail.Rows(i)("Email").ToString()
+                    myMail.To.Add(thisEmail)
+                Next
+            End If
 
-        If Not mailCc = "" Then
-            Dim thisArray() As String = mailCc.Split(";")
-            Dim thisMail As String = String.Empty
-            For Each thisMail In thisArray
-                myMail.CC.Add(thisMail)
-            Next
-        End If
+            If Not mailCc = "" Then
+                Dim thisArray() As String = mailCc.Split(";")
+                Dim thisMail As String = String.Empty
+                For Each thisMail In thisArray
+                    myMail.CC.Add(thisMail)
+                Next
+            End If
 
-        If Not mailBcc = "" Then
-            Dim thisArray() As String = mailBcc.Split(";")
-            Dim thisMail As String = String.Empty
-            For Each thisMail In thisArray
-                myMail.Bcc.Add(thisMail)
-            Next
-        End If
+            If Not mailBcc = "" Then
+                Dim thisArray() As String = mailBcc.Split(";")
+                Dim thisMail As String = String.Empty
+                For Each thisMail In thisArray
+                    myMail.Bcc.Add(thisMail)
+                Next
+            End If
 
-        myMail.Body = mailBody
-        myMail.IsBodyHtml = True
-        Dim smtpClient As New SmtpClient()
-        smtpClient.Host = mailHost
-        smtpClient.Port = mailPort
-        smtpClient.EnableSsl = mailEnableSSL
-        smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network
-        smtpClient.Timeout = 120000
+            myMail.Body = mailBody
+            myMail.IsBodyHtml = True
+            Dim smtpClient As New SmtpClient()
+            smtpClient.Host = mailHost
+            smtpClient.Port = mailPort
+            smtpClient.EnableSsl = mailEnableSSL
+            smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network
+            smtpClient.Timeout = 120000
 
-        If mailNetworkCredentials Then
-            smtpClient.UseDefaultCredentials = False
-            smtpClient.Credentials = New NetworkCredential(mailAccount, mailPassword)
-        Else
-            smtpClient.UseDefaultCredentials = mailDefaultCredentials
-        End If
-        smtpClient.Send(myMail)
+            If mailNetworkCredentials Then
+                smtpClient.UseDefaultCredentials = False
+                smtpClient.Credentials = New NetworkCredential(mailAccount, mailPassword)
+            Else
+                smtpClient.UseDefaultCredentials = mailDefaultCredentials
+            End If
+            smtpClient.Send(myMail)
+        Catch ex As Exception
+
+        End Try
     End Sub
 
     Public Sub TicketRemainder(issue As String)
@@ -1603,7 +1531,7 @@ Public Class MailingClass
         Try
             If String.IsNullOrEmpty(customerId) OrElse String.IsNullOrEmpty(loginId) Then Exit Sub
 
-            Dim customerData As DataRow = GetDataRow("SELECT Customers.*, CustomerLogins.FullName AS CustOperator, CASE WHEN Customers.CashSale=1 THEN 'Yes' WHEN Customers.CashSale=0 THEN 'No' ELSE 'Error' END AS CustomerCashSale FROM Customers LEFT JOIN CustomerLogins ON Customers.Operator=CustomerLogins.Id WHERE Customers.Id='" & customerId & "'")
+            Dim customerData As DataRow = GetDataRow("SELECT Customers.*, CASE WHEN Customers.CashSale=1 THEN 'Yes' WHEN Customers.CashSale=0 THEN 'No' ELSE 'Error' END AS CustomerCashSale FROM Customers LEFT JOIN CustomerLogins ON Customers.Operator=CustomerLogins.Id WHERE Customers.Id='" & customerId & "'")
             If customerData Is Nothing Then Exit Sub
 
             Dim debtorCode As String = customerData("DebtorCode").ToString()
@@ -1611,7 +1539,6 @@ Public Class MailingClass
             Dim companyId As String = customerData("CompanyId").ToString()
             Dim customerArea As String = customerData("Area").ToString()
             Dim customerOperator As String = customerData("Operator").ToString()
-            Dim operatorName As String = customerData("CustOperator").ToString()
             Dim customerCashSale As String = customerData("CustomerCashSale").ToString()
 
             Dim priceGroupId As String = customerData("PriceGroupId").ToString()
@@ -1662,7 +1589,6 @@ Public Class MailingClass
             mailBody &= "<tr><td valign='top'>Company</td><td valign='top'>:</td><td valign='top'><b>" & companyName & "</b></td></tr>"
             mailBody &= "<tr><td valign='top'>Debtor Code</td><td valign='top'>:</td><td valign='top'><b>" & debtorCode & "</b></td></tr>"
             mailBody &= "<tr><td valign='top'>Customer Name</td><td valign='top'>:</td><td valign='top'><b>" & customerName & "</b></td></tr>"
-            mailBody &= "<tr><td valign='top'>Operator</td><td valign='top'>:</td><td valign='top'><b>" & operatorName & "</b></td></tr>"
             mailBody &= "<tr><td valign='top'>Area</td><td valign='top'>:</td><td valign='top'><b>" & customerArea & "</b></td></tr>"
             mailBody &= "<tr><td valign='top'>Cash Sale</td><td valign='top'>:</td><td valign='top'><b>" & customerCashSale & "</b></td></tr>"
             mailBody &= "<tr><td valign='top'></td><td valign='top'></td><td valign='top'></td></tr>"
@@ -1702,8 +1628,10 @@ Public Class MailingClass
                 Next
             End If
 
-            If Not String.IsNullOrEmpty(emailOperator) Then
-                myMail.CC.Add(emailOperator)
+            If companyId = "2" Then
+                Dim operatorEmail As String = GetItemData("SELECT ISNULL(STRING_AGG(CustomerLogins.Email, ';'), '') AS OperatorEmails FROM Customers OUTER APPLY STRING_SPLIT(Customers.Operator, ',') operatorArray LEFT JOIN CustomerLogins ON CustomerLogins.Id = TRY_CAST(operatorArray.value AS INT) WHERE Customers.Id='" & customerId & "';")
+
+                If Not String.IsNullOrEmpty(operatorEmail) Then myMail.CC.Add(operatorEmail)
             End If
 
             If Not String.IsNullOrEmpty(mailBcc) Then
@@ -1819,7 +1747,7 @@ Public Class MailingClass
             mailBody &= "<tr style='background-color:#00B0F0; color:black; font-weight:bold; text-align:center;'>"
             mailBody &= "<th style='border:1px solid #000; padding:6px;'>No</th>"
             mailBody &= "<th style='border:1px solid #000; padding:6px;'>User</th>"
-            mailBody &= "<th style='border:1px solid #000; padding:6px;'>Temporary Password</th>"
+            mailBody &= "<th style='border:1px solid #000; padding:6px;'>Password</th>"
             mailBody &= "</tr>"
 
             Dim no As Integer = 1

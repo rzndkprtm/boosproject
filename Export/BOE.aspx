@@ -618,6 +618,11 @@
 
                 If String.IsNullOrEmpty(kitId) Then Continue For
 
+                Dim stackPosition As String = String.Empty
+                If Not String.IsNullOrEmpty(thisData.Rows(i)("StackPosition").ToString) Then
+
+                End If
+
                 writer.WriteStartElement("OrderDetails")
                 writer.WriteAttributeString("OrddID", thisData.Rows(i)("Id").ToString())
                 writer.WriteAttributeString("FKOrdID", thisData.Rows(i)("HeaderId").ToString())
