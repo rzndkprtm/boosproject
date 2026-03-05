@@ -5,7 +5,6 @@ Imports Newtonsoft.Json
 
 Public Class ShutterOceanService
     Public Async Function SendOrderAsync(headerId As String) As Task
-
         Dim payload As New DataHeader()
         payload.Details = New List(Of DataDetail)()
 
@@ -104,7 +103,6 @@ Public Class ShutterOceanService
             Await client.PostAsync("https://onlineorder.au/handler/Json.ashx", content)
         End Using
     End Function
-
 End Class
 
 Public Class DataHeader

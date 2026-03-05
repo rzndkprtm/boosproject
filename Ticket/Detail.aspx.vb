@@ -9,7 +9,6 @@ Partial Class Ticket_Detail
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
-    Dim dataMailing As Object() = Nothing
 
     Dim ticketId As String = String.Empty
 
@@ -115,8 +114,6 @@ Partial Class Ticket_Detail
                 If Session("RoleName") = "Customer" Then
                     MessageError_Reply(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnReply_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showReply", thisScript, True)
         End Try
@@ -181,8 +178,6 @@ Partial Class Ticket_Detail
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnClose_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -223,8 +218,6 @@ Partial Class Ticket_Detail
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindData", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub

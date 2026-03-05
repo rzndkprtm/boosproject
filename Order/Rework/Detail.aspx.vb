@@ -7,10 +7,8 @@ Partial Class Order_Rework_Detail
     Inherits Page
 
     Dim orderClass As New OrderClass
-    Dim mailingClass As New MailingClass
-
+    
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-    Dim dataMailing As Object() = Nothing
     Dim dataLog As Object() = Nothing
     Dim url As String = String.Empty
 
@@ -53,8 +51,6 @@ Partial Class Order_Rework_Detail
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnCancelRework_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -98,9 +94,10 @@ Partial Class Order_Rework_Detail
                     End Using
                 End Using
 
+                Dim mailingClass As New MailingClass
                 mailingClass.ReworkOrder(lblReworkId.Text)
 
-                Dim dataLog As Object() = {"OrderReworks", lblReworkId.Text, Session("LoginId").ToString(), "Rework Submitted"}
+                dataLog = {"OrderReworks", lblReworkId.Text, Session("LoginId").ToString(), "Rework Submitted"}
                 orderClass.Logs(dataLog)
 
                 url = String.Format("~/order/rework/detail?reworkid={0}", lblReworkId.Text)
@@ -113,8 +110,6 @@ Partial Class Order_Rework_Detail
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnSubmitRework_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -123,6 +118,12 @@ Partial Class Order_Rework_Detail
         MessageError(False, String.Empty)
         Try
             Dim newHeaderId As String = orderClass.GetNewOrderHeaderId()
+
+            Dim cashSale As Boolean = orderClass.GetCustomerCashSale(lblCustomerId.Text)
+            Dim minSurcharge As Boolean = orderClass.GetCustomerMinimum(lblCustomerId.Text)
+
+            Dim status As String = "New Order"
+            If cashSale = True Then status = "Waiting Proforma"
 
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderReworks SET Status='Approved', HeaderIdNew=@HeaderIdNew WHERE Id=@Id", thisConn)
@@ -133,6 +134,8 @@ Partial Class Order_Rework_Detail
                     myCmd.ExecuteNonQuery()
                 End Using
             End Using
+
+            Dim orderType As String = orderClass.GetItemData("SELECT OrderType FROM OrderHeaders WHERE Id='" & lblHeaderId.Text & "'")
 
             Dim companyAlias As String = orderClass.GetCompanyAliasByCustomer(lblCustomerId.Text)
 
@@ -151,15 +154,22 @@ Partial Class Order_Rework_Detail
                 orderId = companyAlias & randomCode
                 Try
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderHeaders(Id, OrderId, CustomerId, OrderNumber, OrderName, OrderNote, Status, CreatedBy, CreatedDate, DownloadBOE, Active) SELECT @NewHeaderId, @OrderId, OrderHeaders.CustomerId, CONVERT(VARCHAR, OrderHeaders.OrderNumber) + ' - RW', CONVERT(VARCHAR, OrderHeaders.OrderName) + ' - RW', NULL, 'Approved Rework', OrderHeaders.CreatedBy, GETDATE(), 0, 1 FROM OrderReworks LEFT JOIN OrderHeaders ON OrderReworks.HeaderId=OrderHeaders.Id WHERE OrderReworks.Id=@ReworkId; INSERT INTO OrderQuotes VALUES(@NewHeaderId, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
-                            myCmd.Parameters.AddWithValue("@NewHeaderId", newHeaderId)
-                            myCmd.Parameters.AddWithValue("@ReworkId", lblReworkId.Text)
-                            myCmd.Parameters.AddWithValue("@OrderId", orderId)
+                        thisConn.Open()
 
-                            thisConn.Open()
+                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderHeaders SELECT @NewID, @OrderId, CustomerId, CONVERT(VARCHAR(200), OrderNumber) + ' - ' + 'RW', CONVERT(VARCHAR(200), OrderName) + ' - ' + 'RW', NULL, OrderType, @Status, NULL, CreatedBy, GETDATE(), NULL, NULL, NULL, NULL, NULL, NULL, 0, 1 FROM OrderHeaders WHERE Id=@OldId;", thisConn)
+                            myCmd.Parameters.AddWithValue("@OldId", lblHeaderId.Text)
+                            myCmd.Parameters.AddWithValue("@NewID", newHeaderId)
+                            myCmd.Parameters.AddWithValue("@OrderId", orderId)
+                            myCmd.Parameters.AddWithValue("@Status", status)
+                            myCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
+
                             myCmd.ExecuteNonQuery()
                         End Using
+
+                        thisConn.Close()
                     End Using
+
+                    success = True
                 Catch exSql As SqlException
                     If exSql.Number = 2601 OrElse exSql.Number = 2627 Then
                         success = False
@@ -168,6 +178,28 @@ Partial Class Order_Rework_Detail
                     End If
                 End Try
             Loop
+
+            Using thisConn As New SqlConnection(myConn)
+                thisConn.Open()
+
+                Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderQuotes VALUES(@NewID, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00); INSERT OrderInvoices(Id, InvoiceNumber, Payment, Amount) VALUES (@NewID, @InvoiceNumber, @Payment, 0);", thisConn)
+                    myCmd.Parameters.AddWithValue("@NewID", newHeaderId)
+                    myCmd.Parameters.AddWithValue("@InvoiceNumber", orderId)
+                    myCmd.Parameters.AddWithValue("@Payment", False)
+
+                    myCmd.ExecuteNonQuery()
+                End Using
+
+                If orderType = "Builder" Then
+                    Using myCmd As New SqlCommand("INSERT INTO OrderBuilders(Id) VALUES (@Id)", thisConn)
+                        myCmd.Parameters.AddWithValue("@Id", newHeaderId)
+
+                        myCmd.ExecuteNonQuery()
+                    End Using
+                End If
+
+                thisConn.Close()
+            End Using
 
             dataLog = {"OrderHeaders", newHeaderId, Session("LoginId").ToString(), "Order Created | Rework Approved"}
             orderClass.Logs(dataLog)
@@ -198,7 +230,33 @@ Partial Class Order_Rework_Detail
                 orderClass.Logs(dataLog)
             Next
 
+            Dim totalItems As Integer = orderClass.GetTotalItemOrder(newHeaderId)
+            If lblCompanyId.Text = "2" AndAlso minSurcharge = True AndAlso totalItems <= 3 Then
+                Dim thisId As String = orderClass.GetNewOrderItemId()
+                Using thisConn As New SqlConnection(myConn)
+                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, 2986, 112, 1, 0, 0, 1, 0, 1)", thisConn)
+                        myCmd.Parameters.AddWithValue("@Id", thisId)
+                        myCmd.Parameters.AddWithValue("@HeaderId", newHeaderId)
+
+                        thisConn.Open()
+                        myCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                dataLog = {"OrderDetails", thisId, "2", "Order Item Added"}
+                orderClass.Logs(dataLog)
+
+                orderClass.ResetPriceDetail(lblHeaderId.Text, thisId)
+                orderClass.CalculatePrice(lblHeaderId.Text, thisId)
+                orderClass.FinalCostItem(lblHeaderId.Text, thisId)
+            End If
+
+            Dim mailingClass As New MailingClass
             mailingClass.ReworkApprove(lblReworkId.Text)
+
+            If cashSale = True Then
+                mailingClass.NewOrder_Proforma(newHeaderId)
+            End If
 
             url = String.Format("~/order/detail?orderid={0}", newHeaderId)
             Response.Redirect(url, False)
@@ -209,8 +267,6 @@ Partial Class Order_Rework_Detail
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnSubmitRework_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -236,15 +292,8 @@ Partial Class Order_Rework_Detail
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnRejectRework_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
-    End Sub
-
-    Protected Sub btnAddItem_Click(sender As Object, e As EventArgs)
-        url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
-        Response.Redirect(url, False)
     End Sub
 
     Protected Sub rptRework_ItemDataBound(sender As Object, e As RepeaterItemEventArgs)
@@ -318,8 +367,6 @@ Partial Class Order_Rework_Detail
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "UpdateItem_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -347,8 +394,6 @@ Partial Class Order_Rework_Detail
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnUpload_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -381,8 +426,6 @@ Partial Class Order_Rework_Detail
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnDeleteItem_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -417,13 +460,11 @@ Partial Class Order_Rework_Detail
             aSubmitRework.Visible = False
             aApproveRework.Visible = False
             aRejectRework.Visible = False
-            btnAddItem.Visible = False
 
             If lblStatus.Text = "Unsubmitted" Then
                 If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Customer" Then
                     aCancelRework.Visible = True
                     aSubmitRework.Visible = True
-                    btnAddItem.Visible = True
                 End If
             End If
 
@@ -444,8 +485,6 @@ Partial Class Order_Rework_Detail
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindDataRework", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -499,7 +538,6 @@ Partial Class Order_Rework_Detail
             Directory.Delete(tempFolder, True)
 
             Return zipFileName
-
         Catch ex As Exception
             Return String.Empty
         End Try

@@ -1775,7 +1775,7 @@
                 title = "Enable Customer Login";
             }
             document.getElementById("titleActiveLogin").innerHTML = title;
-        }     
+        }
 
         function showResetPass(id, username) {
             let newPass = generateNewPassword(15);

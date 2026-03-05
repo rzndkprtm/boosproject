@@ -97,7 +97,7 @@
                                         </div>
                                         <div class="col-7 col-sm-12 col-lg-6 mb-2 form-group">
                                             <label class="form-label">Operator</label>
-                                            <asp:DropDownList runat="server" ID="ddlOperator" CssClass="form-select"></asp:DropDownList>
+                                            <asp:ListBox runat="server" ID="lbOperator" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
                                         </div>
                                     </div>
 

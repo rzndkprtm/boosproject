@@ -1,11 +1,12 @@
-﻿Partial Class Order_Rework_Default
+﻿Imports System.Data.SqlClient
+
+Partial Class Order_Rework_Default
     Inherits Page
-    
+
     Dim orderClass As New OrderClass
-    Dim mailingClass As New MailingClass
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-    Dim dataMailing As Object() = Nothing
+    Dim dataLog As Object() = Nothing
     Dim url As String = String.Empty
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -43,8 +44,6 @@
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "gvList_PageIndexChanging", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -65,29 +64,7 @@
                         If Session("RoleName") = "Customer" Then
                             MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                         End If
-                        dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "linkDetail_Click", ex.ToString()}
-                        mailingClass.WebError(dataMailing)
                     End If
-                End Try
-            ElseIf e.CommandName = "Log" Then
-                MessageError_Log(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showLog(); };"
-                Try
-                    gvListLogs.DataSource = orderClass.GetDataTable("SELECT * FROM Logs WHERE Type='OrderReworks' AND DataId='" & dataId & "' ORDER BY ActionDate ASC")
-                    gvListLogs.DataBind()
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
-                Catch ex As Exception
-                    MessageError_Log(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError_Log(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                        If Session("RoleName") = "Customer" Then
-                            MessageError_Log(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
-                        End If
-                        dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "linkLog_Click", ex.ToString()}
-                        mailingClass.WebError(dataMailing)
-                    End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
                 End Try
             ElseIf e.CommandName = "ToOrder" Then
                 MessageError(False, String.Empty)
@@ -101,12 +78,40 @@
                         If Session("RoleName") = "Customer" Then
                             MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                         End If
-                        dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "linkToOrder_Click", ex.ToString()}
-                        mailingClass.WebError(dataMailing)
                     End If
                 End Try
             End If
         End If
+    End Sub
+
+    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim thisId As String = txtDeleteId.Text
+
+            Using thisConn As New SqlConnection(myConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderReworks SET Active=0 WHERE Id=@Id", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", thisId)
+
+                    thisConn.Open()
+                    myCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            dataLog = {"OrderReworks", thisId, Session("LoginId").ToString(), "Order Rework Deleted"}
+            orderClass.Logs(dataLog)
+
+            url = String.Format("~/order/rework")
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                If Session("RoleName") = "Customer" Then
+                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
+                End If
+            End If
+        End Try
     End Sub
 
     Protected Sub BindDataOrder(search As String, status As String, active As String)
@@ -145,7 +150,7 @@
                 byOrder = " ORDER BY OrderReworks.Id, CASE WHEN OrderReworks.Status='Pending Approval' THEN 1 WHEN OrderReworks.Status='Approved' THEN 2 WHEN OrderReworks.Status='Rejected' THEN 3 WHEN OrderReworks.Status='Unsubmitted' THEN 4 END DESC"
             End If
 
-            Dim thisQuery As String = String.Format("SELECT OrderReworks.*, OrderHeaders.OrderNumber AS OrderNumber, OrderHeaders.OrderName AS OrderName, Customers.Name AS CustomerName FROM OrderReworks LEFT JOIN OrderHeaders ON OrderReworks.HeaderId=OrderHeaders.Id LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id {0} {1} {2} {3} {4}", byActive, byRole, byStatus, byText, byOrder)
+            Dim thisQuery As String = String.Format("SELECT OrderReworks.*, OrderHeaders.OrderId AS OrderId, OrderHeaders.OrderNumber AS OrderNumber, OrderHeaders.OrderName AS OrderName, Customers.Name AS CustomerName FROM OrderReworks LEFT JOIN OrderHeaders ON OrderReworks.HeaderId=OrderHeaders.Id LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id {0} {1} {2} {3} {4}", byActive, byRole, byStatus, byText, byOrder)
 
             gvList.DataSource = orderClass.GetDataTable(thisQuery)
             gvList.DataBind()
@@ -160,18 +165,12 @@
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindDataOrder", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
 
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
-    End Sub
-
-    Protected Sub MessageError_Log(visible As Boolean, message As String)
-        divErrorLog.Visible = visible : msgErrorLog.InnerText = message
     End Sub
 
     Protected Function GetOrderId(headerId As String) As String
@@ -181,8 +180,9 @@
         Return String.Empty
     End Function
 
-    Protected Function BindTextLog(logId As String) As String
-        Return orderClass.GetTextLog(logId)
+    Protected Function VisibleDelete(status As String) As Boolean
+        If status = "Unsubmitted" Then Return True
+        Return False
     End Function
 
     Protected Function PageAction(action As String) As Boolean

@@ -32,7 +32,7 @@ Partial Class _Default
                 Exit Sub
             End If
 
-            imgNewsletter.ImageUrl = thisData("Link").ToString()
+            'imgNewsletter.ImageUrl = thisData("Link").ToString()
         Catch ex As Exception
             If Session("RoleName") = "Developer" Then
                 lblError.Text = ex.ToString()

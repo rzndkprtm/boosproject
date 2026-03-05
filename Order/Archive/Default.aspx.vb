@@ -2,10 +2,8 @@
     Inherits Page
 
     Dim archiveClass As New ArchiveClass
-    Dim mailingClass As New MailingClass
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-    Dim dataMailing As Object() = Nothing
     Dim url As String = String.Empty
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -48,8 +46,6 @@
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "gvList_PageIndexChanging", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -74,8 +70,6 @@
                         If Session("RoleName") = "Customer" Then
                             MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                         End If
-                        dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "linkDetail_Click", ex.ToString()}
-                        mailingClass.WebError(dataMailing)
                     End If
                 End Try
             End If
@@ -148,8 +142,6 @@
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindDataOrder", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub

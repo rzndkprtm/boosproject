@@ -78,7 +78,7 @@
                                     <div class="form-body">
                                         <div class="row">
                                             <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Curtain Type</label>
+                                                <label>Product Type</label>
                                             </div>
                                             <div class="col-12 col-sm-12 col-lg-5 form-group">
                                                 <select id="blindtype" class="form-select"></select>
@@ -121,15 +121,6 @@
                                                 </div>
                                                 <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                     <select id="mounting" class="form-select"></select>
-                                                </div>
-                                            </div>
-
-                                            <%--FIRST CURTAIN--%>
-                                            <div class="row" id="divfirst">
-                                                <div class="col-12">
-                                                    <div class="divider divider-left-center">
-                                                        <div class="divider-text">First Curtain</div>
-                                                    </div>
                                                 </div>
                                             </div>
                                         
@@ -196,11 +187,7 @@
                                                         <label>Track Draw</label>
                                                     </div>
                                                     <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                        <select id="trackdraw" class="form-select">
-                                                            <option value=""></option>
-                                                            <option value="Flick Stick">Flick Stick</option>
-                                                            <option value="Hand">Hand</option>
-                                                        </select>
+                                                        <select id="trackdraw" class="form-select"></select>
                                                     </div>
                                                 </div>
                                             </div>
@@ -278,191 +265,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            <div class="row" id="divfirstend">
-                                                <div class="col-12"><hr /></div>
-                                            </div>
-
-                                            <%--SECOND CURTAIN--%>
-                                            <div class="row" id="divsecond">
-                                                <div class="col-12">
-                                                    <div class="divider divider-left-center">
-                                                        <div class="divider-text">Second Curtain</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="row" id="divheadingb">
-                                                <div class="col-12 col-sm-12 col-lg-3">
-                                                    <label>Curtain Heading</label>
-                                                </div>
-                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                                    <div class="input-group">
-                                                        <select id="headingb" class="form-select">
-                                                            <option value=""></option>
-                                                            <option value="Double Pinch">Double Pinch</option>
-                                                            <option value="Inverted Box">Inverted Box</option>
-                                                            <option value="Knife">Knife</option>
-                                                            <option value="S-Wave">S-Wave</option>
-                                                        </select>
-                                                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalGallery" onclick="return showGallery('Heading');">Info</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div id="divfabricb">
-                                                <div class="row">
-                                                    <div class="col-12 col-sm-12 col-lg-3">
-                                                        <label>Fabric Type</label>
-                                                    </div>
-                                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                                        <select id="fabrictypeb" class="form-select"></select>
-                                                    </div>
-                                                </div>
-
-                                                <div class="row mb-3">
-                                                    <div class="col-12 col-sm-12 col-lg-3">
-                                                        <label>Fabric Colour</label>
-                                                    </div>
-                                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                                        <select id="fabriccolourb" class="form-select"></select>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div id="divtrackb">
-                                                <div class="row">
-                                                    <div class="col-12 col-sm-12 col-lg-3">
-                                                        <label>Track Type</label>
-                                                    </div>
-                                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                                        <select id="tracktypeb" class="form-select"></select>
-                                                    </div>
-                                                </div>
-
-                                                <div class="row">
-                                                    <div class="col-12 col-sm-12 col-lg-3">
-                                                        <label>Track Colour</label>
-                                                    </div>
-                                                    <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                        <select id="trackcolourb" class="form-select"></select>
-                                                    </div>
-                                                </div>
-
-                                                <div class="row mb-3">
-                                                    <div class="col-12 col-sm-12 col-lg-3">
-                                                        <label>Track Draw</label>
-                                                    </div>
-                                                    <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                        <select id="trackdrawb" class="form-select">
-                                                            <option value=""></option>
-                                                            <option value="Flick Stick">Flick Stick</option>
-                                                            <option value="Hand">Hand</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="row mb-3" id="divstackpositionb">
-                                                <div class="col-12 col-sm-12 col-lg-3">
-                                                    <label>Stack Position</label>
-                                                </div>
-                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                                    <select id="stackpositionb" class="form-select">
-                                                        <option value=""></option>
-                                                        <option value="Left - OWD">Left - OWD</option>
-                                                        <option value="Right - OWD">Right - OWD</option>
-                                                        <option value="Centre Open">Centre Open</option>
-                                                        <option value="Free Flow">Free Flow</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                            <div class="row" id="divwidthb">
-                                                <div class="col-12 col-sm-12 col-lg-3">
-                                                    <label>Width</label>
-                                                </div>
-                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                    <div class="input-group">
-                                                        <input type="number" id="widthb" class="form-control" autocomplete="off" placeholder="Width ...." />
-                                                        <span class="input-group-text">mm</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="row" id="divdropb">
-                                                <div class="col-12 col-sm-12 col-lg-3">
-                                                    <label>Drop</label>
-                                                </div>
-                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                    <div class="input-group">
-                                                        <input type="number" id="dropb" class="form-control" autocomplete="off" placeholder="Drop ...." />
-                                                        <span class="input-group-text">mm</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="row mt-3" id="divcontrolcolourb">
-                                                <div class="col-12 col-sm-12 col-lg-3">
-                                                    <label>Control Colour</label>
-                                                </div>
-                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                    <select id="controlcolourb" class="form-select">
-                                                        <option value=""></option>
-                                                        <option value="Clear">Clear</option>
-                                                        <option value="Black">Black</option>
-                                                        <option value="Silver">Silver</option>
-                                                        <option value="White">White</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                            <div class="row" id="divcontrollengthb">
-                                                <div class="col-12 col-sm-12 col-lg-3">
-                                                    <label>Control Length</label>
-                                                </div>
-                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                    <div class="input-group">
-                                                        <select id="controllengthb" class="form-select">
-                                                            <option value=""></option>
-                                                            <option value="750">750</option>
-                                                            <option value="1000">1000</option>
-                                                            <option value="1250">1250</option>
-                                                            <option value="1500">1500</option>
-                                                            <option value="1800">1800</option>
-                                                            <option value="2000">2000</option>
-                                                        </select>
-                                                        <span class="input-group-text">mm</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div id="divreturnlength">
-                                                <div class="row mt-3">
-                                                    <div class="col-12 col-sm-12 col-lg-3">
-                                                        <label>Return Length</label>
-                                                    </div>
-                                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                                        <div class="input-group">
-                                                            <span class="input-group-text">Left</span>
-                                                            <input type="number" id="returnlengthvalue" class="form-control" autocomplete="off" placeholder=".... mm" />
-                                                            <span class="input-group-text">mm</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                                        <div class="input-group">
-                                                            <span class="input-group-text">Right</span>
-                                                            <input type="number" id="returnlengthvalueb" class="form-control" autocomplete="off" placeholder=".... mm" />
-                                                            <span class="input-group-text">mm</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="row" id="divsecondend">
-                                                <div class="col-12"><hr /></div>
-                                            </div>
-                                        
+                                            
                                             <div class="row mt-3" id="divbottomhem">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Bottom HEM</label>
@@ -616,5 +419,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/WebOrders/Curtain.js?v=2.0.1"></script>
+    <script src="/Scripts/WebOrders/Curtain.js?v=2.0.3"></script>
 </asp:Content>

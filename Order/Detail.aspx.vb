@@ -2,16 +2,15 @@
 Imports System.Data.SqlClient
 Imports System.Globalization
 Imports System.Threading.Tasks
+Imports Org.BouncyCastle.Asn1.Cmp
 
 Partial Class Order_Detail
     Inherits Page
 
     Dim orderClass As New OrderClass
-    Dim mailingClass As New MailingClass
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
-    Dim dataMailing As Object() = Nothing
     Dim dataLog As Object() = Nothing
     Dim url As String = String.Empty
 
@@ -65,8 +64,6 @@ Partial Class Order_Detail
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnDownlaod_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -119,8 +116,6 @@ Partial Class Order_Detail
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnDeleteOrder_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -176,8 +171,6 @@ Partial Class Order_Detail
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnQuoteOrder_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -191,6 +184,7 @@ Partial Class Order_Detail
             End If
 
             Dim cashSale As Boolean = orderClass.GetCustomerCashSale(lblCustomerId.Text)
+            Dim minSurcharge As Boolean = orderClass.GetCustomerMinimum(lblCustomerId.Text)
 
             Dim orderStatus As String = "New Order"
             If cashSale = True Then orderStatus = "Waiting Proforma"
@@ -210,7 +204,7 @@ Partial Class Order_Detail
             End Using
 
             Dim totalItems As Integer = orderClass.GetTotalItemOrder(lblHeaderId.Text)
-            If lblCompanyId.Text = "2" AndAlso totalItems <= 3 Then
+            If lblCompanyId.Text = "2" AndAlso minSurcharge = True AndAlso totalItems <= 3 Then
                 Dim thisId As String = orderClass.GetNewOrderItemId()
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, 2986, 112, 1, 0, 0, 1, 0, 1)", thisConn)
@@ -232,6 +226,8 @@ Partial Class Order_Detail
 
             dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), "Order Submitted"}
             orderClass.Logs(dataLog)
+
+            Dim mailingClass As New MailingClass
 
             If cashSale = False Then
                 mailingClass.NewOrder(lblHeaderId.Text, Session("LoginId").ToString())
@@ -265,8 +261,34 @@ Partial Class Order_Detail
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnSubmitOrder_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnNewOrder_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='New Order' WHERE Id=@Id; INSERT INTO OrderShipments(Id) VALUES (@Id)", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
+
+                    thisConn.Open()
+                    myCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), "New Order"}
+            orderClass.Logs(dataLog)
+
+            url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                If Session("RoleName") = "Customer" Then
+                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
+                End If
             End If
         End Try
     End Sub
@@ -314,8 +336,6 @@ Partial Class Order_Detail
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnUnsubmitOrder_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -358,8 +378,6 @@ Partial Class Order_Detail
             MessageError_CancelOrder(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_CancelOrder(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnCancelOrder_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showCancelOrder", thisScript, True)
         End Try
@@ -400,6 +418,7 @@ Partial Class Order_Detail
             End Using
 
             If lblOrderStatus.Text = "Payment Received" OrElse lblOrderStatus.Text = "New Order" Then
+                Dim mailingClass As New MailingClass
                 mailingClass.ProductionOrder(lblHeaderId.Text)
             End If
 
@@ -412,8 +431,6 @@ Partial Class Order_Detail
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnProductionOrder_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -442,8 +459,6 @@ Partial Class Order_Detail
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnHoldOrder_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -472,8 +487,6 @@ Partial Class Order_Detail
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnUnHoldOrder_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -530,8 +543,6 @@ Partial Class Order_Detail
             MessageError_ShippedOrder(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_ShippedOrder(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnShippedOrder_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showShippedOrder", thisScript, True)
         End Try
@@ -561,8 +572,6 @@ Partial Class Order_Detail
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnCompleteOrder_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -591,11 +600,6 @@ Partial Class Order_Detail
             Dim action As String = "Add"
             Dim reworkId As String = orderClass.GetNewOrderReworkId()
 
-            Dim getReworkId As String = orderClass.GetItemData("SELECT Id FROM OrderReworks WHERE HeaderId='" & lblHeaderId.Text & "' AND Status='Unsubmitted'")
-            If Not String.IsNullOrEmpty(getReworkId) Then
-                action = "Update" : reworkId = getReworkId
-            End If
-
             If action = "Add" Then
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderReworks VALUES (@Id, @HeaderId, NULL, 'Unsubmitted', @CreatedBy, GETDATE(), NULL, 1)", thisConn)
@@ -616,8 +620,6 @@ Partial Class Order_Detail
                 dataLog = {"OrderReworks", reworkId, Session("LoginId").ToString(), "Order Rework Created"}
                 orderClass.Logs(dataLog)
             End If
-
-
 
             For Each selectedId As String In selectedIds
                 Dim reworkDetailId As String = orderClass.GetNewOrderReworkDetailId()
@@ -645,8 +647,6 @@ Partial Class Order_Detail
             MessageError_ReworkOrder(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_ReworkOrder(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnShippedOrder_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showReworkOrder", thisScript, True)
         End Try
@@ -762,8 +762,6 @@ Partial Class Order_Detail
                 If Session("RoleName") = "Customer" Then
                     MessageError_DetailQuote(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnDetailQuote_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showDetailQuote", thisScript, True)
         End Try
@@ -793,8 +791,6 @@ Partial Class Order_Detail
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnDownloadQuote_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -850,6 +846,7 @@ Partial Class Order_Detail
                     thisConn.Close()
                 End Using
 
+                Dim mailingClass As New MailingClass
                 mailingClass.SendInvoice(lblHeaderId.Text, Session("LoginId").ToString(), txtSendInvoiceTo.Text, ccCustomer, txtSendInvoiceCCStaff.Text)
 
                 dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), "Send Invoice"}
@@ -862,8 +859,6 @@ Partial Class Order_Detail
             MessageError_SendInvoice(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_SendInvoice(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnSendInvoice_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showSendInvoice", thisScript, True)
         End Try
@@ -920,8 +915,6 @@ Partial Class Order_Detail
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnReceivePayment_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -946,8 +939,6 @@ Partial Class Order_Detail
                 If Session("RoleName") = "Customer" Then
                     MessageError_Preview(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnDownloadInvoice_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showPreview", thisScript, True)
         End Try
@@ -982,8 +973,6 @@ Partial Class Order_Detail
             MessageError_InvoiceNumber(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_InvoiceNumber(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnInvoiceNumber_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showInvoiceNumber", thisScript, True)
         End Try
@@ -1026,8 +1015,6 @@ Partial Class Order_Detail
             MessageError_InvoiceData(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_InvoiceData(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnInvoiceData_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showInvoiceData", thisScript, True)
         End Try
@@ -1058,8 +1045,6 @@ Partial Class Order_Detail
             MessageError_FileOrder(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_FileOrder(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                Dim dataMailing As Object() = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "gvListBuilderFile_RowCommand", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -1090,8 +1075,6 @@ Partial Class Order_Detail
             MessageError_BuilderDetail(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_BuilderDetail(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnBuilderDetail_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showBuilderDetail", thisScript, True)
         End Try
@@ -1121,8 +1104,6 @@ Partial Class Order_Detail
             MessageError_FileOrder(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_FileOrder(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnUploadFileOrder_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showFileOrder", thisScript, True)
         End Try
@@ -1137,20 +1118,31 @@ Partial Class Order_Detail
             End If
 
             Dim quoteClass As New QuoteClass
-            Dim pdfBytes As Byte() = quoteClass.BindContent(lblHeaderId.Text)
+            If lblOrderType.Text = "Regular" Then
+                Dim pdfBytes As Byte() = quoteClass.BindContent(lblHeaderId.Text)
 
-            Response.Clear()
-            Response.ContentType = "application/pdf"
-            Response.AddHeader("Content-Disposition", "attachment; filename=Quote" & lblOrderId.Text & ".pdf")
-            Response.BinaryWrite(pdfBytes)
-            Response.Flush()
-            Response.End()
+                Response.Clear()
+                Response.ContentType = "application/pdf"
+                Response.AddHeader("Content-Disposition", "attachment; filename=QUOTE-" & lblOrderId.Text & ".pdf")
+                Response.BinaryWrite(pdfBytes)
+                Response.Flush()
+                Response.End()
+            End If
+            If lblOrderType.Text = "Builder" Then
+                Dim pdfBytes As Byte() = quoteClass.BindContentBuilder(lblHeaderId.Text)
+
+                Response.Clear()
+                Response.ContentType = "application/pdf"
+                Response.AddHeader("Content-Disposition", "attachment; filename=QUOTE-" & lblOrderId.Text & ".pdf")
+                Response.BinaryWrite(pdfBytes)
+                Response.Flush()
+                Response.End()
+            End If
+
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnMoreDownloadQuote_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -1186,6 +1178,7 @@ Partial Class Order_Detail
             End If
 
             If msgErrorMoreEmailQuote.InnerText = "" Then
+                Dim mailingClass As New MailingClass
                 mailingClass.SentQuote(lblHeaderId.Text, Session("LoginId").ToString(), txtEmailQuoteTo.Text, ccCustomer, txtEmailQuoteCCStaff.Text)
 
                 url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
@@ -1195,8 +1188,6 @@ Partial Class Order_Detail
             MessageError_MoreEmailQuote(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_MoreEmailQuote(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnMoreEmailQuote_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showEmailQuote", thisScript, True)
         End Try
@@ -1231,8 +1222,6 @@ Partial Class Order_Detail
             MessageError_AddNote(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_AddNote(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnAddNote_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showAddNote", thisScript, True)
         End Try
@@ -1250,8 +1239,6 @@ Partial Class Order_Detail
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "gvList_PageIndexChanging", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -1273,10 +1260,8 @@ Partial Class Order_Detail
                         Exit Sub
                     End If
 
-                    Dim itemAction As String = ""
-                    If Session("RoleName") = "Developer" Then
-                        itemAction = "edit"
-                    End If
+                    Dim itemAction As String = String.Empty
+                    If Session("RoleName") = "Developer" Then itemAction = "edit"
 
                     If Session("RoleName") = "IT" Then
                         itemAction = "edit"
@@ -1320,9 +1305,7 @@ Partial Class Order_Detail
 
                     If Session("RoleName") = "Installer" Then
                         itemAction = "view"
-                        If lblOrderStatus.Text = "Quoted" Then
-                            itemAction = "edit"
-                        End If
+                        If lblOrderStatus.Text = "Quoted" Then itemAction = "edit"
                     End If
 
                     If Session("RoleName") = "Export" Then
@@ -1331,9 +1314,7 @@ Partial Class Order_Detail
 
                     If Session("RoleName") = "Customer" Then
                         itemAction = "view"
-                        If lblOrderStatus.Text = "Unsubmitted" Then
-                            itemAction = "edit"
-                        End If
+                        If lblOrderStatus.Text = "Unsubmitted" Then itemAction = "edit"
                     End If
 
                     If String.IsNullOrEmpty(itemAction) Then
@@ -1354,8 +1335,6 @@ Partial Class Order_Detail
                         If Session("RoleName") = "Customer" Then
                             MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                         End If
-                        dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "linkDetail_Click", ex.ToString()}
-                        mailingClass.WebError(dataMailing)
                     End If
                 End Try
             ElseIf e.CommandName = "Copy" Then
@@ -1379,8 +1358,6 @@ Partial Class Order_Detail
                         If Session("RoleName") = "Customer" Then
                             MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                         End If
-                        dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "linkCopy_Click", ex.ToString()}
-                        mailingClass.WebError(dataMailing)
                     End If
                 End Try
             ElseIf e.CommandName = "Printing" Then
@@ -1398,36 +1375,36 @@ Partial Class Order_Detail
                         If Session("RoleName") = "Customer" Then
                             MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                         End If
-                        dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "linkPrinting_Click", ex.ToString()}
-                        mailingClass.WebError(dataMailing)
                     End If
                     ClientScript.RegisterStartupScript(Me.GetType(), "showPrinting", thisScript, True)
                 End Try
             ElseIf e.CommandName = "EditCosting" Then
                 MessageError_EditCosting(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showEditCosting(); };"
+                'Dim thisScript As String = "window.onload = function() { showEditCosting(); };"
                 Try
-                    Dim queryDetailsPrice As String = "SELECT *, FORMAT(BuyPrice, 'C', 'en-US') AS BuyPricing, FORMAT(SellPrice, 'C', 'en-US') AS SellPricing FROM OrderCostings WHERE ItemId='" & dataId & "' AND Type<>'Final' AND Number<>0 ORDER BY Number, CASE WHEN Type='Base' THEN 1 WHEN Type='Surcharge' THEN 2 ELSE 3 END ASC"
-                    If lblCompanyId.Text = "3" OrElse lblCompanyId.Text = "5" Then
-                        queryDetailsPrice = "SELECT *, FORMAT(BuyPrice, 'C', 'id-ID') AS BuyPricing, FORMAT(SellPrice, 'C', 'en-US') AS SellPricing FROM OrderCostings WHERE ItemId='" & dataId & "' AND Type<>'Final' AND Number<>0 ORDER BY Number, CASE WHEN Type='Base' THEN 1 WHEN Type='Surcharge' THEN 2 ELSE 3 END ASC"
-                    End If
+                    'Dim queryDetailsPrice As String = "SELECT *, FORMAT(BuyPrice, 'C', 'en-US') AS BuyPricing, FORMAT(SellPrice, 'C', 'en-US') AS SellPricing FROM OrderCostings WHERE ItemId='" & dataId & "' AND Type<>'Final' AND Number<>0 ORDER BY Number, CASE WHEN Type='Base' THEN 1 WHEN Type='Surcharge' THEN 2 ELSE 3 END ASC"
+                    'If lblCompanyId.Text = "3" OrElse lblCompanyId.Text = "5" Then
+                    '    queryDetailsPrice = "SELECT *, FORMAT(BuyPrice, 'C', 'id-ID') AS BuyPricing, FORMAT(SellPrice, 'C', 'en-US') AS SellPricing FROM OrderCostings WHERE ItemId='" & dataId & "' AND Type<>'Final' AND Number<>0 ORDER BY Number, CASE WHEN Type='Base' THEN 1 WHEN Type='Surcharge' THEN 2 ELSE 3 END ASC"
+                    'End If
 
-                    lblItemId.Text = dataId
+                    'lblItemId.Text = dataId
 
-                    gvListEditCosting.DataSource = orderClass.GetDataTable(queryDetailsPrice)
-                    gvListEditCosting.DataBind()
+                    'gvListEditCosting.DataSource = orderClass.GetDataTable(queryDetailsPrice)
+                    'gvListEditCosting.DataBind()
 
-                    gvListEditCosting.Columns(0).Visible = False
+                    'gvListEditCosting.Columns(0).Visible = False
 
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showEditCosting", thisScript, True)
+                    'ClientScript.RegisterStartupScript(Me.GetType(), "showEditCosting", thisScript, True)
+                    Dim queryString As String = String.Format("headerid={0}&itemid={1}", lblHeaderId.Text, dataId)
+                    Dim contextId As String = InsertContext(queryString)
+                    url = String.Format("~/order/editcosting?boos={0}", contextId)
+                    Response.Redirect(url)
                 Catch ex As Exception
                     MessageError_EditCosting(True, ex.ToString())
                     If Not Session("RoleName") = "Developer" Then
                         MessageError_EditCosting(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                        dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "linkEditCosting_Click", ex.ToString()}
-                        mailingClass.WebError(dataMailing)
                     End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showEditCosting", thisScript, True)
+                    'ClientScript.RegisterStartupScript(Me.GetType(), "showEditCosting", thisScript, True)
                 End Try
             End If
         End If
@@ -1454,8 +1431,6 @@ Partial Class Order_Detail
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnAddItem_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -1514,8 +1489,6 @@ Partial Class Order_Detail
             MessageError_Service(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_Service(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnService_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showService", thisScript, True)
         End Try
@@ -1565,8 +1538,6 @@ Partial Class Order_Detail
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnDeleteItem_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -1589,10 +1560,6 @@ Partial Class Order_Detail
                             If row.RowType = DataControlRowType.DataRow Then
                                 Dim costingId As String = gvListEditCosting.DataKeys(row.RowIndex).Values("Id").ToString()
 
-                                Dim txtDescription As TextBox = CType(row.FindControl("txtDescriptionPrice"), TextBox)
-                                Dim newDescription As String = txtDescription.Text
-                                Dim oldDescription As String = String.Empty
-
                                 Dim txtNewSellPrice As TextBox = CType(row.FindControl("txtNewSellPrice"), TextBox)
                                 Dim newSell As Decimal = 0
                                 Decimal.TryParse(txtNewSellPrice.Text, NumberStyles.Any, CultureInfo.CurrentCulture, newSell)
@@ -1605,19 +1572,9 @@ Partial Class Order_Detail
                                     Using rd = cmdOld.ExecuteReader()
                                         If rd.Read() Then
                                             oldSell = If(IsDBNull(rd("SellPrice")), 0D, Convert.ToDecimal(rd("SellPrice")))
-                                            oldDescription = rd("Description").ToString()
                                         End If
                                     End Using
                                 End Using
-
-
-                                If oldDescription <> newDescription Then
-                                    Using cmd As New SqlCommand("UPDATE OrderCostings SET Description=@Description WHERE Id=@Id", thisConn, tran)
-                                        cmd.Parameters.AddWithValue("@Id", costingId)
-                                        cmd.Parameters.AddWithValue("@Description", newDescription)
-                                        cmd.ExecuteNonQuery()
-                                    End Using
-                                End If
 
                                 If oldSell <> newSell Then
                                     Using cmd As New SqlCommand("UPDATE OrderCostings SET SellPrice=@SellPrice WHERE Id=@Id", thisConn, tran)
@@ -1668,8 +1625,6 @@ Partial Class Order_Detail
             MessageError_EditCosting(True, ex.Message)
             If Not Session("RoleName") = "Developer" Then
                 MessageError_EditCosting(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnEditCosting_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showEditCosting", thisScript, True)
         End Try
@@ -1686,8 +1641,6 @@ Partial Class Order_Detail
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnRecalculate_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -1786,6 +1739,7 @@ Partial Class Order_Detail
             btnEditHeader.Visible = False
             aDeleteOrder.Visible = False
             aQuoteOrder.Visible = False
+            aNewOrder.Visible = False
             aSubmitOrder.Visible = False
             aUnsubmitOrder.Visible = False
             aCancelOrder.Visible = False
@@ -1819,8 +1773,6 @@ Partial Class Order_Detail
             aService.Visible = False
 
             Dim isReworkOrder As Boolean = orderClass.IsReworkOrder(headerId)
-
-            Dim checkRework As Integer = orderClass.CheckRework(headerId)
             Dim roleName As String = orderClass.GetUserRoleName(lblCreatedBy.Text)
 
             If Session("RoleName") = "Developer" Then
@@ -1870,6 +1822,7 @@ Partial Class Order_Detail
 
                     btnInvoice.Visible = True : aSendInvoice.Visible = True
                     liDividerInvoice.Visible = True : liUpdateInvoiceNumber.Visible = True
+                    aNewOrder.Visible = True
 
                     aAddItem.Visible = True : aService.Visible = True
                 End If
@@ -1895,18 +1848,6 @@ Partial Class Order_Detail
 
                     aProductionOrder.Visible = True
                     aHoldOrder.Visible = True
-                    aCancelOrder.Visible = True
-
-                    aAddItem.Visible = True : aService.Visible = True
-                End If
-
-                If lblOrderStatus.Text = "Approved Rework" Then
-                    btnEditHeader.Visible = True
-
-                    btnInvoice.Visible = True
-                    liDividerInvoice.Visible = True : liUpdateInvoiceData.Visible = True
-
-                    aProductionOrder.Visible = True
                     aCancelOrder.Visible = True
 
                     aAddItem.Visible = True : aService.Visible = True
@@ -2373,6 +2314,7 @@ Partial Class Order_Detail
 
                 If lblOrderStatus.Text = "Waiting Proforma" Then
                     aCancelOrder.Visible = True : aUnsubmitOrder.Visible = True
+                    aNewOrder.Visible = True
 
                     btnInvoice.Visible = True : aSendInvoice.Visible = True
                     liDividerInvoice.Visible = True : liUpdateInvoiceNumber.Visible = True
@@ -2536,7 +2478,9 @@ Partial Class Order_Detail
                 End If
 
                 If lblOrderStatus.Text = "Shipped Out" OrElse lblOrderStatus.Text = "Completed" Then
-                    aReworkOrder.Visible = True
+                    If isReworkOrder = False Then
+                        aReworkOrder.Visible = True
+                    End If
                 End If
             End If
 
@@ -2587,8 +2531,6 @@ Partial Class Order_Detail
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindDataOrder", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -2596,9 +2538,7 @@ Partial Class Order_Detail
     Protected Sub BindDesignType()
         ddlDesign.Items.Clear()
         Try
-            Dim thisQuery As String = "SELECT Designs.Id, Designs.Name AS NameText FROM CustomerProductAccess CROSS APPLY STRING_SPLIT(CustomerProductAccess.DesignId, ',') AS designArray INNER JOIN Designs ON designArray.VALUE=Designs.Id WHERE CustomerProductAccess.Id='" & lblCustomerId.Text & "' AND Designs.Type<>'Additional' AND Designs.Active=1 ORDER BY Designs.Name ASC"
-
-            ddlDesign.DataSource = orderClass.GetDataTable(thisQuery)
+            ddlDesign.DataSource = orderClass.GetDataTable("SELECT Designs.Id, Designs.Name AS NameText FROM CustomerProductAccess CROSS APPLY STRING_SPLIT(CustomerProductAccess.DesignId, ',') AS designArray INNER JOIN Designs ON designArray.VALUE=Designs.Id WHERE CustomerProductAccess.Id='" & lblCustomerId.Text & "' AND Designs.Type<>'Additional' AND Designs.Active=1 ORDER BY Designs.Name ASC")
             ddlDesign.DataTextField = "NameText"
             ddlDesign.DataValueField = "Id"
             ddlDesign.DataBind()
@@ -2607,10 +2547,9 @@ Partial Class Order_Detail
                 ddlDesign.Items.Insert(0, New ListItem("", ""))
             End If
         Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindDesignType", ex.ToString()}
-                mailingClass.WebError(dataMailing)
+            ddlDesign.Items.Clear()
+            If Session("RoleName") = "Developer" Then
+                MessageError(True, ex.ToString())
             End If
         End Try
     End Sub
@@ -2627,10 +2566,9 @@ Partial Class Order_Detail
                 ddlBlindService.Items.Insert(0, New ListItem("", ""))
             End If
         Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindDesignType", ex.ToString()}
-                mailingClass.WebError(dataMailing)
+            ddlBlindService.Items.Clear()
+            If Session("RoleName") = "Developer" Then
+                MessageError(True, ex.ToString())
             End If
         End Try
     End Sub
@@ -2687,8 +2625,6 @@ Partial Class Order_Detail
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindDataItem", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -2719,7 +2655,7 @@ Partial Class Order_Detail
         spanInstall.InnerText = "$"
         spanFreight.InnerText = "$"
 
-        If lblCompanyId.Text = "3" OrElse lblCompanyId.Text = "5" Then
+        If lblCompanyId.Text = "3" Then
             divQuoteCity.Visible = True
 
             spanDiscount.InnerText = "Rp"
@@ -2730,10 +2666,10 @@ Partial Class Order_Detail
 
         ddlQuoteCountry.Items.Clear()
         ddlQuoteCountry.Items.Add(New ListItem("", ""))
-        If lblCompanyId.Text = "2" OrElse lblCompanyId.Text = "4" Then
+        If lblCompanyId.Text = "2" Then
             ddlQuoteCountry.Items.Add(New ListItem("Australia", "Australia"))
         End If
-        If lblCompanyId.Text = "3" OrElse lblCompanyId.Text = "5" Then
+        If lblCompanyId.Text = "3" Then
             ddlQuoteCountry.Items.Add(New ListItem("Indonesia", "Indonesia"))
         End If
 
@@ -2762,7 +2698,7 @@ Partial Class Order_Detail
         lblPriceOrderTitle.Text = "Total excl. GST"
         lblGstTitle.Text = "GST 10%"
         lblFinalPriceOrderTitle.Text = "TOTAL incl. GST"
-        If lblCompanyId.Text = "3" OrElse lblCompanyId.Text = "5" Then
+        If lblCompanyId.Text = "3" Then
             lblPriceOrderTitle.Text = "Total excl. PPN"
             lblGstTitle.Text = "PPN 11%"
             lblFinalPriceOrderTitle.Text = "TOTAL incl. PPN"
@@ -2771,16 +2707,14 @@ Partial Class Order_Detail
         If itemCount > 0 Then
             Dim sumPrice As Decimal = orderClass.GetItemData_Decimal("SELECT SUM(SellPrice) AS SumPrice FROM OrderCostings WHERE HeaderId='" & lblHeaderId.Text & "' AND Type='Final'")
             Dim gst As Decimal = sumPrice * 10 / 100
-            If lblCompanyId.Text = "3" OrElse lblCompanyId.Text = "5" Then
-                gst = sumPrice * 11 / 100
-            End If
+            If lblCompanyId.Text = "3" Then gst = sumPrice * 11 / 100
             Dim finaltotal As Decimal = sumPrice + gst
 
             lblPriceOrder.Text = "$ " & sumPrice.ToString("N2", enUS)
             lblGst.Text = "$ " & gst.ToString("N2", enUS)
             lblFinalPriceOrder.Text = "$ " & finaltotal.ToString("N2", enUS)
 
-            If lblCompanyId.Text = "3" OrElse lblCompanyId.Text = "5" Then
+            If lblCompanyId.Text = "3" Then
                 lblPriceOrder.Text = "Rp " & sumPrice.ToString("N2", idIDR)
                 lblGst.Text = "Rp " & gst.ToString("N2", idIDR)
                 lblFinalPriceOrder.Text = "Rp " & finaltotal.ToString("N2", idIDR)
@@ -2801,7 +2735,6 @@ Partial Class Order_Detail
         lblPaymentDate.Text = "-"
 
         If invoiceData IsNot Nothing Then
-
             If Not String.IsNullOrEmpty(invoiceData("InvoiceNumber").ToString()) Then
                 lblInvoiceNumber.Text = invoiceData("InvoiceNumber").ToString()
                 txtUpdateInvoiceNumber.Text = invoiceData("InvoiceNumber").ToString()
@@ -2841,7 +2774,6 @@ Partial Class Order_Detail
         lblCourier.Text = "-"
 
         If shipmentData IsNot Nothing Then
-
             If Not String.IsNullOrEmpty(shipmentData("ShipmentNumber").ToString()) Then
                 lblShipmentNumber.Text = shipmentData("ShipmentNumber").ToString()
                 txtShipmentNumber.Text = shipmentData("ShipmentNumber").ToString()
@@ -2911,8 +2843,6 @@ Partial Class Order_Detail
             MessageError_BuilderDetail(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_BuilderDetail(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindDataBuilder", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -2947,8 +2877,6 @@ Partial Class Order_Detail
             MessageError_FileOrder(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_FileOrder(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                Dim dataMailing As Object() = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindBuilderFile", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -3151,6 +3079,9 @@ Partial Class Order_Detail
 
         If designName = "Curtain" Then
             result = itemDescription
+            result &= "<br />"
+            result &= String.Format("{0} {1} {2} | {3} ({4}) {5}", fabricColourName, size, squareMetreText, trackType, width, linearMetreText)
+
             If blindName = "Curtain Only" Then
                 result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
             End If
@@ -3159,18 +3090,6 @@ Partial Class Order_Detail
             End If
             If blindName = "Track Only" Then
                 result = String.Format("{0} {1} ({2}) {3}", itemDescription, trackType, width, linearMetreText)
-            End If
-            If blindName = "Single Curtain & Track" Then
-                result = itemDescription
-                result &= "<br />"
-                result &= String.Format("{0} {1} {2} | {3} ({4}) {5}", fabricColourName, size, squareMetreText, trackType, width, linearMetreText)
-            End If
-            If blindName = "Double Curtain & Track" Then
-                result = itemDescription
-                result &= "<br />"
-                result &= String.Format("1st Curtain : {0} {1} {2} | {3} ({4}) {5}", fabricColourName, size, squareMetreText, trackType, width, linearMetreText)
-                result &= "<br />"
-                result &= String.Format("2nd Curtain : {0} {1} {2} | {3} ({4}) {5}", fabricColourNameB, sizeB, squareMetreTextB, trackTypeB, widthB, linearMetreTextB)
             End If
         End If
 
@@ -3449,7 +3368,12 @@ Partial Class Order_Detail
         End If
 
         If designName = "Additional" Then
-            result = orderClass.GetItemData("SELECT Description FROM OrderCostings WHERE HeaderId='" & lblHeaderId.Text & "' AND ItemId='" & itemId & "' AND Number='1' AND Type='Base'")
+            result = productName
+            Dim thisNote As String = orderClass.GetItemData("SELECT Description FROM OrderCostings WHERE HeaderId='" & lblHeaderId.Text & "' AND ItemId='" & itemId & "' AND Type='Note'")
+            If Not String.IsNullOrEmpty(thisNote) Then
+                result &= "<br />"
+                result &= thisNote
+            End If
         End If
         Return result
     End Function
@@ -3462,7 +3386,7 @@ Partial Class Order_Detail
                 Dim thisPrice As Decimal = orderClass.GetItemData_Decimal(thisQuery)
 
                 result = String.Format("${0}", thisPrice.ToString("N2", enUS))
-                If lblCompanyId.Text = "3" OrElse lblCompanyId.Text = "5" Then
+                If lblCompanyId.Text = "3" Then
                     result = String.Format("Rp{0}", thisPrice.ToString("N2", idIDR))
                 End If
             End If
@@ -3769,6 +3693,15 @@ Partial Class Order_Detail
         End If
 
         If Session("RoleName") = "Data Entry" AndAlso lblOrderType.Text = "Builder" Then
+            result = True
+        End If
+
+        Return result
+    End Function
+
+    Protected Function InvoiceItemNote() As Boolean
+        Dim result As Boolean = False
+        If Session("RoleName") = "Developer" Then
             result = True
         End If
 

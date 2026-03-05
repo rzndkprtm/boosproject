@@ -16,27 +16,16 @@ Partial Class Report_Default
         If Not IsPostBack Then
             MessageError(False, String.Empty)
 
-            txtStartDate.Text = Now.ToString("yyyy-mm-dd")
-            txtEndDate.Text = Now.ToString("yyyy-mm-dd")
+            txtStartDate.Text = Now.ToString("dd-mm-yyyy")
+            txtEndDate.Text = Now.ToString("dd-mm-yyyy")
 
             BindCompany()
-            BindCustomer(ddlCustomer.SelectedValue)
         End If
-    End Sub
-
-    Protected Sub ddlCompany_SelectedIndexChanged(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        BindCustomer(ddlCompany.SelectedValue)
     End Sub
 
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            If ddlStatus.SelectedValue = "" Then
-                MessageError(True, "STATUS IS REQUIRED !")
-                Exit Sub
-            End If
-
             If txtStartDate.Text = "" Then
                 MessageError(True, "START DATE IS REQUIRED !")
                 Exit Sub
@@ -47,7 +36,24 @@ Partial Class Report_Default
             End If
 
             If msgError.InnerText = "" Then
-                BindData(ddlStatus.SelectedValue, txtStartDate.Text, txtEndDate.Text, ddlCompany.SelectedValue, ddlCustomer.SelectedValue)
+                Dim paramsPivot As New List(Of SqlParameter) From {
+                    New SqlParameter("@StartDate", txtStartDate.Text),
+                    New SqlParameter("@EndDate", txtEndDate.Text),
+                    New SqlParameter("@CompanyId", ddlCompany.SelectedValue)
+                }
+
+                Dim paramsItem As New List(Of SqlParameter) From {
+                    New SqlParameter("@Status", "In Production"),
+                    New SqlParameter("@DateFrom", txtStartDate.Text),
+                    New SqlParameter("@DateTo", txtEndDate.Text),
+                    New SqlParameter("@CompanyId", ddlCompany.SelectedValue)
+                }
+
+                gvList.DataSource = reportClass.GetDataTableSP("sp_TotalItemsPerDesign", paramsItem)
+                gvList.DataBind()
+
+                gvBlindsPivot.DataSource = reportClass.GetDataTableSP("sp_ProductionSummaryBlindsPivot", paramsPivot)
+                gvBlindsPivot.DataBind()
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -61,35 +67,14 @@ Partial Class Report_Default
         Response.Redirect("~/", False)
     End Sub
 
-    Protected Sub BindData(status As String, dStart As Date, dEnd As Date, companyId As String, customerId As String)
-        Try
-            Dim params As New List(Of SqlParameter) From {
-                New SqlParameter("@Status", status),
-                New SqlParameter("@DateFrom", dStart),
-                New SqlParameter("@DateTo", dEnd),
-                New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(companyId), CType(DBNull.Value, Object), companyId)),
-                New SqlParameter("@CustomerId", If(String.IsNullOrEmpty(customerId), CType(DBNull.Value, Object), customerId))
-            }
-
-            Dim thisData As DataTable = reportClass.GetDataTableSP("sp_TotalItemsPerDesign", params)
-
-            gvList.DataSource = thisData
-            gvList.DataBind()
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
     Protected Sub BindCompany()
         ddlCompany.Items.Clear()
         ddlCompany.Enabled = True
         Try
-            Dim thisString As String = "SELECT * FROM Companys WHERE Active=1 ORDER BY Name ASC"
+            Dim thisString As String = "SELECT * FROM Companys WHERE Id<>1 AND Active=1 ORDER BY Name ASC"
+
             ddlCompany.DataSource = reportClass.GetDataTable(thisString)
-            ddlCompany.DataTextField = "Name"
+            ddlCompany.DataTextField = "Alias"
             ddlCompany.DataValueField = "Id"
             ddlCompany.DataBind()
 
@@ -100,28 +85,6 @@ Partial Class Report_Default
             If Session("RoleName") = "Sales" OrElse Session("RoleName") = "Customer Service" Then
                 ddlCompany.SelectedValue = Session("CompanyId").ToString()
                 ddlCompany.Enabled = False
-            End If
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
-    Protected Sub BindCustomer(company As String)
-        Try
-            If Not String.IsNullOrEmpty(company) Then
-                Dim thisString As String = "SELECT * FROM Customers WHERE CompanyId = '" & company & "' ORDER BY Name ASC"
-
-                ddlCustomer.DataSource = reportClass.GetDataTable(thisString)
-                ddlCustomer.DataTextField = "Name"
-                ddlCustomer.DataValueField = "Id"
-                ddlCustomer.DataBind()
-
-                If ddlCustomer.Items.Count > 0 Then
-                    ddlCustomer.Items.Insert(0, New ListItem("", ""))
-                End If
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -148,4 +111,16 @@ Partial Class Report_Default
             Return False
         End Try
     End Function
+
+    Protected Sub gvBlindsPivot_RowDataBound(sender As Object, e As GridViewRowEventArgs)
+        If e.Row.RowType = DataControlRowType.Header OrElse e.Row.RowType = DataControlRowType.DataRow Then
+            If e.Row.Cells.Count > 0 Then
+                e.Row.Cells(0).Visible = False
+            End If
+
+            If e.Row.Cells.Count > 3 Then
+                e.Row.Cells(3).Visible = False
+            End If
+        End If
+    End Sub
 End Class

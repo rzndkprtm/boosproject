@@ -26,6 +26,7 @@
                 <asp:Button runat="server" ID="btnEditHeader" CssClass="btn btn-secondary" Text="Create PDF" />
             </div>
         </section>
+
         <section class="row mb-3" runat="server" id="divError">
             <div class="col-12">
                 <div class="alert alert-danger">
@@ -44,60 +45,24 @@
                     <div class="card-content">
                         <div class="card-body">
                             <div class="form form-horizontal">
-                                <div class="row">
-                                    <div class="col-12 col-sm-12 col-lg-3">
-                                        <label class="form-label">Status</label>
-                                    </div>
-                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
-                                        <asp:DropDownList runat="server" ID="ddlStatus" CssClass="form-select">
-                                            <asp:ListItem Value="" Text=""></asp:ListItem>
-                                            <asp:ListItem Value="Submitted" Text="Submitted"></asp:ListItem>
-                                            <asp:ListItem Value="In Production" Text="In Production"></asp:ListItem>
-                                        </asp:DropDownList>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-12 col-sm-12 col-lg-3">
-                                        <label class="form-label">From Date</label>
-                                    </div>
-                                    <div class="col-12 col-sm-12 col-lg-5 form-group">
-                                        <asp:TextBox runat="server" ID="txtStartDate" CssClass="form-control" TextMode="Date"></asp:TextBox>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-12 col-sm-12 col-lg-3">
-                                        <label class="form-label">To Date</label>
-                                    </div>
-                                    <div class="col-12 col-sm-12 col-lg-5 form-group">
-                                        <asp:TextBox runat="server" ID="txtEndDate" CssClass="form-control" TextMode="Date"></asp:TextBox>
-                                    </div>
-                                </div>
-
-                                <div class="row mt-3">
-                                    <div class="col-12">
-                                        <div class="divider divider-left-center">
-                                            <div class="divider-text">Custom Data</div>
-                                        </div>
-                                    </div>
-                                </div>
-
                                 <div class="row" runat="server" id="divCompany">
                                     <div class="col-12 col-sm-12 col-lg-3">
-                                        <label class="form-label">By Company</label>
+                                        <label class="form-label">Company</label>
                                     </div>
                                     <div class="col-12 col-sm-12 col-lg-6 form-group">
-                                        <asp:DropDownList runat="server" ID="ddlCompany" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCompany_SelectedIndexChanged"></asp:DropDownList>
+                                        <asp:DropDownList runat="server" ID="ddlCompany" CssClass="form-select"></asp:DropDownList>
                                     </div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-12 col-sm-12 col-lg-3">
-                                        <label class="form-label">By Customer</label>
+                                        <label class="form-label">Date</label>
                                     </div>
-                                    <div class="col-12 col-sm-12 col-lg-9 form-group">
-                                        <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="form-select"></asp:DropDownList>
+                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                        <asp:TextBox runat="server" ID="txtStartDate" CssClass="form-control" TextMode="Date"></asp:TextBox>
+                                    </div>
+                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                        <asp:TextBox runat="server" ID="txtEndDate" CssClass="form-control" TextMode="Date"></asp:TextBox>
                                     </div>
                                 </div>
                             </div>
@@ -120,6 +85,24 @@
                         <div class="card-body">
                             <div class="table-responsive">
                                 <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover" AutoGenerateColumns="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center"></asp:GridView>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Report Output</h4>
+                    </div>
+
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <asp:GridView runat="server" ID="gvBlindsPivot" CssClass="table table-bordered table-hover" AutoGenerateColumns="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowDataBound="gvBlindsPivot_RowDataBound"></asp:GridView>
                             </div>
                         </div>
                     </div>

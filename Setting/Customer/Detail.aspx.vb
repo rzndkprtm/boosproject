@@ -8,12 +8,12 @@ Partial Class Setting_Customer_Detail
     Inherits Page
 
     Dim settingClass As New SettingClass
-    Dim mailingClass As New MailingClass
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim enUS As CultureInfo = New CultureInfo("en-US")
-    Dim dataMailing As Object() = Nothing
     Dim url As String = String.Empty
+
+    Dim dataLog As Object() = Nothing
 
     <WebMethod(EnableSession:=True)>
     Public Shared Sub UpdateSession(value As String)
@@ -125,7 +125,7 @@ Partial Class Setting_Customer_Detail
                 Dim success As Boolean = False
                 Dim retry As Integer = 0
                 Dim maxRetry As Integer = 100
-                Dim orderId As String = ""
+                Dim orderId As String = String.Empty
 
                 Do While Not success
                     retry += 1
@@ -153,7 +153,6 @@ Partial Class Setting_Customer_Detail
                         End Using
 
                         success = True
-
                     Catch exSql As SqlException
                         If exSql.Number = 2601 OrElse exSql.Number = 2627 Then
                             success = False
@@ -179,7 +178,7 @@ Partial Class Setting_Customer_Detail
                     Directory.CreateDirectory(directoryOrder)
                 End If
 
-                Dim dataLog As Object() = {"OrderHeaders", thisId, Session("LoginId").ToString(), "Order Created"}
+                dataLog = {"OrderHeaders", thisId, Session("LoginId").ToString(), "Order Created"}
                 settingClass.Logs(dataLog)
 
                 url = String.Format("~/order/detail?orderid={0}", thisId)
@@ -189,8 +188,6 @@ Partial Class Setting_Customer_Detail
             MessageError_CreateOrder(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_CreateOrder(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnCreateOrder_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showCreateOrder", thisScript, True)
         End Try
@@ -215,8 +212,6 @@ Partial Class Setting_Customer_Detail
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnRecalculate_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -238,8 +233,6 @@ Partial Class Setting_Customer_Detail
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnDelete_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -253,6 +246,7 @@ Partial Class Setting_Customer_Detail
                 Exit Sub
             End If
 
+            Dim mailingClass As New MailingClass
             mailingClass.LoginCredentials(lblId.Text, Session("LoginId").ToString(), "Welcome Customer")
 
             url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
@@ -261,8 +255,6 @@ Partial Class Setting_Customer_Detail
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnCredentialsLogin_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -338,8 +330,6 @@ Partial Class Setting_Customer_Detail
             MessageError(True, ex.ToString)
             If Not Session("RoleName") = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindData", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -381,8 +371,6 @@ Partial Class Setting_Customer_Detail
             MessageError_ProcessContact(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_ProcessContact(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnAddContact_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcessContact", thisScript, True)
         End Try
@@ -428,8 +416,6 @@ Partial Class Setting_Customer_Detail
                     MessageError_ProcessContact(True, ex.ToString())
                     If Not Session("RoleName") = "Developer" Then
                         MessageError_ProcessContact(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                        dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "linkDetailContact_Click", ex.ToString()}
-                        mailingClass.WebError(dataMailing)
                     End If
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcessContact", thisScript, True)
                 End Try
@@ -482,7 +468,7 @@ Partial Class Setting_Customer_Detail
                         End Using
                     End Using
 
-                    Dim dataLog As Object() = {"CustomerContacts", thisId, Session("LoginId").ToString(), "Customer Contact Created"}
+                    dataLog = {"CustomerContacts", thisId, Session("LoginId").ToString(), "Customer Contact Created"}
                     settingClass.Logs(dataLog)
 
                     url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
@@ -509,7 +495,7 @@ Partial Class Setting_Customer_Detail
                         End Using
                     End Using
 
-                    Dim dataLog As Object() = {"CustomerContacts", lblIdContact.Text, Session("LoginId"), "Customer Contact Updated"}
+                    dataLog = {"CustomerContacts", lblIdContact.Text, Session("LoginId"), "Customer Contact Updated"}
                     settingClass.Logs(dataLog)
 
                     url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
@@ -520,8 +506,6 @@ Partial Class Setting_Customer_Detail
             MessageError_ProcessContact(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_ProcessContact(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnProcessContact_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcessContact", thisScript, True)
         End Try
@@ -555,8 +539,6 @@ Partial Class Setting_Customer_Detail
             MessageError_Contact(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_Contact(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnDeleteContact_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -589,8 +571,6 @@ Partial Class Setting_Customer_Detail
             MessageError_Contact(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_Contact(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnPrimaryContact_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -607,8 +587,6 @@ Partial Class Setting_Customer_Detail
             MessageError_Contact(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindDataContact", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -653,8 +631,6 @@ Partial Class Setting_Customer_Detail
             MessageError_ProcessAddress(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_ProcessAddress(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnAddAddress_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcessAddress", thisScript, True)
         End Try
@@ -699,8 +675,6 @@ Partial Class Setting_Customer_Detail
                     MessageError_ProcessAddress(True, ex.ToString())
                     If Not Session("RoleName") = "Developer" Then
                         MessageError_ProcessAddress(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                        dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "linkDetailAddress_Click", ex.ToString()}
-                        mailingClass.WebError(dataMailing)
                     End If
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcessAddress", thisScript, True)
                 End Try
@@ -777,7 +751,7 @@ Partial Class Setting_Customer_Detail
                         End Using
                     End Using
 
-                    Dim dataLog As Object() = {"CustomerAddress", thisId, Session("LoginId"), "Address Created"}
+                    dataLog = {"CustomerAddress", thisId, Session("LoginId"), "Address Created"}
                     settingClass.Logs(dataLog)
 
                     url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
@@ -803,7 +777,7 @@ Partial Class Setting_Customer_Detail
                         End Using
                     End Using
 
-                    Dim dataLog As Object() = {"CustomerAddress", lblIdAddress.Text, Session("LoginId"), "Address Updated"}
+                    dataLog = {"CustomerAddress", lblIdAddress.Text, Session("LoginId"), "Address Updated"}
                     settingClass.Logs(dataLog)
 
                     url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
@@ -814,8 +788,6 @@ Partial Class Setting_Customer_Detail
             MessageError_ProcessAddress(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_ProcessAddress(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnProcessAddress_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcessAddress", thisScript, True)
         End Try
@@ -849,8 +821,6 @@ Partial Class Setting_Customer_Detail
             MessageError_Address(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_Address(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnDeleteAddress_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -883,8 +853,6 @@ Partial Class Setting_Customer_Detail
             MessageError_Contact(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_Contact(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnPrimaryAddress_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -903,8 +871,6 @@ Partial Class Setting_Customer_Detail
             MessageError_Address(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_Address(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindDataAddress", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -983,8 +949,6 @@ Partial Class Setting_Customer_Detail
                     MessageError_ProcessBusiness(True, ex.ToString())
                     If Not Session("RoleName") = "Developer" Then
                         MessageError_ProcessBusiness(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                        dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "linkDetailBusiness_Click", ex.ToString()}
-                        mailingClass.WebError(dataMailing)
                     End If
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcessBusiness", thisScript, True)
                 End Try
@@ -1005,8 +969,6 @@ Partial Class Setting_Customer_Detail
             MessageError_ProcessBusiness(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_ProcessBusiness(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnAddBusiness_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcessBusiness", thisScript, True)
         End Try
@@ -1047,7 +1009,7 @@ Partial Class Setting_Customer_Detail
                         End Using
                     End Using
 
-                    Dim dataLog As Object() = {"CustomerBusiness", thisId, Session("LoginId"), "Business Created"}
+                    dataLog = {"CustomerBusiness", thisId, Session("LoginId"), "Business Created"}
                     settingClass.Logs(dataLog)
 
                     url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
@@ -1069,7 +1031,7 @@ Partial Class Setting_Customer_Detail
                         End Using
                     End Using
 
-                    Dim dataLog As Object() = {"CustomerBusiness", lblIdBusiness.Text, Session("LoginId"), "Business Updated"}
+                    dataLog = {"CustomerBusiness", lblIdBusiness.Text, Session("LoginId"), "Business Updated"}
                     settingClass.Logs(dataLog)
 
                     url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
@@ -1080,8 +1042,6 @@ Partial Class Setting_Customer_Detail
             MessageError_ProcessBusiness(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_ProcessBusiness(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnProcessBusiness_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcessBusiness", thisScript, True)
         End Try
@@ -1115,8 +1075,6 @@ Partial Class Setting_Customer_Detail
             MessageError_Business(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_Business(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnDeleteBusiness_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -1149,8 +1107,6 @@ Partial Class Setting_Customer_Detail
             MessageError_Contact(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_Contact(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnPrimaryBusiness_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -1169,8 +1125,6 @@ Partial Class Setting_Customer_Detail
             MessageError_Business(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_Business(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindDataBusiness", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -1241,8 +1195,6 @@ Partial Class Setting_Customer_Detail
                     MessageError_ProcesLogin(True, ex.ToString())
                     If Not Session("RoleName") = "Developer" Then
                         MessageError_ProcesLogin(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                        dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "linkDetailLogin_Click", ex.ToString()}
-                        mailingClass.WebError(dataMailing)
                     End If
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcessLogin", thisScript, True)
                 End Try
@@ -1268,8 +1220,6 @@ Partial Class Setting_Customer_Detail
                     MessageError_InstallerAccess(True, ex.ToString())
                     If Not Session("RoleName") = "Developer" Then
                         MessageError_InstallerAccess(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                        dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "linkInstallerAccess_Click", ex.ToString()}
-                        mailingClass.WebError(dataMailing)
                     End If
                     ClientScript.RegisterStartupScript(Me.GetType(), "showInstallerAccess", thisScript, True)
                 End Try
@@ -1299,8 +1249,6 @@ Partial Class Setting_Customer_Detail
             MessageError_ProcesLogin(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_ProcesLogin(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnAddLogin_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcessLogin", thisScript, True)
         End Try
@@ -1387,7 +1335,7 @@ Partial Class Setting_Customer_Detail
                         End Using
                     End Using
 
-                    Dim dataLog As Object() = {"CustomerLogins", thisId, Session("LoginId").ToString(), "Customer Login Created"}
+                    dataLog = {"CustomerLogins", thisId, Session("LoginId").ToString(), "Customer Login Created"}
                     settingClass.Logs(dataLog)
 
                     url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
@@ -1412,7 +1360,7 @@ Partial Class Setting_Customer_Detail
                         End Using
                     End Using
 
-                    Dim dataLog As Object() = {"CustomerLogins", lblIdLogin.Text, Session("LoginId").ToString(), "Customer Login Updated"}
+                    dataLog = {"CustomerLogins", lblIdLogin.Text, Session("LoginId").ToString(), "Customer Login Updated"}
                     settingClass.Logs(dataLog)
 
                     url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
@@ -1423,8 +1371,6 @@ Partial Class Setting_Customer_Detail
             MessageError_ProcesLogin(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_ProcesLogin(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnProccessLogin_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcessLogin", thisScript, True)
         End Try
@@ -1456,7 +1402,7 @@ Partial Class Setting_Customer_Detail
                 End Using
             End Using
 
-            Dim dataLog As Object() = {"CustomerBusiness", lblIdBusiness.Text, Session("LoginId"), "Business Updated"}
+            dataLog = {"CustomerBusiness", lblIdBusiness.Text, Session("LoginId"), "Business Updated"}
             settingClass.Logs(dataLog)
 
             url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
@@ -1465,8 +1411,6 @@ Partial Class Setting_Customer_Detail
             MessageError_InstallerAccess(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_InstallerAccess(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnInstallerAccess_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showInstallerAccess", thisScript, True)
         End Try
@@ -1494,7 +1438,7 @@ Partial Class Setting_Customer_Detail
             Dim activeDesc As String = "Customer Login Has Been Activated"
             If active = 0 Then activeDesc = "Customer Login Has Been Deactivated"
 
-            Dim dataLog As Object() = {"CustomerLogins", thisId, Session("LoginId").ToString(), activeDesc}
+            dataLog = {"CustomerLogins", thisId, Session("LoginId").ToString(), activeDesc}
             settingClass.Logs(dataLog)
 
             url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
@@ -1503,8 +1447,6 @@ Partial Class Setting_Customer_Detail
             MessageError_Login(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_Login(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnActiveLogin_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -1526,7 +1468,7 @@ Partial Class Setting_Customer_Detail
                 End Using
             End Using
 
-            Dim dataLog As Object() = {"CustomerLogins", thisId, Session("LoginId").ToString(), "Customer Login Reset Password"}
+            dataLog = {"CustomerLogins", thisId, Session("LoginId").ToString(), "Customer Login Reset Password"}
             settingClass.Logs(dataLog)
 
             url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
@@ -1535,8 +1477,6 @@ Partial Class Setting_Customer_Detail
             MessageError_Login(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_Login(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnResetPass_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -1551,15 +1491,15 @@ Partial Class Setting_Customer_Detail
                 Exit Sub
             End If
 
+            Dim mailingClass As New MailingClass
             mailingClass.LoginCredentials(lblId.Text, Session("LoginId").ToString(), "Login Credentials")
+
             url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
             Response.Redirect(url, False)
         Catch ex As Exception
             MessageError_Login(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_Login(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnLoginCredentials_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -1580,8 +1520,6 @@ Partial Class Setting_Customer_Detail
             MessageError_Login(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_Login(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindDataLogin", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -1608,8 +1546,6 @@ Partial Class Setting_Customer_Detail
             ddlLoginRole.Items.Insert(0, New ListItem("", ""))
         Catch ex As Exception
             ddlLoginRole.Items.Clear()
-            dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindDataLoginRole", ex.ToString()}
-            mailingClass.WebError(dataMailing)
         End Try
     End Sub
 
@@ -1624,8 +1560,6 @@ Partial Class Setting_Customer_Detail
             ddlLoginLevel.Items.Insert(0, New ListItem("", ""))
         Catch ex As Exception
             ddlLoginLevel.Items.Clear()
-            dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindDataLoginLevel", ex.ToString()}
-            mailingClass.WebError(dataMailing)
         End Try
     End Sub
 
@@ -1703,8 +1637,6 @@ Partial Class Setting_Customer_Detail
                     MessageError_ProcessDiscount(True, ex.ToString())
                     If Not Session("RoleName") = "Developer" Then
                         MessageError_ProcessDiscount(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                        dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "linkDetailDiscount_Click", ex.ToString()}
-                        mailingClass.WebError(dataMailing)
                     End If
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcessDiscount", thisScript, True)
                 End Try
@@ -1729,8 +1661,6 @@ Partial Class Setting_Customer_Detail
             MessageError_ProcessDiscount(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_ProcessDiscount(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnAddDiscount_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcessDiscount", thisScript, True)
         End Try
@@ -1754,8 +1684,6 @@ Partial Class Setting_Customer_Detail
             MessageError_ProcessDiscount(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_ProcessDiscount(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnAddDiscountCustom_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcessDiscount", thisScript, True)
         End Try
@@ -1819,7 +1747,7 @@ Partial Class Setting_Customer_Detail
                         thisConn.Close()
                     End Using
 
-                    Dim dataLog As Object() = {"CustomerDiscounts", lblIdDiscount.Text, Session("LoginId").ToString(), "Customer Discount Updated"}
+                    dataLog = {"CustomerDiscounts", lblIdDiscount.Text, Session("LoginId").ToString(), "Customer Discount Updated"}
                     settingClass.Logs(dataLog)
 
                     url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
@@ -1830,8 +1758,6 @@ Partial Class Setting_Customer_Detail
             MessageError_ProcessDiscount(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_ProcessDiscount(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnProcessDiscount_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcessDiscount", thisScript, True)
         End Try
@@ -1865,8 +1791,6 @@ Partial Class Setting_Customer_Detail
             MessageError_Discount(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnDeleteDiscount_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -1902,8 +1826,6 @@ Partial Class Setting_Customer_Detail
             MessageError_Discount(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_Discount(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnResetDiscount_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -1926,8 +1848,6 @@ Partial Class Setting_Customer_Detail
             MessageError_Discount(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_Discount(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindDataDiscount", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -1945,8 +1865,6 @@ Partial Class Setting_Customer_Detail
             End If
         Catch ex As Exception
             ddlDiscountDataId.Items.Clear()
-            dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindDiscountData", ex.ToString()}
-            mailingClass.WebError(dataMailing)
         End Try
     End Sub
 
@@ -1963,8 +1881,6 @@ Partial Class Setting_Customer_Detail
             End If
         Catch ex As Exception
             ddlDiscountDataIdB.Items.Clear()
-            dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindDiscountDataB", ex.ToString()}
-            mailingClass.WebError(dataMailing)
         End Try
     End Sub
 
@@ -2043,8 +1959,6 @@ Partial Class Setting_Customer_Detail
                     MessageError_DetailPromo(True, ex.ToString())
                     If Not Session("RoleName") = "Developer" Then
                         MessageError_DetailPromo(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                        dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "linkDetailPromo_Click", ex.ToString()}
-                        mailingClass.WebError(dataMailing)
                     End If
                     ClientScript.RegisterStartupScript(Me.GetType(), "showDetailPromo", thisScript, True)
                 End Try
@@ -2065,8 +1979,6 @@ Partial Class Setting_Customer_Detail
             MessageError_ProcessPromo(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_ProcessPromo(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnAddPromo_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcessPromo", thisScript, True)
         End Try
@@ -2104,7 +2016,7 @@ Partial Class Setting_Customer_Detail
                         End Using
                     End Using
 
-                    Dim dataLog As Object() = {"CustomerPromos", thisId, Session("LoginId").ToString(), "Customer Promo Created"}
+                    dataLog = {"CustomerPromos", thisId, Session("LoginId").ToString(), "Customer Promo Created"}
                     settingClass.Logs(dataLog)
 
                     url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
@@ -2115,8 +2027,6 @@ Partial Class Setting_Customer_Detail
             MessageError_ProcessPromo(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_ProcessPromo(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnProcessPromo_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcessPromo", thisScript, True)
         End Try
@@ -2150,8 +2060,6 @@ Partial Class Setting_Customer_Detail
             MessageError_Promo(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnDeletePromo_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -2187,8 +2095,6 @@ Partial Class Setting_Customer_Detail
             MessageError_Promo(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_Promo(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnResetPromo_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -2210,8 +2116,6 @@ Partial Class Setting_Customer_Detail
             MessageError_Promo(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_Promo(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindDataPromo", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -2229,8 +2133,6 @@ Partial Class Setting_Customer_Detail
             End If
         Catch ex As Exception
             ddlListPromo.Items.Clear()
-            dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindListPromo", ex.ToString()}
-            mailingClass.WebError(dataMailing)
         End Try
     End Sub
 
@@ -2287,8 +2189,6 @@ Partial Class Setting_Customer_Detail
                     MessageErrorProcess_Product(True, ex.ToString())
                     If Not Session("RoleName") = "Developer" Then
                         MessageErrorProcess_Product(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                        dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "linkDetailProduct_Click", ex.ToString()}
-                        mailingClass.WebError(dataMailing)
                     End If
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcessProduct", thisScript, True)
                 End Try
@@ -2323,7 +2223,7 @@ Partial Class Setting_Customer_Detail
                 thisConn.Close()
             End Using
 
-            Dim dataLog As Object() = {"CustomerProductAccess", lblId.Text, Session("LoginId").ToString(), "Reset Customer Product Access"}
+            dataLog = {"CustomerProductAccess", lblId.Text, Session("LoginId").ToString(), "Reset Customer Product Access"}
             settingClass.Logs(dataLog)
 
             url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
@@ -2332,8 +2232,6 @@ Partial Class Setting_Customer_Detail
             MessageError_Product(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_Product(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnSubmitResetProduct_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -2367,7 +2265,7 @@ Partial Class Setting_Customer_Detail
                     thisConn.Close()
                 End Using
 
-                Dim dataLog As Object() = {"CustomerProductAccess", lblIdProduct.Text, Session("LoginId").ToString(), "Customer Product Access Updated"}
+                dataLog = {"CustomerProductAccess", lblIdProduct.Text, Session("LoginId").ToString(), "Customer Product Access Updated"}
                 settingClass.Logs(dataLog)
 
                 url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
@@ -2377,8 +2275,6 @@ Partial Class Setting_Customer_Detail
             MessageErrorProcess_Product(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageErrorProcess_Product(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "btnProccessProduct_Click", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcessProduct", thisScript, True)
         End Try
@@ -2395,8 +2291,6 @@ Partial Class Setting_Customer_Detail
             MessageError_Product(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_Product(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindDataProduct", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub
@@ -2413,8 +2307,6 @@ Partial Class Setting_Customer_Detail
             End If
         Catch ex As Exception
             lbProductTags.Items.Clear()
-            dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindDesignProduct", ex.ToString()}
-            mailingClass.WebError(dataMailing)
         End Try
     End Sub
 
@@ -2435,8 +2327,6 @@ Partial Class Setting_Customer_Detail
             MessageError_Product(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_Product(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindDetailProduct", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
         Return result
@@ -2462,8 +2352,6 @@ Partial Class Setting_Customer_Detail
             MessageError_Quote(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_Quote(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindDataQuote", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub

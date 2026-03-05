@@ -68,16 +68,23 @@ Public Class SettingClass
 
     Public Function GetDataTableSP(spName As String, params As List(Of SqlParameter)) As DataTable
         Dim dt As New DataTable()
-        Using conn As New SqlConnection(myConn)
-            Using cmd As New SqlCommand(spName, conn)
-                cmd.CommandType = CommandType.StoredProcedure
-                cmd.Parameters.AddRange(params.ToArray())
+        Try
+            Using conn As New SqlConnection(myConn)
+                Using cmd As New SqlCommand(spName, conn)
+                    cmd.CommandType = CommandType.StoredProcedure
 
-                Using da As New SqlDataAdapter(cmd)
-                    da.Fill(dt)
+                    If params IsNot Nothing AndAlso params.Count > 0 Then
+                        cmd.Parameters.AddRange(params.ToArray())
+                    End If
+
+                    Using da As New SqlDataAdapter(cmd)
+                        da.Fill(dt)
+                    End Using
                 End Using
             End Using
-        End Using
+        Catch ex As Exception
+            dt = New DataTable()
+        End Try
         Return dt
     End Function
 
@@ -162,27 +169,42 @@ Public Class SettingClass
     End Function
 
     Public Function GetTotalDiscount(ParamArray discounts() As Object) As Decimal
-        Dim result As Decimal = 1D
+        Try
+            Dim result As Decimal = 1D
 
-        For Each d As Object In discounts
-            Dim discValue As Decimal = 0D
-
-            If d Is Nothing Then
-                discValue = 0D
-            ElseIf TypeOf d Is Decimal OrElse TypeOf d Is Double OrElse TypeOf d Is Integer Then
-                discValue = Convert.ToDecimal(d)
-            ElseIf TypeOf d Is String Then
-                Dim s As String = d.ToString().Trim().ToUpper()
-                If s = "D" Then
-                    discValue = 0D
-                ElseIf IsNumeric(s) Then
-                    discValue = Convert.ToDecimal(s)
-                End If
+            If discounts Is Nothing OrElse discounts.Length = 0 Then
+                Return 0D
             End If
 
-            result *= (1D - (discValue / 100D))
-        Next
-        Return (1D - result) * 100D
+            For Each d As Object In discounts
+                Dim discValue As Decimal = 0D
+                Try
+                    If d Is Nothing Then
+                        discValue = 0D
+
+                    ElseIf TypeOf d Is Decimal OrElse TypeOf d Is Double OrElse TypeOf d Is Integer Then
+                        discValue = Convert.ToDecimal(d)
+
+                    ElseIf TypeOf d Is String Then
+                        Dim s As String = d.ToString().Trim().ToUpper()
+
+                        If s = "D" Then
+                            discValue = 0D
+                        ElseIf IsNumeric(s) Then
+                            discValue = Convert.ToDecimal(s)
+                        End If
+                    End If
+                Catch
+                    discValue = 0D
+                End Try
+
+                result *= (1D - (discValue / 100D))
+            Next
+
+            Return (1D - result) * 100D
+        Catch ex As Exception
+            Return 0D
+        End Try
     End Function
 
     Public Function GetTextLog(logId As String) As String
@@ -373,7 +395,6 @@ Public Class SettingClass
             result = otp
         Catch ex As Exception
         End Try
-
         Return result
     End Function
 

@@ -5,11 +5,8 @@ Partial Class Account_Default
     Inherits Page
 
     Dim settingClass As New SettingClass
-    Dim mailingClass As New MailingClass
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-    Dim loginId As String = String.Empty
-    Dim dataMailing As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         If String.IsNullOrEmpty(Request.QueryString("uid")) Then
@@ -17,9 +14,9 @@ Partial Class Account_Default
             Exit Sub
         End If
 
-        loginId = Request.QueryString("uid").ToString()
+        hiddenLoginId.Value = Request.QueryString("uid").ToString()
         If Not Session("RoleName") = "Developer" Then
-            If Not Session("LoginId") = loginId Then
+            If Not Session("LoginId") = hiddenLoginId.Value Then
                 Response.Redirect("~/", False)
                 Exit Sub
             End If
@@ -30,7 +27,7 @@ Partial Class Account_Default
             MessageError_Name(False, String.Empty)
             MessageError_Email(False, String.Empty)
 
-            BindData(loginId)
+            BindData(hiddenLoginId.Value)
         End If
     End Sub
 
@@ -41,7 +38,7 @@ Partial Class Account_Default
             If msgErrorName.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLogins SET FullName=@FullName WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", loginId)
+                        myCmd.Parameters.AddWithValue("@Id", hiddenLoginId.Value)
                         myCmd.Parameters.AddWithValue("@FullName", txtFullName.Text.Trim())
 
                         thisConn.Open()
@@ -49,7 +46,7 @@ Partial Class Account_Default
                     End Using
                 End Using
 
-                Dim url As String = String.Format("~/account?uid={0}", loginId)
+                Dim url As String = String.Format("~/account?uid={0}", hiddenLoginId.Value)
                 Response.Redirect(url, False)
             End If
         Catch ex As Exception
@@ -68,7 +65,7 @@ Partial Class Account_Default
             If msgErrorEmail.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLogins SET Email=@Email WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", loginId)
+                        myCmd.Parameters.AddWithValue("@Id", hiddenLoginId.Value)
                         myCmd.Parameters.AddWithValue("@Email", txtUserEmail.Text.Trim())
 
                         thisConn.Open()
@@ -76,7 +73,7 @@ Partial Class Account_Default
                     End Using
                 End Using
 
-                Dim url As String = String.Format("~/account?uid={0}", loginId)
+                Dim url As String = String.Format("~/account?uid={0}", hiddenLoginId.Value)
                 Response.Redirect(url, False)
             End If
         Catch ex As Exception
@@ -108,8 +105,6 @@ Partial Class Account_Default
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-                dataMailing = {Session("LoginId").ToString(), Session("CompanyId").ToString(), Page.Title, "BindData", ex.ToString()}
-                mailingClass.WebError(dataMailing)
             End If
         End Try
     End Sub

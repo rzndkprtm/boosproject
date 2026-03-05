@@ -68,8 +68,6 @@ Partial Class Setting_Boos
                 Exit Sub
             End If
 
-            'https://ordersblindonline.com/setting/boos?action=shipment&OrdID=270051&Status=Shipped%20Out&ShipmentNo=xxx&ContainerNo=xxx&Courier=xxx&InvoiceNo=xxx&ShipDate=2026-02-23
-
             UpdateShipment(id, status, shipmentNumber, shipDate, containerNumber, courier, invoiceNumber)
         End If
     End Sub

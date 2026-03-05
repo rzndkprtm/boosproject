@@ -5,17 +5,17 @@ Public Class ActionClass
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
-    Public Function GetActionAccess(RoleId As String, LevelId As String, Page As String, Action As String) As Boolean
-        If String.IsNullOrEmpty(RoleId) OrElse String.IsNullOrEmpty(LevelId) OrElse
-           String.IsNullOrEmpty(Page) OrElse String.IsNullOrEmpty(Action) Then Return False
+    Public Function GetActionAccess(roleId As String, levelId As String, page As String, action As String) As Boolean
+        If String.IsNullOrEmpty(roleId) OrElse String.IsNullOrEmpty(levelId) OrElse
+           String.IsNullOrEmpty(page) OrElse String.IsNullOrEmpty(action) Then Return False
         Try
             Using thisConn As New SqlConnection(myConn)
                 Using cmd As New SqlCommand("sp_GetActionAccess", thisConn)
                     cmd.CommandType = CommandType.StoredProcedure
-                    cmd.Parameters.AddWithValue("@RoleId", RoleId)
-                    cmd.Parameters.AddWithValue("@LevelId", LevelId)
-                    cmd.Parameters.AddWithValue("@Page", Page)
-                    cmd.Parameters.AddWithValue("@Action", Action)
+                    cmd.Parameters.AddWithValue("@RoleId", roleId)
+                    cmd.Parameters.AddWithValue("@LevelId", levelId)
+                    cmd.Parameters.AddWithValue("@Page", page)
+                    cmd.Parameters.AddWithValue("@Action", action)
 
                     thisConn.Open()
                     Return Convert.ToInt32(cmd.ExecuteScalar()) = 1

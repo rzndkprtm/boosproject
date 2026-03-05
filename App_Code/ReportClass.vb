@@ -44,32 +44,49 @@ Public Class ReportClass
 
     Public Function GetDataTableSP(spName As String, params As List(Of SqlParameter)) As DataTable
         Dim dt As New DataTable()
-        Using conn As New SqlConnection(myConn)
-            Using cmd As New SqlCommand(spName, conn)
-                cmd.CommandType = CommandType.StoredProcedure
-                cmd.Parameters.AddRange(params.ToArray())
+        Try
+            Using conn As New SqlConnection(myConn)
+                Using cmd As New SqlCommand(spName, conn)
+                    cmd.CommandType = CommandType.StoredProcedure
 
-                Using da As New SqlDataAdapter(cmd)
-                    da.Fill(dt)
+                    If params IsNot Nothing AndAlso params.Count > 0 Then
+                        cmd.Parameters.AddRange(params.ToArray())
+                    End If
+
+                    Using da As New SqlDataAdapter(cmd)
+                        da.Fill(dt)
+                    End Using
                 End Using
             End Using
-        End Using
+        Catch ex As Exception
+            dt = New DataTable()
+        End Try
         Return dt
     End Function
 
     Public Function GetItemData(thisString As String) As String
         Dim result As String = String.Empty
-        Using thisConn As New SqlConnection(myConn)
-            thisConn.Open()
-            Using myCmd As New SqlCommand(thisString, thisConn)
-                Using rdResult = myCmd.ExecuteReader
-                    While rdResult.Read
-                        result = rdResult.Item(0).ToString()
-                    End While
+        Try
+            If String.IsNullOrWhiteSpace(thisString) Then
+                Return String.Empty
+            End If
+
+            Using thisConn As New SqlConnection(myConn)
+                thisConn.Open()
+
+                Using myCmd As New SqlCommand(thisString, thisConn)
+                    Using rdResult = myCmd.ExecuteReader()
+                        If rdResult.Read() Then
+                            If Not IsDBNull(rdResult(0)) Then
+                                result = rdResult(0).ToString()
+                            End If
+                        End If
+                    End Using
                 End Using
             End Using
-            thisConn.Close()
-        End Using
+        Catch ex As Exception
+            result = String.Empty
+        End Try
         Return result
     End Function
 End Class

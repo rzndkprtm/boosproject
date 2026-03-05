@@ -3,12 +3,10 @@ Imports System.Data.SqlClient
 
 Public Partial Class SiteMaster
     Inherits MasterPage
-    
+
     Dim settingClass As New SettingClass
-    Dim mailingClass As New MailingClass
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-    Dim dataMailing As Object() = Nothing
 
     Protected Sub Page_Init(sender As Object, e As EventArgs)
         AddHandler Page.PreLoad, AddressOf master_Page_PreLoad
@@ -69,6 +67,7 @@ Public Partial Class SiteMaster
                 Session("CompanyName") = myData("CompanyName").ToString()
 
                 Dim companyId As String = myData("CompanyId").ToString()
+                Dim companyDetailId As String = myData("CompanyDetailId").ToString()
                 Dim companyActive As Boolean = myData("CompanyActive")
                 Dim customerActive As Boolean = myData("CustomerActive")
                 Dim loginActive As Boolean = myData("Active")
@@ -98,19 +97,13 @@ Public Partial Class SiteMaster
                 End If
 
                 If companyId = "1" Then
-                    imgLogo.ImageUrl = "~/Assets/images/logo/general.jpg"
+                    imgLogo.ImageUrl = "~/Assets/images/logo/general.jpg?v=1.0.0"
                 End If
                 If companyId = "2" Then
-                    imgLogo.ImageUrl = "~/Assets/images/logo/jpmdirect.jpg"
+                    imgLogo.ImageUrl = "~/Assets/images/logo/jpmdirect.jpg?v=1.0.0"
                 End If
                 If companyId = "3" Then
-                    imgLogo.ImageUrl = "~/Assets/images/logo/accent.png"
-                End If
-                If companyId = "4" Then
-                    imgLogo.ImageUrl = "~/Assets/images/logo/sunlight.jpg"
-                End If
-                If companyId = "5" Then
-                    imgLogo.ImageUrl = "~/Assets/images/logo/general.jpg"
+                    imgLogo.ImageUrl = "~/Assets/images/logo/bigblinds.png?v=1.0.0"
                 End If
 
                 Using thisConn As New SqlConnection(myConn)
@@ -222,7 +215,6 @@ Public Partial Class SiteMaster
                 liOldOrder.Visible = True
                 liExport.Visible = True
                 liReport.Visible = True
-                liSales.Visible = True
                 liGuide.Visible = True
 
                 liSetting.Visible = True
@@ -254,7 +246,6 @@ Public Partial Class SiteMaster
             If Session("RoleName") = "Factory Office" Then
                 liOldOrder.Visible = True
                 liReport.Visible = True
-                liSales.Visible = True
                 liGuide.Visible = True
 
                 liSetting.Visible = True
@@ -289,7 +280,6 @@ Public Partial Class SiteMaster
 
                 If Session("LevelName") = "Leader" Then
                     liReport.Visible = True
-                    liSales.Visible = True
                 End If
 
                 liSetting.Visible = True
