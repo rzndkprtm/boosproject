@@ -587,5 +587,5 @@
         </div>
     </div>
     
-    <script src="/Scripts/WebOrders/Venetian.js?v=2.0.1"></script>
+    <script src="/Scripts/WebOrders/Venetian.js?v=2.0.0"></script>
 </asp:Content>

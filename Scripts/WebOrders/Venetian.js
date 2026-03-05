@@ -869,7 +869,7 @@ function controlForm(status, isEditItem, isCopyItem) {
         if (inputElement) {
             if (isCopyItem) {
                 inputElement.disabled = (id === "blindtype");
-            } else if (isEditItem && (id === "qty")) {
+            } else if (isEditItem && (id === "qty" || id === "blindtype")) {
                 inputElement.disabled = true;
             } else {
                 inputElement.disabled = status;
