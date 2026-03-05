@@ -734,7 +734,7 @@ function bindTubeType(blindType, controlType) {
 
 
 
-function bindColourType(blindType, tubeType, controlType) {
+function bindColourType(blindType, controlType, tubeType) {
     return new Promise((resolve, reject) => {
         const colourtype = document.getElementById("colourtype");
         colourtype.innerHTML = "";
