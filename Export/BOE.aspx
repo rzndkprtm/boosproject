@@ -451,6 +451,8 @@
                 writer.WriteAttributeString("FKOrdID", thisData.Rows(i)("HeaderId").ToString())
                 writer.WriteAttributeString("Qty", thisData.Rows(i)("Qty").ToString())
                 writer.WriteAttributeString("Room", thisData.Rows(i)("Room").ToString())
+                writer.WriteAttributeString("BlindType", blindName)
+                writer.WriteAttributeString("OrderType", "Fabric Pelmet")
                 writer.WriteAttributeString("IDHK", kitId)
                 writer.WriteAttributeString("FabricID", boeFabricId)
                 writer.WriteAttributeString("Width", thisData.Rows(i)("Width").ToString())
