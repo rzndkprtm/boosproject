@@ -523,6 +523,9 @@ Partial Class Order_Add
                                 Exit For
                             End If
 
+                            Dim finalMounting As String = mounting
+                            If ddlCustomer.SelectedValue = "127" Then finalMounting = String.Format("Opening Size {0}", mounting)
+
                             If String.IsNullOrEmpty(colour) Then
                                 MessageError(True, "COLOUR IS REQUIRED !")
                                 Exit For
@@ -616,14 +619,10 @@ Partial Class Order_Add
                             End If
 
                             valanceSize = "Standard"
-                            valanceSizeValue = width - 1
-                            If mounting = "Reveal Fit" Then
-                                valanceSizeValue = width + 9
-                            End If
-
-                            If mounting = "Face Fit" Then
-                                valanceSizeValue = width + 20
-                            End If
+                            If finalMounting = "Opening Size Reveal Fit" Then valanceSizeValue = width - 1
+                            If finalMounting = "Make Size Reveal Fit" Then valanceSizeValue = width + 9
+                            If finalMounting = "Opening Size Face Fit" Then valanceSizeValue = width + 20
+                            If finalMounting = "Make Size Face Fit" Then valanceSizeValue = width + 20
 
                             If Not String.IsNullOrEmpty(valanceSizeText) AndAlso Not valanceSizeText.ToLower().Contains("standard") AndAlso Not valanceSizeText.ToLower().Contains("std") Then
                                 valanceSize = "Custom"
@@ -673,9 +672,6 @@ Partial Class Order_Add
                                 Dim customName As String = blindName
                                 If blindName = "Ultraslat 50mm" Then customName = "Econo 50mm"
                                 If blindName = "Ultraslat 63mm" Then customName = "Econo 63mm"
-
-                                Dim finalMounting As String = mounting
-                                If ddlCustomer.SelectedValue = "127" Then finalMounting = "Opening Size " & mounting
 
                                 Dim groupName As String = String.Format("Venetian Blind - {0}", customName)
 
