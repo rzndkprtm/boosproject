@@ -3297,13 +3297,10 @@ Partial Class Order_Method
         End If
 
         If data.valancesize = "Standard" Then
-            vsvalue = width + widthb - 1
-            If data.mounting = "Make Size Reveal Fit" Then
-                vsvalue = width + widthb + 9
-            End If
-            If data.mounting = "Make Size Face Fit" OrElse data.mounting = "Make Size Face Fit" Then
-                vsvalue = width + widthb + 20
-            End If
+            If data.mounting = "Opening Size Reveal Fit" Then vsvalue = width + widthb - 1
+            If data.mounting = "Make Size Reveal Fit" Then vsvalue = width + widthb + 9
+            If data.mounting = "Opening Size Face Fit" Then vsvalue = width + widthb + 20
+            If data.mounting = "Make Size Face Fit" Then vsvalue = width + widthb + 20
         End If
 
         If data.returnlength = "Standard" Then
