@@ -564,12 +564,12 @@ Partial Class Order_Add
                             End If
 
                             If width <= 300 Then
-                                If controlPosition <> "No Control" OrElse controlPosition <> "N/A" Then
+                                If controlPosition <> "No Control" AndAlso controlPosition <> "N/A" Then
                                     MessageError(True, "YOUR WIDTH ORDER UNDER 300MM. PLEASE CHANGE PULL CORD POSITION TO NO CONTROL !")
                                     Exit For
                                 End If
 
-                                If tilterPosition <> "Center" OrElse tilterPosition <> "Centre" Then
+                                If tilterPosition <> "Center" AndAlso tilterPosition <> "Centre" Then
                                     MessageError(True, "YOUR WIDTH ORDER UNDER 300MM. PLEASE CHANGE TILTER POSITION TO CENTER !")
                                     Exit For
                                 End If
