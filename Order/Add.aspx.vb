@@ -1698,6 +1698,9 @@ Partial Class Order_Add
                             chainColour = chainColour.Replace("Cream", "Ivory")
                             chainColour = chainColour.Replace("Platinum", "Grey")
 
+                            MessageError(True, chainColour)
+                            Exit For
+
                             chainName = String.Format("Cont {0}", chainColour)
                             chainType = "Continuous"
                             chainStopper = "No Stopper"
