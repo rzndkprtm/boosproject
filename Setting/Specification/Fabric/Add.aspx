@@ -36,10 +36,10 @@
                                 <div class="form-body">
                                     <div class="row">
                                         <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Fabric Name</label>
+                                            <label>Name</label>
                                         </div>
                                         <div class="col-12 col-sm-12 col-lg-6 form-group">
-                                            <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Fabric Name ..." autocomplete="off"></asp:TextBox>
+                                            <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
                                         </div>
                                     </div>
                                     <div class="row">

@@ -32,32 +32,17 @@ Partial Class Setting_Specification_Fabric_Add
                 Exit Sub
             End If
 
-            Dim designSelected As String = String.Empty
-            Dim tubeSelected As String = String.Empty
-            Dim companySelected As String = String.Empty
-
-            For Each item As ListItem In lbDesign.Items
-                If item.Selected Then
-                    designSelected += item.Value & ","
-                End If
-            Next
-            If designSelected = "" Then
-                MessageError(True, "DESIGN TYPE IS REQUIRED !")
-                Exit Sub
-            End If
-
-            For Each item As ListItem In lbCompany.Items
-                If item.Selected Then
-                    companySelected += item.Value & ","
-                End If
-            Next
-            If companySelected = "" Then
-                MessageError(True, "COMPANY IS REQUIRED !")
-                Exit Sub
-            End If
-
             If msgError.InnerText = "" Then
-                Dim designType As String = designSelected.Remove(designSelected.Length - 1).ToString()
+                Dim designType As String = String.Empty
+                If Not lbDesign.SelectedValue = "" Then
+                    Dim design As String = String.Empty
+                    For Each item As ListItem In lbDesign.Items
+                        If item.Selected Then
+                            design += item.Value & ","
+                        End If
+                    Next
+                    designType = design.Remove(design.Length - 1).ToString()
+                End If
                 Dim tubeType As String = String.Empty
                 If Not lbTube.SelectedValue = "" Then
                     Dim tube As String = String.Empty
@@ -68,7 +53,16 @@ Partial Class Setting_Specification_Fabric_Add
                     Next
                     tubeType = tube.Remove(tube.Length - 1).ToString()
                 End If
-                Dim companyDetail As String = companySelected.Remove(companySelected.Length - 1).ToString()
+                Dim companyDetail As String = String.Empty
+                If Not lbCompany.SelectedValue = "" Then
+                    Dim company As String = String.Empty
+                    For Each item As ListItem In lbCompany.Items
+                        If item.Selected Then
+                            company += item.Value & ","
+                        End If
+                    Next
+                    companyDetail = company.Remove(company.Length - 1).ToString()
+                End If
 
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Fabrics ORDER BY Id DESC")
 
@@ -130,7 +124,7 @@ Partial Class Setting_Specification_Fabric_Add
     Protected Sub BindTube()
         lbTube.Items.Clear()
         Try
-            lbTube.DataSource = settingClass.GetDataTable("SELECT * FROM ProductTubes ORDER BY Name ASC")
+            lbTube.DataSource = settingClass.GetDataTable("SELECT * FROM ProductTubes CROSS APPLY STRING_SPLIT(AppliesTo, ',') AS applyArray WHERE applyArray.VALUE='Fabrics' ORDER BY Name ASC")
             lbTube.DataTextField = "Name"
             lbTube.DataValueField = "Id"
             lbTube.DataBind()
@@ -149,8 +143,7 @@ Partial Class Setting_Specification_Fabric_Add
     Protected Sub BindCompanyDetail()
         lbCompany.Items.Clear()
         Try
-            Dim thisString As String = "SELECT * FROM CompanyDetails WHERE Active=1 ORDER BY Name ASC"
-            lbCompany.DataSource = settingClass.GetDataTable(thisString)
+            lbCompany.DataSource = settingClass.GetDataTable("SELECT * FROM CompanyDetails WHERE Active=1 ORDER BY Name ASC")
             lbCompany.DataTextField = "Name"
             lbCompany.DataValueField = "Id"
             lbCompany.DataBind()
