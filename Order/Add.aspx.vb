@@ -1698,9 +1698,6 @@ Partial Class Order_Add
                             chainColour = chainColour.Replace("Cream", "Ivory")
                             chainColour = chainColour.Replace("Platinum", "Grey")
 
-                            MessageError(True, chainColour)
-                            Exit For
-
                             chainName = String.Format("Cont {0}", chainColour)
                             chainType = "Continuous"
                             chainStopper = "No Stopper"
@@ -1812,7 +1809,7 @@ Partial Class Order_Add
 
                         Dim chainId As String = orderClass.GetItemData("SELECT Id FROM Chains CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(ControlTypeId, ',') AS controlArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE Name='" & chainName & "' AND designArray.VALUE='" & designId & "' AND controlArray.VALUE='" & controlId & "' AND companyArray.VALUE='" & companyDetailId & "' AND Active=1")
                         If String.IsNullOrEmpty(chainId) Then
-                            MessageError(True, "PLEASE CHECK YOUR CHAIN COLOUR / MOTOR REMOTE DATA !")
+                            MessageError(True, "PLEASE CHECK YOUR CHAIN COLOUR / MOTORISED DATA !")
                             Exit For
                         End If
 
