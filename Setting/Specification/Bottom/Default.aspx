@@ -86,11 +86,14 @@
                                                     <ItemTemplate>
                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                         <ul class="dropdown-menu">
-                                                            <li runat="server" visible='<%# PageAction("Detail") %>'>
-                                                                <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                            <li runat="server" visible='<%# PageAction("Update") %>'>
+                                                                <asp:LinkButton runat="server" ID="linkEdit" CssClass="dropdown-item" Text="Edit / Update" CommandName="Change" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                             </li>
-                                                            <li runat="server" visible='<%# PageAction("Delete") %>'>
-                                                                <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                            <li runat="server" visible='<%# PageAction("Detail") %>'>
+                                                                <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail / View" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                            </li>
+                                                            <li runat="server" visible='<%# PageAction("Active") %>'>
+                                                                <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalActive" onclick='<%# String.Format("return showActive(`{0}`, `{1}`);", Eval("Id").ToString(), Convert.ToInt32(Eval("Active"))) %>'><%# TextActive(Eval("Active")) %></a>
                                                             </li>
                                                             <li>
                                                                 <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('Bottoms', '<%# Eval("Id") %>')">Log</a>
@@ -117,7 +120,7 @@
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Add Bottom Rail</h4>
+                    <h4 class="modal-title" runat="server" id="titleProcess"></h4>
                 </div>
 
                 <div class="modal-body">
@@ -176,21 +179,20 @@
         </div>
     </div>
 
-    <div class="modal fade text-center" id="modalDelete" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal modal-blur fade" id="modalActive" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-danger">
-                    <h5 class="modal-title white">Delete Bottom Type</h5>
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title white" id="titleActive"></h5>
                 </div>
-
-                <div class="modal-body">
-                    <asp:TextBox runat="server" ID="txtIdDelete" style="display:none;"></asp:TextBox>
+                <div class="modal-body text-center py-4">
+                    <asp:TextBox runat="server" ID="txtIdActive" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtActive" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnDelete" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDelete_Click" />
+                    <asp:Button runat="server" ID="btnActive" CssClass="btn btn-warning" Text="Confirm" OnClick="btnActive_Click" />
                 </div>
             </div>
         </div>
@@ -244,8 +246,17 @@
             $("#modalProcess").modal("show");
         }
 
-        function showDelete(id) {
-            document.getElementById('<%=txtIdDelete.ClientID %>').value = id;
+        function showActive(id, active) {
+            document.getElementById("<%=txtIdActive.ClientID %>").value = id;
+            document.getElementById("<%=txtActive.ClientID %>").value = active;
+
+            let title = "";
+            if (active === "1") {
+                title = "Deactivate Bottom Type";
+            } else {
+                title = "Activate Bottom Type";
+            }
+            document.getElementById("titleActive").innerHTML = title;
         }
 
         function showLog(type, dataId) {
@@ -282,7 +293,7 @@
             });
         }
 
-        ["modalProcess", "modalDelete", "modalLog"].forEach(function (id) {
+        ["modalProcess", "modalActive", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
@@ -294,5 +305,6 @@
 
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblId"></asp:Label>
+        <asp:Label runat="server" ID="lblAction"></asp:Label>
     </div>
 </asp:Content>

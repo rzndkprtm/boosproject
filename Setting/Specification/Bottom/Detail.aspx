@@ -26,11 +26,10 @@
     <div class="page-content">
         <section class="row mb-3">
             <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
-                <a href="#" runat="server" id="aEdit" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#modalCreateOrder">Edit</a>
-                <a href="#" runat="server" id="aDelete" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalDelete">Delete</a>
-                <a href="javascript:void(0);" class="btn btn-secondary" onclick="showLog('Bottoms', '<%= lblId.Text %>')">Log</a>
+                
             </div>
         </section>
+
         <section class="row">
             <div class="col-12">
                 <div class="row mb-2" runat="server" id="divError">
@@ -41,63 +40,74 @@
                     </div>
                 </div>
             </div>
+        </section>
 
-            <div class="col-12 col-sm-12 col-lg-8">
+        <section class="row">
+            <div class="col-12 col-sm-12 col-lg-4">
                 <div class="card">
                     <div class="card-content">
                         <div class="card-body">
-                            <div class="row mb-3">
-                                <div class="col-4">
-                                    <label class="form-label">Bottom ID</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblId" CssClass="form-label font-bold"></asp:Label>
+                            <div class="form form-vertical">
+                                <div class="row mb-2">
+                                    <div class="col-12">
+                                        <label>ID</label>
+                                        <br />
+                                        <asp:Label runat="server" ID="lblId" CssClass="form-label font-bold"></asp:Label>
+                                    </div>
                                 </div>
-                                <div class="col-8">
-                                    <label class="form-label">Bottom Name</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblName" CssClass="form-label font-bold"></asp:Label>
+                                <div class="row mb-2">
+                                    <div class="col-12">
+                                        <label>Bottom Name</label>
+                                        <br />
+                                        <asp:Label runat="server" ID="lblName" CssClass="form-label font-bold"></asp:Label>
+                                    </div>
                                 </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-12 col-sm-12 col-lg-6 mb-3">
-                                    <label class="form-label">Design Type</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblDesignType" CssClass="form-label font-bold"></asp:Label>
+                                <div class="row mb-2">
+                                    <div class="col-12">
+                                        <label>Design Type</label>
+                                        <br />
+                                        <asp:Label runat="server" ID="lblDesignType" CssClass="form-label font-bold"></asp:Label>
+                                    </div>
                                 </div>
-                                <div class="col-12 col-sm-12 col-lg-6">
-                                    <label class="form-label">Company Detail</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblCompanyDetail" CssClass="form-label font-bold"></asp:Label>
+                                <div class="row mb-2">
+                                    <div class="col-12">
+                                        <label>Company Detail</label>
+                                        <br />
+                                        <asp:Label runat="server" ID="lblCompanyDetail" CssClass="form-label font-bold"></asp:Label>
+                                    </div>
                                 </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-9">
-                                    <label class="form-label">Description</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblDescription" CssClass="form-label font-bold"></asp:Label>
+                                <div class="row mb-2">
+                                    <div class="col-12">
+                                        <label>Description</label>
+                                        <br />
+                                        <asp:Label runat="server" ID="lblDescription" CssClass="form-label font-bold"></asp:Label>
+                                    </div>
                                 </div>
-                                <div class="col-3">
-                                    <label class="form-label">Active</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblActive" CssClass="form-label font-bold"></asp:Label>
+                                <div class="row mb-2">
+                                    <div class="col-12">
+                                        <label>Active</label>
+                                        <br />
+                                        <asp:Label runat="server" ID="lblActive" CssClass="form-label font-bold"></asp:Label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <div class="card-footer text-center">
+                        <a href="#" runat="server" id="aEdit" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#modalCreateOrder">Edit</a>
+                        <a href="#" runat="server" id="aDelete" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalDelete">Delete</a>
+                        <a href="javascript:void(0);" class="btn btn-secondary" onclick="showLog('Bottoms', '<%= lblId.Text %>')">Log</a>
+                    </div>
                 </div>
             </div>
-        </section>
-
-        <section class="row">
-            <div class="col-12">
+            <div class="col-12 col-sm-12 col-lg-8">
                 <div class="card">
                     <div class="card-content">
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-6">
-                                    <h3 class="card-title">Your Item</h3>
+                                    <h3 class="card-title">List Colour</h3>
                                 </div>
                                 <div class="col-6 d-flex justify-content-end">
                                     <asp:Button runat="server" ID="btnAddColour" CssClass="btn btn-primary" Text="Add New" OnClick="btnAddColour_Click" />

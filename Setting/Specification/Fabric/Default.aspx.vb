@@ -5,7 +5,6 @@ Partial Class Setting_Specification_Fabric_Default
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
 
@@ -18,9 +17,7 @@ Partial Class Setting_Specification_Fabric_Default
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-
             txtSearch.Text = Session("SearchFabric")
-
             BindCompanyDetailSort()
             BindData(txtSearch.Text, ddlCompanyDetail.SelectedValue)
         End If

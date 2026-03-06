@@ -5,7 +5,6 @@ Partial Class Setting_Specification_Bottom_Default
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
 
@@ -32,6 +31,9 @@ Partial Class Setting_Specification_Bottom_Default
 
         Dim thisScript As String = "window.onload = function() { showProcess(); };"
         Try
+            lblAction.Text = "Add"
+            titleProcess.InnerText = "Add Bottom Rail"
+
             BindDesign()
             BindCompany()
 
@@ -84,6 +86,57 @@ Partial Class Setting_Specification_Bottom_Default
                         MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
                     End If
                 End Try
+            ElseIf e.CommandName = "Change" Then
+                MessageError_Process(False, String.Empty)
+                Dim thisScript As String = "window.onload = function() { showProcess(); };"
+                Try
+                    lblId.Text = dataId
+                    lblAction.Text = "Edit"
+                    titleProcess.InnerText = "Edit Bottom Rail"
+
+                    Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Bottoms WHERE Id='" & lblId.Text & "'")
+
+                    If myData Is Nothing Then Exit Sub
+
+                    BindDesign(isEdit:=True)
+                    BindCompany(isEdit:=True)
+
+                    txtName.Text = myData("Name").ToString()
+
+                    If Not myData("DesignId").ToString() = "" Then
+                        Dim companyArray() As String = myData("DesignId").ToString().Split(",")
+                        For Each i In companyArray
+                            If Not String.IsNullOrEmpty(i) Then
+                                Dim item = lbDesign.Items.FindByValue(i)
+                                If item IsNot Nothing Then
+                                    item.Selected = True
+                                End If
+                            End If
+                        Next
+                    End If
+
+                    If Not myData("CompanyDetailId").ToString() = "" Then
+                        Dim companyArray() As String = myData("CompanyDetailId").ToString().Split(",")
+                        For Each i In companyArray
+                            If Not String.IsNullOrEmpty(i) Then
+                                Dim item = lbCompany.Items.FindByValue(i)
+                                If item IsNot Nothing Then
+                                    item.Selected = True
+                                End If
+                            End If
+                        Next
+                    End If
+
+                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
+                Catch ex As Exception
+                    MessageError_Process(True, ex.ToString())
+                    If Not Session("RoleName") = "Developer" Then
+                        MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                    End If
+                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
+                End Try
+            Else
+                Response.Redirect("~/setting/specification/bottom", False)
             End If
         End If
     End Sub
@@ -132,27 +185,51 @@ Partial Class Setting_Specification_Bottom_Default
                 Dim designType As String = design.Remove(design.Length - 1).ToString()
                 Dim companyDetail As String = company.Remove(company.Length - 1).ToString()
 
-                Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Bottoms ORDER BY Id DESC")
-                Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Bottoms VALUES (@Id, @Name, @DesignId, @CompanyDetailId, @Description, @Active)", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", thisId)
-                        myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@DesignId", designType)
-                        myCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetail)
-                        myCmd.Parameters.AddWithValue("@Description", descText)
-                        myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
+                If lblAction.Text = "Add" Then
+                    Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Bottoms ORDER BY Id DESC")
+                    Using thisConn As New SqlConnection(myConn)
+                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Bottoms VALUES (@Id, @Name, @DesignId, @CompanyDetailId, @Description, @Active)", thisConn)
+                            myCmd.Parameters.AddWithValue("@Id", thisId)
+                            myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
+                            myCmd.Parameters.AddWithValue("@DesignId", designType)
+                            myCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetail)
+                            myCmd.Parameters.AddWithValue("@Description", descText)
+                            myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
 
-                        thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                            thisConn.Open()
+                            myCmd.ExecuteNonQuery()
+                        End Using
                     End Using
-                End Using
 
-                Dim dataLog As Object() = {"Bottoms", thisId, Session("LoginId").ToString(), "Bottom Type Created"}
-                settingClass.Logs(dataLog)
+                    Dim dataLog As Object() = {"Bottoms", thisId, Session("LoginId").ToString(), "Bottom Type Created"}
+                    settingClass.Logs(dataLog)
 
-                Session("SearchBottom") = txtSearch.Text
-                url = String.Format("~/setting/specification/bottom/detail?bottomid={0}", thisId)
-                Response.Redirect(url, False)
+                    Session("SearchBottom") = txtSearch.Text
+                    url = String.Format("~/setting/specification/bottom/detail?bottomid={0}", thisId)
+                    Response.Redirect(url, False)
+                End If
+
+                If lblAction.Text = "Edit" Then
+                    Using thisConn As New SqlConnection(myConn)
+                        Using myCmd As SqlCommand = New SqlCommand("UPDATE Bottoms SET Name=@Name, DesignId=@DesignId, CompanyDetailId=@CompanyDetailId, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
+                            myCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                            myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
+                            myCmd.Parameters.AddWithValue("@DesignId", designType)
+                            myCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetail)
+                            myCmd.Parameters.AddWithValue("@Description", descText)
+                            myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
+
+                            thisConn.Open()
+                            myCmd.ExecuteNonQuery()
+                        End Using
+                    End Using
+
+                    Dim dataLog As Object() = {"Bottoms", lblId.Text, Session("LoginId").ToString(), "Bottom Type Updated"}
+                    settingClass.Logs(dataLog)
+
+                    Session("SearchBottom") = txtSearch.Text
+                    Response.Redirect("~/setting/specification/bottom/", False)
+                End If
             End If
         Catch ex As Exception
             MessageError_Process(True, ex.ToString())
@@ -163,22 +240,60 @@ Partial Class Setting_Specification_Bottom_Default
         End Try
     End Sub
 
-    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
+    Protected Sub btnActive_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim thisId As String = txtIdDelete.Text
+            Dim thisId As String = txtIdActive.Text
+
+            Dim active As Integer = 1
+            If txtActive.Text = "1" Then : active = 0 : End If
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Products WHERE Id=@Id", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE Bottoms SET Active=@Active WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", thisId)
+                    myCmd.Parameters.AddWithValue("@Active", active)
 
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
             End Using
 
+            Dim activeDesc As String = "Bottom Type Has Been Activated"
+            If active = 0 Then activeDesc = "Bottom Type Has Been Deactivated"
+
+            Dim dataLog As Object() = {"Bottoms", thisId, Session("LoginId").ToString(), activeDesc}
+            settingClass.Logs(dataLog)
+
+            Dim bottomDetail As DataTable = settingClass.GetDataTable("SELECT * FROM BottomColours WHERE BottomId='" & thisId & "'")
+            If bottomDetail.Rows.Count > 0 Then
+                For i As Integer = 0 To bottomDetail.Rows.Count - 1
+                    Dim detailId As String = bottomDetail.Rows(i)("Id").ToString()
+
+                    Using thisConn As New SqlConnection(myConn)
+                        Using myCmd As SqlCommand = New SqlCommand("UPDATE BottomColours SET Active=@Active WHERE Id=@Id", thisConn)
+                            myCmd.Parameters.AddWithValue("@Id", detailId)
+                            myCmd.Parameters.AddWithValue("@Active", active)
+
+                            thisConn.Open()
+                            myCmd.ExecuteNonQuery()
+                        End Using
+                    End Using
+
+                    activeDesc = "Bottom Colour Has Been Activated from Bottom Type"
+                    If active = 0 Then activeDesc = "Bottom Colour Has Been Deactivated from Bottom Type"
+
+                    dataLog = {"BottomColours", detailId, Session("LoginId").ToString(), activeDesc}
+                    settingClass.Logs(dataLog)
+                Next
+            End If
+
+            Session("SearchBottom") = txtSearch.Text
+            Response.Redirect("~/setting/specification/bottom", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 
@@ -229,10 +344,12 @@ Partial Class Setting_Specification_Bottom_Default
         End Try
     End Sub
 
-    Protected Sub BindDesign()
+    Protected Sub BindDesign(Optional isEdit As Boolean = False)
         lbDesign.Items.Clear()
         Try
-            lbDesign.DataSource = settingClass.GetDataTable("SELECT * FROM Designs ORDER BY Name ASC")
+            Dim thisString As String = "SELECT * FROM Designs CROSS APPLY STRING_SPLIT(AppliesTo, ',') AS applyArray WHERE applyArray.VALUE='Bottoms' AND Active=1 ORDER BY Name ASC"
+            If isEdit = True Then thisString = "SELECT * FROM Designs CROSS APPLY STRING_SPLIT(AppliesTo, ',') AS applyArray WHERE applyArray.VALUE='Bottoms' ORDER BY Name ASC"
+            lbDesign.DataSource = settingClass.GetDataTable(thisString)
             lbDesign.DataTextField = "Name"
             lbDesign.DataValueField = "Id"
             lbDesign.DataBind()
@@ -248,10 +365,13 @@ Partial Class Setting_Specification_Bottom_Default
         End Try
     End Sub
 
-    Protected Sub BindCompany()
+    Protected Sub BindCompany(Optional isEdit As Boolean = False)
         lbCompany.Items.Clear()
         Try
-            lbCompany.DataSource = settingClass.GetDataTable("SELECT * FROM CompanyDetails ORDER BY Name ASC")
+            Dim thisString As String = "SELECT * FROM CompanyDetails WHERE Active=1 ORDER BY Name ASC"
+            If isEdit = True Then thisString = "SELECT * FROM CompanyDetails ORDER BY Name ASC"
+
+            lbCompany.DataSource = settingClass.GetDataTable(thisString)
             lbCompany.DataTextField = "Name"
             lbCompany.DataValueField = "Id"
             lbCompany.DataBind()
@@ -306,6 +426,11 @@ Partial Class Setting_Specification_Bottom_Default
             End If
         End If
         Return "Error"
+    End Function
+
+    Protected Function TextActive(active As Boolean) As String
+        If active = True Then Return "Deactivate"
+        Return "Activate"
     End Function
 
     Protected Function PageAction(action As String) As Boolean
