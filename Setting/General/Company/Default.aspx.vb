@@ -8,7 +8,6 @@ Partial Class Setting_General_Company_Default
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
-
     Dim dataLog As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -176,7 +175,6 @@ Partial Class Setting_General_Company_Default
     Protected Sub BindData(searchText As String)
         Session("SearchCompany") = String.Empty
         Try
-
             Dim search As String = String.Empty
             If Not String.IsNullOrEmpty(searchText) Then
                 search = "WHERE Id LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%' OR Alias LIKE '%" & searchText & "%' OR Description LIKE '%" & searchText & "%'"

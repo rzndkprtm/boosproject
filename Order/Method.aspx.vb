@@ -5646,7 +5646,7 @@ Partial Class Order_Method
                 data.printingd = String.Empty
             End If
 
-            If controlType = "Chain" Then
+            If controlType = "Motorised" Then
                 data.chaincolour = data.remote : data.chaincolourb = String.Empty
                 data.chaincolourc = String.Empty : data.chaincolourd = String.Empty
 
@@ -5826,21 +5826,38 @@ Partial Class Order_Method
 
             totalItems = 4
 
-            groupFabric = orderClass.GetFabricGroup(data.fabrictype)
-            groupFabricDB = orderClass.GetFabricGroup(data.fabrictypec)
-
             Dim tubeIstilah As String = String.Empty
-            If data.companydetailid = "2" OrElse data.companydetailid = "3" OrElse data.companydetailid = "4" OrElse data.companydetailid = "8" Then
-                tubeIstilah = "STD / GR"
+            If data.companyid = "2" Then
+                tubeIstilah = String.Empty
+                If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
+                If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
                 If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
+
+                groupFabric = orderClass.GetFabricGroup(data.fabrictype)
+                groupFabricDB = orderClass.GetFabricGroup(data.fabrictypec)
             End If
-            If data.companydetailid = "5" AndAlso data.companydetailid = "6" Then
-                tubeIstilah = tubeName
-                If data.customerid = "902" OrElse data.customerid = "953" Then
-                    tubeIstilah = "Gear Reduction 38mm"
+            If data.companyid = "3" Then
+                If data.companydetailid = "5" OrElse data.companydetailid = "6" Then
+                    tubeIstilah = String.Empty
+                    If tubeName = "Gear Reduction 38mm" Then tubeIstilah = "Light"
+                    If tubeName = "Gear Reduction 45mm" Then tubeIstilah = "Standard"
+                    If tubeName = "Gear Reduction 49mm" Then tubeIstilah = "Heavy Duty"
+
+                    If data.customerid = "902" OrElse data.customerid = "953" Then tubeIstilah = "Light"
+
+                    groupFabric = orderClass.GetFabricGroupLocal("Roller", data.fabrictype)
+                    groupFabricDB = orderClass.GetFabricGroupLocal("Roller", data.fabrictypec)
                 End If
-                groupFabric = orderClass.GetFabricGroupLocal("Roller", data.fabrictype)
-                groupFabricDB = orderClass.GetFabricGroupLocal("Roller", data.fabrictypec)
+
+                If data.companydetailid = "8" Then
+                    tubeIstilah = String.Empty
+                    If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
+                    If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
+                    If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
+
+                    groupFabric = orderClass.GetFabricGroup(data.fabrictype)
+                    groupFabricDB = orderClass.GetFabricGroup(data.fabrictypec)
+                End If
             End If
 
             Dim priceName As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabric)

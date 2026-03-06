@@ -34,8 +34,8 @@
 
         <section class="row mb-4">
             <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
-                <a href="javascript:void(0);" class="btn btn-secondary me-1" onclick="showLog('Fabrics', '<%= lblId.Text %>')">Log</a>
                 <asp:Button runat="server" ID="btnEditFabric" CssClass="btn btn-primary me-1" Text="Edit Fabric" OnClick="btnEditFabric_Click" />
+                <a href="javascript:void(0);" class="btn btn-secondary me-1" onclick="showLog('Fabrics', '<%= lblId.Text %>')">Log</a>
             </div>
         </section>
 
