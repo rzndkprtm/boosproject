@@ -546,13 +546,13 @@ Partial Class Order_Add
                                 Exit For
                             End If
 
-                            Dim validCP As String() = {"Left", "Right", "No Control"}
+                            Dim validCP As String() = {"Left", "Right", "No Control", "N/A"}
                             If Not validCP.Contains(controlPosition) Then
                                 MessageError(True, "PLEASE CHECK YOUR CONTROL POSITION DATA !")
                                 Exit For
                             End If
 
-                            Dim validTP As String() = {"Left", "Right", "Center"}
+                            Dim validTP As String() = {"Left", "Right", "Center", "Centre"}
                             If Not validTP.Contains(tilterPosition) Then
                                 MessageError(True, "PLEASE CHECK YOUR TILTER POSITION DATA !")
                                 Exit For
@@ -564,12 +564,12 @@ Partial Class Order_Add
                             End If
 
                             If width <= 300 Then
-                                If controlPosition = "No Control" Then
+                                If controlPosition <> "No Control" OrElse controlPosition <> "N/A" Then
                                     MessageError(True, "YOUR WIDTH ORDER UNDER 300MM. PLEASE CHANGE PULL CORD POSITION TO NO CONTROL !")
                                     Exit For
                                 End If
 
-                                If tilterPosition <> "Center" Then
+                                If tilterPosition <> "Center" OrElse tilterPosition <> "Centre" Then
                                     MessageError(True, "YOUR WIDTH ORDER UNDER 300MM. PLEASE CHANGE TILTER POSITION TO CENTER !")
                                     Exit For
                                 End If
