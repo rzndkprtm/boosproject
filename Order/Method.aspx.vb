@@ -4475,6 +4475,7 @@ Partial Class Order_Method
             Dim tubeIstilah As String = String.Empty
             If data.companyid = "2" Then
                 tubeIstilah = String.Empty
+                If tubeName = "Standard" Then tubeIstilah = "STD / GR"
                 If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
                 If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
                 If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
@@ -4493,12 +4494,17 @@ Partial Class Order_Method
                 End If
                 If data.companydetailid = "8" Then
                     tubeIstilah = String.Empty
+                    If tubeName = "Standard" Then tubeIstilah = "STD / GR"
                     If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
                     If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
                     If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
                     groupFabric = orderClass.GetFabricGroup(data.fabrictype)
                 End If
+            End If
+
+            If data.headerid = "270639" Then
+                Return tubeIstilah
             End If
 
             Dim priceName As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabric)
@@ -4650,6 +4656,7 @@ Partial Class Order_Method
             Dim tubeIstilah As String = String.Empty
             If data.companyid = "2" Then
                 tubeIstilah = String.Empty
+                If tubeName = "Standard" Then tubeIstilah = "STD / GR"
                 If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
                 If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
                 If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
@@ -4671,6 +4678,7 @@ Partial Class Order_Method
                 End If
                 If data.companydetailid = "8" Then
                     tubeIstilah = String.Empty
+                    If tubeName = "Standard" Then tubeIstilah = "STD / GR"
                     If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
                     If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
                     If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
@@ -4809,6 +4817,7 @@ Partial Class Order_Method
             Dim tubeIstilah As String = String.Empty
             If data.companyid = "2" Then
                 tubeIstilah = String.Empty
+                If tubeName = "Standard" Then tubeIstilah = "STD / GR"
                 If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
                 If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
                 If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
@@ -4828,6 +4837,7 @@ Partial Class Order_Method
                 End If
                 If data.companydetailid = "8" Then
                     tubeIstilah = String.Empty
+                    If tubeName = "Standard" Then tubeIstilah = "STD / GR"
                     If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
                     If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
                     If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
@@ -4990,6 +5000,7 @@ Partial Class Order_Method
             Dim tubeIstilah As String = String.Empty
             If data.companyid = "2" Then
                 tubeIstilah = String.Empty
+                If tubeName = "Standard" Then tubeIstilah = "STD / GR"
                 If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
                 If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
                 If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
@@ -5010,6 +5021,7 @@ Partial Class Order_Method
 
                 If data.companydetailid = "8" Then
                     tubeIstilah = String.Empty
+                    If tubeName = "Standard" Then tubeIstilah = "STD / GR"
                     If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
                     If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
                     If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
@@ -5164,6 +5176,7 @@ Partial Class Order_Method
             Dim tubeIstilah As String = String.Empty
             If data.companyid = "2" Then
                 tubeIstilah = String.Empty
+                If tubeName = "Standard" Then tubeIstilah = "STD / GR"
                 If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
                 If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
                 If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
@@ -5183,6 +5196,7 @@ Partial Class Order_Method
                 End If
                 If data.companydetailid = "8" Then
                     tubeIstilah = String.Empty
+                    If tubeName = "Standard" Then tubeIstilah = "STD / GR"
                     If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
                     If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
                     If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
@@ -5367,6 +5381,7 @@ Partial Class Order_Method
             Dim tubeIstilah As String = String.Empty
             If data.companyid = "2" Then
                 tubeIstilah = String.Empty
+                If tubeName = "Standard" Then tubeIstilah = "STD / GR"
                 If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
                 If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
                 If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
@@ -5387,6 +5402,7 @@ Partial Class Order_Method
 
                 If data.companydetailid = "8" Then
                     tubeIstilah = String.Empty
+                    If tubeName = "Standard" Then tubeIstilah = "STD / GR"
                     If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
                     If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
                     If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
@@ -5572,6 +5588,7 @@ Partial Class Order_Method
             Dim tubeIstilah As String = String.Empty
             If data.companyid = "2" Then
                 tubeIstilah = String.Empty
+                If tubeName = "Standard" Then tubeIstilah = "STD / GR"
                 If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
                 If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
                 If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
@@ -5594,6 +5611,7 @@ Partial Class Order_Method
                 End If
                 If data.companydetailid = "8" Then
                     tubeIstilah = String.Empty
+                    If tubeName = "Standard" Then tubeIstilah = "STD / GR"
                     If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
                     If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
                     If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
@@ -5842,6 +5860,7 @@ Partial Class Order_Method
             Dim tubeIstilah As String = String.Empty
             If data.companyid = "2" Then
                 tubeIstilah = String.Empty
+                If tubeName = "Standard" Then tubeIstilah = "STD / GR"
                 If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
                 If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
                 If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
@@ -5864,6 +5883,7 @@ Partial Class Order_Method
 
                 If data.companydetailid = "8" Then
                     tubeIstilah = String.Empty
+                    If tubeName = "Standard" Then tubeIstilah = "STD / GR"
                     If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
                     If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
                     If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
