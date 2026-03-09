@@ -4478,7 +4478,7 @@ Partial Class Order_Method
                 If tubeName = "Standard" Then tubeIstilah = "STD / GR"
                 If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
                 If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
-                If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
+                If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
                 groupFabric = orderClass.GetFabricGroup(data.fabrictype)
             End If
@@ -4497,10 +4497,14 @@ Partial Class Order_Method
                     If tubeName = "Standard" Then tubeIstilah = "STD / GR"
                     If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
                     If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
-                    If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
+                    If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
                     groupFabric = orderClass.GetFabricGroup(data.fabrictype)
                 End If
+            End If
+
+            If data.headerid = "270493" Then
+                Return tubeIstilah
             End If
 
             Dim priceName As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabric)
@@ -4655,7 +4659,7 @@ Partial Class Order_Method
                 If tubeName = "Standard" Then tubeIstilah = "STD / GR"
                 If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
                 If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
-                If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
+                If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
                 groupFabric = orderClass.GetFabricGroup(data.fabrictype)
                 groupFabricDB = orderClass.GetFabricGroup(data.fabrictypeb)
@@ -4677,7 +4681,7 @@ Partial Class Order_Method
                     If tubeName = "Standard" Then tubeIstilah = "STD / GR"
                     If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
                     If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
-                    If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
+                    If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
                     groupFabric = orderClass.GetFabricGroup(data.fabrictype)
                     groupFabricDB = orderClass.GetFabricGroup(data.fabrictypeb)
@@ -4816,7 +4820,7 @@ Partial Class Order_Method
                 If tubeName = "Standard" Then tubeIstilah = "STD / GR"
                 If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
                 If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
-                If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
+                If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
                 groupFabric = orderClass.GetFabricGroup(data.fabrictype)
             End If
@@ -4836,7 +4840,7 @@ Partial Class Order_Method
                     If tubeName = "Standard" Then tubeIstilah = "STD / GR"
                     If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
                     If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
-                    If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
+                    If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
                     groupFabric = orderClass.GetFabricGroup(data.fabrictype)
                 End If
@@ -4999,7 +5003,7 @@ Partial Class Order_Method
                 If tubeName = "Standard" Then tubeIstilah = "STD / GR"
                 If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
                 If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
-                If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
+                If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
                 groupFabric = orderClass.GetFabricGroup(data.fabrictype)
             End If
@@ -5020,7 +5024,7 @@ Partial Class Order_Method
                     If tubeName = "Standard" Then tubeIstilah = "STD / GR"
                     If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
                     If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
-                    If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
+                    If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
                     groupFabric = orderClass.GetFabricGroup(data.fabrictype)
                 End If
@@ -5175,7 +5179,7 @@ Partial Class Order_Method
                 If tubeName = "Standard" Then tubeIstilah = "STD / GR"
                 If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
                 If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
-                If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
+                If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
                 groupFabric = orderClass.GetFabricGroup(data.fabrictype)
             End If
@@ -5195,7 +5199,7 @@ Partial Class Order_Method
                     If tubeName = "Standard" Then tubeIstilah = "STD / GR"
                     If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
                     If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
-                    If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
+                    If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
                     groupFabric = orderClass.GetFabricGroup(data.fabrictype)
                 End If
@@ -5380,7 +5384,7 @@ Partial Class Order_Method
                 If tubeName = "Standard" Then tubeIstilah = "STD / GR"
                 If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
                 If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
-                If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
+                If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
                 groupFabric = orderClass.GetFabricGroup(data.fabrictype)
             End If
@@ -5401,7 +5405,7 @@ Partial Class Order_Method
                     If tubeName = "Standard" Then tubeIstilah = "STD / GR"
                     If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
                     If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
-                    If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
+                    If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
                     groupFabric = orderClass.GetFabricGroup(data.fabrictype)
                 End If
@@ -5587,7 +5591,7 @@ Partial Class Order_Method
                 If tubeName = "Standard" Then tubeIstilah = "STD / GR"
                 If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
                 If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
-                If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
+                If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
                 groupFabric = orderClass.GetFabricGroup(data.fabrictype)
                 groupFabricDB = orderClass.GetFabricGroup(data.fabrictypec)
@@ -5610,7 +5614,7 @@ Partial Class Order_Method
                     If tubeName = "Standard" Then tubeIstilah = "STD / GR"
                     If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
                     If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
-                    If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
+                    If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
                     groupFabric = orderClass.GetFabricGroup(data.fabrictype)
                     groupFabricDB = orderClass.GetFabricGroup(data.fabrictypec)
@@ -5859,7 +5863,7 @@ Partial Class Order_Method
                 If tubeName = "Standard" Then tubeIstilah = "STD / GR"
                 If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
                 If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
-                If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
+                If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
                 groupFabric = orderClass.GetFabricGroup(data.fabrictype)
                 groupFabricDB = orderClass.GetFabricGroup(data.fabrictypec)
@@ -5882,7 +5886,7 @@ Partial Class Order_Method
                     If tubeName = "Standard" Then tubeIstilah = "STD / GR"
                     If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
                     If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
-                    If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
+                    If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
                     groupFabric = orderClass.GetFabricGroup(data.fabrictype)
                     groupFabricDB = orderClass.GetFabricGroup(data.fabrictypec)
@@ -6104,7 +6108,7 @@ Partial Class Order_Method
             Dim tubeIstilah As String = String.Empty
             If data.companydetailid = "2" OrElse data.companydetailid = "3" OrElse data.companydetailid = "4" OrElse data.companydetailid = "8" Then
                 tubeIstilah = "STD / GR"
-                If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
+                If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
             End If
             If data.companydetailid = "5" AndAlso data.companydetailid = "6" Then
                 tubeIstilah = tubeName
@@ -6404,7 +6408,7 @@ Partial Class Order_Method
             Dim tubeIstilah As String = String.Empty
             If data.companydetailid = "2" OrElse data.companydetailid = "3" OrElse data.companydetailid = "4" OrElse data.companydetailid = "8" Then
                 tubeIstilah = "STD / GR"
-                If tubeIstilah.Contains("Acmeda") Then tubeIstilah = "Acmeda"
+                If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
             End If
             If data.companydetailid = "5" AndAlso data.companydetailid = "6" Then
                 tubeIstilah = tubeName
