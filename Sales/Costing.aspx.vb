@@ -21,11 +21,6 @@ Partial Class Sales_Costing
         End If
     End Sub
 
-    Protected Sub tmrTicket_Tick(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        BindData(txtSearch.Text)
-    End Sub
-
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         BindData(txtSearch.Text)
