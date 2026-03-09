@@ -101,7 +101,7 @@
                         <div class="card-body">
                             <div class="list-group list-group-horizontal-sm mb-1 text-center" role="tablist">
                                 <a class="list-group-item list-group-item-action active" id="list-sunday-list" data-bs-toggle="list" href="#list-sunday" role="tab">Output</a>
-                                <a class="list-group-item list-group-item-action" id="list-monday-list" data-bs-toggle="list" href="#list-monday" role="tab">Output Include Customeer</a>
+                                <a class="list-group-item list-group-item-action" id="list-monday-list" data-bs-toggle="list" href="#list-monday" role="tab">Output Include Customer</a>
                             </div>
 
                             <div class="tab-content text-justify">
