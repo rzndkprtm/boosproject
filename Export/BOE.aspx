@@ -444,7 +444,7 @@
 
                 Dim drop As String = String.Empty
                 If tubeName = "Pelmet 140mm" Then drop = "140"
-                If tubeName = "Pelmet 200mm" Then drop = "140"
+                If tubeName = "Pelmet 200mm" Then drop = "200"
 
                 writer.WriteStartElement("OrderDetails")
                 writer.WriteAttributeString("OrddID", thisData.Rows(i)("Id").ToString())
