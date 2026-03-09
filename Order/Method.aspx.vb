@@ -11,9 +11,7 @@ Partial Class Order_Method
 
         Dim row As DataRow = orderClass.GetDataRow("SELECT OrderId, CustomerId, OrderNumber, OrderName FROM OrderHeaders WHERE Id = '" & headerId & "'")
 
-        If row Is Nothing Then
-            Return Nothing
-        End If
+        If row Is Nothing Then Return Nothing
 
         Dim dataHeader As New Dictionary(Of String, String) From {
             {"OrderId", row("OrderId").ToString()},
@@ -3858,6 +3856,7 @@ Partial Class Order_Method
             If data.controllength = "Custom" Then
                 If chainLength = "Static" Then
                     If String.IsNullOrEmpty(data.controllengthvalue2) Then Return "CHAIN LENGTH VALUE IS REQUIRED !"
+                    If Not Integer.TryParse(data.controllengthvalue2, controllength) OrElse controllength <= 0 Then Return "PLEASE CHECK YOUR CHAIN LENGTH VALUE ORDER !"
                 End If
                 If chainLength = "Flexible" Then
                     If String.IsNullOrEmpty(data.controllengthvalue) Then Return "CHAIN LENGTH VALUE IS REQUIRED !"
@@ -3901,11 +3900,11 @@ Partial Class Order_Method
         squareMetre = width * drop / 1000000
         If tubeName.Contains("Gear Reduction") AndAlso data.companyid = "2" Then
             If tubeName = "Gear Reduction 38mm" AndAlso width > 1810 Then Return "MAXIMUM WIDTH BLIND FOR GEAR REDUCTION 38MM IS 1810MM !"
-
             If squareMetre >= 6 AndAlso (tubeName = "Gear Reduction 38mm" OrElse tubeName = "Gear Reduction 45mm") Then
                 Return "YOUR BLIND AREA EXCEEDS 6 SQM.<br />PLEASE USE <b>GEAR REDUCTION 49MM</b> IF YOU WISH TO CONTINUE USING THE GEAR REDUCTION SYSTEM.<br />OUR ALTERNATIVE RECOMMENDATION:<br />ACMEDA SYSTEM: <b>ACMEDA 49MM</b><br />SUNBOSS SYSTEM: <b>SUNBOSS 43MM</b> OR <b>SUNBOSS 50MM</b>"
             End If
         End If
+        If tubeName = "Acmeda 43mm" AndAlso width > 1810 Then Return "MAXIMUM WIDTH FOR ACMEDA 43MM IS 1810MM !"
 
         ' START SECOND BLIND
         If blindName = "Dual Blinds" Then
@@ -3927,8 +3926,6 @@ Partial Class Order_Method
                     If String.IsNullOrEmpty(data.chainstopperb) Then Return "CHAIN STOPPER FOR SECOND BLIND IS REQUIRED !"
                     If String.IsNullOrEmpty(data.controllengthb) Then Return "CHAIN LENGTH FOR SECOND BLIND IS REQUIRED !"
                     If data.controllengthb = "Custom" Then
-                        chainLengthB = orderClass.GetChainType(data.chaincolourb)
-
                         If chainLengthB = "Static" Then
                             If String.IsNullOrEmpty(data.controllengthvalueb2) Then Return "CHAIN LENGTH VALUE FOR SECOND BLIND IS REQUIRED !"
                             If Not Integer.TryParse(data.controllengthvalueb2, controllengthb) OrElse controllengthb <= 0 Then Return "PLEASE CHECK YOUR CHAIN LENGTH VALUE FOR SECOND BLIND !"
@@ -3979,6 +3976,7 @@ Partial Class Order_Method
                     Return "YOUR BLIND AREA EXCEEDS 6 SQM.<br />PLEASE USE <b>GEAR REDUCTION 49MM</b> IF YOU WISH TO CONTINUE USING THE GEAR REDUCTION SYSTEM.<br />OUR ALTERNATIVE RECOMMENDATION:<br />ACMEDA SYSTEM: <b>ACMEDA 49MM</b><br />SUNBOSS SYSTEM: <b>SUNBOSS 43MM</b> OR <b>SUNBOSS 50MM</b>"
                 End If
             End If
+            If tubeName = "Acmeda 43mm" AndAlso widthb > 1810 Then Return "MAXIMUM WIDTH FOR SECOND BLIND ACMEDA 43MM IS 1810MM !"
         End If
         ' END SECOND BLIND
 
