@@ -4503,10 +4503,6 @@ Partial Class Order_Method
                 End If
             End If
 
-            If data.headerid = "270639" Then
-                Return tubeIstilah
-            End If
-
             Dim priceName As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabric)
             priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid)
         End If
