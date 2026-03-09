@@ -43,6 +43,10 @@ $("#colourtype").on("change", function () {
     const controltype = document.getElementById("controltype").value;
 
     visibleDetail(blindtype, tubetype, controltype, $(this).val());
+
+    if (itemAction === "edit" || itemAction === "view" || itemAction === "copy"){
+        visibleEditViewCopy(blindtype);
+    }
 });
 
 $("#fabrictype").on("change", function () {
@@ -97,8 +101,7 @@ $("#bottomtyped").on("change", function () {
     visibleFlatBottom($(this).val(), 4);
 });
 
-$("#bottomtypee").on("change", function () {
-    
+$("#bottomtypee").on("change", function () {    
     bindBottomColourE($(this).val());
     visibleFlatBottom($(this).val(), 5);
 });
@@ -109,38 +112,30 @@ $("#bottomtypef").on("change", function () {
 });
 
 $("#chaincolour").on("change", function () {
-    const controltype = document.getElementById("controltype").value;
     const controllength = document.getElementById("controllength").value;
 
     bindChainStopper($(this).val());
-    visibleChainStopperLength(controltype, $(this).val(), 1);
     visibleCustomChainLength($(this).val(), controllength, 1);
 });
 
 $("#chaincolourb").on("change", function () {
-    const controltype = document.getElementById("controltype").value;
     const controllength = document.getElementById("controllengthb").value;
 
     bindChainStopperB($(this).val());
-    visibleChainStopperLength(controltype, $(this).val(), 2);
     visibleCustomChainLength($(this).val(), controllength, 2);
 });
 
 $("#chaincolourc").on("change", function () {
-    const controltype = document.getElementById("controltype").value;
     const controllength = document.getElementById("controllengthc").value;
 
     bindChainStopperC($(this).val());
-    visibleChainStopperLength(controltype, $(this).val(), 3);
     visibleCustomChainLength($(this).val(), controllength, 3);
 });
 
 $("#chaincolourd").on("change", function () {
-    const controltype = document.getElementById("controltype").value;
     const controllength = document.getElementById("controllengthd").value;
 
     bindChainStopperD($(this).val());
-    visibleChainStopperLength(controltype, $(this).val(), 4);
     visibleCustomChainLength($(this).val(), controllength, 4);
 });
 
@@ -523,9 +518,12 @@ function getBottomName(bottomType) {
 }
 
 function getChainLength(chainColour) {
-    if (!chainColour) return;
-
     const type = "ChainLength";
+
+    if (!chainColour) {
+        return Promise.resolve(null);
+    }
+
     return new Promise((resolve, reject) => {
         $.ajax({
             type: "POST",
@@ -731,8 +729,6 @@ function bindTubeType(blindType, controlType) {
         });
     });
 }
-
-
 
 function bindColourType(blindType, controlType, tubeType) {
     return new Promise((resolve, reject) => {
@@ -2026,6 +2022,9 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                 if (["Gear Reduction 38mm", "Gear Reduction 45mm", "Gear Reduction 49mm"].includes(tubeName)) {
                     divShow.push("divbracketextension");
                 }
+                if (controlName === "Chain") {
+                    divShow.push("divchainstopper", "divcontrollength");
+                }
             }
             else if (blindName === "Wire Guide") {
                 divShow.push("divfabric", "divcontrolposition", "divbottomtype", "divsize");
@@ -2044,9 +2043,12 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                     "divfabricb", "divrollb", "divcontrolpositionb",
                     "divbottomtypeb", "divbottomcolourb", "divsizeb"
                 );
+                if (controlName === "Chain") {
+                    divShow.push("divchainstopper", "divcontrollength", "divchainstopperb", "divcontrollengthb");
+                }
+
                 textdbfront.innerHTML = "FIRST ROLLER";
                 textdbback.innerHTML = "SECOND ROLLER";
-
             }
             else if (blindName === "Link 2 Blinds Dependent") {
                 divShow.push(
@@ -2059,6 +2061,10 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                 if (["Gear Reduction 38mm", "Gear Reduction 45mm", "Gear Reduction 49mm"].includes(tubeName)) {
                     divShow.push("divbracketextension");
                 }
+                if (controlName === "Chain") {
+                    divShow.push("divchainstopper", "divcontrollength");
+                }
+
                 textlinkdepfirst.innerHTML = "FIRST BLIND / CONTROL BLIND / BLIND NO 1";
                 textlinkdepsecond.innerHTML = "SECOND BLIND / END BLIND / BLIND NO 2";
             }
@@ -2073,6 +2079,10 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                 if (["Gear Reduction 38mm", "Gear Reduction 45mm", "Gear Reduction 49mm"].includes(tubeName)) {
                     divShow.push("divbracketextension");
                 }
+                if (controlName === "Chain") {
+                    divShow.push("divchainstopper", "divcontrollength", "divchainstopperb", "divcontrollengthb");
+                }
+
                 textlinkindfirst.innerHTML = "FIRST BLIND & LEFT CONTROL BLIND";
                 textlinkindsecond.innerHTML = "SECOND BLIND & RIGHT CONTROL BLIND";
             }
@@ -2089,6 +2099,11 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                 if (["Gear Reduction 38mm", "Gear Reduction 45mm", "Gear Reduction 49mm"].includes(tubeName)) {
                     divShow.push("divbracketextension");
                 }
+
+                if (controlName === "Chain") {
+                    divShow.push("divchainstopper", "divcontrollength");
+                }
+
                 textlinkdepfirst.innerHTML = "FIRST BLIND / CONTROL BLIND / BLIND NO 1";
                 textlinkdepsecond.innerHTML = "SECOND BLIND / MIDDLE BLIND / BLIND NO 2";
                 textlinkdepthird.innerHTML = "THIRD BLIND / END BLIND / BLIND NO 3";
@@ -2105,6 +2120,10 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                 );
                 if (["Gear Reduction 38mm", "Gear Reduction 45mm", "Gear Reduction 49mm"].includes(tubeName)) {
                     divShow.push("divbracketextension");
+                }
+
+                if (controlName === "Chain") {
+                    divShow.push("divchainstopper", "divcontrollength", "divchainstopperc", "divcontrollengthc");
                 }
 
                 textlinkindfirst.innerHTML = "FIRST BLIND / INDEPENDENT CONTROL";
@@ -2127,6 +2146,11 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                     "divbottomtypec", "divbottomcolourc", "divsizec",
                     "divbottomtyped", "divbottomcolourd", "divsized"
                 );
+
+                if (controlName === "Chain") {
+                    divShow.push("divchainstopper", "divcontrollength", "divchainstopperc", "divcontrollengthc");
+                }
+
                 textdbfront.innerHTML = "ROLLER - FIRST SIDE";
                 textlinkdepfirst.innerHTML = "First Blind / Control Blind / Blind No 1";
                 textlinkdepsecond.innerHTML = "Second Blind / End Blind / Blind No 2";
@@ -2151,6 +2175,11 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                     "divbottomtypec", "divbottomcolourc", "divsizec",
                     "divbottomtyped", "divbottomcolourd", "divsized"
                 );
+
+                if (controlName === "Chain") {
+                    divShow.push("divchainstopper", "divcontrollength", "divchainstopperb", "divcontrollengthb", "divchainstopperc", "divcontrollengthc", "divchainstopperd", "divcontrollengthd");
+                }
+
                 textdbfront.innerHTML = "ROLLER - FIRST SIDE";
                 textlinkindfirst.innerHTML = "First Blind / Blind No 1";
                 textlinkindsecond.innerHTML = "Second Blind / Blind NNoO 2";
@@ -2284,45 +2313,8 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
     });
 }
 
-function visibleChainStopperLength(controlType, chainColour, number) {
-    return new Promise((resolve, reject) => {
-        let thisDiv = null;
-        let thisDiv2 = null;
-        if (number === 1) {
-            thisDiv = document.getElementById("divchainstopper");
-            thisDiv2 = document.getElementById("divcontrollength");
-        } else if (number === 2) {
-            thisDiv = document.getElementById("divchainstopperb");
-            thisDiv2 = document.getElementById("divcontrollengthb");
-        } else if (number === 3) {
-            thisDiv = document.getElementById("divchainstopperc");
-            thisDiv2 = document.getElementById("divcontrollengthc");
-        } else if (number === 4) {
-            thisDiv = document.getElementById("divchainstopperd");
-            thisDiv2 = document.getElementById("divcontrollengthd");
-        }
-
-        if (!thisDiv || !thisDiv2) return resolve();
-
-        thisDiv.style.display = "none";
-        thisDiv2.style.display = "none";
-
-        if (!chainColour) return resolve();
-
-        getControlName(controlType).then(controlName => {
-            if (controlName === "Chain") {
-                thisDiv.style.display = "";
-                thisDiv2.style.display = "";
-            }
-            resolve();
-        }).catch(error => {
-            resolve();
-        });
-    });
-}
-
 function visibleCustomChainLength(chainColour, chainLength, number) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         let thisDiv = null;
         let thisDiv2 = null;
 
@@ -2349,10 +2341,10 @@ function visibleCustomChainLength(chainColour, chainLength, number) {
 
         if (chainLength === "Custom") {
             getChainLength(chainColour).then(chainType => {
-                if (chainType === "Continuous") {
+                if (chainType === "Static") {
                     thisDiv.style.display = "none";
                     thisDiv2.style.display = "";
-                } else if (chainType === "Non Continuous") {
+                } else if (chainType === "Flexible") {
                     thisDiv.style.display = "";
                     thisDiv2.style.display = "none";
                 } else {
@@ -2955,33 +2947,27 @@ async function bindItemOrder(itemId, companyDetailId, action) {
 
         teksBottomColour(1, data.ItemData.BottomId);
         visibleFlatBottom(data.ItemData.BottomId, 1);
-        visibleChainStopperLength(data.ItemData.ControlType, data.ItemData.ChainId, 1);
         visibleCustomChainLength(data.ItemData.ChainId, data.ItemData.ControlLength, 1);
 
         let visiblePromises = [
             teksBottomColour(2, data.ItemData.BottomIdB),
             visibleFlatBottom(data.ItemData.BottomIdB, 2),
-            visibleChainStopperLength(data.ItemData.ControlType, data.ItemData.ChainIdB, 2),
             visibleCustomChainLength(data.ItemData.ChainIdB, data.ItemData.ControlLengthB, 2),
 
             teksBottomColour(3, data.ItemData.BottomIdC),
             visibleFlatBottom(data.ItemData.BottomIdC, 3),
-            visibleChainStopperLength(data.ItemData.ControlType, data.ItemData.ChainIdC, 3),
             visibleCustomChainLength(data.ItemData.ChainIdC, data.ItemData.ControlLengthC, 3),
 
             teksBottomColour(4, data.ItemData.BottomIdD),
             visibleFlatBottom(data.ItemData.BottomIdD, 4),
-            visibleChainStopperLength(data.ItemData.ControlType, data.ItemData.ChainIdD, 4),
             visibleCustomChainLength(data.ItemData.ChainIdD, data.ItemData.ControlLengthD, 4),
 
             teksBottomColour(5, data.ItemData.BottomIdE),
             visibleFlatBottom(data.ItemData.BottomIdE, 5),
-            visibleChainStopperLength(data.ItemData.ControlType, data.ItemData.ChainIdE, 5),
             visibleCustomChainLength(data.ItemData.ChainIdE, data.ItemData.ControlLengthE, 5),
 
             teksBottomColour(6, data.ItemData.BottomIdF),
             visibleFlatBottom(data.ItemData.BottomIdF, 6),
-            visibleChainStopperLength(data.ItemData.ControlType, data.ItemData.ChainIdF, 6),
             visibleCustomChainLength(data.ItemData.ChainIdF, data.ItemData.ControlLengthF, 6)
         ];
 
@@ -2989,6 +2975,59 @@ async function bindItemOrder(itemId, companyDetailId, action) {
     } catch (error) {
         document.getElementById("divloader").style.display = "none";
     }
+}
+
+function visibleEditViewCopy(blindType) {
+    getBlindName(blindType).then(function (blindName) {
+        const processBlind = function (chain, length, bottom, index) {
+            visibleCustomChainLength(chain, length, index);
+            teksBottomColour(index, bottom);
+            visibleFlatBottom(bottom, index);
+        };
+
+        processBlind(
+            document.getElementById("chaincolour").value,
+            document.getElementById("controllength").value,
+            document.getElementById("bottomtype").value,
+            1
+        );
+
+        if (blindName === "Dual Blinds" || blindName === "Link 2 Blinds Independent" || blindName === "Link 2 Blinds Dependent" || blindName === "Link 3 Blinds Independent" || blindName === "Link 3 Blinds Independent with Dependent" || blindName === "DB Link 2 Blinds Dependent" || blindName === "DB Link 2 Blinds Independent" || blindName === "DB Link 3 Blinds Independent" || blindName === "DB Link 3 Blinds Independent with Dependent") {
+            processBlind(
+                document.getElementById("chaincolourb").value,
+                document.getElementById("controllengthb").value,
+                document.getElementById("bottomtypeb").value,
+                2
+            );
+        } else if (blindName === "Link 3 Blinds Independent" || blindName === "Link 3 Blinds Independent with Dependent" || blindName === "DB Link 2 Blinds Dependent" || blindName === "DB Link 2 Blinds Independent" || blindName === "DB Link 3 Blinds Independent" || blindName === "DB Link 3 Blinds Independent with Dependent") {
+            processBlind(
+                document.getElementById("chaincolourc").value,
+                document.getElementById("controllengthc").value,
+                document.getElementById("bottomtypec").value,
+                3
+            );
+        } else if (blindName === "DB Link 2 Blinds Dependent" || blindName === "DB Link 2 Blinds Independent" || blindName === "DB Link 3 Blinds Independent" || blindName === "DB Link 3 Blinds Independent with Dependent") {
+            processBlind(
+                document.getElementById("chaincolourd").value,
+                document.getElementById("controllengthd").value,
+                document.getElementById("bottomtyped").value,
+                4
+            );
+        } else if (blindName === "DB Link 3 Blinds Independent" || blindName === "DB Link 3 Blinds Independent with Dependent") {
+            processBlind(
+                document.getElementById("chaincoloure").value,
+                document.getElementById("controllengthe").value,
+                document.getElementById("bottomtypee").value,
+                5
+            );
+            processBlind(
+                document.getElementById("chaincolourf").value,
+                document.getElementById("controllengthf").value,
+                document.getElementById("bottomtypef").value,
+                6
+            );
+        }
+    }).catch(function () { });
 }
 
 function showInfo(type) {

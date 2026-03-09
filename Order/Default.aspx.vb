@@ -750,7 +750,7 @@ Partial Class Order_Default
         Session("OrderActive") = String.Empty
         Try
             Dim params As New List(Of SqlParameter) From {
-                New SqlParameter("@Search", search),
+                New SqlParameter("@Search", search.Trim()),
                 New SqlParameter("@Status", status),
                 New SqlParameter("@Company", company),
                 New SqlParameter("@Active", active),

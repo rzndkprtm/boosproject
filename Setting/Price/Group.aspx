@@ -134,8 +134,7 @@
                                 <asp:ListItem Value="" Text=""></asp:ListItem>
                                 <asp:ListItem Value="Blinds" Text="Blinds"></asp:ListItem>
                                 <asp:ListItem Value="Shutters" Text="Shutters"></asp:ListItem>
-                                <asp:ListItem Value="Samples" Text="Samples"></asp:ListItem>
-                                <asp:ListItem Value="Component" Text="Component"></asp:ListItem>
+                                <asp:ListItem Value="Doors" Text="Doors"></asp:ListItem>
                             </asp:DropDownList>
                         </div>
                     </div>

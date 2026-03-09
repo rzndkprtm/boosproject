@@ -43,7 +43,7 @@ Partial Class Report_Default
                 }
 
                 Dim paramsItem As New List(Of SqlParameter) From {
-                    New SqlParameter("@Status", "In Production"),
+                    New SqlParameter("@Status", ddlStatus.SelectedValue),
                     New SqlParameter("@DateFrom", txtStartDate.Text),
                     New SqlParameter("@DateTo", txtEndDate.Text),
                     New SqlParameter("@CompanyId", ddlCompany.SelectedValue)
