@@ -905,6 +905,28 @@ Public Class OrderClass
         Return result
     End Function
 
+    Public Function GetChainLength(chainId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(chainId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using myCmd As New SqlCommand("SELECT ChainLength FROM Chains WHERE Id=@Id", thisConn)
+                        myCmd.Parameters.AddWithValue("@Id", chainId)
+
+                        thisConn.Open()
+                        Dim obj = myCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
     Public Function GetBottomName(bottomId As String) As String
         Dim result As String = String.Empty
         Try

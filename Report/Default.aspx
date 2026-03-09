@@ -56,6 +56,19 @@
 
                                 <div class="row">
                                     <div class="col-12 col-sm-12 col-lg-3">
+                                        <label class="form-label">Status</label>
+                                    </div>
+                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                        <asp:DropDownList runat="server" ID="ddlStatus" CssClass="form-select">
+                                            <asp:ListItem Value="" Text=""></asp:ListItem>
+                                            <asp:ListItem Value="Submitted" Text="Submitted"></asp:ListItem>
+                                            <asp:ListItem Value="In Production" Text="In Production"></asp:ListItem>
+                                        </asp:DropDownList>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-12 col-sm-12 col-lg-3">
                                         <label class="form-label">Date</label>
                                     </div>
                                     <div class="col-12 col-sm-12 col-lg-4 form-group">
