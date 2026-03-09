@@ -279,6 +279,7 @@ Public Partial Class SiteMaster
                 liGuide.Visible = True
 
                 If Session("LevelName") = "Leader" Then
+                    liSales.Visible = True
                     liReport.Visible = True
                 End If
 
