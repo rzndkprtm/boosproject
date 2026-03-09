@@ -36,17 +36,23 @@ Partial Class Report_Default
             End If
 
             If msgError.InnerText = "" Then
-                Dim params As New List(Of SqlParameter) From {
+                Dim paramsPivot As New List(Of SqlParameter) From {
+                    New SqlParameter("@StartDate", txtStartDate.Text),
+                    New SqlParameter("@EndDate", txtEndDate.Text),
+                    New SqlParameter("@CompanyId", ddlCompany.SelectedValue)
+                }
+
+                Dim paramsItem As New List(Of SqlParameter) From {
                     New SqlParameter("@Status", ddlStatus.SelectedValue),
                     New SqlParameter("@StartDate", txtStartDate.Text),
                     New SqlParameter("@EndDate", txtEndDate.Text),
                     New SqlParameter("@CompanyId", ddlCompany.SelectedValue)
                 }
 
-                gvList.DataSource = reportClass.GetDataTableSP("sp_TotalItemsPerDesign", params)
+                gvList.DataSource = reportClass.GetDataTableSP("sp_TotalItemsPerDesign", paramsItem)
                 gvList.DataBind()
 
-                gvBlindsPivot.DataSource = reportClass.GetDataTableSP("sp_ProductionSummaryBlindsPivot", params)
+                gvBlindsPivot.DataSource = reportClass.GetDataTableSP("sp_ProductionSummaryBlindsPivot", paramsPivot)
                 gvBlindsPivot.DataBind()
             End If
         Catch ex As Exception
