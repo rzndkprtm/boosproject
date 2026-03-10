@@ -2,7 +2,6 @@
 Imports System.Data.SqlClient
 Imports System.Globalization
 Imports System.Threading.Tasks
-Imports Org.BouncyCastle.Asn1.Cmp
 
 Partial Class Order_Detail
     Inherits Page
@@ -230,7 +229,7 @@ Partial Class Order_Detail
             Dim mailingClass As New MailingClass
 
             If cashSale = False Then
-                mailingClass.NewOrder(lblHeaderId.Text, Session("LoginId").ToString())
+                mailingClass.ProductionOrder(lblHeaderId.Text)
             End If
             If cashSale = True Then
                 mailingClass.NewOrder_Proforma(lblHeaderId.Text)
@@ -417,7 +416,7 @@ Partial Class Order_Detail
                 End Using
             End Using
 
-            If lblOrderStatus.Text = "Payment Received" OrElse lblOrderStatus.Text = "New Order" Then
+            If lblOrderStatus.Text = "Payment Received" Then
                 Dim mailingClass As New MailingClass
                 mailingClass.ProductionOrder(lblHeaderId.Text)
             End If

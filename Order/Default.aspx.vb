@@ -297,6 +297,9 @@ Partial Class Order_Default
                 dataLog = {"OrderHeaders", thisId, Session("LoginId"), "New Order"}
                 orderClass.Logs(dataLog)
 
+                Dim mailingClass As New MailingClass
+                mailingClass.ProductionOrder(thisId)
+
                 Session("OrderStatus") = ddlStatus.SelectedValue
                 Session("OrderCompany") = ddlCompany.SelectedValue
                 Session("OrderSearch") = txtSearch.Text
@@ -325,9 +328,6 @@ Partial Class Order_Default
                     Dim salesClass As New SalesClass
                     salesClass.RefreshData()
                 End If
-
-                Dim mailingClass As New MailingClass
-                mailingClass.ProductionOrder(thisId)
 
                 Session("OrderStatus") = ddlStatus.SelectedValue
                 Session("OrderCompany") = ddlCompany.SelectedValue
