@@ -7,7 +7,6 @@
 <script runat="server">
 
     Dim orderClass As New OrderClass
-    Dim mailingClass As New MailingClass
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
@@ -106,8 +105,6 @@
                             Dim salesClass As New SalesClass
                             salesClass.RefreshData()
                         End If
-
-                        mailingClass.ProductionOrder(headerId)
                     Next
                 End If
             End If
