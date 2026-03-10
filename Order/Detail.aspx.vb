@@ -1785,6 +1785,8 @@ Partial Class Order_Detail
 
                 aFileOrder.Visible = True
 
+                btnEditHeader.Visible = True
+
                 If lblOrderType.Text = "Regular" Then btnQuoteAction.Visible = True
                 If lblOrderType.Text = "Builder" Then
                     aBuilder.Visible = True : secBuilder.Visible = True
@@ -1795,7 +1797,7 @@ Partial Class Order_Detail
                     liMoreEmailQuote.Visible = True
                     liMoreDividerQuote.Visible = True
 
-                    btnEditHeader.Visible = True : aDeleteOrder.Visible = True
+                    aDeleteOrder.Visible = True
 
                     If lblOrderType.Text = "Regular" Then aSubmitOrder.Visible = True
                     If lblOrderType.Text = "Builder" Then aQuoteOrder.Visible = True
@@ -1808,7 +1810,6 @@ Partial Class Order_Detail
                     liMoreEmailQuote.Visible = True
                     liMoreDividerQuote.Visible = True
 
-                    btnEditHeader.Visible = True
                     aDeleteOrder.Visible = True
                     aSubmitOrder.Visible = True
 
@@ -1816,7 +1817,6 @@ Partial Class Order_Detail
                 End If
 
                 If lblOrderStatus.Text = "Waiting Proforma" Then
-                    btnEditHeader.Visible = True
                     aUnsubmitOrder.Visible = True : aCancelOrder.Visible = True
 
                     btnInvoice.Visible = True : aSendInvoice.Visible = True
@@ -1827,7 +1827,6 @@ Partial Class Order_Detail
                 End If
 
                 If lblOrderStatus.Text = "Proforma Sent" Then
-                    btnEditHeader.Visible = True
                     aUnsubmitOrder.Visible = True
                     aCancelOrder.Visible = True
 
@@ -1840,8 +1839,6 @@ Partial Class Order_Detail
                 End If
 
                 If lblOrderStatus.Text = "Payment Received" Then
-                    btnEditHeader.Visible = True
-
                     btnInvoice.Visible = True
                     liDividerInvoice.Visible = True : liUpdateInvoiceData.Visible = True
 
@@ -1856,8 +1853,6 @@ Partial Class Order_Detail
                     liMoreDownloadQuote.Visible = True
                     liMoreEmailQuote.Visible = True
                     liMoreDividerQuote.Visible = True
-
-                    btnEditHeader.Visible = True
 
                     aUnsubmitOrder.Visible = True : aCancelOrder.Visible = True
                     aHoldOrder.Visible = True : aProductionOrder.Visible = True
