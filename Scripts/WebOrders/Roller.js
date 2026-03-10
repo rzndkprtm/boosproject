@@ -2016,22 +2016,27 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
 
             if (blindName === "Single Blind") {
                 divShow.push("divfabric", "divroll", "divcontrolposition", "divbottomtype", "divbottomcolour", "divsize");
+
                 if (companyDetailName === "ACCENT") {
                     divShow.push("divtoptrack");
                 }
+
                 if (["Gear Reduction 38mm", "Gear Reduction 45mm", "Gear Reduction 49mm"].includes(tubeName)) {
                     divShow.push("divbracketextension");
                 }
+
                 if (controlName === "Chain") {
                     divShow.push("divchainstopper", "divcontrollength");
                 }
             }
             else if (blindName === "Wire Guide") {
                 divShow.push("divfabric", "divcontrolposition", "divbottomtype", "divsize");
+
                 document.getElementById("roll").value = "Standard";
             }
             else if (blindName === "Full Cassette" || blindName === "Semi Cassette") {
                 divShow.push("divfabric", "divcontrolposition", "divsize");
+
                 document.getElementById("roll").value = "Standard";
             }
             else if (blindName === "Dual Blinds") {
@@ -2043,6 +2048,7 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                     "divfabricb", "divrollb", "divcontrolpositionb",
                     "divbottomtypeb", "divbottomcolourb", "divsizeb"
                 );
+
                 if (controlName === "Chain") {
                     divShow.push("divchainstopper", "divcontrollength", "divchainstopperb", "divcontrollengthb");
                 }
@@ -2058,9 +2064,11 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                     "divbottomtype", "divbottomcolour", "divsize",
                     "divbottomtypeb", "divbottomcolourb", "divsizeb"
                 );
+
                 if (["Gear Reduction 38mm", "Gear Reduction 45mm", "Gear Reduction 49mm"].includes(tubeName)) {
                     divShow.push("divbracketextension");
                 }
+
                 if (controlName === "Chain") {
                     divShow.push("divchainstopper", "divcontrollength");
                 }
@@ -2076,9 +2084,11 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                     "divbottomtype", "divbottomcolour", "divsize",
                     "divbottomtypeb", "divbottomcolourb", "divsizeb"
                 );
+
                 if (["Gear Reduction 38mm", "Gear Reduction 45mm", "Gear Reduction 49mm"].includes(tubeName)) {
                     divShow.push("divbracketextension");
                 }
+
                 if (controlName === "Chain") {
                     divShow.push("divchainstopper", "divcontrollength", "divchainstopperb", "divcontrollengthb");
                 }
@@ -2096,6 +2106,7 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                     "divbottomtypeb", "divbottomcolourb", "divsizeb",
                     "divbottomtypec", "divbottomcolourc", "divsizec"
                 );
+
                 if (["Gear Reduction 38mm", "Gear Reduction 45mm", "Gear Reduction 49mm"].includes(tubeName)) {
                     divShow.push("divbracketextension");
                 }
@@ -2118,6 +2129,7 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                     "divbottomtypeb", "divbottomcolourb", "divsizeb",
                     "divbottomtypec", "divbottomcolourc", "divsizec"
                 );
+
                 if (["Gear Reduction 38mm", "Gear Reduction 45mm", "Gear Reduction 49mm"].includes(tubeName)) {
                     divShow.push("divbracketextension");
                 }
@@ -2182,7 +2194,7 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
 
                 textdbfront.innerHTML = "ROLLER - FIRST SIDE";
                 textlinkindfirst.innerHTML = "First Blind / Blind No 1";
-                textlinkindsecond.innerHTML = "Second Blind / Blind NNoO 2";
+                textlinkindsecond.innerHTML = "Second Blind / Blind No 2";
 
                 textthird.innerHTML = "ROLLER - SECOND SIDE";
                 textlinkindthird.innerHTML = "Third Blind / Blind No 3";
@@ -2208,6 +2220,11 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                     "divbottomtypee", "divbottomcoloure", "divsizee",
                     "divbottomtypef", "divbottomcolourf", "divsizef"
                 );
+
+                if (controlName === "Chain") {
+                    divShow.push("divchainstopper", "divcontrollength", "divchainstopperd", "divcontrollengthd");
+                }
+
                 textdbfront.innerHTML = "ROLLER - FIRST SIDE";
                 textlinkdepfirst.innerHTML = "First Blind / Control Blind / Blind No 1";
                 textlinkdepsecond.innerHTML = "Second Blind / Middle Blind / Blind No 2";
@@ -2238,6 +2255,11 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                     "divbottomtypee", "divbottomcoloure", "divsizee",
                     "divbottomtypef", "divbottomcolourf", "divsizef"
                 );
+
+                if (controlName === "Chain") {
+                    divShow.push("divchainstopper", "divcontrollength", "divchainstopperc", "divcontrollengthc", "divchainstopperd", "divcontrollengthd", "divchainstopperf", "divcontrollengthf");
+                }
+
                 textdbfront.innerHTML = "ROLLER - FIRST SIDE";
                 textlinkindfirst.innerHTML = "First Blind / Ind Control Blind / Blind No 1";
                 textlinkindsecond.innerHTML = "Second Blind / Middle Blind / Blind No 2";
