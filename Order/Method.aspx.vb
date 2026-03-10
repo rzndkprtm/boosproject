@@ -3803,12 +3803,12 @@ Partial Class Order_Method
         Dim chainLengthE As String = String.Empty
         Dim chainLengthF As String = String.Empty
 
-        If Not String.IsNullOrEmpty(data.chaincolour) Then chainLength = orderClass.GetChainType(data.chaincolour)
-        If Not String.IsNullOrEmpty(data.chaincolourb) Then chainLengthB = orderClass.GetChainType(data.chaincolourb)
-        If Not String.IsNullOrEmpty(data.chaincolourc) Then chainLengthC = orderClass.GetChainType(data.chaincolourc)
-        If Not String.IsNullOrEmpty(data.chaincolourd) Then chainLengthD = orderClass.GetChainType(data.chaincolourd)
-        If Not String.IsNullOrEmpty(data.chaincoloure) Then chainLengthE = orderClass.GetChainType(data.chaincoloure)
-        If Not String.IsNullOrEmpty(data.chaincolourf) Then chainLengthF = orderClass.GetChainType(data.chaincolourf)
+        If Not String.IsNullOrEmpty(data.chaincolour) Then chainLength = orderClass.GetChainLength(data.chaincolour)
+        If Not String.IsNullOrEmpty(data.chaincolourb) Then chainLengthB = orderClass.GetChainLength(data.chaincolourb)
+        If Not String.IsNullOrEmpty(data.chaincolourc) Then chainLengthC = orderClass.GetChainLength(data.chaincolourc)
+        If Not String.IsNullOrEmpty(data.chaincolourd) Then chainLengthD = orderClass.GetChainLength(data.chaincolourd)
+        If Not String.IsNullOrEmpty(data.chaincoloure) Then chainLengthE = orderClass.GetChainLength(data.chaincoloure)
+        If Not String.IsNullOrEmpty(data.chaincolourf) Then chainLengthF = orderClass.GetChainLength(data.chaincolourf)
 
         Dim bottomName As String = String.Empty
         Dim bottomNameB As String = String.Empty
