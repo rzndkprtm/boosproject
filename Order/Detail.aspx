@@ -82,10 +82,13 @@
                         <a href="#" runat="server" id="aReceivePayment" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalReceivePayment">Receive Payment</a>
                     </li>
                     <li>
+                        <asp:Button runat="server" ID="btnPreviewInvoice" CssClass="dropdown-item" Text="Preview Invoice" />
+                    </li>
+                    <li>
                         <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDownloadInvoice">Download Invoice</a>
                     </li>
                     <li>
-                        <asp:Button runat="server" ID="btnPreviewInvoice" CssClass="dropdown-item" Text="Preview Invoice" />
+                        <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDownloadInvoiceCSV">Download Invoice (CSV)</a>
                     </li>
                     <li runat="server" id="liDividerInvoice"><hr class="dropdown-divider"></li>
                     <li runat="server" id="liUpdateInvoiceNumber">
@@ -1140,6 +1143,23 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade text-center" id="modalDownloadInvoiceCSV" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <h5 class="modal-title white">Download Invoice (CSV)</h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnDownloadInvoiceCSV" CssClass="btn btn-primary" Text="Confirm" OnClick="btnDownloadInvoiceCSV_Click" OnClientClick="return showWaiting($(this).closest('.modal').attr('id'));" />
+                </div>
+            </div>
+        </div>
+    </div>
     
     <div class="modal fade text-left" id="modalInvoiceNumber" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
@@ -1655,7 +1675,7 @@
             "modalLog", "modalPreview", "modalWaiting", "modalBuilderDetail", "modalFileOrder",
             "modalDeleteOrder", "modalQuoteOrder", "modalSubmitOrder", "modalUnsubmitOrder", "modalCancelOrder", "modalProductionOrder", "modalHoldOrder", "modalUnHoldOrder", "modalShippedOrder", "modalCompleteOrder",
             "modalReworkOrder",
-            "modalSendInvoice", "modalReceivePayment", "modalDownloadInvoice", "modalInvoiceNumber", "modalInvoiceData",
+            "modalSendInvoice", "modalReceivePayment", "modalDownloadInvoice", "modalDownloadInvoiceCSV", "modalInvoiceNumber", "modalInvoiceData",
             "modalDetailQuote", "modalDownloadQuote",
             "modalMoreDownloadQuote", "modalMoreEmailQuote",
             "modalAddNote", "modalHistoryNote", "modalRecalculate",

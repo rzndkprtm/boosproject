@@ -919,8 +919,7 @@ Partial Class Order_Detail
     End Sub
 
     Protected Sub btnDownloadInvoice_Click(sender As Object, e As EventArgs)
-        MessageError_Preview(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showPreview(); };"
+        MessageError(False, String.Empty)
         Try
             Dim invoiceClass As New InvoiceClass
             Dim pdfBytes As Byte() = invoiceClass.BindContent(lblHeaderId.Text)
@@ -932,14 +931,57 @@ Partial Class Order_Detail
             Response.Flush()
             Response.End()
         Catch ex As Exception
-            MessageError_Preview(True, ex.ToString())
+            MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
-                MessageError_Preview(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
                 If Session("RoleName") = "Customer" Then
-                    MessageError_Preview(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
+                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
             End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showPreview", thisScript, True)
+        End Try
+    End Sub
+
+    Protected Sub btnDownloadInvoiceCSV_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim detailData As DataTable = orderClass.GetDataTable("SELECT * FROM OrderDetails WHERE HeaderId='" & lblHeaderId.Text & "' AND Active=1 ORDER BY Id ASC")
+            If detailData.Rows.Count > 0 Then
+                Dim sb As New StringBuilder()
+
+                For Each row As DataRow In detailData.Rows
+                    sb.Append(lblCustomerName.Text & ",")
+                    sb.Append("email@customer.com" & ",")
+                    sb.Append("Aalamat" & ",")
+                    sb.Append("" & ",")
+                    sb.Append("" & ",")
+                    sb.Append("" & ",")
+                    sb.Append("City" & ",")
+                    sb.Append("Region" & ",")
+                    sb.Append("Post Code" & ",")
+                    sb.Append("Australia" & ",")
+                    sb.Append(lblInvoiceNumber.Text & ",")
+                    sb.Append(lblOrderId.Text & ",")
+                    sb.Append(lblInvoiceDate.Text & ",")
+                    'sb.Append(lbldu.Text & ",")
+
+
+                    sb.AppendLine()
+                Next
+
+                Response.Clear()
+                Response.Buffer = True
+                Response.AddHeader("content-disposition", "attachment;filename=OrderDetails.csv")
+                Response.ContentType = "text/csv"
+
+                Response.Write(sb.ToString())
+                Response.Flush()
+                Response.End()
+            End If
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 

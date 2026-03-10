@@ -1667,13 +1667,12 @@ Public Class MailingClass
 
             If String.IsNullOrEmpty(customerId) OrElse String.IsNullOrEmpty(loginId) Then Exit Sub
 
-            Dim customerData As DataRow = GetDataRow("SELECT Customers.*, Companys.Name AS CompanyName, CustomerLogins.FullName AS OperatorName, CustomerLogins.Email AS OperatorEmail FROM Customers LEFT JOIN Companys ON Customers.CompanyId=Companys.Id LEFT JOIN CustomerLogins ON Customers.Operator=CustomerLogins.Id WHERE Customers.Id='" & customerId & "'")
+            Dim customerData As DataRow = GetDataRow("SELECT Customers.*, Companys.Name AS CompanyName, CustomerLogins.Operator AS CustomerOperator FROM Customers LEFT JOIN Companys ON Customers.CompanyId=Companys.Id LEFT JOIN CustomerLogins ON Customers.Operator=CustomerLogins.Id WHERE Customers.Id='" & customerId & "'")
             If customerData Is Nothing Then Exit Sub
             Dim companyId As String = customerData("CompanyId").ToString()
             Dim customerName As String = customerData("nAME").ToString()
             Dim companyName As String = customerData("CompanyName").ToString()
-            Dim operatorName As String = customerData("OperatorName").ToString()
-            Dim operatorEmail As String = customerData("OperatorEmail").ToString()
+            Dim customerOperator As String = customerData("CustomerOperator").ToString()
 
             Dim contactData As DataRow = GetDataRow("SELECT * FROM CustomerContacts WHERE CustomerId='" & customerId & "' AND [Primary]=1")
             If contactData Is Nothing Then Exit Sub
@@ -1779,8 +1778,14 @@ Public Class MailingClass
                 mailBody &= "<b>Sales / Orders:</b>"
                 mailBody &= "<ul>"
                 mailBody &= "<li>Matt McCamey - matt@jpmdirect.com.au</li>"
-                If Not String.IsNullOrEmpty(operatorName) Then
-                    mailBody &= "<li>" & operatorName & " - " & operatorEmail & "</li>"
+                Dim operatorData As DataTable = GetDataTable("SELECT * FROM CustomerLogins WHERE Id IN (SELECT CAST(value AS INT) FROM STRING_SPLIT('" & customerOperator & "', ','))")
+                If operatorData.Rows.Count > 0 Then
+                    For i As Integer = 0 To operatorData.Rows.Count - 1
+                        Dim operatorName As String = operatorData.Rows(i)("FullName").ToString()
+                        Dim operatorEmail As String = operatorData.Rows(i)("Email").ToString()
+
+                        mailBody &= "<li>" & operatorName & " - " & operatorEmail & "</li>"
+                    Next
                 End If
                 mailBody &= "</ul>"
                 mailBody &= "<br />"
@@ -1834,8 +1839,18 @@ Public Class MailingClass
             For Each thisMail In mailCc.Split(";"c)
                 If Not String.IsNullOrEmpty(thisMail.Trim()) Then myMail.CC.Add(thisMail.Trim())
             Next
-            If Not String.IsNullOrEmpty(operatorEmail) Then
-                myMail.CC.Add(operatorEmail)
+            If companyId = "2" Then
+                Dim operatorEmail As String = GetItemData("SELECT ISNULL(STRING_AGG(CustomerLogins.Email, ';'), '') FROM Customers OUTER APPLY STRING_SPLIT(Customers.Operator, ',') operatorArray LEFT JOIN CustomerLogins ON CustomerLogins.Id = TRY_CAST(operatorArray.value AS INT) WHERE Customers.Id='" & customerId & "';")
+
+                If Not String.IsNullOrEmpty(operatorEmail) Then
+                    Dim emailList() As String = operatorEmail.Split(";"c)
+
+                    For Each email As String In emailList
+                        If Not String.IsNullOrWhiteSpace(email) Then
+                            myMail.CC.Add(email.Trim())
+                        End If
+                    Next
+                End If
             End If
             If Not String.IsNullOrEmpty(mailBcc) Then
                 For Each thisMail In mailBcc.Split(";"c)
