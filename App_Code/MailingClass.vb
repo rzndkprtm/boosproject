@@ -1667,7 +1667,7 @@ Public Class MailingClass
 
             If String.IsNullOrEmpty(customerId) OrElse String.IsNullOrEmpty(loginId) Then Exit Sub
 
-            Dim customerData As DataRow = GetDataRow("SELECT Customers.*, Companys.Name AS CompanyName, CustomerLogins.Operator AS CustomerOperator FROM Customers LEFT JOIN Companys ON Customers.CompanyId=Companys.Id LEFT JOIN CustomerLogins ON Customers.Operator=CustomerLogins.Id WHERE Customers.Id='" & customerId & "'")
+            Dim customerData As DataRow = GetDataRow("SELECT Customers.*, Companys.Name AS CompanyName, Customers.Operator AS CustomerOperator FROM Customers LEFT JOIN Companys ON Customers.CompanyId=Companys.Id LEFT JOIN CustomerLogins ON Customers.Operator=CustomerLogins.Id WHERE Customers.Id='" & customerId & "'")
             If customerData Is Nothing Then Exit Sub
             Dim companyId As String = customerData("CompanyId").ToString()
             Dim customerName As String = customerData("nAME").ToString()
