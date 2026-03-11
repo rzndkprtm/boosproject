@@ -28,7 +28,7 @@
                 <br />
                 <br />
                 <br />
-                <asp:Image runat="server" CssClass="w-100" ID="imgNewsletter" ImageUrl="~/assets/newsletter/SkylineHD.png" />
+                <asp:Image runat="server" CssClass="w-100" ID="imgNewsletter" ImageUrl="~/assets/newsletter/ramadhan.png" />
                 <asp:Label runat="server" ID="lblError"></asp:Label>
             </div>
         </section>
