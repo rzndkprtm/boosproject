@@ -32,6 +32,7 @@ Partial Class Setting_Price_ProductGroup
             titleProcess.InnerText = "Add Product Group"
 
             BindDesignType()
+            BindCompanyDetail()
 
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         Catch ex As Exception
@@ -78,11 +79,24 @@ Partial Class Setting_Price_ProductGroup
                     If myData Is Nothing Then Exit Sub
 
                     BindDesignType()
+                    BindCompanyDetail(True)
 
                     ddlDesign.SelectedValue = myData("DesignId").ToString()
                     txtName.Text = myData("Name").ToString()
                     txtDescription.Text = myData("Description").ToString()
                     ddlActive.SelectedValue = Convert.ToInt32(myData("Active"))
+
+                    If Not myData("CompanyDetailId").ToString() = "" Then
+                        Dim companyDetailArray() As String = myData("CompanyDetailId").ToString().Split(",")
+                        For Each i In companyDetailArray
+                            If Not String.IsNullOrEmpty(i) Then
+                                Dim item = lbCompanyDetail.Items.FindByValue(i)
+                                If item IsNot Nothing Then
+                                    item.Selected = True
+                                End If
+                            End If
+                        Next
+                    End If
 
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Catch ex As Exception
@@ -113,15 +127,21 @@ Partial Class Setting_Price_ProductGroup
             End If
 
             If msgErrorProcess.InnerText = "" Then
+                Dim companyDetail As String = String.Empty
+                If Not lbCompanyDetail.SelectedValue = "" Then
+                    companyDetail = String.Join(",", lbCompanyDetail.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
+                End If
+
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 
                 If lblAction.Text = "Add" Then
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM PriceProductGroups ORDER BY Id DESC")
 
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO PriceProductGroups VALUES (@Id, @Name, @DesignId, @Description, @Active)", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO PriceProductGroups VALUES (@Id, @Name, @DesignId, @CompanyDetailId, @Description, @Active)", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", thisId)
                             myCmd.Parameters.AddWithValue("@DesignId", ddlDesign.SelectedValue)
+                            myCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetail)
                             myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Description", descText)
                             myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
@@ -140,9 +160,10 @@ Partial Class Setting_Price_ProductGroup
 
                 If lblAction.Text = "Edit" Then
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE PriceProductGroups SET Name=@Name, DesignId=@DesignId, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("UPDATE PriceProductGroups SET Name=@Name, DesignId=@DesignId, CompanyDetailId=@CompanyDetailId, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", lblId.Text)
                             myCmd.Parameters.AddWithValue("@DesignId", ddlDesign.SelectedValue)
+                            myCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetail)
                             myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Description", descText)
                             myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
@@ -214,6 +235,30 @@ Partial Class Setting_Price_ProductGroup
         End Try
     End Sub
 
+    Protected Sub BindCompanyDetail(Optional isEdit As Boolean = False)
+        lbCompanyDetail.Items.Clear()
+        Try
+            Dim thisString As String = "SELECT * FROM CompanyDetails WHERE Active=1 ORDER BY Name ASC"
+            If isEdit = True Then
+                thisString = "SELECT * FROM CompanyDetails ORDER BY Name ASC"
+            End If
+
+            lbCompanyDetail.DataSource = settingClass.GetDataTable(thisString)
+            lbCompanyDetail.DataTextField = "Name"
+            lbCompanyDetail.DataValueField = "Id"
+            lbCompanyDetail.DataBind()
+
+            If lbCompanyDetail.Items.Count > 0 Then
+                lbCompanyDetail.Items.Insert(0, New ListItem("", ""))
+            End If
+        Catch ex As Exception
+            MessageError_Process(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
     End Sub
@@ -221,6 +266,23 @@ Partial Class Setting_Price_ProductGroup
     Protected Sub MessageError_Process(visible As Boolean, message As String)
         divErrorProcess.Visible = visible : msgErrorProcess.InnerText = message
     End Sub
+
+    Protected Function GetCompanyName(dataId As String) As String
+        If Not String.IsNullOrEmpty(dataId) Then
+            Dim myData As DataTable = settingClass.GetDataTable("SELECT CompanyDetails.Name AS CompanyName FROM PriceProductGroups CROSS APPLY STRING_SPLIT(PriceProductGroups.CompanyDetailId, ',') AS companyArray LEFT JOIN CompanyDetails ON companyArray.VALUE=CompanyDetails.Id WHERE PriceProductGroups.Id='" & dataId & "' ORDER BY CompanyDetails.Id ASC")
+            Dim hasil As String = String.Empty
+            If myData.Rows.Count > 0 Then
+                For i As Integer = 0 To myData.Rows.Count - 1
+                    Dim designName As String = myData.Rows(i)("CompanyName").ToString()
+                    hasil += designName & ","
+                Next
+                Return hasil.Remove(hasil.Length - 1).ToString()
+            Else
+                Return String.Empty
+            End If
+        End If
+        Return "Error"
+    End Function
 
     Protected Function PageAction(action As String) As Boolean
         Try

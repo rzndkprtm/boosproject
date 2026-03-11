@@ -550,11 +550,7 @@ function bindTrackType(heading) {
 
         const safeHeading = heading || "";
 
-        const listData = {
-            type: "CurtainTrackType",
-            customtype: safeHeading,
-            action: itemAction
-        };
+        const listData = { type: "CurtainTrackType", customtype: safeHeading, companyid: companyId, action: itemAction };
 
         $.ajax({
             type: "POST",

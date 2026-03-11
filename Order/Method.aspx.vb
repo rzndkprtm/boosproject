@@ -225,38 +225,45 @@ Partial Class Order_Method
         End If
 
         If type = "FabricTypeByDesign" Then
-            Dim thisQuery As String = "SELECT * FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Active=1 ORDER BY Name ASC"
+            Dim thisQuery As String = "SELECT *, Name AS FinalName FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Active=1 ORDER BY Name ASC"
             If designtype = "3" Then
-                thisQuery = "SELECT * FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Active=1 ORDER BY CASE WHEN [Group] LIKE '%Express%' THEN 1 ELSE 2 END, Name ASC"
+                thisQuery = "SELECT *, Name AS FinalName FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Active=1 ORDER BY CASE WHEN [Group] LIKE '%Express%' THEN 1 ELSE 2 END, Name ASC"
+                If companydetailid = "5" Or companydetailid = "6" OrElse companydetailid = "8" Then
+                    thisQuery = "SELECT *, REPLACE(Name, ' (Express)', '') AS FinalName FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Active=1 ORDER BY CASE WHEN [Group] LIKE '%Express%' THEN 1 ELSE 2 END, Name ASC"
+                End If
             End If
             If action = "view" Then
-                thisQuery = "SELECT * FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' ORDER BY Name ASC"
+                thisQuery = "SELECT *, Name AS FinalName FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' ORDER BY Name ASC"
                 If designtype = "3" Then
-                    thisQuery = "SELECT * FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' ORDER BY CASE WHEN [Group]='Group Express' THEN 1 ELSE 2 END, Name ASC"
+                    thisQuery = "SELECT *, Name AS FinalName FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' ORDER BY CASE WHEN [Group]='Group Express' THEN 1 ELSE 2 END, Name ASC"
+
+                    If companydetailid = "5" Or companydetailid = "6" OrElse companydetailid = "8" Then
+                        thisQuery = "SELECT *, REPLACE(Name, ' (Express)', '') AS FinalName FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' ORDER BY CASE WHEN [Group] LIKE '%Express%' THEN 1 ELSE 2 END, Name ASC"
+                    End If
                 End If
             End If
 
             Dim dt As DataTable = orderClass.GetDataTable(thisQuery)
             For Each row As DataRow In dt.Rows
-                result.Add(New With {.Value = row("Id").ToString(), .Text = row("Name").ToString()})
+                result.Add(New With {.Value = row("Id").ToString(), .Text = row("FinalName").ToString()})
             Next
         End If
 
         If type = "FabricColour" Then
-            Dim thisQuery As String = "SELECT * FROM FabricColours WHERE FabricId='" & fabrictype & "' AND Active=1 ORDER BY CASE WHEN Factory='Express' THEN 1 ELSE 2 END, Colour ASC"
+            Dim thisQuery As String = "SELECT *, Colour AS FinalColour FROM FabricColours WHERE FabricId='" & fabrictype & "' AND Active=1 ORDER BY CASE WHEN Factory='Express' THEN 1 ELSE 2 END, Colour ASC"
             If action = "view" Then
-                thisQuery = "SELECT * FROM FabricColours WHERE FabricId='" & fabrictype & "' ORDER BY CASE WHEN Factory='Express' THEN 1 ELSE 2 END, Colour ASC"
+                thisQuery = "SELECT *, Colour AS FinalColour FROM FabricColours WHERE FabricId='" & fabrictype & "' ORDER BY CASE WHEN Factory='Express' THEN 1 ELSE 2 END, Colour ASC"
             End If
             If companyid = "3" Then
-                thisQuery = "SELECT * FROM FabricColours WHERE FabricId='" & fabrictype & "' AND Factory='Express' AND Active=1 ORDER BY Colour ASC"
+                thisQuery = "SELECT *, REPLACE(Colour, '(Express)', '') AS FinalColour FROM FabricColours WHERE FabricId='" & fabrictype & "' AND Factory='Express' AND Active=1 ORDER BY Colour ASC"
                 If action = "view" Then
-                    thisQuery = "SELECT * FROM FabricColours WHERE FabricId='" & fabrictype & "' AND Factory='Express' ORDER BY Colour ASC"
+                    thisQuery = "SELECT *, REPLACE(Colour   , '(Express)', '') AS FinalColour FROM FabricColours WHERE FabricId='" & fabrictype & "' AND Factory='Express' ORDER BY Colour ASC"
                 End If
             End If
 
             Dim dt As DataTable = orderClass.GetDataTable(thisQuery)
             For Each row As DataRow In dt.Rows
-                result.Add(New With {.Value = row("Id").ToString(), .Text = row("Colour").ToString()})
+                result.Add(New With {.Value = row("Id").ToString(), .Text = row("FinalColour").ToString()})
             Next
         End If
 
@@ -329,6 +336,11 @@ Partial Class Order_Method
                 result.Clear()
                 result.Add(New With {.Value = "Express Track", .Text = "Express Track"})
                 result.Add(New With {.Value = "Commercial", .Text = "Commercial"})
+            End If
+
+            If companyid = "3" Then
+                result.Clear()
+                result.Add(New With {.Value = "Express Track", .Text = "Express Track"})
             End If
         End If
 
@@ -1159,7 +1171,7 @@ Partial Class Order_Method
             If wandlengthb < 450 Then wandlengthb = 450
         End If
 
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(blindName, data.designid)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(blindName, data.designid, data.companydetailid)
         Dim priceProductGroupB As String = String.Empty
 
         If data.subtype.Contains("2 on 1") Then priceProductGroupB = priceProductGroup
@@ -1420,15 +1432,15 @@ Partial Class Order_Method
 
         Dim groupName As String = String.Format("{0} - {1} - {2} - {3}", blindName, controlName, fabricGroup, factory)
 
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
         Dim priceProductGroupB As String = String.Empty
 
         If blindName = "Day & Night" Then
             groupName = String.Format("{0} - {1} - {2}", blindName, controlName, factory)
             Dim groupNameB As String = String.Format("{0} - {1} - {2}", blindName, controlName, factoryB)
 
-            priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid)
-            priceProductGroupB = orderClass.GetPriceProductGroupId(groupNameB, data.designid)
+            priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
+            priceProductGroupB = orderClass.GetPriceProductGroupId(groupNameB, data.designid, data.companydetailid)
         End If
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
@@ -1683,8 +1695,8 @@ Partial Class Order_Method
                 trackGroupName = String.Empty
             End If
 
-            priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid)
-            priceAdditional = orderClass.GetPriceProductGroupId(trackGroupName, data.designid)
+            priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
+            priceAdditional = orderClass.GetPriceProductGroupId(trackGroupName, data.designid, data.companydetailid)
         End If
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
@@ -1915,7 +1927,7 @@ Partial Class Order_Method
         linearMetre = width / 1000
         squareMetre = width * drop / 1000000
 
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(designName, data.designid)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(designName, data.designid, data.companydetailid)
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
@@ -2092,7 +2104,7 @@ Partial Class Order_Method
 
         Dim linearMetre As Decimal = width / 1000
 
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(tubeName, data.designid)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(tubeName, data.designid, data.companydetailid)
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
@@ -2342,7 +2354,7 @@ Partial Class Order_Method
         Dim groupName As String = String.Format("{0} - {1} - {2} - {3}", designName, blindName, tubeName, groupFabric)
         If blindName = "Track Only" Then groupName = String.Format("{0} - {1}", designName, blindName)
 
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
@@ -2548,7 +2560,7 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.batten) Then
             groupName = String.Format("{0} - Batten", tubeName)
         End If
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
         Dim priceProductGroupB As String = String.Empty
         Dim priceProductGroupC As String = String.Empty
 
@@ -2788,7 +2800,7 @@ Partial Class Order_Method
         End If
 
         Dim groupName As String = String.Format("{0} - {1} - {2}", designName, tubeName, groupFabric)
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
 
         If data.controllength = "Standard" Then
             If controlName = "Reg Cord Lock" OrElse controlName = "Cord Lock" Then controllength = Math.Ceiling(drop * 2 / 3)
@@ -2986,7 +2998,7 @@ Partial Class Order_Method
         Dim squareMetre As Decimal = width * drop / 1000000
 
         Dim groupName As String = blindName
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
@@ -3305,7 +3317,7 @@ Partial Class Order_Method
         End If
 
         Dim groupName As String = String.Format("{0} - {1}", designName, blindName)
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
         Dim priceProductGroupB As String = String.Empty
         Dim priceProductGroupC As String = String.Empty
 
@@ -3628,7 +3640,7 @@ Partial Class Order_Method
         Dim squareMetre As Decimal = width * drop / 1000000
 
         Dim groupName As String = String.Format("Vertical - {0} - {1}", blindName, tubeName)
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
@@ -3883,6 +3895,7 @@ Partial Class Order_Method
         End If
         If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
             If width > 2400 AndAlso (blindName = "Full Cassette" OrElse blindName = "Semi Cassette") Then Return "MAXIMUM WIDTH IS 2400MM !"
+            If width > 1810 AndAlso tubeName = "Standard" Then Return "FOR NOW, WIDTHS GREATER THAN 1810 CANNOT BE USED WITH THE STANDARD TUBE TYPE."
             If width > 2910 Then Return "MAXIMUM WIDTH IS 2910MM !"
         End If
 
@@ -3955,6 +3968,7 @@ Partial Class Order_Method
                 If controlType = "Motorised" AndAlso widthb < 700 Then Return "MINIMUM SECOND WIDTH FOR MOTORISED IS 700MM !"
             End If
             If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
+                If widthb > 1810 AndAlso tubeName = "Standard" Then Return "FOR NOW, WIDTHS GREATER THAN 1810 CANNOT BE USED WITH THE STANDARD TUBE TYPE."
                 If widthb > 2910 Then Return "MAXIMUM SECOND WIDTH IS 2910MM !"
             End If
 
@@ -4022,6 +4036,7 @@ Partial Class Order_Method
             If String.IsNullOrEmpty(data.widthc) Then Return "WIDTH FOR THIRD BLIND IS REQUIRED !"
             If Not Integer.TryParse(data.widthc, widthc) OrElse widthc <= 0 Then Return "PLEASE CHECK YOUR WIDTH FOR THIRD BLIND !"
             If widthc < 200 Then Return "MINIMUM WIDTH FOR THIRD BLIND IS 200MM !"
+            If width > 1810 AndAlso tubeName = "Standard" Then Return "FOR NOW, WIDTHS GREATER THAN 1810 CANNOT BE USED WITH THE STANDARD TUBE TYPE."
 
             If String.IsNullOrEmpty(data.dropc) Then Return "DROP FOR THIRD BLIND IS REQUIRED !"
             If Not Integer.TryParse(data.dropc, dropc) OrElse dropc <= 0 Then Return "PLEASE CHECK YOUR DROP FOR THIRD BLIND !"
@@ -4107,10 +4122,7 @@ Partial Class Order_Method
         ' START FIFTH BLIND
         If blindName = "DB Link 3 Blinds Dependent" OrElse blindName = "DB Link 3 Blinds Independent with Dependent" Then
             If Not String.IsNullOrEmpty(data.bottomtypee) Then
-                If String.IsNullOrEmpty(data.bottomcoloure) Then
-
-                    Return "BOTTOM COLOUR FOR FIFTH BLIND IS REQUIRED !"
-                End If
+                If String.IsNullOrEmpty(data.bottomcoloure) Then Return "BOTTOM COLOUR FOR FIFTH BLIND IS REQUIRED !"
                 If bottomNameE = "Flat" AndAlso String.IsNullOrEmpty(data.bottomoptione) Then Return "FLAT BOTTOM FOR FIFTH BLIND IS REQUIRED !"
             End If
 
@@ -4260,10 +4272,10 @@ Partial Class Order_Method
                 groupFabric = orderClass.GetFabricGroupLocal("Roller", data.fabrictype)
             End If
 
-            Dim tubeIstilah As String = "STD / GR"
+            Dim tubeIstilah As String = "Standard"
 
             Dim groupName As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabric)
-            priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid)
+            priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
         End If
 
         ' WIRE GUIDE CRUD
@@ -4366,10 +4378,10 @@ Partial Class Order_Method
                 groupFabric = orderClass.GetFabricGroupLocal("Roller", data.fabrictype)
             End If
 
-            Dim tubeIstilah As String = "STD / GR"
+            Dim tubeIstilah As String = "Standard"
 
             Dim groupName As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabric)
-            priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid)
+            priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
         End If
 
         ' REGULAR CRUD
@@ -4473,13 +4485,15 @@ Partial Class Order_Method
             Dim tubeIstilah As String = String.Empty
             If data.companyid = "2" Then
                 tubeIstilah = String.Empty
-                If tubeName = "Standard" Then tubeIstilah = "STD / GR"
-                If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
-                If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
+
+                If tubeName = "Standard" Then tubeIstilah = "Standard"
+                If tubeName.Contains("Gear Reduction") Then tubeIstilah = "Gear Reduction"
+                If tubeName.Contains("Sunboss") Then tubeIstilah = "Sunboss"
                 If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
                 groupFabric = orderClass.GetFabricGroup(data.fabrictype)
             End If
+
             If data.companyid = "3" Then
                 If data.companydetailid = "5" OrElse data.companydetailid = "6" Then
                     tubeIstilah = String.Empty
@@ -4492,9 +4506,10 @@ Partial Class Order_Method
                 End If
                 If data.companydetailid = "8" Then
                     tubeIstilah = String.Empty
-                    If tubeName = "Standard" Then tubeIstilah = "STD / GR"
-                    If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
-                    If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
+
+                    If tubeName = "Standard" Then tubeIstilah = "Standard"
+                    If tubeName.Contains("Gear Reduction") Then tubeIstilah = "Gear Reduction"
+                    If tubeName.Contains("Sunboss") Then tubeIstilah = "Sunboss"
                     If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
                     groupFabric = orderClass.GetFabricGroup(data.fabrictype)
@@ -4502,7 +4517,7 @@ Partial Class Order_Method
             End If
 
             Dim priceName As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabric)
-            priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid)
+            priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid, data.companydetailid)
         End If
 
         ' Dual Blinds CRUD
@@ -4590,7 +4605,7 @@ Partial Class Order_Method
                     End If
                 End If
 
-                If data.controllengthb = "" OrElse data.controllengthb = "Standard" Then
+                If data.controllengthb = String.Empty OrElse data.controllengthb = "Standard" Then
                     Dim stdControlLength As Integer = Math.Ceiling(dropb * 2 / 3)
                     If chainLengthB = "Static" Then
                         controllengthb = 500
@@ -4650,9 +4665,10 @@ Partial Class Order_Method
             Dim tubeIstilah As String = String.Empty
             If data.companyid = "2" Then
                 tubeIstilah = String.Empty
-                If tubeName = "Standard" Then tubeIstilah = "STD / GR"
-                If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
-                If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
+
+                If tubeName = "Standard" Then tubeIstilah = "Standard"
+                If tubeName.Contains("Gear Reduction") Then tubeIstilah = "Gear Reduction"
+                If tubeName.Contains("Sunboss") Then tubeIstilah = "Sunboss"
                 If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
                 groupFabric = orderClass.GetFabricGroup(data.fabrictype)
@@ -4672,9 +4688,10 @@ Partial Class Order_Method
                 End If
                 If data.companydetailid = "8" Then
                     tubeIstilah = String.Empty
-                    If tubeName = "Standard" Then tubeIstilah = "STD / GR"
-                    If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
-                    If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
+
+                    If tubeName = "Standard" Then tubeIstilah = "Standard"
+                    If tubeName.Contains("Gear Reduction") Then tubeIstilah = "Gear Reduction"
+                    If tubeName.Contains("Sunboss") Then tubeIstilah = "Sunboss"
                     If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
                     groupFabric = orderClass.GetFabricGroup(data.fabrictype)
@@ -4685,8 +4702,8 @@ Partial Class Order_Method
             Dim priceName As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabric)
             Dim priceNameDB As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabricDB)
 
-            priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid)
-            priceProductGroupB = orderClass.GetPriceProductGroupId(priceNameDB, data.designid)
+            priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid, data.companydetailid)
+            priceProductGroupB = orderClass.GetPriceProductGroupId(priceNameDB, data.designid, data.companydetailid)
         End If
 
         If blindName = "Link 2 Blinds Dependent" Then
@@ -4811,9 +4828,10 @@ Partial Class Order_Method
             Dim tubeIstilah As String = String.Empty
             If data.companyid = "2" Then
                 tubeIstilah = String.Empty
-                If tubeName = "Standard" Then tubeIstilah = "STD / GR"
-                If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
-                If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
+
+                If tubeName = "Standard" Then tubeIstilah = "Standard"
+                If tubeName.Contains("Gear Reduction") Then tubeIstilah = "Gear Reduction"
+                If tubeName.Contains("Sunboss") Then tubeIstilah = "Sunboss"
                 If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
                 groupFabric = orderClass.GetFabricGroup(data.fabrictype)
@@ -4831,9 +4849,10 @@ Partial Class Order_Method
                 End If
                 If data.companydetailid = "8" Then
                     tubeIstilah = String.Empty
-                    If tubeName = "Standard" Then tubeIstilah = "STD / GR"
-                    If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
-                    If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
+
+                    If tubeName = "Standard" Then tubeIstilah = "Standard"
+                    If tubeName.Contains("Gear Reduction") Then tubeIstilah = "Gear Reduction"
+                    If tubeName.Contains("Sunboss") Then tubeIstilah = "Sunboss"
                     If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
                     groupFabric = orderClass.GetFabricGroup(data.fabrictype)
@@ -4841,8 +4860,8 @@ Partial Class Order_Method
             End If
 
             Dim priceName As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabric)
-            priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid)
-            priceProductGroupB = orderClass.GetPriceProductGroupId(priceName, data.designid)
+            priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid, data.companydetailid)
+            priceProductGroupB = orderClass.GetPriceProductGroupId(priceName, data.designid, data.companydetailid)
         End If
 
         If blindName = "Link 2 Blinds Independent" Then
@@ -4930,7 +4949,7 @@ Partial Class Order_Method
                     End If
                 End If
 
-                If data.controllengthb = "" OrElse data.controllengthb = "Standard" Then
+                If data.controllengthb = String.Empty OrElse data.controllengthb = "Standard" Then
                     Dim stdControlLength As Integer = Math.Ceiling(dropb * 2 / 3)
                     If chainLengthB = "Static" Then
                         controllengthb = 500
@@ -4994,9 +5013,10 @@ Partial Class Order_Method
             Dim tubeIstilah As String = String.Empty
             If data.companyid = "2" Then
                 tubeIstilah = String.Empty
-                If tubeName = "Standard" Then tubeIstilah = "STD / GR"
-                If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
-                If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
+
+                If tubeName = "Standard" Then tubeIstilah = "Standard"
+                If tubeName.Contains("Gear Reduction") Then tubeIstilah = "Gear Reduction"
+                If tubeName.Contains("Sunboss") Then tubeIstilah = "Sunboss"
                 If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
                 groupFabric = orderClass.GetFabricGroup(data.fabrictype)
@@ -5015,9 +5035,10 @@ Partial Class Order_Method
 
                 If data.companydetailid = "8" Then
                     tubeIstilah = String.Empty
-                    If tubeName = "Standard" Then tubeIstilah = "STD / GR"
-                    If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
-                    If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
+
+                    If tubeName = "Standard" Then tubeIstilah = "Standard"
+                    If tubeName.Contains("Gear Reduction") Then tubeIstilah = "Gear Reduction"
+                    If tubeName.Contains("Sunboss") Then tubeIstilah = "Sunboss"
                     If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
                     groupFabric = orderClass.GetFabricGroup(data.fabrictype)
@@ -5025,8 +5046,8 @@ Partial Class Order_Method
             End If
 
             Dim priceName As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabric)
-            priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid)
-            priceProductGroupB = orderClass.GetPriceProductGroupId(priceName, data.designid)
+            priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid, data.companydetailid)
+            priceProductGroupB = orderClass.GetPriceProductGroupId(priceName, data.designid, data.companydetailid)
         End If
 
         If blindName = "Link 3 Blinds Dependent" Then
@@ -5170,9 +5191,10 @@ Partial Class Order_Method
             Dim tubeIstilah As String = String.Empty
             If data.companyid = "2" Then
                 tubeIstilah = String.Empty
-                If tubeName = "Standard" Then tubeIstilah = "STD / GR"
-                If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
-                If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
+
+                If tubeName = "Standard" Then tubeIstilah = "Standard"
+                If tubeName.Contains("Gear Reduction") Then tubeIstilah = "Gear Reduction"
+                If tubeName.Contains("Sunboss") Then tubeIstilah = "Sunboss"
                 If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
                 groupFabric = orderClass.GetFabricGroup(data.fabrictype)
@@ -5190,9 +5212,10 @@ Partial Class Order_Method
                 End If
                 If data.companydetailid = "8" Then
                     tubeIstilah = String.Empty
-                    If tubeName = "Standard" Then tubeIstilah = "STD / GR"
-                    If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
-                    If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
+
+                    If tubeName = "Standard" Then tubeIstilah = "Standard"
+                    If tubeName.Contains("Gear Reduction") Then tubeIstilah = "Gear Reduction"
+                    If tubeName.Contains("Sunboss") Then tubeIstilah = "Sunboss"
                     If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
                     groupFabric = orderClass.GetFabricGroup(data.fabrictype)
@@ -5200,9 +5223,9 @@ Partial Class Order_Method
             End If
 
             Dim priceName As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabric)
-            priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid)
-            priceProductGroupB = orderClass.GetPriceProductGroupId(priceName, data.designid)
-            priceProductGroupC = orderClass.GetPriceProductGroupId(priceName, data.designid)
+            priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid, data.companydetailid)
+            priceProductGroupB = orderClass.GetPriceProductGroupId(priceName, data.designid, data.companydetailid)
+            priceProductGroupC = orderClass.GetPriceProductGroupId(priceName, data.designid, data.companydetailid)
         End If
 
         If blindName = "Link 3 Blinds Independent with Dependent" Then
@@ -5375,9 +5398,10 @@ Partial Class Order_Method
             Dim tubeIstilah As String = String.Empty
             If data.companyid = "2" Then
                 tubeIstilah = String.Empty
-                If tubeName = "Standard" Then tubeIstilah = "STD / GR"
-                If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
-                If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
+
+                If tubeName = "Standard" Then tubeIstilah = "Standard"
+                If tubeName.Contains("Gear Reduction") Then tubeIstilah = "Gear Reduction"
+                If tubeName.Contains("Sunboss") Then tubeIstilah = "Sunboss"
                 If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
                 groupFabric = orderClass.GetFabricGroup(data.fabrictype)
@@ -5396,9 +5420,10 @@ Partial Class Order_Method
 
                 If data.companydetailid = "8" Then
                     tubeIstilah = String.Empty
-                    If tubeName = "Standard" Then tubeIstilah = "STD / GR"
-                    If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
-                    If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
+
+                    If tubeName = "Standard" Then tubeIstilah = "Standard"
+                    If tubeName.Contains("Gear Reduction") Then tubeIstilah = "Gear Reduction"
+                    If tubeName.Contains("Sunboss") Then tubeIstilah = "Sunboss"
                     If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
                     groupFabric = orderClass.GetFabricGroup(data.fabrictype)
@@ -5406,9 +5431,9 @@ Partial Class Order_Method
             End If
 
             Dim priceName As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabric)
-            priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid)
-            priceProductGroupB = orderClass.GetPriceProductGroupId(priceName, data.designid)
-            priceProductGroupC = orderClass.GetPriceProductGroupId(priceName, data.designid)
+            priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid, data.companydetailid)
+            priceProductGroupB = orderClass.GetPriceProductGroupId(priceName, data.designid, data.companydetailid)
+            priceProductGroupC = orderClass.GetPriceProductGroupId(priceName, data.designid, data.companydetailid)
         End If
 
         If blindName = "DB Link 2 Blinds Dependent" Then
@@ -5582,9 +5607,10 @@ Partial Class Order_Method
             Dim tubeIstilah As String = String.Empty
             If data.companyid = "2" Then
                 tubeIstilah = String.Empty
-                If tubeName = "Standard" Then tubeIstilah = "STD / GR"
-                If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
-                If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
+
+                If tubeName = "Standard" Then tubeIstilah = "Standard"
+                If tubeName.Contains("Gear Reduction") Then tubeIstilah = "Gear Reduction"
+                If tubeName.Contains("Sunboss") Then tubeIstilah = "Sunboss"
                 If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
                 groupFabric = orderClass.GetFabricGroup(data.fabrictype)
@@ -5605,9 +5631,10 @@ Partial Class Order_Method
                 End If
                 If data.companydetailid = "8" Then
                     tubeIstilah = String.Empty
-                    If tubeName = "Standard" Then tubeIstilah = "STD / GR"
-                    If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
-                    If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
+
+                    If tubeName = "Standard" Then tubeIstilah = "Standard"
+                    If tubeName.Contains("Gear Reduction") Then tubeIstilah = "Gear Reduction"
+                    If tubeName.Contains("Sunboss") Then tubeIstilah = "Sunboss"
                     If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
                     groupFabric = orderClass.GetFabricGroup(data.fabrictype)
@@ -5618,10 +5645,10 @@ Partial Class Order_Method
             Dim priceName As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabric)
             Dim priceNameDB As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabricDB)
 
-            priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid)
-            priceProductGroupB = orderClass.GetPriceProductGroupId(priceName, data.designid)
-            priceProductGroupC = orderClass.GetPriceProductGroupId(priceNameDB, data.designid)
-            priceProductGroupD = orderClass.GetPriceProductGroupId(priceNameDB, data.designid)
+            priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid, data.companydetailid)
+            priceProductGroupB = orderClass.GetPriceProductGroupId(priceName, data.designid, data.companydetailid)
+            priceProductGroupC = orderClass.GetPriceProductGroupId(priceNameDB, data.designid, data.companydetailid)
+            priceProductGroupD = orderClass.GetPriceProductGroupId(priceNameDB, data.designid, data.companydetailid)
         End If
 
         If blindName = "DB Link 2 Blinds Independent" Then
@@ -5854,9 +5881,10 @@ Partial Class Order_Method
             Dim tubeIstilah As String = String.Empty
             If data.companyid = "2" Then
                 tubeIstilah = String.Empty
-                If tubeName = "Standard" Then tubeIstilah = "STD / GR"
-                If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
-                If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
+
+                If tubeName = "Standard" Then tubeIstilah = "Standard"
+                If tubeName.Contains("Gear Reduction") Then tubeIstilah = "Gear Reduction"
+                If tubeName.Contains("Sunboss") Then tubeIstilah = "Sunboss"
                 If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
                 groupFabric = orderClass.GetFabricGroup(data.fabrictype)
@@ -5877,9 +5905,10 @@ Partial Class Order_Method
 
                 If data.companydetailid = "8" Then
                     tubeIstilah = String.Empty
-                    If tubeName = "Standard" Then tubeIstilah = "STD / GR"
-                    If tubeName.Contains("Gear Reduction") Then tubeIstilah = "STD / GR"
-                    If tubeName.Contains("Sunboss") Then tubeIstilah = "STD / GR"
+
+                    If tubeName = "Standard" Then tubeIstilah = "Standard"
+                    If tubeName.Contains("Gear Reduction") Then tubeIstilah = "Gear Reduction"
+                    If tubeName.Contains("Sunboss") Then tubeIstilah = "Sunboss"
                     If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
 
                     groupFabric = orderClass.GetFabricGroup(data.fabrictype)
@@ -5890,10 +5919,10 @@ Partial Class Order_Method
             Dim priceName As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabric)
             Dim priceNameDB As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabricDB)
 
-            priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid)
-            priceProductGroupB = orderClass.GetPriceProductGroupId(priceName, data.designid)
-            priceProductGroupC = orderClass.GetPriceProductGroupId(priceNameDB, data.designid)
-            priceProductGroupD = orderClass.GetPriceProductGroupId(priceNameDB, data.designid)
+            priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid, data.companydetailid)
+            priceProductGroupB = orderClass.GetPriceProductGroupId(priceName, data.designid, data.companydetailid)
+            priceProductGroupC = orderClass.GetPriceProductGroupId(priceNameDB, data.designid, data.companydetailid)
+            priceProductGroupD = orderClass.GetPriceProductGroupId(priceNameDB, data.designid, data.companydetailid)
         End If
 
         If blindName = "DB Link 3 Blinds Dependent" Then
@@ -6096,32 +6125,54 @@ Partial Class Order_Method
 
             totalItems = 6
 
-            groupFabric = orderClass.GetFabricGroup(data.fabrictype)
-            groupFabricDB = orderClass.GetFabricGroup(data.fabrictyped)
-
             Dim tubeIstilah As String = String.Empty
-            If data.companydetailid = "2" OrElse data.companydetailid = "3" OrElse data.companydetailid = "4" OrElse data.companydetailid = "8" Then
-                tubeIstilah = "STD / GR"
+            If data.companyid = "2" Then
+                tubeIstilah = String.Empty
+
+                If tubeName = "Standard" Then tubeIstilah = "Standard"
+                If tubeName.Contains("Gear Reduction") Then tubeIstilah = "Gear Reduction"
+                If tubeName.Contains("Sunboss") Then tubeIstilah = "Sunboss"
                 If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
+
+                groupFabric = orderClass.GetFabricGroup(data.fabrictype)
+                groupFabricDB = orderClass.GetFabricGroup(data.fabrictyped)
             End If
-            If data.companydetailid = "5" AndAlso data.companydetailid = "6" Then
-                tubeIstilah = tubeName
-                If data.customerid = "902" OrElse data.customerid = "953" Then
-                    tubeIstilah = "Gear Reduction 38mm"
+
+            If data.companyid = "3" Then
+                If data.companydetailid = "5" OrElse data.companydetailid = "6" Then
+                    tubeIstilah = String.Empty
+                    If tubeName = "Gear Reduction 38mm" Then tubeIstilah = "Light"
+                    If tubeName = "Gear Reduction 45mm" Then tubeIstilah = "Standard"
+                    If tubeName = "Gear Reduction 49mm" Then tubeIstilah = "Heavy Duty"
+
+                    If data.customerid = "902" OrElse data.customerid = "953" Then tubeIstilah = "Light"
+
+                    groupFabric = orderClass.GetFabricGroupLocal("Roller", data.fabrictype)
+                    groupFabricDB = orderClass.GetFabricGroupLocal("Roller", data.fabrictyped)
                 End If
-                groupFabric = orderClass.GetFabricGroupLocal("Roller", data.fabrictype)
-                groupFabricDB = orderClass.GetFabricGroupLocal("Roller", data.fabrictyped)
+
+                If data.companydetailid = "8" Then
+                    tubeIstilah = String.Empty
+
+                    If tubeName = "Standard" Then tubeIstilah = "Standard"
+                    If tubeName.Contains("Gear Reduction") Then tubeIstilah = "Gear Reduction"
+                    If tubeName.Contains("Sunboss") Then tubeIstilah = "Sunboss"
+                    If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
+
+                    groupFabric = orderClass.GetFabricGroup(data.fabrictyped)
+                    groupFabricDB = orderClass.GetFabricGroup(data.fabrictyped)
+                End If
             End If
 
             Dim priceName As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabric)
             Dim priceNameDB As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabricDB)
 
-            priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid)
-            priceProductGroupB = orderClass.GetPriceProductGroupId(priceName, data.designid)
-            priceProductGroupC = orderClass.GetPriceProductGroupId(priceName, data.designid)
-            priceProductGroupD = orderClass.GetPriceProductGroupId(priceNameDB, data.designid)
-            priceProductGroupE = orderClass.GetPriceProductGroupId(priceNameDB, data.designid)
-            priceProductGroupF = orderClass.GetPriceProductGroupId(priceNameDB, data.designid)
+            priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid, data.companydetailid)
+            priceProductGroupB = orderClass.GetPriceProductGroupId(priceName, data.designid, data.companydetailid)
+            priceProductGroupC = orderClass.GetPriceProductGroupId(priceName, data.designid, data.companydetailid)
+            priceProductGroupD = orderClass.GetPriceProductGroupId(priceNameDB, data.designid, data.companydetailid)
+            priceProductGroupE = orderClass.GetPriceProductGroupId(priceNameDB, data.designid, data.companydetailid)
+            priceProductGroupF = orderClass.GetPriceProductGroupId(priceNameDB, data.designid, data.companydetailid)
         End If
 
         If blindName = "DB Link 3 Blinds Independent with Dependent" Then
@@ -6396,32 +6447,54 @@ Partial Class Order_Method
 
             totalItems = 6
 
-            groupFabric = orderClass.GetFabricGroup(data.fabrictype)
-            groupFabricDB = orderClass.GetFabricGroup(data.fabrictyped)
-
             Dim tubeIstilah As String = String.Empty
-            If data.companydetailid = "2" OrElse data.companydetailid = "3" OrElse data.companydetailid = "4" OrElse data.companydetailid = "8" Then
-                tubeIstilah = "STD / GR"
+            If data.companyid = "2" Then
+                tubeIstilah = String.Empty
+
+                If tubeName = "Standard" Then tubeIstilah = "Standard"
+                If tubeName.Contains("Gear Reduction") Then tubeIstilah = "Gear Reduction"
+                If tubeName.Contains("Sunboss") Then tubeIstilah = "Sunboss"
                 If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
+
+                groupFabric = orderClass.GetFabricGroup(data.fabrictype)
+                groupFabricDB = orderClass.GetFabricGroup(data.fabrictyped)
             End If
-            If data.companydetailid = "5" AndAlso data.companydetailid = "6" Then
-                tubeIstilah = tubeName
-                If data.customerid = "902" OrElse data.customerid = "953" Then
-                    tubeIstilah = "Gear Reduction 38mm"
+
+            If data.companyid = "3" Then
+                If data.companydetailid = "5" OrElse data.companydetailid = "6" Then
+                    tubeIstilah = String.Empty
+                    If tubeName = "Gear Reduction 38mm" Then tubeIstilah = "Light"
+                    If tubeName = "Gear Reduction 45mm" Then tubeIstilah = "Standard"
+                    If tubeName = "Gear Reduction 49mm" Then tubeIstilah = "Heavy Duty"
+
+                    If data.customerid = "902" OrElse data.customerid = "953" Then tubeIstilah = "Light"
+
+                    groupFabric = orderClass.GetFabricGroupLocal("Roller", data.fabrictype)
+                    groupFabricDB = orderClass.GetFabricGroupLocal("Roller", data.fabrictyped)
                 End If
-                groupFabric = orderClass.GetFabricGroupLocal("Roller", data.fabrictype)
-                groupFabricDB = orderClass.GetFabricGroupLocal("Roller", data.fabrictyped)
+
+                If data.companydetailid = "8" Then
+                    tubeIstilah = String.Empty
+
+                    If tubeName = "Standard" Then tubeIstilah = "Standard"
+                    If tubeName.Contains("Gear Reduction") Then tubeIstilah = "Gear Reduction"
+                    If tubeName.Contains("Sunboss") Then tubeIstilah = "Sunboss"
+                    If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
+
+                    groupFabric = orderClass.GetFabricGroup(data.fabrictyped)
+                    groupFabricDB = orderClass.GetFabricGroup(data.fabrictyped)
+                End If
             End If
 
             Dim groupName As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabric)
             Dim groupNameDB As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabricDB)
 
-            priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid)
-            priceProductGroupB = orderClass.GetPriceProductGroupId(groupName, data.designid)
-            priceProductGroupC = orderClass.GetPriceProductGroupId(groupName, data.designid)
-            priceProductGroupD = orderClass.GetPriceProductGroupId(groupNameDB, data.designid)
-            priceProductGroupE = orderClass.GetPriceProductGroupId(groupNameDB, data.designid)
-            priceProductGroupF = orderClass.GetPriceProductGroupId(groupNameDB, data.designid)
+            priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
+            priceProductGroupB = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
+            priceProductGroupC = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
+            priceProductGroupD = orderClass.GetPriceProductGroupId(groupNameDB, data.designid, data.companydetailid)
+            priceProductGroupE = orderClass.GetPriceProductGroupId(groupNameDB, data.designid, data.companydetailid)
+            priceProductGroupF = orderClass.GetPriceProductGroupId(groupNameDB, data.designid, data.companydetailid)
         End If
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
@@ -6839,7 +6912,7 @@ Partial Class Order_Method
 
         groupFabric = orderClass.GetFabricGroup(data.fabrictype)
         Dim priceName As String = String.Format("{0} - {1}", designName, groupFabric)
-        priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid)
+        priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid, data.companydetailid)
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
@@ -7689,7 +7762,7 @@ Partial Class Order_Method
             End If
         End If
 
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
 
         Dim squareMetre As Decimal = width * drop / 1000000
         Dim linearMetre As Decimal = width / 1000
@@ -8416,7 +8489,7 @@ Partial Class Order_Method
             data.hingesloose = ""
         End If
 
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(designName, data.designid)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(designName, data.designid, data.companydetailid)
 
         Dim squareMetre As Decimal = width * drop / 1000000
         Dim linearMetre As Decimal = width / 1000
@@ -8609,7 +8682,7 @@ Partial Class Order_Method
             If Not Integer.TryParse(data.markup, markup) OrElse markup < 0 Then Return "PLEASE CHECK YOUR MARK UP ORDER !"
         End If
 
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(designName, data.designid)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(designName, data.designid, data.companydetailid)
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
@@ -8794,7 +8867,7 @@ Partial Class Order_Method
         Dim squareMetre As Decimal = width * drop / 1000000
 
         Dim groupName As String = blindName
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
@@ -9251,10 +9324,10 @@ Partial Class Order_Method
         If tubeName.Contains("Sliding") Then mechanism = "Sliding"
 
         Dim groupName As String = String.Format("{0} {1} {2} {3}", designName, blindName, mechanism, factory)
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
         Dim priceProductGroupB As String = String.Empty
         If tubeName = "Hinged Double" OrElse tubeName = "Sliding Double" Then
-            priceProductGroupB = orderClass.GetPriceProductGroupId(groupName, data.designid)
+            priceProductGroupB = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
         End If
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
@@ -9522,7 +9595,7 @@ Partial Class Order_Method
         If blindName = "Standard" AndAlso (data.meshtype = "Fibreglass Mesh" OrElse data.meshtype = "Pawproof" OrElse data.meshtype = "SS Mesh") Then
             groupName = String.Format("{0} {1} {2} + Flyscreen Mesh", designName, blindName, factory)
         End If
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty

@@ -908,10 +908,9 @@ Public Class PreviewClass
                             chainColour = chainName : remoteType = ""
                         End If
 
-                        Dim chainLength As String = String.Empty
-                        Dim chainLengthValue As Integer = rollerData.Rows(i)("ChainLength")
-                        If chainLengthValue > 0 Then
-                            chainLength = rollerData.Rows(i)("ChainLength").ToString()
+                        Dim controlLength As String = String.Empty
+                        If controlName = "Chain" Then
+                            controlLength = String.Format("{0}: {1}mm", rollerData.Rows(i)("ChainLength"), rollerData.Rows(i)("ChainLengthValue"))
                         End If
 
                         Dim bottomType As String = GetItemData("SELECT Name FROM Bottoms WHERE Id='" & rollerData.Rows(i)("BottomType").ToString() & "'")
@@ -958,7 +957,7 @@ Public Class PreviewClass
                         items(17, i) = rollerData.Rows(i)("DryContact").ToString()
                         items(18, i) = chainColour
                         items(19, i) = rollerData.Rows(i)("ChainStopper").ToString()
-                        items(20, i) = chainLength
+                        items(20, i) = controlLength
                         items(21, i) = bottomType
                         items(22, i) = bottomColour
                         items(23, i) = rollerData.Rows(i)("FlatOption").ToString()
@@ -1244,24 +1243,24 @@ Public Class PreviewClass
                         Dim controlLength As String = venetianData.Rows(i)("CL").ToString()
                         Dim controlLengthValue As String = venetianData.Rows(i)("CLValue").ToString()
 
-                        Dim controlLengthText As String = controlLength
-                        If controlLength = "Custom" Then
+                        Dim controlLengthText As String = String.Empty
+                        If Not String.IsNullOrEmpty(controlLength) Then
                             controlLengthText = String.Format("{0} : {1}mm", controlLength, controlLengthValue)
                         End If
 
                         Dim valancesize As String = venetianData.Rows(i)("ValanceSize").ToString()
                         Dim valancesizeValue As String = venetianData.Rows(i)("ValanceSizeValue").ToString()
 
-                        Dim valancesizeText As String = valancesize
-                        If valancesize = "Custom" Then
+                        Dim valancesizeText As String = String.Empty
+                        If Not String.IsNullOrEmpty(valancesize) Then
                             valancesizeText = String.Format("{0} : {1}mm", valancesize, valancesizeValue)
                         End If
 
                         Dim returnLength As String = venetianData.Rows(i)("ReturnLength").ToString()
                         Dim returnLengthValue As String = venetianData.Rows(i)("ReturnLengthValue").ToString()
 
-                        Dim returnLengthText As String = returnLength
-                        If returnLength = "Custom" Then
+                        Dim returnLengthText As String = String.Empty
+                        If Not String.IsNullOrEmpty(returnLength) Then
                             returnLengthText = String.Format("{0} : {1}mm", returnLength, returnLengthValue)
                         End If
 

@@ -417,7 +417,7 @@ Partial Class Order_Add
                             If msgError.InnerText = "" Then
                                 Dim groupName As String = "Aluminium 25mm x 0.21mm"
 
-                                Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, designId)
+                                Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, designId, companyDetailId)
 
                                 Dim linearMetre As Decimal = width / 10000
                                 Dim squareMetre As Decimal = width * drop / 1000000
@@ -675,7 +675,7 @@ Partial Class Order_Add
 
                                 Dim groupName As String = String.Format("Venetian Blind - {0}", customName)
 
-                                Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, designId)
+                                Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, designId, companyDetailId)
 
                                 Dim linearMetre As Decimal = width / 10000
                                 Dim squareMetre As Decimal = width * drop / 1000000
@@ -883,7 +883,7 @@ Partial Class Order_Add
                         Dim factory As String = orderClass.GetFabricFactory(fabricColourId)
 
                         Dim groupName As String = String.Format("{0} - {1} - {2} - {3}", blindType, controlType, fabricGroup, factory)
-                        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, designId)
+                        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, designId, companyDetailId)
                         Dim priceProductGroupB As String = String.Empty
 
                         If blindType = "Day & Night" OrElse blindType = "Top Down Bottom Up" Then
@@ -905,8 +905,8 @@ Partial Class Order_Add
                             groupName = String.Format("{0} - {1} - {2}", blindType, controlType, factory)
                             Dim groupNameB As String = String.Format("{0} - {1} - {2}", blindType, controlType, factoryB)
 
-                            priceProductGroup = orderClass.GetPriceProductGroupId(groupName, designId)
-                            priceProductGroupB = orderClass.GetPriceProductGroupId(groupNameB, designId)
+                            priceProductGroup = orderClass.GetPriceProductGroupId(groupName, designId, companyDetailId)
+                            priceProductGroupB = orderClass.GetPriceProductGroupId(groupNameB, designId, companyDetailId)
                         End If
 
                         Dim itemId As String = orderClass.GetNewOrderItemId()
@@ -1122,7 +1122,7 @@ Partial Class Order_Add
                         Dim groupFabric As String = orderClass.GetFabricGroup(fabricId)
                         Dim groupName As String = String.Format("Panel Glide - {0} - {1} - {2}", blindType, tubeName, groupFabric)
 
-                        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, designId)
+                        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, designId, companyDetailId)
 
                         Dim itemId As String = orderClass.GetNewOrderItemId()
 
@@ -1362,7 +1362,7 @@ Partial Class Order_Add
                             End If
 
                             Dim groupName As String = String.Format("Vertical - {0} - {1}", blindType, tubeName)
-                            Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, designId)
+                            Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, designId, companyDetailId)
 
                             Dim linearMetre As Decimal = 0D
                             Dim squareMetre As Decimal = 0D
@@ -1909,7 +1909,7 @@ Partial Class Order_Add
 
                                 groupFabric = orderClass.GetFabricGroup(fabricId)
                                 Dim groupName As String = String.Format("Roller Blind - STD / GR - {0}", groupFabric)
-                                priceProductGroupId = orderClass.GetPriceProductGroupId(groupName, designId)
+                                priceProductGroupId = orderClass.GetPriceProductGroupId(groupName, designId, companyDetailId)
                             End If
 
                             If blindName = "Dual Blinds" Then
@@ -1945,8 +1945,8 @@ Partial Class Order_Add
                                 linearMetreB = linearMetre
                                 squareMetreB = squareMetre
 
-                                priceProductGroupId = orderClass.GetPriceProductGroupId(groupName, designId)
-                                priceProductGroupIdB = orderClass.GetPriceProductGroupId(groupNameDB, designId)
+                                priceProductGroupId = orderClass.GetPriceProductGroupId(groupName, designId, companyDetailId)
+                                priceProductGroupIdB = orderClass.GetPriceProductGroupId(groupNameDB, designId, companyDetailId)
 
                                 If controlType = "Chain" Then
                                     chainIdB = chainId
@@ -2005,8 +2005,8 @@ Partial Class Order_Add
                                 groupFabric = orderClass.GetFabricGroup(fabricId)
                                 Dim groupName As String = String.Format("Roller Blind - STD / GR - {0}", groupFabric)
 
-                                priceProductGroupId = orderClass.GetPriceProductGroupId(groupName, designId)
-                                priceProductGroupIdB = orderClass.GetPriceProductGroupId(groupName, designId)
+                                priceProductGroupId = orderClass.GetPriceProductGroupId(groupName, designId, companyDetailId)
+                                priceProductGroupIdB = orderClass.GetPriceProductGroupId(groupName, designId, companyDetailId)
                             End If
 
                             If blindName = "Link 2 Blinds Independent" Then
@@ -2053,8 +2053,8 @@ Partial Class Order_Add
                                 groupFabric = orderClass.GetFabricGroup(fabricId)
                                 Dim groupName As String = String.Format("Roller Blind - STD / GR - {0}", groupFabric)
 
-                                priceProductGroupId = orderClass.GetPriceProductGroupId(groupName, designId)
-                                priceProductGroupIdB = orderClass.GetPriceProductGroupId(groupName, designId)
+                                priceProductGroupId = orderClass.GetPriceProductGroupId(groupName, designId, companyDetailId)
+                                priceProductGroupIdB = orderClass.GetPriceProductGroupId(groupName, designId, companyDetailId)
                             End If
 
                             If blindName = "Link 3 Blinds Dependent" Then
@@ -2101,9 +2101,9 @@ Partial Class Order_Add
                                 groupFabric = orderClass.GetFabricGroup(fabricId)
                                 Dim groupName As String = String.Format("Roller Blind - STD / GR - {0}", groupFabric)
 
-                                priceProductGroupId = orderClass.GetPriceProductGroupId(groupName, designId)
-                                priceProductGroupIdB = orderClass.GetPriceProductGroupId(groupName, designId)
-                                priceProductGroupIdC = orderClass.GetPriceProductGroupId(groupName, designId)
+                                priceProductGroupId = orderClass.GetPriceProductGroupId(groupName, designId, companyDetailId)
+                                priceProductGroupIdB = orderClass.GetPriceProductGroupId(groupName, designId, companyDetailId)
+                                priceProductGroupIdC = orderClass.GetPriceProductGroupId(groupName, designId, companyDetailId)
                             End If
 
                             If blindName = "Link 3 Blinds Independent with Dependent" Then
@@ -2156,9 +2156,9 @@ Partial Class Order_Add
                                 groupFabric = orderClass.GetFabricGroup(fabricId)
                                 Dim groupName As String = String.Format("Roller Blind - STD / GR - {0}", groupFabric)
 
-                                priceProductGroupId = orderClass.GetPriceProductGroupId(groupName, designId)
-                                priceProductGroupIdB = orderClass.GetPriceProductGroupId(groupName, designId)
-                                priceProductGroupIdC = orderClass.GetPriceProductGroupId(groupName, designId)
+                                priceProductGroupId = orderClass.GetPriceProductGroupId(groupName, designId, companyDetailId)
+                                priceProductGroupIdB = orderClass.GetPriceProductGroupId(groupName, designId, companyDetailId)
+                                priceProductGroupIdC = orderClass.GetPriceProductGroupId(groupName, designId, companyDetailId)
                             End If
 
                             If blindName = "DB Link 2 Blinds Dependent" Then
@@ -2239,10 +2239,10 @@ Partial Class Order_Add
                                 Dim groupName As String = String.Format("Roller Blind - STD / GR - {0}", groupFabric)
                                 Dim groupNameDB As String = String.Format("Roller Blind - STD / GR - {0}", groupFabricDB)
 
-                                priceProductGroupId = orderClass.GetPriceProductGroupId(groupName, designId)
-                                priceProductGroupIdB = orderClass.GetPriceProductGroupId(groupName, designId)
-                                priceProductGroupIdC = orderClass.GetPriceProductGroupId(groupNameDB, designId)
-                                priceProductGroupIdD = orderClass.GetPriceProductGroupId(groupNameDB, designId)
+                                priceProductGroupId = orderClass.GetPriceProductGroupId(groupName, designId, companyDetailId)
+                                priceProductGroupIdB = orderClass.GetPriceProductGroupId(groupName, designId, companyDetailId)
+                                priceProductGroupIdC = orderClass.GetPriceProductGroupId(groupNameDB, designId, companyDetailId)
+                                priceProductGroupIdD = orderClass.GetPriceProductGroupId(groupNameDB, designId, companyDetailId)
                             End If
 
                             If blindName = "DB Link 2 Blinds Independent" Then
@@ -2314,10 +2314,10 @@ Partial Class Order_Add
                                 Dim groupName As String = String.Format("Roller Blind - STD / GR - {0}", groupFabric)
                                 Dim groupNameDB As String = String.Format("Roller Blind - STD / GR - {0}", groupFabricDB)
 
-                                priceProductGroupId = orderClass.GetPriceProductGroupId(groupName, designId)
-                                priceProductGroupIdB = orderClass.GetPriceProductGroupId(groupName, designId)
-                                priceProductGroupIdC = orderClass.GetPriceProductGroupId(groupNameDB, designId)
-                                priceProductGroupIdD = orderClass.GetPriceProductGroupId(groupNameDB, designId)
+                                priceProductGroupId = orderClass.GetPriceProductGroupId(groupName, designId, companyDetailId)
+                                priceProductGroupIdB = orderClass.GetPriceProductGroupId(groupName, designId, companyDetailId)
+                                priceProductGroupIdC = orderClass.GetPriceProductGroupId(groupNameDB, designId, companyDetailId)
+                                priceProductGroupIdD = orderClass.GetPriceProductGroupId(groupNameDB, designId, companyDetailId)
                             End If
 
                             Dim itemId As String = orderClass.GetNewOrderItemId()
@@ -2639,7 +2639,7 @@ Partial Class Order_Add
 
                         Dim groupFabric As String = orderClass.GetFabricGroup(fabricId)
                         Dim groupName As String = String.Format("Roman Blind - {0} - {1}", tubeName, groupFabric)
-                        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, designId)
+                        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, designId, companyDetailId)
 
                         Dim itemId As String = orderClass.GetNewOrderItemId()
 
