@@ -910,7 +910,7 @@ Public Class PreviewClass
 
                         Dim controlLength As String = String.Empty
                         If controlName = "Chain" Then
-                            controlLength = String.Format("{0}: {1}mm", rollerData.Rows(i)("ChainLength"), rollerData.Rows(i)("ChainLengthValue"))
+                            controlLength = String.Format("{0}: {1}mm", rollerData.Rows(i)("ChainLength").ToString(), rollerData.Rows(i)("ChainLengthValue"))
                         End If
 
                         Dim bottomType As String = GetItemData("SELECT Name FROM Bottoms WHERE Id='" & rollerData.Rows(i)("BottomType").ToString() & "'")
@@ -1045,11 +1045,7 @@ Public Class PreviewClass
 
                         Dim chainName As String = GetItemData("SELECT Name FROM Chains WHERE Id='" & horizonData.Rows(i)("ChainId").ToString() & "'")
 
-                        Dim chainLength As String = String.Empty
-                        Dim chainLengthValue As Integer = horizonData.Rows(i)("ControlLengthValue")
-                        If chainLengthValue > 0 Then
-                            chainLength = horizonData.Rows(i)("ControlLengthValue").ToString()
-                        End If
+                        Dim controlLength As String = String.Format("{0}: {1}mm", horizonData.Rows(i)("ControlLength").ToString(), horizonData.Rows(i)("ControlLengthValue"))
 
                         Dim bottomType As String = GetItemData("SELECT Name FROM Bottoms WHERE Id='" & horizonData.Rows(i)("BottomId").ToString() & "'")
                         Dim bottomColour As String = GetItemData("SELECT Colour FROM BottomColours WHERE Id='" & horizonData.Rows(i)("BottomColourId").ToString() & "'")
@@ -1071,7 +1067,7 @@ Public Class PreviewClass
                         items(12, i) = horizonData.Rows(i)("ControlPosition").ToString()
                         items(13, i) = chainName
                         items(14, i) = horizonData.Rows(i)("ChainStopper").ToString()
-                        items(15, i) = chainLength
+                        items(15, i) = controlLength
                         items(16, i) = bottomType
                         items(17, i) = bottomColour
                         items(18, i) = horizonData.Rows(i)("Printing").ToString()
