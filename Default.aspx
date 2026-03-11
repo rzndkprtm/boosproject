@@ -24,10 +24,6 @@
                 </div>--%>
                 <%--<img class="w-100" src="http://ordersblindonline.com/assets/newsletter/panorama.JPG" />--%>
                 <br />
-                <br />
-                <br />
-                <br />
-                <br />
                 <asp:Image runat="server" CssClass="w-100" ID="imgNewsletter" ImageUrl="~/assets/newsletter/ramadhan.png" />
                 <asp:Label runat="server" ID="lblError"></asp:Label>
             </div>
