@@ -1353,8 +1353,8 @@ Public Class PreviewClass
                         Dim controlLength As String = verticalData.Rows(i)("ControlLength").ToString()
                         Dim controlLengthValue As String = verticalData.Rows(i)("ControlLengthValue").ToString()
 
-                        Dim controlLengthText As String = controlLength
-                        If controlLength = "Custom" Then
+                        Dim controlLengthText As String = String.Empty
+                        If Not String.IsNullOrEmpty(controlLength) Then
                             controlLengthText = String.Format("{0} : {1}mm", controlLength, controlLengthValue)
                         End If
 
