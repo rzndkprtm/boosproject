@@ -3585,7 +3585,7 @@ Partial Class Order_Method
             If controlName = "Wand" Then
                 data.chaincolour = String.Empty
                 wandlength = controllength
-                If controllength > 1000 Then wandlength = 1000
+                If controllength > 1000 Then wandlength = 1000 : controllength = 1000
 
                 If data.stackposition = "Left" Then data.controlposition = "Right"
                 If data.stackposition = "Right" Then data.controlposition = "Left"
