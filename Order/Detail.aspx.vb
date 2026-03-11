@@ -40,7 +40,7 @@ Partial Class Order_Detail
         End If
     End Sub
 
-    Protected Sub btnDownlaod_Click(sender As Object, e As EventArgs)
+    Protected Sub btnDownload_Click(sender As Object, e As EventArgs)
         Try
             If gvListItem.Rows.Count = 0 Then
                 MessageError(True, "PLEASE ADD MINIMAL 1 ITEM ORDER !")
@@ -50,9 +50,11 @@ Partial Class Order_Detail
             Dim previewClass As New PreviewClass
             Dim pdfBytes As Byte() = previewClass.BindContent(lblHeaderId.Text)
 
+            Dim fileName As String = String.Format("ORDER-{0} {1}.pdf", lblOrderId.Text, lblCustomerName.Text)
+
             Response.Clear()
             Response.ContentType = "application/pdf"
-            Response.AddHeader("Content-Disposition", "attachment; filename=ORDER-" & lblOrderId.Text & ".pdf")
+            Response.AddHeader("Content-Disposition", "attachment; filename='" & fileName & "'")
             Response.BinaryWrite(pdfBytes)
             Response.Flush()
             Response.End()
@@ -944,39 +946,19 @@ Partial Class Order_Detail
     Protected Sub btnDownloadInvoiceCSV_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim detailData As DataTable = orderClass.GetDataTable("SELECT * FROM OrderDetails WHERE HeaderId='" & lblHeaderId.Text & "' AND Active=1 ORDER BY Id ASC")
-            If detailData.Rows.Count > 0 Then
-                Dim sb As New StringBuilder()
+            Dim invoiceClass As New InvoiceClass
+            Dim data As String = invoiceClass.BindXero(lblHeaderId.Text)
 
-                For Each row As DataRow In detailData.Rows
-                    sb.Append(lblCustomerName.Text & ",")
-                    sb.Append("email@customer.com" & ",")
-                    sb.Append("Aalamat" & ",")
-                    sb.Append("" & ",")
-                    sb.Append("" & ",")
-                    sb.Append("" & ",")
-                    sb.Append("City" & ",")
-                    sb.Append("Region" & ",")
-                    sb.Append("Post Code" & ",")
-                    sb.Append("Australia" & ",")
-                    sb.Append(lblInvoiceNumber.Text & ",")
-                    sb.Append(lblOrderId.Text & ",")
-                    sb.Append(lblInvoiceDate.Text & ",")
-                    'sb.Append(lbldu.Text & ",")
+            Dim fileName As String = String.Format("{0}.csv", lblInvoiceNumber.Text)
 
+            Response.Clear()
+            Response.Buffer = True
+            Response.AddHeader("content-disposition", "attachment;filename=" & fileName & "")
+            Response.ContentType = "text/csv"
 
-                    sb.AppendLine()
-                Next
-
-                Response.Clear()
-                Response.Buffer = True
-                Response.AddHeader("content-disposition", "attachment;filename=OrderDetails.csv")
-                Response.ContentType = "text/csv"
-
-                Response.Write(sb.ToString())
-                Response.Flush()
-                Response.End()
-            End If
+            Response.Write(data)
+            Response.Flush()
+            Response.End()
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -1497,7 +1479,7 @@ Partial Class Order_Detail
                 Dim newItemId As String = orderClass.GetNewOrderItemId()
 
                 Dim groupName As String = orderClass.GetItemData("SELECT Name FROM Products WHERE Id='" & ddlBlindService.SelectedValue & "'")
-                Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, "16")
+                Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, "16", lblCompanyDetailId.Text)
 
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, 1, 0, 0, 1, 0, 1)", thisConn)
@@ -2767,6 +2749,7 @@ Partial Class Order_Detail
 
         lblInvoiceNumber.Text = "-"
         lblInvoiceDate.Text = "-"
+        lblDueDate.Text = "-"
         lblCollector.Text = "-"
         lblPaymentDate.Text = "-"
 
@@ -2780,6 +2763,10 @@ Partial Class Order_Detail
             If Not String.IsNullOrEmpty(invoiceData("InvoiceDate").ToString()) Then
                 lblInvoiceDate.Text = Convert.ToDateTime(invoiceData("InvoiceDate")).ToString("dd MMM yyyy")
                 txtInvoiceDate.Text = Convert.ToDateTime(invoiceData("InvoiceDate")).ToString("yyyy-MM-dd")
+            End If
+
+            If Not String.IsNullOrEmpty(invoiceData("DueDate").ToString()) Then
+                lblDueDate.Text = Convert.ToDateTime(invoiceData("DueDate")).ToString("dd MMM yyyy")
             End If
 
             If Not String.IsNullOrEmpty(invoiceData("CollectorName").ToString()) Then

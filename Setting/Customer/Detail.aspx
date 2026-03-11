@@ -65,6 +65,7 @@
                                 <div class="col-6 col-sm-6 col-lg-3 mb-3">
                                     <label>Sub Company</label>
                                     <br />
+                                    <asp:Label runat="server" ID="lblCompanyDetailId" Visible="false"></asp:Label>
                                     <asp:Label runat="server" ID="lblCompanyDetailName" CssClass="font-bold"></asp:Label>
                                 </div>
                                 <div class="col-6 col-sm-6 col-lg-3 mb-3">

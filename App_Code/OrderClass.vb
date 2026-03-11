@@ -438,14 +438,15 @@ Public Class OrderClass
         Return result
     End Function
 
-    Public Function GetPriceProductGroupId(groupName As String, designId As String) As String
+    Public Function GetPriceProductGroupId(groupName As String, designId As String, companyDetailId As String) As String
         Dim result As String = String.Empty
         Try
             If Not String.IsNullOrEmpty(groupName) OrElse String.IsNullOrEmpty(designId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT Id FROM PriceProductGroups WHERE Name=@Name AND DesignId=@DesignId AND Active=1", thisConn)
+                    Using myCmd As New SqlCommand("SELECT Id FROM PriceProductGroups CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS thisArray WHERE Name=@Name AND DesignId=@DesignId AND thisArray.VALUE=@CompanyDetailId AND Active=1", thisConn)
                         myCmd.Parameters.AddWithValue("@Name", groupName)
                         myCmd.Parameters.AddWithValue("@DesignId", designId)
+                        myCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetailId)
 
                         thisConn.Open()
                         Dim obj = myCmd.ExecuteScalar()
@@ -1498,14 +1499,14 @@ Public Class OrderClass
                                         Continue For
                                     End If
                                     Dim baseValue As Decimal = costSell * discountValue / 100
-                                    If gridSellConditional = "STD / GR $7" Then
+                                    If gridSellConditional = "Excl. $7 Disc" Then
                                         baseValue = (costSell - 7) * discountValue / 100
                                     End If
 
                                     Dim additionalValue As Decimal = costSellAdditional * discountValue / 100
 
                                     thisSell = costSell - baseValue
-                                    If gridSellConditional = "STD / GR $7" Then
+                                    If gridSellConditional = "Excl. $7 Disc" Then
                                         thisSell = (costSell - 7) - baseValue + 7
                                     End If
                                     thisSellAdditional = gridSellAdditional - additionalValue
@@ -1518,13 +1519,13 @@ Public Class OrderClass
                             If discountType = "PriceProductGroups" Then
                                 If dataId = priceProductGroupId Then
                                     Dim baseValue As Decimal = costSell * discountValue / 100
-                                    If gridSellConditional = "STD / GR $7" Then
+                                    If gridSellConditional = "Excl. $7 Disc" Then
                                         baseValue = (costSell - 7) * discountValue / 100
                                     End If
                                     Dim additionalValue As Decimal = costSellAdditional * discountValue / 100
 
                                     thisSell = costSell - baseValue
-                                    If gridSellConditional = "STD / GR $7" Then
+                                    If gridSellConditional = "Excl. $7 Disc" Then
                                         thisSell = (costSell - 7) - baseValue + 7
                                     End If
                                     thisSellAdditional = gridSellAdditional - additionalValue
@@ -1609,12 +1610,12 @@ Public Class OrderClass
                                             If designName = "Roller Blind" Then
 
                                             End If
-                                            If gridSellConditional = "STD / GR $7" Then
+                                            If gridSellConditional = "Excl. $7 Disc" Then
                                                 baseValue = (costSell - 7) * promoValue / 100
                                             End If
 
                                             thisSell = costSell - baseValue
-                                            If gridSellConditional = "STD / GR $7" Then
+                                            If gridSellConditional = "Excl. $7 Disc" Then
                                                 thisSell = (costSell - 7) - baseValue + 7
                                             End If
                                             costSell = thisSell
@@ -1624,11 +1625,11 @@ Public Class OrderClass
                                     If promoType = "FabricColours" AndAlso designName = "Roller Blind" Then
                                         If dataId = fabricColourId Then
                                             Dim baseValue As Decimal = costSell * promoValue / 100
-                                            If gridSellConditional = "STD / GR $7" Then
+                                            If gridSellConditional = "Excl. $7 Disc" Then
                                                 baseValue = (costSell - 7) * promoValue / 100
                                             End If
                                             thisSell = costSell - baseValue
-                                            If gridSellConditional = "STD / GR $7" Then
+                                            If gridSellConditional = "Excl. $7 Disc" Then
                                                 thisSell = (costSell - 7) - baseValue + 7
                                             End If
                                             costSell = thisSell
@@ -1722,12 +1723,12 @@ Public Class OrderClass
                             If discountType = "Designs" Then
                                 If dataId = designId Then
                                     Dim baseValue As Decimal = costSell * discountValue / 100
-                                    If gridSellConditional = "STD / GR $7" Then
+                                    If gridSellConditional = "Excl. $7 Disc" Then
                                         baseValue = (costSell - 7) * discountValue / 100
                                     End If
 
                                     thisSell = costSell - baseValue
-                                    If gridSellConditional = "STD / GR $7" Then
+                                    If gridSellConditional = "Excl. $7 Disc" Then
                                         thisSell = (costSell - 7) - baseValue + 7
                                     End If
 
@@ -1738,12 +1739,12 @@ Public Class OrderClass
                             If discountType = "PriceProductGroups" Then
                                 If dataId = priceProductGroupIdB Then
                                     Dim baseValue As Decimal = costSell * discountValue / 100
-                                    If gridSellConditional = "STD / GR $7" Then
+                                    If gridSellConditional = "Excl. $7 Disc" Then
                                         baseValue = (costSell - 7) * discountValue / 100
                                     End If
 
                                     thisSell = costSell - baseValue
-                                    If gridSellConditional = "STD / GR $7" Then
+                                    If gridSellConditional = "Excl. $7 Disc" Then
                                         thisSell = (costSell - 7) - baseValue + 7
                                     End If
                                     costSell = thisSell
@@ -1885,12 +1886,12 @@ Public Class OrderClass
                             If discountType = "Designs" Then
                                 If dataId = designId Then
                                     Dim baseValue As Decimal = costSell * discountValue / 100
-                                    If gridSellConditional = "STD / GR $7" Then
+                                    If gridSellConditional = "Excl. $7 Disc" Then
                                         baseValue = (costSell - 7) * discountValue / 100
                                     End If
 
                                     thisSell = costSell - baseValue
-                                    If gridSellConditional = "STD / GR $7" Then
+                                    If gridSellConditional = "Excl. $7 Disc" Then
                                         thisSell = (costSell - 7) - baseValue + 7
                                     End If
                                     costSell = thisSell
@@ -1900,12 +1901,12 @@ Public Class OrderClass
                             If discountType = "PriceProductGroups" Then
                                 If dataId = priceProductGroupId Then
                                     Dim baseValue As Decimal = costSell * discountValue / 100
-                                    If gridSellConditional = "STD / GR $7" Then
+                                    If gridSellConditional = "Excl. $7 Disc" Then
                                         baseValue = (costSell - 7) * discountValue / 100
                                     End If
 
                                     thisSell = costSell - baseValue
-                                    If gridSellConditional = "STD / GR $7" Then
+                                    If gridSellConditional = "Excl. $7 Disc" Then
                                         thisSell = (costSell - 7) - baseValue + 7
                                     End If
 
@@ -2059,12 +2060,12 @@ Public Class OrderClass
                             If discountType = "PriceProductGroups" Then
                                 If dataId = priceProductGroupIdD Then
                                     Dim baseValue As Decimal = costSell * discountValue / 100
-                                    If gridSellConditional = "STD / GR $7" Then
+                                    If gridSellConditional = "Excl. $7 Disc" Then
                                         baseValue = (costSell - 7) * discountValue / 100
                                     End If
 
                                     thisSell = costSell - baseValue
-                                    If gridSellConditional = "STD / GR $7" Then
+                                    If gridSellConditional = "Excl. $7 Disc" Then
                                         thisSell = (costSell - 7) - baseValue + 7
                                     End If
 
@@ -2205,12 +2206,12 @@ Public Class OrderClass
                             If discountType = "Designs" Then
                                 If dataId = designId Then
                                     Dim baseValue As Decimal = costSell * discountValue / 100
-                                    If gridSellConditional = "STD / GR $7" Then
+                                    If gridSellConditional = "Excl. $7 Disc" Then
                                         baseValue = (costSell - 7) * discountValue / 100
                                     End If
 
                                     thisSell = costSell - baseValue
-                                    If gridSellConditional = "STD / GR $7" Then
+                                    If gridSellConditional = "Excl. $7 Disc" Then
                                         thisSell = (costSell - 7) - baseValue + 7
                                     End If
                                     costSell = thisSell
@@ -2220,12 +2221,12 @@ Public Class OrderClass
                             If discountType = "PriceProductGroups" Then
                                 If dataId = priceProductGroupId Then
                                     Dim baseValue As Decimal = costSell * discountValue / 100
-                                    If gridSellConditional = "STD / GR $7" Then
+                                    If gridSellConditional = "Excl. $7 Disc" Then
                                         baseValue = (costSell - 7) * discountValue / 100
                                     End If
 
                                     thisSell = costSell - baseValue
-                                    If gridSellConditional = "STD / GR $7" Then
+                                    If gridSellConditional = "Excl. $7 Disc" Then
                                         thisSell = (costSell - 7) - baseValue + 7
                                     End If
 
@@ -2365,12 +2366,12 @@ Public Class OrderClass
                             If discountType = "Designs" Then
                                 If dataId = designId Then
                                     Dim baseValue As Decimal = costSell * discountValue / 100
-                                    If gridSellConditional = "STD / GR $7" Then
+                                    If gridSellConditional = "Excl. $7 Disc" Then
                                         baseValue = (costSell - 7) * discountValue / 100
                                     End If
 
                                     thisSell = costSell - baseValue
-                                    If gridSellConditional = "STD / GR $7" Then
+                                    If gridSellConditional = "Excl. $7 Disc" Then
                                         thisSell = (costSell - 7) - baseValue + 7
                                     End If
                                     costSell = thisSell
@@ -2380,12 +2381,12 @@ Public Class OrderClass
                             If discountType = "PriceProductGroups" Then
                                 If dataId = priceProductGroupId Then
                                     Dim baseValue As Decimal = costSell * discountValue / 100
-                                    If gridSellConditional = "STD / GR $7" Then
+                                    If gridSellConditional = "Excl. $7 Disc" Then
                                         baseValue = (costSell - 7) * discountValue / 100
                                     End If
 
                                     thisSell = costSell - baseValue
-                                    If gridSellConditional = "STD / GR $7" Then
+                                    If gridSellConditional = "Excl. $7 Disc" Then
                                         thisSell = (costSell - 7) - baseValue + 7
                                     End If
 

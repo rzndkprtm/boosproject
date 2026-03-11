@@ -42,7 +42,7 @@
                         <asp:Button runat="server" ID="btnPreview" CssClass="dropdown-item" Text="Preview" />
                     </li>
                     <li>
-                        <asp:Button runat="server" ID="btnDownlaod" CssClass="dropdown-item" Text="Download" OnClick="btnDownlaod_Click" />
+                        <asp:Button runat="server" ID="btnDownload" CssClass="dropdown-item" Text="Download" OnClick="btnDownload_Click" />
                     </li>
                 </ul>
                 
@@ -354,6 +354,7 @@
                                     <label>Invoiced Date</label>
                                     <br />
                                     <asp:Label runat="server" ID="lblInvoiceDate" CssClass="font-bold"></asp:Label>
+                                    <asp:Label runat="server" ID="lblDueDate" CssClass="font-bold"></asp:Label>
                                 </div>
 
                                 <div class="col-6 col-sm-6 col-lg-3">

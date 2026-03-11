@@ -67,6 +67,11 @@
                                                 <asp:BoundField DataField="Id" HeaderText="ID" />
                                                 <asp:BoundField DataField="Name" HeaderText="Name" />
                                                 <asp:BoundField DataField="DesignName" HeaderText="Design Name" />
+                                                <asp:TemplateField HeaderText="Company Detail">
+                                                    <ItemTemplate>
+                                                        <%# GetCompanyName(Eval("Id").ToString()) %>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
                                                 <asp:BoundField DataField="DataActive" HeaderText="Active" />
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="150px">
                                                     <ItemTemplate>
@@ -122,6 +127,13 @@
                         <div class="col-12 form-group">
                             <label class="form-label">Design Type</label>
                             <asp:DropDownList runat="server" ID="ddlDesign" CssClass="form-select"></asp:DropDownList>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Company</label>
+                            <asp:ListBox runat="server" ID="lbCompanyDetail" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
                         </div>
                     </div>
                     

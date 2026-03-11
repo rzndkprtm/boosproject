@@ -298,6 +298,7 @@ Partial Class Setting_Customer_Detail
             lblName.Text = thisData("Name").ToString()
             lblCompanyId.Text = thisData("CompanyId").ToString()
             lblCompanyName.Text = thisData("CompanyName").ToString()
+            lblCompanyDetailId.Text = thisData("CompanyDetailId").ToString()
             lblCompanyDetailName.Text = thisData("CompanyDetailName").ToString()
             lblArea.Text = thisData("Area").ToString()
             lblOperator.Text = thisData("OperatorName").ToString()
@@ -1871,7 +1872,7 @@ Partial Class Setting_Customer_Detail
     Protected Sub BindDiscountDataB()
         ddlDiscountDataIdB.Items.Clear()
         Try
-            ddlDiscountDataIdB.DataSource = settingClass.GetDataTable("SELECT * FROM PriceProductGroups WHERE Active=1 ORDER BY Name ASC")
+            ddlDiscountDataIdB.DataSource = settingClass.GetDataTable("SELECT PriceProductGroups.* FROM PriceProductGroups LEFT JOIN Designs ON PriceProductGroups.DesignId=Designs.Id CROSS APPLY STRING_SPLIT(PriceProductGroups.CompanyDetailId, ',') AS companyArray WHERE companyArray.VALUE='" & lblCompanyDetailId.Text & "' AND PriceProductGroups.Active=1 AND Designs.Type='Blinds' AND PriceProductGroups.Name NOT LIKE '%Panel Glide - Panel Only%' AND PriceProductGroups.Name NOT LIKE '%Panel Glide - Track Only%' ORDER BY PriceProductGroups.Name ASC")
             ddlDiscountDataIdB.DataTextField = "Name"
             ddlDiscountDataIdB.DataValueField = "Id"
             ddlDiscountDataIdB.DataBind()
