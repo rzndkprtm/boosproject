@@ -34,6 +34,8 @@ Partial Class Setting_Specification_Design
 
             BindCompany()
 
+            txtName.Enabled = True
+
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         Catch ex As Exception
             MessageError_Process(True, ex.ToString())
@@ -76,7 +78,6 @@ Partial Class Setting_Specification_Design
                     titleProcess.InnerText = "Edit Design Type"
 
                     Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Designs WHERE Id='" & lblId.Text & "'")
-
                     If myData Is Nothing Then Exit Sub
 
                     BindCompany(True)
@@ -111,6 +112,9 @@ Partial Class Setting_Specification_Design
                         Next
                     End If
 
+                    txtName.Enabled = False
+                    If Session("RoleName") = "Developer" Then txtName.Enabled = True
+
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Catch ex As Exception
                     MessageError_Process(True, ex.ToString())
@@ -141,12 +145,11 @@ Partial Class Setting_Specification_Design
 
             If msgErrorProcess.InnerText = "" Then
                 Dim company As String = String.Empty
-                Dim applyTo As String = String.Empty
-
                 If Not lbCompany.SelectedValue = "" Then
                     company = String.Join(",", lbCompany.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
                 End If
 
+                Dim applyTo As String = String.Empty
                 If Not lbApplies.SelectedValue = "" Then
                     applyTo = String.Join(",", lbApplies.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
                 End If
@@ -224,7 +227,7 @@ Partial Class Setting_Specification_Design
         Try
             Dim search As String = String.Empty
             If Not searchText = "" Then
-                search = "WHERE Id LIKE '%" & searchText.Trim() & "%' OR Name LIKE '%" & searchText.Trim() & "%' OR Page LIKE '%" & searchText.Trim() & "%' OR Description LIKE '%" & searchText.Trim() & "%'"
+                search = "WHERE Id LIKE '%" & searchText.Trim() & "%' OR Name LIKE '%" & searchText.Trim() & "%' OR Page LIKE '%" & searchText.Trim() & "%' OR AppliesTo LIKE '%" & searchText.Trim() & "%' OR Description LIKE '%" & searchText.Trim() & "%'"
             End If
             Dim thisString As String = String.Format("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Designs {0} ORDER BY Name ASC", search)
 
@@ -266,20 +269,24 @@ Partial Class Setting_Specification_Design
     End Sub
 
     Protected Function GetCompanyName(designId As String) As String
-        If Not String.IsNullOrEmpty(designId) Then
-            Dim myData As DataTable = settingClass.GetDataTable("SELECT Companys.Alias AS CompanyName FROM Designs CROSS APPLY STRING_SPLIT(Designs.CompanyId, ',') AS companyArray LEFT JOIN Companys ON companyArray.VALUE=Companys.Id WHERE Designs.Id='" & designId & "' ORDER BY Companys.Id ASC")
-            Dim hasil As String = String.Empty
-            If myData.Rows.Count > 0 Then
-                For i As Integer = 0 To myData.Rows.Count - 1
-                    Dim designName As String = myData.Rows(i)("CompanyName").ToString()
-                    hasil += designName & ","
-                Next
-                Return hasil.Remove(hasil.Length - 1).ToString()
-            Else
-                Return String.Empty
+        Try
+            If Not String.IsNullOrEmpty(designId) Then
+                Dim myData As DataTable = settingClass.GetDataTable("SELECT Companys.Alias AS CompanyName FROM Designs CROSS APPLY STRING_SPLIT(Designs.CompanyId, ',') AS companyArray LEFT JOIN Companys ON companyArray.VALUE=Companys.Id WHERE Designs.Id='" & designId & "' ORDER BY Companys.Id ASC")
+                Dim hasil As String = String.Empty
+                If myData.Rows.Count > 0 Then
+                    For i As Integer = 0 To myData.Rows.Count - 1
+                        Dim designName As String = myData.Rows(i)("CompanyName").ToString()
+                        hasil += designName & ","
+                    Next
+                    Return hasil.Remove(hasil.Length - 1).ToString()
+                Else
+                    Return String.Empty
+                End If
             End If
-        End If
-        Return "Error"
+            Return String.Empty
+        Catch ex As Exception
+            Return "ERROR"
+        End Try
     End Function
 
     Protected Sub MessageError(visible As Boolean, message As String)

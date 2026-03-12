@@ -245,9 +245,9 @@
 
             let title = "";
             if (active === "1") {
-                title = "Disable Blind Type";
+                title = "Deactivate Blind Type";
             } else {
-                title = "Enable Blind Type";
+                title = "Activate Blind Type";
             }
             document.getElementById("titleActive").innerHTML = title;
         }

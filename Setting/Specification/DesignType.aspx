@@ -71,8 +71,7 @@
                                                         <%# GetCompanyName(Eval("Id").ToString()) %>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-                                                <asp:BoundField DataField="Page" HeaderText="Page" />
-                                                <asp:BoundField DataField="Description" HeaderText="Description" />
+                                                <asp:BoundField DataField="AppliesTo" HeaderText="Applied" />
                                                 <asp:BoundField DataField="DataActive" HeaderText="Active" />
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
                                                     <ItemTemplate>
