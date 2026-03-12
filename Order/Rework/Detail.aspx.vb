@@ -469,11 +469,11 @@ Partial Class Order_Rework_Detail
             End If
 
             If lblStatus.Text = "Pending Approval" Then
-                If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" Then
+                If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" Then
                     aApproveRework.Visible = True
                     aRejectRework.Visible = True
                 End If
-                If Session("RoleName") = "Customer Service" Then
+                If Session("RoleName") = "Customer Service" OrElse Session("RoleName") = "Data Entry" Then
                     aApproveRework.Visible = True
                     aRejectRework.Visible = True
                 End If
