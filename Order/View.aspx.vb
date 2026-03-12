@@ -21,11 +21,11 @@
             Dim orderId As String = previewClass.GetItemData("SELECT OrderId FROM OrderHeaders WHERE Id='" & headerId & "'")
             Dim customerName As String = previewClass.GetItemData("SELECT Customers.Name FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id='" & headerId & "'")
 
-            Dim fileName As String = String.Format("ORDER-{0} {1}.pdf", orderId, customerName)
+            Dim fileName As String = String.Format("ORDER {0} {1}.pdf", orderId, customerName.ToUpper())
 
             Response.Clear()
             Response.ContentType = "application/pdf"
-            Response.AddHeader("Content-Disposition", "inline; filename='" & fileName & "'")
+            Response.AddHeader("Content-Disposition", "inline; filename=" & fileName & "")
             Response.BinaryWrite(pdfBytes)
             Response.Flush()
             Response.End()
@@ -38,14 +38,17 @@
             Dim invoiceClass As New InvoiceClass
             Dim pdfBytes As Byte() = invoiceClass.BindContent(headerId)
 
+            Dim invoiceNumber As String = invoiceClass.GetItemData("SELECT InvoiceNumber FROM OrderInvoices WHERE Id='" & headerId & "'")
+
+            Dim fileName As String = String.Format("INVOICE {0}.pdf", invoiceNumber)
+
             Response.Clear()
             Response.ContentType = "application/pdf"
-            Response.AddHeader("Content-Disposition", "inline; filename=INVOICE-" & headerId & ".pdf")
+            Response.AddHeader("Content-Disposition", "inline; filename=" & fileName & "")
             Response.BinaryWrite(pdfBytes)
             Response.Flush()
             Response.End()
         Catch ex As Exception
-
         End Try
     End Sub
 
@@ -61,7 +64,6 @@
             Response.Flush()
             Response.End()
         Catch ex As Exception
-
         End Try
     End Sub
 End Class
