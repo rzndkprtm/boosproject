@@ -138,6 +138,7 @@ Public Partial Class SiteMaster
             liGeneral.Visible = False
             liGeneralCompany.Visible = False
             liGeneralMailing.Visible = False
+            liGeneralXero.Visible = False
             liGeneralRole.Visible = False
             liGeneralLevel.Visible = False
             liGeneralNewsletter.Visible = False
@@ -181,6 +182,7 @@ Public Partial Class SiteMaster
                 liGeneral.Visible = True
                 liGeneralCompany.Visible = True
                 liGeneralMailing.Visible = True
+                liGeneralXero.Visible = True
                 liGeneralRole.Visible = True
                 liGeneralLevel.Visible = True
                 liGeneralNewsletter.Visible = True

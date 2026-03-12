@@ -3801,12 +3801,14 @@ Partial Class Order_Method
         Dim tubeName As String = String.Empty
         Dim controlName As String = String.Empty
         Dim controlType As String = String.Empty
+        Dim colourName As String = String.Empty
 
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
         If Not String.IsNullOrEmpty(data.tubetype) Then tubeName = orderClass.GetTubeName(data.tubetype)
         If Not String.IsNullOrEmpty(data.controltype) Then controlName = orderClass.GetControlName(data.controltype)
         If Not String.IsNullOrEmpty(data.controltype) Then controlType = orderClass.GetControlType(data.controltype)
+        If Not String.IsNullOrEmpty(data.colourtype) Then colourName = orderClass.GetColourName(data.colourtype)
 
         Dim chainLength As String = String.Empty
         Dim chainLengthB As String = String.Empty
@@ -3864,7 +3866,6 @@ Partial Class Order_Method
             If String.IsNullOrEmpty(data.chaincolour) Then Return "CHAIN COLOUR IS REQUIRED !"
             If String.IsNullOrEmpty(data.chainstopper) Then Return "CHAIN STOPPER IS REQUIRED !"
             If String.IsNullOrEmpty(data.controllength) Then Return "CHAIN LENGTH IS REQUIRED !"
-
             If data.controllength = "Custom" Then
                 If chainLength = "Static" Then
                     If String.IsNullOrEmpty(data.controllengthvalue2) Then Return "CHAIN LENGTH VALUE IS REQUIRED !"
@@ -3895,29 +3896,30 @@ Partial Class Order_Method
         End If
         If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
             If width > 2400 AndAlso (blindName = "Full Cassette" OrElse blindName = "Semi Cassette") Then Return "MAXIMUM WIDTH IS 2400MM !"
-            If width > 1810 AndAlso tubeName = "Standard" Then Return "FOR NOW, WIDTHS GREATER THAN 1810 CANNOT BE USED WITH THE STANDARD TUBE TYPE."
+            If width > 1810 AndAlso tubeName = "Standard" AndAlso colourName = "White" Then Return "FOR NOW, WIDTHS GREATER THAN 1810 CANNOT BE USED WITH THE STANDARD TUBE TYPE AND WHITE BRACKET COLOUR !"
             If width > 2910 Then Return "MAXIMUM WIDTH IS 2910MM !"
         End If
 
         If String.IsNullOrEmpty(data.drop) Then Return "DROP IS REQUIRED !"
         If Not Integer.TryParse(data.drop, drop) OrElse drop <= 0 Then Return "PLEASE CHECK YOUR DROP ORDER !"
-
         If data.rolename = "Customer" OrElse data.rolename = "Installer" Then
             If drop < 200 Then Return "MINIMUM DROP IS 200MM !"
         End If
         If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
-            If width > 2200 AndAlso (blindName = "Full Cassette" OrElse blindName = "Semi Cassette") Then Return "MAXIMUM DROP IS 2200MM !"
+            If drop > 2200 AndAlso (blindName = "Full Cassette" OrElse blindName = "Semi Cassette") Then Return "MAXIMUM DROP IS 2200MM !"
             If drop > 3200 Then Return "MAXIMUM DROP IS 3200MM !"
         End If
 
-        squareMetre = width * drop / 1000000
-        If tubeName.Contains("Gear Reduction") AndAlso data.companyid = "2" Then
-            If tubeName = "Gear Reduction 38mm" AndAlso width > 1810 Then Return "MAXIMUM WIDTH BLIND FOR GEAR REDUCTION 38MM IS 1810MM !"
-            If squareMetre >= 6 AndAlso (tubeName = "Gear Reduction 38mm" OrElse tubeName = "Gear Reduction 45mm") Then
-                Return "YOUR BLIND AREA EXCEEDS 6 SQM.<br />PLEASE USE <b>GEAR REDUCTION 49MM</b> IF YOU WISH TO CONTINUE USING THE GEAR REDUCTION SYSTEM.<br />OUR ALTERNATIVE RECOMMENDATION:<br />ACMEDA SYSTEM: <b>ACMEDA 49MM</b><br />SUNBOSS SYSTEM: <b>SUNBOSS 43MM</b> OR <b>SUNBOSS 50MM</b>"
+        If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
+            squareMetre = width * drop / 1000000
+            If tubeName.Contains("Gear Reduction") Then
+                If tubeName = "Gear Reduction 38mm" AndAlso width > 1810 Then Return "MAXIMUM WIDTH BLIND FOR GEAR REDUCTION 38MM IS 1810MM !"
+                If squareMetre >= 6 AndAlso (tubeName = "Gear Reduction 38mm" OrElse tubeName = "Gear Reduction 45mm") Then
+                    Return "YOUR BLIND AREA EXCEEDS 6 SQM.<br />PLEASE USE <b>GEAR REDUCTION 49MM</b> IF YOU WISH TO CONTINUE USING THE GEAR REDUCTION SYSTEM.<br />OUR ALTERNATIVE RECOMMENDATION:<br />ACMEDA SYSTEM: <b>ACMEDA 49MM</b><br />SUNBOSS SYSTEM: <b>SUNBOSS 43MM</b> OR <b>SUNBOSS 50MM</b>"
+                End If
             End If
+            If tubeName = "Acmeda 43mm" AndAlso width > 1810 Then Return "MAXIMUM WIDTH FOR ACMEDA 43MM IS 1810MM !"
         End If
-        If tubeName = "Acmeda 43mm" AndAlso width > 1810 Then Return "MAXIMUM WIDTH FOR ACMEDA 43MM IS 1810MM !"
 
         ' START SECOND BLIND
         If blindName = "Dual Blinds" Then
@@ -3968,7 +3970,7 @@ Partial Class Order_Method
                 If controlType = "Motorised" AndAlso widthb < 700 Then Return "MINIMUM SECOND WIDTH FOR MOTORISED IS 700MM !"
             End If
             If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
-                If widthb > 1810 AndAlso tubeName = "Standard" Then Return "FOR NOW, WIDTHS GREATER THAN 1810 CANNOT BE USED WITH THE STANDARD TUBE TYPE."
+                If widthb > 1810 AndAlso tubeName = "Standard" AndAlso colourName = "White" Then Return "PLEASE CHECK THE SECOND WIDTH.<br />FOR NOW, WIDTHS GREATER THAN 1810 CANNOT BE USED WITH THE STANDARD TUBE TYPE AND WHITE BRACKET COLOUR !"
                 If widthb > 2910 Then Return "MAXIMUM SECOND WIDTH IS 2910MM !"
             End If
 
@@ -3981,16 +3983,16 @@ Partial Class Order_Method
                 If dropb > 3200 Then Return "MAXIMUM SECOND DROP IS 3200MM !"
             End If
 
-            squareMetreB = widthb * dropb / 1000000
-
-            If tubeName.Contains("Gear Reduction") AndAlso data.companyid = "2" Then
-                If tubeName = "Gear Reduction 38mm" AndAlso widthb > 1810 Then Return "MAXIMUM WIDTH FOR SECOND BLIND GEAR REDUCTION 38MM IS 1810MM !"
-
-                If squareMetreB >= 6 AndAlso (tubeName = "Gear Reduction 38mm" OrElse tubeName = "Gear Reduction 45mm") Then
-                    Return "YOUR BLIND AREA EXCEEDS 6 SQM.<br />PLEASE USE <b>GEAR REDUCTION 49MM</b> IF YOU WISH TO CONTINUE USING THE GEAR REDUCTION SYSTEM.<br />OUR ALTERNATIVE RECOMMENDATION:<br />ACMEDA SYSTEM: <b>ACMEDA 49MM</b><br />SUNBOSS SYSTEM: <b>SUNBOSS 43MM</b> OR <b>SUNBOSS 50MM</b>"
+            If data.companyid = "2" Then
+                squareMetreB = widthb * dropb / 1000000
+                If tubeName.Contains("Gear Reduction") Then
+                    If tubeName = "Gear Reduction 38mm" AndAlso widthb > 1810 Then Return "MAXIMUM WIDTH FOR SECOND BLIND GEAR REDUCTION 38MM IS 1810MM !"
+                    If squareMetreB >= 6 AndAlso (tubeName = "Gear Reduction 38mm" OrElse tubeName = "Gear Reduction 45mm") Then
+                        Return "YOUR BLIND AREA EXCEEDS 6 SQM.<br />PLEASE USE <b>GEAR REDUCTION 49MM</b> IF YOU WISH TO CONTINUE USING THE GEAR REDUCTION SYSTEM.<br />OUR ALTERNATIVE RECOMMENDATION:<br />ACMEDA SYSTEM: <b>ACMEDA 49MM</b><br />SUNBOSS SYSTEM: <b>SUNBOSS 43MM</b> OR <b>SUNBOSS 50MM</b>"
+                    End If
                 End If
+                If tubeName = "Acmeda 43mm" AndAlso widthb > 1810 Then Return "MAXIMUM WIDTH FOR SECOND BLIND ACMEDA 43MM IS 1810MM !"
             End If
-            If tubeName = "Acmeda 43mm" AndAlso widthb > 1810 Then Return "MAXIMUM WIDTH FOR SECOND BLIND ACMEDA 43MM IS 1810MM !"
         End If
         ' END SECOND BLIND
 
