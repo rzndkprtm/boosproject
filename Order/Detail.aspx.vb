@@ -50,7 +50,7 @@ Partial Class Order_Detail
             Dim previewClass As New PreviewClass
             Dim pdfBytes As Byte() = previewClass.BindContent(lblHeaderId.Text)
 
-            Dim fileName As String = String.Format("ORDER-{0} {1}.pdf", lblOrderId.Text, lblCustomerName.Text)
+            Dim fileName As String = String.Format("ORDER {0} {1}.pdf", lblOrderId.Text, lblCustomerName.Text.ToUpper())
 
             Response.Clear()
             Response.ContentType = "application/pdf"
@@ -399,7 +399,6 @@ Partial Class Order_Detail
             dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), "Order In Production"}
             orderClass.Logs(dataLog)
 
-            ' SALES
             If lblCompanyId.Text = "2" Then
                 Dim salesClass As New SalesClass
                 salesClass.RefreshData()
@@ -926,9 +925,11 @@ Partial Class Order_Detail
             Dim invoiceClass As New InvoiceClass
             Dim pdfBytes As Byte() = invoiceClass.BindContent(lblHeaderId.Text)
 
+            Dim fileName As String = String.Format("INVOICE {0}.pdf", lblInvoiceNumber.Text.ToUpper())
+
             Response.Clear()
             Response.ContentType = "application/pdf"
-            Response.AddHeader("Content-Disposition", "attachment; filename=INV-" & lblInvoiceNumber.Text & ".pdf")
+            Response.AddHeader("Content-Disposition", "attachment; filename=" & fileName & "")
             Response.BinaryWrite(pdfBytes)
             Response.Flush()
             Response.End()

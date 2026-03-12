@@ -1,5 +1,4 @@
-﻿Imports System.ComponentModel.Design
-Imports System.Data
+﻿Imports System.Data
 Imports System.Data.SqlClient
 Imports System.Globalization
 Imports System.IO
@@ -64,7 +63,7 @@ Public Class InvoiceClass
         Return dt
     End Function
 
-    Protected Function GetItemData(thisString As String) As String
+    Public Function GetItemData(thisString As String) As String
         Dim result As String = String.Empty
         Try
             Using thisConn As New SqlConnection(myConn)

@@ -1444,9 +1444,9 @@ Public Class PreviewClass
                         Dim controlLength As String = saphoraData.Rows(i)("ControlLength").ToString()
                         Dim controlLengthValue As String = saphoraData.Rows(i)("ControlLengthValue").ToString()
 
-                        Dim controlLengthText As String = controlLength
-                        If controlLength = "Custom" Then
-                            controlLengthText = String.Format("{0} : {1}mm", controlLength, controlLengthValue)
+                        Dim controlLengthText As String = String.Empty
+                        If Not String.IsNullOrEmpty(controlLength) Then
+                            controlLengthText = String.Format("{0}: {1}mm", controlLength, controlLengthValue)
                         End If
 
                         items(0, i) = "Item : " & number
