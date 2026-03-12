@@ -54,7 +54,7 @@ Partial Class Order_Detail
 
             Response.Clear()
             Response.ContentType = "application/pdf"
-            Response.AddHeader("Content-Disposition", "attachment; filename='" & fileName & "'")
+            Response.AddHeader("Content-Disposition", "attachment; filename=" & fileName & "")
             Response.BinaryWrite(pdfBytes)
             Response.Flush()
             Response.End()
