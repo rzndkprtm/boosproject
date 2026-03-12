@@ -185,6 +185,7 @@ Partial Class Setting_Specification_Design
                     Session("SearchDesign") = txtSearch.Text
                     Response.Redirect("~/setting/specification/designtype", False)
                 End If
+
                 If lblAction.Text = "Edit" Then
                     Using thisConn As New SqlConnection(myConn)
                         Using myCmd As SqlCommand = New SqlCommand("UPDATE Designs SET Name=@Name, CompanyId=@CompanyId, Type=@Type, Page=@Page, AppliesTo=@AppliesTo, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)

@@ -182,6 +182,9 @@
                                                         <li class="subsubmenu-item" runat="server" id="liGeneralMailing">
                                                             <a runat="server" href="~/setting/general/mailing" class="subsubmenu-link">Mailing</a>
                                                         </li>
+                                                        <li class="subsubmenu-item" runat="server" id="liGeneralXero">
+                                                            <a runat="server" href="~/setting/general/xero" class="subsubmenu-link">Xero</a>
+                                                        </li>
                                                         <li class="subsubmenu-item" runat="server" id="liGeneralRole">
                                                             <a runat="server" href="~/setting/general/role" class="subsubmenu-link">Role Access</a>
                                                         </li>
