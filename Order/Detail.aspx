@@ -1902,7 +1902,7 @@
                 if (hideModal) {
                     $(`#${hideModal}`).modal("hide");
                 }
-            }, 3000);
+            }, 1000);
 
             return true;
         }
