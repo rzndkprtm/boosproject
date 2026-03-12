@@ -35,6 +35,8 @@ Partial Class Setting_Specification_BlindType
             BindDesign()
             BindCompany()
 
+            txtName.Enabled = True
+
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         Catch ex As Exception
             MessageError_Process(True, ex.ToString())
@@ -97,6 +99,9 @@ Partial Class Setting_Specification_BlindType
                             End If
                         Next
                     End If
+
+                    txtName.Enabled = False
+                    If Session("RoleName") = "Developer" Then txtName.Enabled = True
 
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Catch ex As Exception
@@ -308,8 +313,8 @@ Partial Class Setting_Specification_BlindType
     End Sub
 
     Protected Function TextActive(active As Boolean) As String
-        If active = True Then Return "Inactive"
-        Return "Active"
+        If active = True Then Return "Deactivate"
+        Return "Activate"
     End Function
 
     Protected Function BindCompanyDetail(blindId As String) As String
