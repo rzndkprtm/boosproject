@@ -354,7 +354,7 @@
                                     <label>Invoiced Date</label>
                                     <br />
                                     <asp:Label runat="server" ID="lblInvoiceDate" CssClass="font-bold"></asp:Label>
-                                    <asp:Label runat="server" ID="lblDueDate" CssClass="font-bold"></asp:Label>
+                                    <asp:Label runat="server" ID="lblDueDate" CssClass="font-bold" Visible="false"></asp:Label>
                                 </div>
 
                                 <div class="col-6 col-sm-6 col-lg-3">
