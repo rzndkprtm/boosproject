@@ -61,13 +61,11 @@ Partial Class Setting_General_Newsletter_Add
                 If ddlType.SelectedValue = "Link" Then link = txtLink.Text.Trim()
                 If ddlType.SelectedValue = "Image" Then
                     Dim ext As String = IO.Path.GetExtension(fuFile.FileName)
-
                     Dim newFileName As String = Now.ToString("yyyyMMddHHmmss") & ext
+                    link = String.Format("~/Assets/newsletter/{0}", newFileName)
 
-                    Dim savePath As String = Server.MapPath("~/Assets/newsletter/" & newFileName)
+                    Dim savePath As String = Server.MapPath(link)
                     fuFile.SaveAs(savePath)
-
-                    link = String.Format("https://ordersblindonline.com/assets/newsletter/{0}", newFileName)
                 End If
 
                 Using thisConn As New SqlConnection(myConn)
@@ -114,7 +112,7 @@ Partial Class Setting_General_Newsletter_Add
     Protected Sub BindCompany()
         ddlCompany.Items.Clear()
         Try
-            ddlCompany.DataSource = settingClass.GetDataTable("SELECT * FROM Companys ORDER BY Name ASC")
+            ddlCompany.DataSource = settingClass.GetDataTable("SELECT * FROM Companys WHERE Active=1 ORDER BY Name ASC")
             ddlCompany.DataTextField = "Name"
             ddlCompany.DataValueField = "Id"
             ddlCompany.DataBind()
