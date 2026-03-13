@@ -1142,8 +1142,8 @@ Partial Class Order_Method
         End If
 
         If data.subtype = "2 on 1 Left-Right" Then
-            data.controlposition = "Left" : data.tilterposition = "Right"
-            controlpositionb = "Left" : tilterpositionb = "Right"
+            data.controlposition = "Left" : data.tilterposition = "Left"
+            controlpositionb = "Right" : tilterpositionb = "Right"
 
             linearmetreb = widthb / 1000
             squaremetreb = widthb * dropb / 1000000
@@ -3277,10 +3277,8 @@ Partial Class Order_Method
             End If
 
             If data.subtype = "2 on 1 Left-Right" Then
-                data.controlposition = "Left"
-                data.tilterposition = "Right"
-                controlpositionb = "Left"
-                tilterpositionb = "Right"
+                data.controlposition = "Left" : data.tilterposition = "Left"
+                controlpositionb = "Right" : tilterpositionb = "Right"
 
                 linearMetreB = widthb / 1000
                 squareMetreB = widthb * dropb / 1000000
