@@ -5,10 +5,9 @@ Imports System.Globalization
 Partial Class Setting_Price_Base
     Inherits Page
 
-    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-
     Dim settingClass As New SettingClass
 
+    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim enUS As CultureInfo = New CultureInfo("en-US")
     Dim idIDR As New CultureInfo("id-ID")
 
@@ -102,6 +101,7 @@ Partial Class Setting_Price_Base
                     txtHeight.Text = myData("Height").ToString()
                     txtWidth.Text = myData("Width").ToString()
                     txtPrice.Text = Convert.ToDecimal(myData("Price")).ToString("G29", enUS)
+                    txtConditional.Text = myData("Conditional").ToString()
 
                     If ddlPriceGroup.SelectedValue = "2" OrElse ddlPriceGroup.SelectedValue = "3" OrElse ddlPriceGroup.SelectedValue = "4" OrElse ddlPriceGroup.SelectedValue = "5" OrElse ddlPriceGroup.SelectedValue = "10" Then
                         txtPrice.Text = Convert.ToDecimal(myData("Price")).ToString("G29", idIDR)
@@ -179,7 +179,7 @@ Partial Class Setting_Price_Base
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM PriceBases ORDER BY Id DESC")
 
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO PriceBases VALUES (@Id, @Category, @Method, @ProductGroupId, @PriceGroupId, @Height, @Width, @Price)", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO PriceBases VALUES (@Id, @Category, @Method, @ProductGroupId, @PriceGroupId, @Height, @Width, @Price, @Conditional)", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", thisId)
                             myCmd.Parameters.AddWithValue("@Category", ddlCategory.SelectedValue)
                             myCmd.Parameters.AddWithValue("@Method", ddlMethod.SelectedValue)
@@ -188,6 +188,7 @@ Partial Class Setting_Price_Base
                             myCmd.Parameters.AddWithValue("@Height", txtHeight.Text)
                             myCmd.Parameters.AddWithValue("@Width", txtWidth.Text)
                             myCmd.Parameters.AddWithValue("@Price", txtPrice.Text)
+                            myCmd.Parameters.AddWithValue("@Conditional", txtConditional.Text)
 
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
@@ -206,7 +207,7 @@ Partial Class Setting_Price_Base
 
                 If lblAction.Text = "Edit" Then
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE PriceBases SET Category=@Category, Method=@Method, ProductGroupId=@ProductGroupId, PriceGroupId=@PriceGroupId, Height=@Height, Width=@Width, Price=@Price WHERE Id=@Id", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("UPDATE PriceBases SET Category=@Category, Method=@Method, ProductGroupId=@ProductGroupId, PriceGroupId=@PriceGroupId, Height=@Height, Width=@Width, Price=@Price, Conditional=@Conditional WHERE Id=@Id", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", lblId.Text)
                             myCmd.Parameters.AddWithValue("@Category", ddlCategory.SelectedValue)
                             myCmd.Parameters.AddWithValue("@Method", ddlMethod.SelectedValue)
@@ -215,6 +216,7 @@ Partial Class Setting_Price_Base
                             myCmd.Parameters.AddWithValue("@Height", txtHeight.Text)
                             myCmd.Parameters.AddWithValue("@Width", txtWidth.Text)
                             myCmd.Parameters.AddWithValue("@Price", txtPrice.Text)
+                            myCmd.Parameters.AddWithValue("@Conditional", txtConditional.Text)
 
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()

@@ -192,6 +192,10 @@
                                 <asp:TextBox runat="server" ID="txtPrice" CssClass="form-control" placeholder="Price ..." autocomplete="off" Text="0"></asp:TextBox>
                             </div>
                         </div>
+                        <div class="col-6 form-group">
+                            <label class="form-label">Conditional</label>
+                            <asp:TextBox runat="server" ID="txtConditional" CssClass="form-control" placeholder="Conditional ..." autocomplete="off"></asp:TextBox>
+                        </div>
                     </div>
                     <div class="row mb-2" runat="server" id="divErrorProcess">
                         <div class="col-12">
