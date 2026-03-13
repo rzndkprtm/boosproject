@@ -353,7 +353,7 @@ Partial Class Order_Detail
 
             If msgErrorCancelOrder.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Canceled', CanceledDate=GETDATE(), ProductionDate=NULL, OnHoldDate=NULL, DownloadBOE=0 WHERE Id=@Id; UPDATE OrderShipments SET ShipmentNumber=NULL, ShipmentDate=NULL, ContainerNumber=NULL, Courier=NULL WHERE Id=@Id; UPDATE OrderInvoices SET InvoiceNumber=NULL, Collector=NULL, InvoiceDate=NULL, DueDate=NULL, Payment=0, PaymentDate=NULL, Amount=0 WHERE Id=@Id;", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Canceled', CanceledDate=GETDATE(), ProductionDate=NULL, OnHoldDate=NULL, DownloadBOE=0 WHERE Id=@Id; UPDATE OrderShipments SET ShipmentNumber=NULL, ShipmentDate=NULL, ContainerNumber=NULL, ContainerETA=NULL, Courier=NULL WHERE Id=@Id; UPDATE OrderInvoices SET InvoiceNumber=NULL, Collector=NULL, InvoiceDate=NULL, DueDate=NULL, Payment=0, PaymentDate=NULL, Amount=0 WHERE Id=@Id;", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
                         myCmd.Parameters.AddWithValue("@StatusDescription", txtCancelDescription.Text.Trim())
 
@@ -406,7 +406,7 @@ Partial Class Order_Detail
 
             Dim shipmentString As String = "INSERT INTO OrderShipments(Id) VALUES (@Id)"
             If lblOrderStatus.Text = "Shipped Out" Then
-                shipmentString = "UPDATE OrderShipments SET ShipmentNumber=NULL, ShipmentDate=NULL, ContainerNumber=NULL, Courier=NULL WHERE Id=@Id"
+                shipmentString = "UPDATE OrderShipments SET ShipmentNumber=NULL, ShipmentDate=NULL, ContainerNumber=NULL, ContainerETA=NULL, Courier=NULL WHERE Id=@Id"
             End If
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand(shipmentString, thisConn)
@@ -521,11 +521,12 @@ Partial Class Order_Detail
 
             If msgErrorShippedOrder.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Shipped Out' WHERE Id=@Id; UPDATE OrderShipments SET ShipmentNumber=@ShipmentNumber, ShipmentDate=@ShipmentDate, ContainerNumber=@ContainerNumber, Courier=@Courier WHERE Id=@Id", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Shipped Out' WHERE Id=@Id; UPDATE OrderShipments SET ShipmentNumber=@ShipmentNumber, ShipmentDate=@ShipmentDate, ContainerNumber=@ContainerNumber, ContainerETA=@ContainerETA, Courier=@Courier WHERE Id=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
                         myCmd.Parameters.AddWithValue("@ShipmentNumber", txtShipmentNumber.Text.Trim())
                         myCmd.Parameters.AddWithValue("@ShipmentDate", txtShipmentDate.Text)
                         myCmd.Parameters.AddWithValue("@ContainerNumber", txtContainerNumber.Text.Trim())
+                        myCmd.Parameters.AddWithValue("@ContainerETA", If(String.IsNullOrEmpty(txtContainerEta.Text), CType(DBNull.Value, Object), txtContainerEta.Text))
                         myCmd.Parameters.AddWithValue("@Courier", txtCourier.Text.Trim())
 
                         thisConn.Open()
@@ -2795,6 +2796,7 @@ Partial Class Order_Detail
         lblShipmentNumber.Text = "-"
         lblShipmentDate.Text = "-"
         lblContainerNumber.Text = "-"
+        lblContainerEta.Text = "-"
         lblCourier.Text = "-"
 
         If shipmentData IsNot Nothing Then
@@ -2806,6 +2808,11 @@ Partial Class Order_Detail
             If Not String.IsNullOrEmpty(shipmentData("ShipmentDate").ToString()) Then
                 lblShipmentDate.Text = Convert.ToDateTime(shipmentData("ShipmentDate")).ToString("dd MMM yyyy")
                 txtShipmentDate.Text = Convert.ToDateTime(shipmentData("ShipmentDate")).ToString("yyyy-MM-dd")
+            End If
+
+            If Not String.IsNullOrEmpty(shipmentData("ContainerEta").ToString()) Then
+                lblContainerEta.Text = Convert.ToDateTime(shipmentData("ContainerEta")).ToString("dd MMM yyyy")
+                txtContainerEta.Text = Convert.ToDateTime(shipmentData("ContainerEta")).ToString("yyyy-MM-dd")
             End If
 
             If Not String.IsNullOrEmpty(shipmentData("ContainerNumber").ToString()) Then

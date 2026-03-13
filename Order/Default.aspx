@@ -105,7 +105,7 @@
                                                  <asp:BoundField DataField="ProductionDate" HeaderText="Production" DataFormatString="{0:dd MMM yyyy}" />
                                                  <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="Shipment">
                                                      <ItemTemplate>
-                                                         <a class="btn btn-sm btn-secondary" href="#" data-bs-toggle="modal" data-bs-target="#modalShipment" onclick='<%# String.Format("return showShipment(`{0}`, `{1:dd MMM yyyy}`, `{2}`, `{3}`);", Eval("ShipmentNumber").ToString(), Eval("ShipmentDate"), Eval("ContainerNumber").ToString(), Eval("Courier").ToString()) %>'>Show</a>
+                                                         <a class="btn btn-sm btn-secondary" href="#" data-bs-toggle="modal" data-bs-target="#modalShipment" onclick='<%# String.Format("return showShipment(`{0}`, `{1:dd MMM yyyy}`, `{2}`, `{3:dd MMM yyyy}`, `{4}`);", Eval("ShipmentNumber").ToString(), Eval("ShipmentDate"), Eval("ContainerNumber").ToString(), Eval("ContainerETA"), Eval("Courier").ToString()) %>'>Show</a>
                                                      </ItemTemplate>
                                                  </asp:TemplateField>
                                                  <asp:TemplateField ItemStyle-Width="150px" ItemStyle-HorizontalAlign="Center">
@@ -217,12 +217,14 @@
                                 <th>Shipment Number</th>
                                 <th>Shipment Date</th>
                                 <th>Container Number</th>
+                                <th>Container ETA</th>
                                 <th>Courier</th>
                             </tr>
                             <tr>
                                 <td><span id="spanShipmentNumber"></span></td>
                                 <td><span id="spanShipmentDate"></span></td>
                                 <td><span id="spanContainerNumber"></span></td>
+                                <td><span id="spanContainerEta"></span></td>
                                 <td><span id="spanCourier"></span></td>
                             </tr>
                         </table>
@@ -316,6 +318,12 @@
                         <div class="col-12 form-group">
                             <label class="form-label">Container Number</label>
                             <asp:TextBox runat="server" ID="txtContainerNumber" CssClass="form-control" placeholder="Container Number ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Container ETA</label>
+                            <asp:TextBox runat="server" TextMode="Date" ID="txtContainerEta" CssClass="form-control" placeholder="Container ETA ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
                     <div class="row mb-2">
@@ -438,10 +446,11 @@
             }
         });
 
-        function showShipment(number, date, container, courier) {
+        function showShipment(number, date, container, coneta, courier) {
             document.getElementById("spanShipmentNumber").innerText = number;
             document.getElementById("spanShipmentDate").innerText = date;
             document.getElementById("spanContainerNumber").innerText = container;
+            document.getElementById("spanContainerEta").innerText = coneta;
             document.getElementById("spanCourier").innerText = courier;
         }
 
