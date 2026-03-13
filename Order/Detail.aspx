@@ -129,7 +129,7 @@
         </section>
 
         <section class="row">
-            <div class="col-12 col-sm-12 col-lg-7">
+            <div class="col-12 col-sm-12 col-lg-6">
                 <div class="card">
                     <div class="card-content">
                         <div class="card-body">
@@ -162,13 +162,19 @@
                             </div>
 
                             <div class="row mb-2">
-                                <div class="col-6 col-sm-6 col-lg-5 mb-2">
+                                <div class="col-4 col-sm-4 col-lg-4 mb-2">
+                                    <label>CreatedBy</label>
+                                    <br />
+                                    <asp:Label runat="server" ID="lblCreatedBy" Visible="false"></asp:Label>
+                                    <asp:Label runat="server" ID="lblCreatedName" CssClass="font-bold"></asp:Label>
+                                </div>
+                                <div class="col-4 col-sm-4 col-lg-4">
                                     <label>Order Status</label>
                                     <br />
                                     <asp:Label runat="server" ID="lblOrderStatus" CssClass="font-bold"></asp:Label>
                                 </div>
 
-                                <div class="col-6 col-sm-6 col-lg-7 mb-2">
+                                <div class="col-4 col-sm-4 col-lg-4">
                                     <label>Order Type</label>
                                     <br />
                                     <asp:Label runat="server" ID="lblOrderType" CssClass="font-bold"></asp:Label>
@@ -183,15 +189,8 @@
                                 </div>
                             </div>
 
-                            <div class="row">
-                                <div class="col-4">
-                                    <label>CreatedBy</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblCreatedBy" Visible="false"></asp:Label>
-                                    <asp:Label runat="server" ID="lblCreatedName" CssClass="font-bold"></asp:Label>
-                                </div>
-
-                                <div class="col-8" runat="server" id="divInternalNote">
+                            <div class="row" runat="server" id="divInternalNote">
+                                <div class="col-12">
                                     <label>Internal Note (Latest)</label>
                                     <br />
                                     <asp:Label runat="server" ID="lblInternalNote" CssClass="font-bold"></asp:Label>
@@ -202,44 +201,42 @@
                 </div>
             </div>
 
-            <div class="col-12 col-sm-12 col-lg-5">
+            <div class="col-12 col-sm-12 col-lg-6">
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
                             <div class="card-content">
                                 <div class="card-body">
-                                    <div class="row mb-1">
-                                        <div class="col-6 col-sm-6 col-lg-6">
+                                    <div class="row mb-2">
+                                        <div class="col-4 col-sm-4 col-lg-4">
                                             <label>Created Date</label>
                                             <br />
                                             <asp:Label runat="server" ID="lblCreatedDate" CssClass="font-bold"></asp:Label>
                                         </div>
-                                        <div class="col-6 col-sm-6 col-lg-6">
+                                        <div class="col-4 col-sm-4 col-lg-4">
                                             <label>Submitted Date</label>
                                             <br />
                                             <asp:Label runat="server" ID="lblSubmittedDate" CssClass="font-bold"></asp:Label>
                                         </div>
-                                    </div>
-                                    <div class="row mb-1">
-                                        <div class="col-6 col-sm-6 col-lg-6">
+                                        <div class="col-4 col-sm-4 col-lg-4">
                                             <label>Production Date</label>
                                             <br />
                                             <asp:Label runat="server" ID="lblProductionDate" CssClass="font-bold"></asp:Label>
                                         </div>
-                                        <div class="col-6 col-sm-6 col-lg-6">
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-4 col-sm-4 col-lg-4">
                                             <label>On Hold Date</label>
                                             <br />
                                             <asp:Label runat="server" ID="lblOnHoldDate" CssClass="font-bold"></asp:Label>
                                         </div>
-                                    </div>
-
-                                    <div class="row mb-1">
-                                        <div class="col-6 col-sm-6 col-lg-6">
+                                        <div class="col-4 col-sm-4 col-lg-4">
                                             <label>Canceled Date</label>
                                             <br />
                                             <asp:Label runat="server" ID="lblCanceledDate" CssClass="font-bold"></asp:Label>
                                         </div>
-                                        <div class="col-6 col-sm-6 col-lg-6">
+                                        <div class="col-4 col-sm-4 col-lg-4">
                                             <label>Completed Date</label>
                                             <br />
                                             <asp:Label runat="server" ID="lblCompletedDate" CssClass="font-bold"></asp:Label>
@@ -253,24 +250,40 @@
 
                 <div class="row">
                     <div class="col-12">
-                        <div class="card" runat="server" id="divPricing">
+                        <div class="card">
                             <div class="card-content">
                                 <div class="card-body">
-                                    <div class="row mb-3">
-                                        <div class="col-6 col-sm-6 col-lg-4">
-                                            <asp:Label runat="server" ID="lblPriceOrderTitle"></asp:Label>
+                                    <div class="row mb-2">
+                                        <div class="col-6">
+                                            <label>Shipment No</label>
                                             <br />
-                                            <asp:Label runat="server" ID="lblPriceOrder" CssClass="font-bold"></asp:Label>
+                                            <asp:Label runat="server" ID="lblShipmentNumber" CssClass="font-bold"></asp:Label>
                                         </div>
-                                        <div class="col-6 col-sm-6 col-lg-4">
-                                            <asp:Label runat="server" ID="lblGstTitle"></asp:Label>
+
+                                        <div class="col-6">
+                                            <label>Shipment Date</label>
                                             <br />
-                                            <asp:Label runat="server" ID="lblGst" CssClass="font-bold"></asp:Label>
+                                            <asp:Label runat="server" ID="lblShipmentDate" CssClass="font-bold"></asp:Label>
                                         </div>
-                                        <div class="col-12 col-sm-12 col-lg-4">
-                                            <asp:Label runat="server" ID="lblFinalPriceOrderTitle"></asp:Label>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <label>Container No</label>
                                             <br />
-                                            <asp:Label runat="server" ID="lblFinalPriceOrder" CssClass="font-bold"></asp:Label>
+                                            <asp:Label runat="server" ID="lblContainerNumber" CssClass="font-bold"></asp:Label>
+                                        </div>
+
+                                        <div class="col-4">
+                                            <label>Container ETA</label>
+                                            <br />
+                                            <asp:Label runat="server" ID="lblContainerEta" CssClass="font-bold"></asp:Label>
+                                        </div>
+
+                                        <div class="col-4">
+                                            <label>Courier</label>
+                                            <br />
+                                            <asp:Label runat="server" ID="lblCourier" CssClass="font-bold"></asp:Label>
                                         </div>
                                     </div>
                                 </div>
@@ -339,7 +352,7 @@
         </section>
 
         <section class="row">
-            <div class="col-12 col-sm-12 col-lg-6">
+            <div class="col-12 col-sm-12 col-lg-6" runat="server" id="divInvoicing">
                 <div class="card">
                     <div class="card-content">
                         <div class="card-body">
@@ -350,7 +363,7 @@
                                     <asp:Label runat="server" ID="lblInvoiceNumber" CssClass="font-bold"></asp:Label>
                                 </div>
 
-                                <div class="col-6 col-sm-6 col-lg-3">
+                                <div class="col-6 col-sm-6 col-lg-3 mb-2">
                                     <label>Invoiced Date</label>
                                     <br />
                                     <asp:Label runat="server" ID="lblInvoiceDate" CssClass="font-bold"></asp:Label>
@@ -374,35 +387,28 @@
                 </div>
             </div>
 
-            <div class="col-12 col-sm-12 col-lg-6">
+            <div class="col-12 col-sm-12 col-lg-6" runat="server" id="divPricing">
                 <div class="card">
                     <div class="card-content">
                         <div class="card-body">
                             <div class="row mb-3">
-                                <div class="col-6 col-sm-6 col-lg-3">
-                                    <label>Shipment No</label>
+                                <div class="col-6 col-sm-6 col-lg-4">
+                                    <asp:Label runat="server" ID="lblPriceOrderTitle"></asp:Label>
                                     <br />
-                                    <asp:Label runat="server" ID="lblShipmentNumber" CssClass="font-bold"></asp:Label>
+                                    <asp:Label runat="server" ID="lblPriceOrder" CssClass="font-bold"></asp:Label>
                                 </div>
-
-                                <div class="col-6 col-sm-6 col-lg-3">
-                                    <label>Shipment Date</label>
+                                <div class="col-6 col-sm-6 col-lg-4 mb-2">
+                                    <asp:Label runat="server" ID="lblGstTitle"></asp:Label>
                                     <br />
-                                    <asp:Label runat="server" ID="lblShipmentDate" CssClass="font-bold"></asp:Label>
+                                    <asp:Label runat="server" ID="lblGst" CssClass="font-bold"></asp:Label>
                                 </div>
-
-                                <div class="col-6 col-sm-6 col-lg-3">
-                                    <label>Container No</label>
+                                <div class="col-12 col-sm-12 col-lg-4">
+                                    <asp:Label runat="server" ID="lblFinalPriceOrderTitle"></asp:Label>
                                     <br />
-                                    <asp:Label runat="server" ID="lblContainerNumber" CssClass="font-bold"></asp:Label>
-                                </div>
-
-                                <div class="col-6 col-sm-6 col-lg-3">
-                                    <label>Courier</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblCourier" CssClass="font-bold"></asp:Label>
+                                    <asp:Label runat="server" ID="lblFinalPriceOrder" CssClass="font-bold"></asp:Label>
                                 </div>
                             </div>
+                            
                         </div>
                     </div>
                 </div>
@@ -775,6 +781,12 @@
                         <div class="col-12 form-group">
                             <label class="form-label">Container Number</label>
                             <asp:TextBox runat="server" ID="txtContainerNumber" CssClass="form-control" placeholder="Container Number ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Container ETA</label>
+                            <asp:TextBox runat="server" TextMode="Date" ID="txtContainerEta" CssClass="form-control"></asp:TextBox>
                         </div>
                     </div>
                     <div class="row mb-2">

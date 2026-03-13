@@ -138,24 +138,12 @@
                                         <span>Report</span>
                                     </a>
                                 </li>
-                                
-                                <li class="menu-item has-sub" runat="server" id="liSales">
-                                    <a href="javascript:void(0);" class='menu-link'>
+
+                                <li class="menu-item" runat="server" id="liSales">
+                                    <a runat="server" href="~/sales" class='menu-link'>
                                         <i class="bi bi-wallet-fill"></i>
                                         <span>Sales</span>
                                     </a>
-                                    <div class="submenu">
-                                        <div class="submenu-group-wrapper">
-                                            <ul class="submenu-group">
-                                                <li class="submenu-item">
-                                                    <a runat="server" href="~/sales/costing" class="submenu-link">Costing</a>
-                                                </li>
-                                                <li class="submenu-item">
-                                                    <a runat="server" href="~/sales/product" class="submenu-link">Product</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
                                 </li>
 
                                 <li class="menu-item" runat="server" id="liSettingQuote">

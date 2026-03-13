@@ -354,7 +354,7 @@ Public Class InvoiceClass
 
             leftTable.AddCell(CreateCell("Reference", True, Element.ALIGN_TOP))
             leftTable.AddCell(CreateCell(""))
-            leftTable.AddCell(CreateCell(orderId, False, Element.ALIGN_TOP))
+            leftTable.AddCell(CreateCell(reference, False, Element.ALIGN_TOP))
 
             leftTable.AddCell(CreateCell("ABN", True))
             leftTable.AddCell(CreateCell(""))
