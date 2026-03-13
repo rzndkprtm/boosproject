@@ -21,12 +21,6 @@
     </div>
 
     <div class="page-content">
-        <section class="row mb-4">
-            <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
-                <asp:Button runat="server" ID="btnEditHeader" CssClass="btn btn-secondary" Text="Create PDF" />
-            </div>
-        </section>
-
         <section class="row mb-3" runat="server" id="divError">
             <div class="col-12">
                 <div class="alert alert-danger">
@@ -71,10 +65,10 @@
                                     <div class="col-12 col-sm-12 col-lg-3">
                                         <label class="form-label">Date</label>
                                     </div>
-                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                    <div class="col-6 col-sm-6 col-lg-4 form-group">
                                         <asp:TextBox runat="server" ID="txtStartDate" CssClass="form-control" TextMode="Date"></asp:TextBox>
                                     </div>
-                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                    <div class="col-6 col-sm-6 col-lg-4 form-group">
                                         <asp:TextBox runat="server" ID="txtEndDate" CssClass="form-control" TextMode="Date"></asp:TextBox>
                                     </div>
                                 </div>
@@ -107,7 +101,7 @@
                             <div class="tab-content text-justify">
                                 <div class="tab-pane fade show active" id="list-sunday" role="tabpanel" aria-labelledby="list-sunday-list">
                                     <div class="row mt-3">
-                                        <div class="col-6">
+                                        <div class="col-12">
                                             <div class="table-responsive">
                                                 <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover" AutoGenerateColumns="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center"></asp:GridView>
                                             </div>
