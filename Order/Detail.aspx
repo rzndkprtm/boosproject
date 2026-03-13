@@ -351,8 +351,8 @@
             </div>
         </section>
 
-        <section class="row">
-            <div class="col-12 col-sm-12 col-lg-6" runat="server" id="divInvoicing">
+        <section class="row" runat="server" id="secPricing">
+            <div class="col-12 col-sm-12 col-lg-6">
                 <div class="card">
                     <div class="card-content">
                         <div class="card-body">
@@ -387,7 +387,7 @@
                 </div>
             </div>
 
-            <div class="col-12 col-sm-12 col-lg-6" runat="server" id="divPricing">
+            <div class="col-12 col-sm-12 col-lg-6">
                 <div class="card">
                     <div class="card-content">
                         <div class="card-body">
@@ -1554,6 +1554,39 @@
         </div>
     </div>
 
+    <div class="modal fade" id="modalCostingBuy" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header ">
+                    <h5 class="modal-title">JPMD Buy</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover mb-0">
+                             <thead>
+                                 <tr>
+                                     <th>Total Excl. GST</th>
+                                     <th>GST 10%</th>
+                                     <th>Total Incl. GST</th>
+                                 </tr>
+                             </thead>
+                             <tbody>
+                                 <tr>
+                                     <td><span runat="server" id="spanOrderBuy"></span></td>
+                                     <td><span runat="server" id="spanGstBuy"></span></td>
+                                     <td><span runat="server" id="spanTotalBuy"></span></td>
+                                 </tr>
+                             </tbody>
+                         </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal modal-blur fade" id="modalCosting" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -1692,7 +1725,7 @@
             "modalDetailQuote", "modalDownloadQuote",
             "modalMoreDownloadQuote", "modalMoreEmailQuote",
             "modalAddNote", "modalHistoryNote", "modalRecalculate",
-            "modalAddItem", "modalDeleteItem", "modalCosting", "modalEditCosting"
+            "modalAddItem", "modalDeleteItem", "modalCosting", "modalEditCosting", "modalCostingBuy"
         ].forEach(id => {
             document.getElementById(id).addEventListener("hide.bs.modal", () => {
                 document.activeElement.blur();
@@ -1901,6 +1934,10 @@
 
         function showService() {
             $("#modalService").modal("show");
+        }
+
+        function showCostingBuy() {
+            $("#modalCostingBuy").modal("show");
         }
 
         function showDeleteItem(id) {

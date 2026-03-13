@@ -2709,8 +2709,8 @@ Partial Class Order_Detail
     End Sub
 
     Protected Sub BindDataCosting(itemCount As Integer)
-        divPricing.Visible = False
-        If Session("PriceAccess") = "Yes" Then divPricing.Visible = True
+        secPricing.Visible = False
+        If Session("PriceAccess") = "Yes" Then secPricing.Visible = True
         lblPriceOrder.Text = "-"
         lblGst.Text = "-"
         lblFinalPriceOrder.Text = "-"
@@ -2725,19 +2725,37 @@ Partial Class Order_Detail
         End If
 
         If itemCount > 0 Then
-            Dim sumPrice As Decimal = orderClass.GetItemData_Decimal("SELECT SUM(SellPrice) AS SumPrice FROM OrderCostings WHERE HeaderId='" & lblHeaderId.Text & "' AND Type='Final'")
-            Dim gst As Decimal = sumPrice * 10 / 100
-            If lblCompanyId.Text = "3" Then gst = sumPrice * 11 / 100
-            Dim finaltotal As Decimal = sumPrice + gst
+            Dim priceSell As Decimal = orderClass.GetItemData_Decimal("SELECT SUM(SellPrice) AS SumPrice FROM OrderCostings WHERE HeaderId='" & lblHeaderId.Text & "' AND Type='Final'")
+            Dim gstSell As Decimal = priceSell * 10 / 100
+            If lblCompanyId.Text = "3" Then gstSell = priceSell * 11 / 100
+            Dim totalSell As Decimal = priceSell + gstSell
 
-            lblPriceOrder.Text = "$ " & sumPrice.ToString("N2", enUS)
-            lblGst.Text = "$ " & gst.ToString("N2", enUS)
-            lblFinalPriceOrder.Text = "$ " & finaltotal.ToString("N2", enUS)
+            lblPriceOrder.Text = "$ " & priceSell.ToString("N2", enUS)
+            lblGst.Text = "$ " & gstSell.ToString("N2", enUS)
+            lblFinalPriceOrder.Text = "$ " & totalSell.ToString("N2", enUS)
 
             If lblCompanyId.Text = "3" Then
-                lblPriceOrder.Text = "Rp " & sumPrice.ToString("N2", idIDR)
-                lblGst.Text = "Rp " & gst.ToString("N2", idIDR)
-                lblFinalPriceOrder.Text = "Rp " & finaltotal.ToString("N2", idIDR)
+                lblPriceOrder.Text = "Rp " & priceSell.ToString("N2", idIDR)
+                lblGst.Text = "Rp " & gstSell.ToString("N2", idIDR)
+                lblFinalPriceOrder.Text = "Rp " & totalSell.ToString("N2", idIDR)
+            End If
+
+            If lblCompanyId.Text = "2" Then
+                Dim priceBuy As Decimal = orderClass.GetItemData_Decimal("SELECT SUM(BuyPrice) AS BuyPrice FROM OrderCostings WHERE HeaderId='" & lblHeaderId.Text & "' AND Type='Final'")
+
+                Dim gstBuy As Decimal = priceBuy * 10 / 1000
+                Dim totalBuy As Decimal = priceBuy + gstBuy
+
+                spanOrderBuy.InnerText = "$ " & priceBuy.ToString("N2", enUS)
+                spanGstBuy.InnerText = "$ " & gstBuy.ToString("N2", enUS)
+                spanTotalBuy.InnerText = "$ " & totalBuy.ToString("N2", enUS)
+            End If
+        End If
+
+        If lblCompanyId.Text = "2" Then
+            If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse (Session("RoleName") = "Sales" AndAlso Session("LevelName") = "Leader") Then
+                secPricing.Attributes.Add("onclick", "showCostingBuy()")
+                secPricing.Style.Add("cursor", "pointer")
             End If
         End If
     End Sub
