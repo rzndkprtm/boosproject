@@ -388,7 +388,7 @@
             </div>
 
             <div class="col-12 col-sm-12 col-lg-6">
-                <div class="card">
+                <div class="card" runat="server" id="divPricing">
                     <div class="card-content">
                         <div class="card-body">
                             <div class="row mb-3">
