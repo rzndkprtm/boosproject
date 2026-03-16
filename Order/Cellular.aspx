@@ -146,7 +146,7 @@
                                                 <div class="row">
                                                     <div class="col-12">
                                                         <div class="divider divider-left-center">
-                                                            <div class="divider-text">Start Fabric Day</div>
+                                                            <div class="divider-text">Top Fabric</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -174,7 +174,7 @@
                                                 <div class="row">
                                                     <div class="col-12">
                                                         <div class="divider divider-left-center">
-                                                            <div class="divider-text">End Fabric Day</div>
+                                                            <div class="divider-text">Top Fabric</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -184,7 +184,7 @@
                                                 <div class="row">
                                                     <div class="col-12">
                                                         <div class="divider divider-left-center">
-                                                            <div class="divider-text">Start Fabric Night</div>
+                                                            <div class="divider-text">Bottom Fabric</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -210,7 +210,7 @@
                                                 <div class="row mb-4">
                                                     <div class="col-12">
                                                         <div class="divider divider-left-center">
-                                                            <div class="divider-text">End Fabric Night</div>
+                                                            <div class="divider-text">Bottom Fabric</div>
                                                         </div>
                                                     </div>
                                                 </div>

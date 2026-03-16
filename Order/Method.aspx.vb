@@ -1328,17 +1328,23 @@ Partial Class Order_Method
             Return "ROOM TO INSTALL IS REQUIRED AND MUST NOT CONTAIN: , & ` ' &= &+ !"
         End If
         If String.IsNullOrEmpty(data.mounting) Then Return "MOUNTING IS REQUIRED !"
-        If String.IsNullOrEmpty(data.fabrictype) Then Return "FABRIC TYPE IS REQUIRED !"
-        If String.IsNullOrEmpty(data.fabriccolour) Then Return "FABRIC COLOUR IS REQUIRED !"
+        If String.IsNullOrEmpty(data.fabrictype) Then
+            If blindName = "Day & Night" Then Return "TOP FABRIC TYPE IS REQUIRED !"
+            Return "FABRIC TYPE IS REQUIRED !"
+        End If
+        If String.IsNullOrEmpty(data.fabriccolour) Then
+            If blindName = "Day & Night" Then Return "TOP FABRIC COLOUR IS REQUIRED !"
+            Return "FABRIC COLOUR IS REQUIRED !"
+        End If
 
         If blindName = "Day & Night" Then
-            If String.IsNullOrEmpty(data.fabrictypeb) Then Return "FABRIC TYPE FOR DAY & NIGHT IS REQUIRED !"
-            If String.IsNullOrEmpty(data.fabriccolourb) Then Return "FABRIC COLOUR FOR DAY & NIGHT IS REQUIRED !"
+            If String.IsNullOrEmpty(data.fabrictypeb) Then Return "BOTTOM FABRIC TYPE IS REQUIRED !"
+            If String.IsNullOrEmpty(data.fabriccolourb) Then Return "BOTTOM FABRIC COLOUR IS REQUIRED !"
             If Not factory = factoryB Then
                 If factory = "Regular" Then
-                    Return "THE FIRST FABRIC SELECTED IS <b>REGULAR</b>.<br />PLEASE CHOOSE <b>REGULAR</b> AS WELL FOR THE SECOND FABRIC. !"
+                    Return "THE TOP FABRIC SELECTED IS <b>REGULAR</b>.<br />PLEASE CHOOSE <b>REGULAR</b> AS WELL FOR THE BOTTOM FABRIC. !"
                 End If
-                Return "THE FIRST FABRIC SELECTED IS <b>EXPRESS</b>.<br />PLEASE CHOOSE <b>EXPRESS</b> AS WELL FOR THE SECOND FABRIC. !"
+                Return "THE TOP FABRIC SELECTED IS <b>EXPRESS</b>.<br />PLEASE CHOOSE <b>EXPRESS</b> AS WELL FOR THE BOTTOM FABRIC. !"
             End If
         End If
 
