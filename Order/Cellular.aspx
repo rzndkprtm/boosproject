@@ -173,9 +173,7 @@
                                             <div id="divdays">
                                                 <div class="row">
                                                     <div class="col-12">
-                                                        <div class="divider divider-left-center">
-                                                            <div class="divider-text">Top Fabric</div>
-                                                        </div>
+                                                        <hr />
                                                     </div>
                                                 </div>
                                             </div>
@@ -209,9 +207,7 @@
 
                                                 <div class="row mb-4">
                                                     <div class="col-12">
-                                                        <div class="divider divider-left-center">
-                                                            <div class="divider-text">Bottom Fabric</div>
-                                                        </div>
+                                                        <hr />
                                                     </div>
                                                 </div>
                                             </div>
