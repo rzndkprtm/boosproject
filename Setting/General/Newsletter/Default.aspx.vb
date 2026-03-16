@@ -1,4 +1,5 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data
+Imports System.Data.SqlClient
 
 Partial Class Setting_General_Newsletter_Default
     Inherits Page
@@ -86,6 +87,48 @@ Partial Class Setting_General_Newsletter_Default
         End Try
     End Sub
 
+    Protected Sub btnActive_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim thisId As String = txtIdActive.Text
+
+            Dim thisCompany As String = settingClass.GetItemData("SELECT CompanyId FROM Newsletters WHERE Id='" & thisId & "'")
+
+            Dim active As Integer = 1
+            If txtActive.Text = "1" Then : active = 0 : End If
+
+            Dim thisString As String = "UPDATE Newsletters SET Active=@Active WHERE Id=@Id"
+            If active = 1 Then
+                thisString = "UPDATE Newsletters SET Active=0 WHERE CompanyId=@CompanyId;UPDATE Newsletters SET Active=@Active WHERE Id=@Id;"
+            End If
+
+            Using thisConn As New SqlConnection(myConn)
+                Using myCmd As SqlCommand = New SqlCommand(thisString, thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", thisId)
+                    myCmd.Parameters.AddWithValue("@CompanyId", thisCompany)
+                    myCmd.Parameters.AddWithValue("@Active", active)
+
+                    thisConn.Open()
+                    myCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Dim activeDesc As String = "Newsletter Has Been Activated"
+            If active = 0 Then activeDesc = "Newsletter Has Been Deactivated"
+
+            Dim dataLog As Object() = {"Newsletter", thisId, Session("LoginId").ToString(), activeDesc}
+            settingClass.Logs(dataLog)
+
+            Session("SearchNewsletter") = txtSearch.Text
+            Response.Redirect("~/setting/general/newsletter", False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
     Protected Sub BindData(searchText As String)
         Session("SearchNewsletter") = String.Empty
         Try
@@ -110,6 +153,11 @@ Partial Class Setting_General_Newsletter_Default
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
     End Sub
+
+    Protected Function TextActive(active As Boolean) As String
+        If active = True Then Return "Deactivate"
+        Return "Activate"
+    End Function
 
     Protected Function PageAction(action As String) As Boolean
         Try

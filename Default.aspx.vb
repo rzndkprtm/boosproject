@@ -15,24 +15,29 @@ Partial Class _Default
         End If
 
         If Not IsPostBack Then
+            lblError.Text = String.Empty
             BindData()
         End If
     End Sub
 
     Protected Sub BindData()
         Try
-
             If Session("CompanyId") = "3" OrElse Session("CompanyId") = "5" Then
                 Response.Redirect("~/order", False)
                 Exit Sub
             End If
 
-            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM Newsletters WHERE CompanyId='" & Session("CompanyId") & "' Active=1")
-            If thisData Is Nothing Then
-                Exit Sub
-            End If
+            secDefault.Visible = True
+            secNewsletter.Visible = False
 
-            'imgNewsletter.ImageUrl = thisData("Link").ToString()
+            If Session("CompanyId") = "3" Then
+                secNewsletter.Visible = True
+                Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM Newsletters WHERE CompanyId='" & Session("CompanyId") & "' AND Active=1")
+                If thisData Is Nothing Then
+                    Exit Sub
+                End If
+                imgNewsletter.ImageUrl = thisData("Link").ToString()
+            End If
         Catch ex As Exception
             If Session("RoleName") = "Developer" Then
                 lblError.Text = ex.ToString()

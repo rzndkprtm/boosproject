@@ -502,5 +502,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/WebOrders/Aluminium.js?v=2.0.0"></script>
+    <script src="/Scripts/WebOrders/Aluminium.js?v=2.0.1"></script>
 </asp:Content>

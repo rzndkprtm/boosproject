@@ -5,25 +5,28 @@
         <h3>Home Page</h3>
     </div>
     <div class="page-content">
-        <section class="row">
+        <section class="col-12" runat="server" id="secDefault">
             <div class="col-12">
-                <%--<div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Newsletter</h3>
-                    </div>
-                    <div class="card-content">
-                        <div class="card-body">
-                            <br />
-                            <br />
-                            <br />
-                            <br />
-                            <br />
-                        </div>
-                    </div>
-                    <div class="card-footer text-center"></div>
-                </div>--%>
-                <%--<img class="w-100" src="http://ordersblindonline.com/assets/newsletter/panorama.JPG" />--%>
-                <asp:Image runat="server" CssClass="w-100" ID="imgNewsletter" ImageUrl="~/assets/newsletter/ramadhan.png" />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+            </div>
+        </section>
+        <section class="row" runat="server" id="secNewsletter">
+            <div class="col-12">
+                <asp:Image runat="server" CssClass="w-100" ID="imgNewsletter" />
                 <asp:Label runat="server" ID="lblError"></asp:Label>
             </div>
         </section>

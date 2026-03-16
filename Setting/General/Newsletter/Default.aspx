@@ -77,6 +77,9 @@
                                                                 <asp:LinkButton runat="server" ID="linkPreview" CssClass="dropdown-item" Text="Preview" CommandName="Preview" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                             </li>
                                                             <li>
+                                                                <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalActive" onclick='<%# String.Format("return showActive(`{0}`, `{1}`);", Eval("Id").ToString(), Convert.ToInt32(Eval("Active"))) %>'><%# TextActive(Eval("Active")) %></a>
+                                                            </li>
+                                                            <li runat="server">
                                                                 <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                             </li>
                                                             <li>
@@ -117,6 +120,27 @@
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnDelete" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDelete_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade text-center" id="modalActive" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-danger">
+                    <h5 class="modal-title white" id="titleActive"></h5>
+                </div>
+
+                <div class="modal-body text-center py-4">
+                    <asp:TextBox runat="server" ID="txtIdActive" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtActive" style="display:none;"></asp:TextBox>
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                </div>
+
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnActive" CssClass="btn btn-danger" Text="Confirm" OnClick="btnActive_Click" />
                 </div>
             </div>
         </div>
@@ -175,6 +199,19 @@
             document.getElementById("<%=txtIdDelete.ClientID %>").value = id;
         }
 
+        function showActive(id, active) {
+            document.getElementById("<%=txtIdActive.ClientID %>").value = id;
+            document.getElementById("<%=txtActive.ClientID %>").value = active;
+
+            let title = "";
+            if (active === "1") {
+                title = "Deactivate Newsletter";
+            } else {
+                title = "Activate Newsletter";
+            }
+            document.getElementById("titleActive").innerHTML = title;
+        }
+
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
             $("#tblLogs tbody").html("");
@@ -209,7 +246,7 @@
             });
         }
 
-        ["modalDelete", "modalLog"].forEach(function (id) {
+        ["modalDelete", "modalActive", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
