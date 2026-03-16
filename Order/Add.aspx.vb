@@ -325,7 +325,7 @@ Partial Class Order_Add
                                 Exit For
                             End If
 
-                            Dim tubeId As String = "0" : Dim controlId As String = "0"
+                            Dim tubeId As String = "9" : Dim controlId As String = "17"
                             Dim colourId As String = orderClass.GetItemData("SELECT Id FROM ProductColours WHERE Name='" & colour & "'")
 
                             If String.IsNullOrEmpty(colourId) Then
@@ -469,7 +469,6 @@ Partial Class Order_Add
                         If blindLower.Contains("basswood") OrElse blindLower.Contains("ultraslat") Then
                             designId = orderClass.GetItemData("SELECT Id FROM Designs WHERE Name='Venetian Blind'")
 
-
                             Dim blindName As String = blindType
                             If ddlCustomer.SelectedValue = "127" Then
                                 blindName = Regex.Replace(blindType, "\bVenetian\b", "", RegexOptions.IgnoreCase).Trim()
@@ -531,7 +530,7 @@ Partial Class Order_Add
                                 Exit For
                             End If
 
-                            Dim tubeId As String = "0" : Dim controlId As String = "0"
+                            Dim tubeId As String = "9" : Dim controlId As String = "17"
                             Dim colourId As String = orderClass.GetItemData("SELECT Id FROM ProductColours WHERE Name='" & colour & "'")
 
                             If String.IsNullOrEmpty(colourId) Then
