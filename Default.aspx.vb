@@ -30,7 +30,7 @@ Partial Class _Default
             secDefault.Visible = True
             secNewsletter.Visible = False
 
-            If Session("CompanyId") = "3" Then
+            If Session("CompanyId") = "2" Then
                 secNewsletter.Visible = True
                 Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM Newsletters WHERE CompanyId='" & Session("CompanyId") & "' AND Active=1")
                 If thisData Is Nothing Then
