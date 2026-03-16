@@ -3554,7 +3554,7 @@ Partial Class Order_Method
             If String.IsNullOrEmpty(data.controllengthvalue) Then Return "CONTROL LENGTH VALUE IS REQUIRED !"
             If Not Integer.TryParse(data.controllengthvalue, controllength) OrElse controllength <= 0 Then Return "PLEASE CHECK YOUR CONTROL LENGTH ORDER !"
 
-            If controlName = "Wand" Then Return "MAXIMUM WAND LENGTH IS 1000MM !"
+            If controlName = "Wand" AndAlso controllength > 1000 Then Return "MAXIMUM WAND LENGTH IS 1000MM !"
         End If
 
         If blindName = "Complete Set" OrElse blindName = "Slat Only" Then
