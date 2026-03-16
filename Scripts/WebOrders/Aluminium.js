@@ -383,7 +383,7 @@ function bindColourType(blindType) {
             return;
         }
 
-        const listData = { type: "ColourType", blindtype: blindType, companydetailid: companyDetailId, tubetype: "0", controltype: "0", action: itemAction };
+        const listData = { type: "ColourType", blindtype: blindType, companydetailid: companyDetailId, tubetype: "9", controltype: "17", action: itemAction };
 
         $.ajax({
             type: "POST",

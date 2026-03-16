@@ -6,7 +6,7 @@
 <head runat="server">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%: Page.Title %> - <%: Session("CompanyName") %></title>
+    <title><%: String.Format("{0}{1}", Page.Title, If(String.IsNullOrEmpty(TryCast(Session("CompanyName"), String)), "", " - " & Session("CompanyName"))) %></title>
 
     <link rel="stylesheet" href="/Assets/vendors/choices.js/choices.min.css" />
     <link rel="stylesheet" href="/Assets/css/bootstrap.css" />
@@ -173,11 +173,8 @@
                                                         <li class="subsubmenu-item" runat="server" id="liGeneralXero">
                                                             <a runat="server" href="~/setting/general/xero" class="subsubmenu-link">Xero</a>
                                                         </li>
-                                                        <li class="subsubmenu-item" runat="server" id="liGeneralRole">
-                                                            <a runat="server" href="~/setting/general/role" class="subsubmenu-link">Role Access</a>
-                                                        </li>
-                                                        <li class="subsubmenu-item" runat="server" id="liGeneralLevel">
-                                                            <a runat="server" href="~/setting/general/level" class="subsubmenu-link">Level Access</a>
+                                                        <li class="subsubmenu-item" runat="server" id="liGeneralLoginAccess">
+                                                            <a runat="server" href="~/setting/general/loginaccess" class="subsubmenu-link">Login Access</a>
                                                         </li>
                                                         <li class="subsubmenu-item" runat="server" id="liGeneralNewsletter">
                                                             <a runat="server" href="~/setting/general/newsletter" class="subsubmenu-link">Newsletter</a>

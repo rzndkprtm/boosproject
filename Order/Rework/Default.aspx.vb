@@ -69,8 +69,8 @@ Partial Class Order_Rework_Default
             ElseIf e.CommandName = "ToOrder" Then
                 MessageError(False, String.Empty)
                 Try
-                    Session("headerId") = dataId
-                    Response.Redirect("~/order/detail", False)
+                    Dim url As String = String.Format("~/order/detail?orderid={0}", dataId)
+                    Response.Redirect(url, False)
                 Catch ex As Exception
                     MessageError(True, ex.ToString())
                     If Not Session("RoleName") = "Developer" Then

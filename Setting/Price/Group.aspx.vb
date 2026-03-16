@@ -31,6 +31,8 @@ Partial Class Setting_Price_Group
             lblAction.Text = "Add"
             titleProcess.InnerText = "Add Price Group"
 
+            txtName.Enabled = True
+
             BindCompany()
 
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
@@ -78,6 +80,9 @@ Partial Class Setting_Price_Group
                     If myData Is Nothing Then Exit Sub
 
                     BindCompany(True)
+
+                    txtName.Enabled = False
+                    If Session("RoleName") = "Developer" Then txtName.Enabled = True
 
                     txtName.Text = myData("Name").ToString()
                     ddlType.SelectedValue = myData("Type").ToString()
@@ -214,7 +219,7 @@ Partial Class Setting_Price_Group
                 thisString = "SELECT * FROM Companys ORDER BY Id ASC"
             End If
             ddlCompany.DataSource = settingClass.GetDataTable(thisString)
-            ddlCompany.DataTextField = "Name"
+            ddlCompany.DataTextField = "Alias"
             ddlCompany.DataValueField = "Id"
             ddlCompany.DataBind()
 

@@ -68,22 +68,27 @@ Public Partial Class SiteMaster
 
                 Dim companyId As String = myData("CompanyId").ToString()
                 Dim companyDetailId As String = myData("CompanyDetailId").ToString()
-                Dim companyActive As Boolean = myData("CompanyActive")
-                Dim customerActive As Boolean = myData("CustomerActive")
+
+
                 Dim loginActive As Boolean = myData("Active")
                 Dim roleActive As Boolean = myData("RoleActive")
                 Dim levelActive As Boolean = myData("LevelActive")
                 Dim resetLogin As Boolean = myData("ResetLogin")
                 Dim personalEmail As String = myData("Email").ToString()
 
-                If customerActive = False Then
-                    Response.Redirect("~/error", False)
-                    Exit Sub
-                End If
+                If Not Session("RoleName") = "Developer" Then
+                    Dim customerActive As Boolean = myData("CustomerActive")
+                    Dim companyActive As Boolean = myData("CompanyActive")
 
-                If companyActive = False Then
-                    Response.Redirect("~/error/maintenance", False)
-                    Exit Sub
+                    If customerActive = False Then
+                        Response.Redirect("~/error", False)
+                        Exit Sub
+                    End If
+
+                    If companyActive = False Then
+                        Response.Redirect("~/error/maintenance", False)
+                        Exit Sub
+                    End If
                 End If
 
                 If roleActive = False Then
@@ -96,9 +101,7 @@ Public Partial Class SiteMaster
                     Exit Sub
                 End If
 
-                If companyId = "1" Then
-                    imgLogo.ImageUrl = "~/Assets/images/logo/general.jpg?v=1.0.0"
-                End If
+                imgLogo.ImageUrl = "~/Assets/images/logo/general.jpg?v=1.0.0"
                 If companyId = "2" Then
                     imgLogo.ImageUrl = "~/Assets/images/logo/jpmdirect.jpg?v=1.0.0"
                 End If
@@ -139,8 +142,7 @@ Public Partial Class SiteMaster
             liGeneralCompany.Visible = False
             liGeneralMailing.Visible = False
             liGeneralXero.Visible = False
-            liGeneralRole.Visible = False
-            liGeneralLevel.Visible = False
+            liGeneralLoginAccess.Visible = False
             liGeneralNewsletter.Visible = False
             liGeneralTutorial.Visible = False
             liGeneralAccess.Visible = False
@@ -183,8 +185,7 @@ Public Partial Class SiteMaster
                 liGeneralCompany.Visible = True
                 liGeneralMailing.Visible = True
                 liGeneralXero.Visible = True
-                liGeneralRole.Visible = True
-                liGeneralLevel.Visible = True
+                liGeneralLoginAccess.Visible = True
                 liGeneralNewsletter.Visible = True
                 liGeneralTutorial.Visible = True
                 liGeneralAccess.Visible = True

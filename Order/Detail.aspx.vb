@@ -229,12 +229,16 @@ Partial Class Order_Detail
             orderClass.Logs(dataLog)
 
             Dim mailingClass As New MailingClass
-
-            If cashSale = False Then
-                mailingClass.ProductionOrder(lblHeaderId.Text)
+            If lblCompanyId.Text = "2" Then
+                If cashSale = False Then
+                    mailingClass.ProductionOrder(lblHeaderId.Text)
+                End If
+                If cashSale = True Then
+                    mailingClass.NewOrder_Proforma(lblHeaderId.Text)
+                End If
             End If
-            If cashSale = True Then
-                mailingClass.NewOrder_Proforma(lblHeaderId.Text)
+            If lblCompanyId.Text = "3" Then
+                mailingClass.NewOrder(lblHeaderId.Text)
             End If
 
             Dim checkPrinting As Integer = orderClass.GetItemData_Integer("SELECT COUNT(*) FROM OrderDetails WHERE HeaderId='" & lblHeaderId.Text & "' AND (NULLIF(LTRIM(RTRIM(Printing)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingB)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingC)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingD)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingE)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingF)),'') IS NOT NULL)")
@@ -277,6 +281,11 @@ Partial Class Order_Detail
                     myCmd.ExecuteNonQuery()
                 End Using
             End Using
+
+            If lblCompanyId.Text = "2" Then
+                Dim mailingClass As New MailingClass
+                mailingClass.ProductionOrder(lblHeaderId.Text)
+            End If
 
             dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), "New Order"}
             orderClass.Logs(dataLog)
@@ -402,6 +411,16 @@ Partial Class Order_Detail
             If lblCompanyId.Text = "2" Then
                 Dim salesClass As New SalesClass
                 salesClass.RefreshData()
+
+                If lblOrderStatus.Text = "Payment Received" Then
+                    Dim mailingClass As New MailingClass
+                    mailingClass.ProductionOrder(lblHeaderId.Text)
+                End If
+            End If
+
+            If lblCompanyId.Text = "3" Then
+                Dim mailingClass As New MailingClass
+                mailingClass.ProductionOrder(lblHeaderId.Text)
             End If
 
             Dim shipmentString As String = "INSERT INTO OrderShipments(Id) VALUES (@Id)"

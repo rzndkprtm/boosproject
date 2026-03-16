@@ -336,7 +336,7 @@ function bindControlType(blindType) {
             return;
         }
 
-        let listData = { type: "ControlType", companydetailid: companyDetailId, blindtype: blindType, tubetype: "0", action: itemAction };
+        let listData = { type: "ControlType", companydetailid: companyDetailId, blindtype: blindType, tubetype: "9", action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -399,7 +399,7 @@ function bindColourType(blindType, controlType) {
             return;
         }
 
-        const listData = { type: "ColourType", companydetailid: companyDetailId, blindtype: blindType, tubetype: "0", controltype: controlType, action: itemAction };
+        const listData = { type: "ColourType", companydetailid: companyDetailId, blindtype: blindType, tubetype: "9", controltype: controlType, action: itemAction };
 
         $.ajax({
             type: "POST",
