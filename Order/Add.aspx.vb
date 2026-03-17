@@ -1312,31 +1312,19 @@ Partial Class Order_Add
 
                         If blindType = "Complete Set" Then
                             controlLength = "Standard"
+                            controlLengthValue = Math.Ceiling(drop * 2 / 3)
                             If controlType = "Wand" Then
-                                wandLengthValue = Math.Ceiling(drop * 2 / 3)
-                                If wandLengthValue > 1000 Then wandLengthValue = 1000
-                            End If
-                            If controlType = "Chain" Then
-                                controlLengthValue = Math.Ceiling(drop * 2 / 3)
+                                If controlLengthValue > 1000 Then controlLengthValue = 1000
                             End If
 
                             If Not String.IsNullOrEmpty(controlLengthText) AndAlso Not controlLengthText.ToLower().Contains("standard") AndAlso Not controlLengthText.ToLower().Contains("std") Then
                                 controlLength = "Custom"
                                 controlLengthText = controlLengthText.Replace("mm", "")
 
-                                If controlType = "Chain" Then
-                                    If Not Integer.TryParse(controlLengthText, controlLengthValue) OrElse controlLengthValue < 0 Then
-                                        MessageError(True, "PLEASE CHECK YOUR CORD LENGTH !")
-                                        Exit For
-                                    End If
+                                If Not Integer.TryParse(controlLengthText, controlLengthValue) OrElse controlLengthValue < 0 Then
+                                    MessageError(True, "PLEASE CHECK YOUR CONTROL LENGTH !")
+                                    Exit For
                                 End If
-                                If controlType = "Wand" Then
-                                    If Not Integer.TryParse(controlLengthText, wandLengthValue) OrElse wandLengthValue < 0 Then
-                                        MessageError(True, "PLEASE CHECK YOUR WAND LENGTH !")
-                                        Exit For
-                                    End If
-                                End If
-
                             End If
                         End If
 
@@ -1358,6 +1346,10 @@ Partial Class Order_Add
                             End If
                             If bracketExtension = "Extension Bracket" Then
                                 bracketExtension = "Yes"
+                            End If
+
+                            If controlType = "Wand" Then
+                                wandLengthValue = controlLengthValue
                             End If
 
                             Dim groupName As String = String.Format("Vertical - {0} - {1}", blindType, tubeName)
