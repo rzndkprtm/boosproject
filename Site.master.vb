@@ -69,7 +69,6 @@ Public Partial Class SiteMaster
                 Dim companyId As String = myData("CompanyId").ToString()
                 Dim companyDetailId As String = myData("CompanyDetailId").ToString()
 
-
                 Dim loginActive As Boolean = myData("Active")
                 Dim roleActive As Boolean = myData("RoleActive")
                 Dim levelActive As Boolean = myData("LevelActive")
@@ -107,6 +106,9 @@ Public Partial Class SiteMaster
                 End If
                 If companyId = "3" Then
                     imgLogo.ImageUrl = "~/Assets/images/logo/bigblinds.png?v=1.0.0"
+                End If
+                If companyId = "4" Then
+                    imgLogo.ImageUrl = "~/Assets/images/logo/sunlight.jpg?v=1.0.0"
                 End If
 
                 Using thisConn As New SqlConnection(myConn)
