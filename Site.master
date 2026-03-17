@@ -167,21 +167,27 @@
                                                         <li class="subsubmenu-item" runat="server" id="liGeneralCompany">
                                                             <a runat="server" href="~/setting/general/company" class="subsubmenu-link">Company</a>
                                                         </li>
+
                                                         <li class="subsubmenu-item" runat="server" id="liGeneralMailing">
                                                             <a runat="server" href="~/setting/general/mailing" class="subsubmenu-link">Mailing</a>
                                                         </li>
+
                                                         <li class="subsubmenu-item" runat="server" id="liGeneralXero">
                                                             <a runat="server" href="~/setting/general/xero" class="subsubmenu-link">Xero</a>
                                                         </li>
+
                                                         <li class="subsubmenu-item" runat="server" id="liGeneralLoginAccess">
                                                             <a runat="server" href="~/setting/general/loginaccess" class="subsubmenu-link">Login Access</a>
                                                         </li>
+
                                                         <li class="subsubmenu-item" runat="server" id="liGeneralNewsletter">
                                                             <a runat="server" href="~/setting/general/newsletter" class="subsubmenu-link">Newsletter</a>
                                                         </li>
+
                                                         <li class="subsubmenu-item" runat="server" id="liGeneralTutorial">
                                                             <a runat="server" href="~/setting/general/tutorial" class="subsubmenu-link">Tutorial</a>
                                                         </li>
+
                                                         <li class="subsubmenu-item" runat="server" id="liGeneralAccess">
                                                             <a runat="server" href="~/setting/general/action" class="subsubmenu-link">Action Access</a>
                                                         </li>
@@ -194,27 +200,35 @@
                                                         <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/customer" class="subsubmenu-link">Customer</a>
                                                         </li>
+
                                                         <li class="subsubmenu-item">
                                                             <hr class="dropdown-divider">
                                                         </li>
+
                                                         <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/customer/contact" class="subsubmenu-link">Customer Contact</a>
                                                         </li>
+
                                                         <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/customer/address" class="subsubmenu-link">Customer Address</a>
                                                         </li>
+
                                                         <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/customer/business" class="subsubmenu-link">Customer Business</a>
                                                         </li>
+
                                                         <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/customer/login" class="subsubmenu-link">Customer Login</a>
                                                         </li>
+
                                                         <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/customer/discount" class="subsubmenu-link">Customer Discount</a>
                                                         </li>
+
                                                         <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/customer/promo" class="subsubmenu-link">Customer Promo</a>
                                                         </li>
+
                                                         <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/customer/productaccess" class="subsubmenu-link">Customer Product Access</a>
                                                         </li>
@@ -231,6 +245,7 @@
                                                         <li class="subsubmenu-item" runat="server" id="liSpecificationDesign">
                                                             <a runat="server" href="~/setting/specification/designtype" class="subsubmenu-link">Design Type</a>
                                                         </li>
+
                                                         <li class="subsubmenu-item" runat="server" id="liSpecificationBlind">
                                                             <a runat="server" href="~/setting/specification/blindtype" class="subsubmenu-link">Blind Type</a>
                                                         </li>
@@ -300,14 +315,13 @@
                                                         <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/additional/query" class="subsubmenu-link">Query</a>
                                                         </li>
+
                                                         <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/additional/log" class="subsubmenu-link">Log</a>
                                                         </li>
+
                                                         <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/additional/delete" class="subsubmenu-link">Delete File</a>
-                                                        </li>
-                                                        <li class="subsubmenu-item">
-                                                            <a runat="server" href="~/setting/additional/email" class="subsubmenu-link">Send Email</a>
                                                         </li>
                                                     </ul>
                                                 </li>

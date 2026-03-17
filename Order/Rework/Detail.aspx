@@ -128,7 +128,7 @@
                                 <div class="card-header">
                                     <h3 class="card-title">Your Item</h3>
                                 </div>
-
+                                
                                 <div class="card-body">
                                     <div class="accordion" id="accordionExample">
                                         <asp:Repeater runat="server" ID="rptRework" OnItemDataBound="rptRework_ItemDataBound">
@@ -149,7 +149,15 @@
                                                                         </div>
                                                                         <div class="col-12 col-sm-12 col-lg-8">
                                                                             <%# Eval("Category") %>
-                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="row mb-3">
+                                                                        <div class="col-12 col-sm-12 col-lg-3">
+                                                                            <label>Install Date :</label>
+                                                                        </div>
+                                                                        <div class="col-12 col-sm-12 col-lg-8">
+                                                                            <%# Eval("InstallDate", "{0:dd MMM yyyy}") %>
                                                                         </div>
                                                                     </div>
 
@@ -171,7 +179,7 @@
                                                                        class="btn btn-sm btn-secondary" 
                                                                        data-bs-toggle="modal" 
                                                                        data-bs-target="#modalUpdateItem" 
-                                                                       onclick="showUpdateItem('<%# Eval("Id") %>','<%# Eval("Category") %>', '<%# HttpUtility.JavaScriptStringEncode(Eval("Description").ToString()) %>')">
+                                                                       onclick="showUpdateItem('<%# Eval("Id") %>','<%# Eval("Category") %>', '<%# Eval("InstallDate","{0:yyyy-MM-dd}") %>', '<%# HttpUtility.JavaScriptStringEncode(Eval("Description").ToString()) %>')">
                                                                         Update Item
                                                                     </a>
                                                                     <a href="javascript:void(0)" 
@@ -226,21 +234,18 @@
                                                                 </div>
                                                             </div>
 
-                                                            <div runat="server" class="row mb-3" visible='<%# VisibleDetailRework() %>'>
-                                                                <div class="col-3">
-                                                                    <a href="javascript:void(0)" 
-                                                                       class="btn btn-sm btn-primary" 
-                                                                       data-bs-toggle="modal" 
-                                                                       data-bs-target="#modalUpload" 
-                                                                       onclick="showUpload('<%# Eval("Id") %>')">
-                                                                        Upload New File
-                                                                    </a>
+                                                            <div class="row mb-3">
+                                                                <div class="col-8">
+                                                                    <div runat="server" visible='<%# VisibleDetailRework() %>'>
+                                                                        <a href="javascript:void(0)" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalUpload" onclick="showUpload('<%# Eval("Id") %>')">Upload New File</a>
+                                                                    </div>
+                                                                    <div runat="server" visible='<%# VisibleDownloadZip() %>'>
+                                                                        <asp:LinkButton runat="server" CssClass="btn btn-sm btn-success ms-2" Text="Download All" CommandName="DownloadZip" CommandArgument='<%# Eval("Id") %>' OnCommand="DownloadZip_Command"></asp:LinkButton>
+                                                                    </div>
                                                                 </div>
                                                             </div>
-
                                                         </div>
                                                     </div>
-
                                                 </div>
                                             </ItemTemplate>
                                         </asp:Repeater>
@@ -285,6 +290,14 @@
                                 <asp:ListItem Value="Freight Damage to Customer" Text="Freight Damage to Customer"></asp:ListItem>
                             </asp:DropDownList>
                         </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Install Date</label>
+                            <asp:TextBox runat="server" TextMode="Date" ID="txtInstallDate" CssClass="form-control"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
                         <div class="col-12 form-group">
                             <label class="form-label">Description</label>
                             <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
@@ -439,9 +452,10 @@
             });
         });
 
-        function showUpdateItem(id, category, description) {
+        function showUpdateItem(id, category, install, description) {
             document.getElementById("<%=txtDetailId.ClientID %>").value = id;
             document.getElementById("<%=ddlCategory.ClientID %>").value = category;
+            document.getElementById("<%=txtInstallDate.ClientID %>").value = install;
             document.getElementById("<%=txtDescription.ClientID %>").value = description;
         }
 
@@ -457,7 +471,7 @@
             $("#modalWaiting").modal("show");
             setTimeout(function () {
                 $("#modalWaiting").modal("hide");
-            }, 6000);
+            }, 2000);
         }
 
         window.history.replaceState(null, null, window.location.href);

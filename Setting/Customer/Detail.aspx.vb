@@ -2103,9 +2103,7 @@ Partial Class Setting_Customer_Detail
     Protected Sub BindDataPromo(customerId As String)
         MessageError_Promo(False, String.Empty)
         Try
-            Dim thisQuery As String = "SELECT CustomerPromos.*, Promos.Name AS PromoName, Promos.StartDate AS StartDate, Promos.EndDate AS EndDate FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "'"
-
-            gvListPromo.DataSource = settingClass.GetDataTable(thisQuery)
+            gvListPromo.DataSource = settingClass.GetDataTable("SELECT CustomerPromos.*, Promos.Name AS PromoName, Promos.StartDate AS StartDate, Promos.EndDate AS EndDate FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "'")
             gvListPromo.DataBind()
             gvListPromo.Columns(1).Visible = PageAction("Visible ID Promo")
 

@@ -1609,49 +1609,6 @@
         </div>
     </div>
 
-    <div class="modal modal-blur fade" id="modalEditCosting" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Edit Costing</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                
-                <div class="modal-body">
-                    <div class="card-body border-bottom py-3" runat="server" id="divErrorEditCosting">
-                        <div class="alert alert-danger">
-                            <span runat="server" id="msgErrorEditCosting"></span>
-                        </div>
-                    </div>
-                    <div class="table-responsive">
-                        <asp:Label runat="server" ID="lblItemIdCosting" Visible="false"></asp:Label>
-                        <asp:GridView runat="server" ID="gvListEditCosting" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" ShowHeaderWhenEmpty="true" DataKeyNames="Id,Type">
-                            <RowStyle />
-                            <Columns>
-                                <asp:BoundField DataField="Id" HeaderText="ID" />
-                                <asp:BoundField DataField="Description" HeaderText="Description" />
-                                <asp:TemplateField HeaderText="New Price (Sell)" ItemStyle-Width="180px">
-                                    <ItemTemplate>
-                                        <div class="input-group">
-                                            <span runat="server" id="spanEditSellPrice" class="input-group-text">$</span>
-                                            <asp:TextBox runat="server" ID="txtNewSellPrice" CssClass="form-control" Text='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:0.##}", Eval("SellPrice")) %>'></asp:TextBox>
-                                        </div>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                            </Columns>
-                            <AlternatingRowStyle BackColor="White" />
-                        </asp:GridView>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnEditCosting" CssClass="btn btn-primary" Text="Submit" OnClick="btnEditCosting_Click" OnClientClick="return showWaiting();" />
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div class="modal modal-blur fade" id="modalRecalculate" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -1725,7 +1682,7 @@
             "modalDetailQuote", "modalDownloadQuote",
             "modalMoreDownloadQuote", "modalMoreEmailQuote",
             "modalAddNote", "modalHistoryNote", "modalRecalculate",
-            "modalAddItem", "modalDeleteItem", "modalCosting", "modalEditCosting", "modalCostingBuy"
+            "modalAddItem", "modalDeleteItem", "modalCosting", "modalCostingBuy"
         ].forEach(id => {
             document.getElementById(id).addEventListener("hide.bs.modal", () => {
                 document.activeElement.blur();
@@ -1926,10 +1883,6 @@
 
         function showReworkOrder() {
             $("#modalReworkOrder").modal("show");
-        }
-
-        function showEditCosting() {
-            $("#modalEditCosting").modal("show");
         }
 
         function showService() {

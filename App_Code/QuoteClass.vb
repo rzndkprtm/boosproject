@@ -1842,7 +1842,7 @@ Public Class QuoteEvents
 
         Dim img As Image = Image.GetInstance(imagePath)
         img.ScaleToFit(150, 60)
-        'If Me.companyId = "1" OrElse Me.companyId = "3" Then
+        'If Me.companyId = "3" Then
         '    img.ScaleToFit(180, 100)
         'End If
 
@@ -2081,7 +2081,7 @@ Public Class QuoteBuilderEvents
 
         Dim img As Image = Image.GetInstance(imagePath)
         img.ScaleToFit(150, 60)
-        'If Me.companyId = "1" OrElse Me.companyId = "3" Then
+        'If Me.companyId = "3" Then
         '    img.ScaleToFit(180, 100)
         'End If
 
