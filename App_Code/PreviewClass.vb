@@ -2482,6 +2482,9 @@ Public Class PreviewEvents
         If pageCompany = "3" Then
             logoPath = HttpContext.Current.Server.MapPath("~/Assets/images/logo/bigblinds.png")
         End If
+        If pageCompany = "4" Then
+            logoPath = HttpContext.Current.Server.MapPath("~/Assets/images/logo/sunlight.jpg")
+        End If
 
         Dim logoImage As Image = Image.GetInstance(logoPath)
 
