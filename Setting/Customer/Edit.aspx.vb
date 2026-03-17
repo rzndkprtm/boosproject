@@ -245,21 +245,17 @@ Partial Class Setting_Customer_Edit
     Private Sub BindCompany()
         ddlCompany.Items.Clear()
         Try
-            Dim thisQuery As String = "SELECT * FROM Companys ORDER BY Id ASC"
-            If Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" Then
-                thisQuery = "SELECT * FROM Companys WHERE Id<>'1' ORDER BY Id ASC"
-            End If
-            If Session("RoleName") = "Sales" OrElse Session("RoleName") = "Account" Then
-                thisQuery = "SELECT * FROM Companys WHERE Id='" & Session("CompanyId") & "' ORDER BY Id ASC"
-            End If
-
-            ddlCompany.DataSource = settingClass.GetDataTable(thisQuery)
+            ddlCompany.DataSource = settingClass.GetDataTable("SELECT * FROM Companys ORDER BY Id ASC")
             ddlCompany.DataTextField = "Name"
             ddlCompany.DataValueField = "Id"
             ddlCompany.DataBind()
 
             If ddlCompany.Items.Count > 0 Then
                 ddlCompany.Items.Insert(0, New ListItem("", ""))
+            End If
+
+            If Session("RoleName") = "Sales" OrElse Session("RoleName") = "Account" OrElse Session("RoleName") = "Customer Service" Then
+                ddlCompany.SelectedValue = Session("CompanyId").ToString()
             End If
 
             ddlCompany.Enabled = False

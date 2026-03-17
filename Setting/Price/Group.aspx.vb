@@ -218,7 +218,7 @@ Partial Class Setting_Price_Group
             If isEdit = True Then
                 thisString = "SELECT * FROM Companys ORDER BY Id ASC"
             End If
-            ddlCompany.DataSource = settingClass.GetDataTable(thisString)
+            ddlCompany.DataSource = settingClass.GetDataTable("SELECT * FROM Companys ORDER BY Id ASC")
             ddlCompany.DataTextField = "Alias"
             ddlCompany.DataValueField = "Id"
             ddlCompany.DataBind()

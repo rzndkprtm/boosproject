@@ -297,49 +297,84 @@ Partial Class Order_Rework_Detail
     End Sub
 
     Protected Sub rptRework_ItemDataBound(sender As Object, e As RepeaterItemEventArgs)
-        If e.Item.ItemType = ListItemType.Item OrElse e.Item.ItemType = ListItemType.AlternatingItem Then
-            Dim row As DataRowView = CType(e.Item.DataItem, DataRowView)
-            Dim itemId As String = row("Id").ToString()
+        Try
+            If e.Item.ItemType = ListItemType.Item OrElse e.Item.ItemType = ListItemType.AlternatingItem Then
+                Dim row As DataRowView = CType(e.Item.DataItem, DataRowView)
+                Dim itemId As String = row("Id").ToString()
 
-            Dim gv As GridView = CType(e.Item.FindControl("gvFiles"), GridView)
+                Dim gv As GridView = CType(e.Item.FindControl("gvFiles"), GridView)
 
-            Dim stringPath As String = String.Format("~/File/Rework/{0}/{1}", lblReworkId.Text, itemId)
+                Dim stringPath As String = String.Format("~/File/Rework/{0}/{1}", lblReworkId.Text, itemId)
 
-            Dim folderPath As String = Server.MapPath(stringPath)
-            Dim dt As New DataTable()
-            dt.Columns.Add("FileName")
-            dt.Columns.Add("FilePath")
+                Dim folderPath As String = Server.MapPath(stringPath)
+                Dim dt As New DataTable()
+                dt.Columns.Add("FileName")
+                dt.Columns.Add("FilePath")
 
-            If Directory.Exists(folderPath) Then
-                For Each filePath As String In Directory.GetFiles(folderPath)
-                    Dim dr As DataRow = dt.NewRow()
-                    dr("FileName") = Path.GetFileName(filePath)
-                    Dim stringFilePath As String = String.Format("~/File/Rework/{0}/{1}/{2}", lblReworkId.Text, itemId, Path.GetFileName(filePath))
-                    dr("FilePath") = ResolveUrl(stringFilePath)
-                    dt.Rows.Add(dr)
-                Next
+                If Directory.Exists(folderPath) Then
+                    For Each filePath As String In Directory.GetFiles(folderPath)
+                        Dim dr As DataRow = dt.NewRow()
+                        dr("FileName") = Path.GetFileName(filePath)
+                        Dim stringFilePath As String = String.Format("~/File/Rework/{0}/{1}/{2}", lblReworkId.Text, itemId, Path.GetFileName(filePath))
+                        dr("FilePath") = ResolveUrl(stringFilePath)
+                        dt.Rows.Add(dr)
+                    Next
+                End If
+
+                gv.DataSource = dt
+                gv.DataBind()
             End If
-
-            gv.DataSource = dt
-            gv.DataBind()
-        End If
+        Catch ex As Exception
+        End Try
     End Sub
 
     Protected Sub gvFiles_RowCommand(sender As Object, e As GridViewCommandEventArgs)
-        If e.CommandName = "DeleteFile" Then
-            Dim filePath As String = e.CommandArgument.ToString()
-            Dim fullPath As String = Server.MapPath(filePath)
+        Try
+            If e.CommandName = "DeleteFile" Then
+                Dim filePath As String = e.CommandArgument.ToString()
+                Dim fullPath As String = Server.MapPath(filePath)
 
-            Try
-                If File.Exists(fullPath) Then
-                    File.Delete(fullPath)
-                End If
-            Catch ex As Exception
-            End Try
+                Try
+                    If File.Exists(fullPath) Then
+                        File.Delete(fullPath)
+                    End If
+                Catch ex As Exception
+                End Try
 
-            url = String.Format("~/order/rework/detail?reworkid={0}", lblReworkId.Text)
-            Response.Redirect(url, False)
-        End If
+                url = String.Format("~/order/rework/detail?reworkid={0}", lblReworkId.Text)
+                Response.Redirect(url, False)
+            End If
+        Catch ex As Exception
+        End Try
+    End Sub
+
+    Protected Sub DownloadZip_Command(sender As Object, e As CommandEventArgs)
+        Try
+            Dim itemId As String = e.CommandArgument.ToString()
+
+            Dim stringPath As String = String.Format("~/File/Rework/{0}/{1}", lblReworkId.Text, itemId)
+            Dim folderPath As String = Server.MapPath(stringPath)
+
+            If Not Directory.Exists(folderPath) Then
+                Exit Sub
+            End If
+
+            Dim zipName As String = "ReworkFiles_" & itemId & ".zip"
+            Dim tempZip As String = Path.Combine(Path.GetTempPath(), zipName)
+
+            If File.Exists(tempZip) Then
+                File.Delete(tempZip)
+            End If
+
+            ZipFile.CreateFromDirectory(folderPath, tempZip)
+
+            Response.Clear()
+            Response.ContentType = "application/zip"
+            Response.AddHeader("content-disposition", "attachment; filename=" & zipName)
+            Response.TransmitFile(tempZip)
+            Response.End()
+        Catch ex As Exception
+        End Try
     End Sub
 
     Protected Sub UpdateItem_Click(sender As Object, e As EventArgs)
@@ -348,9 +383,10 @@ Partial Class Order_Rework_Detail
             Dim thisId As String = txtDetailId.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderReworkDetails SET Category=@Category, Description=@Description WHERE Id=@Id", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderReworkDetails SET Category=@Category, InstallDate=@InstallDate, Description=@Description WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", thisId)
                     myCmd.Parameters.AddWithValue("@Category", ddlCategory.SelectedValue)
+                    myCmd.Parameters.AddWithValue("@InstallDate", If(String.IsNullOrEmpty(txtInstallDate.Text), CType(DBNull.Value, Object), txtInstallDate.Text))
                     myCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
 
                     thisConn.Open()
@@ -503,6 +539,11 @@ Partial Class Order_Rework_Detail
         Return False
     End Function
 
+    Protected Function VisibleDownloadZip() As Boolean
+        If lblStatus.Text = "Pending Approval" OrElse lblStatus.Text = "Approved" Then Return True
+        Return False
+    End Function
+
     Protected Function CreateReworkZip(thisId As String) As String
         Try
             Dim itemRework As DataTable = orderClass.GetDataTable("SELECT * FROM OrderReworkDetails WHERE ReworkId='" & thisId & "' AND Active=1 ORDER BY Id ASC")
@@ -534,7 +575,6 @@ Partial Class Order_Rework_Detail
             Next
 
             ZipFile.CreateFromDirectory(tempFolder, zipFilePath, CompressionLevel.Fastest, False)
-
             Directory.Delete(tempFolder, True)
 
             Return zipFileName

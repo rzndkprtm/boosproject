@@ -260,7 +260,7 @@ Partial Class Setting_Quote
 
             imgQuoteExample.ImageUrl = "~/assets/images/quotation/full.jpg"
             imgQuoteExample2.ImageUrl = "~/assets/images/quotation/full.jpg"
-            If companyId = "1" OrElse companyId = "3" Then
+            If companyId = "3" Then
                 imgQuoteExample.ImageUrl = "~/assets/images/quotation/local.jpg"
                 imgQuoteExample2.ImageUrl = "~/assets/images/quotation/local.jpg"
             End If

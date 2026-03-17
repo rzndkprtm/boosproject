@@ -22,6 +22,18 @@ Partial Class Report_Default
         End If
     End Sub
 
+    Protected Sub gvBlindsPivot_RowDataBound(sender As Object, e As GridViewRowEventArgs)
+        If e.Row.RowType = DataControlRowType.Header OrElse e.Row.RowType = DataControlRowType.DataRow Then
+            If e.Row.Cells.Count > 0 Then
+                e.Row.Cells(0).Visible = False
+            End If
+
+            If e.Row.Cells.Count > 3 Then
+                e.Row.Cells(3).Visible = False
+            End If
+        End If
+    End Sub
+
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
@@ -70,7 +82,7 @@ Partial Class Report_Default
         ddlCompany.Items.Clear()
         ddlCompany.Enabled = True
         Try
-            Dim thisString As String = "SELECT * FROM Companys WHERE Id<>1 AND Active=1 ORDER BY Name ASC"
+            Dim thisString As String = "SELECT * FROM Companys WHERE Active=1 ORDER BY Name ASC"
 
             ddlCompany.DataSource = reportClass.GetDataTable(thisString)
             ddlCompany.DataTextField = "Alias"
@@ -110,16 +122,4 @@ Partial Class Report_Default
             Return False
         End Try
     End Function
-
-    Protected Sub gvBlindsPivot_RowDataBound(sender As Object, e As GridViewRowEventArgs)
-        If e.Row.RowType = DataControlRowType.Header OrElse e.Row.RowType = DataControlRowType.DataRow Then
-            If e.Row.Cells.Count > 0 Then
-                e.Row.Cells(0).Visible = False
-            End If
-
-            If e.Row.Cells.Count > 3 Then
-                e.Row.Cells(3).Visible = False
-            End If
-        End If
-    End Sub
 End Class

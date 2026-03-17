@@ -645,7 +645,7 @@ Partial Class Order_Detail
                 Dim reworkDetailId As String = orderClass.GetNewOrderReworkDetailId()
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderReworkDetails VALUES (@Id, @ReworkId, @ItemId, NULL, NULL, 1)", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderReworkDetails VALUES (@Id, @ReworkId, @ItemId, NULL, NULL, NULL, 1)", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", reworkDetailId)
                         myCmd.Parameters.AddWithValue("@ReworkId", reworkId)
                         myCmd.Parameters.AddWithValue("@ItemId", selectedId)
@@ -1162,8 +1162,11 @@ Partial Class Order_Detail
             End If
 
             Dim quoteClass As New QuoteClass
+
+            Dim pdfBytes As Byte() = Nothing
+
             If lblOrderType.Text = "Regular" Then
-                Dim pdfBytes As Byte() = quoteClass.BindContent(lblHeaderId.Text)
+                pdfBytes = quoteClass.BindContent(lblHeaderId.Text)
 
                 Response.Clear()
                 Response.ContentType = "application/pdf"
@@ -1172,8 +1175,9 @@ Partial Class Order_Detail
                 Response.Flush()
                 Response.End()
             End If
+
             If lblOrderType.Text = "Builder" Then
-                Dim pdfBytes As Byte() = quoteClass.BindContentBuilder(lblHeaderId.Text)
+                pdfBytes = quoteClass.BindContentBuilder(lblHeaderId.Text)
 
                 Response.Clear()
                 Response.ContentType = "application/pdf"
@@ -1182,7 +1186,6 @@ Partial Class Order_Detail
                 Response.Flush()
                 Response.End()
             End If
-
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -1423,32 +1426,17 @@ Partial Class Order_Detail
                     ClientScript.RegisterStartupScript(Me.GetType(), "showPrinting", thisScript, True)
                 End Try
             ElseIf e.CommandName = "EditCosting" Then
-                MessageError_EditCosting(False, String.Empty)
-                'Dim thisScript As String = "window.onload = function() { showEditCosting(); };"
+                MessageError(False, String.Empty)
                 Try
-                    'Dim queryDetailsPrice As String = "SELECT *, FORMAT(BuyPrice, 'C', 'en-US') AS BuyPricing, FORMAT(SellPrice, 'C', 'en-US') AS SellPricing FROM OrderCostings WHERE ItemId='" & dataId & "' AND Type<>'Final' AND Number<>0 ORDER BY Number, CASE WHEN Type='Base' THEN 1 WHEN Type='Surcharge' THEN 2 ELSE 3 END ASC"
-                    'If lblCompanyId.Text = "3" OrElse lblCompanyId.Text = "5" Then
-                    '    queryDetailsPrice = "SELECT *, FORMAT(BuyPrice, 'C', 'id-ID') AS BuyPricing, FORMAT(SellPrice, 'C', 'en-US') AS SellPricing FROM OrderCostings WHERE ItemId='" & dataId & "' AND Type<>'Final' AND Number<>0 ORDER BY Number, CASE WHEN Type='Base' THEN 1 WHEN Type='Surcharge' THEN 2 ELSE 3 END ASC"
-                    'End If
-
-                    'lblItemId.Text = dataId
-
-                    'gvListEditCosting.DataSource = orderClass.GetDataTable(queryDetailsPrice)
-                    'gvListEditCosting.DataBind()
-
-                    'gvListEditCosting.Columns(0).Visible = False
-
-                    'ClientScript.RegisterStartupScript(Me.GetType(), "showEditCosting", thisScript, True)
                     Dim queryString As String = String.Format("headerid={0}&itemid={1}", lblHeaderId.Text, dataId)
                     Dim contextId As String = InsertContext(queryString)
                     url = String.Format("~/order/editcosting?boos={0}", contextId)
                     Response.Redirect(url)
                 Catch ex As Exception
-                    MessageError_EditCosting(True, ex.ToString())
+                    MessageError(True, ex.ToString())
                     If Not Session("RoleName") = "Developer" Then
-                        MessageError_EditCosting(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                        MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
                     End If
-                    'ClientScript.RegisterStartupScript(Me.GetType(), "showEditCosting", thisScript, True)
                 End Try
             End If
         End If
@@ -1583,94 +1571,6 @@ Partial Class Order_Detail
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
             End If
-        End Try
-    End Sub
-
-    Protected Sub btnEditCosting_Click(sender As Object, e As EventArgs)
-        MessageError_EditCosting(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showEditCosting(); };"
-        Try
-            Using thisConn As New SqlConnection(myConn)
-                thisConn.Open()
-
-                Using tran As SqlTransaction = thisConn.BeginTransaction()
-                    Try
-                        Using delFinal As New SqlCommand("DELETE FROM OrderCostings WHERE ItemId=@ItemId AND Type='Final'", thisConn, tran)
-                            delFinal.Parameters.Add("@ItemId", SqlDbType.Int).Value = lblItemId.Text
-                            delFinal.ExecuteNonQuery()
-                        End Using
-
-                        For Each row As GridViewRow In gvListEditCosting.Rows
-                            If row.RowType = DataControlRowType.DataRow Then
-                                Dim costingId As String = gvListEditCosting.DataKeys(row.RowIndex).Values("Id").ToString()
-
-                                Dim txtNewSellPrice As TextBox = CType(row.FindControl("txtNewSellPrice"), TextBox)
-                                Dim newSell As Decimal = 0
-                                Decimal.TryParse(txtNewSellPrice.Text, NumberStyles.Any, CultureInfo.CurrentCulture, newSell)
-
-                                Dim oldSell As Decimal = 0
-
-                                Using cmdOld As New SqlCommand("SELECT * FROM OrderCostings WHERE Id=@Id", thisConn, tran)
-                                    cmdOld.Parameters.AddWithValue("@Id", costingId)
-
-                                    Using rd = cmdOld.ExecuteReader()
-                                        If rd.Read() Then
-                                            oldSell = If(IsDBNull(rd("SellPrice")), 0D, Convert.ToDecimal(rd("SellPrice")))
-                                        End If
-                                    End Using
-                                End Using
-
-                                If oldSell <> newSell Then
-                                    Using cmd As New SqlCommand("UPDATE OrderCostings SET SellPrice=@SellPrice WHERE Id=@Id", thisConn, tran)
-                                        cmd.Parameters.AddWithValue("@Id", costingId)
-                                        cmd.Parameters.Add("@SellPrice", SqlDbType.Decimal).Value = newSell
-                                        cmd.ExecuteNonQuery()
-                                    End Using
-                                End If
-                            End If
-                        Next
-
-                        Dim buyPrice As Decimal = 0
-                        Dim sellPrice As Decimal = 0
-
-                        Using cmdSum As New SqlCommand("SELECT ISNULL(SUM(CASE WHEN Type='Base' THEN BuyPrice WHEN Type='Discount' THEN -BuyPrice WHEN Type='Surcharge' THEN BuyPrice ELSE 0 END),0) AS TotalBuy, ISNULL(SUM(CASE WHEN Type='Base' THEN SellPrice WHEN Type='Discount' THEN -SellPrice WHEN Type='Surcharge' THEN SellPrice ELSE 0 END),0) AS TotalSell FROM OrderCostings WHERE ItemId=@ItemId", thisConn, tran)
-                            cmdSum.Parameters.Add("@ItemId", SqlDbType.Int).Value = lblItemId.Text
-
-                            Using rd = cmdSum.ExecuteReader()
-                                If rd.Read() Then
-                                    buyPrice = Convert.ToDecimal(rd("TotalBuy"))
-                                    sellPrice = Convert.ToDecimal(rd("TotalSell"))
-                                End If
-                            End Using
-                        End Using
-
-                        Dim dataCosting As Object() = {lblHeaderId.Text, lblItemId.Text, 0, "Final", "Final Cost This Item", buyPrice, sellPrice}
-                        orderClass.OrderCostings(dataCosting)
-
-                        dataLog = {"OrderDetails", lblItemId.Text, Session("LoginId"), "Update Price"}
-                        orderClass.Logs(dataLog)
-
-                        tran.Commit()
-                    Catch
-                        tran.Rollback()
-                        Throw
-                    End Try
-                End Using
-            End Using
-
-            If lblOrderStatus.Text = "In Production" OrElse lblOrderStatus.Text = "On Hold" Then
-                Dim salesClass As New SalesClass
-                salesClass.RefreshData()
-            End If
-
-            Response.Redirect(String.Format("~/order/detail?orderid={0}", lblHeaderId.Text), False)
-            Context.ApplicationInstance.CompleteRequest()
-        Catch ex As Exception
-            MessageError_EditCosting(True, ex.Message)
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_EditCosting(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showEditCosting", thisScript, True)
         End Try
     End Sub
 
@@ -2680,7 +2580,6 @@ Partial Class Order_Detail
                     myCmd.ExecuteNonQuery()
                 End Using
             End Using
-
             Response.Redirect("~/order/detail", False)
         End If
 
@@ -2861,7 +2760,6 @@ Partial Class Order_Detail
                 lblCourier.Text = shipmentData("Courier").ToString()
                 txtCourier.Text = shipmentData("Courier").ToString()
             End If
-
         End If
     End Sub
 
@@ -3508,7 +3406,6 @@ Partial Class Order_Detail
         MessageError_MoreEmailQuote(visible, message)
 
         MessageError_Service(visible, message)
-        MessageError_EditCosting(visible, message)
     End Sub
 
     Protected Sub MessageError(visible As Boolean, message As String)
@@ -3562,10 +3459,6 @@ Partial Class Order_Detail
 
     Protected Sub MessageError_ReworkOrder(visible As Boolean, message As String)
         divErrorReworkOrder.Visible = visible : msgErrorReworkOrder.InnerText = message
-    End Sub
-
-    Protected Sub MessageError_EditCosting(visible As Boolean, message As String)
-        divErrorEditCosting.Visible = visible : msgErrorEditCosting.InnerText = message
     End Sub
 
     Protected Sub MessageError_Service(visible As Boolean, message As String)
