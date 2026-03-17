@@ -254,7 +254,7 @@ Partial Class Order_Method
             If action = "view" Then
                 thisQuery = "SELECT *, Colour AS FinalColour FROM FabricColours WHERE FabricId='" & fabrictype & "' ORDER BY CASE WHEN Factory='Express' THEN 1 ELSE 2 END, Colour ASC"
             End If
-            If companyid = "3" Then
+            If companyid = "3" OrElse companyid = "4" Then
                 thisQuery = "SELECT *, REPLACE(Colour, '(Express)', '') AS FinalColour FROM FabricColours WHERE FabricId='" & fabrictype & "' AND Factory='Express' AND Active=1 ORDER BY Colour ASC"
                 If action = "view" Then
                     thisQuery = "SELECT *, REPLACE(Colour   , '(Express)', '') AS FinalColour FROM FabricColours WHERE FabricId='" & fabrictype & "' AND Factory='Express' ORDER BY Colour ASC"
