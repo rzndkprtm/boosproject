@@ -35,6 +35,9 @@ Partial Class Setting_Customer_Login
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         Catch ex As Exception
             MessageError_Process(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         End Try
     End Sub
@@ -51,6 +54,9 @@ Partial Class Setting_Customer_Login
             BindData(txtSearch.Text)
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 
@@ -65,6 +71,8 @@ Partial Class Setting_Customer_Login
                     lblId.Text = dataId
                     lblAction.Text = "Edit"
                     titleProcess.InnerText = "Edit Login"
+
+
 
                     BindDataCustomer()
                     BindRole()
@@ -84,22 +92,23 @@ Partial Class Setting_Customer_Login
                     Dim password As String = myData("Password").ToString()
                     txtPassword.Text = settingClass.Decrypt(password)
 
+                    If Session("RoleName") = "IT" AndAlso ddlRole.SelectedValue = "1" Then
+                        Response.Redirect("~/setting/customer/login", False)
+                        Exit Sub
+                    End If
+
+                    If Session("RoleName") = "IT" AndAlso Session("LevelName") = "Member" AndAlso ddlRole.SelectedValue = "2" Then
+                        Response.Redirect("~/setting/customer/login", False)
+                        Exit Sub
+                    End If
+
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Catch ex As Exception
                     MessageError_Process(True, ex.ToString())
+                    If Not Session("RoleName") = "Developer" Then
+                        MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                    End If
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-                End Try
-            ElseIf e.CommandName = "Log" Then
-                MessageError_Log(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showLog(); };"
-                Try
-                    gvListLogs.DataSource = settingClass.GetDataTable("SELECT * FROM Logs WHERE Type='CustomerLogins' AND DataId='" & dataId & "'  ORDER BY ActionDate DESC")
-                    gvListLogs.DataBind()
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
-                Catch ex As Exception
-                    MessageError_Log(True, ex.ToString())
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
                 End Try
             End If
         End If
@@ -109,7 +118,7 @@ Partial Class Setting_Customer_Login
         MessageError_Process(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showProcess(); };"
         Try
-            If ddlCustomer.SelectedValue = "" Then
+            If ddlCustomer.SelectedValue = "" AndAlso (ddlRole.SelectedValue = "4" OrElse ddlRole.SelectedValue = "5" OrElse ddlRole.SelectedValue = "6" OrElse ddlRole.SelectedValue = "8" OrElse ddlRole.SelectedValue = "10") Then
                 MessageError_Process(True, "CUSTOMER ACCOUNT IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
@@ -120,11 +129,23 @@ Partial Class Setting_Customer_Login
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
             End If
+            If Session("RoleName") = "IT" AndAlso ddlRole.SelectedValue = "1" Then
+                Dim alert As String = "YOU DO NOT HAVE PERMISSION TO CREATE A LOGIN WITH THIS ROLE !"
+                If lblAction.Text = "Edit" Then
+                    alert = "YOU DO NOT HAVE PERMISSION TO UPDATE A LOGIN WITH THIS ROLE !"
+                End If
+                MessageError_Process(True, alert)
+                ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
+                Exit Sub
+            End If
 
             If ddlLevel.SelectedValue = "" Then
                 MessageError_Process(True, "LEVEL MEMBER IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
+            End If
+            If Session("RoleName") = "IT" Then
+
             End If
 
             If txtFullName.Text = "" Then
@@ -219,6 +240,9 @@ Partial Class Setting_Customer_Login
             End If
         Catch ex As Exception
             MessageError_Process(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         End Try
     End Sub
@@ -252,6 +276,9 @@ Partial Class Setting_Customer_Login
             Response.Redirect("~/setting/customer/login", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 
@@ -279,6 +306,9 @@ Partial Class Setting_Customer_Login
             Response.Redirect("~/setting/customer/login", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 
@@ -306,6 +336,9 @@ Partial Class Setting_Customer_Login
             Response.Redirect("~/setting/customer/login", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 
@@ -315,7 +348,7 @@ Partial Class Setting_Customer_Login
             If Not String.IsNullOrEmpty(searchText) Then
                 search = "WHERE Customers.Name LIKE '%" & searchText & "%' OR CustomerLogins.UserName LIKE '%" & searchText & "%' OR CustomerLogins.FullName LIKE '%" & searchText & "%'"
             End If
-            Dim thisQuery As String = String.Format("SELECT CustomerLogins.*, Customers.Name AS CustomerName, LoginRoles.Name AS RoleName, LoginLevels.Name AS LevelName FROM CustomerLogins LEFT JOIN Customers ON CustomerLogins.CustomerId=Customers.Id LEFT JOIN LoginRoles ON CustomerLogins.RoleId=LoginRoles.Id LEFT JOIN LoginLevels ON CustomerLogins.LevelId=LoginLevels.Id {0} ORDER BY CustomerLogins.RoleId, CustomerLogins.Id ASC", search)
+            Dim thisQuery As String = String.Format("SELECT CustomerLogins.*, Customers.Name AS CustomerName, LoginRoles.Name AS RoleName, LoginLevels.Name AS LevelName, CASE WHEN CustomerLogins.Active=1 THEN 'Yes' WHEN CustomerLogins.Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM CustomerLogins LEFT JOIN Customers ON CustomerLogins.CustomerId=Customers.Id LEFT JOIN LoginRoles ON CustomerLogins.RoleId=LoginRoles.Id LEFT JOIN LoginLevels ON CustomerLogins.LevelId=LoginLevels.Id {0} ORDER BY CustomerLogins.RoleId, CustomerLogins.Id ASC", search)
 
             gvList.DataSource = settingClass.GetDataTable(thisQuery)
             gvList.DataBind()
@@ -324,6 +357,9 @@ Partial Class Setting_Customer_Login
             btnAdd.Visible = PageAction("Add")
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 

@@ -31,6 +31,43 @@
             </div>
         </section>
 
+        <section class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="list-group list-group-horizontal-sm mb-1 text-center" id="dvTab" role="tablist">
+                                <a class="list-group-item list-group-item-action active" id="listRole" data-bs-toggle="list" href="#list-role" role="tab">Role</a>
+                                <a class="list-group-item list-group-item-action" id="listLevel" data-bs-toggle="list" href="#list-level" role="tab">Level</a>
+                            </div>
+
+                            <div class="tab-content text-justify">
+                                <div class="tab-pane fade show active" id="list-role" role="tabpanel" aria-labelledby="listRole">
+
+                                    <div class="row mt-5">
+                                        <div class="col-12">
+                                            <div class="table-responsive"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="tab-pane fade" id="list-level" role="tabpanel" aria-labelledby="listLevel">
+
+                                    <div class="row mt-5">
+                                        <div class="col-12">
+                                            <div class="table-responsive"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        
+
         <section class="row mb-3">
             <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
                 <asp:Button runat="server" ID="btnAddChain" CssClass="btn btn-primary" Text="Add Chain" OnClick="btnAddChain_Click" />

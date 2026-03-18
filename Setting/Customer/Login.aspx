@@ -72,11 +72,15 @@
                                                 </asp:TemplateField>
                                                 <asp:BoundField DataField="Id" HeaderText="ID" />
                                                 <asp:BoundField DataField="CustomerName" HeaderText="Customer" />
-                                                <asp:BoundField DataField="RoleName" HeaderText="Role" />
-                                                <asp:BoundField DataField="LevelName" HeaderText="Level" />
                                                 <asp:BoundField DataField="UserName" HeaderText="User" />
+                                                <asp:TemplateField HeaderText="Role">
+                                                    <ItemTemplate>
+                                                        <%# If(IsDBNull(Eval("RoleName")) OrElse IsDBNull(Eval("LevelName")) OrElse String.IsNullOrEmpty(Eval("RoleName") & "") OrElse String.IsNullOrEmpty(Eval("LevelName") & ""), "Requires correction", Eval("RoleName") & " - " & Eval("LevelName")) %>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
                                                 <asp:BoundField DataField="FullName" HeaderText="Full Name" />
                                                 <asp:BoundField DataField="LastLogin" HeaderText="Last Login" DataFormatString="{0:dd MMM yyyy HH:mm:ss}" />
+                                                <asp:BoundField DataField="DataActive" HeaderText="Active" />
                                                 <asp:TemplateField ItemStyle-Width="120px">
                                                     <ItemTemplate>
                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
