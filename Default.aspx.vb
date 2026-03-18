@@ -8,12 +8,6 @@ Partial Class _Default
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        Dim pageAccess As Boolean = PageAction("Load")
-        If pageAccess = False Then
-            Response.Redirect("~/order/", False)
-            Exit Sub
-        End If
-
         If Not IsPostBack Then
             lblError.Text = String.Empty
             BindData()

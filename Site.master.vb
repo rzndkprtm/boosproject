@@ -229,7 +229,7 @@ Public Partial Class SiteMaster
                 liGeneralNewsletter.Visible = True
                 liGeneralTutorial.Visible = True
 
-                liCustomer.Visible = True
+                liCustomerDev.Visible = True
 
                 liSpecification.Visible = True
                 liSpecificationDesign.Visible = True

@@ -157,17 +157,14 @@ Partial Class Setting_Specification_Fabric_Default
     Protected Sub BindCompanyDetailSort()
         ddlCompanyDetail.Items.Clear()
         Try
+            Dim thisString As String = "SELECT * FROM CompanyDetails ORDER BY Id ASC"
             If Not Session("CompanyDetailId") = "" Then
-                Dim thisString As String = "SELECT * FROM CompanyDetails ORDER BY Id ASC"
-                If Session("RoleName") = "Account" OrElse Session("RoleName") = "Customer Service" Then
-                    thisString = "SELECT * FROM CompanyDetails WHERE CompanyId='" & Session("CompanyId") & "' ORDER BY Id ASC"
-                End If
-
-                ddlCompanyDetail.DataSource = settingClass.GetDataTable(thisString)
-                ddlCompanyDetail.DataTextField = "Name"
-                ddlCompanyDetail.DataValueField = "Id"
-                ddlCompanyDetail.DataBind()
+                thisString = "SELECT * FROM CompanyDetails WHERE CompanyId='" & Session("CompanyId") & "' ORDER BY Id ASC"
             End If
+            ddlCompanyDetail.DataSource = settingClass.GetDataTable(thisString)
+            ddlCompanyDetail.DataTextField = "Name"
+            ddlCompanyDetail.DataValueField = "Id"
+            ddlCompanyDetail.DataBind()
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
