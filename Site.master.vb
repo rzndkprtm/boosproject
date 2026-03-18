@@ -75,7 +75,7 @@ Public Partial Class SiteMaster
                 Dim resetLogin As Boolean = myData("ResetLogin")
                 Dim personalEmail As String = myData("Email").ToString()
 
-                If Session("RoleName") = "Customer Service" OrElse Session("RoleName") = "Data Entry" OrElse Session("RoleName") = "Customer" OrElse Session("RoleName") = "Installer" OrElse Session("RoleName") = "Sales" OrElse Session("RoleName") = "Account" Then
+                If Session("RoleName") = "Customer Service" OrElse Session("RoleName") = "Customer" OrElse Session("RoleName") = "Installer" OrElse Session("RoleName") = "Sales" OrElse Session("RoleName") = "Account" Then
                     Dim customerActive As Boolean = myData("CustomerActive")
                     Dim companyActive As Boolean = myData("CompanyActive")
 
