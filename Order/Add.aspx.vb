@@ -845,7 +845,7 @@ Partial Class Order_Add
                         If controlType = "Corded" Then
                             If String.IsNullOrEmpty(controlPosition) Then
                                 MessageError(True, "CORD POSITION IS REQUIRED !")
-                                Exit Sub
+                                Exit For
                             End If
 
                             Dim validControlPosition As String() = {"Left", "Right"}
@@ -855,6 +855,7 @@ Partial Class Order_Add
 
                             If Not validControlPosition.Contains(controlPosition) Then
                                 MessageError(True, "PLEASE CHECK YOUR CONTROL POSITION")
+                                Exit For
                             End If
 
                             controlLength = "Standard"
