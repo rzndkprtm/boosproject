@@ -2461,7 +2461,7 @@ Partial Class Order_Add
 
                         designId = orderClass.GetItemData("SELECT Id FROM Designs WHERE Name='Roman Blind'")
                         If String.IsNullOrEmpty(designId) Then
-                            MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID")
+                            MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID [DESIGN NAME]")
                             Exit For
                         End If
 
@@ -2555,7 +2555,7 @@ Partial Class Order_Add
 
                         Dim productId As String = orderClass.GetItemData("SELECT Id FROM Products CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designId & "' AND BlindId='" & blindId & "' AND TubeType='" & tubeId & "' AND ControlType='" & controlId & "' AND ColourType='0' AND Active=1")
                         If String.IsNullOrEmpty(productId) Then
-                            MessageError(True, "PLEASE CONTACT OUR IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                            MessageError(True, "PLEASE CONTACT OUR IT SUPPORT AT REZA@BIGBLINDS.CO.ID [PRODUCTS] !")
                             Exit For
                         End If
 
