@@ -2553,7 +2553,7 @@ Partial Class Order_Add
                             Exit For
                         End If
 
-                        Dim productId As String = orderClass.GetItemData("SELECT Id FROM Products CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designId & "' AND BlindId='" & blindId & "' AND TubeType='" & tubeId & "' AND ControlType='" & controlId & "' AND ColourType='0' AND Active=1")
+                        Dim productId As String = orderClass.GetItemData("SELECT Id FROM Products CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designId & "' AND BlindId='" & blindId & "' AND TubeType='" & tubeId & "' AND ControlType='" & controlId & "' AND ColourType='56' AND Active=1")
                         If String.IsNullOrEmpty(productId) Then
                             MessageError(True, "PLEASE CONTACT OUR IT SUPPORT AT REZA@BIGBLINDS.CO.ID [PRODUCTS] !")
                             Exit For
