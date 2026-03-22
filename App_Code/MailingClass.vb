@@ -630,7 +630,7 @@ Public Class MailingClass
         If companyId = "2" Then
             mailBody &= "<span style='font-family: Cambria; font-size:16px; font-weight: bold;'>" & companyName & "</span>"
         End If
-        If companyId = "2" Then
+        If companyId = "3" Then
             mailBody &= "<span style='font-family: Cambria; font-size:16px; font-weight: bold;'>PT Bumi Indah Global</span>"
         End If
 

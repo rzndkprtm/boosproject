@@ -1,6 +1,5 @@
 ﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="ProductGroup.aspx.vb" Inherits="Setting_Price_ProductGroup" MaintainScrollPositionOnPostback="true" MasterPageFile="~/Site.Master" Debug="true" Title="Price Product Group" %>
 
-
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-heading">
         <div class="page-title">
@@ -116,7 +115,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row mb-2">
+                    <div class="row">
                         <div class="col-12 form-group">
                             <label class="form-label">Name</label>
                             <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>

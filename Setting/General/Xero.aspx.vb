@@ -1,6 +1,5 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
-Imports iTextSharp.tool.xml.css
 
 Partial Class Setting_General_Xero
     Inherits Page
@@ -173,6 +172,37 @@ Partial Class Setting_General_Xero
                 MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
+        End Try
+    End Sub
+
+    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim thisId As String = txtIdDelete.Text
+
+            Using thisConn As New SqlConnection(myConn)
+                thisConn.Open()
+
+                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Xeros WHERE Id=@Id", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", thisId)
+                    myCmd.ExecuteNonQuery()
+                End Using
+
+                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Logs WHERE Type='Xeros' AND DataId=@Id", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", thisId)
+                    myCmd.ExecuteNonQuery()
+                End Using
+
+                thisConn.Close()
+            End Using
+
+            Session("SearchXero") = txtSearch.Text
+            Response.Redirect("~/setting/general/xero", False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 

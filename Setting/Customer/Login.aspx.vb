@@ -17,12 +17,14 @@ Partial Class Setting_Customer_Login
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
+            txtSearch.Text = Session("SearchCustomerLogins")
             BindData(txtSearch.Text)
         End If
     End Sub
 
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
         MessageError_Process(False, String.Empty)
+        Session("SearchCustomerLogins") = txtSearch.Text
         Dim thisScript As String = "window.onload = function() { showProcess(); };"
         Try
             lblAction.Text = "Add"
@@ -66,13 +68,12 @@ Partial Class Setting_Customer_Login
 
             If e.CommandName = "Detail" Then
                 MessageError_Process(False, String.Empty)
+                Session("SearchCustomerLogins") = txtSearch.Text
                 Dim thisScript As String = "window.onload = function() { showProcess(); };"
                 Try
                     lblId.Text = dataId
                     lblAction.Text = "Edit"
                     titleProcess.InnerText = "Edit Login"
-
-
 
                     BindDataCustomer()
                     BindRole()
@@ -211,6 +212,7 @@ Partial Class Setting_Customer_Login
                     Dim dataLog As Object() = {"CustomerLogins", thisId, Session("LoginId").ToString(), "Customer Login Created"}
                     settingClass.Logs(dataLog)
 
+                    Session("SearchCustomerLogins") = txtSearch.Text
                     Response.Redirect("~/setting/customer/login", False)
                 End If
 
@@ -235,6 +237,7 @@ Partial Class Setting_Customer_Login
                     Dim dataLog As Object() = {"CustomerLogins", lblId.Text, Session("LoginId").ToString(), "Customer Login Updated"}
                     settingClass.Logs(dataLog)
 
+                    Session("SearchCustomerLogins") = txtSearch.Text
                     Response.Redirect("~/setting/customer/login", False)
                 End If
             End If
@@ -273,6 +276,7 @@ Partial Class Setting_Customer_Login
             Dim dataLog As Object() = {"CustomerLogins", thisId, Session("LoginId").ToString(), activeDesc}
             settingClass.Logs(dataLog)
 
+            Session("SearchCustomerLogins") = txtSearch.Text
             Response.Redirect("~/setting/customer/login", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -303,6 +307,7 @@ Partial Class Setting_Customer_Login
                 thisConn.Close()
             End Using
 
+            Session("SearchCustomerLogins") = txtSearch.Text
             Response.Redirect("~/setting/customer/login", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -333,6 +338,7 @@ Partial Class Setting_Customer_Login
             Dim dataLog As Object() = {"CustomerLogins", thisId, Session("LoginId").ToString(), "Customer Login Reset Password"}
             settingClass.Logs(dataLog)
 
+            Session("SearchCustomerLogins") = txtSearch.Text
             Response.Redirect("~/setting/customer/login", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -343,10 +349,11 @@ Partial Class Setting_Customer_Login
     End Sub
 
     Protected Sub BindData(searchText As String)
+        Session("SearchCustomerLogins") = String.Empty
         Try
             Dim search As String = String.Empty
             If Not String.IsNullOrEmpty(searchText) Then
-                search = "WHERE Customers.Name LIKE '%" & searchText & "%' OR CustomerLogins.UserName LIKE '%" & searchText & "%' OR CustomerLogins.FullName LIKE '%" & searchText & "%'"
+                search = "WHERE Customers.Name LIKE '%" & searchText & "%' OR Customers.DebtorCode LIKE '%" & searchText & "%' OR CustomerLogins.UserName LIKE '%" & searchText & "%' OR CustomerLogins.FullName LIKE '%" & searchText & "%'"
             End If
             Dim thisQuery As String = String.Format("SELECT CustomerLogins.*, Customers.Name AS CustomerName, LoginRoles.Name AS RoleName, LoginLevels.Name AS LevelName, CASE WHEN CustomerLogins.Active=1 THEN 'Yes' WHEN CustomerLogins.Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM CustomerLogins LEFT JOIN Customers ON CustomerLogins.CustomerId=Customers.Id LEFT JOIN LoginRoles ON CustomerLogins.RoleId=LoginRoles.Id LEFT JOIN LoginLevels ON CustomerLogins.LevelId=LoginLevels.Id {0} ORDER BY CustomerLogins.RoleId, CustomerLogins.Id ASC", search)
 
@@ -420,18 +427,10 @@ Partial Class Setting_Customer_Login
         divErrorProcess.Visible = visible : msgErrorProcess.InnerText = message
     End Sub
 
-    Protected Sub MessageError_Log(visible As Boolean, message As String)
-        divErrorLog.Visible = visible : msgErrorLog.InnerText = message
-    End Sub
-
     Protected Function TextActive(active As Boolean) As String
         Dim result As String = "Enable"
         If active = True Then : Return "Disable" : End If
         Return result
-    End Function
-
-    Protected Function BindTextLog(logId As String) As String
-        Return settingClass.GetTextLog(logId)
     End Function
 
     Protected Function PageAction(action As String) As Boolean
