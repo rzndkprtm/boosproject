@@ -2184,7 +2184,7 @@ Partial Class Setting_Customer_Detail
                     Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerProductAccess WHERE Id='" & lblIdProduct.Text & "'")
                     If myData Is Nothing Then Exit Sub
 
-                    BindDesignProduct()
+                    BindDesignProduct(lblCompanyId.Text)
 
                     Dim tagsArray() As String = myData("DesignId").ToString().Split(",")
                     Dim tagsList As List(Of String) = tagsArray.ToList()
@@ -2211,26 +2211,14 @@ Partial Class Setting_Customer_Detail
         Session("selectedTabCustomer") = "list-product"
         Try
             Using thisConn As New SqlConnection(myConn)
-                thisConn.Open()
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerProductAccess WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Logs WHERE Type='CustomerProductAccess' AND DataId=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
                 Dim desingId As String = settingClass.GetProductAccess(lblCompanyId.Text)
-                Using myCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerProductAccess VALUES (@Id, @DesignId)", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerProductAccess SET DesignId=@DesignId WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", lblId.Text)
                     myCmd.Parameters.AddWithValue("@DesignId", desingId)
+
+                    thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
-
-                thisConn.Close()
             End Using
 
             dataLog = {"CustomerProductAccess", lblId.Text, Session("LoginId").ToString(), "Reset Customer Product Access"}
@@ -2305,15 +2293,17 @@ Partial Class Setting_Customer_Detail
         End Try
     End Sub
 
-    Protected Sub BindDesignProduct()
+    Protected Sub BindDesignProduct(companyId As String)
         lbProductTags.Items.Clear()
         Try
-            lbProductTags.DataSource = settingClass.GetDataTable("SELECT * FROM Designs ORDER BY Name ASC")
-            lbProductTags.DataTextField = "Name"
-            lbProductTags.DataValueField = "Id"
-            lbProductTags.DataBind()
-            If lbProductTags.Items.Count > 1 Then
-                lbProductTags.Items.Insert(0, New ListItem("", ""))
+            If Not String.IsNullOrEmpty(companyId) Then
+                lbProductTags.DataSource = settingClass.GetDataTable("SELECT * FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS companyArray WHERE companyArray.VALUE='" & companyId & "' ORDER BY Name ASC")
+                lbProductTags.DataTextField = "Name"
+                lbProductTags.DataValueField = "Id"
+                lbProductTags.DataBind()
+                If lbProductTags.Items.Count > 1 Then
+                    lbProductTags.Items.Insert(0, New ListItem("", ""))
+                End If
             End If
         Catch ex As Exception
             lbProductTags.Items.Clear()
@@ -2334,10 +2324,7 @@ Partial Class Setting_Customer_Detail
 
             result = hasil.Remove(hasil.Length - 2).ToString()
         Catch ex As Exception
-            MessageError_Product(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Product(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
+            result = "Error"
         End Try
         Return result
     End Function

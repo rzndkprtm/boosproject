@@ -214,6 +214,9 @@ Partial Class Setting_Customer_Contact
                 thisConn.Close()
             End Using
 
+            dataLog = {"CustomerContacts", thisId, Session("LoginId"), "Set As Primary"}
+            settingClass.Logs(dataLog)
+
             Session("SearchCustomerContact") = txtSearch.Text
             Response.Redirect("~/setting/customer/contact", False)
         Catch ex As Exception
@@ -262,9 +265,6 @@ Partial Class Setting_Customer_Contact
 
             gvList.DataSource = settingClass.GetDataTable(thisQuery)
             gvList.DataBind()
-            gvList.Columns(1).Visible = PageAction("Visible ID") ' ID
-
-            btnAdd.Visible = PageAction("Add")
         Catch ex As Exception
             MessageError(True, ex.ToString())
         End Try

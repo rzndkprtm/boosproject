@@ -232,6 +232,10 @@
                                                         <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/customer/productaccess" class="subsubmenu-link">Customer Product Access</a>
                                                         </li>
+
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/customer/quote" class="subsubmenu-link">Customer Quote</a>
+                                                        </li>
                                                     </ul>
                                                 </li>
 
