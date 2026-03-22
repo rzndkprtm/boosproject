@@ -64,7 +64,6 @@
                                                         <%# Container.DataItemIndex + 1 %>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-
                                                 <asp:BoundField DataField="Id" HeaderText="ID" />
                                                 <asp:BoundField DataField="CustomerName" HeaderText="Customer" />
                                                 <asp:BoundField DataField="Description" HeaderText="Description" />
@@ -327,6 +326,7 @@
                 document.body.focus();
             });
         });
+
         window.history.replaceState(null, null, window.location.href);
     </script>
 

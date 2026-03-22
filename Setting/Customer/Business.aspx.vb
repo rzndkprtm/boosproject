@@ -191,6 +191,9 @@ Partial Class Setting_Customer_Business
                 thisConn.Close()
             End Using
 
+            dataLog = {"CustomerBusiness", thisId, Session("LoginId"), "Set As Primary"}
+            settingClass.Logs(dataLog)
+
             Session("SearchCustomerBusiness") = txtSearch.Text
             Response.Redirect("~/setting/customer/business", False)
         Catch ex As Exception

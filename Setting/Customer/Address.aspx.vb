@@ -69,11 +69,11 @@ Partial Class Setting_Customer_Address
                     titleProcess.InnerText = "Edit Address"
 
                     Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerAddress WHERE Id='" & dataId & "'")
+                    If thisData Is Nothing Then Exit Sub
 
                     BindDataCustomer()
 
                     ddlCustomer.SelectedValue = thisData("CustomerId").ToString()
-
                     txtDescription.Text = thisData("Description").ToString()
                     txtAddress.Text = thisData("Address").ToString()
                     txtSuburb.Text = thisData("Suburb").ToString()
@@ -235,6 +235,9 @@ Partial Class Setting_Customer_Address
                 thisConn.Close()
             End Using
 
+            dataLog = {"CustomerAddress", thisId, Session("LoginId"), "Reset As Primary"}
+            settingClass.Logs(dataLog)
+
             Session("SearchCustomerAddress") = txtSearch.Text
             Response.Redirect("~/setting/customer/address", False)
         Catch ex As Exception
@@ -270,7 +273,7 @@ Partial Class Setting_Customer_Address
         End Try
     End Sub
 
-    Private Sub BindData(searchText As String)
+    Protected Sub BindData(searchText As String)
         Session("SearchCustomerAddress") = String.Empty
         Try
             Dim search As String = String.Empty
@@ -302,11 +305,11 @@ Partial Class Setting_Customer_Address
         End Try
     End Sub
 
-    Private Sub MessageError(visible As Boolean, message As String)
+    Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
     End Sub
 
-    Private Sub MessageError_Process(visible As Boolean, message As String)
+    Protected Sub MessageError_Process(visible As Boolean, message As String)
         divErrorProcess.Visible = visible : msgErrorProcess.InnerText = message
     End Sub
 
