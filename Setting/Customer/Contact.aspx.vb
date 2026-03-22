@@ -4,9 +4,10 @@ Imports System.Data.SqlClient
 Partial Class Setting_Customer_Contact
     Inherits Page
 
-    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-
     Dim settingClass As New SettingClass
+
+    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim dataLog As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
@@ -17,6 +18,7 @@ Partial Class Setting_Customer_Contact
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
+            txtSearch.Text = Session("SearchCustomerContact")
             BindData(txtSearch.Text)
         End If
     End Sub
@@ -28,6 +30,7 @@ Partial Class Setting_Customer_Contact
 
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
         MessageError_Process(False, String.Empty)
+        Session("SearchCustomerContact") = txtSearch.Text
         Dim thisScript As String = "window.onload = function() { showProcess(); };"
         Try
             lblAction.Text = "Add"
@@ -58,6 +61,7 @@ Partial Class Setting_Customer_Contact
 
             If e.CommandName = "Detail" Then
                 MessageError_Process(False, String.Empty)
+                Session("SearchCustomerContact") = txtSearch.Text
                 Dim thisScript As String = "window.onload = function() { showProcess(); };"
                 Try
                     lblId.Text = dataId
@@ -92,17 +96,6 @@ Partial Class Setting_Customer_Contact
                 Catch ex As Exception
                     MessageError_Process(True, ex.ToString())
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-                End Try
-            ElseIf e.CommandName = "Log" Then
-                MessageError_Log(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showLog(); };"
-                Try
-                    gvListLogs.DataSource = settingClass.GetDataTable("SELECT * FROM Logs WHERE Type='CustomerContacts' AND DataId='" & dataId & "'  ORDER BY ActionDate DESC")
-                    gvListLogs.DataBind()
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
-                Catch ex As Exception
-                    MessageError_Log(True, ex.ToString())
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
                 End Try
             End If
         End If
@@ -158,9 +151,10 @@ Partial Class Setting_Customer_Contact
                         End Using
                     End Using
 
-                    Dim dataLog As Object() = {"CustomerContacts", thisId, Session("LoginId").ToString(), "Customer Contact Created"}
+                    dataLog = {"CustomerContacts", thisId, Session("LoginId").ToString(), "Customer Contact Created"}
                     settingClass.Logs(dataLog)
 
+                    Session("SearchCustomerContact") = txtSearch.Text
                     Response.Redirect("~/setting/customer/contact", False)
                 End If
 
@@ -184,15 +178,46 @@ Partial Class Setting_Customer_Contact
                         End Using
                     End Using
 
-                    Dim dataLog As Object() = {"CustomerContacts", lblId.Text, Session("LoginId"), "Customer Contact Updated"}
+                    dataLog = {"CustomerContacts", lblId.Text, Session("LoginId"), "Customer Contact Updated"}
                     settingClass.Logs(dataLog)
 
+                    Session("SearchCustomerContact") = txtSearch.Text
                     Response.Redirect("~/setting/customer/contact", False)
                 End If
             End If
         Catch ex As Exception
             MessageError_Process(True, ex.ToString())
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
+        End Try
+    End Sub
+
+    Protected Sub btnPrimary_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim thisId As String = txtIdPrimary.Text
+
+            Dim customerId As String = settingClass.GetItemData("SELECT CustomerId FROM CustomerContacts WHERE Id='" & thisId & "'")
+
+            Using thisConn As New SqlConnection(myConn)
+                thisConn.Open()
+
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerContacts SET [Primary]=0 WHERE CustomerId=@Id", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", customerId)
+                    myCmd.ExecuteNonQuery()
+                End Using
+
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerContacts SET Tags='Confirming,Invoicing,Quoting,Newsletter', [Primary]=1 WHERE Id=@Id", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", thisId)
+                    myCmd.ExecuteNonQuery()
+                End Using
+
+                thisConn.Close()
+            End Using
+
+            Session("SearchCustomerContact") = txtSearch.Text
+            Response.Redirect("~/setting/customer/contact", False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
         End Try
     End Sub
 
@@ -217,6 +242,7 @@ Partial Class Setting_Customer_Contact
                 thisConn.Close()
             End Using
 
+            Session("SearchCustomerContact") = txtSearch.Text
             Response.Redirect("~/setting/customer/contact", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -224,11 +250,12 @@ Partial Class Setting_Customer_Contact
     End Sub
 
     Protected Sub BindData(searchText As String)
+        Session("SearchCustomerContact") = String.Empty
         Try
             Dim search As String = String.Empty
 
             If Not String.IsNullOrEmpty(searchText) Then
-                search = "WHERE Customers.Name LIKE '%" & searchText & "%' OR CustomerContacts.Name LIKE '%" & searchText & "%' OR CustomerContacts.Email LIKE '%" & searchText & "%'"
+                search = "WHERE Customers.Id LIKE '%" & searchText & "%' OR Customers.Name LIKE '%" & searchText & "%' OR Customers.DebtorCode LIKE '%" & searchText & "%' OR CustomerContacts.Name LIKE '%" & searchText & "%' OR CustomerContacts.Email LIKE '%" & searchText & "%'"
             End If
 
             Dim thisQuery As String = String.Format("SELECT CustomerContacts.*, Customers.Name AS CustomerName, CONVERT(VARCHAR, CustomerContacts.Salutation) + ' ' + CONVERT(VARCHAR, CustomerContacts.Name) AS ContactName, CASE WHEN CustomerContacts.[Primary]=1 THEN 'Yes' WHEN CustomerContacts.[Primary]=0 THEN 'No' ELSE 'Error' END AS DataPrimary FROM CustomerContacts LEFT JOIN Customers ON CustomerContacts.CustomerId=Customers.Id {0} ORDER BY Customers.Id, CustomerContacts.Id ASC", search)
@@ -263,16 +290,13 @@ Partial Class Setting_Customer_Contact
         divError.Visible = visible : msgError.InnerText = message
     End Sub
 
-    Protected Sub MessageError_Log(visible As Boolean, message As String)
-        divErrorLog.Visible = visible : msgErrorLog.InnerText = message
-    End Sub
-
     Protected Sub MessageError_Process(visible As Boolean, message As String)
         divErrorProcess.Visible = visible : msgErrorProcess.InnerText = message
     End Sub
 
-    Protected Function BindTextLog(logId As String) As String
-        Return settingClass.getTextLog(logId)
+    Protected Function VisiblePrimary(primary As Boolean) As Boolean
+        If primary = False Then Return True
+        Return False
     End Function
 
     Protected Function PageAction(action As String) As Boolean

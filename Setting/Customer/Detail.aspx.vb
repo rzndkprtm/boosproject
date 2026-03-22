@@ -34,11 +34,6 @@ Partial Class Setting_Customer_Detail
 
         lblId.Text = Request.QueryString("customerid").ToString()
 
-        If lblId.Text = "1" AndAlso Not Session("RoleName") = "Developer" Then
-            Response.Redirect("~/setting/customer", False)
-            Exit Sub
-        End If
-
         If Not Session("selectedTabCustomer") = "" Then
             selected_tab.Value = Session("selectedTabCustomer").ToString()
         End If
@@ -204,6 +199,9 @@ Partial Class Setting_Customer_Detail
 
                     orderClass.CalculatePriceByOrder(orderId)
                 Next
+
+                dataLog = {"Customers", lblId.Text, Session("LoginId").ToString(), "Customer Re-Calculate Price Order"}
+                settingClass.Logs(dataLog)
             End If
 
             url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
@@ -228,6 +226,9 @@ Partial Class Setting_Customer_Detail
                 End Using
             End Using
 
+            dataLog = {"Customers", lblId.Text, Session("LoginId").ToString(), "Customer Deleted"}
+            settingClass.Logs(dataLog)
+
             Response.Redirect("~/setting/customer/", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -248,6 +249,9 @@ Partial Class Setting_Customer_Detail
 
             Dim mailingClass As New MailingClass
             mailingClass.LoginCredentials(lblId.Text, Session("LoginId").ToString(), "Welcome Customer")
+
+            dataLog = {"Customers", lblId.Text, Session("LoginId").ToString(), "Customer Send Welcome"}
+            settingClass.Logs(dataLog)
 
             url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
             Response.Redirect(url, False)
@@ -391,7 +395,6 @@ Partial Class Setting_Customer_Detail
                     titleContact.InnerText = "Edit Customer Contact"
 
                     Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerContacts WHERE Id='" & dataId & "'")
-
                     If thisData Is Nothing Then Exit Sub
 
                     txtContactName.Text = thisData("Name").ToString()
@@ -565,6 +568,8 @@ Partial Class Setting_Customer_Detail
 
                 thisConn.Close()
             End Using
+
+            dataLog = {"CustomerContacts", lblIdContact.Text, Session("LoginId"), "Set As Primary Contact"}
 
             url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
             Response.Redirect(url, False)
@@ -848,6 +853,9 @@ Partial Class Setting_Customer_Detail
                 thisConn.Close()
             End Using
 
+            dataLog = {"CustomerAddress", thisId, Session("LoginId"), "Set As Primary Address"}
+            settingClass.Logs(dataLog)
+
             url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
             Response.Redirect(url, False)
         Catch ex As Exception
@@ -918,6 +926,24 @@ Partial Class Setting_Customer_Detail
     ' END CUSTOMER ADDRESS
 
     ' START CUSTOMER BUSINESS
+
+    Protected Sub btnAddBusiness_Click(sender As Object, e As EventArgs)
+        MessageError_ProcessBusiness(False, String.Empty)
+        Dim thisScript As String = "window.onload = function() { showProcessBusiness(); };"
+        Session("selectedTabCustomer") = "list-business"
+        Try
+            lblActionBusiness.Text = "Add"
+            titleBusiness.InnerText = "Add Customer Business"
+
+            ClientScript.RegisterStartupScript(Me.GetType(), "showProcessBusiness", thisScript, True)
+        Catch ex As Exception
+            MessageError_ProcessBusiness(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_ProcessBusiness(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+            ClientScript.RegisterStartupScript(Me.GetType(), "showProcessBusiness", thisScript, True)
+        End Try
+    End Sub
     Protected Sub gvListBusiness_RowCommand(sender As Object, e As GridViewCommandEventArgs)
         If Not String.IsNullOrEmpty(e.CommandArgument) Then
             Session("selectedTabCustomer") = "list-business"
@@ -955,24 +981,6 @@ Partial Class Setting_Customer_Detail
                 End Try
             End If
         End If
-    End Sub
-
-    Protected Sub btnAddBusiness_Click(sender As Object, e As EventArgs)
-        MessageError_ProcessBusiness(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showProcessBusiness(); };"
-        Session("selectedTabCustomer") = "list-business"
-        Try
-            lblActionBusiness.Text = "Add"
-            titleBusiness.InnerText = "Add Customer Business"
-
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcessBusiness", thisScript, True)
-        Catch ex As Exception
-            MessageError_ProcessBusiness(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_ProcessBusiness(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcessBusiness", thisScript, True)
-        End Try
     End Sub
 
     Protected Sub btnProcessBusiness_Click(sender As Object, e As EventArgs)
@@ -1101,6 +1109,9 @@ Partial Class Setting_Customer_Detail
 
                 thisConn.Close()
             End Using
+
+            dataLog = {"CustomerBusiness", thisId, Session("LoginId"), "Set As Primary Business"}
+            settingClass.Logs(dataLog)
 
             url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
             Response.Redirect(url, False)

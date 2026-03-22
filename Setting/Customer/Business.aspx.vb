@@ -4,9 +4,10 @@ Imports System.Data.SqlClient
 Partial Class Setting_Customer_Business
     Inherits Page
 
-    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-
     Dim settingClass As New SettingClass
+
+    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim dataLog As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
@@ -17,6 +18,7 @@ Partial Class Setting_Customer_Business
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
+            txtSearch.Text = Session("SearchCustomerBusiness")
             BindData(txtSearch.Text)
         End If
     End Sub
@@ -28,6 +30,7 @@ Partial Class Setting_Customer_Business
 
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
         MessageError_Process(False, String.Empty)
+        Session("SearchCustomerBusiness") = txtSearch.Text
         Dim thisScript As String = "window.onload = function() { showProcess(); };"
         Try
             lblAction.Text = "Add"
@@ -58,6 +61,7 @@ Partial Class Setting_Customer_Business
 
             If e.CommandName = "Detail" Then
                 MessageError_Process(False, String.Empty)
+                Session("SearchCustomerBusiness") = txtSearch.Text
                 Dim thisScript As String = "window.onload = function() { showProcess(); };"
                 Try
                     lblId.Text = dataId
@@ -73,29 +77,17 @@ Partial Class Setting_Customer_Business
                     txtNumber.Text = thisData("ABNNumber").ToString()
                     txtName.Text = thisData("RegisteredName").ToString()
                     If Not String.IsNullOrEmpty(thisData("RegisteredDate").ToString()) Then
-                        txtRegistered.Text = Convert.ToDateTime(thisData("RegisteredDate")).ToString("dd MMM yyyy")
+                        txtRegistered.Text = Convert.ToDateTime(thisData("RegisteredDate")).ToString("yyyy-MM-dd")
                     End If
 
                     If Not String.IsNullOrEmpty(thisData("ExpiryDate").ToString()) Then
-                        txtExpiry.Text = Convert.ToDateTime(thisData("ExpiryDate")).ToString("dd MMM yyyy")
+                        txtExpiry.Text = Convert.ToDateTime(thisData("ExpiryDate")).ToString("yyyy-MM-dd")
                     End If
 
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Catch ex As Exception
                     MessageError_Process(True, ex.ToString())
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-                End Try
-            ElseIf e.CommandName = "Log" Then
-                MessageError_Log(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showLog(); };"
-                Try
-                    gvListLogs.DataSource = settingClass.GetDataTable("SELECT * FROM Logs WHERE Type='CustomerBusiness' AND DataId='" & dataId & "'  ORDER BY ActionDate DESC")
-                    gvListLogs.DataBind()
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
-                Catch ex As Exception
-                    MessageError_Log(True, ex.ToString())
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
                 End Try
             End If
         End If
@@ -124,7 +116,6 @@ Partial Class Setting_Customer_Business
             End If
 
             If msgErrorProcess.InnerText = "" Then
-
                 If lblAction.Text = "Add" Then
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerBusiness ORDER BY Id DESC")
 
@@ -142,9 +133,10 @@ Partial Class Setting_Customer_Business
                         End Using
                     End Using
 
-                    Dim dataLog As Object() = {"CustomerBusiness", thisId, Session("LoginId"), "Business Created"}
+                    dataLog = {"CustomerBusiness", thisId, Session("LoginId"), "Customer Business Created"}
                     settingClass.Logs(dataLog)
 
+                    Session("SearchCustomerBusiness") = txtSearch.Text
                     Response.Redirect("~/setting/customer/business", False)
                 End If
 
@@ -163,15 +155,46 @@ Partial Class Setting_Customer_Business
                         End Using
                     End Using
 
-                    Dim dataLog As Object() = {"CustomerBusiness", lblId.Text, Session("LoginId"), "Business Updated"}
+                    dataLog = {"CustomerBusiness", lblId.Text, Session("LoginId"), "Customer Business Updated"}
                     settingClass.Logs(dataLog)
 
+                    Session("SearchCustomerBusiness") = txtSearch.Text
                     Response.Redirect("~/setting/customer/business", False)
                 End If
             End If
         Catch ex As Exception
             MessageError_Process(True, ex.ToString())
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
+        End Try
+    End Sub
+
+    Protected Sub btnPrimary_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim thisId As String = txtIdPrimary.Text
+
+            Dim customerId As String = settingClass.GetItemData("SELECT CustomerId FROM CustomerBusiness WHERE Id='" & thisId & "'")
+
+            Using thisConn As New SqlConnection(myConn)
+                thisConn.Open()
+
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerBusiness SET [Primary]=0 WHERE CustomerId=@Id", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", customerId)
+                    myCmd.ExecuteNonQuery()
+                End Using
+
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerBusiness SET [Primary]=1 WHERE Id=@Id", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", thisId)
+                    myCmd.ExecuteNonQuery()
+                End Using
+
+                thisConn.Close()
+            End Using
+
+            Session("SearchCustomerBusiness") = txtSearch.Text
+            Response.Redirect("~/setting/customer/business", False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
         End Try
     End Sub
 
@@ -196,6 +219,7 @@ Partial Class Setting_Customer_Business
                 thisConn.Close()
             End Using
 
+            Session("SearchCustomerBusiness") = txtSearch.Text
             Response.Redirect("~/setting/customer/business", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -203,10 +227,11 @@ Partial Class Setting_Customer_Business
     End Sub
 
     Private Sub BindData(searchText As String)
+        Session("SearchCustomerBusiness") = String.Empty
         Try
             Dim search As String = String.Empty
             If Not String.IsNullOrEmpty(searchText) Then
-                search = "WHERE Customers.Name LIKE '%" & searchText & "%'"
+                search = "WHERE Customers.Name LIKE '%" & searchText & "%' OR Customers.DebtorCode LIKE '%" & searchText & "%'"
             End If
             Dim thisQuery As String = String.Format("SELECT CustomerBusiness.*, Customers.Name AS CustomerName, CASE WHEN CustomerBusiness.[Primary]=1 THEN 'Yes' WHEN CustomerBusiness.[Primary]=0 THEN 'No' ELSE 'Error' END AS DataPrimary FROM CustomerBusiness LEFT JOIN Customers ON CustomerBusiness.CustomerId=Customers.Id {0} ORDER BY Customers.Id, CustomerBusiness.Id ASC", search)
 
@@ -220,7 +245,7 @@ Partial Class Setting_Customer_Business
     Private Sub BindDataCustomer()
         ddlCustomer.Items.Clear()
         Try
-            ddlCustomer.DataSource = settingClass.GetDataTable("SELECT * FROM Customers WHERE Active=1 ORDER BY Name ASC")
+            ddlCustomer.DataSource = settingClass.GetDataTable("SELECT * FROM Customers ORDER BY Name ASC")
             ddlCustomer.DataTextField = "Name"
             ddlCustomer.DataValueField = "Id"
             ddlCustomer.DataBind()
@@ -237,16 +262,13 @@ Partial Class Setting_Customer_Business
         divError.Visible = visible : msgError.InnerText = message
     End Sub
 
-    Private Sub MessageError_Log(visible As Boolean, message As String)
-        divErrorLog.Visible = visible : msgErrorLog.InnerText = message
-    End Sub
-
     Private Sub MessageError_Process(visible As Boolean, message As String)
         divErrorProcess.Visible = visible : msgErrorProcess.InnerText = message
     End Sub
 
-    Protected Function BindTextLog(logId As String) As String
-        Return settingClass.GetTextLog(logId)
+    Protected Function VisiblePrimary(primary As Boolean) As Boolean
+        If primary = False Then Return True
+        Return False
     End Function
 
     Protected Function PageAction(action As String) As Boolean
