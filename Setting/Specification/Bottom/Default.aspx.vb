@@ -19,31 +19,14 @@ Partial Class Setting_Specification_Bottom_Default
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             txtSearch.Text = Session("SearchBottom")
-            BindCompanyDetailSort()
+            BindCompanyDetail()
             BindData(txtSearch.Text, ddlCompanyDetail.SelectedValue)
         End If
     End Sub
 
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
-        MessageError_Process(False, String.Empty)
         Session("SearchBottom") = txtSearch.Text
-
-        Dim thisScript As String = "window.onload = function() { showProcess(); };"
-        Try
-            lblAction.Text = "Add"
-            titleProcess.InnerText = "Add Bottom Rail"
-
-            BindDesign()
-            BindCompany()
-
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-        Catch ex As Exception
-            MessageError_Process(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-        End Try
+        Response.Redirect("~/setting/specification/bottom/add", False)
     End Sub
 
     Protected Sub ddlCompanyDetail_SelectedIndexChanged(sender As Object, e As EventArgs)
@@ -85,157 +68,8 @@ Partial Class Setting_Specification_Bottom_Default
                         MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
                     End If
                 End Try
-            ElseIf e.CommandName = "Change" Then
-                MessageError_Process(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showProcess(); };"
-                Try
-                    lblId.Text = dataId
-                    lblAction.Text = "Edit"
-                    titleProcess.InnerText = "Edit Bottom Rail"
-
-                    Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Bottoms WHERE Id='" & lblId.Text & "'")
-                    If myData Is Nothing Then Exit Sub
-
-                    BindDesign(isEdit:=True)
-                    BindCompany(isEdit:=True)
-
-                    txtName.Text = myData("Name").ToString()
-
-                    If Not myData("DesignId").ToString() = "" Then
-                        Dim companyArray() As String = myData("DesignId").ToString().Split(",")
-                        For Each i In companyArray
-                            If Not String.IsNullOrEmpty(i) Then
-                                Dim item = lbDesign.Items.FindByValue(i)
-                                If item IsNot Nothing Then
-                                    item.Selected = True
-                                End If
-                            End If
-                        Next
-                    End If
-
-                    If Not myData("CompanyDetailId").ToString() = "" Then
-                        Dim companyArray() As String = myData("CompanyDetailId").ToString().Split(",")
-                        For Each i In companyArray
-                            If Not String.IsNullOrEmpty(i) Then
-                                Dim item = lbCompany.Items.FindByValue(i)
-                                If item IsNot Nothing Then
-                                    item.Selected = True
-                                End If
-                            End If
-                        Next
-                    End If
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-                Catch ex As Exception
-                    MessageError_Process(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                    End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-                End Try
-            Else
-                Response.Redirect("~/setting/specification/bottom", False)
             End If
         End If
-    End Sub
-
-    Protected Sub btnProcess_Click(sender As Object, e As EventArgs)
-        MessageError_Process(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showProcess(); };"
-        Try
-            If txtName.Text = "" Then
-                MessageError_Process(True, "BOTTOM NAME IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-                Exit Sub
-            End If
-
-            Dim design As String = String.Empty
-            For Each item As ListItem In lbDesign.Items
-                If item.Selected Then
-                    If Not String.IsNullOrEmpty(item.Selected) Then
-                        design += item.Value & ","
-                    End If
-                End If
-            Next
-            If design = "" Then
-                MessageError_Process(True, "DESIGN TYPE IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-                Exit Sub
-            End If
-
-            Dim company As String = String.Empty
-            For Each item As ListItem In lbCompany.Items
-                If item.Selected Then
-                    If Not String.IsNullOrEmpty(item.Selected) Then
-                        company += item.Value & ","
-                    End If
-                End If
-            Next
-            If company = "" Then
-                MessageError_Process(True, "COMPANY IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-                Exit Sub
-            End If
-
-            If msgErrorProcess.InnerText = "" Then
-                Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
-
-                Dim designType As String = design.Remove(design.Length - 1).ToString()
-                Dim companyDetail As String = company.Remove(company.Length - 1).ToString()
-
-                If lblAction.Text = "Add" Then
-                    Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Bottoms ORDER BY Id DESC")
-                    Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Bottoms VALUES (@Id, @Name, @DesignId, @CompanyDetailId, @Description, @Active)", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", thisId)
-                            myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@DesignId", designType)
-                            myCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetail)
-                            myCmd.Parameters.AddWithValue("@Description", descText)
-                            myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
-
-                            thisConn.Open()
-                            myCmd.ExecuteNonQuery()
-                        End Using
-                    End Using
-
-                    Dim dataLog As Object() = {"Bottoms", thisId, Session("LoginId").ToString(), "Bottom Type Created"}
-                    settingClass.Logs(dataLog)
-
-                    Session("SearchBottom") = txtSearch.Text
-                    url = String.Format("~/setting/specification/bottom/detail?bottomid={0}", thisId)
-                    Response.Redirect(url, False)
-                End If
-
-                If lblAction.Text = "Edit" Then
-                    Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE Bottoms SET Name=@Name, DesignId=@DesignId, CompanyDetailId=@CompanyDetailId, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                            myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@DesignId", designType)
-                            myCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetail)
-                            myCmd.Parameters.AddWithValue("@Description", descText)
-                            myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
-
-                            thisConn.Open()
-                            myCmd.ExecuteNonQuery()
-                        End Using
-                    End Using
-
-                    Dim dataLog As Object() = {"Bottoms", lblId.Text, Session("LoginId").ToString(), "Bottom Type Updated"}
-                    settingClass.Logs(dataLog)
-
-                    Session("SearchBottom") = txtSearch.Text
-                    Response.Redirect("~/setting/specification/bottom/", False)
-                End If
-            End If
-        Catch ex As Exception
-            MessageError_Process(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-        End Try
     End Sub
 
     Protected Sub btnActive_Click(sender As Object, e As EventArgs)
@@ -298,14 +132,13 @@ Partial Class Setting_Specification_Bottom_Default
     Protected Sub BindData(searchText As String, companyText As String)
         Session("SearchBottom") = String.Empty
         Try
-            Dim company As String = "WHERE EXISTS (SELECT 1 FROM STRING_SPLIT(Bottoms.CompanyDetailId, ',') companyArray WHERE LTRIM(RTRIM(companyArray.value)) = '" & companyText & "')"
-            Dim search As String = String.Empty
-
+            Dim stringCompanyDetail As String = "WHERE cdArray.VALUE='" & companyText & "'"
+            Dim stringSearch As String = String.Empty
             If Not searchText = "" Then
-                search = "(Id LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%' OR Description LIKE '%" & searchText & "%')"
+                stringSearch = "(Id LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%' OR Description LIKE '%" & searchText & "%')"
             End If
 
-            Dim thisString As String = String.Format("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Bottoms {0} {1} ORDER BY Name ASC", company, search)
+            Dim thisString As String = String.Format("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Bottoms CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS cdArray {0} {1} ORDER BY Name ASC", stringCompanyDetail, stringSearch)
 
             gvList.DataSource = settingClass.GetDataTable(thisString)
             gvList.DataBind()
@@ -320,20 +153,18 @@ Partial Class Setting_Specification_Bottom_Default
         End Try
     End Sub
 
-    Protected Sub BindCompanyDetailSort()
+    Protected Sub BindCompanyDetail()
         ddlCompanyDetail.Items.Clear()
         Try
+            Dim thisString As String = "SELECT * FROM CompanyDetails ORDER BY Id ASC"
             If Not Session("CompanyDetailId") = "" Then
-                Dim thisString As String = "SELECT * FROM CompanyDetails ORDER BY Id ASC"
-                If Session("RoleName") = "Customer Service" Then
-                    thisString = "SELECT * FROM CompanyDetails WHERE CompanyId='" & Session("CompanyId") & "' ORDER BY Id ASC"
-                End If
-
-                ddlCompanyDetail.DataSource = settingClass.GetDataTable(thisString)
-                ddlCompanyDetail.DataTextField = "Name"
-                ddlCompanyDetail.DataValueField = "Id"
-                ddlCompanyDetail.DataBind()
+                thisString = "SELECT * FROM CompanyDetails WHERE CompanyId='" & Session("CompanyId") & "' ORDER BY Id ASC"
             End If
+
+            ddlCompanyDetail.DataSource = settingClass.GetDataTable(thisString)
+            ddlCompanyDetail.DataTextField = "Name"
+            ddlCompanyDetail.DataValueField = "Id"
+            ddlCompanyDetail.DataBind()
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -342,55 +173,8 @@ Partial Class Setting_Specification_Bottom_Default
         End Try
     End Sub
 
-    Protected Sub BindDesign(Optional isEdit As Boolean = False)
-        lbDesign.Items.Clear()
-        Try
-            Dim thisString As String = "SELECT * FROM Designs CROSS APPLY STRING_SPLIT(AppliesTo, ',') AS applyArray WHERE applyArray.VALUE='Bottoms' AND Active=1 ORDER BY Name ASC"
-            If isEdit = True Then thisString = "SELECT * FROM Designs CROSS APPLY STRING_SPLIT(AppliesTo, ',') AS applyArray WHERE applyArray.VALUE='Bottoms' ORDER BY Name ASC"
-            lbDesign.DataSource = settingClass.GetDataTable(thisString)
-            lbDesign.DataTextField = "Name"
-            lbDesign.DataValueField = "Id"
-            lbDesign.DataBind()
-
-            If lbDesign.Items.Count > 0 Then
-                lbDesign.Items.Insert(0, New ListItem("", ""))
-            End If
-        Catch ex As Exception
-            MessageError_Process(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
-    Protected Sub BindCompany(Optional isEdit As Boolean = False)
-        lbCompany.Items.Clear()
-        Try
-            Dim thisString As String = "SELECT * FROM CompanyDetails WHERE Active=1 ORDER BY Name ASC"
-            If isEdit = True Then thisString = "SELECT * FROM CompanyDetails ORDER BY Name ASC"
-
-            lbCompany.DataSource = settingClass.GetDataTable(thisString)
-            lbCompany.DataTextField = "Name"
-            lbCompany.DataValueField = "Id"
-            lbCompany.DataBind()
-
-            If lbCompany.Items.Count > 0 Then
-                lbCompany.Items.Insert(0, New ListItem("", ""))
-            End If
-        Catch ex As Exception
-            MessageError_Process(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
-    End Sub
-
-    Protected Sub MessageError_Process(visible As Boolean, message As String)
-        divErrorProcess.Visible = visible : msgErrorProcess.InnerText = message
     End Sub
 
     Protected Function BindDesign(bottomId As String) As String
