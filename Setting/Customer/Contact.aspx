@@ -125,12 +125,12 @@
                     <div class="row mb-3">
                         <div class="col-12">
                             <label class="form-label">Customer Account</label>
-                            <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="form-select">
+                            <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select">
                             </asp:DropDownList>
                         </div>
                     </div>
 
-                    <div class="row mb-2">
+                    <div class="row">
                         <div class="col-12 col-sm-12 col-lg-6 form-group">
                             <label class="form-label">Name</label>
                             <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
@@ -146,7 +146,7 @@
                         </div>
                     </div>
 
-                    <div class="row mb-2">
+                    <div class="row">
                         <div class="col-12 col-sm-12 col-lg-6 form-group">
                             <label class="form-label">Role</label>
                             <asp:TextBox runat="server" ID="txtRole" CssClass="form-control" placeholder="Role ..." autocomplete="off"></asp:TextBox>
@@ -157,7 +157,7 @@
                         </div>
                     </div>
 
-                    <div class="mb-3 row">
+                    <div class="row">
                         <div class="col-12 col-sm-12 col-lg-4 form-group">
                             <label class="form-label">Phone</label>
                             <asp:TextBox runat="server" ID="txtPhone" CssClass="form-control" placeholder="Phone ..." autocomplete="off"></asp:TextBox>
@@ -172,7 +172,7 @@
                         </div>
                     </div>
 
-                    <div class="mb-3 row">
+                    <div class="row">
                         <div class="col-12 form-group">
                             <label class="form-label">Tags</label>
                             <asp:ListBox runat="server" ID="lbTags" CssClass="choices form-select multiple-remove" SelectionMode="Multiple">
@@ -184,7 +184,7 @@
                         </div>
                     </div>
 
-                    <div class="mb-3 row">
+                    <div class="row">
                         <div class="col-12 form-group">
                             <label class="form-label">Note</label>
                             <asp:TextBox runat="server" TextMode="MultiLine" ID="txtNote" CssClass="form-control" Height="100px" placeholder="Note ..." autocomplete="off" style="resize:none;"></asp:TextBox>

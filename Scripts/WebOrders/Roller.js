@@ -2528,7 +2528,7 @@ function otomatisDrop(blindType, blindNumber, drop) {
 
         getBlindName(blindType).then(blindName => {
             if (blindNumber === 1) {
-                if (blindName === "Dual Blinds" || blindName === "Link 2 Blinds Dependent" || blindName === "Link 2 Blinds Independent") {
+                if (blindName === "Dual Blinds" || blindName === "Link 2 Blinds Dependent") {
                     document.getElementById("dropb").value = drop;
                 } else if (blindName === "Link 3 Blinds Dependent" || blindName === "Link 3 Blinds Independent with Dependent") {
                     document.getElementById("dropb").value = drop;
@@ -2545,7 +2545,7 @@ function otomatisDrop(blindType, blindNumber, drop) {
                     document.getElementById("dropf").value = drop;
                 }
             } else if (blindNumber === 2) {
-                if (blindName === "Dual Blinds" || blindName === "Link 2 Blinds Dependent" || blindName === "Link 2 Blinds Independent") {
+                if (blindName === "Dual Blinds" || blindName === "Link 2 Blinds Dependent") {
                     document.getElementById("drop").value = drop;
                 } else if (blindName === "Link 3 Blinds Dependent" || blindName === "Link 3 Blinds Independent with Dependent") {
                     document.getElementById("drop").value = drop;

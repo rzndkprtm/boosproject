@@ -113,7 +113,7 @@
                     <h5 runat="server" class="modal-title" id="titleProcess"></h5>
                 </div>
                 <div class="modal-body">
-                    <div class="row mb-2" runat="server" id="divErrorProcess">
+                    <div class="row" runat="server" id="divErrorProcess">
                         <div class="col-12">
                             <div class="alert alert-danger">
                                 <span runat="server" id="msgErrorProcess"></span>
@@ -121,29 +121,29 @@
                         </div>
                     </div>
 
-                    <div class="row mb-3">
-                        <div class="col-12">
+                    <div class="row3">
+                        <div class="col-12 form-group">
                             <label class="form-label">Customer Account</label>
-                            <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="form-select">
+                            <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select">
                             </asp:DropDownList>
                         </div>
                     </div>
 
-                    <div class="row mb-2">
+                    <div class="row">
                         <div class="col-12 form-group">
                             <label class="form-label">ABN Number</label>
                             <asp:TextBox runat="server" ID="txtNumber" CssClass="form-control" placeholder="ABN Name ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
 
-                    <div class="row mb-2">
+                    <div class="row">
                         <div class="col-12 form-group">
                             <label class="form-label">Registered Name</label>
                             <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Registered Name ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
 
-                    <div class="row mb-2">
+                    <div class="row">
                         <div class="col-6 form-group">
                             <label class="form-label">Registered Date</label>
                             <asp:TextBox runat="server" ID="txtRegistered" CssClass="form-control" TextMode="Date"></asp:TextBox>

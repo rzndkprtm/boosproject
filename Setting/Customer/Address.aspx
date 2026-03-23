@@ -103,7 +103,6 @@
                             </div>
                         </div>
                     </div>
-                    
                     <div class="card-footer d-flex justify-content-between"></div>
                 </div>
             </div>
@@ -126,25 +125,25 @@
                             </div>
                         </div>
                     </div>
-                    <div class="mb-3 row">
+                    <div class="row mb-3">
                         <div class="col-12">
                             <label class="form-label">Customer Account</label>
-                            <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="form-select"></asp:DropDownList>
+                            <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select"></asp:DropDownList>
                         </div>
                     </div>
 
-                    <div class="mb-2 row">
-                        <div class="col-12 col-sm-12 col-lg-6">
+                    <div class="row">
+                        <div class="col-12 col-sm-12 col-lg-6 form-group">
                             <label class="form-label">Description</label>
                             <asp:TextBox runat="server" ID="txtDescription" CssClass="form-control" placeholder="Description ..." autocomplete="off"></asp:TextBox>
                         </div>
-                        <div class="col-12 col-sm-12 col-lg-6">
+                        <div class="col-12 col-sm-12 col-lg-6 form-group">
                             <label class="form-label">Address</label>
                             <asp:TextBox runat="server" ID="txtAddress" CssClass="form-control" placeholder="Address ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
                 
-                    <div class="mb-2 row">
+                    <div class="row">
                         <div class="col-12 col-sm-12 col-lg-6 form-group">
                             <label class="form-label">Suburb</label>
                             <asp:TextBox runat="server" ID="txtSuburb" CssClass="form-control" placeholder="Suburb ..." autocomplete="off"></asp:TextBox>
@@ -155,7 +154,7 @@
                         </div>
                     </div>
                 
-                    <div class="mb-2 row">
+                    <div class="row">
                         <div class="col-12 col-sm-12 col-lg-6 form-group">
                             <label class="form-label">Post Code</label>
                             <asp:TextBox runat="server" ID="txtPostCode" CssClass="form-control" placeholder="Post Code ..." autocomplete="off"></asp:TextBox>
@@ -170,7 +169,7 @@
                         </div>
                     </div>
                     
-                    <div class="mb-2 row">
+                    <div class="row">
                         <div class="col-12 form-group">
                             <label class="form-label">Tags</label>
                             <asp:ListBox runat="server" ID="lbTags" CssClass="choices form-select multiple-remove" SelectionMode="Multiple">
@@ -180,7 +179,7 @@
                         </div>
                     </div>
 
-                    <div class="mb-2 row">
+                    <div class="row">
                         <div class="col-12 form-group">
                             <label class="form-label">Note</label>
                             <asp:TextBox runat="server" TextMode="MultiLine" ID="txtNote" CssClass="form-control" Height="100px" placeholder="Note ..." autocomplete="off" style="resize:none;"></asp:TextBox>
