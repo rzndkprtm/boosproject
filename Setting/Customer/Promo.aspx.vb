@@ -1,4 +1,5 @@
-﻿Imports System.Data
+﻿Imports System.Data.SqlClient
+Imports System.Globalization
 
 Partial Class Setting_Customer_Promo
     Inherits Page
@@ -6,6 +7,8 @@ Partial Class Setting_Customer_Promo
     Dim settingClass As New SettingClass
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim dataLog As Object() = Nothing
+    Dim enUS As CultureInfo = New CultureInfo("en-US")
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
@@ -30,10 +33,8 @@ Partial Class Setting_Customer_Promo
         MessageError_Process(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showProcess(); };"
         Try
-            lblAction.Text = "Add"
-            titleProcess.InnerText = "Add Customer Promo"
-
             BindDataCustomer()
+            BindDataPromo()
 
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         Catch ex As Exception
@@ -54,27 +55,21 @@ Partial Class Setting_Customer_Promo
 
     Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
         If Not String.IsNullOrEmpty(e.CommandArgument) Then
+            Session("SearchCustomerPromo") = txtSearch.Text
             Dim dataId As String = e.CommandArgument.ToString()
 
             If e.CommandName = "Detail" Then
-                MessageError_Process(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showProcess(); };"
+                MessageError_Detail(False, String.Empty)
+                Dim thisScript As String = "window.onload = function() { showDetail(); };"
                 Try
-                    lblId.Text = dataId
-                    lblAction.Text = "Edit"
-                    titleProcess.InnerText = "Edit Contact"
+                    Dim promoId As String = settingClass.GetItemData("SELECT PromoId FROM CustomerPromos WHERE Id='" & dataId & "'")
+                    gvListDetail.DataSource = settingClass.GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
+                    gvListDetail.DataBind()
 
-                    Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerContacts WHERE Id='" & dataId & "'")
-                    If thisData Is Nothing Then Exit Sub
-
-                    BindDataCustomer()
-
-                    ddlCustomer.SelectedValue = thisData("CustomerId").ToString()
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
+                    ClientScript.RegisterStartupScript(Me.GetType(), "showDetail", thisScript, True)
                 Catch ex As Exception
-                    MessageError_Process(True, ex.ToString())
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
+                    MessageError_Detail(True, ex.ToString())
+                    ClientScript.RegisterStartupScript(Me.GetType(), "showDetail", thisScript, True)
                 End Try
             End If
         End If
@@ -84,7 +79,45 @@ Partial Class Setting_Customer_Promo
         MessageError_Process(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showProcess(); };"
         Try
+            If ddlCustomer.SelectedValue = "" Then
+                MessageError_Process(True, "CUSTOMER IS REQUIRED !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
+                Exit Sub
+            End If
 
+            If ddlPromo.SelectedValue = "" Then
+                MessageError_Process(True, "PROMO IS REQUIRED !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
+                Exit Sub
+            End If
+
+            Dim checkData As Integer = settingClass.GetItemData_Integer("SELECT COUNT(*) FROM CustomerPromos WHERE CustomerId='" & lblId.Text & "' AND PromoId='" & ddlPromo.SelectedValue & "'")
+            If checkData > 0 Then
+                MessageError_Process(True, "THIS PROMO IS ALREADY REGISTERED. PLEASE USE A DIFFERENT PROMO !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
+                Exit Sub
+            End If
+
+            If msgErrorProcess.InnerText = "" Then
+                Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerPromos ORDER BY Id DESC")
+
+                Using thisConn As New SqlConnection(myConn)
+                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerPromos VALUES (@Id, @CustomerId, @PromoId)", thisConn)
+                        myCmd.Parameters.AddWithValue("@Id", thisId)
+                        myCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
+                        myCmd.Parameters.AddWithValue("@PromoId", ddlPromo.SelectedValue)
+
+                        thisConn.Open()
+                        myCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                dataLog = {"CustomerPromos", thisId, Session("LoginId").ToString(), "Customer Promo Created"}
+                settingClass.Logs(dataLog)
+
+                Session("SearchCustomerPromo") = txtSearch.Text
+                Response.Redirect("~/setting/customer/promo", False)
+            End If
         Catch ex As Exception
             MessageError_Process(True, ex.ToString())
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
@@ -95,12 +128,37 @@ Partial Class Setting_Customer_Promo
         MessageError(False, String.Empty)
         Try
             Dim thisId As String = txtIdDelete.Text
+
+            Dim customerId As String = settingClass.GetItemData("SELECT CustomerId FROM CustomerPromos WHERE Id='" & thisId & "'")
+
+            Using thisConn As New SqlConnection(myConn)
+                thisConn.Open()
+
+                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerPromos WHERE Id=@Id", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", thisId)
+                    myCmd.ExecuteNonQuery()
+                End Using
+
+                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Logs WHERE Type='CustomerPromos' AND DataId=@Id", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", thisId)
+                    myCmd.ExecuteNonQuery()
+                End Using
+
+                thisConn.Close()
+            End Using
+
+            dataLog = {"Customers", customerId, Session("LoginId"), "Customer Promo Deleted"}
+            settingClass.Logs(dataLog)
+
+            Session("SearchCustomerPromo") = txtSearch.Text
+            Response.Redirect("~/setting/customer/promo", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
         End Try
     End Sub
 
     Protected Sub BindData(searchText As String)
+        Session("SearchCustomerPromo") = String.Empty
         Try
             Dim search As String = String.Empty
             If Not String.IsNullOrEmpty(searchText) Then
@@ -111,7 +169,6 @@ Partial Class Setting_Customer_Promo
             gvList.DataSource = settingClass.GetDataTable(thisQuery)
             gvList.DataBind()
             gvList.Columns(1).Visible = PageAction("Visible ID") ' ID
-
         Catch ex As Exception
             MessageError(True, ex.ToString())
         End Try
@@ -133,12 +190,43 @@ Partial Class Setting_Customer_Promo
         End Try
     End Sub
 
+    Protected Sub BindDataPromo()
+        ddlPromo.Items.Clear()
+        Try
+            ddlPromo.DataSource = settingClass.GetDataTable("SELECT * FROM Promos WHERE Active=1 ORDER BY Name ASC")
+            ddlPromo.DataTextField = "Name"
+            ddlPromo.DataValueField = "Id"
+            ddlPromo.DataBind()
+
+            If ddlPromo.Items.Count > 1 Then
+                ddlPromo.Items.Insert(0, New ListItem("", ""))
+            End If
+        Catch ex As Exception
+            ddlPromo.Items.Clear()
+        End Try
+    End Sub
+
+    Protected Function PromoTitle(type As String, dataId As String) As String
+        If String.IsNullOrEmpty(type) Then Return String.Empty
+        If type = "FrameColours" Then Return dataId
+        Return settingClass.GetItemData(String.Format("SELECT Name FROM {0} WHERE Id='{1}'", type, dataId))
+    End Function
+
+    Protected Function PromoValue(data As Decimal) As String
+        If data > 0 Then Return data.ToString("G29", enUS) & "%"
+        Return "ERROR"
+    End Function
+
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
     End Sub
 
     Protected Sub MessageError_Process(visible As Boolean, message As String)
         divErrorProcess.Visible = visible : msgErrorProcess.InnerText = message
+    End Sub
+
+    Protected Sub MessageError_Detail(visible As Boolean, message As String)
+        divErrorDetail.Visible = visible : msgErrorDetail.InnerText = message
     End Sub
 
     Protected Function PageAction(action As String) As Boolean

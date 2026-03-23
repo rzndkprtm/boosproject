@@ -517,7 +517,7 @@ Partial Class Setting_Customer_Detail
         Try
             Dim thisId As String = txtIdContactDelete.Text
 
-            Dim contactDesc As String = settingClass.GetItemData("SELECT 'Name : ' + CONVERT(VARCHAR(250), Name) + ' - Email : ' + CONVERT(VARCHAR(250), Email) FROM CustomerContacts WHERE Id='" & thisId & "'")
+            Dim fullContact As String = settingClass.GetItemData("SELECT CONCAT('Contact Name: ', ISNULL(Name, ''), ', ', 'Email: ', ISNULL(Email, ''), ', ', 'Tags: ', ISNULL(Tags, '')) AS ThisContact FROM CustomerContacts WHERE Id='" & thisId & "'")
 
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
@@ -535,8 +535,8 @@ Partial Class Setting_Customer_Detail
                 thisConn.Close()
             End Using
 
-            Dim logDesc As String = String.Format("Customer Contact Deleted | {0}", contactDesc)
-            dataLog = {"Customers", lblId.Text, Session("LoginId").ToString(), logDesc}
+            Dim stringLog As String = String.Format("Customer Contact Deleted | {0}", fullContact)
+            dataLog = {"Customers", lblId.Text, Session("LoginId").ToString(), stringLog}
             settingClass.Logs(dataLog)
 
             url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
@@ -1089,8 +1089,8 @@ Partial Class Setting_Customer_Detail
                 thisConn.Close()
             End Using
 
-            Dim logDesc As String = String.Format("Customer Business Deleted | {0}", fullBusiness)
-            dataLog = {"Customers", lblId.Text, Session("LoginId").ToString(), logDesc}
+            Dim stringLog As String = String.Format("Customer Business Deleted | {0}", fullBusiness)
+            dataLog = {"Customers", lblId.Text, Session("LoginId").ToString(), stringLog}
             settingClass.Logs(dataLog)
 
             url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)

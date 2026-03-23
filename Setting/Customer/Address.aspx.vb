@@ -250,6 +250,8 @@ Partial Class Setting_Customer_Address
         Try
             Dim thisId As String = txtIdDelete.Text
 
+            Dim fullAddress As String = settingClass.GetItemData("SELECT CONCAT('Description: ', ISNULL(Description, ''), ', ', 'Address: ', ISNULL(Address, ''), ', ', 'Suburb: ', ISNULL(Suburb, ''), ', ', 'State: ', ISNULL(State, ''), ', ', 'PostCode: ', ISNULL(PostCode, '')) AS FullDescription FROM CustomerAddress WHERE Id='" & thisId & "'")
+
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
 
@@ -265,6 +267,10 @@ Partial Class Setting_Customer_Address
 
                 thisConn.Close()
             End Using
+
+            Dim stringLog As String = String.Format("Customer Address Deleted | {0}", fullAddress)
+            dataLog = {"Customers", lblId.Text, Session("LoginId").ToString(), stringLog}
+            settingClass.Logs(dataLog)
 
             Session("SearchCustomerAddress") = txtSearch.Text
             Response.Redirect("~/setting/customer/address", False)

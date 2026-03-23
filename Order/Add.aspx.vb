@@ -639,7 +639,7 @@ Partial Class Order_Add
                             End If
 
                             If Not returnPosition = "None" Then
-                                If mounting = "Face Fit" Then
+                                If mounting = "Face Fit" OrElse mounting = "Opening Size Face Fit" OrElse mounting = "Make Size Face Fit" Then
                                     returnLength = "Standard"
                                     returnLengthValue = 70
                                     If blindType.Contains("Ultraslat") Then returnLengthValue = 77
@@ -655,7 +655,7 @@ Partial Class Order_Add
                                     End If
                                 End If
 
-                                If mounting = "Reveal Fit" OrElse mounting = "Opening Size Reveal Fit" Then
+                                If mounting = "Reveal Fit" OrElse mounting = "Opening Size Reveal Fit" OrElse mounting = "Make Size Reveal Fit" Then
                                     returnLength = "Custom"
                                     returnLengthText = returnLengthText.Replace("mm", "")
 

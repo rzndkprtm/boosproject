@@ -277,15 +277,19 @@
                 });
             }
         });
+
         function showProcess() {
             $("#modalProcess").modal("show");
         }
+
         function showPrimary(id) {
             document.getElementById("<%=txtIdPrimary.ClientID %>").value = id;
         }
+
         function showDelete(id) {
             document.getElementById("<%=txtIdDelete.ClientID %>").value = id;
         }
+
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
             $("#tblLogs tbody").html("");
@@ -319,12 +323,14 @@
                 }
             });
         }
+
         ["modalProcess", "modalDelete", "modalLog", "modalPrimary"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
             });
         });
+
         window.history.replaceState(null, null, window.location.href);
     </script>
 

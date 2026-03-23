@@ -61,20 +61,11 @@
                                                         <%# Container.DataItemIndex + 1 %>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-                                                <asp:BoundField DataField="Id" HeaderText="ID" />
                                                 <asp:BoundField DataField="DebtorCode" HeaderText="Debtor Code" />
                                                 <asp:BoundField DataField="CustomerName" HeaderText="Customer Name" />
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
                                                     <ItemTemplate>
-                                                        <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
-                                                        <ul class="dropdown-menu">
-                                                            <li>
-                                                                <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
-                                                            </li>
-                                                            <li>
-                                                                <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
-                                                            </li>
-                                                        </ul>
+                                                        <asp:LinkButton runat="server" ID="linkDetail" CssClass="btn btn-sm btn-primary" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                             </Columns>
@@ -91,6 +82,57 @@
                 </div>
             </div>
         </section>
+    </div>
+
+    <div class="modal modal-blur fade" id="modalDetailDiscount" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detail Discount</h5>
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-2" runat="server" id="divErrorDetailDiscount">
+                        <div class="col-12">
+                            <div class="alert alert-danger">
+                                <span runat="server" id="msgErrorDetailDiscount"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="table-responsive">
+                                <asp:GridView runat="server" ID="gvListDetailDiscount" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center">
+                                    <RowStyle />
+                                    <Columns>
+                                        <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="60px">
+                                            <ItemTemplate>
+                                                <%# Container.DataItemIndex + 1 %>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:BoundField DataField="Type" HeaderText="Type" />
+                                        <asp:TemplateField HeaderText="Discount Type">
+                                            <ItemTemplate>
+                                                <%# DiscountTitle(Eval("Type").ToString(), Eval("DataId").ToString()) %>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField HeaderText="Discount">
+                                            <ItemTemplate>
+                                                <%# DiscountValue(Eval("Discount")) %>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                    </Columns>
+                                </asp:GridView>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script type="text/javascript">
@@ -111,6 +153,17 @@
                     if (btn) btn.click();
                 });
             }
+        });
+
+        function showDetailDiscount() {
+            $("#modalDetailDiscount").modal("show");
+        }
+
+        ["modalDetailDiscount"].forEach(function (id) {
+            document.getElementById(id).addEventListener("hide.bs.modal", function () {
+                document.activeElement.blur();
+                document.body.focus();
+            });
         });
 
         window.history.replaceState(null, null, window.location.href);

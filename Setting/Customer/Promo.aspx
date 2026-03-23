@@ -72,7 +72,7 @@
                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                         <ul class="dropdown-menu">
                                                             <li>
-                                                                <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                                <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                             </li>
                                                             <li>
                                                                 <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
@@ -103,7 +103,7 @@
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 runat="server" class="modal-title" id="titleProcess"></h5>
+                    <h5 class="modal-title">Add Promo</h5>
                 </div>
                 <div class="modal-body">
                     <div class="row mb-2" runat="server" id="divErrorProcess">
@@ -114,10 +114,18 @@
                         </div>
                     </div>
 
-                    <div class="row mb-3">
-                        <div class="col-12">
+                    <div class="row">
+                        <div class="col-12 form-group">
                             <label class="form-label">Customer Account</label>
-                            <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="form-select">
+                            <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select">
+                            </asp:DropDownList>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Promo</label>
+                            <asp:DropDownList runat="server" ID="ddlPromo" CssClass="choices form-select">
                             </asp:DropDownList>
                         </div>
                     </div>
@@ -131,11 +139,62 @@
         </div>
     </div>
 
+    <div class="modal modal-blur fade" id="modalDetail" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detail Promo</h5>
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-2" runat="server" id="divErrorDetail">
+                        <div class="col-12">
+                            <div class="alert alert-danger">
+                                <span runat="server" id="msgErrorDetail"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="table-responsive">
+                                <asp:GridView runat="server" ID="gvListDetail" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center">
+                                    <RowStyle />
+                                    <Columns>
+                                        <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="60px">
+                                            <ItemTemplate>
+                                                <%# Container.DataItemIndex + 1 %>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:BoundField DataField="Id" HeaderText="ID" />
+                                        <asp:TemplateField HeaderText="Type">
+                                            <ItemTemplate>
+                                                <%# PromoTitle(Eval("Type").ToString(), Eval("DataId").ToString()) %>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField HeaderText="Discount">
+                                            <ItemTemplate>
+                                                <%# PromoValue(Eval("Discount")) %>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                    </Columns>
+                                </asp:GridView>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade text-center" id="modalDelete" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-danger">
-                    <h5 class="modal-title white">Delete Customer Promo</h5>
+                    <h5 class="modal-title white">Delete Promo</h5>
                 </div>
 
                 <div class="modal-body text-center py-4">
@@ -195,6 +254,10 @@
             $("#modalProcess").modal("show");
         }
 
+        function showDetail() {
+            $("#modalDetail").modal("show");
+        }
+
         function showDelete(id) {
             document.getElementById("<%=txtIdDelete.ClientID %>").value = id;
         }
@@ -233,17 +296,17 @@
             });
         }
 
-        ["modalProcess", "modalDelete", "modalLog"].forEach(function (id) {
+        ["modalProcess", "modalDetail", "modalDelete", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
             });
         });
+
         window.history.replaceState(null, null, window.location.href);
     </script>
 
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblId"></asp:Label>
-        <asp:Label runat="server" ID="lblAction"></asp:Label>
     </div>
 </asp:Content>

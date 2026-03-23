@@ -229,6 +229,8 @@ Partial Class Setting_Customer_Contact
         Try
             Dim thisId As String = txtIdDelete.Text
 
+            Dim fullContact As String = settingClass.GetItemData("SELECT CONCAT('Contact Name: ', ISNULL(Name, ''), ', ', 'Email: ', ISNULL(Email, ''), ', ', 'Tags: ', ISNULL(Tags, '')) AS ThisContact FROM CustomerContacts WHERE Id='" & thisId & "'")
+
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
 
@@ -244,6 +246,10 @@ Partial Class Setting_Customer_Contact
 
                 thisConn.Close()
             End Using
+
+            Dim stringLog As String = String.Format("Customer Contact Deleted | {0}", fullContact)
+            dataLog = {"Customers", lblId.Text, Session("LoginId").ToString(), stringLog}
+            settingClass.Logs(dataLog)
 
             Session("SearchCustomerContact") = txtSearch.Text
             Response.Redirect("~/setting/customer/contact", False)

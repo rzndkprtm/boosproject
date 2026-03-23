@@ -37,14 +37,14 @@ Partial Class Setting_Customer_ProductAccess
                 Session("SearchCustomerAddress") = txtSearch.Text
                 Dim thisScript As String = "window.onload = function() { showProcess(); };"
                 Try
+                    lblId.Text = dataId
+
                     Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerProductAccess WHERE Id='" & dataId & "'")
                     If myData Is Nothing Then Exit Sub
 
                     Dim companyId As String = settingClass.GetItemData("SELECT CompanyId FROM Customers WHERE Id='" & dataId & "'")
 
                     BindProduct(companyId)
-
-                    lblId.Text = dataId
 
                     Dim tagsArray() As String = myData("DesignId").ToString().Split(",")
                     Dim tagsList As List(Of String) = tagsArray.ToList()
