@@ -23,12 +23,6 @@
     </div>
 
     <div class="page-content">
-        <section class="row mb-3">
-            <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
-                <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Add New" OnClick="btnAdd_Click" />
-            </div>
-        </section>
-
         <section class="row">
             <div class="col-12">
                 <div class="card">
@@ -36,7 +30,7 @@
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-12 col-sm-12 col-lg-6 mb-2">
-                                    
+                                    <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Add New" OnClick="btnAdd_Click" />
                                 </div>
                                 <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
                                     <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
@@ -85,22 +79,19 @@
                                                     <ItemTemplate>
                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                         <ul class="dropdown-menu">
-                                                            <li>
+                                                            <li runat="server" visible='<%# VisibleAction(Eval("RoleName").ToString(), Eval("LevelName").ToString()) %>'>
                                                                 <asp:LinkButton runat="server" CssClass="dropdown-item" ID="linkDetail" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                             </li>
-                                                            <li>
+                                                            <li runat="server" visible='<%# VisibleAction(Eval("RoleName").ToString(), Eval("LevelName").ToString()) %>'>
                                                                 <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalActive" onclick='<%# String.Format("return showActive(`{0}`, `{1}`);", Eval("Id").ToString(), Convert.ToInt32(Eval("Active"))) %>'><%# TextActive(Eval("Active")) %></a>
                                                             </li>
-                                                            <li>
-                                                                <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
-                                                            </li>
-                                                            <li>
+                                                            <li runat="server" visible='<%# VisibleAction(Eval("RoleName").ToString(), Eval("LevelName").ToString()) %>'>
                                                                 <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalResetPass" onclick='<%# String.Format("return showResetPass(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("UserName").ToString()) %>'>Reset Password</a>
                                                             </li>
-                                                            <li>
+                                                            <li runat="server" visible='<%# VisibleAction(Eval("RoleName").ToString(), Eval("LevelName").ToString()) %>'>
                                                                 <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDencryptPass" onclick='<%# String.Format("return showDencryptPass(`{0}`, `{1}`);", Eval("UserName").ToString(), DencryptPassword(Eval("Password").ToString())) %>'>Show Password</a>
                                                             </li>
-                                                            <li><hr class="dropdown-divider"></li>
+                                                            <li runat="server" visible='<%# VisibleAction(Eval("RoleName").ToString(), Eval("LevelName").ToString()) %>'><hr class="dropdown-divider"></li>
                                                             <li>
                                                                 <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('CustomerLogins', '<%# Eval("Id") %>')">Log</a>
                                                             </li>
@@ -142,11 +133,11 @@
                     <div class="row mb-2">
                         <div class="col-12 form-group">
                             <label class="form-label">Customer Account</label>
-                            <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="form-select"></asp:DropDownList>
+                            <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select"></asp:DropDownList>
                         </div>
                     </div>
 
-                    <div class="row mb-2">
+                    <div class="row">
                         <div class="col-6 form-group">
                             <label class="form-label">Role</label>
                             <asp:DropDownList runat="server" ID="ddlRole" CssClass="form-select"></asp:DropDownList>
@@ -158,7 +149,7 @@
                         </div>
                     </div>
 
-                    <div class="row mb-2">
+                    <div class="row">
                         <div class="col-6 form-group">
                             <label class="form-label">Full Name</label>
                             <asp:TextBox runat="server" ID="txtFullName" CssClass="form-control" placeholder="Full Name ..." autocomplete="off"></asp:TextBox>
@@ -169,7 +160,7 @@
                         </div>
                     </div>
 
-                    <div class="row mb-2">
+                    <div class="row">
                         <div class="col-6 form-group">
                             <label class="form-label">Username</label>
                             <asp:TextBox runat="server" ID="txtUserName" CssClass="form-control" placeholder="UserName ..." autocomplete="new-password"></asp:TextBox>
@@ -213,24 +204,6 @@
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnActive" CssClass="btn btn-warning" Text="Confirm" OnClick="btnActive_Click" />
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal modal-blur fade" id="modalDelete" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-danger">
-                    <h5 class="modal-title white">Delete Login</h5>
-                </div>
-                <div class="modal-body text-center py-4">
-                    <asp:TextBox runat="server" ID="txtIdDelete" style="display:none;"></asp:TextBox>
-                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
-                </div>
-                <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnDelete" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDelete_Click" />
                 </div>
             </div>
         </div>
@@ -309,10 +282,6 @@
             document.getElementById("titleActive").innerHTML = title;
         }
 
-        function showDelete(id) {
-            document.getElementById("<%=txtIdDelete.ClientID %>").value = id;
-        }
-
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
             $("#tblLogs tbody").html("");
@@ -378,7 +347,7 @@
             document.getElementById("spanPassword").innerHTML = body;
         }
 
-        ["modalProcess", "modalActive", "modalDelete", "modalResetPass", "modalDencryptPass", "modalLog"].forEach(function (id) {
+        ["modalProcess", "modalActive", "modalResetPass", "modalDencryptPass", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

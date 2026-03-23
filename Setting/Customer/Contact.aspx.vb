@@ -265,6 +265,7 @@ Partial Class Setting_Customer_Contact
 
             gvList.DataSource = settingClass.GetDataTable(thisQuery)
             gvList.DataBind()
+            gvList.Columns(1).Visible = PageAction("Visible ID") ' ID
         Catch ex As Exception
             MessageError(True, ex.ToString())
         End Try

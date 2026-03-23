@@ -38,7 +38,7 @@
                                             <label>Customer Account</label>
                                         </div>
                                         <div class="col-12 col-sm-12 col-lg-9 form-group">
-                                            <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="form-select"></asp:DropDownList>
+                                            <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select"></asp:DropDownList>
                                         </div>
                                     </div>
 
@@ -47,7 +47,7 @@
                                             <label>Created By</label>
                                         </div>
                                         <div class="col-12 col-sm-12 col-lg-9 form-group">
-                                            <asp:DropDownList runat="server" ID="ddlCreatedBy" CssClass="form-select"></asp:DropDownList>
+                                            <asp:DropDownList runat="server" ID="ddlCreatedBy" CssClass="choices form-select"></asp:DropDownList>
                                         </div>
                                     </div>
 

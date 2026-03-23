@@ -284,12 +284,13 @@ Partial Class Setting_Customer_Address
 
             gvList.DataSource = settingClass.GetDataTable(thisQuery)
             gvList.DataBind()
+            gvList.Columns(1).Visible = PageAction("Visible ID") ' ID
         Catch ex As Exception
             MessageError(True, ex.ToString())
         End Try
     End Sub
 
-    Private Sub BindDataCustomer()
+    Protected Sub BindDataCustomer()
         ddlCustomer.Items.Clear()
         Try
             ddlCustomer.DataSource = settingClass.GetDataTable("SELECT * FROM Customers WHERE Active=1 ORDER BY Name ASC")

@@ -602,6 +602,9 @@
                                                                     <li runat="server" visible='<%# PageAction("Detail Product Access") %>'>
                                                                         <asp:LinkButton runat="server" ID="linkDetailProduct" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                                     </li>
+                                                                    <li runat="server" visible='<%# PageAction("Reset Product Access") %>'>
+                                                                        <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalResetProduct">Reset</a>
+                                                                    </li>
                                                                     <li>
                                                                         <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('CustomerProductAccess', '<%# Eval("Id") %>')">Log</a>
                                                                     </li>
@@ -611,11 +614,6 @@
                                                     </Columns>
                                                 </asp:GridView>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="row mt-3">
-                                        <div class="col-12">
-                                            <a href="#" runat="server" id="aResetProduct" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalResetProduct">Reset Product Access</a>
                                         </div>
                                     </div>
                                 </div>
