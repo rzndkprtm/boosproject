@@ -1519,7 +1519,7 @@ Partial Class Setting_Customer_Detail
             End If
 
             Dim mailingClass As New MailingClass
-            mailingClass.LoginCredentials(lblId.Text, Session("LoginId").ToString(), "Sent Login Credentials")
+            mailingClass.LoginCredentials(lblId.Text, Session("LoginId").ToString(), "Login Credentials")
 
             dataLog = {"Customers", lblId.Text, Session("LoginId").ToString(), "Sent Login Credentials"}
             settingClass.Logs(dataLog)
