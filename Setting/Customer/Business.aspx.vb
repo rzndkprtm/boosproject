@@ -30,7 +30,6 @@ Partial Class Setting_Customer_Business
 
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
         MessageError_Process(False, String.Empty)
-        Session("SearchCustomerBusiness") = txtSearch.Text
         Dim thisScript As String = "window.onload = function() { showProcess(); };"
         Try
             lblAction.Text = "Add"
@@ -205,6 +204,7 @@ Partial Class Setting_Customer_Business
         MessageError(False, String.Empty)
         Try
             Dim thisId As String = txtIdDelete.Text
+            Dim fullBusiness As String = settingClass.GetItemData("SELECT CONCAT('ABN Number: ', ISNULL(ABNNumber, ''), ', ', 'Registered Name: ', ISNULL(RegisteredName, '')) AS FullDescription FROM CustomerBusiness WHERE Id='" & thisId & "'")
 
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
@@ -222,6 +222,10 @@ Partial Class Setting_Customer_Business
                 thisConn.Close()
             End Using
 
+            Dim stringLog As String = String.Format("Customer Business Deleted | {0}", fullBusiness)
+            dataLog = {"Customers", lblId.Text, Session("LoginId").ToString(), stringLog}
+            settingClass.Logs(dataLog)
+
             Session("SearchCustomerBusiness") = txtSearch.Text
             Response.Redirect("~/setting/customer/business", False)
         Catch ex As Exception
@@ -229,7 +233,7 @@ Partial Class Setting_Customer_Business
         End Try
     End Sub
 
-    Private Sub BindData(searchText As String)
+    Protected Sub BindData(searchText As String)
         Session("SearchCustomerBusiness") = String.Empty
         Try
             Dim search As String = String.Empty
@@ -246,7 +250,7 @@ Partial Class Setting_Customer_Business
         End Try
     End Sub
 
-    Private Sub BindDataCustomer()
+    Protected Sub BindDataCustomer()
         ddlCustomer.Items.Clear()
         Try
             ddlCustomer.DataSource = settingClass.GetDataTable("SELECT * FROM Customers ORDER BY Name ASC")
@@ -262,11 +266,11 @@ Partial Class Setting_Customer_Business
         End Try
     End Sub
 
-    Private Sub MessageError(visible As Boolean, message As String)
+    Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
     End Sub
 
-    Private Sub MessageError_Process(visible As Boolean, message As String)
+    Protected Sub MessageError_Process(visible As Boolean, message As String)
         divErrorProcess.Visible = visible : msgErrorProcess.InnerText = message
     End Sub
 

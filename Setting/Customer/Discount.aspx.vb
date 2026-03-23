@@ -1,5 +1,4 @@
-﻿Imports System.Data
-Imports System.Data.SqlClient
+﻿Imports System.Globalization
 
 Partial Class Setting_Customer_Discount
     Inherits Page
@@ -8,6 +7,7 @@ Partial Class Setting_Customer_Discount
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataLog As Object() = Nothing
+    Dim enUS As CultureInfo = New CultureInfo("en-US")
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
@@ -43,7 +43,17 @@ Partial Class Setting_Customer_Discount
             Dim dataId As String = e.CommandArgument.ToString()
 
             If e.CommandName = "Detail" Then
+                MessageError_DetailDiscount(False, String.Empty)
+                Dim thisScript As String = "window.onload = function() { showDetailDiscount(); };"
+                Try
+                    gvListDetailDiscount.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & dataId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END, DataId ASC")
+                    gvListDetailDiscount.DataBind()
 
+                    ClientScript.RegisterStartupScript(Me.GetType(), "showDetailDiscount", thisScript, True)
+                Catch ex As Exception
+                    MessageError_DetailDiscount(True, ex.ToString())
+                    ClientScript.RegisterStartupScript(Me.GetType(), "showDetailDiscount", thisScript, True)
+                End Try
             End If
         End If
     End Sub
@@ -59,14 +69,27 @@ Partial Class Setting_Customer_Discount
 
             gvList.DataSource = settingClass.GetDataTable(thisQuery)
             gvList.DataBind()
-            gvList.Columns(1).Visible = PageAction("Visible ID") ' ID
         Catch ex As Exception
             MessageError(True, ex.ToString())
         End Try
     End Sub
 
+    Protected Function DiscountTitle(type As String, dataId As String) As String
+        If String.IsNullOrEmpty(type) Then Return String.Empty
+        Return settingClass.GetItemData(String.Format("SELECT Name FROM {0} WHERE Id='{1}'", type, dataId))
+    End Function
+
+    Protected Function DiscountValue(data As Decimal) As String
+        If data > 0 Then Return data.ToString("G29", enUS) & "%"
+        Return "ERROR"
+    End Function
+
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
+    End Sub
+
+    Protected Sub MessageError_DetailDiscount(visible As Boolean, message As String)
+        divErrorDetailDiscount.Visible = visible : msgErrorDetailDiscount.InnerText = message
     End Sub
 
     Protected Function PageAction(action As String) As Boolean

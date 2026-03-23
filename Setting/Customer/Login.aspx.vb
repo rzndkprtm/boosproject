@@ -25,7 +25,6 @@ Partial Class Setting_Customer_Login
 
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
         MessageError_Process(False, String.Empty)
-        Session("SearchCustomerLogin") = txtSearch.Text
         Dim thisScript As String = "window.onload = function() { showProcess(); };"
         Try
             lblAction.Text = "Add"
@@ -70,12 +69,12 @@ Partial Class Setting_Customer_Login
                     lblAction.Text = "Edit"
                     titleProcess.InnerText = "Edit Login"
 
+                    Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerLogins WHERE Id='" & lblId.Text & "'")
+                    If myData Is Nothing Then Exit Sub
+
                     BindDataCustomer()
                     BindRole()
                     BindLevel()
-
-                    Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerLogins WHERE Id='" & lblId.Text & "'")
-                    If myData Is Nothing Then Exit Sub
 
                     ddlCustomer.SelectedValue = myData("CustomerId").ToString()
                     ddlRole.SelectedValue = myData("RoleId").ToString()
@@ -313,7 +312,7 @@ Partial Class Setting_Customer_Login
         Try
             Dim search As String = String.Empty
             If Not String.IsNullOrEmpty(searchText) Then
-                search = "WHERE Customers.Name LIKE '%" & searchText & "%' OR Customers.DebtorCode LIKE '%" & searchText & "%' OR CustomerLogins.UserName LIKE '%" & searchText & "%' OR CustomerLogins.FullName LIKE '%" & searchText & "%'"
+                search = "WHERE Customers.Name LIKE '%" & searchText & "%' OR Customers.DebtorCode LIKE '%" & searchText & "%' OR CustomerLogins.Id LIKE '%" & searchText & "%' OR CustomerLogins.UserName LIKE '%" & searchText & "%' OR CustomerLogins.FullName LIKE '%" & searchText & "%'"
             End If
 
             Dim thisQuery As String = String.Format("SELECT CustomerLogins.*, Customers.Name AS CustomerName, LoginRoles.Name AS RoleName, LoginLevels.Name AS LevelName, CASE WHEN CustomerLogins.Active=1 THEN 'Yes' WHEN CustomerLogins.Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM CustomerLogins LEFT JOIN Customers ON CustomerLogins.CustomerId=Customers.Id LEFT JOIN LoginRoles ON CustomerLogins.RoleId=LoginRoles.Id LEFT JOIN LoginLevels ON CustomerLogins.LevelId=LoginLevels.Id {0} ORDER BY Customers.Name, CustomerLogins.Id ASC", search)
