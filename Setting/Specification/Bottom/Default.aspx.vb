@@ -5,6 +5,7 @@ Partial Class Setting_Specification_Bottom_Default
     Inherits Page
 
     Dim settingClass As New SettingClass
+
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
 
@@ -18,9 +19,7 @@ Partial Class Setting_Specification_Bottom_Default
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             txtSearch.Text = Session("SearchBottom")
-
             BindCompanyDetailSort()
-
             BindData(txtSearch.Text, ddlCompanyDetail.SelectedValue)
         End If
     End Sub
@@ -95,7 +94,6 @@ Partial Class Setting_Specification_Bottom_Default
                     titleProcess.InnerText = "Edit Bottom Rail"
 
                     Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Bottoms WHERE Id='" & lblId.Text & "'")
-
                     If myData Is Nothing Then Exit Sub
 
                     BindDesign(isEdit:=True)

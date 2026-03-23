@@ -5,6 +5,7 @@ Partial Class Setting_Specification_Fabric_Default
     Inherits Page
 
     Dim settingClass As New SettingClass
+
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
 
@@ -18,7 +19,7 @@ Partial Class Setting_Specification_Fabric_Default
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             txtSearch.Text = Session("SearchFabric")
-            BindCompanyDetailSort()
+            BindCompanyDetail()
             BindData(txtSearch.Text, ddlCompanyDetail.SelectedValue)
         End If
     End Sub
@@ -127,17 +128,16 @@ Partial Class Setting_Specification_Fabric_Default
         End Try
     End Sub
 
-    Protected Sub BindData(searchText As String, sortText As String)
+    Protected Sub BindData(searchText As String, companyText As String)
         Session("SearchFabric") = String.Empty
         Try
-            Dim sort As String = "WHERE EXISTS (SELECT 1 FROM STRING_SPLIT(Fabrics.CompanyDetailId, ',') companyArray WHERE LTRIM(RTRIM(companyArray.value)) = '" & sortText & "')"
-            Dim byRole As String = String.Empty
-            Dim search As String = String.Empty
+            Dim companyString As String = "WHERE cdArray.VALUE='" & companyText & "'"
+            Dim searchString As String = String.Empty
             If Not searchText = "" Then
-                search = "AND (Id LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%')"
+                searchString = "AND (Id LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%')"
             End If
 
-            Dim thisString As String = String.Format("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Fabrics {0} {1} ORDER BY Id ASC", sort, search)
+            Dim thisString As String = String.Format("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Fabrics CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS cdArray {0} {1} ORDER BY Name ASC", companyString, searchString)
 
             gvList.DataSource = settingClass.GetDataTable(thisString)
             gvList.DataBind()
@@ -154,7 +154,7 @@ Partial Class Setting_Specification_Fabric_Default
         End Try
     End Sub
 
-    Protected Sub BindCompanyDetailSort()
+    Protected Sub BindCompanyDetail()
         ddlCompanyDetail.Items.Clear()
         Try
             Dim thisString As String = "SELECT * FROM CompanyDetails ORDER BY Id ASC"

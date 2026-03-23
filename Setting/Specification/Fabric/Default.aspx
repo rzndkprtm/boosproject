@@ -33,7 +33,7 @@
 
         <section class="row mb-3">
             <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
-                <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary me-1" Text="Add New" OnClick="btnAdd_Click" />
+                <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Add New" OnClick="btnAdd_Click" />
                 <a href="#" runat="server" id="aFabricAlias" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalAlias">Fabric Alias</a>
             </div>
         </section>
@@ -254,6 +254,7 @@
 
         window.history.replaceState(null, null, window.location.href);
     </script>
+
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblId"></asp:Label>
         <asp:Label runat="server" ID="lblAction"></asp:Label>
