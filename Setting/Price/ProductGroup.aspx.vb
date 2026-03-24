@@ -34,6 +34,8 @@ Partial Class Setting_Price_ProductGroup
             BindDesignType()
             BindCompanyDetail()
 
+            txtName.Enabled = True
+
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         Catch ex As Exception
             MessageError_Process(True, ex.ToString())
@@ -97,6 +99,9 @@ Partial Class Setting_Price_ProductGroup
                             End If
                         Next
                     End If
+
+                    txtName.Enabled = False
+                    If Session("RoleName") = "Developer" Then txtName.Enabled = True
 
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Catch ex As Exception

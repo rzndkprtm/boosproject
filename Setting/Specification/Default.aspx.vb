@@ -6,7 +6,7 @@
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
         If pageAccess = False Then
-            Response.Redirect("~/", False)
+            Response.Redirect("~/setting", False)
             Exit Sub
         End If
 

@@ -10,6 +10,7 @@ Partial Class Setting_Price_Base
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim enUS As CultureInfo = New CultureInfo("en-US")
     Dim idIDR As New CultureInfo("id-ID")
+    Dim dataLog As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
@@ -21,11 +22,11 @@ Partial Class Setting_Price_Base
         If Not IsPostBack Then
             MessageError(False, String.Empty)
 
-            ddlSortCategory.SelectedValue = Session("PriceBaseCategory")
-            BindPriceGroup_Sort()
-            ddlSortPriceGroup.SelectedValue = Session("PriceBasePriceGroup")
-            txtSearch.Text = Session("PriceBaseSearch")
-            BindData(ddlSortCategory.SelectedValue, ddlSortPriceGroup.SelectedValue, txtSearch.Text)
+            'ddlSortCategory.SelectedValue = Session("PriceBaseCategory")
+            'BindPriceGroup_Sort()
+            'ddlSortPriceGroup.SelectedValue = Session("PriceBasePriceGroup")
+            'txtSearch.Text = Session("PriceBaseSearch")
+            'BindData(ddlSortCategory.SelectedValue, ddlSortPriceGroup.SelectedValue, txtSearch.Text)
         End If
     End Sub
 
@@ -115,21 +116,6 @@ Partial Class Setting_Price_Base
                     End If
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 End Try
-            ElseIf e.CommandName = "Log" Then
-                MessageError_Log(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showLog(); };"
-                Try
-                    gvListLogs.DataSource = settingClass.GetDataTable("SELECT * FROM Logs WHERE DataId='" & dataId & "' AND Type='PriceBases' ORDER BY ActionDate DESC")
-                    gvListLogs.DataBind()
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
-                Catch ex As Exception
-                    MessageError_Log(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError_Log(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                    End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
-                End Try
             End If
         End If
     End Sub
@@ -195,7 +181,7 @@ Partial Class Setting_Price_Base
                         End Using
                     End Using
 
-                    Dim dataLog As Object() = {"PriceBases", thisId, Session("LoginId").ToString(), "Price Base Created"}
+                    dataLog = {"PriceBases", thisId, Session("LoginId").ToString(), "Price Base Created"}
                     settingClass.Logs(dataLog)
 
                     Session("PriceBaseCategory") = ddlSortCategory.SelectedValue
@@ -223,7 +209,7 @@ Partial Class Setting_Price_Base
                         End Using
                     End Using
 
-                    Dim dataLog As Object() = {"PriceBases", lblId.Text, Session("LoginId").ToString(), "Price Base Updated"}
+                    dataLog = {"PriceBases", lblId.Text, Session("LoginId").ToString(), "Price Base Updated"}
                     settingClass.Logs(dataLog)
 
                     Session("PriceBaseCategory") = ddlSortCategory.SelectedValue
@@ -291,7 +277,6 @@ Partial Class Setting_Price_Base
 
             gvList.DataSource = thisData
             gvList.DataBind()
-
             gvList.Columns(1).Visible = PageAction("Visible ID")
             gvList.Columns(2).Visible = PageAction("Visible Category")
 
@@ -371,7 +356,7 @@ Partial Class Setting_Price_Base
 
     Protected Function BindCost(cost As Decimal, priceGroupId As String) As String
         If cost > 0 Then
-            If priceGroupId = "2" OrElse priceGroupId = "3" OrElse priceGroupId = "4" OrElse priceGroupId = "5" Then
+            If priceGroupId = "2" OrElse priceGroupId = "3" OrElse priceGroupId = "4" OrElse priceGroupId = "5" OrElse priceGroupId = "10" OrElse priceGroupId = "17" OrElse priceGroupId = "19" Then
                 Return cost.ToString("N2", idIDR)
             End If
             Return cost.ToString("N2", enUS)

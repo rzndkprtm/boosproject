@@ -39,12 +39,12 @@
         </section>
 
         <section class="row mt-3">
-            <div class="col-12">
+            <div class="col-8">
                 <div class="card">
                     <div class="card-content">
-                        <div class="card-header">
-                            <div class="row">
-                                <div class="col-12 col-sm-12 col-lg-3 mb-2">
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-12 col-sm-12 col-lg-6">
                                     <div class="input-group">
                                         <asp:Label runat="server" CssClass="input-group-text" Text="Category"></asp:Label>
                                         <asp:DropDownList runat="server" ID="ddlSortCategory" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlSortCategory_SelectedIndexChanged">
@@ -54,11 +54,44 @@
                                         </asp:DropDownList>
                                     </div>
                                 </div>
-                                <div class="col-12 col-sm-12 col-lg-4 mb-2">
+                                <div class="col-12 col-sm-12 col-lg-6">
+                                    <div class="input-group">
+                                        <asp:Label runat="server" CssClass="input-group-text" Text="Method"></asp:Label>
+                                        <asp:DropDownList runat="server" ID="ddlMethod" CssClass="form-select">
+                                            <asp:ListItem Value="" Text=""></asp:ListItem>
+                                            <asp:ListItem Value="Sell" Text="Sell Price"></asp:ListItem>
+                                            <asp:ListItem Value="Buy" Text="Buy Price"></asp:ListItem>
+                                        </asp:DropDownList>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-12 col-sm-12 col-lg-6">
                                     <div class="input-group">
                                         <asp:Label runat="server" CssClass="input-group-text" Text="Price Group"></asp:Label>
                                         <asp:DropDownList runat="server" ID="ddlSortPriceGroup" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlSortPriceGroup_SelectedIndexChanged"></asp:DropDownList>
                                     </div>
+                                </div>
+                                <div class="col-12 col-sm-12 col-lg-6"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-12 col-sm-12 col-lg-3 mb-2">
+                                    
+                                </div>
+                                <div class="col-12 col-sm-12 col-lg-4 mb-2">
+                                    
                                 </div>
 
                                 <div class="col-12 col-sm-12 col-lg-5 d-flex justify-content-end">
@@ -74,6 +107,14 @@
                         </div>
 
                         <div class="card-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="table-responsive">
+                                        <asp:GridView ID="gvListB" runat="server" AutoGenerateColumns="true" CssClass="table table-bordered table-hover mb-0"></asp:GridView>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="row">
                                 <div class="col-12">
                                     <div class="table-responsive">
@@ -147,7 +188,7 @@
                         </div>
                         <div class="col-6 form-group">
                             <label class="form-label">Method</label>
-                            <asp:DropDownList runat="server" ID="ddlMethod" CssClass="form-select">
+                            <asp:DropDownList runat="server" ID="ddlMethods" CssClass="form-select">
                                 <asp:ListItem Value="" Text=""></asp:ListItem>
                                 <asp:ListItem Value="Cost" Text="Cost"></asp:ListItem>
                                 <asp:ListItem Value="Square Metre" Text="Square Metre"></asp:ListItem>

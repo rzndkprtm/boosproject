@@ -43,6 +43,7 @@ Partial Class Setting_Specification_Fabric_Add
                     Next
                     designType = design.Remove(design.Length - 1).ToString()
                 End If
+
                 Dim tubeType As String = String.Empty
                 If Not lbTube.SelectedValue = "" Then
                     Dim tube As String = String.Empty
@@ -53,6 +54,7 @@ Partial Class Setting_Specification_Fabric_Add
                     Next
                     tubeType = tube.Remove(tube.Length - 1).ToString()
                 End If
+
                 Dim companyDetail As String = String.Empty
                 If Not lbCompany.SelectedValue = "" Then
                     Dim company As String = String.Empty

@@ -82,9 +82,7 @@ Partial Class Report_Default
         ddlCompany.Items.Clear()
         ddlCompany.Enabled = True
         Try
-            Dim thisString As String = "SELECT * FROM Companys WHERE Active=1 ORDER BY Name ASC"
-
-            ddlCompany.DataSource = reportClass.GetDataTable(thisString)
+            ddlCompany.DataSource = reportClass.GetDataTable("SELECT * FROM Companys WHERE Active=1 ORDER BY Name ASC")
             ddlCompany.DataTextField = "Alias"
             ddlCompany.DataValueField = "Id"
             ddlCompany.DataBind()

@@ -256,6 +256,9 @@ Partial Class Setting_Price_Promo_Detail
             lblEndDate.Text = Convert.ToDateTime(thisData("EndDate")).ToString("dd MMM yyyy")
             txtEndDate.Text = Convert.ToDateTime(thisData("EndDate")).ToString("yyyy-MM-dd")
             lblDescription.Text = thisData("Description").ToString()
+            If String.IsNullOrEmpty(lblDescription.Text) Then
+                lblDescription.Text = "&nbsp;"
+            End If
             txtDescription.Text = thisData("Description").ToString()
 
             Dim active As Integer = Convert.ToInt32(thisData("Active"))
