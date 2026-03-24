@@ -1,59 +1,49 @@
 ﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Default.aspx.vb" Inherits="Setting_Price_Base_Default" MaintainScrollPositionOnPostback="true" MasterPageFile="~/Site.Master" Debug="true" Title="Price Base" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
-    <%--<style>
-        .grid-container { overflow: auto; max-width: 100%; }
-        /*.grid-container { overflow: auto; max-width: 500px; overflow-y: auto; overflow-x: auto; }*/
-        .grid-container table th { position: sticky; top: 0; background: #f5f5f5; z-index: 3; }
-        .grid-container table th:first-child,
-        .grid-container table td:first-child { position: sticky; left: 0; background: #fff; z-index: 2; }
-
-        .grid-container table th:first-child { z-index: 4; background: #f5f5f5; }
-        .grid-container table td:first-child, .grid-container table th:first-child { box-shadow: 2px 0 5px rgba(0,0,0,0.1); }
-    </style>--%>
     <style>
-.grid-container {
-    width: 100%;
-    height: calc(100vh - 150px); /* sesuaikan dengan header page kamu */
-    overflow: auto;
-    border: 1px solid #ddd;
-}
+        .grid-container {
+            width: 100%;
+            height: calc(100vh - 150px); /* sesuaikan dengan header page kamu */
+            overflow: auto;
+            border: 1px solid #ddd;
+        }
 
-/* table full */
-.grid-container table {
-    width: 100%;
-    border-collapse: collapse;
-}
+        /* table full */
+        .grid-container table {
+            width: 100%;
+            border-collapse: collapse;
+        }
 
-/* header freeze */
-.grid-container th {
-    position: sticky;
-    top: 0;
-    background: #f5f5f5;
-    z-index: 3;
-}
+        /* header freeze */
+        .grid-container th {
+            position: sticky;
+            top: 0;
+            background: #f5f5f5;
+            z-index: 3;
+        }
 
-/* kolom pertama freeze */
-.grid-container td:first-child,
-.grid-container th:first-child {
-    position: sticky;
-    left: 0;
-    background: #fff;
-    z-index: 2;
-}
+        /* kolom pertama freeze */
+        .grid-container td:first-child,
+        .grid-container th:first-child {
+            position: sticky;
+            left: 0;
+            background: #fff;
+            z-index: 2;
+        }
 
-/* pojok kiri atas */
-.grid-container th:first-child {
-    z-index: 4;
-}
+        /* pojok kiri atas */
+        .grid-container th:first-child {
+            z-index: 4;
+        }
 
-/* biar tidak gepeng */
-.grid-container td,
-.grid-container th {
-    white-space: nowrap;
-    padding: 6px 10px;
-}
-</style>
+        /* biar tidak gepeng */
+        .grid-container td,
+        .grid-container th {
+            white-space: nowrap;
+            padding: 6px 10px;
+        }
+    </style>
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
@@ -86,8 +76,7 @@
 
         <section class="row">
             <div class="col-12 d-flex justify-content-end flex-wrap gap-2">
-                <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Add New" />
-                <asp:Button runat="server" ID="btnImport" CssClass="btn btn-secondary" Text="Import" />
+                <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Editable Page" />
             </div>
         </section>
 
@@ -115,7 +104,7 @@
                                 </div>
                             </div>
 
-                            <div class="row">
+                            <div class="row mb-3">
                                 <div class="col-12 col-sm-12 col-lg-4">
                                     <div class="input-group">
                                         <label class="input-group-text">Method</label>
@@ -131,6 +120,14 @@
                                     <div class="input-group">
                                         <label class="input-group-text">Price Group</label>
                                         <asp:DropDownList runat="server" ID="ddlPriceGroup" CssClass="form-select"></asp:DropDownList>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-12 col-sm-12 col-lg-4">
+                                    <div class="input-group">
+                                        <label class="input-group-text">Discount</label>
+                                        <asp:TextBox runat="server" ID="txtDiscount" TextMode="Number" CssClass="form-control" placeholder="Discount ...." autocomplete="off"></asp:TextBox>
                                     </div>
                                 </div>
                             </div>

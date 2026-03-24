@@ -1,5 +1,4 @@
-﻿
-Imports System.Data
+﻿Imports System.Data
 Imports System.Data.SqlClient
 
 Partial Class Setting_Price_Base_Default
@@ -38,11 +37,16 @@ Partial Class Setting_Price_Base_Default
                 Exit Sub
             End If
 
+            If String.IsNullOrEmpty(txtDiscount.Text) Then
+                txtDiscount.Text = "0"
+            End If
+
             Dim params As New List(Of SqlParameter) From {
                 New SqlParameter("@Category", If(String.IsNullOrEmpty(ddlCategory.SelectedValue), CType(DBNull.Value, Object), ddlCategory.SelectedValue)),
                 New SqlParameter("@Method", If(String.IsNullOrEmpty(ddlMethod.SelectedValue), CType(DBNull.Value, Object), ddlMethod.SelectedValue)),
                 New SqlParameter("@ProductGroupId", If(String.IsNullOrEmpty(ddlProductGroup.SelectedValue), CType(DBNull.Value, Object), ddlProductGroup.SelectedValue)),
-                New SqlParameter("@PriceGroupId", If(String.IsNullOrEmpty(ddlPriceGroup.SelectedValue), CType(DBNull.Value, Object), ddlPriceGroup.SelectedValue))
+                New SqlParameter("@PriceGroupId", If(String.IsNullOrEmpty(ddlPriceGroup.SelectedValue), CType(DBNull.Value, Object), ddlPriceGroup.SelectedValue)),
+                New SqlParameter("@Discount", If(String.IsNullOrEmpty(txtDiscount.Text), CType(DBNull.Value, Object), txtDiscount.Text))
             }
 
             Dim thisData As DataTable = settingClass.GetDataTableSP("sp_GetPriceListPivot", params)
