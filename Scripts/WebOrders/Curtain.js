@@ -41,6 +41,7 @@ $("#fabrictype").on("change", function () {
 
 $("#tracktype").on("change", function () {
     bindTrackDraw($(this).val());
+    visibleReturnLength($(this).val());
 });
 
 $("#trackdraw").on("change", function () {
@@ -698,7 +699,7 @@ function bindComponentForm(blindType, colourType) {
         const detail = document.getElementById("divdetail");
         const markup = document.getElementById("divmarkup");
 
-        const divsToHide = ["divmouting", "divheading", "divfabric", "divtrack", "divstackposition", "divwidth", "divdrop", "divcontrolcolour", "divcontrollength", "divbottomhem", "divtieback"].map(id => document.getElementById(id));
+        const divsToHide = ["divmouting", "divheading", "divfabric", "divtrack", "divstackposition", "divwidth", "divdrop", "divcontrolcolour", "divcontrollength", "divreturnlength", "divbottomhem", "divtieback"].map(id => document.getElementById(id));
 
         const toggleDisplay = (el, show) => {
             if (el) el.style.display = show ? "" : "none";
@@ -758,6 +759,23 @@ function visibleControlColourLength(trackDraw) {
     });
 }
 
+function visibleReturnLength(trackType) {
+    return new Promise((resolve) => {
+        let divreturnlength = document.getElementById("divreturnlength");
+
+        if (!divreturnlength) {
+            return resolve();
+        }
+
+        divreturnlength.style.display = "none";
+        if (trackType === "Styletrack" || trackType === "Commercial") {
+            divreturnlength.style.display = "";
+        }
+
+        resolve();
+    });
+}
+
 function toggleButtonState(disabled, text) {
     $("#submit")
         .prop("disabled", disabled)
@@ -796,7 +814,7 @@ function controlForm(status, isEditItem, isCopyItem) {
 
     const inputs = [
         "blindtype", "colourtype", "qty", "room", "mounting",
-        "heading", "fabrictype", "fabriccolour", "tracktype", "trackcolour", "trackdraw", "stackposition", "width", "drop", "controlcolour", "controllength", "bottomhem", "tieback", "notes", "markup"
+        "heading", "fabrictype", "fabriccolour", "tracktype", "trackcolour", "trackdraw", "stackposition", "width", "drop", "controlcolour", "controllength", "returnlengthvalue", "returnlengthvalueb", "bottomhem", "tieback", "notes", "markup"
     ];
 
     inputs.forEach(id => {
@@ -841,6 +859,8 @@ function setFormValues(itemData) {
         stackposition: "StackPosition",
         controlcolour: "ControlColour",
         controllength: "ControlLengthValue",
+        returnlengthvalue: "ReturnLengthValue",
+        returnlengthvalueb: "ReturnLengthValueB",
         width: "Width",
         drop: "Drop",
         bottomhem: "BottomHem",
@@ -872,7 +892,7 @@ function process() {
 
     const fields = [
         "blindtype", "colourtype", "qty", "room", "mounting",
-        "heading", "fabrictype", "fabriccolour", "tracktype", "trackcolour", "trackdraw", "stackposition", "width", "drop", "controlcolour", "controllength", "bottomhem", "tieback",
+        "heading", "fabrictype", "fabriccolour", "tracktype", "trackcolour", "trackdraw", "stackposition", "width", "drop", "controlcolour", "controllength", "returnlengthvalue", "returnlengthvalueb", "bottomhem", "tieback",
         "notes", "markup"
     ];
 
@@ -1003,6 +1023,7 @@ async function bindItemOrder(itemId, companyDetailId, action) {
 
         bindComponentForm(data.ItemData.BlindType, data.ItemData.ProductId);
         visibleControlColourLength(data.ItemData.TrackDraw);
+        visibleReturnLength(data.ItemData.TrackType);
     } catch (error) {
         document.getElementById("divloader").style.display = "none";
     }

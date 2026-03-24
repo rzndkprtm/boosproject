@@ -1558,6 +1558,8 @@ Partial Class Order_Method
         Dim width As Integer
         Dim drop As Integer
         Dim controllength As Integer
+        Dim returnLengthValue As Integer
+        Dim returnLengthValueB As Integer
 
         Dim linearmetre As Decimal
         Dim squaremetre As Decimal
@@ -1628,6 +1630,18 @@ Partial Class Order_Method
             If Not Integer.TryParse(data.controllength, controllength) OrElse controllength <= 0 Then Return "PLEASE CHECK YOUR CONTROL LENGTH ORDER !"
         End If
 
+        If blindName = "Complete Set" OrElse blindName = "Track Only" Then
+            If data.tracktype = "Styletrack" OrElse data.tracktype = "Commercial" Then
+                If Not String.IsNullOrEmpty(data.returnlengthvalue) Then
+                    If Not Integer.TryParse(data.returnlengthvalue, returnLengthValue) OrElse returnLengthValue <= 0 Then Return "PLEASE CHECK YOUR LEFT RETURN LENGTH !"
+                End If
+
+                If Not String.IsNullOrEmpty(data.returnlengthvalueb) Then
+                    If Not Integer.TryParse(data.returnlengthvalueb, returnLengthValueB) OrElse returnLengthValueB <= 0 Then Return "PLEASE CHECK YOUR RIGHT RETURN LENGTH !"
+                End If
+            End If
+        End If
+
         If blindName = "Complete Set" OrElse blindName = "Curtain Only" Then
             If String.IsNullOrEmpty(data.bottomhem) Then Return "BOTTOM HEM IS REQUIRED !"
         End If
@@ -1648,6 +1662,10 @@ Partial Class Order_Method
                 data.controlcolour = String.Empty : controllength = 0
             End If
 
+            If data.tracktype = "Express Track" Then
+                returnLengthValue = 0 : returnLengthValueB = 0
+            End If
+
             linearmetre = width / 1000
             squaremetre = Math.Ceiling(width * drop / 1000000)
         End If
@@ -1659,6 +1677,9 @@ Partial Class Order_Method
             data.controlcolour = String.Empty : controllength = 0
             data.stackposition = String.Empty
 
+            returnLengthValue = 0
+            returnLengthValueB = 0
+
             linearmetre = width / 1000
             squaremetre = Math.Ceiling(width * drop / 1000000)
         End If
@@ -1667,6 +1688,9 @@ Partial Class Order_Method
             data.tracktype = String.Empty : data.trackcolour = String.Empty
             data.trackdraw = String.Empty
             data.controlcolour = String.Empty : controllength = 0
+
+            returnLengthValue = 0
+            returnLengthValueB = 0
 
             linearmetre = width / 1000
             squaremetre = Math.Ceiling(width * drop / 1000000)
@@ -1678,6 +1702,10 @@ Partial Class Order_Method
                 data.controlcolour = String.Empty : controllength = 0
             End If
             drop = 0
+
+            If data.tracktype = "Express Track" Then
+                returnLengthValue = 0 : returnLengthValueB = 0
+            End If
 
             linearmetre = width / 1000
         End If
@@ -1710,7 +1738,7 @@ Partial Class Order_Method
                 Dim itemId As String = orderClass.GetNewOrderItemId()
 
                 Using thisConn As SqlConnection = New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricColourId, PriceProductGroupId, PriceAdditional,  Qty, Room, Mounting, Width, [Drop], Heading, TrackType,  TrackColour, TrackDraw, StackPosition, ControlColour, ControlLengthValue, BottomHem, Supply, LinearMetre, SquareMetre, TotalItems, Notes, MarkUp, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricColourId, @PriceProductGroupId, @PriceAdditional, @Qty, @Room, @Mounting, @Width, @Drop, @Heading, @TrackType, @TrackColour, @TrackDraw, @StackPosition, @ControlColour, @ControlLengthValue, @BottomHem, @Supply, @LinearMetre, @SquareMetre, @TotalItems, @Notes, @MarkUp, 1)", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricColourId, PriceProductGroupId, PriceAdditional,  Qty, Room, Mounting, Width, [Drop], Heading, TrackType,  TrackColour, TrackDraw, StackPosition, ControlColour, ControlLengthValue, ReturnLengthValue, ReturnLengthValueB, BottomHem, Supply, LinearMetre, SquareMetre, TotalItems, Notes, MarkUp, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricColourId, @PriceProductGroupId, @PriceAdditional, @Qty, @Room, @Mounting, @Width, @Drop, @Heading, @TrackType, @TrackColour, @TrackDraw, @StackPosition, @ControlColour, @ControlLengthValue, @ReturnLengthValue, @ReturnLengthValueB, @BottomHem, @Supply, @LinearMetre, @SquareMetre, @TotalItems, @Notes, @MarkUp, 1)", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", itemId)
                         myCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                         myCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
@@ -1722,7 +1750,6 @@ Partial Class Order_Method
 
                         myCmd.Parameters.AddWithValue("@Room", data.room)
                         myCmd.Parameters.AddWithValue("@Mounting", data.mounting)
-
                         myCmd.Parameters.AddWithValue("@Width", width)
                         myCmd.Parameters.AddWithValue("@Drop", drop)
                         myCmd.Parameters.AddWithValue("@Heading", data.heading)
@@ -1732,6 +1759,8 @@ Partial Class Order_Method
                         myCmd.Parameters.AddWithValue("@StackPosition", data.stackposition)
                         myCmd.Parameters.AddWithValue("@ControlColour", data.controlcolour)
                         myCmd.Parameters.AddWithValue("@ControlLengthValue", controllength)
+                        myCmd.Parameters.AddWithValue("@ReturnLengthValue", returnLengthValue)
+                        myCmd.Parameters.AddWithValue("@ReturnLengthValueB", returnLengthValueB)
                         myCmd.Parameters.AddWithValue("@BottomHem", data.bottomhem)
                         myCmd.Parameters.AddWithValue("@Supply", data.tieback)
                         myCmd.Parameters.AddWithValue("@LinearMetre", linearmetre)
@@ -1759,7 +1788,7 @@ Partial Class Order_Method
             Dim itemId As String = data.itemid
 
             Using thisConn As SqlConnection = New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET ProductId=@ProductId, FabricId=@FabricId, FabricColourId=@FabricColourId, PriceProductGroupId=@PriceProductGroupId, PriceAdditional=@PriceAdditional, Qty=@Qty, Room=@Room, Mounting=@Mounting, Width=@Width, [Drop]=@Drop, Heading=@Heading, TrackType=@TrackType, TrackColour=@TrackColour, TrackDraw=@TrackDraw, StackPosition=@StackPosition, ControlColour=@ControlColour, ControlLengthValue=@ControlLengthValue, BottomHem=@BottomHem, Supply=@Supply, LinearMetre=@LinearMetre, SquareMetre=@SquareMetre, TotalItems=@TotalItems, Notes=@Notes, MarkUp=@MarkUp, Active=1 WHERE Id=@Id", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET ProductId=@ProductId, FabricId=@FabricId, FabricColourId=@FabricColourId, PriceProductGroupId=@PriceProductGroupId, PriceAdditional=@PriceAdditional, Qty=@Qty, Room=@Room, Mounting=@Mounting, Width=@Width, [Drop]=@Drop, Heading=@Heading, TrackType=@TrackType, TrackColour=@TrackColour, TrackDraw=@TrackDraw, StackPosition=@StackPosition, ControlColour=@ControlColour, ControlLengthValue=@ControlLengthValue, ReturnLengthValue=@ReturnLengthValue, ReturnLengthValueB=@ReturnLengthValueB, BottomHem=@BottomHem, Supply=@Supply, LinearMetre=@LinearMetre, SquareMetre=@SquareMetre, TotalItems=@TotalItems, Notes=@Notes, MarkUp=@MarkUp, Active=1 WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", itemId)
                     myCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                     myCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
@@ -1779,6 +1808,8 @@ Partial Class Order_Method
                     myCmd.Parameters.AddWithValue("@StackPosition", data.stackposition)
                     myCmd.Parameters.AddWithValue("@ControlColour", data.controlcolour)
                     myCmd.Parameters.AddWithValue("@ControlLengthValue", controllength)
+                    myCmd.Parameters.AddWithValue("@ReturnLengthValue", returnLengthValue)
+                    myCmd.Parameters.AddWithValue("@ReturnLengthValueB", returnLengthValueB)
                     myCmd.Parameters.AddWithValue("@BottomHem", data.bottomhem)
                     myCmd.Parameters.AddWithValue("@Supply", data.tieback)
                     myCmd.Parameters.AddWithValue("@LinearMetre", linearmetre)
