@@ -27,6 +27,11 @@ Partial Class Setting_Specification_Bottom_Detail
         End If
     End Sub
 
+    Protected Sub btnEdit_Click(sender As Object, e As EventArgs)
+        url = String.Format("~/setting/specification/bottom/edit?bottomid={0}", lblId.Text)
+        Response.Redirect(url, False)
+    End Sub
+
     Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
@@ -37,19 +42,19 @@ Partial Class Setting_Specification_Bottom_Detail
     End Sub
 
     Protected Sub btnAddColour_Click(sender As Object, e As EventArgs)
-        MessageError_Process(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showProcess(); };"
+        MessageError_ProcessColour(False, String.Empty)
+        Dim thisScript As String = "window.onload = function() { showProcessColour(); };"
         Try
             lblAction.Text = "Add"
-            titleProcess.InnerText = "Add Bottom Colour"
+            titleProcessColour.InnerText = "Add Bottom Colour"
 
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
+            ClientScript.RegisterStartupScript(Me.GetType(), "showProcessColour", thisScript, True)
         Catch ex As Exception
-            MessageError_Process(True, ex.ToString())
+            MessageError_ProcessColour(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
-                MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                MessageError_ProcessColour(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
+            ClientScript.RegisterStartupScript(Me.GetType(), "showProcessColour", thisScript, True)
         End Try
     End Sub
 
@@ -61,7 +66,7 @@ Partial Class Setting_Specification_Bottom_Detail
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
-                MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
         End Try
     End Sub
@@ -70,12 +75,12 @@ Partial Class Setting_Specification_Bottom_Detail
         If Not String.IsNullOrEmpty(e.CommandArgument) Then
             Dim dataId As String = e.CommandArgument.ToString()
             If e.CommandName = "Detail" Then
-                MessageError_Process(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showProcess(); };"
+                MessageError_ProcessColour(False, String.Empty)
+                Dim thisScript As String = "window.onload = function() { showProcessColour(); };"
                 Try
                     lblIdColour.Text = dataId
                     lblAction.Text = "Edit"
-                    titleProcess.InnerText = "Edit Bottom Colour"
+                    titleProcessColour.InnerText = "Edit Bottom Colour"
 
                     Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM BottomColours WHERE Id='" & lblIdColour.Text & "'")
                     If myData Is Nothing Then Exit Sub
@@ -84,32 +89,32 @@ Partial Class Setting_Specification_Bottom_Detail
                     txtDescription.Text = myData("Description").ToString()
                     ddlActive.SelectedValue = Convert.ToInt32(myData("Active"))
 
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
+                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcessColour", thisScript, True)
                 Catch ex As Exception
-                    MessageError_Process(True, ex.ToString())
+                    MessageError_ProcessColour(True, ex.ToString())
                     If Not Session("RoleName") = "Developer" Then
-                        MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                        MessageError_ProcessColour(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
                     End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
+                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcessColour", thisScript, True)
                 End Try
             End If
         End If
     End Sub
 
-    Protected Sub btnProcess_Click(sender As Object, e As EventArgs)
-        MessageError_Process(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showProcess(); };"
+    Protected Sub btnProcessColour_Click(sender As Object, e As EventArgs)
+        MessageError_ProcessColour(False, String.Empty)
+        Dim thisScript As String = "window.onload = function() { showProcessColour(); };"
         Try
             If Not txtBoeId.Text = "" Then
                 If Not IsNumeric(txtBoeId.Text) Then
-                    MessageError_Process(True, "BOE ID SHOULD BE NUMERIC !")
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
+                    MessageError_ProcessColour(True, "BOE ID SHOULD BE NUMERIC !")
+                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcessColour", thisScript, True)
                     Exit Sub
                 End If
             End If
             If txtColour.Text = "" Then
-                MessageError_Process(True, "COLOUR IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
+                MessageError_ProcessColour(True, "COLOUR IS REQUIRED !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showProcessColour", thisScript, True)
                 Exit Sub
             End If
 
@@ -165,42 +170,11 @@ Partial Class Setting_Specification_Bottom_Detail
                 End If
             End If
         Catch ex As Exception
-            MessageError_Process(True, ex.ToString())
+            MessageError_ProcessColour(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
-                MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                MessageError_ProcessColour(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-        End Try
-    End Sub
-
-    Protected Sub btnDeleteColour_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        Try
-            Dim thisId As String = txtIdDeleteColour.Text
-
-            Using thisConn As New SqlConnection(myConn)
-                thisConn.Open()
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM BottomColours WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Logs WHERE Type='BottomColours' AND DataId=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                thisConn.Close()
-            End Using
-
-            url = String.Format("~/setting/specification/bottom/detail?bottomid={0}", lblId.Text)
-            Response.Redirect(url, False)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
+            ClientScript.RegisterStartupScript(Me.GetType(), "showProcessColour", thisScript, True)
         End Try
     End Sub
 
@@ -215,6 +189,7 @@ Partial Class Setting_Specification_Bottom_Detail
             lblId.Visible = PageAction("Visible ID")
             lblName.Text = thisData("Name").ToString()
             lblDescription.Text = thisData("Description").ToString()
+
             Dim active As Integer = Convert.ToInt32(thisData("Active"))
             lblActive.Text = "Error"
             If active = 1 Then lblActive.Text = "Yes"
@@ -260,8 +235,8 @@ Partial Class Setting_Specification_Bottom_Detail
         divError.Visible = visible : msgError.InnerText = message
     End Sub
 
-    Protected Sub MessageError_Process(visible As Boolean, message As String)
-        divErrorProcess.Visible = visible : msgErrorProcess.InnerText = message
+    Protected Sub MessageError_ProcessColour(visible As Boolean, message As String)
+        divErrorProcessColour.Visible = visible : msgErrorProcessColour.InnerText = message
     End Sub
 
     Protected Function PageAction(action As String) As Boolean

@@ -24,12 +24,6 @@
     </div>
 
     <div class="page-content">
-        <section class="row mb-3">
-            <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
-                
-            </div>
-        </section>
-
         <section class="row">
             <div class="col-12">
                 <div class="row mb-2" runat="server" id="divError">
@@ -95,8 +89,7 @@
                     </div>
 
                     <div class="card-footer text-center">
-                        <a href="#" runat="server" id="aEdit" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#modalCreateOrder">Edit</a>
-                        <a href="#" runat="server" id="aDelete" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalDelete">Delete</a>
+                        <asp:Button runat="server" ID="btnEdit" CssClass="btn btn-info" Text="Edit" OnClick="btnEdit_Click" />
                         <a href="javascript:void(0);" class="btn btn-secondary" onclick="showLog('Bottoms', '<%= lblId.Text %>')">Log</a>
                     </div>
                 </div>
@@ -140,9 +133,6 @@
                                                             <li runat="server" visible='<%# PageAction("Detail Colour") %>'>
                                                                 <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                             </li>
-                                                            <li runat="server" visible='<%# PageAction("Delete Colour") %>'>
-                                                                <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteColour" onclick='<%# String.Format("return showDeleteColour(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
-                                                            </li>
                                                             <li>
                                                                 <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('BottomColours', '<%# Eval("Id") %>')">Log</a>
                                                             </li>
@@ -181,11 +171,11 @@
         </div>
     </div>
 
-    <div class="modal fade text-left" id="modalProcess" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal fade text-left" id="modalProcessColour" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 runat="server" class="modal-title" id="titleProcess"></h4>
+                    <h4 runat="server" class="modal-title" id="titleProcessColour"></h4>
                 </div>
 
                 <div class="modal-body">
@@ -217,10 +207,10 @@
                         </div>
                     </div>
 
-                    <div class="row mb-2" runat="server" id="divErrorProcess">
+                    <div class="row mb-2" runat="server" id="divErrorProcessColour">
                         <div class="col-12">
                             <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorProcess"></span>
+                                <span runat="server" id="msgErrorProcessColour"></span>
                             </div>
                         </div>
                     </div>
@@ -228,27 +218,7 @@
 
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnProcess" CssClass="btn btn-primary" Text="Submit" OnClick="btnProcess_Click" />
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade text-center" id="modalDeleteColour" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-danger">
-                    <h5 class="modal-title white">Delete Bottom Colour</h5>
-                </div>
-
-                <div class="modal-body">
-                    <asp:TextBox runat="server" ID="txtIdDeleteColour" style="display:none;"></asp:TextBox>
-                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
-                </div>
-
-                <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnDeleteColour" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDeleteColour_Click" />
+                    <asp:Button runat="server" ID="btnProcessColour" CssClass="btn btn-primary" Text="Submit" OnClick="btnProcessColour_Click" />
                 </div>
             </div>
         </div>
@@ -280,12 +250,8 @@
     </div>
 
     <script type="text/javascript">
-        function showProcess() {
-            $("#modalProcess").modal("show");
-        }
-
-        function showDeleteColour(id) {
-            document.getElementById("<%=txtIdDeleteColour.ClientID %>").value = id;
+        function showProcessColour() {
+            $("#modalProcessColour").modal("show");
         }
 
         function showLog(type, dataId) {
@@ -322,7 +288,7 @@
             });
         }
 
-        ["modalDelete", "modalProcess", "modalDeleteColour", "modalLog"].forEach(function (id) {
+        ["modalProcessColour", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

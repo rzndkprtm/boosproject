@@ -86,11 +86,8 @@
                                                     <ItemTemplate>
                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                         <ul class="dropdown-menu">
-                                                            <li runat="server" visible='<%# PageAction("Update") %>'>
-                                                                <asp:LinkButton runat="server" ID="linkEdit" CssClass="dropdown-item" Text="Edit / Update" CommandName="Change" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
-                                                            </li>
                                                             <li runat="server" visible='<%# PageAction("Detail") %>'>
-                                                                <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail / View" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                                <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                             </li>
                                                             <li runat="server" visible='<%# PageAction("Active") %>'>
                                                                 <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalActive" onclick='<%# String.Format("return showActive(`{0}`, `{1}`);", Eval("Id").ToString(), Convert.ToInt32(Eval("Active"))) %>'><%# TextActive(Eval("Active")) %></a>

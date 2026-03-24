@@ -96,29 +96,6 @@ Partial Class Setting_Specification_Bottom_Default
             Dim dataLog As Object() = {"Bottoms", thisId, Session("LoginId").ToString(), activeDesc}
             settingClass.Logs(dataLog)
 
-            Dim bottomDetail As DataTable = settingClass.GetDataTable("SELECT * FROM BottomColours WHERE BottomId='" & thisId & "'")
-            If bottomDetail.Rows.Count > 0 Then
-                For i As Integer = 0 To bottomDetail.Rows.Count - 1
-                    Dim detailId As String = bottomDetail.Rows(i)("Id").ToString()
-
-                    Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE BottomColours SET Active=@Active WHERE Id=@Id", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", detailId)
-                            myCmd.Parameters.AddWithValue("@Active", active)
-
-                            thisConn.Open()
-                            myCmd.ExecuteNonQuery()
-                        End Using
-                    End Using
-
-                    activeDesc = "Bottom Colour Has Been Activated from Bottom Type"
-                    If active = 0 Then activeDesc = "Bottom Colour Has Been Deactivated from Bottom Type"
-
-                    dataLog = {"BottomColours", detailId, Session("LoginId").ToString(), activeDesc}
-                    settingClass.Logs(dataLog)
-                Next
-            End If
-
             Session("SearchBottom") = txtSearch.Text
             Response.Redirect("~/setting/specification/bottom", False)
         Catch ex As Exception
