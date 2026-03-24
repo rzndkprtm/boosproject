@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="DesignType.aspx.vb" Inherits="Setting_Specification_Design" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Design Type" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Remote.aspx.vb" Inherits="Setting_Specification_Remote" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Remote" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-heading">
@@ -64,24 +64,18 @@
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:BoundField DataField="Id" HeaderText="ID" />
+                                                <asp:BoundField DataField="BoeId" HeaderText="BOE ID" />
                                                 <asp:BoundField DataField="Name" HeaderText="Name" />
-                                                <asp:BoundField DataField="Type" HeaderText="Type" />
-                                                <asp:TemplateField HeaderText="Company Detail">
-                                                    <ItemTemplate>
-                                                        <%# GetCompanyName(Eval("Id").ToString()) %>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:BoundField DataField="AppliesTo" HeaderText="Applied" />
                                                 <asp:BoundField DataField="DataActive" HeaderText="Active" />
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
                                                     <ItemTemplate>
                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                         <ul class="dropdown-menu">
-                                                            <li runat="server" visible='<%# PageAction("Detail") %>'>
+                                                            <li>
                                                                 <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail/ Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                             </li>
                                                             <li>
-                                                                <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('Designs', '<%# Eval("Id") %>')">Log</a>
+                                                                <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('Chains', '<%# Eval("Id") %>')">Log</a>
                                                             </li>
                                                         </ul>
                                                     </ItemTemplate>
@@ -109,7 +103,7 @@
                 </div>
 
                 <div class="modal-body">
-                    <div class="row mb-2" runat="server" id="divErrorProcess">
+                    <div class="row" runat="server" id="divErrorProcess">
                         <div class="col-12">
                             <div class="alert alert-danger">
                                 <span runat="server" id="msgErrorProcess"></span>
@@ -117,46 +111,31 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-12 form-group">
+                        <div class="col-12 col-sm-12 col-lg-4 form-group">
+                            <label class="form-label">BOE ID</label>
+                            <asp:TextBox runat="server" ID="txtBoeId" CssClass="form-control" placeholder="BOE ID ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                        <div class="col-12 col-sm-12 col-lg-8 form-group">
                             <label class="form-label">Name</label>
                             <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-                    
-                    <div class="row">
-                        <div class="col-5 form-group">
-                            <label class="form-label">Type</label>
-                            <asp:DropDownList runat="server" ID="ddlType" CssClass="form-select">
-                                <asp:ListItem Value="" Text=""></asp:ListItem>
-                                <asp:ListItem Value="Blinds" Text="Blinds"></asp:ListItem>
-                                <asp:ListItem Value="Shutters" Text="Shutters"></asp:ListItem>
-                                <asp:ListItem Value="Doors" Text="Doors"></asp:ListItem>
-                                <asp:ListItem Value="Parts" Text="Parts"></asp:ListItem>
-                                <asp:ListItem Value="Additional" Text="Additional"></asp:ListItem>
-                            </asp:DropDownList>
-                        </div>
-                        <div class="col-7 form-group">
-                            <label class="form-label">Page</label>
-                            <asp:TextBox runat="server" ID="txtPage" CssClass="form-control" placeholder="Page ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                    </div>
 
                     <div class="row">
-                        <div class="col-12 form-group">
+                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                            <label class="form-label">Design Name</label>
+                            <asp:ListBox runat="server" ID="lbDesign" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
+                        </div>
+                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                            <label class="form-label">Control Type</label>
+                            <asp:ListBox runat="server" ID="lbControl" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
+                        </div>
+                    </div>
+                
+                    <div class="row">
+                        <div class="col-12 col-sm-12 col-lg-6 form-group">
                             <label class="form-label">Company</label>
                             <asp:ListBox runat="server" ID="lbCompany" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Applies To</label>
-                            <asp:ListBox runat="server" ID="lbApplies" CssClass="choices form-select multiple-remove" SelectionMode="Multiple">
-                                <asp:ListItem Value="Fabrics" Text="Fabrics"></asp:ListItem>
-                                <asp:ListItem Value="Chains" Text="Chains"></asp:ListItem>
-                                <asp:ListItem Value="Bottoms" Text="Bottoms"></asp:ListItem>
-                                <asp:ListItem Value="Discounts" Text="Discounts"></asp:ListItem>
-                            </asp:ListBox>
                         </div>
                     </div>
 
@@ -204,6 +183,11 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <div runat="server" visible="false">
+        <asp:Label runat="server" ID="lblId"></asp:Label>
+        <asp:Label runat="server" ID="lblAction"></asp:Label>
     </div>
 
     <script type="text/javascript">
@@ -277,9 +261,4 @@
 
         window.history.replaceState(null, null, window.location.href);
     </script>
-
-    <div runat="server" visible="false">
-        <asp:Label runat="server" ID="lblId"></asp:Label>
-        <asp:Label runat="server" ID="lblAction"></asp:Label>
-    </div>
 </asp:Content>

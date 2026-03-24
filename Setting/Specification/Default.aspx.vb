@@ -14,7 +14,8 @@
         divBlindType.Attributes("onclick") = "location.href='blindtype'"
         divProduct.Attributes("onclick") = "location.href='product'"
         divFabric.Attributes("onclick") = "location.href='fabric'"
-        divChain.Attributes("onclick") = "location.href='chainremote'"
+        divChain.Attributes("onclick") = "location.href='chain'"
+        divRemote.Attributes("onclick") = "location.href='remote'"
         divBottom.Attributes("onclick") = "location.href='bottom'"
         divMounting.Attributes("onclick") = "location.href='mounting'"
     End Sub
@@ -23,6 +24,12 @@
         Try
             If Not String.IsNullOrEmpty(params) Then
                 Dim thisQuery As String = String.Format("SELECT COUNT(*) FROM {0}", params)
+                If params = "Chains" Then
+                    thisQuery = "SELECT COUNT(*) FROM Chains WHERE ControlTypeId='1'"
+                End If
+                If params = "Remotes" Then
+                    thisQuery = "SELECT COUNT(DISTINCT Chains.Id) FROM Chains CROSS APPLY STRING_SPLIT(ControlTypeId, ',') AS controlArray WHERE controlArray.VALUE<>'1'"
+                End If
                 Dim sumData As Integer = settingClass.GetItemData_Integer(thisQuery)
                 Return sumData & " Data"
             End If

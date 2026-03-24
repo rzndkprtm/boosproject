@@ -126,7 +126,7 @@
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-12">
+                        <div class="col-12 form-group">
                             <label class="form-label">Customer Account</label>
                             <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select"></asp:DropDownList>
                         </div>

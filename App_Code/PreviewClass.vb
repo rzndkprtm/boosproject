@@ -1158,9 +1158,9 @@ Public Class PreviewClass
                         items(0, i) = "Item : " & number
                         items(1, i) = romanData.Rows(i)("Room").ToString()
                         items(2, i) = romanData.Rows(i)("Mounting").ToString()
-                        items(3, i) = romanData.Rows(i)("Width").ToString()
-                        items(4, i) = romanData.Rows(i)("FabricName").ToString()
-                        items(5, i) = romanData.Rows(i)("FabricColour").ToString()
+                        items(3, i) = romanData.Rows(i)("FabricName").ToString()
+                        items(4, i) = romanData.Rows(i)("FabricColour").ToString()
+                        items(5, i) = romanData.Rows(i)("Width").ToString()
                         items(6, i) = romanData.Rows(i)("Drop").ToString()
                         items(7, i) = romanData.Rows(i)("TubeName").ToString()
                         items(8, i) = romanData.Rows(i)("ControlName").ToString()

@@ -1,12 +1,13 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 
-Partial Class Setting_Specification_ChainRemote
+Partial Class Setting_Specification_Chain
     Inherits Page
 
     Dim settingClass As New SettingClass
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim dataLog As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
@@ -22,45 +23,15 @@ Partial Class Setting_Specification_ChainRemote
         End If
     End Sub
 
-    Protected Sub btnAddChain_Click(sender As Object, e As EventArgs)
+    Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
         MessageError_Process(False, String.Empty)
-        Session("SearchChain") = txtSearch.Text
-
         Dim thisScript As String = "window.onload = function() { showProcess(); };"
         Try
-            BindDesign()
-            BindControl("Chain")
-            BindCompany()
-
             lblAction.Text = "Add"
             titleProcess.InnerText = "Add Chain"
 
-            divChainType.Visible = True
-
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-        Catch ex As Exception
-            MessageError_Process(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-        End Try
-    End Sub
-
-    Protected Sub btnAddRemote_Click(sender As Object, e As EventArgs)
-        MessageError_Process(False, String.Empty)
-        Session("SearchChain") = txtSearch.Text
-
-        Dim thisScript As String = "window.onload = function() { showProcess(); };"
-        Try
             BindDesign()
-            BindControl("Motorised")
             BindCompany()
-
-            lblAction.Text = "Add"
-            titleProcess.InnerText = "Add Remote"
-
-            divChainType.Visible = False
 
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         Catch ex As Exception
@@ -92,15 +63,15 @@ Partial Class Setting_Specification_ChainRemote
 
     Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
         If Not String.IsNullOrEmpty(e.CommandArgument) Then
-            Session("SearchChain") = txtSearch.Text
             Dim dataId As String = e.CommandArgument.ToString()
             If e.CommandName = "Detail" Then
+                Session("SearchChain") = txtSearch.Text
                 MessageError_Process(False, String.Empty)
                 Dim thisScript As String = "window.onload = function() { showProcess(); };"
                 Try
                     lblId.Text = dataId
                     lblAction.Text = "Edit"
-                    titleProcess.InnerText = "Edit Chain - Remote"
+                    titleProcess.InnerText = "Edit Chain"
 
                     Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Chains WHERE Id='" & lblId.Text & "'")
                     If myData Is Nothing Then Exit Sub
@@ -108,17 +79,10 @@ Partial Class Setting_Specification_ChainRemote
                     BindDesign()
                     BindCompany()
 
-                    Dim controlTypeId As String = myData("ControlTypeId").ToString()
-                    Dim thisControl As String = String.Empty
-                    If Not String.IsNullOrEmpty(controlTypeId) Then
-                        thisControl = "Motorised"
-                        If controlTypeId = "1" Then thisControl = "Chain"
-                    End If
-                    BindControl(thisControl)
-
                     txtBoeId.Text = myData("BoeId").ToString()
                     txtName.Text = myData("Name").ToString()
                     ddlChainType.SelectedValue = myData("ChainType").ToString()
+                    ddlChainLength.SelectedValue = myData("ChainLength").ToString()
                     txtDescription.Text = myData("Description").ToString()
                     ddlActive.SelectedValue = Convert.ToInt32(myData("Active"))
 
@@ -127,15 +91,6 @@ Partial Class Setting_Specification_ChainRemote
                         For Each i In thisArray
                             If Not (i.Equals(String.Empty)) Then
                                 lbDesign.Items.FindByValue(i).Selected = True
-                            End If
-                        Next
-                    End If
-
-                    If Not myData("ControlTypeId").ToString() = "" Then
-                        Dim thisArray() As String = myData("ControlTypeId").ToString().Split(",")
-                        For Each i In thisArray
-                            If Not (i.Equals(String.Empty)) Then
-                                lbControl.Items.FindByValue(i).Selected = True
                             End If
                         Next
                     End If
@@ -157,21 +112,6 @@ Partial Class Setting_Specification_ChainRemote
                     End If
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 End Try
-            ElseIf e.CommandName = "Log" Then
-                MessageError_Log(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showLog(); };"
-                Try
-                    gvListLogs.DataSource = settingClass.GetDataTable("SELECT * FROM Logs WHERE DataId='" & dataId & "' AND Type='Chains' ORDER BY ActionDate DESC")
-                    gvListLogs.DataBind()
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
-                Catch ex As Exception
-                    MessageError_Log(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError_Log(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                    End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
-                End Try
             End If
         End If
     End Sub
@@ -187,6 +127,7 @@ Partial Class Setting_Specification_ChainRemote
                     Exit Sub
                 End If
             End If
+
             If txtName.Text = "" Then
                 MessageError_Process(True, "CHAIN / REMOTE NAME IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
@@ -195,12 +136,6 @@ Partial Class Setting_Specification_ChainRemote
 
             If lbDesign.SelectedValue = "" Then
                 MessageError_Process(True, "DESIGN TYPE IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-                Exit Sub
-            End If
-
-            If lbControl.SelectedValue = "" Then
-                MessageError_Process(True, "CONTROL TYPE IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
             End If
@@ -219,13 +154,6 @@ Partial Class Setting_Specification_ChainRemote
                     End If
                 Next
 
-                Dim selectedControl As String = String.Empty
-                For Each item As ListItem In lbControl.Items
-                    If item.Selected Then
-                        selectedControl += item.Value & ","
-                    End If
-                Next
-
                 Dim selectedCompany As String = String.Empty
                 For Each item As ListItem In lbCompany.Items
                     If item.Selected Then
@@ -233,25 +161,24 @@ Partial Class Setting_Specification_ChainRemote
                     End If
                 Next
 
-                Dim designType As String = selectedDesign.Remove(selectedDesign.Length - 1).ToString()
-                Dim controlType As String = selectedControl.Remove(selectedControl.Length - 1).ToString()
-                Dim companyDetail As String = selectedCompany.Remove(selectedCompany.Length - 1).ToString()
-
                 If msgErrorProcess.InnerText = "" Then
+                    Dim designType As String = selectedDesign.Remove(selectedDesign.Length - 1).ToString()
+                    Dim companyDetail As String = selectedCompany.Remove(selectedCompany.Length - 1).ToString()
+
                     Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 
                     If lblAction.Text = "Add" Then
                         Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Chains ORDER BY Id DESC")
 
                         Using thisConn As New SqlConnection(myConn)
-                            Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Chains VALUES (@Id, @BoeId, @Name, @DesignId, @ControlTypeId, @CompanyDetailId, @ChainType, @Description, @Active)", thisConn)
+                            Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Chains VALUES (@Id, @BoeId, @Name, @DesignId, '1', @CompanyDetailId, @ChainType, @ChainLength, @Description, @Active)", thisConn)
                                 myCmd.Parameters.AddWithValue("@Id", thisId)
                                 myCmd.Parameters.AddWithValue("@BoeId", If(String.IsNullOrEmpty(txtBoeId.Text), CType(DBNull.Value, Object), txtBoeId.Text))
                                 myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                                 myCmd.Parameters.AddWithValue("@DesignId", designType)
-                                myCmd.Parameters.AddWithValue("@ControlTypeId", controlType)
                                 myCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetail)
                                 myCmd.Parameters.AddWithValue("@ChainType", ddlChainType.SelectedValue)
+                                myCmd.Parameters.AddWithValue("@ChainLength", ddlChainLength.SelectedValue)
                                 myCmd.Parameters.AddWithValue("@Description", descText)
                                 myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
 
@@ -260,23 +187,23 @@ Partial Class Setting_Specification_ChainRemote
                             End Using
                         End Using
 
-                        Dim dataLog As Object() = {"Chains", thisId, Session("LoginId").ToString(), "Chain / Remote Created"}
+                        dataLog = {"Chains", thisId, Session("LoginId").ToString(), "Chain Created"}
                         settingClass.Logs(dataLog)
 
                         Session("SearchChain") = txtSearch.Text
-                        Response.Redirect("~/setting/specification/chainremote", False)
+                        Response.Redirect("~/setting/specification/chain", False)
                     End If
 
                     If lblAction.Text = "Edit" Then
                         Using thisConn As New SqlConnection(myConn)
-                            Using myCmd As SqlCommand = New SqlCommand("UPDATE Chains SET BoeId=@BoeId, Name=@Name, DesignId=@DesignId, ControlTypeId=@ControlTypeId, CompanyDetailId=@CompanyDetailId, ChainType=@ChainType, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
+                            Using myCmd As SqlCommand = New SqlCommand("UPDATE Chains SET BoeId=@BoeId, Name=@Name, DesignId=@DesignId, ControlTypeId='1', CompanyDetailId=@CompanyDetailId, ChainType=@ChainType, ChainLength=@ChainLength, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
                                 myCmd.Parameters.AddWithValue("@Id", lblId.Text)
                                 myCmd.Parameters.AddWithValue("@BoeId", If(String.IsNullOrEmpty(txtBoeId.Text), CType(DBNull.Value, Object), txtBoeId.Text))
                                 myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                                 myCmd.Parameters.AddWithValue("@DesignId", designType)
-                                myCmd.Parameters.AddWithValue("@ControlTypeId", controlType)
                                 myCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetail)
                                 myCmd.Parameters.AddWithValue("@ChainType", ddlChainType.SelectedValue)
+                                myCmd.Parameters.AddWithValue("@ChainLength", ddlChainLength.SelectedValue)
                                 myCmd.Parameters.AddWithValue("@Description", descText)
                                 myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
 
@@ -285,11 +212,11 @@ Partial Class Setting_Specification_ChainRemote
                             End Using
                         End Using
 
-                        Dim dataLog As Object() = {"Chains", lblId.Text, Session("LoginId").ToString(), "Chain / Remote Updated"}
+                        dataLog = {"Chains", lblId.Text, Session("LoginId").ToString(), "Chain Updated"}
                         settingClass.Logs(dataLog)
 
                         Session("SearchChain") = txtSearch.Text
-                        Response.Redirect("~/setting/specification/chainremote", False)
+                        Response.Redirect("~/setting/specification/chain", False)
                     End If
                 End If
             End If
@@ -297,38 +224,6 @@ Partial Class Setting_Specification_ChainRemote
             MessageError_Process(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-        End Try
-    End Sub
-
-    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        Try
-            Dim thisId As String = txtIdDelete.Text
-
-            Using thisConn As New SqlConnection(myConn)
-                thisConn.Open()
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Chains WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Logs WHERE Type='Chains' AND DataId=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                thisConn.Close()
-            End Using
-
-            Session("SearchChain") = txtSearch.Text
-            Response.Redirect("~/setting/specification/chainremote", False)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
         End Try
     End Sub
@@ -338,16 +233,15 @@ Partial Class Setting_Specification_ChainRemote
         Try
             Dim search As String = String.Empty
             If Not searchText = "" Then
-                search = " WHERE Id LIKE '%" & searchText & "%' OR BoeId LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%' OR Description LIKE '%" & searchText & "%'"
+                search = "AND (Id LIKE '%" & searchText & "%' OR BoeId LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%' OR Description LIKE '%" & searchText & "%')"
             End If
-            Dim thisString As String = String.Format("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Chains {0} ORDER BY ControlTypeId, Name ASC", search)
+            Dim thisString As String = String.Format("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Chains WHERE ControlTypeId='1' {0} ORDER BY ControlTypeId, Name ASC", search)
 
             gvList.DataSource = settingClass.GetDataTable(thisString)
             gvList.DataBind()
             gvList.Columns(1).Visible = PageAction("Visible ID")
 
-            btnAddChain.Visible = PageAction("Add")
-            btnAddRemote.Visible = PageAction("Add")
+            btnAdd.Visible = PageAction("Add")
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -359,34 +253,13 @@ Partial Class Setting_Specification_ChainRemote
     Protected Sub BindDesign()
         lbDesign.Items.Clear()
         Try
-            lbDesign.DataSource = settingClass.GetDataTable("SELECT * FROM Designs ORDER BY Name ASC")
+            lbDesign.DataSource = settingClass.GetDataTable("SELECT * FROM Designs CROSS APPLY STRING_SPLIT(AppliesTo, ',') applyArray WHERE applyArray.VALUE='Chains' ORDER BY Name ASC")
             lbDesign.DataTextField = "Name"
             lbDesign.DataValueField = "Id"
             lbDesign.DataBind()
 
             If lbDesign.Items.Count > 0 Then
                 lbDesign.Items.Insert(0, New ListItem("", ""))
-            End If
-        Catch ex As Exception
-            MessageError_Process(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
-    Protected Sub BindControl(type As String)
-        lbControl.Items.Clear()
-        Try
-            If Not String.IsNullOrEmpty(type) Then
-                lbControl.DataSource = settingClass.GetDataTable("SELECT * FROM ProductControls WHERE Type='" & type & "' ORDER BY Name ASC")
-                lbControl.DataTextField = "Name"
-                lbControl.DataValueField = "Id"
-                lbControl.DataBind()
-
-                If lbControl.Items.Count > 0 Then
-                    lbControl.Items.Insert(0, New ListItem("", ""))
-                End If
             End If
         Catch ex As Exception
             MessageError_Process(True, ex.ToString())
@@ -415,42 +288,6 @@ Partial Class Setting_Specification_ChainRemote
         End Try
     End Sub
 
-    Protected Function BindDesignDetail(chainId As String) As String
-        If Not String.IsNullOrEmpty(chainId) Then
-            Dim myData As DataTable = settingClass.GetDataTable("SELECT Designs.Name AS DesignName FROM Chains CROSS APPLY STRING_SPLIT(Chains.DesignId, ',') AS thisArray LEFT JOIN Designs ON thisArray.VALUE=Designs.Id WHERE Chains.Id='" & chainId & "' ORDER BY Designs.Name ASC")
-
-            Dim hasil As String = String.Empty
-            If myData.Rows.Count > 0 Then
-                For i As Integer = 0 To myData.Rows.Count - 1
-                    Dim designName As String = myData.Rows(i)("DesignName").ToString()
-                    hasil += designName & ", "
-                Next
-                Return hasil.Remove(hasil.Length - 2).ToString()
-            Else
-                Return String.Empty
-            End If
-        End If
-        Return "Error"
-    End Function
-
-    Protected Function BindControlDetail(chainId As String) As String
-        If Not String.IsNullOrEmpty(chainId) Then
-            Dim myData As DataTable = settingClass.GetDataTable("SELECT ProductControls.Name AS ControlName FROM Chains CROSS APPLY STRING_SPLIT(Chains.ControlTypeId, ',') AS thisArray LEFT JOIN ProductControls ON thisArray.VALUE=ProductControls.Id WHERE Chains.Id='" & chainId & "' ORDER BY ProductControls.Name ASC")
-
-            Dim hasil As String = String.Empty
-            If myData.Rows.Count > 0 Then
-                For i As Integer = 0 To myData.Rows.Count - 1
-                    Dim designName As String = myData.Rows(i)("ControlName").ToString()
-                    hasil += designName & ", "
-                Next
-                Return hasil.Remove(hasil.Length - 2).ToString()
-            Else
-                Return String.Empty
-            End If
-        End If
-        Return "Error"
-    End Function
-
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
     End Sub
@@ -458,14 +295,6 @@ Partial Class Setting_Specification_ChainRemote
     Protected Sub MessageError_Process(visible As Boolean, message As String)
         divErrorProcess.Visible = visible : msgErrorProcess.InnerText = message
     End Sub
-
-    Protected Sub MessageError_Log(visible As Boolean, message As String)
-        divErrorLog.Visible = visible : msgErrorLog.InnerText = message
-    End Sub
-
-    Protected Function BindTextLog(logId As String) As String
-        Return settingClass.getTextLog(logId)
-    End Function
 
     Protected Function PageAction(action As String) As Boolean
         Try
