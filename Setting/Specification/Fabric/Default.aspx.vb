@@ -95,29 +95,6 @@ Partial Class Setting_Specification_Fabric_Default
             Dim dataLog As Object() = {"Fabrics", thisId, Session("LoginId").ToString(), activeDesc}
             settingClass.Logs(dataLog)
 
-            Dim fabricDetail As DataTable = settingClass.GetDataTable("SELECT * FROM FabricColours WHERE FabricId='" & thisId & "'")
-            If fabricDetail.Rows.Count > 0 Then
-                For i As Integer = 0 To fabricDetail.Rows.Count - 1
-                    Dim detailId As String = fabricDetail.Rows(i)("Id").ToString()
-
-                    Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET Active=@Active WHERE Id=@Id", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", detailId)
-                            myCmd.Parameters.AddWithValue("@Active", active)
-
-                            thisConn.Open()
-                            myCmd.ExecuteNonQuery()
-                        End Using
-                    End Using
-
-                    activeDesc = "Fabric Colour Has Been Activated from Fabric Type"
-                    If active = 0 Then activeDesc = "Fabric Colour Has Been Deactivated from Fabric Type"
-
-                    dataLog = {"FabricColours", detailId, Session("LoginId").ToString(), activeDesc}
-                    settingClass.Logs(dataLog)
-                Next
-            End If
-
             Session("SearchFabric") = txtSearch.Text
             Response.Redirect("~/setting/specification/fabric", False)
         Catch ex As Exception
