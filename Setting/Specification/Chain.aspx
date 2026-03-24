@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="ChainRemote.aspx.vb" Inherits="Setting_Specification_ChainRemote" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Chain - Remote" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Chain.aspx.vb" Inherits="Setting_Specification_Chain" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Chain" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-heading">
@@ -23,58 +23,6 @@
     </div>
 
     <div class="page-content">
-        <section class="row mb-3" runat="server" id="divError">
-            <div class="col-12">
-                <div class="alert alert-danger">
-                    <span runat="server" id="msgError"></span>
-                </div>
-            </div>
-        </section>
-
-        <section class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-content">
-                        <div class="card-body">
-                            <div class="list-group list-group-horizontal-sm mb-1 text-center" id="dvTab" role="tablist">
-                                <a class="list-group-item list-group-item-action active" id="listRole" data-bs-toggle="list" href="#list-role" role="tab">Role</a>
-                                <a class="list-group-item list-group-item-action" id="listLevel" data-bs-toggle="list" href="#list-level" role="tab">Level</a>
-                            </div>
-
-                            <div class="tab-content text-justify">
-                                <div class="tab-pane fade show active" id="list-role" role="tabpanel" aria-labelledby="listRole">
-
-                                    <div class="row mt-5">
-                                        <div class="col-12">
-                                            <div class="table-responsive"></div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="tab-pane fade" id="list-level" role="tabpanel" aria-labelledby="listLevel">
-
-                                    <div class="row mt-5">
-                                        <div class="col-12">
-                                            <div class="table-responsive"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> 
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        
-
-        <section class="row mb-3">
-            <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
-                <asp:Button runat="server" ID="btnAddChain" CssClass="btn btn-primary" Text="Add Chain" OnClick="btnAddChain_Click" />
-                <asp:Button runat="server" ID="btnAddRemote" CssClass="btn btn-info" Text="Add Remote" OnClick="btnAddRemote_Click" />
-            </div>
-        </section>
-
         <section class="row">
             <div class="col-12">
                 <div class="card">
@@ -82,13 +30,13 @@
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-12 col-sm-12 col-lg-6 mb-2">
-                                    &nbsp;
+                                    <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Add New" OnClick="btnAdd_Click" />
                                 </div>
                                 <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
                                     <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
                                         <div class="input-group">
                                             <span class="input-group-text">Search : </span>
-                                            <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" placeholoder="" autocomplete="off"></asp:TextBox>
+                                            <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" placeholoder="Name" autocomplete="off"></asp:TextBox>
                                             <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />
                                         </div>
                                     </asp:Panel>
@@ -96,43 +44,40 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <div class="row">
+                            <div class="row mb-2" runat="server" id="divError">
+                                <div class="col-12">
+                                    <div class="alert alert-danger">
+                                        <span runat="server" id="msgError"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
                                 <div class="col-12">
                                     <div class="table-responsive">
-                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="True" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom" OnPageIndexChanging="gvList_PageIndexChanging" OnRowCommand="gvList_RowCommand">
+                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom" OnPageIndexChanging="gvList_PageIndexChanging" OnRowCommand="gvList_RowCommand">
                                             <RowStyle />
                                             <Columns>
-                                                <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="80px">
+                                                <asp:TemplateField ItemStyle-HorizontalAlign="Center">
                                                     <ItemTemplate>
                                                         <%# Container.DataItemIndex + 1 %>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-                                                <asp:BoundField DataField="Id" HeaderText="ID" HeaderStyle-Width="80px" />
-                                                <asp:BoundField DataField="BoeId" HeaderText="BOE ID" HeaderStyle-Width="80px" />
-                                                <asp:BoundField DataField="Name" HeaderText="Name" HeaderStyle-Width="230px" />
-                                                <asp:TemplateField HeaderText="Product" HeaderStyle-Width="200px">
-                                                    <ItemTemplate>
-                                                        <%# BindDesignDetail(Eval("Id").ToString()) %>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="Control Type" HeaderStyle-Width="200px">
-                                                    <ItemTemplate>
-                                                        <%# BindControlDetail(Eval("Id").ToString()) %>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
+                                                <asp:BoundField DataField="Id" HeaderText="ID" />
+                                                <asp:BoundField DataField="BoeId" HeaderText="BOE ID" />
+                                                <asp:BoundField DataField="Name" HeaderText="Name" />
+                                                <asp:BoundField DataField="ChainType" HeaderText="Chain Type" />
+                                                <asp:BoundField DataField="ChainLength" HeaderText="Chain Length" />
                                                 <asp:BoundField DataField="DataActive" HeaderText="Active" />
-                                                <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="150px">
+                                                <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
                                                     <ItemTemplate>
                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                         <ul class="dropdown-menu">
-                                                            <li runat="server" visible='<%# PageAction("Detail") %>'>
-                                                                <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
-                                                            </li>
-                                                            <li runat="server" visible='<%# PageAction("Delete") %>'>
-                                                                <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                            <li>
+                                                                <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail/ Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                             </li>
                                                             <li>
-                                                                <asp:LinkButton runat="server" ID="linkLog" CssClass="dropdown-item" Text="Log" CommandName="Log" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                                <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('Chains', '<%# Eval("Id") %>')">Log</a>
                                                             </li>
                                                         </ul>
                                                     </ItemTemplate>
@@ -160,14 +105,14 @@
                 </div>
 
                 <div class="modal-body">
-                    <div class="row mb-2" runat="server" id="divErrorProcess">
+                    <div class="row" runat="server" id="divErrorProcess">
                         <div class="col-12">
                             <div class="alert alert-danger">
                                 <span runat="server" id="msgErrorProcess"></span>
                             </div>
                         </div>
                     </div>
-                    <div class="row mb-2">
+                    <div class="row">
                         <div class="col-12 col-sm-12 col-lg-4 form-group">
                             <label class="form-label">BOE ID</label>
                             <asp:TextBox runat="server" ID="txtBoeId" CssClass="form-control" placeholder="BOE ID ..." autocomplete="off"></asp:TextBox>
@@ -177,24 +122,20 @@
                             <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-
-                    <div class="row mb-2">
+                    
+                    <div class="row">
                         <div class="col-12 col-sm-12 col-lg-6 form-group">
                             <label class="form-label">Design Name</label>
                             <asp:ListBox runat="server" ID="lbDesign" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
                         </div>
                         <div class="col-12 col-sm-12 col-lg-6 form-group">
-                            <label class="form-label">Control Type</label>
-                            <asp:ListBox runat="server" ID="lbControl" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
-                        </div>
-                    </div>
-                
-                    <div class="row mb-2">
-                        <div class="col-12 col-sm-12 col-lg-6 form-group">
                             <label class="form-label">Company</label>
                             <asp:ListBox runat="server" ID="lbCompany" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
                         </div>
-                        <div class="col-12 col-sm-12 col-lg-6 form-group" runat="server" id="divChainType">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12 col-sm-12 col-lg-6 form-group">
                             <label class="form-label">Chain Type</label>
                             <asp:DropDownList runat="server" ID="ddlChainType" CssClass="form-select">
                                 <asp:ListItem Value="" Text=""></asp:ListItem>
@@ -202,16 +143,24 @@
                                 <asp:ListItem Value="Non Continuous" Text="Non Continuous"></asp:ListItem>
                             </asp:DropDownList>
                         </div>
+                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                            <label class="form-label">Chain Length</label>
+                            <asp:DropDownList runat="server" ID="ddlChainLength" CssClass="form-select">
+                                <asp:ListItem Value="" Text=""></asp:ListItem>
+                                <asp:ListItem Value="Static" Text="Static"></asp:ListItem>
+                                <asp:ListItem Value="Flexible" Text="Flexible"></asp:ListItem>
+                            </asp:DropDownList>
+                        </div>
                     </div>
 
-                    <div class="row mb-2">
+                    <div class="row">
                         <div class="col-12 form-group">
                             <label class="form-label">Description</label>
                             <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
                         </div>
                     </div>
 
-                    <div class="row mb-2">
+                    <div class="row">
                         <div class="col-12 col-sm-12 col-lg-3 form-group">
                             <label class="form-label">Active</label>
                             <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select">
@@ -230,26 +179,6 @@
         </div>
     </div>
 
-    <div class="modal fade text-center" id="modalDelete" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-danger">
-                    <h5 class="modal-title white">Delete Chain / Remote</h5>
-                </div>
-
-                <div class="modal-body">
-                    <asp:TextBox runat="server" ID="txtIdDelete" style="display:none;"></asp:TextBox>
-                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
-                </div>
-
-                <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnDelete" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDelete_Click" />
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div class="modal modal-blur fade" id="modalLog" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -259,29 +188,20 @@
                 </div>
 
                 <div class="modal-body">
-                    <div class="row" runat="server" id="divErrorLog">
-                        <div class="col-12">
-                            <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorLog"></span>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="alert alert-danger d-none" id="logError"></div>
                     <div class="table-responsive">
-                        <asp:GridView runat="server" ID="gvListLogs" CssClass="table table-vcenter card-table" AutoGenerateColumns="false" EmptyDataText="DATA LOG NOT FOUND" EmptyDataRowStyle-HorizontalAlign="Center" ShowHeader="false" GridLines="None" BorderStyle="None">
-                            <RowStyle />
-                            <Columns>
-                                <asp:TemplateField>
-                                    <ItemTemplate>
-                                        <%# BindTextLog(Eval("Id").ToString()) %>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                            </Columns>
-                            <AlternatingRowStyle BackColor="White" />
-                        </asp:GridView>
+                        <table class="table table-vcenter card-table" id="tblLogs">
+                            <tbody></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+
+    <div runat="server" visible="false">
+        <asp:Label runat="server" ID="lblId"></asp:Label>
+        <asp:Label runat="server" ID="lblAction"></asp:Label>
     </div>
 
     <script type="text/javascript">
@@ -307,17 +227,46 @@
                 });
             }
         });
+
         function showProcess() {
             $("#modalProcess").modal("show");
         }
-        function showDelete(id) {
-            document.getElementById("<%=txtIdDelete.ClientID %>").value = id;
-        }
-        function showLog() {
+
+        function showLog(type, dataId) {
+            $("#logError").addClass("d-none").html("");
+            $("#tblLogs tbody").html("");
             $("#modalLog").modal("show");
+
+            $.ajax({
+                type: "POST",
+                url: "/Setting/Method.aspx/GetLogs",
+                data: JSON.stringify({ type: type, dataId: dataId }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (res) {
+                    const logs = res.d;
+
+                    if (!logs || logs.length === 0) {
+                        $("#tblLogs tbody").html(
+                            `<tr><td class="text-center">DATA LOG NOT FOUND</td></tr>`
+                        );
+                        return;
+                    }
+
+                    let html = "";
+                    logs.forEach(r => {
+                        html += `<tr><td>${r.TextLog}</td></tr>`;
+                    });
+
+                    $("#tblLogs tbody").html(html);
+                },
+                error: function (err) {
+                    $("#logError").removeClass("d-none").html("FAILED TO LOAD LOG DATA");
+                }
+            });
         }
 
-        ["modalProcess", "modalDelete", "modalLog"].forEach(function (id) {
+        ["modalProcess", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
@@ -326,9 +275,4 @@
 
         window.history.replaceState(null, null, window.location.href);
     </script>
-
-    <div runat="server" visible="false">
-        <asp:Label runat="server" ID="lblId"></asp:Label>
-        <asp:Label runat="server" ID="lblAction"></asp:Label>
-    </div>
 </asp:Content>

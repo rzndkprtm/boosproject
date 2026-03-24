@@ -47,7 +47,7 @@ Partial Class Setting_Specification_Design
     End Sub
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
-        MessageError_Process(False, String.Empty)
+        MessageError(False, String.Empty)
         BindData(txtSearch.Text)
     End Sub
 
