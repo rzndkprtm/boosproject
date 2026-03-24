@@ -210,6 +210,7 @@
         function showName() {
             $("#modalName").modal("show");
         }
+
         function showEmail() {
             $("#modalEmail").modal("show");
         }

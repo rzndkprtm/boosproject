@@ -381,7 +381,7 @@ Public Class PreviewClass
                     Dim table As New PdfPTable(7)
                     table.WidthPercentage = 100
 
-                    Dim items(18, curtainData.Rows.Count - 1) As String
+                    Dim items(20, curtainData.Rows.Count - 1) As String
 
                     For i As Integer = 0 To curtainData.Rows.Count - 1
                         Dim controlLengthText As String = curtainData.Rows(i)("ControlLengthValue").ToString()
@@ -404,9 +404,11 @@ Public Class PreviewClass
                         items(12, i) = curtainData.Rows(i)("StackPosition").ToString()
                         items(13, i) = curtainData.Rows(i)("ControlColour").ToString()
                         items(14, i) = controlLengthText
-                        items(15, i) = curtainData.Rows(i)("BottomHem").ToString()
-                        items(16, i) = curtainData.Rows(i)("Supply").ToString()
-                        items(17, i) = curtainData.Rows(i)("Notes").ToString()
+                        items(15, i) = curtainData.Rows(i)("ReturnLengthValue").ToString()
+                        items(16, i) = curtainData.Rows(i)("ReturnLengthValueB").ToString()
+                        items(17, i) = curtainData.Rows(i)("BottomHem").ToString()
+                        items(18, i) = curtainData.Rows(i)("Supply").ToString()
+                        items(19, i) = curtainData.Rows(i)("Notes").ToString()
                     Next
 
                     For i As Integer = 0 To items.GetLength(1) - 1 Step 6
@@ -415,7 +417,7 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Fitting", "Curtain Type", "Heading", "Fabric Type", "Fabric Colour", "Width (mm)", "Drop (mm)", "Track Type", "Track Colour", "Track Draw", "Stack Position", "Control Colour", "Control Length", "Bottom HEM", "Tie Back Req", "Notes"}
+                        Dim headers As String() = {"", "Location", "Fitting", "Curtain Type", "Heading", "Fabric Type", "Fabric Colour", "Width (mm)", "Drop (mm)", "Track Type", "Track Colour", "Track Draw", "Stack Position", "Control Colour", "Control Length", "Return Length (L)", "Return Length (R)", "Bottom HEM", "Tie Back Req", "Notes"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))

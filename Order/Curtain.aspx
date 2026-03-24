@@ -265,6 +265,28 @@
                                                     </div>
                                                 </div>
                                             </div>
+
+                                            <div id="divreturnlength">
+                                                <div class="row mt-3">
+                                                    <div class="col-12 col-sm-12 col-lg-3">
+                                                        <label>Return Length</label>
+                                                    </div>
+                                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text">Left</span>
+                                                            <input type="number" id="returnlengthvalue" class="form-control" autocomplete="off" placeholder=".... mm" />
+                                                            <span class="input-group-text">mm</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text">Right</span>
+                                                            <input type="number" id="returnlengthvalueb" class="form-control" autocomplete="off" placeholder=".... mm" />
+                                                            <span class="input-group-text">mm</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             
                                             <div class="row mt-3" id="divbottomhem">
                                                 <div class="col-12 col-sm-12 col-lg-3">
@@ -419,5 +441,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/WebOrders/Curtain.js?v=2.0.6"></script>
+    <script src="/Scripts/WebOrders/Curtain.js?v=2.0.7"></script>
 </asp:Content>

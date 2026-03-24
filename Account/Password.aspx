@@ -114,6 +114,7 @@
             document.activeElement.blur();
             document.body.focus();
         });
+
         function showSuccess() {
             $('#modalSuccess').modal('show');
         }
@@ -123,5 +124,7 @@
         });
 
         $("#vieworder").on("click", () => window.location.href = "/");
+
+        window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

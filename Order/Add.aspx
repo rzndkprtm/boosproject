@@ -195,5 +195,7 @@
 
             document.getElementById("spanInfo").innerHTML = info;
         }
+
+        window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>
