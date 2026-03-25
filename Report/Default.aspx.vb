@@ -19,6 +19,12 @@ Partial Class Report_Default
             txtEndDate.Text = Now.ToString("dd-mm-yyyy")
 
             BindCompany()
+
+            gvList.DataSource = Nothing
+            gvList.DataBind()
+
+            gvBlindsPivot.DataSource = Nothing
+            gvBlindsPivot.DataBind()
         End If
     End Sub
 
@@ -57,7 +63,6 @@ Partial Class Report_Default
 
         gvBlindsPivot.DataSource = Nothing
         gvBlindsPivot.DataBind()
-
         Try
             If txtStartDate.Text = "" Then
                 MessageError(True, "START DATE IS REQUIRED !")
