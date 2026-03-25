@@ -221,10 +221,12 @@ Public Partial Class SiteMaster
                 liExport.Visible = True
                 liReport.Visible = True
                 liGuide.Visible = True
+                liSales.Visible = True
 
                 liSetting.Visible = True
 
                 liGeneral.Visible = True
+                liGeneralCompany.Visible = True
                 liGeneralMailing.Visible = True
                 liGeneralNewsletter.Visible = True
                 liGeneralTutorial.Visible = True

@@ -23,12 +23,6 @@
     </div>
     <div class="page-content">
         <section class="row mb-3">
-            <div class="col-12 d-flex justify-content-end flex-wrap gap-2">
-                <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Add New" OnClick="btnAdd_Click" />
-            </div>
-        </section>
-
-        <section class="row mb-3">
             <div class="col-12">
                 <div class="row mb-2" runat="server" id="divError">
                     <div class="col-12">
@@ -46,7 +40,9 @@
                     <div class="card-content">
                         <div class="card-header">
                             <div class="row">
-                                <div class="col-12 col-sm-12 col-lg-6 mb-2"></div>
+                                <div class="col-12 col-sm-12 col-lg-6 mb-2">
+                                    <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Add New" OnClick="btnAdd_Click" />
+                                </div>
                                 <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
                                     <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
                                         <div class="input-group">
