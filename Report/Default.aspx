@@ -1,6 +1,14 @@
 ﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Default.aspx.vb" Inherits="Report_Default" MasterPageFile="~/Site.master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Report" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
+    <style>
+        .grid-container { width: 100%; height: calc(100vh - 150px); overflow: auto; border: 1px solid #ddd; }
+        .grid-container table { width: 100%; border-collapse: collapse; }
+        .grid-container th { position: sticky; top: 0; background: #f5f5f5; z-index: 3; }
+        .grid-container td:first-child, .grid-container th:first-child { position: sticky; left: 0; background: #fff; z-index: 2; }
+        .grid-container th:first-child { z-index: 4; }
+        .grid-container td, .grid-container th { white-space: nowrap; padding: 6px 10px; }
+    </style>
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
@@ -112,7 +120,7 @@
                                 <div class="tab-pane fade" id="list-monday" role="tabpanel" aria-labelledby="list-monday-list">
                                     <div class="row mt-3">
                                         <div class="col-12">
-                                            <div class="table-responsive">
+                                            <div class="grid-container table-responsive">
                                                 <asp:GridView runat="server" ID="gvBlindsPivot" CssClass="table table-bordered table-hover" AutoGenerateColumns="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowDataBound="gvBlindsPivot_RowDataBound"></asp:GridView>
                                             </div>
                                         </div>
