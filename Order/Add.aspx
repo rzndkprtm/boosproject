@@ -122,7 +122,7 @@
                                     <div runat="server" id="divUpload">
                                         <div class="row">
                                             <div class="col-12 col-sm-12 col-lg-3" >
-                                                <label class="form-label">Upload CSV Order</label>
+                                                <label class="form-label">Upload Your File</label>
                                             </div>
                                             <div class="col-12 col-sm-12 col-lg-9 form-group">
                                                 <asp:FileUpload runat="server" ID="fuFile" CssClass="form-control" />
