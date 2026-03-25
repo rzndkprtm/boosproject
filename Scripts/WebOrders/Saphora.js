@@ -938,7 +938,7 @@ function visibleDetail(blindtype, tubetype, controltype, colourtype) {
         const markup = document.getElementById("divmarkup");
 
         const divsToHide = [
-            "divcontrolposition", "divchaincolour", "divwandcolour", "divcontrollengthvalue", "divmarkup"
+            "divmounting", "divstackposition", "divcontrolposition", "divchaincolour", "divwandcolour", "divcontrollength", "divcontrollengthvalue", "divextbracket", "divmarkup"
         ];
 
         const toggleDisplay = (el, show) => {
@@ -955,12 +955,12 @@ function visibleDetail(blindtype, tubetype, controltype, colourtype) {
         getBlindName(blindtype).then(blindName => {
             let divShow = [];
 
-            if (blindName === "Saphora Drape") {
+            if (blindName === "Complete Set") {
                 return getControlName(controltype).then(controlName => {
                     if (controlName === "Chain") {
-                        divShow.push("divcontrolposition", "divchaincolour");
+                        divShow.push("divmounting", "divstackposition", "divcontrolposition", "divchaincolour", "divcontrollength", "divextbracket");
                     } else if (controlName === "Wand") {
-                        divShow.push("divwandcolour");
+                        divShow.push("divmounting", "divstackposition", "divwandcolour", "divcontrollength", "divextbracket");
                     }
                     divShow.forEach(id => toggleDisplay(document.getElementById(id), true));
                 });
