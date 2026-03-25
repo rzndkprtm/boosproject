@@ -2,7 +2,7 @@
 Imports System.Data.SqlClient
 Imports System.Globalization
 
-Partial Class Setting_Price_Base
+Partial Class Setting_Price_Base_Editable
     Inherits Page
 
     Dim settingClass As New SettingClass
@@ -15,18 +15,18 @@ Partial Class Setting_Price_Base
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
         If pageAccess = False Then
-            Response.Redirect("~/setting/price", False)
+            Response.Redirect("~/setting/price/base", False)
             Exit Sub
         End If
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
 
-            'ddlSortCategory.SelectedValue = Session("PriceBaseCategory")
-            'BindPriceGroup_Sort()
-            'ddlSortPriceGroup.SelectedValue = Session("PriceBasePriceGroup")
-            'txtSearch.Text = Session("PriceBaseSearch")
-            'BindData(ddlSortCategory.SelectedValue, ddlSortPriceGroup.SelectedValue, txtSearch.Text)
+            BindProductGroup()
+            BindPriceGroup()
+
+            btnAdd.Visible = PageAction("Add")
+            btnImport.Visible = PageAction("Import")
         End If
     End Sub
 
@@ -36,9 +36,6 @@ Partial Class Setting_Price_Base
         Try
             lblAction.Text = "Add"
             titleProcess.InnerText = "Add Price Base"
-
-            BindProductGroup()
-            BindPriceGroup()
 
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         Catch ex As Exception
@@ -50,26 +47,50 @@ Partial Class Setting_Price_Base
         End Try
     End Sub
 
-    Protected Sub ddlSortCategory_SelectedIndexChanged(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        BindData(ddlSortCategory.SelectedValue, ddlSortPriceGroup.SelectedValue, txtSearch.Text)
+    Protected Sub btnImport_Click(sender As Object, e As EventArgs)
+
     End Sub
 
-    Protected Sub ddlSortPriceGroup_SelectedIndexChanged(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        BindData(ddlSortCategory.SelectedValue, ddlSortPriceGroup.SelectedValue, txtSearch.Text)
-    End Sub
-
-    Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        BindData(ddlSortCategory.SelectedValue, ddlSortPriceGroup.SelectedValue, txtSearch.Text)
-    End Sub
-
-    Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+    Protected Sub btnSort_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            gvList.PageIndex = e.NewPageIndex
-            BindData(ddlSortCategory.SelectedValue, ddlSortPriceGroup.SelectedValue, txtSearch.Text)
+            If ddlCategory.SelectedValue = "" Then
+                gvList.DataSource = Nothing
+                gvList.DataBind()
+                Exit Sub
+            End If
+            If ddlMethod.SelectedValue = "" Then
+                gvList.DataSource = Nothing
+                gvList.DataBind()
+                Exit Sub
+            End If
+            If ddlProductGroup.SelectedValue = "" Then
+                gvList.DataSource = Nothing
+                gvList.DataBind()
+                Exit Sub
+            End If
+            If ddlPriceGroup.SelectedValue = "" Then
+                gvList.DataSource = Nothing
+                gvList.DataBind()
+                Exit Sub
+            End If
+
+            If txtHeight.Text = "" Then txtHeight.Text = "0"
+            If txtWidth.Text = "" Then txtWidth.Text = "0"
+
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@Category", If(String.IsNullOrEmpty(ddlCategory.SelectedValue), CType(DBNull.Value, Object), ddlCategory.SelectedValue)),
+                New SqlParameter("@Method", If(String.IsNullOrEmpty(ddlMethod.SelectedValue), CType(DBNull.Value, Object), ddlMethod.SelectedValue)),
+                New SqlParameter("@ProductGroupId", If(String.IsNullOrEmpty(ddlProductGroup.SelectedValue), CType(DBNull.Value, Object), ddlProductGroup.SelectedValue)),
+                New SqlParameter("@PriceGroupId", If(String.IsNullOrEmpty(ddlPriceGroup.SelectedValue), CType(DBNull.Value, Object), ddlPriceGroup.SelectedValue)),
+                New SqlParameter("@Height", If(String.IsNullOrEmpty(txtHeight.Text), CType(DBNull.Value, Object), txtHeight.Text)),
+                New SqlParameter("@Width", If(String.IsNullOrEmpty(txtWidth.Text), CType(DBNull.Value, Object), txtWidth.Text))
+            }
+
+            Dim thisData As DataTable = settingClass.GetDataTableSP("sp_PriceBaseList", params)
+
+            gvList.DataSource = thisData
+            gvList.DataBind()
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -92,22 +113,18 @@ Partial Class Setting_Price_Base
                     Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM PriceBases WHERE Id='" & lblId.Text & "'")
                     If myData Is Nothing Then Exit Sub
 
-                    BindProductGroup()
-                    BindPriceGroup()
-
-                    ddlCategory.SelectedValue = myData("Category").ToString()
-                    ddlMethod.SelectedValue = myData("Method").ToString()
-                    ddlProductGroup.SelectedValue = myData("ProductGroupId").ToString()
-                    ddlPriceGroup.SelectedValue = myData("PriceGroupId").ToString()
-                    txtHeight.Text = myData("Height").ToString()
-                    txtWidth.Text = myData("Width").ToString()
+                    ddlCategoryProcess.SelectedValue = myData("Category").ToString()
+                    ddlMethodProcess.SelectedValue = myData("Method").ToString()
+                    ddlProductGroupProcess.SelectedValue = myData("ProductGroupId").ToString()
+                    ddlPriceGroupProcess.SelectedValue = myData("PriceGroupId").ToString()
+                    txtHeightProcess.Text = myData("Height").ToString()
+                    txtWidthProcess.Text = myData("Width").ToString()
                     txtPrice.Text = Convert.ToDecimal(myData("Price")).ToString("G29", enUS)
                     txtConditional.Text = myData("Conditional").ToString()
 
-                    If ddlPriceGroup.SelectedValue = "2" OrElse ddlPriceGroup.SelectedValue = "3" OrElse ddlPriceGroup.SelectedValue = "4" OrElse ddlPriceGroup.SelectedValue = "5" OrElse ddlPriceGroup.SelectedValue = "10" Then
+                    If ddlPriceGroupProcess.SelectedValue = "2" OrElse ddlPriceGroupProcess.SelectedValue = "3" OrElse ddlPriceGroupProcess.SelectedValue = "4" OrElse ddlPriceGroup.SelectedValue = "5" OrElse ddlPriceGroupProcess.SelectedValue = "10" Then
                         txtPrice.Text = Convert.ToDecimal(myData("Price")).ToString("G29", idIDR)
                     End If
-
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Catch ex As Exception
                     MessageError_Process(True, ex.ToString())
@@ -124,37 +141,37 @@ Partial Class Setting_Price_Base
         MessageError_Process(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showProcess(); };"
         Try
-            If ddlCategory.SelectedValue = "" Then
+            If ddlCategoryProcess.SelectedValue = "" Then
                 MessageError_Process(True, "CATEGORY IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
             End If
 
-            If ddlMethod.SelectedValue = "" Then
+            If ddlMethodProcess.SelectedValue = "" Then
                 MessageError_Process(True, "METHOD IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
             End If
 
-            If ddlProductGroup.SelectedValue = "" Then
+            If ddlProductGroupProcess.SelectedValue = "" Then
                 MessageError_Process(True, "PRODUCT GROUP IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
             End If
 
-            If ddlPriceGroup.SelectedValue = "" Then
+            If ddlPriceGroupProcess.SelectedValue = "" Then
                 MessageError_Process(True, "PRICE GROUP IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
             End If
 
-            If txtHeight.Text = "" Then
+            If txtHeightProcess.Text = "" Then
                 MessageError_Process(True, "HEIGHT IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
             End If
 
-            If txtWidth.Text = "" Then
+            If txtWidthProcess.Text = "" Then
                 MessageError_Process(True, "WIDTH IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
@@ -167,12 +184,12 @@ Partial Class Setting_Price_Base
                     Using thisConn As New SqlConnection(myConn)
                         Using myCmd As SqlCommand = New SqlCommand("INSERT INTO PriceBases VALUES (@Id, @Category, @Method, @ProductGroupId, @PriceGroupId, @Height, @Width, @Price, @Conditional)", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", thisId)
-                            myCmd.Parameters.AddWithValue("@Category", ddlCategory.SelectedValue)
-                            myCmd.Parameters.AddWithValue("@Method", ddlMethod.SelectedValue)
-                            myCmd.Parameters.AddWithValue("@ProductGroupId", ddlProductGroup.SelectedValue)
-                            myCmd.Parameters.AddWithValue("@PriceGroupId", ddlPriceGroup.SelectedValue)
-                            myCmd.Parameters.AddWithValue("@Height", txtHeight.Text)
-                            myCmd.Parameters.AddWithValue("@Width", txtWidth.Text)
+                            myCmd.Parameters.AddWithValue("@Category", ddlCategoryProcess.SelectedValue)
+                            myCmd.Parameters.AddWithValue("@Method", ddlMethodProcess.SelectedValue)
+                            myCmd.Parameters.AddWithValue("@ProductGroupId", ddlProductGroupProcess.SelectedValue)
+                            myCmd.Parameters.AddWithValue("@PriceGroupId", ddlPriceGroupProcess.SelectedValue)
+                            myCmd.Parameters.AddWithValue("@Height", txtHeightProcess.Text)
+                            myCmd.Parameters.AddWithValue("@Width", txtWidthProcess.Text)
                             myCmd.Parameters.AddWithValue("@Price", txtPrice.Text)
                             myCmd.Parameters.AddWithValue("@Conditional", txtConditional.Text)
 
@@ -184,23 +201,19 @@ Partial Class Setting_Price_Base
                     dataLog = {"PriceBases", thisId, Session("LoginId").ToString(), "Price Base Created"}
                     settingClass.Logs(dataLog)
 
-                    Session("PriceBaseCategory") = ddlSortCategory.SelectedValue
-                    Session("PriceBasePriceGroup") = ddlSortPriceGroup.SelectedValue
-                    Session("PriceBaseSearch") = txtSearch.Text
-
-                    Response.Redirect("~/setting/price/base", False)
+                    Response.Redirect("~/setting/price/base/editable", False)
                 End If
 
                 If lblAction.Text = "Edit" Then
                     Using thisConn As New SqlConnection(myConn)
                         Using myCmd As SqlCommand = New SqlCommand("UPDATE PriceBases SET Category=@Category, Method=@Method, ProductGroupId=@ProductGroupId, PriceGroupId=@PriceGroupId, Height=@Height, Width=@Width, Price=@Price, Conditional=@Conditional WHERE Id=@Id", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                            myCmd.Parameters.AddWithValue("@Category", ddlCategory.SelectedValue)
-                            myCmd.Parameters.AddWithValue("@Method", ddlMethod.SelectedValue)
-                            myCmd.Parameters.AddWithValue("@ProductGroupId", ddlProductGroup.SelectedValue)
-                            myCmd.Parameters.AddWithValue("@PriceGroupId", ddlPriceGroup.SelectedValue)
-                            myCmd.Parameters.AddWithValue("@Height", txtHeight.Text)
-                            myCmd.Parameters.AddWithValue("@Width", txtWidth.Text)
+                            myCmd.Parameters.AddWithValue("@Category", ddlCategoryProcess.SelectedValue)
+                            myCmd.Parameters.AddWithValue("@Method", ddlMethodProcess.SelectedValue)
+                            myCmd.Parameters.AddWithValue("@ProductGroupId", ddlProductGroupProcess.SelectedValue)
+                            myCmd.Parameters.AddWithValue("@PriceGroupId", ddlPriceGroupProcess.SelectedValue)
+                            myCmd.Parameters.AddWithValue("@Height", txtHeightProcess.Text)
+                            myCmd.Parameters.AddWithValue("@Width", txtWidthProcess.Text)
                             myCmd.Parameters.AddWithValue("@Price", txtPrice.Text)
                             myCmd.Parameters.AddWithValue("@Conditional", txtConditional.Text)
 
@@ -212,11 +225,7 @@ Partial Class Setting_Price_Base
                     dataLog = {"PriceBases", lblId.Text, Session("LoginId").ToString(), "Price Base Updated"}
                     settingClass.Logs(dataLog)
 
-                    Session("PriceBaseCategory") = ddlSortCategory.SelectedValue
-                    Session("PriceBasePriceGroup") = ddlSortPriceGroup.SelectedValue
-                    Session("PriceBaseSearch") = txtSearch.Text
-
-                    Response.Redirect("~/setting/price/base", False)
+                    Response.Redirect("~/setting/price/base/editable", False)
                 End If
             End If
         Catch ex As Exception
@@ -249,39 +258,7 @@ Partial Class Setting_Price_Base
                 thisConn.Close()
             End Using
 
-            Session("PriceBaseCategory") = ddlSortCategory.SelectedValue
-            Session("PriceBasePriceGroup") = ddlSortPriceGroup.SelectedValue
-            Session("PriceBaseSearch") = txtSearch.Text
-
-            Response.Redirect("~/setting/price/base", False)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
-    Protected Sub BindData(category As String, priceGroup As String, search As String)
-        Session("PriceBaseCategory") = String.Empty
-        Session("PriceBasePriceGroup") = String.Empty
-        Session("PriceBaseSearch") = String.Empty
-        Try
-            Dim params As New List(Of SqlParameter) From {
-                New SqlParameter("@Category", If(String.IsNullOrEmpty(category), CType(DBNull.Value, Object), category)),
-                New SqlParameter("@PriceGroupId", If(String.IsNullOrEmpty(priceGroup), CType(DBNull.Value, Object), priceGroup)),
-                New SqlParameter("@Search", If(String.IsNullOrEmpty(search), CType(DBNull.Value, Object), search))
-            }
-
-            Dim thisData As DataTable = settingClass.GetDataTableSP("sp_PriceBaseList", params)
-
-            gvList.DataSource = thisData
-            gvList.DataBind()
-            gvList.Columns(1).Visible = PageAction("Visible ID")
-            gvList.Columns(2).Visible = PageAction("Visible Category")
-
-            btnAdd.Visible = PageAction("Add")
-            btnImport.Visible = PageAction("Import")
+            Response.Redirect("~/setting/price/base/editable", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -292,49 +269,57 @@ Partial Class Setting_Price_Base
 
     Protected Sub BindProductGroup()
         ddlProductGroup.Items.Clear()
+        ddlProductGroupProcess.Items.Clear()
         Try
-            ddlProductGroup.DataSource = settingClass.GetDataTable("SELECT * FROM PriceProductGroups ORDER BY Id ASC")
+            Dim thisString As String = "SELECT * FROM PriceProductGroups ORDER BY Id ASC"
+
+            ddlProductGroup.DataSource = settingClass.GetDataTable(thisString)
             ddlProductGroup.DataTextField = "Name"
             ddlProductGroup.DataValueField = "Id"
             ddlProductGroup.DataBind()
 
+            ddlProductGroupProcess.DataSource = settingClass.GetDataTable(thisString)
+            ddlProductGroupProcess.DataTextField = "Name"
+            ddlProductGroupProcess.DataValueField = "Id"
+            ddlProductGroupProcess.DataBind()
+
             If ddlProductGroup.Items.Count > 0 Then
                 ddlProductGroup.Items.Insert(0, New ListItem("", ""))
             End If
+            If ddlProductGroupProcess.Items.Count > 0 Then
+                ddlProductGroupProcess.Items.Insert(0, New ListItem("", ""))
+            End If
         Catch ex As Exception
             ddlProductGroup.Items.Clear()
+            ddlProductGroupProcess.Items.Clear()
         End Try
     End Sub
 
     Protected Sub BindPriceGroup()
         ddlPriceGroup.Items.Clear()
+        ddlPriceGroupProcess.Items.Clear()
         Try
-            ddlPriceGroup.DataSource = settingClass.GetDataTable("SELECT * FROM PriceGroups ORDER BY Id ASC")
+            Dim thisString As String = "SELECT * FROM PriceGroups ORDER BY Id ASC"
+
+            ddlPriceGroup.DataSource = settingClass.GetDataTable(thisString)
             ddlPriceGroup.DataTextField = "Name"
             ddlPriceGroup.DataValueField = "Id"
             ddlPriceGroup.DataBind()
 
+            ddlPriceGroupProcess.DataSource = settingClass.GetDataTable(thisString)
+            ddlPriceGroupProcess.DataTextField = "Name"
+            ddlPriceGroupProcess.DataValueField = "Id"
+            ddlPriceGroupProcess.DataBind()
+
             If ddlPriceGroup.Items.Count > 0 Then
                 ddlPriceGroup.Items.Insert(0, New ListItem("", ""))
             End If
-        Catch ex As Exception
-            ddlPriceGroup.Items.Clear()
-        End Try
-    End Sub
-
-    Protected Sub BindPriceGroup_Sort()
-        ddlSortPriceGroup.Items.Clear()
-        Try
-            ddlSortPriceGroup.DataSource = settingClass.GetDataTable("SELECT * FROM PriceGroups ORDER BY Id ASC")
-            ddlSortPriceGroup.DataTextField = "Name"
-            ddlSortPriceGroup.DataValueField = "Id"
-            ddlSortPriceGroup.DataBind()
-
-            If ddlSortPriceGroup.Items.Count > 0 Then
-                ddlSortPriceGroup.Items.Insert(0, New ListItem("", ""))
+            If ddlPriceGroupProcess.Items.Count > 0 Then
+                ddlPriceGroupProcess.Items.Insert(0, New ListItem("", ""))
             End If
         Catch ex As Exception
-            ddlSortPriceGroup.Items.Clear()
+            ddlPriceGroup.Items.Clear()
+            ddlPriceGroupProcess.Items.Clear()
         End Try
     End Sub
 
@@ -345,14 +330,6 @@ Partial Class Setting_Price_Base
     Protected Sub MessageError_Process(visible As Boolean, message As String)
         divErrorProcess.Visible = visible : msgErrorProcess.InnerText = message
     End Sub
-
-    Protected Sub MessageError_Log(visible As Boolean, message As String)
-        divErrorLog.Visible = visible : msgErrorLog.InnerText = message
-    End Sub
-
-    Protected Function BindTextLog(logId As String) As String
-        Return settingClass.getTextLog(logId)
-    End Function
 
     Protected Function BindCost(cost As Decimal, priceGroupId As String) As String
         If cost > 0 Then
