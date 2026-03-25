@@ -3349,6 +3349,10 @@ Partial Class Order_Method
         If data.returnlength = "Standard" Then
             rlvalue = 70
             If blindName.Contains("Econo") Then rlvalue = 77
+
+            If data.mounting = "Opening Size Reveal Fit" OrElse data.mounting = "Make Size Reveal Fit" Then
+                rlvalue = 20
+            End If
         End If
 
         Dim groupName As String = String.Format("{0} - {1}", designName, blindName)
