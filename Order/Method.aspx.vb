@@ -8823,7 +8823,10 @@ Partial Class Order_Method
             Return "ROOM TO INSTALL IS REQUIRED AND MUST NOT CONTAIN: , & ` ' &= &+"
         End If
 
-        If String.IsNullOrEmpty(data.mounting) Then Return "MOUNTING IS REQUIRED !"
+        If blindName = "Complete Set" Then
+            If String.IsNullOrEmpty(data.mounting) Then Return "MOUNTING IS REQUIRED !"
+        End If
+
         If String.IsNullOrEmpty(data.fabrictype) Then Return "FABRIC TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.fabriccolour) Then Return "FABRIC COLOUR IS REQUIRED !"
 
@@ -8845,31 +8848,32 @@ Partial Class Order_Method
             If drop > 3050 Then Return "MAXIMUM DROP IS 3050MM !"
         End If
 
-        If String.IsNullOrEmpty(data.stackposition) Then Return "STACK POSITION IS REQUIRED !"
-
-        If controlName = "Chain" Then
-            If String.IsNullOrEmpty(data.controlposition) Then Return "CONTROL POSITION IS REQUIRED !"
-        End If
-        If controlName = "Chain" AndAlso String.IsNullOrEmpty(data.chaincolour) Then
-            Return "CHAIN COLOUR IS REQUIRED !"
-        End If
-        If controlName = "Wand" AndAlso String.IsNullOrEmpty(data.wandcolour) Then
-            Return "WAND COLOUR IS REQUIRED !"
-        End If
-
-        If String.IsNullOrEmpty(data.controllength) Then Return "CONTROL LENGTH IS REQUIRED !"
-
-        If data.controllength = "Custom" Then
-            If String.IsNullOrEmpty(data.controllengthvalue) Then Return "CONTROL LENGTH VALUE IS REQUIRED !"
-            If Not Integer.TryParse(data.controllengthvalue, controllength) OrElse controllength <= 0 Then Return "PLEASE CHECK YOUR CONTROL LENGTH ORDER !"
-
-            Dim thisStandard As Integer = Math.Ceiling(drop * 2 / 3)
-            If thisStandard > 1000 Then thisStandard = 1000
-            If controllength < thisStandard Then
-                If thisStandard = 1000 Then Return "MINIMUM CONTROL LENGTH IS 1000MM !"
-                Return String.Format("CONTROL LENGTH MUST BE BETWEEN {0}MM - 1000MM !", thisStandard)
+        If blindName = "Complete Set" Then
+            If String.IsNullOrEmpty(data.stackposition) Then Return "STACK POSITION IS REQUIRED !"
+            If controlName = "Chain" Then
+                If String.IsNullOrEmpty(data.controlposition) Then Return "CONTROL POSITION IS REQUIRED !"
             End If
-            If controllength > 1000 Then Return "MAXIMUM CONTROL LENGTH IS 1000MM !"
+            If controlName = "Chain" AndAlso String.IsNullOrEmpty(data.chaincolour) Then
+                Return "CHAIN COLOUR IS REQUIRED !"
+            End If
+            If controlName = "Wand" AndAlso String.IsNullOrEmpty(data.wandcolour) Then
+                Return "WAND COLOUR IS REQUIRED !"
+            End If
+
+            If String.IsNullOrEmpty(data.controllength) Then Return "CONTROL LENGTH IS REQUIRED !"
+
+            If data.controllength = "Custom" Then
+                If String.IsNullOrEmpty(data.controllengthvalue) Then Return "CONTROL LENGTH VALUE IS REQUIRED !"
+                If Not Integer.TryParse(data.controllengthvalue, controllength) OrElse controllength <= 0 Then Return "PLEASE CHECK YOUR CONTROL LENGTH ORDER !"
+
+                Dim thisStandard As Integer = Math.Ceiling(drop * 2 / 3)
+                If thisStandard > 1000 Then thisStandard = 1000
+                If controllength < thisStandard Then
+                    If thisStandard = 1000 Then Return "MINIMUM CONTROL LENGTH IS 1000MM !"
+                    Return String.Format("CONTROL LENGTH MUST BE BETWEEN {0}MM - 1000MM !", thisStandard)
+                End If
+                If controllength > 1000 Then Return "MAXIMUM CONTROL LENGTH IS 1000MM !"
+            End If
         End If
 
         If Not String.IsNullOrEmpty(data.notes) Then
@@ -8883,23 +8887,34 @@ Partial Class Order_Method
             If Not Integer.TryParse(data.markup, markup) OrElse markup < 0 Then Return "PLEASE CHECK YOUR MARK UP ORDER !"
         End If
 
-        If data.controllength = "Standard" Then
-            controllength = Math.Ceiling(drop * 2 / 3)
-            If controllength > 1000 Then controllength = 1000
+        If blindName = "Complete Set" Then
+            If data.controllength = "Standard" Then
+                controllength = Math.Ceiling(drop * 2 / 3)
+            End If
+
+            If controlName = "Chain" Then
+                data.wandcolour = String.Empty
+            End If
+
+            If controlName = "Wand" Then
+                If controllength > 1000 Then controllength = 1000
+                wandlength = controllength
+
+                data.chaincolour = String.Empty
+                If data.stackposition = "Left" Then data.controlposition = "Right"
+                If data.stackposition = "Right" Then data.controlposition = "Left"
+                If data.stackposition = "Centre" Then data.controlposition = "Right and Left"
+                If data.stackposition = "Split" Then data.controlposition = "Middle"
+            End If
         End If
 
-        If controlName = "Chain" Then
-            data.wandcolour = String.Empty
-        End If
-
-        If controlName = "Wand" Then
-            data.chaincolour = String.Empty
-            wandlength = controllength
-
-            If data.stackposition = "Left" Then data.controlposition = "Right"
-            If data.stackposition = "Right" Then data.controlposition = "Left"
-            If data.stackposition = "Centre" Then data.controlposition = "Right and Left"
-            If data.stackposition = "Split" Then data.controlposition = "Middle"
+        If blindName = "Fabric Only" Then
+            data.mounting = String.Empty
+            data.controllength = String.Empty
+            controllength = 0 : wandlength = 0
+            data.chaincolour = String.Empty : data.wandcolour = String.Empty
+            data.stackposition = String.Empty
+            data.controlposition = String.Empty
         End If
 
         Dim linearMetre As Decimal = width / 1000
