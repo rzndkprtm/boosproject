@@ -21,6 +21,7 @@
     z-index: 3; 
 }
 
+/* Kolom pertama freeze */
 .grid-container td:first-child, 
 .grid-container th:first-child { 
     position: sticky; 
@@ -39,12 +40,18 @@
     padding: 6px 10px; 
 }
 
-/* Freeze baris terakhir */
+/* Baris terakhir freeze */
 .grid-container tr:last-child td { 
     position: sticky; 
     bottom: 0; 
-    background: #f5f5f5; /* Bisa disesuaikan agar beda warna */
+    background: #f5f5f5; 
     z-index: 3; 
+}
+
+/* Baris terakhir + kolom pertama freeze */
+.grid-container tr:last-child td:first-child {
+    left: 0;
+    z-index: 5; /* lebih tinggi agar tidak tertutup */
 }
     </style>
     <div class="page-heading">
