@@ -79,10 +79,9 @@ Partial Class Setting_Specification_BlindType
                     titleProcess.InnerText = "Edit Blind Type"
 
                     Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Blinds WHERE Id='" & lblId.Text & "'")
-
                     If myData Is Nothing Then Exit Sub
 
-                    BindDesign(True)
+                    BindDesign()
                     BindCompany(True)
 
                     ddlDesign.SelectedValue = myData("DesignId").ToString()
@@ -226,14 +225,10 @@ Partial Class Setting_Specification_BlindType
         End Try
     End Sub
 
-    Protected Sub BindDesign(Optional isEdit As Boolean = False)
+    Protected Sub BindDesign()
         ddlDesign.Items.Clear()
         Try
-            Dim thisString As String = "SELECT * FROM Designs WHERE Active=1 ORDER BY Name ASC"
-            If isEdit = True Then
-                thisString = "SELECT * FROM Designs ORDER BY Name ASC"
-            End If
-            ddlDesign.DataSource = settingClass.GetDataTable(thisString)
+            ddlDesign.DataSource = settingClass.GetDataTable("SELECT * FROM Designs ORDER BY Name ASC")
             ddlDesign.DataTextField = "Name"
             ddlDesign.DataValueField = "Id"
             ddlDesign.DataBind()
