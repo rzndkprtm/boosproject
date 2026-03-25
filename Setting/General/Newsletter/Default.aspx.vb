@@ -7,6 +7,7 @@ Partial Class Setting_General_Newsletter_Default
     Dim settingClass As New SettingClass
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim dataLog As Object()
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
@@ -116,7 +117,7 @@ Partial Class Setting_General_Newsletter_Default
             Dim activeDesc As String = "Newsletter Has Been Activated"
             If active = 0 Then activeDesc = "Newsletter Has Been Deactivated"
 
-            Dim dataLog As Object() = {"Newsletter", thisId, Session("LoginId").ToString(), activeDesc}
+            dataLog = {"Newsletter", thisId, Session("LoginId").ToString(), activeDesc}
             settingClass.Logs(dataLog)
 
             Session("SearchNewsletter") = txtSearch.Text
@@ -140,6 +141,7 @@ Partial Class Setting_General_Newsletter_Default
 
             gvList.DataSource = settingClass.GetDataTable(thisString)
             gvList.DataBind()
+            gvList.Columns(1).Visible = PageAction("Visible ID")
 
             btnAdd.Visible = PageAction("Add")
         Catch ex As Exception

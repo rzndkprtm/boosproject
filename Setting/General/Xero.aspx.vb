@@ -74,7 +74,6 @@ Partial Class Setting_General_Xero
                     titleProcess.InnerText = "Edit Xero"
 
                     Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Xeros WHERE Id='" & lblId.Text & "'")
-
                     If myData Is Nothing Then Exit Sub
 
                     txtName.Text = myData("Name").ToString()
@@ -137,7 +136,7 @@ Partial Class Setting_General_Xero
                         End Using
                     End Using
 
-                    dataLog = {"Xeros", thisId, Session("LoginId").ToString(), "Created"}
+                    dataLog = {"Xeros", thisId, Session("LoginId").ToString(), "Xero Created"}
                     settingClass.Logs(dataLog)
 
                     Session("SearchXero") = txtSearch.Text
@@ -159,7 +158,7 @@ Partial Class Setting_General_Xero
                         End Using
                     End Using
 
-                    dataLog = {"Xeros", lblId.Text, Session("LoginId").ToString(), "Updated"}
+                    dataLog = {"Xeros", lblId.Text, Session("LoginId").ToString(), "Xero Updated"}
                     settingClass.Logs(dataLog)
 
                     Session("SearchXero") = txtSearch.Text
