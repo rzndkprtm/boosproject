@@ -48,10 +48,7 @@ Partial Class Report_Default
         If e.Row.RowType = DataControlRowType.Header OrElse e.Row.RowType = DataControlRowType.DataRow Then
             If e.Row.Cells.Count > 0 Then
                 e.Row.Cells(0).Visible = False
-            End If
-
-            If e.Row.Cells.Count > 3 Then
-                e.Row.Cells(3).Visible = False
+                e.Row.Cells(1).Visible = False
             End If
         End If
     End Sub
