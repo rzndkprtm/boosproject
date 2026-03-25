@@ -103,7 +103,7 @@
                                     <div class="row mt-3">
                                         <div class="col-12">
                                             <div class="table-responsive">
-                                                <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover" AutoGenerateColumns="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center"></asp:GridView>
+                                                <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover" AutoGenerateColumns="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowDataBound="gvList_RowDataBound"></asp:GridView>
                                             </div>
                                         </div>
                                     </div>

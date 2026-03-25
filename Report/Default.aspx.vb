@@ -22,6 +22,22 @@ Partial Class Report_Default
         End If
     End Sub
 
+    Protected Sub gvList_RowDataBound(sender As Object, e As GridViewRowEventArgs)
+        If ddlStatus.SelectedValue = "In Production" Then
+
+            If e.Row.RowType = DataControlRowType.Header OrElse
+               e.Row.RowType = DataControlRowType.DataRow OrElse
+               e.Row.RowType = DataControlRowType.Footer Then
+
+                If e.Row.Cells.Count > 0 Then
+                    e.Row.Cells(e.Row.Cells.Count - 1).Visible = False
+                End If
+
+            End If
+
+        End If
+    End Sub
+
     Protected Sub gvBlindsPivot_RowDataBound(sender As Object, e As GridViewRowEventArgs)
         If e.Row.RowType = DataControlRowType.Header OrElse e.Row.RowType = DataControlRowType.DataRow Then
             If e.Row.Cells.Count > 0 Then
@@ -36,6 +52,12 @@ Partial Class Report_Default
 
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
+        gvList.DataSource = Nothing
+        gvList.DataBind()
+
+        gvBlindsPivot.DataSource = Nothing
+        gvBlindsPivot.DataBind()
+
         Try
             If txtStartDate.Text = "" Then
                 MessageError(True, "START DATE IS REQUIRED !")
@@ -53,18 +75,17 @@ Partial Class Report_Default
                     New SqlParameter("@EndDate", txtEndDate.Text),
                     New SqlParameter("@CompanyId", ddlCompany.SelectedValue)
                 }
-                gvList.DataSource = reportClass.GetDataTableSP("sp_TotalItemsPerDesign", paramsItem)
+                gvList.DataSource = reportClass.GetDataTableSP("sp_ReportPerDesign", paramsItem)
                 gvList.DataBind()
 
-                If ddlStatus.SelectedValue = "In Production" Then
-                    Dim paramsPivot As New List(Of SqlParameter) From {
+                Dim paramsPivot As New List(Of SqlParameter) From {
+                    New SqlParameter("@Status", ddlStatus.SelectedValue),
                     New SqlParameter("@StartDate", txtStartDate.Text),
                     New SqlParameter("@EndDate", txtEndDate.Text),
                     New SqlParameter("@CompanyId", ddlCompany.SelectedValue)
                 }
-                    gvBlindsPivot.DataSource = reportClass.GetDataTableSP("sp_ProductionSummaryBlindsPivot", paramsPivot)
-                    gvBlindsPivot.DataBind()
-                End If
+                gvBlindsPivot.DataSource = reportClass.GetDataTableSP("sp_ReportPerCustomer", paramsPivot)
+                gvBlindsPivot.DataBind()
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
