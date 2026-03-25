@@ -2,12 +2,50 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <style>
-        .grid-container { width: 100%; height: calc(100vh - 150px); overflow: auto; border: 1px solid #ddd; }
-        .grid-container table { width: 100%; border-collapse: collapse; }
-        .grid-container th { position: sticky; top: 0; background: #f5f5f5; z-index: 3; }
-        .grid-container td:first-child, .grid-container th:first-child { position: sticky; left: 0; background: #fff; z-index: 2; }
-        .grid-container th:first-child { z-index: 4; }
-        .grid-container td, .grid-container th { white-space: nowrap; padding: 6px 10px; }
+        .grid-container { 
+    width: 100%; 
+    height: calc(100vh - 150px); 
+    overflow: auto; 
+    border: 1px solid #ddd; 
+}
+
+.grid-container table { 
+    width: 100%; 
+    border-collapse: collapse; 
+}
+
+.grid-container th { 
+    position: sticky; 
+    top: 0; 
+    background: #f5f5f5; 
+    z-index: 3; 
+}
+
+.grid-container td:first-child, 
+.grid-container th:first-child { 
+    position: sticky; 
+    left: 0; 
+    background: #fff; 
+    z-index: 2; 
+}
+
+.grid-container th:first-child { 
+    z-index: 4; 
+}
+
+.grid-container td, 
+.grid-container th { 
+    white-space: nowrap; 
+    padding: 6px 10px; 
+}
+
+/* Freeze baris terakhir */
+.grid-container tr:last-child td { 
+    position: sticky; 
+    bottom: 0; 
+    background: #f5f5f5; /* Bisa disesuaikan agar beda warna */
+    z-index: 3; 
+}
     </style>
     <div class="page-heading">
         <div class="page-title">
