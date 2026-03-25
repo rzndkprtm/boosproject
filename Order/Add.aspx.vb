@@ -466,7 +466,7 @@ Partial Class Order_Add
                             End If
                         End If
 
-                        If blindLower.Contains("basswood") OrElse blindLower.Contains("ultraslat") Then
+                        If blindLower.Contains("basswood") OrElse blindLower.Contains("econo") OrElse blindLower.Contains("ultraslat") Then
                             designId = orderClass.GetItemData("SELECT Id FROM Designs WHERE Name='Venetian Blind'")
 
                             Dim blindName As String = blindType
@@ -632,6 +632,8 @@ Partial Class Order_Add
                                 End If
                             End If
 
+                            If String.IsNullOrEmpty(returnPosition) Then returnPosition = "None"
+
                             Dim validRP As String() = {"None", "Left", "Right", "Both Sides"}
                             If Not validRP.Contains(returnPosition) Then
                                 MessageError(True, "PLEASE CHECK YOUR VALANCE RETURN POSITION !")
@@ -656,12 +658,18 @@ Partial Class Order_Add
                                 End If
 
                                 If mounting = "Reveal Fit" OrElse mounting = "Opening Size Reveal Fit" OrElse mounting = "Make Size Reveal Fit" Then
-                                    returnLength = "Custom"
+                                    returnLength = "Standard"
+                                    returnLengthValue = 20
                                     returnLengthText = returnLengthText.Replace("mm", "")
 
-                                    If Not Integer.TryParse(returnLengthText, returnLengthValue) OrElse returnLengthValue <= 0 Then
-                                        MessageError(True, "VALANCE RETURN LENGTH IS REQUIRED !")
-                                        Exit For
+                                    If Not String.IsNullOrEmpty(returnLengthText) AndAlso Not returnLengthText.ToLower().Contains("standard") AndAlso Not returnLengthText.ToLower().Contains("std") Then
+                                        returnLength = "Custom"
+                                        returnLengthText = returnLengthText.Replace("mm", "")
+
+                                        If Not Integer.TryParse(returnLengthText, returnLengthValue) OrElse returnLengthValue < 0 Then
+                                            MessageError(True, "PLEASE CHECK YOUR VALANCE RETURN LENGTH !")
+                                            Exit For
+                                        End If
                                     End If
                                 End If
                             End If
@@ -2726,7 +2734,7 @@ Partial Class Order_Add
                 divCreatedBy.Visible = True
             End If
 
-            If Session("CustomerId") = "127" OrElse customerId = "127" Then divMethod.Visible = True
+            If Session("CustomerId") = "127" OrElse customerId = "127" OrElse Session("CustomerId") = "985" OrElse customerId = "985" Then divMethod.Visible = True
 
             If method = "Manual" Then divManual.Visible = True
             If method = "Upload" Then divUpload.Visible = True
