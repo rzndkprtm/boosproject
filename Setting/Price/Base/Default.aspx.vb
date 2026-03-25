@@ -18,7 +18,13 @@ Partial Class Setting_Price_Base_Default
 
             BindProductGroup()
             BindPriceGroup()
+
+            btnEditable.Visible = PageAction("Editable")
         End If
+    End Sub
+
+    Protected Sub btnEditable_Click(sender As Object, e As EventArgs)
+        Response.Redirect("~/setting/price/base/editable", False)
     End Sub
 
     Protected Sub btnSort_Click(sender As Object, e As EventArgs)

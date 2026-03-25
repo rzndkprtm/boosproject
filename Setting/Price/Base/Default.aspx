@@ -2,47 +2,12 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <style>
-        .grid-container {
-            width: 100%;
-            height: calc(100vh - 150px); /* sesuaikan dengan header page kamu */
-            overflow: auto;
-            border: 1px solid #ddd;
-        }
-
-        /* table full */
-        .grid-container table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        /* header freeze */
-        .grid-container th {
-            position: sticky;
-            top: 0;
-            background: #f5f5f5;
-            z-index: 3;
-        }
-
-        /* kolom pertama freeze */
-        .grid-container td:first-child,
-        .grid-container th:first-child {
-            position: sticky;
-            left: 0;
-            background: #fff;
-            z-index: 2;
-        }
-
-        /* pojok kiri atas */
-        .grid-container th:first-child {
-            z-index: 4;
-        }
-
-        /* biar tidak gepeng */
-        .grid-container td,
-        .grid-container th {
-            white-space: nowrap;
-            padding: 6px 10px;
-        }
+        .grid-container { width: 100%; height: calc(100vh - 150px); overflow: auto; border: 1px solid #ddd; }
+        .grid-container table { width: 100%; border-collapse: collapse; }
+        .grid-container th { position: sticky; top: 0; background: #f5f5f5; z-index: 3; }
+        .grid-container td:first-child, .grid-container th:first-child { position: sticky; left: 0; background: #fff; z-index: 2; }
+        .grid-container th:first-child { z-index: 4; }
+        .grid-container td, .grid-container th { white-space: nowrap; padding: 6px 10px; }
     </style>
     <div class="page-heading">
         <div class="page-title">
@@ -76,17 +41,17 @@
 
         <section class="row">
             <div class="col-12 d-flex justify-content-end flex-wrap gap-2">
-                <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Editable Page" />
+                <asp:Button runat="server" ID="btnEditable" CssClass="btn btn-primary" Text="Editable Page" OnClick="btnEditable_Click" />
             </div>
         </section>
 
         <section class="row mt-3">
-            <div class="col-9">
+            <div class="col-12 col-sm-12 col-lg-9">
                 <div class="card">
                     <div class="card-content">
                         <div class="card-body">
-                            <div class="row mb-3">
-                                <div class="col-12 col-sm-12 col-lg-3">
+                            <div class="row mb-2">
+                                <div class="col-12 col-sm-12 col-lg-3 mb-2">
                                     <div class="input-group">
                                         <label class="input-group-text">Category</label>
                                         <asp:DropDownList runat="server" ID="ddlCategory" CssClass="form-select">
@@ -104,8 +69,8 @@
                                 </div>
                             </div>
 
-                            <div class="row mb-3">
-                                <div class="col-12 col-sm-12 col-lg-4">
+                            <div class="row mb-2">
+                                <div class="col-12 col-sm-12 col-lg-4 mb-2">
                                     <div class="input-group">
                                         <label class="input-group-text">Method</label>
                                         <asp:DropDownList runat="server" ID="ddlMethod" CssClass="form-select">
@@ -123,7 +88,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row mb-3">
+                            <div class="row">
                                 <div class="col-12 col-sm-12 col-lg-4">
                                     <div class="input-group">
                                         <label class="input-group-text">Discount</label>

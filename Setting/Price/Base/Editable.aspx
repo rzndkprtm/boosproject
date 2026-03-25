@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Base.aspx.vb" Inherits="Setting_Price_Base" MaintainScrollPositionOnPostback="true" MasterPageFile="~/Site.Master" Debug="true" Title="Price Base" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Editable.aspx.vb" Inherits="Setting_Price_Base_Editable" MaintainScrollPositionOnPostback="true" MasterPageFile="~/Site.Master" Debug="true" Title="Price Base Editable" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-heading">
@@ -14,6 +14,7 @@
                             <li class="breadcrumb-item"><a runat="server" href="~/">Home</a></li>
                             <li class="breadcrumb-item"><a runat="server" href="~/setting">Setting</a></li>
                             <li class="breadcrumb-item"><a runat="server" href="~/setting/price">Price</a></li>
+                            <li class="breadcrumb-item"><a runat="server" href="~/setting/price/base">Price Base</a></li>
                             <li class="breadcrumb-item active" aria-current="page"><%: Page.Title %></li>
                         </ol>
                     </nav>
@@ -34,46 +35,70 @@
         <section class="row">
             <div class="col-12 d-flex justify-content-end flex-wrap gap-2">
                 <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Add New" OnClick="btnAdd_Click" />
-                <asp:Button runat="server" ID="btnImport" CssClass="btn btn-secondary" Text="Import" />
+                <asp:Button runat="server" ID="btnImport" CssClass="btn btn-secondary" Text="Import" OnClick="btnImport_Click" />
             </div>
         </section>
 
         <section class="row mt-3">
-            <div class="col-8">
+            <div class="col-12 col-sm-12 col-lg-9">
                 <div class="card">
                     <div class="card-content">
                         <div class="card-body">
-                            <div class="row mb-3">
-                                <div class="col-12 col-sm-12 col-lg-6">
+                            <div class="row mb-2">
+                                <div class="col-12 col-sm-12 col-lg-3 mb-2">
                                     <div class="input-group">
-                                        <asp:Label runat="server" CssClass="input-group-text" Text="Category"></asp:Label>
-                                        <asp:DropDownList runat="server" ID="ddlSortCategory" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlSortCategory_SelectedIndexChanged">
+                                        <label class="input-group-text">Category</label>
+                                        <asp:DropDownList runat="server" ID="ddlCategory" CssClass="form-select">
                                             <asp:ListItem Value="" Text=""></asp:ListItem>
                                             <asp:ListItem Value="Sell" Text="Sell Price"></asp:ListItem>
                                             <asp:ListItem Value="Buy" Text="Buy Price"></asp:ListItem>
                                         </asp:DropDownList>
                                     </div>
                                 </div>
-                                <div class="col-12 col-sm-12 col-lg-6">
+                                <div class="col-12 col-sm-12 col-lg-9">
                                     <div class="input-group">
-                                        <asp:Label runat="server" CssClass="input-group-text" Text="Method"></asp:Label>
+                                        <label class="input-group-text">Product Group</label>
+                                        <asp:DropDownList runat="server" ID="ddlProductGroup" CssClass="form-select"></asp:DropDownList>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-2">
+                                <div class="col-12 col-sm-12 col-lg-4 mb-2">
+                                    <div class="input-group">
+                                        <label class="input-group-text">Method</label>
                                         <asp:DropDownList runat="server" ID="ddlMethod" CssClass="form-select">
                                             <asp:ListItem Value="" Text=""></asp:ListItem>
-                                            <asp:ListItem Value="Sell" Text="Sell Price"></asp:ListItem>
-                                            <asp:ListItem Value="Buy" Text="Buy Price"></asp:ListItem>
+                                            <asp:ListItem Value="Cost" Text="Cost"></asp:ListItem>
+                                            <asp:ListItem Value="Square Metre" Text="Square Metre"></asp:ListItem>
+                                            <asp:ListItem Value="Linear Metre" Text="Linear Metre"></asp:ListItem>
                                         </asp:DropDownList>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-12 col-lg-8">
+                                    <div class="input-group">
+                                        <label class="input-group-text">Price Group</label>
+                                        <asp:DropDownList runat="server" ID="ddlPriceGroup" CssClass="form-select"></asp:DropDownList>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="row">
-                                <div class="col-12 col-sm-12 col-lg-6">
+                                <div class="col-12 col-sm-12 col-lg-4">
                                     <div class="input-group">
-                                        <asp:Label runat="server" CssClass="input-group-text" Text="Price Group"></asp:Label>
-                                        <asp:DropDownList runat="server" ID="ddlSortPriceGroup" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlSortPriceGroup_SelectedIndexChanged"></asp:DropDownList>
+                                        <label class="input-group-text">Height</label>
+                                        <asp:TextBox runat="server" ID="txtHeight" TextMode="Number" CssClass="form-control" placeholder="Height ...." autocomplete="off"></asp:TextBox>
                                     </div>
                                 </div>
-                                <div class="col-12 col-sm-12 col-lg-6"></div>
+                                <div class="col-12 col-sm-12 col-lg-4">
+                                    <div class="input-group">
+                                        <label class="input-group-text">Width</label>
+                                        <asp:TextBox runat="server" ID="txtWidth" TextMode="Number" CssClass="form-control" placeholder="Width ...." autocomplete="off"></asp:TextBox>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-12 col-lg-4">
+                                    <asp:Button runat="server" ID="btnSort" CssClass="btn btn-primary" Text="Sort" OnClick="btnSort_Click" />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -85,40 +110,11 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-content">
-                        <div class="card-header">
-                            <div class="row">
-                                <div class="col-12 col-sm-12 col-lg-3 mb-2">
-                                    
-                                </div>
-                                <div class="col-12 col-sm-12 col-lg-4 mb-2">
-                                    
-                                </div>
-
-                                <div class="col-12 col-sm-12 col-lg-5 d-flex justify-content-end">
-                                    <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
-                                        <div class="input-group">
-                                            <span class="input-group-text">Search</span>
-                                            <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" placeholoder="Order ID, Customer Name, Order Number, Order Name ....." autocomplete="off"></asp:TextBox>
-                                            <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />
-                                        </div>
-                                    </asp:Panel>
-                                </div>
-                            </div>
-                        </div>
-
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-12">
                                     <div class="table-responsive">
-                                        <asp:GridView ID="gvListB" runat="server" AutoGenerateColumns="true" CssClass="table table-bordered table-hover mb-0"></asp:GridView>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="table-responsive">
-                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom" OnPageIndexChanging="gvList_PageIndexChanging" OnRowCommand="gvList_RowCommand">
+                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom" OnRowCommand="gvList_RowCommand">
                                             <RowStyle />
                                             <Columns>
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center">
@@ -145,11 +141,12 @@
                                                             <li runat="server" visible='<%# PageAction("Detail") %>'>
                                                                 <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                             </li>
+
                                                             <li runat="server" visible='<%# PageAction("Delete") %>'>
                                                                 <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                             </li>
                                                             <li>
-                                                                <asp:LinkButton runat="server" ID="linkLog" CssClass="dropdown-item" Text="Log" CommandName="Log" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                                <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('PriceBases', '<%# Eval("Id") %>')">Log</a>
                                                             </li>
                                                         </ul>
                                                     </ItemTemplate>
@@ -179,8 +176,8 @@
                 <div class="modal-body">
                     <div class="row mb-2">
                         <div class="col-6 form-group">
-                            <label class="form-label">Type</label>
-                            <asp:DropDownList runat="server" ID="ddlCategory" CssClass="form-select">
+                            <label class="form-label">Category</label>
+                            <asp:DropDownList runat="server" ID="ddlCategoryProcess" CssClass="form-select">
                                 <asp:ListItem Value="" Text=""></asp:ListItem>
                                 <asp:ListItem Value="Sell" Text="Sell Price"></asp:ListItem>
                                 <asp:ListItem Value="Buy" Text="Buy Price"></asp:ListItem>
@@ -188,7 +185,7 @@
                         </div>
                         <div class="col-6 form-group">
                             <label class="form-label">Method</label>
-                            <asp:DropDownList runat="server" ID="ddlMethods" CssClass="form-select">
+                            <asp:DropDownList runat="server" ID="ddlMethodProcess" CssClass="form-select">
                                 <asp:ListItem Value="" Text=""></asp:ListItem>
                                 <asp:ListItem Value="Cost" Text="Cost"></asp:ListItem>
                                 <asp:ListItem Value="Square Metre" Text="Square Metre"></asp:ListItem>
@@ -199,28 +196,27 @@
                     <div class="row mb-2">
                         <div class="col-12 form-group">
                             <label class="form-label">Product Group</label>
-                            <asp:DropDownList runat="server" ID="ddlProductGroup" CssClass="form-select"></asp:DropDownList>
+                            <asp:DropDownList runat="server" ID="ddlProductGroupProcess" CssClass="form-select"></asp:DropDownList>
                         </div>
                     </div>
                     <div class="row mb-2">
                         <div class="col-12 form-group">
                             <label class="form-label">Price Group</label>
-                            <asp:DropDownList runat="server" ID="ddlPriceGroup" CssClass="form-select"></asp:DropDownList>
-                            
+                            <asp:DropDownList runat="server" ID="ddlPriceGroupProcess" CssClass="form-select"></asp:DropDownList>
                         </div>
                     </div>
                     <div class="row mb-2">
                         <div class="col-6 form-group">
                             <label class="form-label">Height</label>
                             <div class="input-group">
-                                <asp:TextBox runat="server" ID="txtHeight" TextMode="Number" CssClass="form-control" placeholder="Height ..." autocomplete="off" Text="0"></asp:TextBox>
+                                <asp:TextBox runat="server" ID="txtHeightProcess" TextMode="Number" CssClass="form-control" placeholder="Height ..." autocomplete="off" Text="0"></asp:TextBox>
                                 <span class="input-group-text">mm</span>
                             </div>
                         </div>
                         <div class="col-6 form-group">
                             <label class="form-label">Width</label>
                             <div class="input-group">
-                                <asp:TextBox runat="server" ID="txtWidth" TextMode="Number" CssClass="form-control" placeholder="Width ..." autocomplete="off" Text="0"></asp:TextBox>
+                                <asp:TextBox runat="server" ID="txtWidthProcess" TextMode="Number" CssClass="form-control" placeholder="Width ..." autocomplete="off" Text="0"></asp:TextBox>
                                 <span class="input-group-text">mm</span>
                             </div>
                         </div>
@@ -280,27 +276,13 @@
                     <h5 class="modal-title">Changelog</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
+    
                 <div class="modal-body">
-                    <div class="row" runat="server" id="divErrorLog">
-                        <div class="col-12">
-                            <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorLog"></span>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="alert alert-danger d-none" id="logError"></div>
                     <div class="table-responsive">
-                        <asp:GridView runat="server" ID="gvListLogs" CssClass="table table-vcenter card-table" AutoGenerateColumns="false" EmptyDataText="DATA LOG NOT FOUND" EmptyDataRowStyle-HorizontalAlign="Center" ShowHeader="false" GridLines="None" BorderStyle="None">
-                            <RowStyle />
-                            <Columns>
-                                <asp:TemplateField>
-                                    <ItemTemplate>
-                                        <%# BindTextLog(Eval("Id").ToString()) %>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                            </Columns>
-                            <AlternatingRowStyle BackColor="White" />
-                        </asp:GridView>
+                        <table class="table table-vcenter card-table" id="tblLogs">
+                            <tbody></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -344,8 +326,38 @@
             document.getElementById("<%=txtIdDelete.ClientID %>").value = id;
         }
 
-        function showLog() {
+        function showLog(type, dataId) {
+            $("#logError").addClass("d-none").html("");
+            $("#tblLogs tbody").html("");
             $("#modalLog").modal("show");
+
+            $.ajax({
+                type: "POST",
+                url: "/Setting/Method.aspx/GetLogs",
+                data: JSON.stringify({ type: type, dataId: dataId }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (res) {
+                    const logs = res.d;
+
+                    if (!logs || logs.length === 0) {
+                        $("#tblLogs tbody").html(
+                            `<tr><td class="text-center">DATA LOG NOT FOUND</td></tr>`
+                        );
+                        return;
+                    }
+
+                    let html = "";
+                    logs.forEach(r => {
+                        html += `<tr><td>${r.TextLog}</td></tr>`;
+                    });
+
+                    $("#tblLogs tbody").html(html);
+                },
+                error: function (err) {
+                    $("#logError").removeClass("d-none").html("FAILED TO LOAD LOG DATA");
+                }
+            });
         }
 
         ["modalProcess", "modalDelete", "modalLog"].forEach(function (id) {
@@ -354,6 +366,7 @@
                 document.body.focus();
             });
         });
+
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>
