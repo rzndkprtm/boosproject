@@ -162,7 +162,7 @@ Partial Class Setting_General_Company_Detail
                         End Using
                     End Using
 
-                    dataLog = {"CompanyDetails", thisId, Session("LoginId").ToString(), "Created"}
+                    dataLog = {"CompanyDetails", thisId, Session("LoginId").ToString(), "Company Detail Created"}
                     settingClass.Logs(dataLog)
 
                     url = String.Format("~/setting/general/company/detail?boosid={0}", lblId.Text)
@@ -182,7 +182,7 @@ Partial Class Setting_General_Company_Detail
                         End Using
                     End Using
 
-                    dataLog = {"CompanyDetails", lblDetailId.Text, Session("LoginId").ToString(), "Updated"}
+                    dataLog = {"CompanyDetails", lblDetailId.Text, Session("LoginId").ToString(), "Company Detail Updated"}
                     settingClass.Logs(dataLog)
 
                     url = String.Format("~/setting/general/company/detail?boosid={0}", lblId.Text)
@@ -211,6 +211,7 @@ Partial Class Setting_General_Company_Detail
             lblAlias.Text = thisData("Alias").ToString()
             txtAlias.Text = thisData("Alias").ToString()
             lblDescription.Text = thisData("Description").ToString()
+            If lblDescription.Text = "" Then lblDescription.Text = "&nbsp;"
             txtDescription.Text = thisData("Description").ToString()
 
             Dim active As Integer = Convert.ToInt32(thisData("Active"))

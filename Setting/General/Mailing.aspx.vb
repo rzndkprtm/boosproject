@@ -7,6 +7,7 @@ Partial Class Setting_General_Mailing
     Dim settingClass As New SettingClass
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim dataLog As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
@@ -176,7 +177,7 @@ Partial Class Setting_General_Mailing
                         End Using
                     End Using
 
-                    Dim dataLog As Object() = {"Mailings", thisId, Session("LoginId").ToString(), "Mailing Created"}
+                    dataLog = {"Mailings", thisId, Session("LoginId").ToString(), "Mailing Created"}
                     settingClass.Logs(dataLog)
 
                     Session("SearchMailing") = txtSearch.Text
@@ -210,7 +211,7 @@ Partial Class Setting_General_Mailing
                         End Using
                     End Using
 
-                    Dim dataLog As Object() = {"Mailings", lblId.Text, Session("LoginId").ToString(), "Mailing Updated"}
+                    dataLog = {"Mailings", lblId.Text, Session("LoginId").ToString(), "Mailing Updated"}
                     settingClass.Logs(dataLog)
 
                     Session("SearchMailing") = txtSearch.Text
@@ -242,7 +243,7 @@ Partial Class Setting_General_Mailing
                 End Using
             End Using
 
-            Dim dataLog As Object() = {"Mailings", newId, Session("LoginId").ToString(), "Mailing Created | Duplicated of " & lblId.Text}
+            dataLog = {"Mailings", newId, Session("LoginId").ToString(), "Mailing Created | Duplicated of " & lblId.Text}
             settingClass.Logs(dataLog)
 
             Session("SearchMailing") = txtSearch.Text
