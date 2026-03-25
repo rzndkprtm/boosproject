@@ -2,56 +2,12 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <style>
-        .grid-container {
-    width: 100%;
-    height: calc(100vh - 150px);
-    overflow: auto;
-    border: 1px solid #ddd;
-}
-
-.grid-container table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-/* HEADER freeze */
-.grid-container th {
-    position: sticky;
-    top: 0;
-    background: #f5f5f5;
-    z-index: 3;
-}
-
-/* Kolom 1 */
-.grid-container td:nth-child(1),
-.grid-container th:nth-child(1) {
-    position: sticky;
-    left: 0;
-    background: #fff;
-    z-index: 2;
-}
-
-/* Kolom 2 */
-.grid-container td:nth-child(2),
-.grid-container th:nth-child(2) {
-    position: sticky;
-    left: 120px; /* SESUAIKAN dengan lebar kolom 1 */
-    background: #fff;
-    z-index: 2;
-}
-
-/* Header kolom 1 & 2 lebih tinggi z-index */
-.grid-container th:nth-child(1),
-.grid-container th:nth-child(2) {
-    z-index: 4;
-}
-
-/* Styling umum */
-.grid-container td,
-.grid-container th {
-    white-space: nowrap;
-    padding: 6px 10px;
-}
+        .grid-container { width: 100%; height: calc(100vh - 150px); overflow: auto; border: 1px solid #ddd; }
+        .grid-container table { width: 100%; border-collapse: collapse; }
+        .grid-container th { position: sticky; top: 0; background: #f5f5f5; z-index: 3; }
+        .grid-container td:first-child, .grid-container th:first-child { position: sticky; left: 0; background: #fff; z-index: 2; }
+        .grid-container th:first-child { z-index: 4; }
+        .grid-container td, .grid-container th { white-space: nowrap; padding: 6px 10px; }
     </style>
     <div class="page-heading">
         <div class="page-title">
