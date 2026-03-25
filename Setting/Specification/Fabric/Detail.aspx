@@ -130,6 +130,7 @@
                                                 </asp:TemplateField>
                                                 <asp:BoundField DataField="Id" HeaderText="ID" />
                                                 <asp:BoundField DataField="BoeId" HeaderText="BOE ID" />
+                                                <asp:BoundField DataField="Factory" HeaderText="Factory" />
                                                 <asp:BoundField DataField="Name" HeaderText="Name" />
                                                 <asp:BoundField DataField="Colour" HeaderText="Colour" />
                                                 <asp:BoundField DataField="Width" HeaderText="Width" />
