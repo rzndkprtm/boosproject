@@ -7,6 +7,7 @@ Partial Class Setting_Price_ProductGroup
     Dim settingClass As New SettingClass
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim dataLog As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
@@ -81,7 +82,7 @@ Partial Class Setting_Price_ProductGroup
                     If myData Is Nothing Then Exit Sub
 
                     BindDesignType()
-                    BindCompanyDetail(True)
+                    BindCompanyDetail()
 
                     ddlDesign.SelectedValue = myData("DesignId").ToString()
                     txtName.Text = myData("Name").ToString()
@@ -156,7 +157,7 @@ Partial Class Setting_Price_ProductGroup
                         End Using
                     End Using
 
-                    Dim dataLog As Object() = {"ProductGroups", thisId, Session("LoginId").ToString(), "Price Product Group Created"}
+                    dataLog = {"ProductGroups", thisId, Session("LoginId").ToString(), "Price Product Group Created"}
                     settingClass.Logs(dataLog)
 
                     Session("SearchProductGroup") = txtSearch.Text
@@ -178,7 +179,7 @@ Partial Class Setting_Price_ProductGroup
                         End Using
                     End Using
 
-                    Dim dataLog As Object() = {"ProductGroups", lblId.Text, Session("LoginId").ToString(), "Price Product Group Updated"}
+                    dataLog = {"ProductGroups", lblId.Text, Session("LoginId").ToString(), "Price Product Group Updated"}
                     settingClass.Logs(dataLog)
 
                     Session("SearchProductGroup") = txtSearch.Text
@@ -217,14 +218,10 @@ Partial Class Setting_Price_ProductGroup
         End Try
     End Sub
 
-    Protected Sub BindDesignType(Optional isEdit As Boolean = False)
+    Protected Sub BindDesignType()
         ddlDesign.Items.Clear()
         Try
-            Dim thisString As String = "SELECT * FROM Designs WHERE Active=1 ORDER BY Name ASC"
-            If isEdit = True Then
-                thisString = "SELECT * FROM Designs ORDER BY Name ASC"
-            End If
-            ddlDesign.DataSource = settingClass.GetDataTable(thisString)
+            ddlDesign.DataSource = settingClass.GetDataTable("SELECT * FROM Designs ORDER BY Name ASC")
             ddlDesign.DataTextField = "Name"
             ddlDesign.DataValueField = "Id"
             ddlDesign.DataBind()
@@ -240,15 +237,10 @@ Partial Class Setting_Price_ProductGroup
         End Try
     End Sub
 
-    Protected Sub BindCompanyDetail(Optional isEdit As Boolean = False)
+    Protected Sub BindCompanyDetail()
         lbCompanyDetail.Items.Clear()
         Try
-            Dim thisString As String = "SELECT * FROM CompanyDetails WHERE Active=1 ORDER BY Name ASC"
-            If isEdit = True Then
-                thisString = "SELECT * FROM CompanyDetails ORDER BY Name ASC"
-            End If
-
-            lbCompanyDetail.DataSource = settingClass.GetDataTable(thisString)
+            lbCompanyDetail.DataSource = settingClass.GetDataTable("SELECT * FROM CompanyDetails ORDER BY Name ASC")
             lbCompanyDetail.DataTextField = "Name"
             lbCompanyDetail.DataValueField = "Id"
             lbCompanyDetail.DataBind()
