@@ -253,8 +253,9 @@ Public Partial Class SiteMaster
 
             If Session("RoleName") = "Factory Office" Then
                 liOldOrder.Visible = True
-                liReport.Visible = True
                 liGuide.Visible = True
+                liReport.Visible = True
+                liSales.Visible = True
 
                 liSetting.Visible = True
 
@@ -297,6 +298,7 @@ Public Partial Class SiteMaster
 
             If Session("RoleName") = "Account" Then
                 liOldOrder.Visible = True
+                liSales.Visible = True
                 liGuide.Visible = True
 
                 liSetting.Visible = True
