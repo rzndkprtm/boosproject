@@ -41,7 +41,7 @@
                                     <div class="input-group">
                                         <span class="input-group-text">Search</span>
                                         <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" TextMode="Date"></asp:TextBox>
-                                        <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" />
+                                        <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />
                                     </div>
                                 </asp:Panel>
                             </div>
@@ -52,7 +52,7 @@
                             <div class="row">
                                 <div class="col-12">
                                     <div class="table-responsive">
-                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="31" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom" OnPageIndexChanging="gvList_PageIndexChanging" OnRowCommand="gvList_RowCommand">
+                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="31" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom" OnPageIndexChanging="gvList_PageIndexChanging">
                                             <RowStyle />
                                             <Columns>
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center">
@@ -86,11 +86,6 @@
                                                 <asp:TemplateField HeaderText="Total Unpaid Amount">
                                                     <ItemTemplate>
                                                         <%# BindPrice(Eval("TotalUnpaidAmount")) %>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:TemplateField ItemStyle-Width="150px" ItemStyle-HorizontalAlign="Center">
-                                                    <ItemTemplate>
-                                                        <asp:LinkButton runat="server" ID="linkRefresh" CssClass="btn btn-primary btn-sm" Text="Refresh" CommandName="Refresh" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                             </Columns>

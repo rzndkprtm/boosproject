@@ -39,21 +39,6 @@ Partial Class Sales_Default
         End Try
     End Sub
 
-    Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
-        If Not String.IsNullOrEmpty(e.CommandArgument) Then
-            Dim dataId As String = e.CommandArgument.ToString()
-            If e.CommandName = "Refresh" Then
-                MessageError(False, String.Empty)
-                Try
-                    salesClass.RefreshData(dataId)
-                    Response.Redirect("~/sales/", False)
-                Catch ex As Exception
-                    MessageError(True, ex.ToString())
-                End Try
-            End If
-        End If
-    End Sub
-
     Protected Sub BindData(searchDate As String)
         Try
             Dim dateValue As Date
@@ -67,7 +52,6 @@ Partial Class Sales_Default
             gvList.DataSource = salesClass.GetDataTable(thisQuery)
             gvList.DataBind()
             gvList.Columns(1).Visible = PageAction("Visible ID")
-            gvList.Columns(8).Visible = PageAction("Visible Action")
         Catch ex As Exception
             MessageError(True, ex.ToString())
         End Try

@@ -111,9 +111,6 @@ Partial Class Order_EditCosting
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                If Session("RoleName") = "Customer" Then
-                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
-                End If
             End If
         End Try
     End Sub
@@ -158,9 +155,6 @@ Partial Class Order_EditCosting
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                If Session("RoleName") = "Customer" Then
-                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
-                End If
             End If
         End Try
     End Sub
@@ -182,9 +176,6 @@ Partial Class Order_EditCosting
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                If Session("RoleName") = "Customer" Then
-                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
-                End If
             End If
         End Try
     End Sub
@@ -230,9 +221,6 @@ Partial Class Order_EditCosting
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                If Session("RoleName") = "Customer" Then
-                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
-                End If
             End If
         End Try
     End Sub
