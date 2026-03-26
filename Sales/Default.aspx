@@ -6,7 +6,7 @@
             <div class="row">
                 <div class="col-12 col-md-6 order-md-1 order-last">
                     <h3><%: Page.Title %></h3>
-                    <p class="text-subtitle text-muted"></p>
+                    <p class="text-subtitle text-muted">Production Values Based on Orders Entered into Production and Their Corresponding Dates</p>
                 </div>
                 <div class="col-12 col-md-6 order-md-2 order-first">
                     <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
