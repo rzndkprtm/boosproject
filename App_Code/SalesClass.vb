@@ -182,12 +182,8 @@ Public Class SalesClass
         Return result
     End Function
 
-    Public Sub RefreshData(Optional salesId As String = "")
+    Public Sub RefreshData()
         Try
-            Dim thisQuery As String = "SELECT * FROM SALES ORDER BY SummaryDate DESC"
-            If Not String.IsNullOrEmpty(salesId) Then
-                thisQuery = "SELECT * FROM SALES WHERE Id='" & salesId & "' ORDER BY SummaryDate DESC"
-            End If
             Dim salesData As DataTable = GetDataTable("SELECT * FROM SALES ORDER BY SummaryDate DESC")
             If salesData.Rows.Count > 0 Then
                 For i As Integer = 0 To salesData.Rows.Count - 1

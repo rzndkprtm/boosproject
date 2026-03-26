@@ -123,7 +123,7 @@ Partial Class Order_File
         End Try
     End Sub
 
-    Private Sub DownloadFolderAsZip(folderName As String)
+    Protected Sub DownloadFolderAsZip(folderName As String)
         Dim folderPath As String = Server.MapPath("~/File/Order/" & folderName)
 
         If Not Directory.Exists(folderPath) Then Exit Sub
