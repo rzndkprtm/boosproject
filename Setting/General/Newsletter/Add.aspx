@@ -35,7 +35,7 @@
                         <div class="card-body">
                             <div class="form form-horizontal">
                                 <div class="form-body">
-                                    <div class="row mb-3">
+                                    <div class="row">
                                         <div class="col-12 col-sm-12 col-lg-3">
                                             <label>Name</label>
                                         </div>
@@ -44,11 +44,11 @@
                                         </div>
                                     </div>
 
-                                    <div class="row mb-3">
+                                    <div class="row">
                                         <div class="col-12 col-sm-12 col-lg-3">
                                             <label>Company</label>
                                         </div>
-                                        <div class="col-12 col-sm-12 col-lg-5">
+                                        <div class="col-12 col-sm-12 col-lg-5 form-group">
                                             <asp:DropDownList runat="server" ID="ddlCompany" CssClass="form-select"></asp:DropDownList>
                                         </div>
                                     </div>
@@ -84,7 +84,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="row mb-3">
+                                    <div class="row">
                                         <div class="col-12 col-sm-12 col-lg-3">
                                             <label>Description</label>
                                         </div>

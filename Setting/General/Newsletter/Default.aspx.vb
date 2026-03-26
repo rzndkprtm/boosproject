@@ -61,6 +61,8 @@ Partial Class Setting_General_Newsletter_Default
         MessageError(False, String.Empty)
         Try
             Dim thisId As String = txtIdDelete.Text
+            Dim type As String = txtTypeDelete.Text
+            Dim link As String = txtLinkDelete.Text
 
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
@@ -77,6 +79,13 @@ Partial Class Setting_General_Newsletter_Default
 
                 thisConn.Close()
             End Using
+
+            If type = "Image" Then
+                Dim physicalPath As String = Server.MapPath(link)
+                If IO.File.Exists(physicalPath) Then
+                    IO.File.Delete(physicalPath)
+                End If
+            End If
 
             Session("SearchNewsletter") = txtSearch.Text
             Response.Redirect("~/setting/general/newsletter", False)

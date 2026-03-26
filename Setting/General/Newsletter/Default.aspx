@@ -76,11 +76,11 @@
                                                             <li>
                                                                 <asp:LinkButton runat="server" ID="linkPreview" CssClass="dropdown-item" Text="Preview" CommandName="Preview" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                             </li>
-                                                            <li>
+                                                            <li runat="server" visible='<%# PageAction("Active") %>'>
                                                                 <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalActive" onclick='<%# String.Format("return showActive(`{0}`, `{1}`);", Eval("Id").ToString(), Convert.ToInt32(Eval("Active"))) %>'><%# TextActive(Eval("Active")) %></a>
                                                             </li>
-                                                            <li runat="server">
-                                                                <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                            <li runat="server" visible='<%# PageAction("Delete") %>'>
+                                                                <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("Type").ToString(), Eval("Link").ToString()) %>'>Delete</a>
                                                             </li>
                                                             <li>
                                                                 <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('Newsletters', '<%# Eval("Id") %>')">Log</a>
@@ -114,6 +114,8 @@
 
                 <div class="modal-body text-center py-4">
                     <asp:TextBox runat="server" ID="txtIdDelete" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtTypeDelete" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtLinkDelete" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
 
@@ -195,8 +197,10 @@
             }
         });
 
-        function showDelete(id) {
+        function showDelete(id, type, link) {
             document.getElementById("<%=txtIdDelete.ClientID %>").value = id;
+            document.getElementById("<%=txtTypeDelete.ClientID %>").value = type;
+            document.getElementById("<%=txtLinkDelete.ClientID %>").value = link;
         }
 
         function showActive(id, active) {
