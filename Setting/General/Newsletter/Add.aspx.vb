@@ -113,7 +113,7 @@ Partial Class Setting_General_Newsletter_Add
         ddlCompany.Items.Clear()
         Try
             ddlCompany.DataSource = settingClass.GetDataTable("SELECT * FROM Companys WHERE Active=1 ORDER BY Name ASC")
-            ddlCompany.DataTextField = "Name"
+            ddlCompany.DataTextField = "Alias"
             ddlCompany.DataValueField = "Id"
             ddlCompany.DataBind()
 

@@ -612,7 +612,7 @@ Partial Class Order_Add
                                 Exit For
                             End If
 
-                            If blindName.Contains("Ultraslat") AndAlso valanceType <> "76mm Valance" Then
+                            If (blindName.Contains("Ultraslat") OrElse blindName.Contains("Econo")) AndAlso valanceType <> "76mm Valance" Then
                                 MessageError(True, "PLEASE CHECK YOUR VALANCE TYPE !")
                                 Exit For
                             End If
@@ -1540,8 +1540,8 @@ Partial Class Order_Add
                             Exit For
                         End If
 
-                        If mechanism <> "GR" Then
-                            MessageError(True, "PLEASE CHECK YOUR MECHANISM DATA !")
+                        If String.IsNullOrEmpty(mechanism) Then
+                            MessageError(True, "MECHANISM TUBE IS REQUIRED !")
                             Exit For
                         End If
 
@@ -1550,14 +1550,14 @@ Partial Class Order_Add
                             Exit For
                         End If
 
-                        If blindType = "Single: Linked (2 Blinds)" OrElse blindType = "Single: Linked (3 Blinds)" OrElse blindType = "Double: Linked (4 Blinds)" Then
+                        If blindName = "Link 2 Blinds Dependent" OrElse blindName = "Link 2 Blinds Independent" OrElse blindName = "DB Link 2 Blinds Independent" OrElse blindName = "DB Link 2 Blinds Dependent" OrElse blindName = "DB Link 3 Blinds Independent with Dependent" OrElse blindName = "DB Link 3 Blinds Dependent" Then
                             If widthDataB = 0 Then
                                 MessageError(True, "PLEASE CHECK YOUR SECOND WIDTH DATA !")
                                 Exit For
                             End If
                         End If
 
-                        If blindType = "Single: Linked (3 Blinds)" Then
+                        If blindName = "Link 3 Blinds Dependent" OrElse blindName = "Link 3 Blinds Independent with Dependent" OrElse blindName = "DB Link 3 Blinds Independent with Dependent" OrElse blindName = "DB Link 3 Blinds Dependent" Then
                             If widthDataC = 0 Then
                                 MessageError(True, "PLEASE CHECK YOUR THIRD WIDTH DATA !")
                                 Exit For
@@ -1616,7 +1616,7 @@ Partial Class Order_Add
                             Exit For
                         End If
 
-                        If blindName = "Dual Blinds" OrElse blindType = "Double: Linked (4 Blinds)" OrElse blindType = "Double: Linked (6 Blinds)" Then
+                        If blindName = "Dual Blinds" OrElse blindName = "DB Link 2 Blinds Independent" OrElse blindName = "DB Link 2 Blinds Dependent" OrElse blindName = "DB Link 3 Blinds Independent with Dependent" OrElse blindName = "DB Link 3 Blinds Dependent" Then
                             If String.IsNullOrEmpty(fabricTypeDB) Then
                                 MessageError(True, "SECOND FABRIC TYPE IS REQUIRED !")
                                 Exit For
@@ -1646,7 +1646,7 @@ Partial Class Order_Add
                             Exit For
                         End If
 
-                        If blindName = "Dual Blinds" OrElse blindType = "Double: Linked (4 Blinds)" OrElse blindType = "Double: Linked (6 Blinds)" Then
+                        If blindName = "Dual Blinds" OrElse blindName = "DB Link 2 Blinds Independent" OrElse blindName = "DB Link 2 Blinds Dependent" OrElse blindName = "DB Link 3 Blinds Independent with Dependent" OrElse blindName = "DB Link 3 Blinds Dependent" Then
                             If Not validRoll.Contains(rollDB) Then
                                 MessageError(True, "PLEASE CHECK YOUR SECOND ROLL DIRECTION DATA !")
                                 Exit For
@@ -1659,8 +1659,8 @@ Partial Class Order_Add
                         End If
 
                         Dim validControl As String() = {"Left", "Right"}
-                        If blindType = "Double: (2 Blinds)" Then
-                            validControl = New String() {"L - L", "R - R"}
+                        If blindName = "Dual Blinds" Then
+                            validControl = New String() {"L - L", "R - R", "L - R", "R - L"}
                         End If
                         If blindType = "Single: Linked (2 Blinds)" Then
                             validControl = New String() {"II", "CS", "SC"}
@@ -1740,8 +1740,8 @@ Partial Class Order_Add
                             chainName = "No Remote"
                         End If
 
-                        Dim tubeType As String = String.Empty
-                        If blindType = "Single Blind" OrElse blindType = "Double: (2 Blinds)" Then
+                        Dim tubeType As String = mechanism
+                        If blindName = "Single Blind" OrElse blindName = "Dual Blinds" Then
                             tubeType = "Gear Reduction 49mm"
                             If controlType = "Chain" Then
                                 tubeType = "Gear Reduction 38mm"
