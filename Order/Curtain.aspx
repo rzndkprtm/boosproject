@@ -441,5 +441,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/WebOrders/Curtain.js?v=2.0.7"></script>
+    <script src="/Scripts/WebOrders/Curtain.js?v=2.0.8"></script>
 </asp:Content>
