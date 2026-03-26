@@ -563,7 +563,7 @@ function bindTrackType(heading) {
 
                 if (Array.isArray(response.d)) {
 
-                    if (response.d.length > 1) {
+                    if (response.d.length > 0) {
                         const defaultOption = document.createElement("option");
                         defaultOption.value = "";
                         defaultOption.text = "";
