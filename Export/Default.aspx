@@ -32,20 +32,20 @@
                         <div class="card-body">
                             <div class="form form-horizontal">
                                 <div class="form-body">
-                                    <div class="row mb-2">
+                                    <div class="row form-group mb-2">
                                         <div class="col-12 col-sm-12 col-lg-3">
                                             <label>Company</label>
                                         </div>
-                                        <div class="col-12 col-sm-12 col-lg-5 form-group">
+                                        <div class="col-12 col-sm-12 col-lg-4">
                                             <asp:DropDownList runat="server" ID="ddlOrderCompany" CssClass="form-select"></asp:DropDownList>
                                         </div>
                                     </div>
 
-                                    <div class="row mb-2">
+                                    <div class="row form-group mb-2">
                                         <div class="col-12 col-sm-12 col-lg-3">
                                             <asp:Label runat="server" Text="Order Status"></asp:Label>
                                         </div>
-                                        <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                        <div class="col-12 col-sm-12 col-lg-4">
                                             <asp:DropDownList runat="server" ID="ddlOrderStatus" CssClass="form-select">
                                                 <asp:ListItem Value="" Text=""></asp:ListItem>
                                                 <asp:ListItem Value="Unsubmitted" Text="Unsubmitted"></asp:ListItem>
@@ -59,11 +59,11 @@
                                         </div>
                                     </div>
 
-                                    <div class="row mb-3">
+                                    <div class="row form-group mb-3">
                                         <div class="col-12 col-sm-12 col-lg-3">
                                             <asp:Label runat="server" Text="Order Type"></asp:Label>
                                         </div>
-                                        <div class="col-12 col-sm-12 col-lg-9 form-group">
+                                        <div class="col-12 col-sm-12 col-lg-3">
                                             <asp:DropDownList runat="server" ID="ddlOrderType" CssClass="form-select">
                                                 <asp:ListItem Value="" Text=""></asp:ListItem>
                                                 <asp:ListItem Value="header" Text="Order Header"></asp:ListItem>

@@ -38,7 +38,7 @@
         ddlOrderCompany.Items.Clear()
         Try
             ddlOrderCompany.DataSource = settingClass.GetDataTable("SELECT * FROM Companys ORDER BY Name ASC")
-            ddlOrderCompany.DataTextField = "Name"
+            ddlOrderCompany.DataTextField = "Alias"
             ddlOrderCompany.DataValueField = "Id"
             ddlOrderCompany.DataBind()
 
