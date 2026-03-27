@@ -223,6 +223,7 @@ Partial Class Setting_Specification_Bottom_Detail
             gvList.Columns(1).Visible = PageAction("Visible ID Detail")
 
             btnAddColour.Visible = PageAction("Add Colour")
+            btnEdit.Visible = PageAction("Edit")
         Catch ex As Exception
             MessageError(True, ex.ToString)
             If Not Session("RoleName") = "Developer" Then

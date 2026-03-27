@@ -1,7 +1,8 @@
-﻿Imports System.Data
+﻿
+Imports System.Data
 Imports System.Data.SqlClient
 
-Partial Class Setting_General_Action
+Partial Class Setting_General_ActionAccess
     Inherits Page
 
     Dim settingClass As New SettingClass
@@ -136,7 +137,7 @@ Partial Class Setting_General_Action
                     End Using
 
                     Session("ActionSearch") = txtSearch.Text
-                    Response.Redirect("~/setting/general/action", False)
+                    Response.Redirect("~/setting/general/actionaccess", False)
                 End If
 
                 If lblAction.Text = "Edit" Then
@@ -156,7 +157,7 @@ Partial Class Setting_General_Action
                     End Using
 
                     Session("SearchAction") = txtSearch.Text
-                    Response.Redirect("~/setting/general/action", False)
+                    Response.Redirect("~/setting/general/actionaccess", False)
                 End If
             End If
         Catch ex As Exception
@@ -180,7 +181,7 @@ Partial Class Setting_General_Action
             End Using
 
             Session("SearchAction") = txtSearch.Text
-            Response.Redirect("~/setting/general/action", False)
+            Response.Redirect("~/setting/general/actionaccess", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
         End Try

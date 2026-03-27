@@ -1589,7 +1589,7 @@ Partial Class Order_Method
             Return "ROOM TO INSTALL IS REQUIRED AND MUST NOT CONTAIN: , & ` ' &= &+"
         End If
 
-        If blindName = "Complete Set" OrElse blindName = "Curtain Only" Then
+        If blindName = "Complete Set" OrElse blindName = "Curtain Only" OrElse blindName = "Track Only" Then
             If String.IsNullOrEmpty(data.mounting) Then Return "FITTING IS REQUIRED !"
             If String.IsNullOrEmpty(data.heading) Then Return "CURTAIN HEADING IS REQUIRED !"
         End If
@@ -1658,13 +1658,8 @@ Partial Class Order_Method
         End If
 
         If blindName = "Complete Set" Then
-            If Not data.trackdraw = "Flick Stick" Then
-                data.controlcolour = String.Empty : controllength = 0
-            End If
-
-            If data.tracktype = "Express Track" Then
-                returnLengthValue = 0 : returnLengthValueB = 0
-            End If
+            If Not data.trackdraw = "Flick Stick" Then data.controlcolour = String.Empty : controllength = 0
+            If data.tracktype = "Express Track" Then returnLengthValue = 0 : returnLengthValueB = 0
 
             linearmetre = width / 1000
             squaremetre = Math.Ceiling(width * drop / 1000000)

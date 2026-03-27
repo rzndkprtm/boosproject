@@ -30,9 +30,37 @@ Partial Class Setting_General_LoginAccess
             MessageError_Role(False, String.Empty)
             MessageError_Level(False, String.Empty)
 
-            BindDataRole()
-            BindDataLevel()
+            txtSearchRole.Text = Session("SearchRole")
+            txtSearchLevel.Text = Session("SearchLevel")
+
+            BindDataRole(txtSearchRole.Text)
+            BindDataLevel(txtSearchLevel.Text)
         End If
+    End Sub
+
+    Protected Sub btnAddRole_Click(sender As Object, e As EventArgs)
+        Session("selectedTab") = "list-role"
+        MessageError_Process(False, String.Empty)
+        Dim thisScript As String = "window.onload = function() { showProcess(); };"
+        Try
+            lblAction.Text = "Add"
+            lblType.Text = "Role"
+            titleProcess.InnerText = "Add Role Access"
+
+            ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
+        Catch ex As Exception
+            MessageError_Process(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+            ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
+        End Try
+    End Sub
+
+    Protected Sub btnSearchRole_Click(sender As Object, e As EventArgs)
+        Session("selectedTab") = "list-role"
+        MessageError_Role(False, String.Empty)
+        BindDataRole(txtSearchRole.Text)
     End Sub
 
     Protected Sub gvListRole_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
@@ -40,7 +68,7 @@ Partial Class Setting_General_LoginAccess
         MessageError_Role(False, String.Empty)
         Try
             gvListRole.PageIndex = e.NewPageIndex
-            BindDataRole()
+            BindDataRole(txtSearchRole.Text)
         Catch ex As Exception
             MessageError_Role(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -56,6 +84,7 @@ Partial Class Setting_General_LoginAccess
             If e.CommandName = "Detail" Then
                 MessageError_Process(False, String.Empty)
                 Dim thisScript As String = "window.onload = function() { showProcess(); };"
+                Session("SearchRole") = txtSearchRole.Text
                 Try
                     lblId.Text = dataId
                     lblAction.Text = "Edit"
@@ -81,14 +110,39 @@ Partial Class Setting_General_LoginAccess
         End If
     End Sub
 
-    Protected Sub btnAddRole_Click(sender As Object, e As EventArgs)
-        Session("selectedTab") = "list-role"
+    Protected Sub BindDataRole(searchText As String)
+        Session("SearchRole") = String.Empty
+        Try
+            Dim stringSearch As String = String.Empty
+            If Not String.IsNullOrEmpty(searchText) Then
+                stringSearch = "WHERE Id LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%'"
+            End If
+            Dim stringQuery As String = String.Format("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM LoginRoles {0} ORDER BY Name ASC", stringSearch)
+            gvListRole.DataSource = settingClass.GetDataTable(stringQuery)
+            gvListRole.DataBind()
+            gvListRole.Columns(1).Visible = PageAction("Visible ID")
+
+            btnAddRole.Visible = PageAction("Add")
+        Catch ex As Exception
+            MessageError_Role(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Role(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub MessageError_Role(visible As Boolean, message As String)
+        divErrorRole.Visible = visible : msgErrorRole.InnerText = message
+    End Sub
+
+    Protected Sub btnAddLevel_Click(sender As Object, e As EventArgs)
+        Session("selectedTab") = "list-level"
         MessageError_Process(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showProcess(); };"
         Try
             lblAction.Text = "Add"
-            lblType.Text = "Role"
-            titleProcess.InnerText = "Add Role Access"
+            lblType.Text = "Level"
+            titleProcess.InnerText = "Add Level Access"
 
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         Catch ex As Exception
@@ -100,12 +154,18 @@ Partial Class Setting_General_LoginAccess
         End Try
     End Sub
 
+    Protected Sub btnSearchLevel_Click(sender As Object, e As EventArgs)
+        Session("selectedTab") = "list-level"
+        MessageError_Level(False, String.Empty)
+        BindDataLevel(txtSearchLevel.Text)
+    End Sub
+
     Protected Sub gvListLevel_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
         Session("selectedTab") = "list-level"
         MessageError_Level(False, String.Empty)
         Try
             gvListLevel.PageIndex = e.NewPageIndex
-            BindDataLevel()
+            BindDataLevel(txtSearchLevel.Text)
         Catch ex As Exception
             MessageError_Level(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -121,6 +181,7 @@ Partial Class Setting_General_LoginAccess
             If e.CommandName = "Detail" Then
                 MessageError_Process(False, String.Empty)
                 Dim thisScript As String = "window.onload = function() { showProcess(); };"
+                Session("SearchLevel") = txtSearchLevel.Text
                 Try
                     lblId.Text = dataId
                     lblAction.Text = "Edit"
@@ -146,24 +207,31 @@ Partial Class Setting_General_LoginAccess
         End If
     End Sub
 
-    Protected Sub btnAddLevel_Click(sender As Object, e As EventArgs)
-        Session("selectedTab") = "list-level"
-        MessageError_Process(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showProcess(); };"
+    Protected Sub BindDataLevel(searchText As String)
+        Session("SearchLevel") = String.Empty
         Try
-            lblAction.Text = "Add"
-            lblType.Text = "Level"
-            titleProcess.InnerText = "Add Level Access"
-
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-        Catch ex As Exception
-            MessageError_Process(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            Dim stringSearch As String = String.Empty
+            If Not String.IsNullOrEmpty(searchText) Then
+                stringSearch = "WHERE Id LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%'"
             End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
+            Dim stringQuery As String = String.Format("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM LoginLevels {0} ORDER BY Name ASC", stringSearch)
+            gvListLevel.DataSource = settingClass.GetDataTable(stringQuery)
+            gvListLevel.DataBind()
+            gvListLevel.Columns(1).Visible = PageAction("Visible ID")
+
+            btnAddLevel.Visible = PageAction("Add")
+        Catch ex As Exception
+            MessageError_Level(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Level(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
+
+    Protected Sub MessageError_Level(visible As Boolean, message As String)
+        divErrorLevel.Visible = visible : msgErrorLevel.InnerText = message
+    End Sub
+
 
     Protected Sub btnProcess_Click(sender As Object, e As EventArgs)
         MessageError_Process(False, String.Empty)
@@ -186,7 +254,7 @@ Partial Class Setting_General_LoginAccess
 
                     If lblType.Text = "Role" Then
                         thisId = settingClass.CreateId("SELECT TOP 1 Id FROM LoginRoles ORDER BY Id DESC")
-                        thisScript = "INSERT INTO LoginRoles VALUES (@Id, @Name, @Description, @Active)"
+                        thisString = "INSERT INTO LoginRoles VALUES (@Id, @Name, @Description, @Active)"
                         thisLog = "LoginRoles"
                     End If
                     If lblType.Text = "Level" Then
@@ -248,44 +316,6 @@ Partial Class Setting_General_LoginAccess
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         End Try
-    End Sub
-
-    Protected Sub BindDataRole()
-        Try
-            gvListRole.DataSource = settingClass.GetDataTable("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM LoginRoles ORDER BY Name ASC")
-            gvListRole.DataBind()
-            gvListRole.Columns(1).Visible = PageAction("Visible ID")
-
-            btnAddRole.Visible = PageAction("Add")
-        Catch ex As Exception
-            MessageError_Role(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Role(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
-    Protected Sub BindDataLevel()
-        Try
-            gvListLevel.DataSource = settingClass.GetDataTable("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM LoginLevels ORDER BY Name ASC")
-            gvListLevel.DataBind()
-            gvListLevel.Columns(1).Visible = PageAction("Visible ID")
-
-            btnAddLevel.Visible = PageAction("Add")
-        Catch ex As Exception
-            MessageError_Level(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Level(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
-    Protected Sub MessageError_Role(visible As Boolean, message As String)
-        divErrorRole.Visible = visible : msgErrorRole.InnerText = message
-    End Sub
-
-    Protected Sub MessageError_Level(visible As Boolean, message As String)
-        divErrorLevel.Visible = visible : msgErrorLevel.InnerText = message
     End Sub
 
     Protected Sub MessageError_Process(visible As Boolean, message As String)

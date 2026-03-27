@@ -14,9 +14,9 @@ Partial Class Account_Default
             Exit Sub
         End If
 
-        hiddenLoginId.Value = Request.QueryString("uid").ToString()
+        lblLoginId.Text = Request.QueryString("uid").ToString()
         If Not Session("RoleName") = "Developer" Then
-            If Not Session("LoginId") = hiddenLoginId.Value Then
+            If Not Session("LoginId") = lblLoginId.Text Then
                 Response.Redirect("~/", False)
                 Exit Sub
             End If
@@ -27,7 +27,7 @@ Partial Class Account_Default
             MessageError_Name(False, String.Empty)
             MessageError_Email(False, String.Empty)
 
-            BindData(hiddenLoginId.Value)
+            BindData(lblLoginId.Text)
         End If
     End Sub
 
@@ -38,7 +38,7 @@ Partial Class Account_Default
             If msgErrorName.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLogins SET FullName=@FullName WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", hiddenLoginId.Value)
+                        myCmd.Parameters.AddWithValue("@Id", lblLoginId.Text)
                         myCmd.Parameters.AddWithValue("@FullName", txtFullName.Text.Trim())
 
                         thisConn.Open()
@@ -46,7 +46,7 @@ Partial Class Account_Default
                     End Using
                 End Using
 
-                Dim url As String = String.Format("~/account?uid={0}", hiddenLoginId.Value)
+                Dim url As String = String.Format("~/account?uid={0}", lblLoginId.Text)
                 Response.Redirect(url, False)
             End If
         Catch ex As Exception
@@ -65,7 +65,7 @@ Partial Class Account_Default
             If msgErrorEmail.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLogins SET Email=@Email WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", hiddenLoginId.Value)
+                        myCmd.Parameters.AddWithValue("@Id", lblLoginId.Text)
                         myCmd.Parameters.AddWithValue("@Email", txtUserEmail.Text.Trim())
 
                         thisConn.Open()
@@ -73,7 +73,7 @@ Partial Class Account_Default
                     End Using
                 End Using
 
-                Dim url As String = String.Format("~/account?uid={0}", hiddenLoginId.Value)
+                Dim url As String = String.Format("~/account?uid={0}", lblLoginId.Text)
                 Response.Redirect(url, False)
             End If
         Catch ex As Exception

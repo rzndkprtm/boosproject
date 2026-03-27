@@ -182,49 +182,52 @@ Public Class SalesClass
         Return result
     End Function
 
-    Public Sub RefreshData()
+    Public Sub RefreshData(companyId As String)
         Try
-            Dim salesData As DataTable = GetDataTable("SELECT * FROM SALES ORDER BY SummaryDate DESC")
-            If salesData.Rows.Count > 0 Then
-                For i As Integer = 0 To salesData.Rows.Count - 1
-                    Dim dataId As String = salesData.Rows(i)("Id").ToString()
-                    Dim summaryDate As Date = salesData.Rows(i)("SummaryDate")
+            If Not String.IsNullOrEmpty(companyId) Then
+                Dim salesData As DataTable = GetDataTable("SELECT * FROM Sales WHERE CompanyId='" & companyId & "' ORDER BY SummaryDate DESC")
+                If salesData.Rows.Count > 0 Then
+                    For i As Integer = 0 To salesData.Rows.Count - 1
+                        Dim dataId As String = salesData.Rows(i)("Id").ToString()
+                        Dim summaryDate As Date = salesData.Rows(i)("SummaryDate")
 
-                    Dim orderData As DataTable = GetDataTable("SELECT OrderHeaders.* FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Active=1 AND Customers.CompanyId='2' AND ProductionDate=CONVERT(DATE, '" & summaryDate.ToString("yyyy-MM-dd") & "')")
-                    If orderData.Rows.Count > 0 Then
-                        For iOrder As Integer = 0 To orderData.Rows.Count - 1
-                            Dim headerId As String = orderData.Rows(iOrder)("Id").ToString()
+                        Dim orderData As DataTable = GetDataTable("SELECT OrderHeaders.* FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Active=1 AND Customers.CompanyId='" & companyId & "' AND ProductionDate=CONVERT(DATE, '" & summaryDate.ToString("yyyy-MM-dd") & "')")
+                        If orderData.Rows.Count > 0 Then
+                            For iOrder As Integer = 0 To orderData.Rows.Count - 1
+                                Dim headerId As String = orderData.Rows(iOrder)("Id").ToString()
 
-                            Dim getPricing As DataRow = GetDataRow("SELECT (SUM(BuyPrice) * 1.10) AS BuyPrice, (SUM(SellPrice) * 1.10) AS SellPrice FROM OrderCostings WHERE Type='Final' AND HeaderId='" & headerId & "'")
+                                Dim getPricing As DataRow = GetDataRow("SELECT (SUM(BuyPrice) * 1.10) AS BuyPrice, (SUM(SellPrice) * 1.10) AS SellPrice FROM OrderCostings WHERE Type='Final' AND HeaderId='" & headerId & "'")
 
-                            Dim totalCostPrice As Decimal = If(IsDBNull(getPricing("BuyPrice")), 0D, Convert.ToDecimal(getPricing("BuyPrice")))
-                            Dim totalSellingPrice As Decimal = If(IsDBNull(getPricing("SellPrice")), 0D, Convert.ToDecimal(getPricing("SellPrice")))
+                                Dim totalCostPrice As Decimal = If(IsDBNull(getPricing("BuyPrice")), 0D, Convert.ToDecimal(getPricing("BuyPrice")))
+                                Dim totalSellingPrice As Decimal = If(IsDBNull(getPricing("SellPrice")), 0D, Convert.ToDecimal(getPricing("SellPrice")))
 
-                            Dim totalPaidAmount As Decimal = GetItemData_Decimal("SELECT Amount FROM OrderInvoices WHERE Id='" & headerId & "' AND Payment=1")
+                                Dim totalPaidAmount As Decimal = GetItemData_Decimal("SELECT Amount FROM OrderInvoices WHERE Id='" & headerId & "' AND Payment=1")
 
-                            Using thisConn As New SqlConnection(myConn)
-                                Dim query As String = ""
+                                Using thisConn As New SqlConnection(myConn)
+                                    Dim query As String = ""
 
-                                If iOrder = 0 Then
-                                    query = "UPDATE Sales SET TotalCostPrice=@TotalCostPrice, TotalSellingPrice=@TotalSellingPrice, TotalPaidAmount=@TotalPaidAmount WHERE Id=@Id"
-                                Else
-                                    query = "UPDATE Sales SET TotalCostPrice = TotalCostPrice + @TotalCostPrice, TotalSellingPrice = TotalSellingPrice + @TotalSellingPrice, TotalPaidAmount = TotalPaidAmount + @TotalPaidAmount WHERE Id=@Id"
-                                End If
+                                    If iOrder = 0 Then
+                                        query = "UPDATE Sales SET TotalCostPrice=@TotalCostPrice, TotalSellingPrice=@TotalSellingPrice, TotalPaidAmount=@TotalPaidAmount WHERE Id=@Id"
+                                    Else
+                                        query = "UPDATE Sales SET TotalCostPrice = TotalCostPrice + @TotalCostPrice, TotalSellingPrice = TotalSellingPrice + @TotalSellingPrice, TotalPaidAmount = TotalPaidAmount + @TotalPaidAmount WHERE Id=@Id"
+                                    End If
 
-                                Using myCmd As SqlCommand = New SqlCommand(query, thisConn)
-                                    myCmd.Parameters.Add("@Id", SqlDbType.Int).Value = dataId
-                                    myCmd.Parameters.Add("@TotalCostPrice", SqlDbType.Decimal).Value = totalCostPrice
-                                    myCmd.Parameters.Add("@TotalSellingPrice", SqlDbType.Decimal).Value = totalSellingPrice
-                                    myCmd.Parameters.Add("@TotalPaidAmount", SqlDbType.Decimal).Value = totalPaidAmount
+                                    Using myCmd As SqlCommand = New SqlCommand(query, thisConn)
+                                        myCmd.Parameters.Add("@Id", SqlDbType.Int).Value = dataId
+                                        myCmd.Parameters.Add("@TotalCostPrice", SqlDbType.Decimal).Value = totalCostPrice
+                                        myCmd.Parameters.Add("@TotalSellingPrice", SqlDbType.Decimal).Value = totalSellingPrice
+                                        myCmd.Parameters.Add("@TotalPaidAmount", SqlDbType.Decimal).Value = totalPaidAmount
 
-                                    thisConn.Open()
-                                    myCmd.ExecuteNonQuery()
+                                        thisConn.Open()
+                                        myCmd.ExecuteNonQuery()
+                                    End Using
                                 End Using
-                            End Using
-                        Next
-                    End If
-                Next
+                            Next
+                        End If
+                    Next
+                End If
             End If
+
         Catch ex As Exception
         End Try
     End Sub

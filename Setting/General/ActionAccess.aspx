@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Action.aspx.vb" Inherits="Setting_General_Action" MasterPageFile="~/Site.master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Action Access" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="ActionAccess.aspx.vb" Inherits="Setting_General_ActionAccess" MasterPageFile="~/Site.master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Action Access" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-heading">

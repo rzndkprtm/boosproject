@@ -118,7 +118,7 @@ Partial Class Order_Rework_Default
         Session("reworkId") = String.Empty
         Session("headerId") = String.Empty
         Try
-            Dim byActive As String = " WHERE OrderReworks.Active=1"
+            Dim byActive As String = "WHERE OrderReworks.Active=1"
             If active = "0" Then byActive = "WHERE OrderReworks.Active=0"
 
             Dim byRole As String = String.Empty
@@ -126,28 +126,28 @@ Partial Class Order_Rework_Default
             Dim byStatus As String = String.Empty
 
             Dim byText As String = String.Empty
-            Dim byOrder As String = " ORDER BY OrderReworks.Id DESC"
+            Dim byOrder As String = "ORDER BY OrderReworks.Id DESC"
 
             If Not search = "" Then
-                byText = " AND (OrderReworks.Id LIKE '%" & search.Trim() & "%' OR OrderHeaders.OrderId LIKE '%" & search.Trim() & "%' OR OrderHeaders.OrderNumber LIKE '%" & search.Trim() & "%' OR OrderHeaders.OrderName LIKE '%" & search.Trim() & "%' OR OrderHeaders.CustomerId LIKE '%" & search.Trim() & "%' OR Customers.Name LIKE '%" & search.Trim() & "%')"
+                byText = "AND (OrderReworks.Id LIKE '%" & search.Trim() & "%' OR OrderHeaders.OrderId LIKE '%" & search.Trim() & "%' OR OrderHeaders.OrderNumber LIKE '%" & search.Trim() & "%' OR OrderHeaders.OrderName LIKE '%" & search.Trim() & "%' OR OrderHeaders.CustomerId LIKE '%" & search.Trim() & "%' OR Customers.Name LIKE '%" & search.Trim() & "%')"
             End If
 
             If Session("RoleName") = "Developer" Then
                 byRole = String.Empty
                 byStatus = String.Empty
                 If Not status = "" Then
-                    byStatus = " AND OrderReworks.Status='" & status & "'"
+                    byStatus = "AND OrderReworks.Status='" & status & "'"
                 End If
-                byOrder = " ORDER BY OrderReworks.Id, CASE WHEN OrderReworks.Status='Pending Approval' THEN 1 WHEN OrderReworks.Status='Approved' THEN 2 WHEN OrderReworks.Status='Rejected' THEN 3 WHEN OrderReworks.Status='Unsubmitted' THEN 4 END DESC"
+                byOrder = "ORDER BY OrderReworks.Id, CASE WHEN OrderReworks.Status='Pending Approval' THEN 1 WHEN OrderReworks.Status='Approved' THEN 2 WHEN OrderReworks.Status='Rejected' THEN 3 WHEN OrderReworks.Status='Unsubmitted' THEN 4 END DESC"
             End If
 
             If Session("RoleName") = "Customer" Then
                 byRole = "AND OrderHeaders.CustomerId='" & Session("CustomerId").ToString() & "'"
                 byStatus = String.Empty
                 If Not status = "" Then
-                    byStatus = " AND OrderReworks.Status='" & status & "'"
+                    byStatus = "AND OrderReworks.Status='" & status & "'"
                 End If
-                byOrder = " ORDER BY OrderReworks.Id, CASE WHEN OrderReworks.Status='Pending Approval' THEN 1 WHEN OrderReworks.Status='Approved' THEN 2 WHEN OrderReworks.Status='Rejected' THEN 3 WHEN OrderReworks.Status='Unsubmitted' THEN 4 END DESC"
+                byOrder = "ORDER BY OrderReworks.Id, CASE WHEN OrderReworks.Status='Pending Approval' THEN 1 WHEN OrderReworks.Status='Approved' THEN 2 WHEN OrderReworks.Status='Rejected' THEN 3 WHEN OrderReworks.Status='Unsubmitted' THEN 4 END DESC"
             End If
 
             Dim thisQuery As String = String.Format("SELECT OrderReworks.*, OrderHeaders.OrderId AS OrderId, OrderHeaders.OrderNumber AS OrderNumber, OrderHeaders.OrderName AS OrderName, Customers.Name AS CustomerName FROM OrderReworks LEFT JOIN OrderHeaders ON OrderReworks.HeaderId=OrderHeaders.Id LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id {0} {1} {2} {3} {4}", byActive, byRole, byStatus, byText, byOrder)

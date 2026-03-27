@@ -1,5 +1,4 @@
-﻿
-Partial Class About
+﻿Partial Class About
     Inherits Page
 
 End Class

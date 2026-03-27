@@ -1178,14 +1178,14 @@
                     <div class="row">
                         <div class="col-12 form-group">
                             <label class="form-label required">Username</label>
-                            <asp:TextBox runat="server" ID="txtLoginUserName" CssClass="form-control" placeholder="UserName ..." autocomplete="new-password"></asp:TextBox>
+                            <asp:TextBox runat="server" ID="txtLoginUserName" CssClass="form-control" placeholder="UserName ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
 
                     <div class="row" runat="server" id="divPassword">
                         <div class="col-12 form-group">
                             <label class="form-label">Password</label>
-                            <asp:TextBox runat="server" ID="txtLoginPassword" CssClass="form-control" placeholder="Password ..."></asp:TextBox>
+                            <asp:TextBox runat="server" ID="txtLoginPassword" CssClass="form-control" placeholder="Password ..." autocomplete="off"></asp:TextBox>
                         </div>
                         <small class="form-hint" id="passwordinfo"></small>
                     </div>

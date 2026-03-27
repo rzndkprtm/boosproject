@@ -16,7 +16,7 @@ Partial Class Setting_Boos
 
         Dim thisAction As String = Request.QueryString("action").ToString()
         If thisAction = "salescosting" Then
-            CreateSalesCosting()
+            CreateSales()
         End If
         If thisAction = "resetcashsaleorder" Then
             ResetDataCashSaleOrder()
@@ -85,21 +85,30 @@ Partial Class Setting_Boos
         End Try
     End Sub
 
-    Protected Sub CreateSalesCosting()
+    Protected Sub CreateSales()
         Try
             Dim salesClass As New SalesClass
-            Dim checkData As Integer = salesClass.GetItemData_Integer("SELECT COUNT(*) FROM Sales WHERE SummaryDate=GETDATE()")
-            If checkData = 0 Then
-                Dim thisId As String = salesClass.CreateId("SELECT TOP 1 Id FROM Sales ORDER BY Id DESC")
+            Dim companyData As DataTable = salesClass.GetDataTable("SELECT * FROM Companys WHERE Active=1 ORDER BY Id ASC")
+            If companyData.Rows.Count > 0 Then
+                For i As Integer = 0 To companyData.Rows.Count - 1
+                    Dim companyId As String = companyData.Rows(i)("Id").ToString()
 
-                Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Sales(Id, SummaryDate, TotalCostPrice, TotalSellingPrice, TotalPaidAmount) VALUES(@Id, GETDATE(), 0, 0, 0)", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", thisId)
+                    Dim salesData As Integer = salesClass.GetItemData_Integer("SELECT COUNT(*) FROM Sales WHERE SummaryDate=GETDATE() AND CompanyId='" & companyId & "'")
 
-                        thisConn.Open()
-                        myCmd.ExecuteNonQuery()
-                    End Using
-                End Using
+                    If salesData = 0 Then
+                        Dim thisId As String = salesClass.CreateId("SELECT TOP 1 Id FROM Sales ORDER BY Id DESC")
+
+                        Using thisConn As New SqlConnection(myConn)
+                            Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Sales(Id, CompanyId, SummaryDate, TotalCostPrice, TotalSellingPrice, TotalPaidAmount) VALUES(@Id, @CompanyId, GETDATE(), 0, 0, 0)", thisConn)
+                                myCmd.Parameters.AddWithValue("@Id", thisId)
+                                myCmd.Parameters.AddWithValue("@CompanyId", companyId)
+
+                                thisConn.Open()
+                                myCmd.ExecuteNonQuery()
+                            End Using
+                        End Using
+                    End If
+                Next
             End If
         Catch ex As Exception
         End Try

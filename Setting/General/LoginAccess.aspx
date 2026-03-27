@@ -44,6 +44,21 @@
                                     </div>
 
                                     <div class="row mt-5">
+                                        <div class="col-12 col-sm-12 col-lg-6">
+                                            <asp:Button runat="server" ID="btnAddRole" CssClass="btn btn-primary" Text="Add New Role" OnClick="btnAddRole_Click" />
+                                        </div>
+                                        <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
+                                            <asp:Panel runat="server" DefaultButton="btnSearchRole" Width="100%">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">Search : </span>
+                                                    <asp:TextBox runat="server" ID="txtSearchRole" CssClass="form-control" placeholoder="" autocomplete="off"></asp:TextBox>
+                                                    <asp:Button runat="server" ID="btnSearchRole" CssClass="btn btn-primary" Text="Search" OnClick="btnSearchRole_Click" />
+                                                </div>
+                                            </asp:Panel>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mt-3">
                                         <div class="col-12">
                                             <div class="table-responsive">
                                                 <asp:GridView runat="server" ID="gvListRole" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom" OnPageIndexChanging="gvListRole_PageIndexChanging" OnRowCommand="gvListRole_RowCommand">
@@ -79,12 +94,6 @@
                                             </div>
                                         </div>
                                     </div>
-
-                                    <div class="row mt-3">
-                                        <div class="col-12">
-                                            <asp:Button runat="server" ID="btnAddRole" CssClass="btn btn-primary" Text="Add New" OnClick="btnAddRole_Click" />
-                                        </div>
-                                    </div>
                                 </div>
 
                                 <div class="tab-pane fade" id="list-level" role="tabpanel" aria-labelledby="listLevel">
@@ -95,6 +104,21 @@
                                                      <span runat="server" id="msgErrorLevel"></span>
                                                  </div>
                                              </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mt-5">
+                                        <div class="col-12 col-sm-12 col-lg-6">
+                                            <asp:Button runat="server" ID="btnAddLevel" CssClass="btn btn-primary" Text="Add New Level" OnClick="btnAddLevel_Click" />
+                                        </div>
+                                        <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
+                                            <asp:Panel runat="server" DefaultButton="btnSearchLevel" Width="100%">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">Search : </span>
+                                                    <asp:TextBox runat="server" ID="txtSearchLevel" CssClass="form-control" placeholoder="" autocomplete="off"></asp:TextBox>
+                                                    <asp:Button runat="server" ID="btnSearchLevel" CssClass="btn btn-primary" Text="Search" OnClick="btnSearchLevel_Click" />
+                                                </div>
+                                            </asp:Panel>
                                         </div>
                                     </div>
 
@@ -132,12 +156,6 @@
                                                     <AlternatingRowStyle BackColor="White" />
                                                 </asp:GridView>
                                             </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row mt-3">
-                                        <div class="col-12">
-                                            <asp:Button runat="server" ID="btnAddLevel" CssClass="btn btn-primary" Text="Add New" OnClick="btnAddLevel_Click" />
                                         </div>
                                     </div>
                                 </div>

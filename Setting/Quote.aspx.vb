@@ -14,18 +14,18 @@ Partial Class Setting_Quote
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
         If pageAccess = False Then
-            Response.Redirect("~/", False)
+            Response.Redirect("~/setting", False)
             Exit Sub
         End If
 
         If String.IsNullOrEmpty(Request.QueryString("accountid")) Then
-            Response.Redirect("~/", False)
+            Response.Redirect("~/setting", False)
             Exit Sub
         End If
 
         lblCustomerId.Text = Request.QueryString("accountid").ToString()
-        If lblCustomerId.Text <> Session("CustomerId") Then
-            Response.Redirect("~/", False)
+        If Session("RoleName") = "Customer" AndAlso lblCustomerId.Text <> Session("CustomerId") Then
+            Response.Redirect("~/setting", False)
             Exit Sub
         End If
 

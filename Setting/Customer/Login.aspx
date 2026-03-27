@@ -163,11 +163,11 @@
                     <div class="row">
                         <div class="col-6 form-group">
                             <label class="form-label">Username</label>
-                            <asp:TextBox runat="server" ID="txtUserName" CssClass="form-control" placeholder="UserName ..." autocomplete="new-password"></asp:TextBox>
+                            <asp:TextBox runat="server" ID="txtUserName" CssClass="form-control" placeholder="UserName ..." autocomplete="off"></asp:TextBox>
                         </div>
                         <div class="col-6 form-group">
                             <label class="form-label">Password</label>
-                            <asp:TextBox runat="server" ID="txtPassword" CssClass="form-control" placeholder="Password ..."></asp:TextBox>
+                            <asp:TextBox runat="server" ID="txtPassword" CssClass="form-control" placeholder="Password ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
 

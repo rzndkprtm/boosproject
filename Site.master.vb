@@ -228,6 +228,7 @@ Public Partial Class SiteMaster
                 liGeneral.Visible = True
                 liGeneralCompany.Visible = True
                 liGeneralMailing.Visible = True
+                liGeneralLoginAccess.Visible = True
                 liGeneralXero.Visible = True
                 liGeneralNewsletter.Visible = True
                 liGeneralTutorial.Visible = True
@@ -258,6 +259,14 @@ Public Partial Class SiteMaster
                 liSales.Visible = True
 
                 liSetting.Visible = True
+
+                liGeneral.Visible = True
+                liGeneralCompany.Visible = True
+                liGeneralMailing.Visible = True
+                liGeneralLoginAccess.Visible = True
+                liGeneralXero.Visible = True
+                liGeneralNewsletter.Visible = True
+                liGeneralTutorial.Visible = True
 
                 liCustomer.Visible = True
 
