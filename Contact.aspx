@@ -53,10 +53,7 @@
                                     <p class="mb-2">
                                         <strong>Email</strong><br />
                                         reza@bigblinds.co.id
-                                    </p>
-                                    <p class="mb-2">
-                                        <strong>WhatsApp</strong><br />
-                                        +62 852-1504-3355
+                                        support@ordersblindonline.com
                                     </p>
                                 </div>
                             </div>
