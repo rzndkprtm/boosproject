@@ -189,7 +189,7 @@
                                                         </li>
                                                         
                                                         <li class="subsubmenu-item" runat="server" id="liGeneralAccess">
-                                                            <a runat="server" href="~/setting/general/action" class="subsubmenu-link">Action Access</a>
+                                                            <a runat="server" href="~/setting/general/actionaccess" class="subsubmenu-link">Action Access</a>
                                                         </li>
                                                     </ul>
                                                 </li>
@@ -323,13 +323,8 @@
                                                         <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/additional/query" class="subsubmenu-link">Query</a>
                                                         </li>
-
                                                         <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/additional/log" class="subsubmenu-link">Log</a>
-                                                        </li>
-
-                                                        <li class="subsubmenu-item">
-                                                            <a runat="server" href="~/setting/additional/delete" class="subsubmenu-link">Delete File</a>
                                                         </li>
                                                     </ul>
                                                 </li>

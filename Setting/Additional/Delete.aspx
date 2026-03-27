@@ -1,1 +1,0 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Delete.aspx.vb" Inherits="Setting_Additional_Delete" MasterPageFile="~/Site.master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Delete File" %>

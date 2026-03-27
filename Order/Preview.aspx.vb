@@ -18,14 +18,12 @@
             Return
         End If
 
-        ' Mode 1: tampilkan halaman viewer
         If Not isView Then
             Dim fileUrl As String = ResolveUrl("~/Order/Preview.aspx?file=" & fileName & "&view=true")
             litIframe.Text = String.Format("<iframe src='{0}#toolbar=0' width='100%' height='900px' style='border:1px solid #ccc; border-radius:8px;'></iframe>", fileUrl)
             Return
         End If
 
-        ' Mode 2: kirim file PDF inline agar tidak auto-download
         Response.Clear()
         Response.ContentType = "application/pdf"
         Response.AddHeader("Content-Disposition", "inline; filename=" & fileName)

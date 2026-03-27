@@ -45,6 +45,7 @@
     Protected Sub Page_Load(sender As Object, e As EventArgs)
         Dim type As String = Request.QueryString("type").ToString()
         Dim company As String = Request.QueryString("company").ToString()
+        Dim companyId As String = company
         Dim action As String = String.Empty
         If Not String.IsNullOrEmpty(Request.QueryString("action")) Then
             action = Request.QueryString("action").ToString()
@@ -60,9 +61,11 @@
 
         If company = "jpmd" Then
             stringCompany = "AND Customers.CompanyId='2'"
+            companyId = "2"
         End If
         If company = "local" Then
-            stringCompany = "AND (Customers.CompanyId='3' OR Customers.CompanyId='5')"
+            stringCompany = "AND Customers.CompanyId='3'"
+            companyId = "3"
         End If
 
         Dim stringStatus As String = String.Empty
@@ -101,10 +104,8 @@
                         Dim dataLog As Object() = {"OrderHeaders", headerId, "2", "Order In Production"}
                         orderClass.Logs(dataLog)
 
-                        If company = "2" OrElse company = "jpmd" Then
-                            Dim salesClass As New SalesClass
-                            salesClass.RefreshData()
-                        End If
+                        Dim salesClass As New SalesClass
+                        salesClass.RefreshData(companyId)
                     Next
                 End If
             End If

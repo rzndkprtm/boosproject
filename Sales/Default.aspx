@@ -33,17 +33,14 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="row">
-                            <div class="col-12 col-sm-12 col-lg-8 mb-2">
+                            <div class="col-12 col-sm-12 col-lg-8">
                                 <h5 class="card-title">Summary Sales</h5>
                             </div>
-                            <div class="col-12 col-sm-12 col-lg-4 mb-2 d-flex justify-content-end">
-                                <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
-                                    <div class="input-group">
-                                        <span class="input-group-text">Search</span>
-                                        <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" TextMode="Date"></asp:TextBox>
-                                        <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />
-                                    </div>
-                                </asp:Panel>
+                            <div class="col-12 col-sm-12 col-lg-4 d-flex justify-content-end">
+                                <div class="input-group">
+                                    <label class="input-group-text">Company</label>
+                                    <asp:DropDownList runat="server" ID="ddlCompany" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCompany_SelectedIndexChanged"></asp:DropDownList>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -52,7 +49,7 @@
                             <div class="row">
                                 <div class="col-12">
                                     <div class="table-responsive">
-                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="31" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom" OnPageIndexChanging="gvList_PageIndexChanging">
+                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="31" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom" OnPageIndexChanging="gvList_PageIndexChanging" OnRowCommand="gvList_RowCommand">
                                             <RowStyle />
                                             <Columns>
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center">
@@ -60,7 +57,6 @@
                                                         <%# Container.DataItemIndex + 1 %>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-
                                                 <asp:BoundField DataField="Id" HeaderText="ID" />
                                                 <asp:BoundField DataField="SummaryDate" HeaderText="Order Date" DataFormatString="{0:dd MMM yyyy}" />
                                                 <asp:TemplateField HeaderText="Total Cost Price">
@@ -86,6 +82,11 @@
                                                 <asp:TemplateField HeaderText="Total Unpaid Amount">
                                                     <ItemTemplate>
                                                         <%# BindPrice(Eval("TotalUnpaidAmount")) %>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
+                                                    <ItemTemplate>
+                                                        <asp:LinkButton runat="server" ID="linkDetail" CssClass="btn btn-primary btn-sm" Text="Refresh" CommandName="Refresh" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                             </Columns>

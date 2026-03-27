@@ -26,7 +26,6 @@ Partial Class Setting_General_Xero
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
         MessageError_Process(False, String.Empty)
         Session("SearchXero") = txtSearch.Text
-
         Dim thisScript As String = "window.onload = function() { showProcess(); };"
         Try
             lblAction.Text = "Add"
@@ -121,7 +120,6 @@ Partial Class Setting_General_Xero
 
                 If lblAction.Text = "Add" Then
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Xeros ORDER BY Id DESC")
-
                     Using thisConn As New SqlConnection(myConn)
                         Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Xeros VALUES (@Id, @Name, @ItemCode, @AccountCode, @Description, @Active)", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", thisId)

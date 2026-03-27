@@ -101,10 +101,8 @@ Partial Class Order_EditCosting
                 End Using
             End Using
 
-            If lblOrderStatus.Text = "In Production" OrElse lblOrderStatus.Text = "On Hold" Then
-                Dim salesClass As New SalesClass
-                salesClass.RefreshData()
-            End If
+            Dim salesClass As New SalesClass
+            salesClass.RefreshData(lblCompanyId.Text)
 
             Response.Redirect(String.Format("~/order/detail?orderid={0}", lblHeaderId.Text), False)
         Catch ex As Exception

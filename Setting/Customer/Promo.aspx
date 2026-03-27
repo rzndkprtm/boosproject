@@ -117,8 +117,7 @@
                     <div class="row">
                         <div class="col-12 form-group">
                             <label class="form-label">Customer Account</label>
-                            <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select">
-                            </asp:DropDownList>
+                            <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select"></asp:DropDownList>
                         </div>
                     </div>
 

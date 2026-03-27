@@ -371,10 +371,8 @@ Partial Class Order_Detail
                     End Using
                 End Using
 
-                If lblCompanyId.Text = "2" Then
-                    Dim salesClass As New SalesClass
-                    salesClass.RefreshData()
-                End If
+                Dim salesClass As New SalesClass
+                salesClass.RefreshData(lblCompanyId.Text)
 
                 Dim descLog As String = String.Format("Order Canceled | {0}", txtCancelDescription.Text.Trim())
 
@@ -408,14 +406,12 @@ Partial Class Order_Detail
             dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), "Order In Production"}
             orderClass.Logs(dataLog)
 
-            If lblCompanyId.Text = "2" Then
-                Dim salesClass As New SalesClass
-                salesClass.RefreshData()
+            Dim salesClass As New SalesClass
+            salesClass.RefreshData(lblCompanyId.Text)
 
-                If lblOrderStatus.Text = "Payment Received" Then
-                    Dim mailingClass As New MailingClass
-                    mailingClass.ProductionOrder(lblHeaderId.Text)
-                End If
+            If lblOrderStatus.Text = "Payment Received" Then
+                Dim mailingClass As New MailingClass
+                mailingClass.ProductionOrder(lblHeaderId.Text)
             End If
 
             If lblCompanyId.Text = "3" Then
@@ -924,10 +920,8 @@ Partial Class Order_Detail
             dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), "Confirm Payment Received"}
             orderClass.Logs(dataLog)
 
-            If lblCompanyId.Text = "2" Then
-                Dim salesClass As New SalesClass
-                salesClass.RefreshData()
-            End If
+            Dim salesClass As New SalesClass
+            salesClass.RefreshData(lblCompanyId.Text)
 
             url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
             Response.Redirect(url, False)
@@ -1048,10 +1042,8 @@ Partial Class Order_Detail
             dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), "Update Invoice Data"}
             orderClass.Logs(dataLog)
 
-            If lblCompanyId.Text = "2" Then
-                Dim salesClass As New SalesClass
-                salesClass.RefreshData()
-            End If
+            Dim salesClass As New SalesClass
+            salesClass.RefreshData(lblCompanyId.Text)
 
             url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
             Response.Redirect(url, False)
@@ -1506,9 +1498,9 @@ Partial Class Order_Detail
                 orderClass.CalculatePrice(lblHeaderId.Text, newItemId)
                 orderClass.FinalCostItem(lblHeaderId.Text, newItemId)
 
-                If lblCompanyId.Text = "2" AndAlso (lblOrderStatus.Text = "In Production" OrElse lblOrderStatus.Text = "On Hold") Then
+                If lblOrderStatus.Text = "In Production" OrElse lblOrderStatus.Text = "On Hold" Then
                     Dim salesClass As New SalesClass
-                    salesClass.RefreshData()
+                    salesClass.RefreshData(lblCompanyId.Text)
                 End If
 
                 dataLog = {"OrderDetails", newItemId, Session("LoginId"), "Add Service"}
@@ -1556,9 +1548,9 @@ Partial Class Order_Detail
             dataLog = {"OrderDetails", thisId, Session("LoginId"), "Delete Order Item"}
             orderClass.Logs(dataLog)
 
-            If lblCompanyId.Text = "2" AndAlso (lblOrderStatus.Text = "In Production" OrElse lblOrderStatus.Text = "On Hold") Then
+            If lblOrderStatus.Text = "In Production" OrElse lblOrderStatus.Text = "On Hold" Then
                 Dim salesClass As New SalesClass
-                salesClass.RefreshData()
+                salesClass.RefreshData(lblCompanyId.Text)
             End If
 
             url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)

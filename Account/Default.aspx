@@ -204,7 +204,9 @@
         </div>
     </div>
 
-    <asp:HiddenField runat="server" ID="hiddenLoginId" />
+    <div runat="server" visible="false">
+        <asp:Label runat="server" ID="lblLoginId"></asp:Label>
+    </div>
 
     <script type="text/javascript">
         function showName() {

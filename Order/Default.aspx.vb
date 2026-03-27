@@ -323,11 +323,8 @@ Partial Class Order_Default
                 dataLog = {"OrderHeaders", thisId, Session("LoginId"), "Order In Production"}
                 orderClass.Logs(dataLog)
 
-                ' SALES
-                If companyId = "2" Then
-                    Dim salesClass As New SalesClass
-                    salesClass.RefreshData()
-                End If
+                Dim salesClass As New SalesClass
+                salesClass.RefreshData(companyId)
 
                 Session("OrderStatus") = ddlStatus.SelectedValue
                 Session("OrderCompany") = ddlCompany.SelectedValue
@@ -451,6 +448,7 @@ Partial Class Order_Default
 
             If msgErrorCancelOrder.InnerText = "" Then
                 Dim thisId As String = txtIdCancelOrder.Text
+                Dim companyId As String = orderClass.GetCompanyIdByOrder(thisId)
 
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Canceled', StatusDescription=@StatusDescription, CanceledDate=GETDATE() WHERE Id=@Id", thisConn)
@@ -465,6 +463,9 @@ Partial Class Order_Default
                 Dim descLog As String = String.Format("Order Canceled. Reason : {0}", txtCancelDescription.Text.Trim())
                 dataLog = {"OrderHeaders", thisId, Session("LoginId"), descLog}
                 orderClass.Logs(dataLog)
+
+                Dim salesClass As New SalesClass
+                salesClass.RefreshData(companyId)
 
                 Response.Redirect("~/order", False)
             End If

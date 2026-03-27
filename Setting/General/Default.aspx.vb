@@ -17,7 +17,7 @@
         divLevelAccess.Attributes("onclick") = "location.href='loginaccess'"
         divNewsletter.Attributes("onclick") = "location.href='newsletter'"
         divTutorial.Attributes("onclick") = "location.href='tutorial'"
-        divActionAccess.Attributes("onclick") = "location.href='action'"
+        divActionAccess.Attributes("onclick") = "location.href='actionaccess'"
     End Sub
 
     Protected Function GetSumData(params As String) As String
