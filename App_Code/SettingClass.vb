@@ -430,6 +430,64 @@ Public Class SettingClass
         Return result
     End Function
 
+    Public Function GenerateUsername(accountName As String) As String
+        Dim ignoreWords As String() = {"PT", "CV", "TOKO", "UD", "PD", "PTY", "LTD"}
+
+        accountName = Regex.Replace(accountName, "[^a-zA-Z0-9 ]", "")
+
+        Dim words As String() = accountName.Split(New Char() {" "c}, StringSplitOptions.RemoveEmptyEntries)
+
+        Dim filtered As New List(Of String)
+        For Each w As String In words
+            If Not ignoreWords.Contains(w.ToUpper()) Then
+                filtered.Add(w.ToLower())
+            End If
+        Next
+
+        If filtered.Count = 0 Then
+            Return "user"
+        End If
+
+        Dim candidates As New List(Of String)
+
+        If filtered.Count >= 2 Then
+            Dim w1 As String = filtered(0)
+            Dim w2 As String = filtered(1)
+
+            candidates.Add(Left(w1, Math.Min(3, w1.Length)) & Left(w2, Math.Min(3, w2.Length)))
+            candidates.Add(Left(w1, Math.Min(4, w1.Length)) & Left(w2, Math.Min(2, w2.Length)))
+            candidates.Add(Left(w1, Math.Min(2, w1.Length)) & Left(w2, Math.Min(4, w2.Length)))
+            candidates.Add(w1 & w2)
+            candidates.Add(Left(w1, 1) & w2)
+            candidates.Add(Left(w1, 1) & Left(w2, 1))
+        Else
+            Dim w As String = filtered(0)
+
+            candidates.Add(Left(w, Math.Min(6, w.Length)))
+            candidates.Add(w)
+        End If
+
+        For Each candidate As String In candidates
+            If Not IsUsernameExists(candidate) Then
+                Return candidate
+            End If
+        Next
+
+        Return candidates(0)
+    End Function
+
+    Private Function IsUsernameExists(username As String) As Boolean
+        Using thisConn As New SqlConnection(myConn)
+            thisConn.Open()
+            Using myCmd As New SqlCommand("SELECT COUNT(1) FROM CustomerLogins WHERE LOWER(UserName) = @UserName", thisConn)
+                myCmd.Parameters.AddWithValue("@UserName", username.ToLower())
+
+                Dim count As Integer = Convert.ToInt32(myCmd.ExecuteScalar())
+                Return count > 0
+            End Using
+        End Using
+    End Function
+
     Public Sub Logs(data As Object())
         Try
             If data.Length = 4 Then

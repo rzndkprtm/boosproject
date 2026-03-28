@@ -1340,7 +1340,7 @@
                     <div class="row" id="divDiscountType">
                         <div class="col-12 form-group">
                             <label class="form-label required">Type</label>
-                            <asp:DropDownList runat="server" ID="ddlDiscountType" CssClass="form-select" ClientIDMode="Static" onchange="visibleDiscountType()">
+                            <asp:DropDownList runat="server" ID="ddlDiscountType" CssClass="choices form-select" ClientIDMode="Static" onchange="visibleDiscountType()">
                                 <asp:ListItem Value="Designs" Text="Design Type"></asp:ListItem>
                                 <asp:ListItem Value="PriceProductGroups" Text="Product Group"></asp:ListItem>
                             </asp:DropDownList>
@@ -1350,14 +1350,14 @@
                     <div class="row" id="divDiscountDataId">
                         <div class="col-12 form-group">
                             <label class="form-label required">Product</label>
-                            <asp:DropDownList runat="server" ID="ddlDiscountDataId" CssClass="form-select"></asp:DropDownList>
+                            <asp:DropDownList runat="server" ID="ddlDiscountDataId" CssClass="choices form-select"></asp:DropDownList>
                         </div>
                     </div>
 
                     <div class="row" id="divDiscountDataIdB">
                         <div class="col-12 form-group">
                             <label class="form-label required">Product</label>
-                            <asp:DropDownList runat="server" ID="ddlDiscountDataIdB" CssClass="form-select"></asp:DropDownList>
+                            <asp:DropDownList runat="server" ID="ddlDiscountDataIdB" CssClass="choices form-select"></asp:DropDownList>
                         </div>
                     </div>
 
