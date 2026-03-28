@@ -20,6 +20,9 @@ Partial Class Setting_Price_Base_Default
             BindPriceGroup()
 
             btnEditable.Visible = PageAction("Editable")
+
+            gvList.DataSource = Nothing
+            gvList.DataBind()
         End If
     End Sub
 
@@ -27,8 +30,10 @@ Partial Class Setting_Price_Base_Default
         Response.Redirect("~/setting/price/base/editable", False)
     End Sub
 
-    Protected Sub btnSort_Click(sender As Object, e As EventArgs)
+    Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
+        gvList.DataSource = Nothing
+        gvList.DataBind()
         Try
             If ddlCategory.SelectedValue = "" Then
                 Exit Sub
@@ -56,7 +61,6 @@ Partial Class Setting_Price_Base_Default
             }
 
             Dim thisData As DataTable = settingClass.GetDataTableSP("sp_GetPriceListPivot", params)
-
             gvList.DataSource = thisData
             gvList.DataBind()
         Catch ex As Exception

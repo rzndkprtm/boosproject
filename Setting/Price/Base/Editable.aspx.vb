@@ -27,6 +27,9 @@ Partial Class Setting_Price_Base_Editable
 
             btnAdd.Visible = PageAction("Add")
             btnImport.Visible = PageAction("Import")
+
+            gvList.DataSource = Nothing
+            gvList.DataBind()
         End If
     End Sub
 
@@ -36,6 +39,12 @@ Partial Class Setting_Price_Base_Editable
         Try
             lblAction.Text = "Add"
             titleProcess.InnerText = "Add Price Base"
+
+            divCategoryMethod.Visible = True
+            divProductGroup.Visible = True
+            divPriceGroup.Visible = True
+            txtHeightProcess.Enabled = True
+            txtWidthProcess.Enabled = True
 
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         Catch ex As Exception
@@ -48,11 +57,13 @@ Partial Class Setting_Price_Base_Editable
     End Sub
 
     Protected Sub btnImport_Click(sender As Object, e As EventArgs)
-
+        Response.Redirect("~/setting/price/base/import", False)
     End Sub
 
-    Protected Sub btnSort_Click(sender As Object, e As EventArgs)
+    Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
+        gvList.DataSource = Nothing
+        gvList.DataBind()
         Try
             If ddlCategory.SelectedValue = "" Then
                 gvList.DataSource = Nothing
@@ -125,6 +136,13 @@ Partial Class Setting_Price_Base_Editable
                     If ddlPriceGroupProcess.SelectedValue = "2" OrElse ddlPriceGroupProcess.SelectedValue = "3" OrElse ddlPriceGroupProcess.SelectedValue = "4" OrElse ddlPriceGroup.SelectedValue = "5" OrElse ddlPriceGroupProcess.SelectedValue = "10" Then
                         txtPrice.Text = Convert.ToDecimal(myData("Price")).ToString("G29", idIDR)
                     End If
+
+                    divCategoryMethod.Visible = False
+                    divProductGroup.Visible = False
+                    divPriceGroup.Visible = False
+                    txtHeightProcess.Enabled = False
+                    txtWidthProcess.Enabled = False
+
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Catch ex As Exception
                     MessageError_Process(True, ex.ToString())
