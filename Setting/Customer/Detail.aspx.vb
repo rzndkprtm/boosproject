@@ -1266,6 +1266,7 @@ Partial Class Setting_Customer_Detail
             If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" Then
                 divLoginEmail.Visible = True
             End If
+            txtLoginUserName.Text = settingClass.GenerateUsername(lblName.Text)
             txtLoginPassword.Text = settingClass.GenerateNewPassword(15)
 
             BindDataLoginRole()
@@ -1849,6 +1850,9 @@ Partial Class Setting_Customer_Detail
 
                 thisConn.Close()
             End Using
+
+            dataLog = {"Customers", lblId.Text, Session("LoginId").ToString(), "Customer discount has been reset."}
+            settingClass.Logs(dataLog)
 
             url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
             Response.Redirect(url, False)
