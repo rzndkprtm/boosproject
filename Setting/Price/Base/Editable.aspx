@@ -40,75 +40,87 @@
         </section>
 
         <section class="row mt-3">
-            <div class="col-12 col-sm-12 col-lg-9">
+            <div class="col-12 col-sm-12 col-lg-5">
                 <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Sort Data</h4>
+                    </div>
                     <div class="card-content">
                         <div class="card-body">
-                            <div class="row mb-2">
-                                <div class="col-12 col-sm-12 col-lg-3 mb-2">
-                                    <div class="input-group">
-                                        <label class="input-group-text">Category</label>
-                                        <asp:DropDownList runat="server" ID="ddlCategory" CssClass="form-select">
-                                            <asp:ListItem Value="" Text=""></asp:ListItem>
-                                            <asp:ListItem Value="Sell" Text="Sell Price"></asp:ListItem>
-                                            <asp:ListItem Value="Buy" Text="Buy Price"></asp:ListItem>
-                                        </asp:DropDownList>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-sm-12 col-lg-9">
-                                    <div class="input-group">
-                                        <label class="input-group-text">Product Group</label>
-                                        <asp:DropDownList runat="server" ID="ddlProductGroup" CssClass="form-select"></asp:DropDownList>
-                                    </div>
-                                </div>
-                            </div>
+                            <div class="form form-vertical">
+                                <div class="form-body">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label>Category</label>
+                                                <asp:DropDownList runat="server" ID="ddlCategory" CssClass="choices form-select">
+                                                    <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                    <asp:ListItem Value="Sell" Text="Sell Price"></asp:ListItem>
+                                                    <asp:ListItem Value="Buy" Text="Buy Price"></asp:ListItem>
+                                                </asp:DropDownList>
+                                            </div>
+                                        </div>
 
-                            <div class="row mb-2">
-                                <div class="col-12 col-sm-12 col-lg-4 mb-2">
-                                    <div class="input-group">
-                                        <label class="input-group-text">Method</label>
-                                        <asp:DropDownList runat="server" ID="ddlMethod" CssClass="form-select">
-                                            <asp:ListItem Value="" Text=""></asp:ListItem>
-                                            <asp:ListItem Value="Cost" Text="Cost"></asp:ListItem>
-                                            <asp:ListItem Value="Square Metre" Text="Square Metre"></asp:ListItem>
-                                            <asp:ListItem Value="Linear Metre" Text="Linear Metre"></asp:ListItem>
-                                        </asp:DropDownList>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-sm-12 col-lg-8">
-                                    <div class="input-group">
-                                        <label class="input-group-text">Price Group</label>
-                                        <asp:DropDownList runat="server" ID="ddlPriceGroup" CssClass="form-select"></asp:DropDownList>
-                                    </div>
-                                </div>
-                            </div>
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label>Product Group</label>
+                                                <asp:DropDownList runat="server" ID="ddlProductGroup" CssClass="choices form-select"></asp:DropDownList>
+                                            </div>
+                                        </div>
 
-                            <div class="row">
-                                <div class="col-12 col-sm-12 col-lg-4">
-                                    <div class="input-group">
-                                        <label class="input-group-text">Height</label>
-                                        <asp:TextBox runat="server" ID="txtHeight" TextMode="Number" CssClass="form-control" placeholder="Height ...." autocomplete="off"></asp:TextBox>
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label>Method</label>
+                                                <asp:DropDownList runat="server" ID="ddlMethod" CssClass="choices form-select">
+                                                    <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                    <asp:ListItem Value="Cost" Text="Cost"></asp:ListItem>
+                                                    <asp:ListItem Value="Square Metre" Text="Square Metre"></asp:ListItem>
+                                                    <asp:ListItem Value="Linear Metre" Text="Linear Metre"></asp:ListItem>
+                                                </asp:DropDownList>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label>Price Group</label>
+                                                <asp:DropDownList runat="server" ID="ddlPriceGroup" CssClass="choices form-select"></asp:DropDownList>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label>Height</label>
+                                                <div class="input-group">
+                                                    <asp:TextBox runat="server" ID="txtHeight" TextMode="Number" CssClass="form-control" placeholder="Height ...." autocomplete="off"></asp:TextBox>
+                                                    <label class="input-group-text">mm</label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label>Width</label>
+                                                <div class="input-group">
+                                                    <asp:TextBox runat="server" ID="txtWidth" TextMode="Number" CssClass="form-control" placeholder="Width ...." autocomplete="off"></asp:TextBox>
+                                                    <label class="input-group-text">mm</label>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-12 col-sm-12 col-lg-4">
-                                    <div class="input-group">
-                                        <label class="input-group-text">Width</label>
-                                        <asp:TextBox runat="server" ID="txtWidth" TextMode="Number" CssClass="form-control" placeholder="Width ...." autocomplete="off"></asp:TextBox>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-sm-12 col-lg-4">
-                                    <asp:Button runat="server" ID="btnSort" CssClass="btn btn-primary" Text="Sort" OnClick="btnSort_Click" />
                                 </div>
                             </div>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between">
+                            <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" OnClick="btnSubmit_Click" />
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
-
-        <section class="row">
-            <div class="col-12">
+            <div class="col-12 col-sm-12 col-lg-7">
                 <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Result</h4>
+                    </div>
                     <div class="card-content">
                         <div class="card-body">
                             <div class="row">
@@ -123,10 +135,6 @@
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:BoundField DataField="Id" HeaderText="ID" />
-                                                <asp:BoundField DataField="Category" HeaderText="Category" />
-                                                <asp:BoundField DataField="Method" HeaderText="Method" />
-                                                <asp:BoundField DataField="ProductGroupName" HeaderText="Product Group Name" />
-                                                <asp:BoundField DataField="PriceGroupName" HeaderText="Price Group Name" />
                                                 <asp:BoundField DataField="Height" HeaderText="Height" />
                                                 <asp:BoundField DataField="Width" HeaderText="Width" />
                                                 <asp:TemplateField HeaderText="Price">
@@ -174,7 +182,7 @@
                 </div>
 
                 <div class="modal-body">
-                    <div class="row mb-2">
+                    <div class="row mb-2" runat="server" id="divCategoryMethod">
                         <div class="col-6 form-group">
                             <label class="form-label">Category</label>
                             <asp:DropDownList runat="server" ID="ddlCategoryProcess" CssClass="form-select">
@@ -193,13 +201,13 @@
                             </asp:DropDownList>
                         </div>
                     </div>
-                    <div class="row mb-2">
+                    <div class="row mb-2" runat="server" id="divProductGroup">
                         <div class="col-12 form-group">
                             <label class="form-label">Product Group</label>
                             <asp:DropDownList runat="server" ID="ddlProductGroupProcess" CssClass="form-select"></asp:DropDownList>
                         </div>
                     </div>
-                    <div class="row mb-2">
+                    <div class="row mb-2" runat="server" id="divPriceGroup">
                         <div class="col-12 form-group">
                             <label class="form-label">Price Group</label>
                             <asp:DropDownList runat="server" ID="ddlPriceGroupProcess" CssClass="form-select"></asp:DropDownList>
