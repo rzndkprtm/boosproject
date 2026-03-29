@@ -18,27 +18,17 @@ Partial Class Setting_Boos
         If thisAction = "createsales" Then
             CreateSales()
         End If
-        If thisAction = "resetcashsaleorder" Then
-            ResetDataCashSaleOrder()
+        If thisAction = "resetproformaorder" Then
+            ResetProformaOrder()
         End If
         If thisAction = "unshipment" Then
             UnshipmentOrder()
         End If
         If thisAction = "deleteorderactioncontext" Then
-            DeleteContext()
+            DeleteOrderActionContext()
         End If
-        If thisAction = "login" Then
-            If String.IsNullOrEmpty(Request.QueryString("user")) Then
-                Response.Redirect("~/", False)
-                Exit Sub
-            End If
-            GetTemporary(Request.QueryString("user").ToString())
-        End If
-        If thisAction = "resetpassword" Then
-            ResetPassword()
-        End If
-        If thisAction = "clearsession" Then
-            ClearSession()
+        If thisAction = "deletenullsession" Then
+            DeleteNullSession()
         End If
         If thisAction = "shipment" Then
             If String.IsNullOrEmpty(Request.QueryString("OrdID")) Then
@@ -114,7 +104,7 @@ Partial Class Setting_Boos
         End Try
     End Sub
 
-    Protected Sub ResetDataCashSaleOrder()
+    Protected Sub ResetProformaOrder()
         Try
             Dim orderClass As New OrderClass
             Dim thisData As DataTable = orderClass.GetDataTable("SELECT OrderHeaders.* FROM OrderHeaders LEFT JOIN OrderInvoices ON OrderHeaders.Id=OrderInvoices.Id WHERE OrderHeaders.Status='Proforma Sent' AND OrderInvoices.DueDate=CAST(GETDATE() AS DATE)")
@@ -171,7 +161,7 @@ Partial Class Setting_Boos
         End Try
     End Sub
 
-    Protected Sub DeleteContext()
+    Protected Sub DeleteOrderActionContext()
         Try
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("DELETE FROM OrderActionContext", thisConn)
@@ -184,50 +174,10 @@ Partial Class Setting_Boos
         End Try
     End Sub
 
-    Protected Sub GetTemporary(user As String)
-        Try
-            Dim thisId As String = String.Empty
-
-            Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Temporarys OUTPUT INSERTED.Id VALUES (NEWID(), @UserName)", thisConn)
-                    myCmd.Parameters.AddWithValue("@UserName", user)
-
-                    thisConn.Open()
-                    thisId = myCmd.ExecuteScalar().ToString()
-                End Using
-            End Using
-            Dim url As String = String.Format("~/information?uid={0}", thisId)
-            Response.Redirect(url, False)
-        Catch ex As Exception
-        End Try
-    End Sub
-
-    Protected Sub ResetPassword()
-        Dim loginData As DataTable = settingClass.GetDataTable("SELECT CustomerLogins.* FROM CustomerLogins LEFT JOIN Customers ON CustomerLogins.CustomerId=Customers.Id WHERE Customers.CompanyId='2'")
-        If loginData.Rows.Count > 0 Then
-            For iLogin As Integer = 0 To loginData.Rows.Count - 1
-                Dim loginId As String = loginData.Rows(iLogin)("Id").ToString()
-                Dim userName As String = loginData.Rows(iLogin)("UserName").ToString()
-
-                Dim newPassword As String = settingClass.Encrypt(userName)
-
-                Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLogins SET Password=@Password, FailedCount=0, LastLogin=NULL, ResetLogin=1 WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", loginId)
-                        myCmd.Parameters.AddWithValue("@Password", newPassword)
-
-                        thisConn.Open()
-                        myCmd.ExecuteNonQuery()
-                    End Using
-                End Using
-            Next
-        End If
-    End Sub
-
-    Protected Sub ClearSession()
+    Protected Sub DeleteNullSession()
         Try
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Sessions", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Sessions WHERE LoginId IS NULL", thisConn)
 
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
