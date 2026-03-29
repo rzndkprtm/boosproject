@@ -299,7 +299,7 @@ Partial Class Setting_Customer_Address
     Protected Sub BindDataCustomer()
         ddlCustomer.Items.Clear()
         Try
-            ddlCustomer.DataSource = settingClass.GetDataTable("SELECT * FROM Customers WHERE Active=1 ORDER BY Name ASC")
+            ddlCustomer.DataSource = settingClass.GetDataTable("SELECT * FROM Customers ORDER BY Name ASC")
             ddlCustomer.DataTextField = "Name"
             ddlCustomer.DataValueField = "Id"
             ddlCustomer.DataBind()
