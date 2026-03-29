@@ -44,7 +44,7 @@
 
             Dim dataId As String = e.CommandArgument.ToString()
             If e.CommandName = "Detail" Then
-                Dim url As String = String.Format("~/guide/detail?boos={0}", dataId)
+                Dim url As String = String.Format("~/guide/detail?guideid={0}", dataId)
                 Response.Redirect(url, False)
             End If
         End If
