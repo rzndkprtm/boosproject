@@ -15,7 +15,7 @@ Partial Class Setting_Boos
         End If
 
         Dim thisAction As String = Request.QueryString("action").ToString()
-        If thisAction = "salescosting" Then
+        If thisAction = "createsales" Then
             CreateSales()
         End If
         If thisAction = "resetcashsaleorder" Then
