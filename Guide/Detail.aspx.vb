@@ -12,12 +12,12 @@ Partial Class Guide_Detail
             Exit Sub
         End If
 
-        If String.IsNullOrEmpty(Request.QueryString("boos")) Then
-            Response.Redirect("~/guide", False)
+        If String.IsNullOrEmpty(Request.QueryString("guideid")) Then
+            Response.Redirect("~/guideid", False)
             Exit Sub
         End If
 
-        lblId.Text = Request.QueryString("boos").ToString()
+        lblId.Text = Request.QueryString("guideid").ToString()
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
