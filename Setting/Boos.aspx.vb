@@ -24,7 +24,7 @@ Partial Class Setting_Boos
         If thisAction = "unshipment" Then
             UnshipmentOrder()
         End If
-        If thisAction = "orderactioncontext" Then
+        If thisAction = "deleteorderactioncontext" Then
             DeleteContext()
         End If
         If thisAction = "login" Then
