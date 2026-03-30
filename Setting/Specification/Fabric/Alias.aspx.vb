@@ -1,7 +1,7 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 
-Partial Class Setting_Price_Group
+Partial Class Setting_Specification_Fabric_Alias
     Inherits Page
 
     Dim settingClass As New SettingClass
@@ -12,28 +12,26 @@ Partial Class Setting_Price_Group
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
         If pageAccess = False Then
-            Response.Redirect("~/setting/price", False)
+            Response.Redirect("~/setting/specification/fabric", False)
             Exit Sub
         End If
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-            txtSearch.Text = Session("SearchPriceGroup")
+            txtSearch.Text = Session("SearchFabricAlias")
             BindData(txtSearch.Text)
         End If
     End Sub
 
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
         MessageError_Process(False, String.Empty)
-        Session("SearchPriceGroup") = txtSearch.Text
+        Session("SearchFabricAlias") = txtSearch.Text
         Dim thisScript As String = "window.onload = function() { showProcess(); };"
         Try
             lblAction.Text = "Add"
-            titleProcess.InnerText = "Add Price Group"
+            titleProcess.InnerText = "Add Fabric Alias"
 
-            txtName.Enabled = True
-
-            BindCompany()
+            BindFabric()
 
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         Catch ex As Exception
@@ -50,23 +48,9 @@ Partial Class Setting_Price_Group
         BindData(txtSearch.Text)
     End Sub
 
-    Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
-        MessageError(False, String.Empty)
-        Try
-            gvList.PageIndex = e.NewPageIndex
-            BindData(txtSearch.Text)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
     Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
         If Not String.IsNullOrEmpty(e.CommandArgument) Then
-            Session("SearchPriceGroup") = txtSearch.Text
-
+            Session("SearchFabricAlias") = txtSearch.Text
             Dim dataId As String = e.CommandArgument.ToString()
             If e.CommandName = "Detail" Then
                 MessageError_Process(False, String.Empty)
@@ -74,21 +58,15 @@ Partial Class Setting_Price_Group
                 Try
                     lblId.Text = dataId
                     lblAction.Text = "Edit"
-                    titleProcess.InnerText = "Edit Price Group"
+                    titleProcess.InnerText = "Edit Fabric Alias"
 
-                    Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM PriceGroups WHERE Id='" & lblId.Text & "'")
+                    Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM FabricAlias WHERE Id='" & lblId.Text & "'")
                     If myData Is Nothing Then Exit Sub
 
-                    BindCompany(True)
+                    BindFabric()
 
-                    txtName.Enabled = False
-                    If Session("RoleName") = "Developer" Then txtName.Enabled = True
-
-                    txtName.Text = myData("Name").ToString()
-                    ddlType.SelectedValue = myData("Type").ToString()
-                    ddlCompany.SelectedValue = myData("CompanyId").ToString()
-                    txtDescription.Text = myData("Description").ToString()
-                    ddlActive.SelectedValue = Convert.ToInt32(myData("Active"))
+                    ddlFirstId.SelectedValue = myData("FirstID").ToString()
+                    ddlSecondId.SelectedValue = myData("SecondID").ToString()
 
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Catch ex As Exception
@@ -106,69 +84,57 @@ Partial Class Setting_Price_Group
         MessageError_Process(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showProcess(); };"
         Try
-            If txtName.Text = "" Then
-                MessageError_Process(True, "PRICE GROUP NAME IS REQUIRED !")
+            If ddlFirstId.SelectedValue = "" Then
+                MessageError_Process(True, "NAME IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
             End If
 
-            If ddlCompany.SelectedValue = "" Then
-                MessageError_Process(True, "COMPANY IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-                Exit Sub
-            End If
-
-            If ddlType.SelectedValue = "" Then
-                MessageError_Process(True, "TYPE IS REQUIRED !")
+            If ddlSecondId.SelectedValue = "" Then
+                MessageError_Process(True, "NAME IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
             End If
 
             If msgErrorProcess.InnerText = "" Then
-                Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
                 If lblAction.Text = "Add" Then
-                    Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM PriceGroups ORDER BY Id DESC")
+                    Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM FabricAlias ORDER BY Id DESC")
+
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO PriceGroups VALUES (@Id, @Name, @CompanyId, @Type, @Description, @Active)", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO FabricAlias VALUES (@Id, @FirstId, @SecondId)", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", thisId)
-                            myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
-                            myCmd.Parameters.AddWithValue("@CompanyId", ddlCompany.SelectedValue)
-                            myCmd.Parameters.AddWithValue("@Description", descText)
-                            myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
+                            myCmd.Parameters.AddWithValue("@FirstId", ddlFirstId.SelectedValue)
+                            myCmd.Parameters.AddWithValue("@SecondId", ddlSecondId.SelectedValue)
 
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
                         End Using
                     End Using
 
-                    dataLog = {"PriceGroups", thisId, Session("LoginId").ToString(), "Price Group Created"}
+                    dataLog = {"FabricAlias", thisId, Session("LoginId").ToString(), "Fabric Alias Created"}
                     settingClass.Logs(dataLog)
 
-                    Session("SearchPriceGroup") = txtSearch.Text
-                    Response.Redirect("~/setting/price/group", False)
+                    Session("SearchFabricAlias") = txtSearch.Text
+                    Response.Redirect("~/setting/specification/fabric/alias", False)
                 End If
 
                 If lblAction.Text = "Edit" Then
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE PriceGroups SET Name=@Name, Type=@Type, CompanyId=@CompanyId, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("UPDATE FabricAlias SET FirstId=@FirstId, SecondId=@SecondId WHERE Id=@Id", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                            myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
-                            myCmd.Parameters.AddWithValue("@CompanyId", ddlCompany.SelectedValue)
-                            myCmd.Parameters.AddWithValue("@Description", descText)
-                            myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
+                            myCmd.Parameters.AddWithValue("@FirstId", ddlFirstId.SelectedValue)
+                            myCmd.Parameters.AddWithValue("@SecondId", ddlSecondId.SelectedValue)
 
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
                         End Using
                     End Using
 
-                    dataLog = {"PriceGroups", lblId.Text, Session("LoginId").ToString(), "Price Group Updated"}
+                    dataLog = {"FabricAlias", lblId.Text, Session("LoginId").ToString(), "Fabric Alias Updated"}
                     settingClass.Logs(dataLog)
 
-                    Session("SearchPriceGroup") = txtSearch.Text
-                    Response.Redirect("~/setting/price/group", False)
+                    Session("SearchFabricAlias") = txtSearch.Text
+                    Response.Redirect("~/setting/specification/fabric/alias", False)
                 End If
             End If
         Catch ex As Exception
@@ -180,26 +146,46 @@ Partial Class Setting_Price_Group
         End Try
     End Sub
 
-    Protected Sub BindData(searchText As String)
-        Session("SearchPriceGroup") = String.Empty
+    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
         Try
-            Dim conditions As New List(Of String)
+            Dim thisId As String = txtIdDelete.Text
 
-            If Session("RoleName") = "Account" Then
-                conditions.Add("PriceGroups.CompanyId='" & Session("CompanyId") & "'")
+            Using thisConn As New SqlConnection(myConn)
+                thisConn.Open()
+
+                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM FabricAlias WHERE Id=@Id", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", thisId)
+                    myCmd.ExecuteNonQuery()
+                End Using
+
+                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Logs WHERE Type='FabricAlias' AND DataId=@Id", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", thisId)
+                    myCmd.ExecuteNonQuery()
+                End Using
+
+                thisConn.Close()
+            End Using
+
+            Session("SearchFabricAlias") = txtSearch.Text
+            Response.Redirect("~/setting/specification/fabric/alias", False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindData(searchText As String)
+        Session("SearchFabricAlias") = String.Empty
+        Try
+            Dim stringSearch As String = String.Empty
+            If Not searchText = "" Then
+                stringSearch = "WHERE FirstFabric.Name LIKE '%" & searchText & "%'"
             End If
 
-            If Not String.IsNullOrEmpty(searchText) Then
-                conditions.Add("(PriceGroups.Id LIKE '%" & searchText.Trim() & "%' OR PriceGroups.Name LIKE '%" & searchText.Trim() & "%' OR PriceGroups.Description LIKE '%" & searchText.Trim() & "%' OR Companys.Name LIKE '%" & searchText.Trim() & "%')")
-            End If
-
-            Dim whereClause As String = String.Empty
-            If conditions.Count > 0 Then
-                whereClause = "WHERE " & String.Join(" AND ", conditions)
-            End If
-
-            Dim thisString As String = String.Format("SELECT PriceGroups.*, Companys.Name AS CompanyName, CASE WHEN PriceGroups.Active=1 THEN 'Yes' WHEN PriceGroups.Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM PriceGroups LEFT JOIN Companys ON PriceGroups.CompanyId=Companys.Id {0} ORDER BY PriceGroups.CompanyId, PriceGroups.Id ASC", whereClause)
-
+            Dim thisString As String = String.Format("SELECT FabricAlias.*, FirstFabric.Name AS FirstName, SecondFabric.Name AS SecondName FROM FabricAlias LEFT JOIN Fabrics FirstFabric ON FabricAlias.FirstId = FirstFabric.Id LEFT JOIN Fabrics SecondFabric ON FabricAlias.SecondId = SecondFabric.Id {0} ORDER BY FabricAlias.Id ASC", stringSearch)
             gvList.DataSource = settingClass.GetDataTable(thisString)
             gvList.DataBind()
             gvList.Columns(1).Visible = PageAction("Visible ID")
@@ -213,23 +199,33 @@ Partial Class Setting_Price_Group
         End Try
     End Sub
 
-    Protected Sub BindCompany(Optional isEdit As Boolean = False)
-        ddlCompany.Items.Clear()
+    Protected Sub BindFabric()
+        ddlFirstId.Items.Clear()
+        ddlSecondId.Items.Clear()
         Try
-            Dim thisString As String = "SELECT * FROM Companys WHERE Active=1 ORDER BY Id ASC"
-            If isEdit = True Then
-                thisString = "SELECT * FROM Companys ORDER BY Id ASC"
-            End If
-            ddlCompany.DataSource = settingClass.GetDataTable("SELECT * FROM Companys ORDER BY Id ASC")
-            ddlCompany.DataTextField = "Alias"
-            ddlCompany.DataValueField = "Id"
-            ddlCompany.DataBind()
+            Dim thisQuery As String = "SELECT * FROM Fabrics ORDER BY Name ASC"
 
-            If ddlCompany.Items.Count > 0 Then
-                ddlCompany.Items.Insert(0, New ListItem("", ""))
+            ddlFirstId.DataSource = settingClass.GetDataTable(thisQuery)
+            ddlFirstId.DataTextField = "Name"
+            ddlFirstId.DataValueField = "Id"
+            ddlFirstId.DataBind()
+
+            ddlSecondId.DataSource = settingClass.GetDataTable(thisQuery)
+            ddlSecondId.DataTextField = "Name"
+            ddlSecondId.DataValueField = "Id"
+            ddlSecondId.DataBind()
+
+            If ddlFirstId.Items.Count > 0 Then
+                ddlFirstId.Items.Insert(0, New ListItem("", ""))
+            End If
+            If ddlSecondId.Items.Count > 0 Then
+                ddlSecondId.Items.Insert(0, New ListItem("", ""))
             End If
         Catch ex As Exception
-            ddlCompany.Items.Clear()
+            MessageError_Process(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 

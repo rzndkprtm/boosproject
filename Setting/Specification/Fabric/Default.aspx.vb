@@ -28,6 +28,10 @@ Partial Class Setting_Specification_Fabric_Default
         Response.Redirect("~/setting/specification/fabric/add", False)
     End Sub
 
+    Protected Sub btnAlias_Click(sender As Object, e As EventArgs)
+        Response.Redirect("~/setting/specification/fabric/alias", False)
+    End Sub
+
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         BindData(txtSearch.Text, ddlCompanyDetail.SelectedValue)
@@ -36,19 +40,6 @@ Partial Class Setting_Specification_Fabric_Default
     Protected Sub ddlCompanyDetail_SelectedIndexChanged(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         BindData(txtSearch.Text, ddlCompanyDetail.SelectedValue)
-    End Sub
-
-    Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
-        MessageError(False, String.Empty)
-        Try
-            gvList.PageIndex = e.NewPageIndex
-            BindData(txtSearch.Text, ddlCompanyDetail.SelectedValue)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
     End Sub
 
     Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
@@ -108,13 +99,22 @@ Partial Class Setting_Specification_Fabric_Default
     Protected Sub BindData(searchText As String, companyText As String)
         Session("SearchFabric") = String.Empty
         Try
-            Dim companyString As String = "WHERE cdArray.VALUE='" & companyText & "'"
-            Dim searchString As String = String.Empty
-            If Not searchText = "" Then
-                searchString = "AND (Id LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%')"
+            Dim conditions As New List(Of String)
+
+            If Not String.IsNullOrEmpty(companyText) Then
+                conditions.Add("cdArray.VALUE = '" & companyText & "'")
             End If
 
-            Dim thisString As String = String.Format("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Fabrics CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS cdArray {0} {1} ORDER BY Name ASC", companyString, searchString)
+            If Not String.IsNullOrEmpty(searchText) Then
+                conditions.Add("(Id LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%')")
+            End If
+
+            Dim whereClause As String = ""
+            If conditions.Count > 0 Then
+                whereClause = "WHERE " & String.Join(" AND ", conditions)
+            End If
+
+            Dim thisString As String = "SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Fabrics CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS cdArray " & whereClause & " ORDER BY Name ASC"
 
             gvList.DataSource = settingClass.GetDataTable(thisString)
             gvList.DataBind()
@@ -122,7 +122,9 @@ Partial Class Setting_Specification_Fabric_Default
             gvList.Columns(5).Visible = PageAction("Visible Company Detail")
 
             btnAdd.Visible = PageAction("Add")
-            aFabricAlias.Visible = PageAction("Visible Fabric Alias")
+            btnAlias.Visible = PageAction("Visible Fabric Alias")
+
+            divCompanyDetail.Visible = PageAction("Visible Sort Company Detail")
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -142,6 +144,10 @@ Partial Class Setting_Specification_Fabric_Default
             ddlCompanyDetail.DataTextField = "Name"
             ddlCompanyDetail.DataValueField = "Id"
             ddlCompanyDetail.DataBind()
+
+            If ddlCompanyDetail.Items.Count > 0 Then
+                ddlCompanyDetail.Items.Insert(0, New ListItem("", ""))
+            End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
