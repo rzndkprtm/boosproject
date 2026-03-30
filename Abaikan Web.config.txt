@@ -19,38 +19,12 @@ https://swh17.conetix.com.au:8443/
 User : onlineor
 Password : 2%R0yy47g
 
-SELECT
-	OrderDetails.Id, 
-	OrderDetails.Width,
-	OrderDetails.WidthB,
-	OrderDetails.[Drop],
-	OrderDetails.ProductId,
-	Blinds.Name AS BlindName,
-	Products.Name AS ProductName
-FROM
-	dbo.OrderHeaders
-	INNER JOIN
-	dbo.OrderDetails
-	ON 
-		OrderHeaders.Id = OrderDetails.HeaderId
-	INNER JOIN
-	dbo.Products
-	ON 
-		OrderDetails.ProductId = Products.Id
-	INNER JOIN
-	dbo.ProductTubes
-	ON 
-		Products.TubeType = ProductTubes.Id
-	INNER JOIN
-	dbo.Blinds
-	ON 
-		Products.BlindId = Blinds.Id
-WHERE
-	OrderHeaders.CustomerId = '928' AND
-	OrderHeaders.OrderType = 'Builder' AND
-	OrderHeaders.Status = 'Quoted' AND
-	OrderHeaders.Active = 1 AND
-	OrderDetails.Active = 1 AND
-	Products.DesignId = 12 AND
-	Products.TubeType = 1 AND
-	Products.BlindId = 28
+SELECT c.Id, c.DebtorCode, c.Name, c.Area
+FROM Customers c
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM CustomerContacts cc
+    WHERE cc.CustomerId = c.Id
+      AND cc.[Primary] = 1
+)
+AND c.Active = 1 AND c.CompanyId = 2
