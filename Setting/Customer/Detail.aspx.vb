@@ -592,6 +592,12 @@ Partial Class Setting_Customer_Detail
             gvListContact.Columns(1).Visible = PageAction("Visible ID Contact")
 
             btnAddContact.Visible = PageAction("Add Contact")
+
+            Dim primaryContact As String = settingClass.GetItemData("SELECT Email FROM CustomerContacts WHERE CustomerId='" & customerId & "' AND [Primary]=1")
+            loginContactPrimary.InnerText = primaryContact
+            If String.IsNullOrEmpty(primaryContact) Then
+                loginContactPrimary.InnerText = "PLEASE ADD THE CONTACT DATA FIRST BEFORE PROCEEDING."
+            End If
         Catch ex As Exception
             MessageError_Contact(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then

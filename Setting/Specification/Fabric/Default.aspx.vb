@@ -1,5 +1,6 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
+Imports Org.BouncyCastle.Asn1.Pkcs
 
 Partial Class Setting_Specification_Fabric_Default
     Inherits Page
@@ -85,6 +86,26 @@ Partial Class Setting_Specification_Fabric_Default
 
             Dim dataLog As Object() = {"Fabrics", thisId, Session("LoginId").ToString(), activeDesc}
             settingClass.Logs(dataLog)
+
+            Dim aliasData As DataTable = settingClass.GetDataTable("SELECT * FROM FabricAlias WHERE FirstId='" & thisId & "'")
+            If aliasData.Rows.Count > 0 Then
+                For i As Integer = 0 To aliasData.Rows.Count - 1
+                    Dim aliasId As String = aliasData.Rows(i)("SecondId").ToString()
+
+                    Using thisConn As New SqlConnection(myConn)
+                        Using myCmd As SqlCommand = New SqlCommand("UPDATE Fabrics SET Active=@Active WHERE Id=@Id", thisConn)
+                            myCmd.Parameters.AddWithValue("@Id", aliasId)
+                            myCmd.Parameters.AddWithValue("@Active", active)
+
+                            thisConn.Open()
+                            myCmd.ExecuteNonQuery()
+                        End Using
+                    End Using
+
+                    dataLog = {"Fabrics", aliasId, Session("LoginId").ToString(), activeDesc}
+                    settingClass.Logs(dataLog)
+                Next
+            End If
 
             Session("SearchFabric") = txtSearch.Text
             Response.Redirect("~/setting/specification/fabric", False)
