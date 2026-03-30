@@ -1,12 +1,6 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Default.aspx.vb" Inherits="Setting_Specification_Fabric_Default" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Fabric Type" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Alias.aspx.vb" Inherits="Setting_Specification_Fabric_Alias" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Fabric Alias" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
-    <style>
-        .grid-container { width: 100%; height: calc(100vh - 150px); overflow: auto; border: 1px solid #ddd; }
-        .grid-container table { width: 100%; border-collapse: collapse; table-layout: auto; }
-        .grid-container td, .grid-container th { white-space: nowrap; padding: 6px 10px; }
-        .grid-container th { position: sticky; top: 0; background: #f5f5f5; z-index: 3; }
-    </style>
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
@@ -20,6 +14,7 @@
                             <li class="breadcrumb-item"><a runat="server" href="~/">Home</a></li>
                             <li class="breadcrumb-item"><a runat="server" href="~/setting">Setting</a></li>
                             <li class="breadcrumb-item"><a runat="server" href="~/setting/specification">Specification</a></li>
+                            <li class="breadcrumb-item"><a runat="server" href="~/setting/specification/fabric">Fabric</a></li>
                             <li class="breadcrumb-item active" aria-current="page"><%: Page.Title %></li>
                         </ol>
                     </nav>
@@ -37,20 +32,15 @@
             </div>
         </section>
 
-        <section class="row mb-3">
-            <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
-                <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Add New" OnClick="btnAdd_Click" />
-                <asp:Button runat="server" ID="btnAlias" CssClass="btn btn-secondary" Text="Fabric Alias" OnClick="btnAlias_Click" />
-            </div>
-        </section>
-
         <section class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-content">
                         <div class="card-header">
                             <div class="row">
-                                <div class="col-12 col-sm-12 col-lg-6 mb-2"></div>
+                                <div class="col-12 col-sm-12 col-lg-6 mb-2">
+                                    <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Add New" OnClick="btnAdd_Click" />
+                                </div>
                                 <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
                                     <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
                                         <div class="input-group">
@@ -62,6 +52,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="card-body">
                             <div class="row mb-3">
                                 <div class="col-12">
@@ -75,30 +66,20 @@
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:BoundField DataField="Id" HeaderText="ID" />
-                                                <asp:BoundField DataField="Name" HeaderText="Name" />
-                                                <asp:BoundField DataField="Type" HeaderText="Type" />
-                                                <asp:BoundField DataField="Group" HeaderText="Group" />
-                                                <asp:TemplateField HeaderText="Company Detail">
-                                                    <ItemTemplate>
-                                                        <%# BindCompany(Eval("Id").ToString()) %>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:BoundField DataField="DataActive" HeaderText="Active" />
+                                                <asp:BoundField DataField="FirstName" HeaderText="Fabric Name" />
+                                                <asp:BoundField DataField="SecondName" HeaderText="Fabric Name" />
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="200px">
                                                     <ItemTemplate>
                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                         <ul class="dropdown-menu">
                                                             <li runat="server" visible='<%# PageAction("Detail") %>'>
-                                                                <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                                <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                             </li>
-                                                            <li runat="server" visible='<%# PageAction("Edit") %>'>
-                                                                <asp:LinkButton runat="server" ID="linkEdit" CssClass="dropdown-item" Text="Edit" CommandName="Ubah" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
-                                                            </li>
-                                                            <li runat="server" visible='<%# PageAction("Active") %>'>
-                                                                <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalActive" onclick='<%# String.Format("return showActive(`{0}`, `{1}`);", Eval("Id").ToString(), Convert.ToInt32(Eval("Active"))) %>'><%# TextActive(Eval("Active")) %></a>
+                                                            <li runat="server" visible='<%# PageAction("Delete") %>'>
+                                                                <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                             </li>
                                                             <li>
-                                                                <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('Fabrics', '<%# Eval("Id") %>')">Log</a>
+                                                                <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('FabricAlias', '<%# Eval("Id") %>')">Log</a>
                                                             </li>
                                                         </ul>
                                                     </ItemTemplate>
@@ -111,35 +92,65 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-footer">
-                        <div class="row" runat="server" id="divCompanyDetail">
-                            <div class="col-12 col-sm-12 col-lg-4">
-                                <div class="input-group">
-                                    <span class="input-group-text">Company : </span>
-                                    <asp:DropDownList runat="server" ID="ddlCompanyDetail" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCompanyDetail_SelectedIndexChanged"></asp:DropDownList>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="card-footer"></div>
                 </div>
             </div>
         </section>
     </div>
 
-    <div class="modal modal-blur fade" id="modalActive" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+    <div class="modal fade text-left" id="modalProcess" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-warning">
-                    <h5 class="modal-title white" id="titleActive"></h5>
+                <div class="modal-header">
+                    <h4 runat="server" class="modal-title" id="titleProcess"></h4>
                 </div>
-                <div class="modal-body text-center py-4">
-                    <asp:TextBox runat="server" ID="txtIdActive" style="display:none;"></asp:TextBox>
-                    <asp:TextBox runat="server" ID="txtActive" style="display:none;"></asp:TextBox>
-                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-12 form-group">
+                            <label class="form-label">First ID</label>
+                            <asp:DropDownList runat="server" ID="ddlFirstId" CssClass="choices form-select"></asp:DropDownList>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Second ID</label>
+                            <asp:DropDownList runat="server" ID="ddlSecondId" CssClass="choices form-select"></asp:DropDownList>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3" runat="server" id="divErrorProcess">
+                        <div class="col-12">
+                            <div class="alert alert-danger">
+                                <span runat="server" id="msgErrorProcess"></span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnActive" CssClass="btn btn-warning" Text="Confirm" OnClick="btnActive_Click" />
+                    <asp:Button runat="server" ID="btnProcess" CssClass="btn btn-primary" Text="Submit" OnClick="btnProcess_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade text-center" id="modalDelete" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-danger">
+                    <h5 class="modal-title white">Delete Alias</h5>
+                </div>
+
+                <div class="modal-body">
+                    <asp:TextBox runat="server" ID="txtIdDelete" style="display:none;"></asp:TextBox>
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                </div>
+
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnDelete" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDelete_Click" />
                 </div>
             </div>
         </div>
@@ -152,7 +163,7 @@
                     <h5 class="modal-title">Changelog</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
+    
                 <div class="modal-body">
                     <div class="alert alert-danger d-none" id="logError"></div>
                     <div class="table-responsive">
@@ -163,6 +174,11 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <div runat="server" visible="false">
+        <asp:Label runat="server" ID="lblId"></asp:Label>
+        <asp:Label runat="server" ID="lblAction"></asp:Label>
     </div>
 
     <script type="text/javascript">
@@ -188,6 +204,14 @@
                 });
             }
         });
+
+        function showProcess() {
+            $("#modalProcess").modal("show");
+        }
+
+        function showDelete(id) {
+            document.getElementById("<%=txtIdDelete.ClientID %>").value = id;
+        }
 
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
@@ -223,20 +247,7 @@
             });
         }
 
-        function showActive(id, active) {
-            document.getElementById("<%=txtIdActive.ClientID %>").value = id;
-            document.getElementById("<%=txtActive.ClientID %>").value = active;
-
-            let title = "";
-            if (active === "1") {
-                title = "Deactivate Fabric";
-            } else {
-                title = "Activate Fabric";
-            }
-            document.getElementById("titleActive").innerHTML = title;
-        }
-
-        ["modalLog", "modalActive"].forEach(function (id) {
+        ["modalProcess", "modalDelete", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
@@ -245,9 +256,4 @@
 
         window.history.replaceState(null, null, window.location.href);
     </script>
-
-    <div runat="server" visible="false">
-        <asp:Label runat="server" ID="lblId"></asp:Label>
-        <asp:Label runat="server" ID="lblAction"></asp:Label>
-    </div>
 </asp:Content>
