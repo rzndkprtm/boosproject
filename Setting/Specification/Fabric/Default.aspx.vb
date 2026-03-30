@@ -1,6 +1,5 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
-Imports Org.BouncyCastle.Asn1.Pkcs
 
 Partial Class Setting_Specification_Fabric_Default
     Inherits Page
@@ -121,8 +120,10 @@ Partial Class Setting_Specification_Fabric_Default
         Session("SearchFabric") = String.Empty
         Try
             Dim conditions As New List(Of String)
+            Dim thisArray As String = String.Empty
 
             If Not String.IsNullOrEmpty(companyText) Then
+                thisArray = "CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS cdArray"
                 conditions.Add("cdArray.VALUE = '" & companyText & "'")
             End If
 
@@ -135,7 +136,7 @@ Partial Class Setting_Specification_Fabric_Default
                 whereClause = "WHERE " & String.Join(" AND ", conditions)
             End If
 
-            Dim thisString As String = "SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Fabrics CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS cdArray " & whereClause & " ORDER BY Name ASC"
+            Dim thisString As String = String.Format("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Fabrics {0} {1} ORDER BY Name ASC", thisArray, whereClause)
 
             gvList.DataSource = settingClass.GetDataTable(thisString)
             gvList.DataBind()
