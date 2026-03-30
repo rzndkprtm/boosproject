@@ -19,8 +19,6 @@ Partial Class Sales_Default
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             BindCompany()
-
-            ddlCompany.SelectedValue = Session("SearchSalesCompany")
             BindData(ddlCompany.SelectedValue)
         End If
     End Sub
