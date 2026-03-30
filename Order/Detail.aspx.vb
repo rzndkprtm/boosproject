@@ -204,6 +204,27 @@ Partial Class Order_Detail
                 End Using
             End Using
 
+            'If lblCompanyId.Text = "2" Then
+            '    Dim thisId As String = orderClass.GetNewOrderItemId()
+
+            '    Using thisConn As New SqlConnection(myConn)
+            '        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, 3511, 204, 1, 0, 0, 1, 0, 1)", thisConn)
+            '            myCmd.Parameters.AddWithValue("@Id", thisId)
+            '            myCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
+
+            '            thisConn.Open()
+            '            myCmd.ExecuteNonQuery()
+            '        End Using
+            '    End Using
+
+            '    dataLog = {"OrderDetails", thisId, "2", "Order Item Added"}
+            '    orderClass.Logs(dataLog)
+
+            '    orderClass.ResetPriceDetail(lblHeaderId.Text, thisId)
+            '    orderClass.CalculatePrice(lblHeaderId.Text, thisId)
+            '    orderClass.FinalCostItem(lblHeaderId.Text, thisId)
+            'End If
+
             Dim totalItems As Integer = orderClass.GetTotalItemOrder(lblHeaderId.Text)
             If lblCompanyId.Text = "2" AndAlso minSurcharge = True AndAlso totalItems <= 3 Then
                 Dim thisId As String = orderClass.GetNewOrderItemId()
@@ -597,7 +618,6 @@ Partial Class Order_Detail
         Dim thisScript As String = "window.onload = function() { showReworkOrder(); };"
         Try
             Dim selectedIds As New List(Of String)()
-
             For Each row As GridViewRow In gvListItemRework.Rows
                 Dim chk As CheckBox = TryCast(row.FindControl("chkSelect"), CheckBox)
                 If chk IsNot Nothing AndAlso chk.Checked Then
@@ -853,7 +873,7 @@ Partial Class Order_Detail
                         End Using
                     End If
 
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderInvoices SET Collector=@Collector, InvoiceDate=GETDATE(), DueDate=DATEADD(DAY, 1, GETDATE()) WHERE Id=@Id;", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderInvoices SET Collector=@Collector, InvoiceDate=GETDATE(), DueDate=DATEADD(DAY, 14, GETDATE()) WHERE Id=@Id;", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
                         myCmd.Parameters.AddWithValue("@Collector", Session("LoginId").ToString())
                         myCmd.ExecuteNonQuery()

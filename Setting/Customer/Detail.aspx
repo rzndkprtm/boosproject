@@ -1311,7 +1311,11 @@
                     <h5 class="modal-title white">Send Login Credentials</h5>
                 </div>
                 <div class="modal-body text-center py-4">
-                    Hi <b><%: Session("FullName") %></b>,<br />All login details will be sent to the primary contact email address.<br /><br />Are you sure you would like to do this?
+                    Hi <b><%: Session("FullName") %></b>,<br />All login details will be sent to the primary contact email address.
+                    <br /><br />
+                    <span runat="server" id="loginContactPrimary" class="font-bold"></span>
+                    <br /><br />
+                    Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>

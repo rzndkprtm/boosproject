@@ -99,27 +99,24 @@
     </div>
 
     <div class="modal fade text-left" id="modalProcess" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 runat="server" class="modal-title" id="titleProcess"></h4>
                 </div>
 
                 <div class="modal-body">
-                    <div class="row mb-3">
-                        <div class="col-12 form-group">
+                    <div class="row mb-5">
+                        <div class="col-6 form-group">
                             <label class="form-label">First ID</label>
                             <asp:DropDownList runat="server" ID="ddlFirstId" CssClass="choices form-select"></asp:DropDownList>
                         </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-12 form-group">
+                        <div class="col-6 form-group">
                             <label class="form-label">Second ID</label>
                             <asp:DropDownList runat="server" ID="ddlSecondId" CssClass="choices form-select"></asp:DropDownList>
                         </div>
                     </div>
-
-                    <div class="row mb-3" runat="server" id="divErrorProcess">
+                    <div class="row" runat="server" id="divErrorProcess">
                         <div class="col-12">
                             <div class="alert alert-danger">
                                 <span runat="server" id="msgErrorProcess"></span>

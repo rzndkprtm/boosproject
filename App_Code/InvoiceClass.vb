@@ -240,7 +240,7 @@ Public Class InvoiceClass
             Dim doc As New Document(PageSize.A4, 36, 36, 110, 180)
             Dim writer As PdfWriter = PdfWriter.GetInstance(doc, ms)
 
-            Dim headerData As DataRow = GetDataRow("SELECT OrderHeaders.*, OrderInvoices.InvoiceNumber AS InvoiceNumber, OrderInvoices.InvoiceDate AS InvoiceDate, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, Customers.CompanyDetailId AS CompanyDetailId FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id LEFT JOIN OrderInvoices ON OrderHeaders.Id=OrderInvoices.Id WHERE OrderHeaders.Id='" & headerId & "'")
+            Dim headerData As DataRow = GetDataRow("SELECT OrderHeaders.*, OrderInvoices.InvoiceNumber AS InvoiceNumber, OrderInvoices.InvoiceDate AS InvoiceDate, OrderInvoices.DueDate AS DueDate, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, Customers.CompanyDetailId AS CompanyDetailId FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id LEFT JOIN OrderInvoices ON OrderHeaders.Id=OrderInvoices.Id WHERE OrderHeaders.Id='" & headerId & "'")
 
             Dim orderId As String = headerData("OrderId").ToString()
             Dim customerId As String = headerData("CustomerId").ToString()
@@ -255,9 +255,9 @@ Public Class InvoiceClass
 
             If Not String.IsNullOrEmpty(headerData("InvoiceDate").ToString()) Then
                 Dim invDate As Date = Convert.ToDateTime(headerData("InvoiceDate"))
-                issueDate = invDate.ToString("dd MMM yyyy")
+                Dim dueDt As Date = Convert.ToDateTime(headerData("DueDate"))
 
-                Dim dueDt As Date = invDate.AddDays(1)
+                issueDate = invDate.ToString("dd MMM yyyy")
                 dueDate = dueDt.ToString("dd MMM yyyy")
             End If
 

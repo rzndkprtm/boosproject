@@ -108,7 +108,6 @@ Partial Class Setting_Boos
         Try
             Dim orderClass As New OrderClass
             Dim thisData As DataTable = orderClass.GetDataTable("SELECT OrderHeaders.* FROM OrderHeaders LEFT JOIN OrderInvoices ON OrderHeaders.Id=OrderInvoices.Id WHERE OrderHeaders.Status='Proforma Sent' AND OrderInvoices.DueDate=CAST(GETDATE() AS DATE)")
-
             If thisData.Rows.Count > 0 Then
                 For i As Integer = 0 To thisData.Rows.Count - 1
                     Dim thisId As String = thisData.Rows(i)("Id").ToString()
@@ -138,6 +137,12 @@ Partial Class Setting_Boos
 
                         thisConn.Close()
                     End Using
+
+                    Dim dataLog As Object() = {"OrderHeaders", thisId, 2, "Unsubmitted Order"}
+                    settingClass.Logs(dataLog)
+
+                    Dim mailingClass As New MailingClass
+                    mailingClass.ResetProformaOrder(thisId)
                 Next
             End If
         Catch ex As Exception
