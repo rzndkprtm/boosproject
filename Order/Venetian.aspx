@@ -617,6 +617,8 @@
                         <a class="list-group-item list-group-item-action active" id="list-left-list" data-bs-toggle="list" href="#list-left" role="tab">2 on 1 Left - Left</a>
                         <a class="list-group-item list-group-item-action" id="list-right-list" data-bs-toggle="list" href="#list-right" role="tab">2 on 1 Right - Right</a>
                         <a class="list-group-item list-group-item-action" id="list-leftright-list" data-bs-toggle="list" href="#list-leftright" role="tab">2 on 1 Left - Right</a>
+                        <a class="list-group-item list-group-item-action" id="list-leftleftright-list" data-bs-toggle="list" href="#list-leftleftright" role="tab">3 on 1 Left - Left - Right</a>
+                        <a class="list-group-item list-group-item-action" id="list-leftrightright-list" data-bs-toggle="list" href="#list-leftrightright" role="tab">3 on 1 Left - Right - Right</a>
                     </div>
 
                     <div class="tab-content text-justify">
@@ -631,6 +633,14 @@
                         <div class="tab-pane fade" id="list-leftright" role="tabpanel" aria-labelledby="list-leftright-list">
                             <br />
                             <img runat="server" src="~/Assets/images/products/venetian/2on1venetianleftright.png" alt="Sub Type Image" style="max-width:100%;height:auto;">
+                        </div>
+                        <div class="tab-pane fade" id="list-leftleftright" role="tabpanel" aria-labelledby="list-leftleftright-list">
+                            <br />
+                            <img runat="server" src="~/Assets/images/products/venetian/3on1venetianllr.png" alt="Sub Type Image" style="max-width:100%;height:auto;">
+                        </div>
+                        <div class="tab-pane fade" id="list-leftrightright" role="tabpanel" aria-labelledby="list-leftrightright-list">
+                            <br />
+                            <img runat="server" src="~/Assets/images/products/venetian/3on1venetianlrr.png" alt="Sub Type Image" style="max-width:100%;height:auto;">
                         </div>
                     </div>
                 </div>
