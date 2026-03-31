@@ -319,6 +319,76 @@
                                                 </div>
                                             </div>
 
+                                            <div class="row" id="divthirdblind">
+                                                <div class="col-12">
+                                                    <div class="divider divider-left-center">
+                                                        <div class="divider-text">Third Blind / Blind C</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div id="divsizec">
+                                                <div class="row">
+                                                    <div class="col-12 col-sm-12 col-lg-3">
+                                                        <label>Width</label>
+                                                    </div>
+                                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                        <div class="input-group">
+                                                            <input type="number" id="widthc" class="form-control" autocomplete="off" placeholder="Width ..." />
+                                                            <span class="input-group-text">mm</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-12 col-sm-12 col-lg-3">
+                                                        <label>Drop</label>
+                                                    </div>
+                                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                        <div class="input-group">
+                                                            <input type="number" id="dropc" class="form-control" autocomplete="off" placeholder="Drop ...." />
+                                                            <span class="input-group-text">mm</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12 col-sm-12 col-lg-2">
+                                                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Second Size');">Info</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                
+                                            <div class="row" id="divcordlengthc">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Cord Length</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                    <div class="input-group">
+                                                        <select id="controllengthc" class="form-select">
+                                                            <option value=""></option>
+                                                            <option value="Standard">Standard</option>
+                                                            <option value="Custom">Custom</option>
+                                                        </select>
+                                                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Cord Length');"> ? </a>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group" id="divcordlengthvaluec">
+                                                    <div class="input-group">
+                                                        <input type="number" id="controllengthvaluec" class="form-control" autocomplete="off" placeholder="Length ...." />
+                                                        <span class="input-group-text">mm</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row" id="divthirdend">
+                                                <div class="col-12">
+                                                    <div class="divider divider-left-center">
+                                                        <div class="divider-text">
+                                                            <a class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Third');">Open Layout (Third Blind)</a>
+                                                        </div>
+    
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                             <div id="divvalancesection">
                                                 <div class="row">
                                                     <div class="col-12">
@@ -587,5 +657,5 @@
         </div>
     </div>
     
-    <script src="/Scripts/WebOrders/Venetian.js?v=2.0.1"></script>
+    <script src="/Scripts/WebOrders/Venetian.js?v=2.0.2"></script>
 </asp:Content>
