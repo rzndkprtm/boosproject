@@ -2756,7 +2756,7 @@ Partial Class Order_Add
             Dim role As String = String.Empty
             If Session("RoleName") = "IT" Then role = "AND Id<>'1' AND Id<>'2'"
             If Session("RoleName") = "Customer" Then role = "AND Id='" & Session("CustomerId") & "'"
-            If Session("RoleName") = "Sales" Then role = "AND Id='" & Session("CustomerId") & "'"
+            If Session("RoleName") = "Sales" OrElse Session("RoleName") = "Customer Services" Then role = "AND Id='" & Session("CustomerId") & "'"
 
             Dim thisQuery As String = String.Format("SELECT * FROM Customers WHERE Active=1 {0} ORDER BY Name ASC", role)
 
