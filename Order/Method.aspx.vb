@@ -623,6 +623,8 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "2 on 1 Left-Left", .Text = "2 on 1 Venetian (Left-Left)"})
                 result.Add(New With {.Value = "2 on 1 Right-Right", .Text = "2 on 1 Venetian (Right-Right)"})
                 result.Add(New With {.Value = "2 on 1 Left-Right", .Text = "2 on 1 Venetian (Left-Right)"})
+                result.Add(New With {.Value = "3 on 1 Left-Left-Right", .Text = "3 on 1 Venetian (Left-Left-Right)"})
+                result.Add(New With {.Value = "3 on 1 Left-Right-Right", .Text = "3 on 1 Venetian (Left-Right-Right)"})
             End If
 
             If blindName = "Basswood 63mm" Then
@@ -630,6 +632,8 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "2 on 1 Left-Left", .Text = "2 on 1 Venetian (Left-Left)"})
                 result.Add(New With {.Value = "2 on 1 Right-Right", .Text = "2 on 1 Venetian (Right-Right)"})
                 result.Add(New With {.Value = "2 on 1 Left-Right", .Text = "2 on 1 Venetian (Left-Right)"})
+                result.Add(New With {.Value = "3 on 1 Left-Left-Right", .Text = "3 on 1 Venetian (Left-Left-Right)"})
+                result.Add(New With {.Value = "3 on 1 Left-Right-Right", .Text = "3 on 1 Venetian (Left-Right-Right)"})
             End If
 
             If blindName = "Econo 50mm" Then
@@ -637,6 +641,8 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "2 on 1 Left-Left", .Text = "2 on 1 Venetian (Left-Left)"})
                 result.Add(New With {.Value = "2 on 1 Right-Right", .Text = "2 on 1 Venetian (Right-Right)"})
                 result.Add(New With {.Value = "2 on 1 Left-Right", .Text = "2 on 1 Venetian (Left-Right)"})
+                result.Add(New With {.Value = "3 on 1 Left-Left-Right", .Text = "3 on 1 Venetian (Left-Left-Right)"})
+                result.Add(New With {.Value = "3 on 1 Left-Right-Right", .Text = "3 on 1 Venetian (Left-Right-Right)"})
             End If
 
             If blindName = "Econo 63mm" Then
@@ -644,6 +650,8 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "2 on 1 Left-Left", .Text = "2 on 1 Venetian (Left-Left)"})
                 result.Add(New With {.Value = "2 on 1 Right-Right", .Text = "2 on 1 Venetian (Right-Right)"})
                 result.Add(New With {.Value = "2 on 1 Left-Right", .Text = "2 on 1 Venetian (Left-Right)"})
+                result.Add(New With {.Value = "3 on 1 Left-Left-Right", .Text = "3 on 1 Venetian (Left-Left-Right)"})
+                result.Add(New With {.Value = "3 on 1 Left-Right-Right", .Text = "3 on 1 Venetian (Left-Right-Right)"})
             End If
 
             If blindName = "Ultraslat 50mm" Then
@@ -651,6 +659,8 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "2 on 1 Left-Left", .Text = "2 on 1 Venetian (Left-Left)"})
                 result.Add(New With {.Value = "2 on 1 Right-Right", .Text = "2 on 1 Venetian (Right-Right)"})
                 result.Add(New With {.Value = "2 on 1 Left-Right", .Text = "2 on 1 Venetian (Left-Right)"})
+                result.Add(New With {.Value = "3 on 1 Left-Left-Right", .Text = "3 on 1 Venetian (Left-Left-Right)"})
+                result.Add(New With {.Value = "3 on 1 Left-Right-Right", .Text = "3 on 1 Venetian (Left-Right-Right)"})
             End If
 
             If blindName = "Ultraslat 63mm" Then
@@ -658,6 +668,8 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "2 on 1 Left-Left", .Text = "2 on 1 Venetian (Left-Left)"})
                 result.Add(New With {.Value = "2 on 1 Right-Right", .Text = "2 on 1 Venetian (Right-Right)"})
                 result.Add(New With {.Value = "2 on 1 Left-Right", .Text = "2 on 1 Venetian (Left-Right)"})
+                result.Add(New With {.Value = "3 on 1 Left-Left-Right", .Text = "3 on 1 Venetian (Left-Left-Right)"})
+                result.Add(New With {.Value = "3 on 1 Left-Right-Right", .Text = "3 on 1 Venetian (Left-Right-Right)"})
             End If
 
             If blindName = "Econo 50mm (Cordless)" Then
@@ -3119,10 +3131,10 @@ Partial Class Order_Method
         Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
         Dim qty As Integer
-        Dim width As Integer : Dim widthb As Integer
-        Dim drop As Integer : Dim dropb As Integer
+        Dim width As Integer : Dim widthb As Integer : Dim widthc As Integer
+        Dim drop As Integer : Dim dropb As Integer : Dim dropc As Integer
 
-        Dim clvalue As Integer : Dim clvalueb As Integer
+        Dim clvalue As Integer : Dim clvalueb As Integer : Dim clvaluec As Integer
 
         Dim vsvalue As Integer
         Dim rlvalue As Integer
@@ -3131,6 +3143,9 @@ Partial Class Order_Method
 
         Dim controlpositionb As String = String.Empty
         Dim tilterpositionb As String = String.Empty
+
+        Dim controlpositionc As String = String.Empty
+        Dim tilterpositionc As String = String.Empty
 
         Dim linearMetre As Decimal : Dim linearMetreB As Decimal : Dim linearMetreC As Decimal
 
@@ -3167,7 +3182,7 @@ Partial Class Order_Method
         If data.subtype = "Single" AndAlso (blindName = "Basswood 50mm" OrElse blindName = "Basswood 63mm" OrElse blindName = "Econo 50mm" OrElse blindName = "Econo 63mm" OrElse blindName = "Ultraslat 50mm" OrElse blindName = "Ultraslat 63mm") Then
             If width < 250 Then Return "MINIMUM WIDTH IS 250MM !"
         End If
-        If data.subtype.Contains("2 on 1") Then
+        If data.subtype.Contains("2 on 1") OrElse data.subtype.Contains("3 on 1") Then
             If blindName = "Basswood 50mm" OrElse blindName = "Basswood 63mm" Then
                 If width < 300 Then Return "MINIMUM WIDTH IS 300MM !"
             End If
@@ -3218,7 +3233,7 @@ Partial Class Order_Method
 
         If blindName = "Econo 50mm (Cordless)" AndAlso String.IsNullOrEmpty(data.wandlengthvalue) Then Return "WAND LENGTH IS REQUIRED !"
 
-        If data.subtype.Contains("2 on 1") Then
+        If data.subtype.Contains("2 on 1") OrElse data.subtype.Contains("3 on 1") Then
             If String.IsNullOrEmpty(data.widthb) Then Return "SECOND WIDTH IS REQUIRED !"
             If Not Integer.TryParse(data.widthb, widthb) OrElse widthb <= 0 Then Return "PLEASE CHECK YOUR SECOND WIDTH ORDER !"
 
@@ -3234,6 +3249,25 @@ Partial Class Order_Method
                 If String.IsNullOrEmpty(data.controllengthvalueb) Then Return "SECOND CORD LENGTH VALUE IS REQUIRED !"
                 If Not String.IsNullOrEmpty(data.controllengthvalueb) Then
                     If Not Integer.TryParse(data.controllengthvalueb, clvalueb) OrElse clvalueb <= 0 Then Return "PLEASE CHECK YOUR SECOND CORD LENGTH ORDER !"
+                End If
+            End If
+        End If
+
+        If data.subtype.Contains("3 on 1") Then
+            If String.IsNullOrEmpty(data.widthc) Then Return "THIRD WIDTH IS REQUIRED !"
+            If Not Integer.TryParse(data.widthc, widthc) OrElse widthc <= 0 Then Return "PLEASE CHECK YOUR THIRD WIDTH ORDER !"
+            If widthc < 300 Then Return "MINIMUM WIDTH FOR THIRD BLIND IS 300MM !"
+            If widthc > 2710 Then Return "MAXIMUM WIDTH FOR THIRD BLIND IS 2710MM !"
+            If width + widthb + widthc >= 4000 Then Return "MAXIMUM TOTAL WIDTH IS 4000MM !"
+
+            If String.IsNullOrEmpty(data.dropc) Then Return "THIRD DROP IS REQUIRED !"
+            If Not Integer.TryParse(data.dropc, dropc) OrElse dropc <= 0 Then Return "PLEASE CHECK YOUR THIRD DROP ORDER !"
+
+            If String.IsNullOrEmpty(data.controllengthc) Then Return "THIRD CORD LENGTH IS REQUIRED !"
+            If data.controllengthb = "Custom" Then
+                If String.IsNullOrEmpty(data.controllengthvaluec) Then Return "THIRD CORD LENGTH VALUE IS REQUIRED !"
+                If Not String.IsNullOrEmpty(data.controllengthvaluec) Then
+                    If Not Integer.TryParse(data.controllengthvaluec, clvaluec) OrElse clvaluec <= 0 Then Return "PLEASE CHECK YOUR THIRD CORD LENGTH ORDER !"
                 End If
             End If
         End If
@@ -3279,9 +3313,12 @@ Partial Class Order_Method
         If blindName = "Basswood 50mm" OrElse blindName = "Basswood 63mm" OrElse blindName = "Econo 50mm" OrElse blindName = "Econo 63mm" Then
             If data.subtype = "Single" Then
                 widthb = 0 : dropb = 0
+                widthc = 0 : dropc = 0
+
                 data.controllengthb = String.Empty
-                clvalueb = 0
-                widthb = 0 : dropb = 0
+                data.controllengthc = String.Empty
+
+                clvalueb = 0 : clvaluec = 0
             End If
 
             If data.subtype = "2 on 1 Left-Left" Then
@@ -3290,8 +3327,13 @@ Partial Class Order_Method
                 controlpositionb = "Left"
                 tilterpositionb = String.Empty
 
+                data.controllengthc = String.Empty
+                clvalueb = 0
+
                 linearMetreB = widthb / 1000
                 squareMetreB = widthb * dropb / 1000000
+
+                widthc = 0 : dropc = 0
 
                 totalItems = 2
             End If
@@ -3301,6 +3343,11 @@ Partial Class Order_Method
                 data.tilterposition = String.Empty
                 controlpositionb = "Right"
                 tilterpositionb = "Right"
+
+                widthc = 0 : dropc = 0
+
+                data.controllengthc = String.Empty
+                clvaluec = 0
 
                 linearMetreB = widthb / 1000
                 squareMetreB = widthb * dropb / 1000000
@@ -3312,10 +3359,43 @@ Partial Class Order_Method
                 data.controlposition = "Left" : data.tilterposition = "Left"
                 controlpositionb = "Right" : tilterpositionb = "Right"
 
+                widthc = 0 : dropc = 0
+
+                data.controllengthc = String.Empty
+                clvaluec = 0
+
                 linearMetreB = widthb / 1000
                 squareMetreB = widthb * dropb / 1000000
 
                 totalItems = 2
+            End If
+
+            If data.subtype = "3 on 1 Left-Left-Right" Then
+                data.controlposition = "Left" : data.tilterposition = "Left"
+                controlpositionb = "Left" : tilterpositionb = "Left"
+                controlpositionc = "Right" : tilterpositionc = "Right"
+
+                linearMetreB = widthb / 1000
+                squareMetreB = widthb * dropb / 1000000
+
+                linearMetreC = widthc / 1000
+                squareMetreC = widthc * dropc / 1000000
+
+                totalItems = 3
+            End If
+
+            If data.subtype = "3 on 1 Left-Right-Right" Then
+                data.controlposition = "Left" : data.tilterposition = "Left"
+                controlpositionb = "Right" : tilterpositionb = "Right"
+                controlpositionc = "Right" : tilterpositionc = "Right"
+
+                linearMetreB = widthb / 1000
+                squareMetreB = widthb * dropb / 1000000
+
+                linearMetreC = widthc / 1000
+                squareMetreC = widthc * dropc / 1000000
+
+                totalItems = 3
             End If
 
             If data.controllength = "Standard" Then
@@ -3326,6 +3406,11 @@ Partial Class Order_Method
             If data.controllengthb = "Standard" Then
                 clvalueb = Math.Ceiling(dropb * 2 / 3)
                 If clvalueb < 550 Then clvalueb = 550
+            End If
+
+            If data.controllengthc = "Standard" Then
+                clvaluec = Math.Ceiling(dropc * 2 / 3)
+                If clvaluec < 550 Then clvaluec = 550
             End If
 
             If String.IsNullOrEmpty(data.returnposition) Then
@@ -3363,29 +3448,38 @@ Partial Class Order_Method
                 Dim itemId As String = orderClass.GetNewOrderItemId()
 
                 Using thisConn As SqlConnection = New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails (Id, HeaderId, ProductId, PriceProductGroupId, PriceProductGroupIdB, SubType, Qty, Room, Mounting, ControlPosition, ControlPositionB, TilterPosition, TilterPositionB, Width, WidthB, [Drop], DropB, Supply, Tassel, ControlLength, ControlLengthValue, ControlLengthB, ControlLengthValueB, WandLengthValue, ValanceType, ValanceSize, ValanceSizeValue, ReturnPosition, ReturnLength, ReturnLengthValue, LinearMetre, LinearMetreB, LinearMetreC, SquareMetre, SquareMetreB, SquareMetreC, TotalItems, Notes, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, @PriceProductGroupIdB, @SubType, 1, @Room, @Mounting, @ControlPosition, @ControlPositionB, @TilterPosition, @TilterPositionB, @Width, @WidthB, @Drop, @DropB, @Supply, @Tassel, @ControlLength, @ControlLengthValue, @ControlLengthB, @ControlLengthValueB, @WandLengthValue, @ValanceType, @ValanceSize, @ValanceSizeValue, @ReturnPosition, @ReturnLength, @ReturnLengthValue, @LinearMetre, @LinearMetreB, @LinearMetreC, @SquareMetre, @SquareMetreB, @SquareMetreC, @TotalItems, @Notes, @MarkUp, 1)", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails (Id, HeaderId, ProductId, PriceProductGroupId, PriceProductGroupIdB, PriceProductGroupIdC, SubType, Qty, Room, Mounting, ControlPosition, ControlPositionB, ControlPositionC, TilterPosition, TilterPositionB, TilterPositionC, Width, WidthB, WidthC, [Drop], DropB, DropC, Supply, Tassel, ControlLength, ControlLengthValue, ControlLengthB, ControlLengthValueB, ControlLengthC, ControlLengthValueC, WandLengthValue, ValanceType, ValanceSize, ValanceSizeValue, ReturnPosition, ReturnLength, ReturnLengthValue, LinearMetre, LinearMetreB, LinearMetreC, SquareMetre, SquareMetreB, SquareMetreC, TotalItems, Notes, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, @PriceProductGroupIdB, @PriceProductGroupIdC, @SubType, 1, @Room, @Mounting, @ControlPosition, @ControlPositionB, @ControlPositionC, @TilterPosition, @TilterPositionB, @TilterPosition, @Width, @WidthB, @WidthC, @Drop, @DropB, @DropC, @Supply, @Tassel, @ControlLength, @ControlLengthValue, @ControlLengthB, @ControlLengthValueB, @ControlLengthC, @ControlLengthValueC, @WandLengthValue, @ValanceType, @ValanceSize, @ValanceSizeValue, @ReturnPosition, @ReturnLength, @ReturnLengthValue, @LinearMetre, @LinearMetreB, @LinearMetreC, @SquareMetre, @SquareMetreB, @SquareMetreC, @TotalItems, @Notes, @MarkUp, 1)", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", itemId)
                         myCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                         myCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                         myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
                         myCmd.Parameters.AddWithValue("@PriceProductGroupIdB", If(String.IsNullOrEmpty(priceProductGroupB), CType(DBNull.Value, Object), priceProductGroupB))
+                        myCmd.Parameters.AddWithValue("@PriceProductGroupIdC", If(String.IsNullOrEmpty(priceProductGroupC), CType(DBNull.Value, Object), priceProductGroupC))
                         myCmd.Parameters.AddWithValue("@Room", data.room)
                         myCmd.Parameters.AddWithValue("@Mounting", data.mounting)
                         myCmd.Parameters.AddWithValue("@SubType", data.subtype)
+
                         myCmd.Parameters.AddWithValue("@ControlPosition", data.controlposition)
-                        myCmd.Parameters.AddWithValue("@TilterPosition", data.tilterposition)
-                        myCmd.Parameters.AddWithValue("@Width", width)
-                        myCmd.Parameters.AddWithValue("@Drop", drop)
-                        myCmd.Parameters.AddWithValue("@ControlLength", data.controllength)
-                        myCmd.Parameters.AddWithValue("@ControlLengthValue", clvalue)
-
                         myCmd.Parameters.AddWithValue("@ControlPositionB", controlpositionb)
-                        myCmd.Parameters.AddWithValue("@TilterPositionB", tilterpositionb)
-                        myCmd.Parameters.AddWithValue("@WidthB", widthb)
-                        myCmd.Parameters.AddWithValue("@DropB", dropb)
-                        myCmd.Parameters.AddWithValue("@ControlLengthB", data.controllengthb)
-                        myCmd.Parameters.AddWithValue("@ControlLengthValueB", clvalueb)
+                        myCmd.Parameters.AddWithValue("@ControlPositionC", controlpositionc)
 
+                        myCmd.Parameters.AddWithValue("@TilterPosition", data.tilterposition)
+                        myCmd.Parameters.AddWithValue("@TilterPositionB", tilterpositionb)
+                        myCmd.Parameters.AddWithValue("@TilterPositionC", tilterpositionc)
+
+                        myCmd.Parameters.AddWithValue("@Width", width)
+                        myCmd.Parameters.AddWithValue("@WidthB", widthb)
+                        myCmd.Parameters.AddWithValue("@WidthC", widthc)
+                        myCmd.Parameters.AddWithValue("@Drop", drop)
+                        myCmd.Parameters.AddWithValue("@DropB", dropb)
+                        myCmd.Parameters.AddWithValue("@DropC", dropc)
+
+                        myCmd.Parameters.AddWithValue("@ControlLength", data.controllength)
+                        myCmd.Parameters.AddWithValue("@ControlLengthB", data.controllengthb)
+                        myCmd.Parameters.AddWithValue("@ControlLengthC", data.controllengthc)
+                        myCmd.Parameters.AddWithValue("@ControlLengthValue", clvalue)
+                        myCmd.Parameters.AddWithValue("@ControlLengthValueB", clvalueb)
+                        myCmd.Parameters.AddWithValue("@ControlLengthValueC", clvaluec)
                         myCmd.Parameters.AddWithValue("@WandLengthValue", data.wandlengthvalue)
 
                         myCmd.Parameters.AddWithValue("@ValanceType", data.valancetype)
@@ -3429,29 +3523,38 @@ Partial Class Order_Method
             Dim itemId As String = data.itemid
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As New SqlCommand("UPDATE OrderDetails SET ProductId=@ProductId, PriceProductGroupId=@PriceProductGroupId, PriceProductGroupIdB=@PriceProductGroupIdB, SubType=@Subtype, Qty=1, Room=@Room, Mounting=@Mounting, ControlPosition=@ControlPosition, ControlPositionB=@ControlPositionB, TilterPosition=@TilterPosition, TilterPositionB=@TilterPositionB, Width=@Width, WidthB=@WidthB, [Drop]=@Drop, DropB=@DropB, Supply=@Supply, Tassel=@Tassel, ControlLength=@ControlLength, ControlLengthB=@ControlLengthB, ControlLengthValue=@ControlLengthValue, ControlLengthValueB=@ControlLengthValueB, WandLengthValue=@WandLengthValue, ValanceType=@ValanceType, ValanceSize=@ValanceSize, ValanceSizeValue=@ValanceSizeValue, ReturnPosition=@ReturnPosition, ReturnLength=@ReturnLength, ReturnLengthValue=@ReturnLengthValue, LinearMetre=@LinearMetre, LinearMetreB=@LinearMetreB, LinearMetreC=@LinearMetreC, SquareMetre=@SquareMetre, SquareMetreB=@SquareMetreB, SquareMetreC=@SquareMetreC, TotalItems=@TotalItems, Notes=@Notes, MarkUp=@MarkUp, Active=1 WHERE Id=@Id", thisConn)
+                Using myCmd As New SqlCommand("UPDATE OrderDetails SET ProductId=@ProductId, PriceProductGroupId=@PriceProductGroupId, PriceProductGroupIdB=@PriceProductGroupIdB, PriceProductGroupIdC=@PriceProductGroupIdC, SubType=@Subtype, Qty=1, Room=@Room, Mounting=@Mounting, ControlPosition=@ControlPosition, ControlPositionB=@ControlPositionB, ControlPositionC=@ControlPositionC, TilterPosition=@TilterPosition, TilterPositionB=@TilterPositionB, TilterPositionC=@TilterPositionC, Width=@Width, WidthB=@WidthB, WidthC=@WidthC, [Drop]=@Drop, DropB=@DropB, DropC=@DropC, Supply=@Supply, Tassel=@Tassel, ControlLength=@ControlLength, ControlLengthB=@ControlLengthB, ControlLengthC=@ControlLengthC, ControlLengthValue=@ControlLengthValue, ControlLengthValueB=@ControlLengthValueB, ControlLengthValueC=@ControlLengthValueC, WandLengthValue=@WandLengthValue, ValanceType=@ValanceType, ValanceSize=@ValanceSize, ValanceSizeValue=@ValanceSizeValue, ReturnPosition=@ReturnPosition, ReturnLength=@ReturnLength, ReturnLengthValue=@ReturnLengthValue, LinearMetre=@LinearMetre, LinearMetreB=@LinearMetreB, LinearMetreC=@LinearMetreC, SquareMetre=@SquareMetre, SquareMetreB=@SquareMetreB, SquareMetreC=@SquareMetreC, TotalItems=@TotalItems, Notes=@Notes, MarkUp=@MarkUp, Active=1 WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", itemId)
                     myCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                     myCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                     myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
                     myCmd.Parameters.AddWithValue("@PriceProductGroupIdB", If(String.IsNullOrEmpty(priceProductGroupB), CType(DBNull.Value, Object), priceProductGroupB))
+                    myCmd.Parameters.AddWithValue("@PriceProductGroupIdC", If(String.IsNullOrEmpty(priceProductGroupC), CType(DBNull.Value, Object), priceProductGroupC))
                     myCmd.Parameters.AddWithValue("@Room", data.room)
                     myCmd.Parameters.AddWithValue("@Mounting", data.mounting)
                     myCmd.Parameters.AddWithValue("@SubType", data.subtype)
+
                     myCmd.Parameters.AddWithValue("@ControlPosition", data.controlposition)
-                    myCmd.Parameters.AddWithValue("@TilterPosition", data.tilterposition)
-                    myCmd.Parameters.AddWithValue("@Width", width)
-                    myCmd.Parameters.AddWithValue("@Drop", drop)
-                    myCmd.Parameters.AddWithValue("@ControlLength", data.controllength)
-                    myCmd.Parameters.AddWithValue("@ControlLengthValue", clvalue)
-
                     myCmd.Parameters.AddWithValue("@ControlPositionB", controlpositionb)
-                    myCmd.Parameters.AddWithValue("@TilterPositionB", tilterpositionb)
-                    myCmd.Parameters.AddWithValue("@Widthb", widthb)
-                    myCmd.Parameters.AddWithValue("@DropB", dropb)
-                    myCmd.Parameters.AddWithValue("@ControlLengthB", data.controllengthb)
-                    myCmd.Parameters.AddWithValue("@ControlLengthValueB", clvalueb)
+                    myCmd.Parameters.AddWithValue("@ControlPositionC", controlpositionc)
 
+                    myCmd.Parameters.AddWithValue("@TilterPosition", data.tilterposition)
+                    myCmd.Parameters.AddWithValue("@TilterPositionB", tilterpositionb)
+                    myCmd.Parameters.AddWithValue("@TilterPositionC", tilterpositionc)
+
+                    myCmd.Parameters.AddWithValue("@Width", width)
+                    myCmd.Parameters.AddWithValue("@WidthB", widthb)
+                    myCmd.Parameters.AddWithValue("@WidthC", widthc)
+                    myCmd.Parameters.AddWithValue("@Drop", drop)
+                    myCmd.Parameters.AddWithValue("@DropB", dropb)
+                    myCmd.Parameters.AddWithValue("@DropC", dropc)
+
+                    myCmd.Parameters.AddWithValue("@ControlLength", data.controllength)
+                    myCmd.Parameters.AddWithValue("@ControlLengthB", data.controllengthb)
+                    myCmd.Parameters.AddWithValue("@ControlLengthC", data.controllengthc)
+                    myCmd.Parameters.AddWithValue("@ControlLengthValue", clvalue)
+                    myCmd.Parameters.AddWithValue("@ControlLengthValueB", clvalueb)
+                    myCmd.Parameters.AddWithValue("@ControlLengthValueC", clvaluec)
                     myCmd.Parameters.AddWithValue("@WandLengthValue", data.wandlengthvalue)
 
                     myCmd.Parameters.AddWithValue("@ValanceType", data.valancetype)
@@ -3472,8 +3575,8 @@ Partial Class Order_Method
 
                     myCmd.Parameters.AddWithValue("@Tassel", data.tassel)
                     myCmd.Parameters.AddWithValue("@Supply", data.supply)
-                    myCmd.Parameters.AddWithValue("@Notes", data.notes)
                     myCmd.Parameters.AddWithValue("@TotalItems", totalItems)
+                    myCmd.Parameters.AddWithValue("@Notes", data.notes)
                     myCmd.Parameters.AddWithValue("@MarkUp", markup)
 
                     thisConn.Open()

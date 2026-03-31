@@ -40,6 +40,7 @@ $("#subtype").on("change", function () {
 
     document.getElementById("controllength").value = "";
     document.getElementById("controllengthb").value = "";
+    document.getElementById("controllengthc").value = "";
     document.getElementById("valancesize").value = "";
     document.getElementById("returnlength").value = "";
 });
@@ -71,12 +72,21 @@ $("#dropb").on("input", function () {
     otomatisDrop(subtype, 2, $(this).val());
 });
 
+$("#dropc").on("input", function () {
+    const subtype = document.getElementById("subtype").value;
+    otomatisDrop(subtype, 3, $(this).val());
+});
+
 $("#controllength").on("change", function () {
     visibleCustom("CordLength", $(this).val(), "1");
 });
 
 $("#controllengthb").on("change", function () {
     visibleCustom("CordLength", $(this).val(), "2");
+});
+
+$("#controllengthc").on("change", function () {
+    visibleCustom("CordLength", $(this).val(), "3");
 });
 
 $("#valancesize").on("change", function () {
@@ -731,12 +741,12 @@ function bindComponentForm(blindType, subType) {
         const markup = document.getElementById("divmarkup");
 
         const divsToHide = [
-            "divfirstblind", "divfirstend", "divsecondblind", "divsecondend",
+            "divfirstblind", "divfirstend", "divsecondblind", "divsecondend", "divthirdblind", "divthirdend",
             "divtassel",
             "divcontrolposition", "divtilterposition",
-            "divcordlength", "divcordlengthb",
-            "divcordlengthvalue", "divcordlengthvalueb",
-            "divsize", "divsizeb",
+            "divcordlength", "divcordlengthb", "divcordlengthc",
+            "divcordlengthvalue", "divcordlengthvalueb", "divcordlengthvaluec",
+            "divsize", "divsizeb", "divsizec",
             "divwandlength",
             "divvalancesection",
             "divvalancesizevalue", "divvalancelengthvalue"
@@ -771,6 +781,10 @@ function bindComponentForm(blindType, subType) {
                 }
                 else if (subType === "2 on 1 Left-Right") {
                     divShow.push("divfirstblind", "divfirstend", "divsecondblind", "divsecondend", "divsize", "divsizeb", "divcordlength", "divcordlengthb");
+                } else if (subType === "3 on 1 Left-Left-Right") {
+                    divShow.push("divfirstblind", "divfirstend", "divsecondblind", "divsecondend", "divthirdblind", "divthirdend", "divsize", "divsizeb", "divsizec", "divcordlength", "divcordlengthb", "divcordlengthc");
+                } else if (subType === "3 on 1 Left-Right-Right") {
+                    divShow.push("divfirstblind", "divfirstend", "divsecondblind", "divsecondend", "divthirdblind", "divthirdend", "divsize", "divsizeb", "divsizec", "divcordlength", "divcordlengthb", "divcordlengthc");
                 }
             } else if (blindName === "Econo 50mm (Cordless)") {
                 divShow.push("divsize", "divtilterposition", "divwandlength", "divvalancesection",);
@@ -807,6 +821,8 @@ function visibleCustom(type, text, number) {
                 thisDiv = document.getElementById("divcordlengthvalue");
             } else if (number === "2") {
                 thisDiv = document.getElementById("divcordlengthvalueb");
+            } else if (number === "3") {
+                thisDiv = document.getElementById("divcordlengthvaluec");
             }
         }
 
@@ -858,8 +874,8 @@ function controlForm(status, isEditItem, isCopyItem) {
     const inputs = [
         "blindtype", "colourtype", "qty", "room", "mounting", "subtype",
         "controlposition", "tilterposition",
-        "width", "drop", "widthb", "dropb",
-        "controllength", "controllengthvalue", "controllengthb", "controllengthvalueb",
+        "width", "drop", "widthb", "dropb", "widthc", "dropc",
+        "controllength", "controllengthvalue", "controllengthb", "controllengthvalueb", "controllengthc", "controllengthvaluec",
         "valancetype", "valancesize", "valancesizevalue", "returnposition", "returnlength", "returnlengthvalue", "wandlengthvalue",
         "tassel", "supply", "notes", "markup"
     ];
@@ -888,14 +904,18 @@ function setFormValues(itemData) {
         subtype: "SubType",
         width: "Width",
         widthb: "WidthB",
+        widthc: "WidthC",
         drop: "Drop",
         dropb: "DropB",
+        dropc: "DropC",
         controlposition: "ControlPosition",
         tilterposition: "TilterPosition",
         controllength: "ControlLength",
         controllengthvalue: "ControlLengthValue",
         controllengthb: "ControlLengthB",
         controllengthvalueb: "ControlLengthValueB",
+        controllengthc: "ControlLengthC",
+        controllengthvaluec: "ControlLengthValueC",
         wandlengthvalue: "WandLengthValue",
         valancetype: "ValanceType",
         valancesize: "ValanceSize",
@@ -945,8 +965,8 @@ function process() {
     const fields = [
         "blindtype", "colourtype", "qty", "room", "mounting", "subtype",
         "controlposition", "tilterposition",
-        "width", "drop", "widthb", "dropb",
-        "controllength", "controllengthvalue", "controllengthb", "controllengthvalueb",
+        "width", "drop", "widthb", "dropb", "widthc", "dropc",
+        "controllength", "controllengthvalue", "controllengthb", "controllengthvalueb", "controllengthc", "controllengthvaluec",
         "valancetype", "valancesize", "valancesizevalue", "returnposition", "returnlength", "returnlengthvalue", "wandlengthvalue",
         "tassel", "supply", "notes", "markup"
     ];
@@ -1080,6 +1100,7 @@ async function bindItemOrder(itemId, companyDetailId, action) {
         bindComponentForm(data.ItemData.BlindType, data.ItemData.SubType);
         visibleCustom("CordLength", data.ItemData.ControlLength, "1");
         visibleCustom("CordLength", data.ItemData.ControlLengthB, "2");
+        visibleCustom("CordLength", data.ItemData.ControlLengthB, "3");
         visibleCustom("ValanceSize", data.ItemData.ValanceSize, "");
         visibleCustom("ValanceLength", data.ItemData.ReturnLength, "");
     } catch (error) {
@@ -1096,6 +1117,17 @@ function otomatisDrop(subType, number, drop) {
                 document.getElementById("dropb").value = drop;
             } else if (number === 2) {
                 document.getElementById("drop").value = drop;
+            }
+        } else if (subtype === "3 on 1 Left-Left-Right" || subtype === "3 on 1 Left-Right-Right") {
+            if (number === 1) {
+                document.getElementById("dropb").value = drop;
+                document.getElementById("dropc").value = drop;
+            } else if (number === 2) {
+                document.getElementById("drop").value = drop;
+                document.getElementById("dropc").value = drop;
+            } else if (number === 3) {
+                document.getElementById("drop").value = drop;
+                document.getElementById("dropb").value = drop;
             }
         }
         resolve();
