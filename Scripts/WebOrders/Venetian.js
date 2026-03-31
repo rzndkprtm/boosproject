@@ -1118,7 +1118,7 @@ function otomatisDrop(subType, number, drop) {
             } else if (number === 2) {
                 document.getElementById("drop").value = drop;
             }
-        } else if (subtype === "3 on 1 Left-Left-Right" || subtype === "3 on 1 Left-Right-Right") {
+        } else if (subType === "3 on 1 Left-Left-Right" || subType === "3 on 1 Left-Right-Right") {
             if (number === 1) {
                 document.getElementById("dropb").value = drop;
                 document.getElementById("dropc").value = drop;
