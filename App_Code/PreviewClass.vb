@@ -1288,7 +1288,7 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Mounting", "Venetian Type", "Venetian Colour", "Sub Type", "Width (mm)", "Drop (mm)", "Tassel Colour", "Control Position", "Tilter Position", "Control Length", "Valance Type", "Valance Size", "Return Position", "Return Length", "Supply", "Notes"}
+                        Dim headers As String() = {"", "Location", "Mounting", "Venetian Type", "Venetian Colour", "Sub Type", "Width (mm)", "Drop (mm)", "Tassel Colour", "Control Position", "Tilter Position", "Control Length", "Valance Type", "Valance Size", "Return Position", "Return Length", "Hold Down Clip", "Notes"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))

@@ -96,7 +96,7 @@ Partial Class Account_Default
             txtUserEmail.Text = loginData("Email").ToString()
             lblCustomerName.Text = loginData("CustomerName").ToString()
 
-            gvContact.DataSource = settingClass.GetDataTable("SELECT *, CONVERT(VARCHAR, Salutation) + ' ' + CONVERT(VARCHAR, Name) AS ContactName FROM CustomerContacts WHERE CustomerId='" & loginData("CustomerId").ToString() & "' ORDER BY Id ASC")
+            gvContact.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerContacts WHERE CustomerId='" & loginData("CustomerId").ToString() & "' ORDER BY Id ASC")
             gvContact.DataBind()
         Catch ex As Exception
             MessageError(True, ex.ToString())

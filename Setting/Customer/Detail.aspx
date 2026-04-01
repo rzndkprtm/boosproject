@@ -194,11 +194,10 @@
                                                                 <%# Container.DataItemIndex + 1 %>
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
-
                                                         <asp:BoundField DataField="Id" HeaderText="ID" />
-                                                        <asp:BoundField DataField="ContactName" HeaderText="Name" />
-                                                        <asp:BoundField DataField="Role" HeaderText="Role" />
+                                                        <asp:BoundField DataField="Name" HeaderText="Name" />
                                                         <asp:BoundField DataField="Email" HeaderText="Email" />
+                                                        <asp:BoundField DataField="Phone" HeaderText="Phone" />
                                                         <asp:BoundField DataField="Tags" HeaderText="Tags" />
                                                         <asp:TemplateField HeaderText="Primary">
                                                             <ItemTemplate>
@@ -810,7 +809,7 @@
 
     <%--CUSTOMER CONTACT--%>
     <div class="modal fade text-left" id="modalProcessContact" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 runat="server" class="modal-title" id="titleContact"></h5>
@@ -825,48 +824,24 @@
                     </div>
 
                     <div class="row mb-2">
-                        <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
+                        <div class="col-12 form-group">
                             <label class="form-label">Name</label>
                             <asp:TextBox runat="server" ID="txtContactName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                        <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
-                            <label class="form-label">Salutation</label>
-                            <asp:DropDownList runat="server" ID="ddlContactSalutation" CssClass="form-select">
-                                <asp:ListItem Value="" Text=""></asp:ListItem>
-                                <asp:ListItem Value="Mr." Text="Mr."></asp:ListItem>
-                                <asp:ListItem Value="Mrs." Text="Mrs."></asp:ListItem>
-                                <asp:ListItem Value="Ms." Text="Ms."></asp:ListItem>
-                            </asp:DropDownList>
                         </div>
                     </div>
 
                     <div class="row mb-2">
                         <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
-                            <label class="form-label">Role</label>
-                            <asp:TextBox runat="server" ID="txtContactRole" CssClass="form-control" placeholder="Role ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                        <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
                             <label class="form-label">Email</label>
                             <asp:TextBox runat="server" ID="txtContactEmail" TextMode="Email" CssClass="form-control" placeholder="Email ..." autocomplete="off"></asp:TextBox>
                         </div>
-                    </div>
-
-                    <div class="mb-2 row">
-                        <div class="col-12 col-sm-12 col-lg-4 mb-2 form-group">
+                        <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
                             <label class="form-label">Phone</label>
                             <asp:TextBox runat="server" ID="txtContactPhone" CssClass="form-control" placeholder="Phone ..." autocomplete="off"></asp:TextBox>
                         </div>
-                        <div class="col-12 col-sm-12 col-lg-4 mb-2 form-group">
-                            <label class="form-label">Mobile</label>
-                            <asp:TextBox runat="server" ID="txtContactMobile" CssClass="form-control" placeholder="Mobile ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                        <div class="col-12 col-sm-12 col-lg-4 mb-2 form-group">
-                            <label class="form-label">FAX</label>
-                            <asp:TextBox runat="server" ID="txtContactFax" CssClass="form-control" placeholder="FAX ..." autocomplete="off"></asp:TextBox>
-                        </div>
                     </div>
 
-                    <div class="mb-2 row">
+                    <div class="row mb-2">
                         <div class="col-12 form-group">
                             <label class="form-label">Tags</label>
                             <asp:ListBox runat="server" ID="lbContactTags" CssClass="choices form-select multiple-remove" SelectionMode="Multiple">
@@ -948,39 +923,28 @@
                         </div>
                     </div>
                     <div class="mb-2 row">
-                        <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
+                        <div class="col-12 col-sm-12 col-lg-5 mb-2 form-group">
                             <label class="form-label">Desciption</label>
-                            <asp:TextBox runat="server" ID="txtAddressDescription" CssClass="form-control" placeholder="Desciption ..." autocomplete="off"></asp:TextBox>
+                            <asp:TextBox runat="server" ID="txtAddressDescription" CssClass="form-control" placeholder="Ex : Delivery / Warehouse / Office ..." autocomplete="off"></asp:TextBox>
                         </div>
-                        <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
+                        <div class="col-12 col-sm-12 col-lg-7 mb-2 form-group">
                             <label class="form-label">Address</label>
                             <asp:TextBox runat="server" ID="txtAddressName" CssClass="form-control" placeholder="Address ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
                     
                     <div class="mb-2 row">
-                        <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
+                        <div class="col-12 col-sm-12 col-lg-4 mb-2 form-group">
                             <label class="form-label">Suburb</label>
                             <asp:TextBox runat="server" ID="txtAddressSuburb" CssClass="form-control" placeholder="Suburb ..." autocomplete="off"></asp:TextBox>
                         </div>
-                        <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
+                        <div class="col-12 col-sm-12 col-lg-4 mb-2 form-group">
                             <label class="form-label">State</label>
                             <asp:TextBox runat="server" ID="txtAddressState" CssClass="form-control" placeholder="State ..." autocomplete="off"></asp:TextBox>
                         </div>
-                    </div>
-                    
-                    <div class="mb-2 row">
-                        <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
+                        <div class="col-12 col-sm-12 col-lg-4 mb-2 form-group">
                             <label class="form-label">Post Code</label>
                             <asp:TextBox runat="server" ID="txtAddressPostCode" CssClass="form-control" placeholder="Post Code ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                        <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
-                            <label class="form-label">Country</label>
-                            <asp:DropDownList runat="server" ID="ddlAddressCountry" CssClass="form-select">
-                                <asp:ListItem Value="" Text=""></asp:ListItem>
-                                <asp:ListItem Value="Australia" Text="Australia"></asp:ListItem>
-                                <asp:ListItem Value="Indonesia" Text="Indonesia"></asp:ListItem>
-                            </asp:DropDownList>
                         </div>
                     </div>
                     
@@ -988,16 +952,6 @@
                         <div class="col-12 form-group">
                             <label class="form-label">Note</label>
                             <asp:TextBox runat="server" TextMode="MultiLine" ID="txtAddressNote" CssClass="form-control" Height="70px" placeholder="Note ..." autocomplete="off" style="resize:none;"></asp:TextBox>
-                        </div>
-                    </div>
-
-                    <div class="mb-2 row">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Tags</label>
-                            <asp:ListBox runat="server" ID="lbAddressTags" CssClass="choices form-select multiple-remove" SelectionMode="Multiple">
-                                <asp:ListItem Value="Delivery" Text="Delivery"></asp:ListItem>
-                                <asp:ListItem Value="Warehouse" Text="Warehouse"></asp:ListItem>
-                            </asp:ListBox>
                         </div>
                     </div>
                 </div>

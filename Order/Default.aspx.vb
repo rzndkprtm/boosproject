@@ -192,7 +192,7 @@ Partial Class Order_Default
                         Using thisConn As New SqlConnection(myConn)
                             thisConn.Open()
 
-                            Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderHeaders SELECT @NewID, @OrderId, CustomerId, 'Copy ' + CAST(@NewID AS VARCHAR(20)) + ' - ' + OrderNumber, 'Copy ' + CAST(@NewID AS VARCHAR(20)) + ' - ' + OrderName, NULL, OrderType, 'Unsubmitted', NULL, CreatedBy, GETDATE(), NULL, NULL, NULL, NULL, NULL, NULL, 0, 1 FROM OrderHeaders WHERE Id=@OldId; INSERT INTO OrderQuotes VALUES(@NewID, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
+                            Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderHeaders SELECT @NewID, @OrderId, CustomerId, 'Copy ' + CAST(@NewID AS VARCHAR(20)) + ' - ' + OrderNumber, 'Copy ' + CAST(@NewID AS VARCHAR(20)) + ' - ' + OrderName, NULL, OrderType, 'Unsubmitted', NULL, CreatedBy, GETDATE(), NULL, NULL, NULL, NULL, NULL, NULL, 0, 1 FROM OrderHeaders WHERE Id=@OldId; INSERT INTO OrderQuotes VALUES(@NewID, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
                                 myCmd.Parameters.AddWithValue("@OldId", thisId)
                                 myCmd.Parameters.AddWithValue("@NewID", newIdHeader)
                                 myCmd.Parameters.AddWithValue("@OrderId", orderId)
@@ -298,7 +298,7 @@ Partial Class Order_Default
                 orderClass.Logs(dataLog)
 
                 Dim mailingClass As New MailingClass
-                mailingClass.ProductionOrder(thisId)
+                mailingClass.NewOrder(thisId)
 
                 Session("OrderStatus") = ddlStatus.SelectedValue
                 Session("OrderCompany") = ddlCompany.SelectedValue

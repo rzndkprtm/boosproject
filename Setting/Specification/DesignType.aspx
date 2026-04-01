@@ -131,7 +131,7 @@
                                 <asp:ListItem Value="Blinds" Text="Blinds"></asp:ListItem>
                                 <asp:ListItem Value="Shutters" Text="Shutters"></asp:ListItem>
                                 <asp:ListItem Value="Doors" Text="Doors"></asp:ListItem>
-                                <asp:ListItem Value="Parts" Text="Parts"></asp:ListItem>
+                                <asp:ListItem Value="Components" Text="Components"></asp:ListItem>
                                 <asp:ListItem Value="Additional" Text="Additional"></asp:ListItem>
                             </asp:DropDownList>
                         </div>

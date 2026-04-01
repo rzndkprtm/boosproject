@@ -132,7 +132,7 @@ Partial Class Setting_Customer_Detail
                     orderId = companyAlias & randomCode
                     Try
                         Using thisConn As New SqlConnection(myConn)
-                            Using myCmd As New SqlCommand("INSERT INTO OrderHeaders (Id, OrderId, CustomerId, OrderNumber, OrderName, OrderNote, OrderType, Status, CreatedBy, CreatedDate, DownloadBOE, Active) VALUES (@Id, @OrderId, @CustomerId, @OrderNumber, @OrderName, @OrderNote, @OrderType, 'Unsubmitted', @CreatedBy, GETDATE(), 0, 1); INSERT INTO OrderQuotes VALUES (@Id, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
+                            Using myCmd As New SqlCommand("INSERT INTO OrderHeaders (Id, OrderId, CustomerId, OrderNumber, OrderName, OrderNote, OrderType, Status, CreatedBy, CreatedDate, DownloadBOE, Active) VALUES (@Id, @OrderId, @CustomerId, @OrderNumber, @OrderName, @OrderNote, @OrderType, 'Unsubmitted', @CreatedBy, GETDATE(), 0, 1); INSERT INTO OrderQuotes VALUES (@Id, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
                                 myCmd.Parameters.AddWithValue("@Id", thisId)
                                 myCmd.Parameters.AddWithValue("@OrderId", orderId)
                                 myCmd.Parameters.AddWithValue("@CustomerId", lblId.Text)
@@ -376,12 +376,8 @@ Partial Class Setting_Customer_Detail
                     If thisData Is Nothing Then Exit Sub
 
                     txtContactName.Text = thisData("Name").ToString()
-                    ddlContactSalutation.SelectedValue = thisData("Salutation").ToString()
-                    txtContactRole.Text = thisData("Role").ToString()
                     txtContactEmail.Text = thisData("Email").ToString()
                     txtContactPhone.Text = thisData("Phone").ToString()
-                    txtContactMobile.Text = thisData("Mobile").ToString()
-                    txtContactFax.Text = thisData("Fax").ToString()
                     txtContactNote.Text = thisData("Note").ToString()
 
                     Dim tagsArray() As String = thisData("Tags").ToString().Split(",")
@@ -449,19 +445,24 @@ Partial Class Setting_Customer_Detail
 
                 If lblActionContact.Text = "Add" Then
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerContacts ORDER BY Id DESC")
+
+                    Dim checkData As Integer = settingClass.GetItemData_Integer("SELECT COUNT(*) FROM CustomerContacts WHERE CustomerId='" & lblId.Text & "'")
+                    Dim primaryData As Integer = 0
+                    If checkData = 0 AndAlso Not String.IsNullOrEmpty(txtContactEmail.Text) Then
+                        thisTags = "Confirming,Invoicing,Quoting,Newsletter"
+                        primaryData = 1
+                    End If
+
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerContacts VALUES (@Id, @CustomerId, @Name, @Salutation, @Role, @Email, @Phone, @Mobile, @Fax, @Tags, @Note, 0)", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerContacts VALUES (@Id, @CustomerId, @Name, @Email, @Phone, @Tags, @Note, @Primary)", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", thisId)
                             myCmd.Parameters.AddWithValue("@CustomerId", lblId.Text)
                             myCmd.Parameters.AddWithValue("@Name", txtContactName.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Salutation", ddlContactSalutation.SelectedValue)
-                            myCmd.Parameters.AddWithValue("@Role", txtContactRole.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Email", txtContactEmail.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Phone", txtContactPhone.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Mobile", txtContactMobile.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Fax", txtContactFax.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Tags", thisTags)
                             myCmd.Parameters.AddWithValue("@Note", txtContactNote.Text.Trim())
+                            myCmd.Parameters.AddWithValue("@Primary", primaryData)
 
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
@@ -477,16 +478,12 @@ Partial Class Setting_Customer_Detail
 
                 If lblActionContact.Text = "Edit" Then
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerContacts SET CustomerId=@CustomerId, Name=@Name, Salutation=@Salutation, Role=@Role, Email=@Email, Phone=@Phone, Mobile=@Mobile, Fax=@Fax, Tags=@Tags, Note=@Note WHERE Id=@Id", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerContacts SET CustomerId=@CustomerId, Name=@Name, Email=@Email, Phone=@Phone, Tags=@Tags, Note=@Note WHERE Id=@Id", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", lblIdContact.Text)
                             myCmd.Parameters.AddWithValue("@CustomerId", lblId.Text)
                             myCmd.Parameters.AddWithValue("@Name", txtContactName.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Salutation", ddlContactSalutation.SelectedValue)
-                            myCmd.Parameters.AddWithValue("@Role", txtContactRole.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Email", txtContactEmail.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Phone", txtContactPhone.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Mobile", txtContactMobile.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Fax", txtContactFax.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Tags", thisTags)
                             myCmd.Parameters.AddWithValue("@Note", txtContactNote.Text.Trim())
 
@@ -587,7 +584,7 @@ Partial Class Setting_Customer_Detail
     Protected Sub BindDataContact(customerId As String)
         MessageError_Contact(False, String.Empty)
         Try
-            gvListContact.DataSource = settingClass.GetDataTable("SELECT *, CONVERT(VARCHAR, Salutation) + ' ' + CONVERT(VARCHAR, Name) AS ContactName FROM CustomerContacts WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
+            gvListContact.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerContacts WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
             gvListContact.DataBind()
             gvListContact.Columns(1).Visible = PageAction("Visible ID Contact")
 
@@ -654,17 +651,7 @@ Partial Class Setting_Customer_Detail
                     txtAddressSuburb.Text = thisData("Suburb").ToString()
                     txtAddressState.Text = thisData("State").ToString()
                     txtAddressPostCode.Text = thisData("PostCode").ToString()
-                    ddlAddressCountry.SelectedValue = thisData("Country").ToString()
                     txtAddressNote.Text = thisData("Note").ToString()
-
-                    Dim tagsArray() As String = thisData("Tags").ToString().Split(",")
-                    Dim tagsList As List(Of String) = tagsArray.ToList()
-
-                    For Each i In tagsArray
-                        If Not (i.Equals(String.Empty)) Then
-                            lbAddressTags.Items.FindByValue(i).Selected = True
-                        End If
-                    Next
 
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcessAddress", thisScript, True)
                 Catch ex As Exception
@@ -701,6 +688,12 @@ Partial Class Setting_Customer_Detail
         Dim thisScript As String = "window.onload = function() { showProcessAddress(); };"
         Session("selectedTabCustomer") = "list-address"
         Try
+            If txtAddressDescription.Text = "" Then
+                MessageError_ProcessAddress(True, "ADDRESS DESCRIPTION IS REQUIRED !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showProcessAddress", thisScript, True)
+                Exit Sub
+            End If
+
             If txtAddressName.Text = "" Then
                 MessageError_ProcessAddress(True, "ADDRESS IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcessAddress", thisScript, True)
@@ -725,30 +718,16 @@ Partial Class Setting_Customer_Detail
                 Exit Sub
             End If
 
-            If ddlAddressCountry.SelectedValue = "" Then
-                MessageError_ProcessAddress(True, "COUNTRY IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showProcessAddress", thisScript, True)
-                Exit Sub
-            End If
-
             If msgErrorProcessAddress.InnerText = "" Then
-                Dim thisTags As String = String.Empty
-                Dim selected As String = String.Empty
-                For Each item As ListItem In lbAddressTags.Items
-                    If item.Selected Then
-                        selected += item.Text & ","
-                    End If
-                Next
-
-                If Not selected = "" Then
-                    thisTags = selected.Remove(selected.Length - 1).ToString()
-                End If
-
                 If lblActionAddress.Text = "Add" Then
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerAddress ORDER BY Id DESC")
 
+                    Dim checkData As Integer = settingClass.GetItemData_Integer("SELECT COUNT(*) FROM CustomerAddress WHERE CustomerId='" & lblId.Text & "'")
+                    Dim primaryData As Integer = 0
+                    If checkData = 0 Then primaryData = 1
+
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerAddress VALUES (@Id, @CustomerId, @Description, @Address, @Suburb, @State, @PostCode, @Country, @Tags, @Note, 0)", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerAddress VALUES (@Id, @CustomerId, @Description, @Address, @Suburb, @State, @PostCode, @Note, @Primary)", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", thisId)
                             myCmd.Parameters.AddWithValue("@CustomerId", lblId.Text)
                             myCmd.Parameters.AddWithValue("@Description", txtAddressDescription.Text)
@@ -756,9 +735,8 @@ Partial Class Setting_Customer_Detail
                             myCmd.Parameters.AddWithValue("@Suburb", txtAddressSuburb.Text.Trim())
                             myCmd.Parameters.AddWithValue("@State", txtAddressState.Text.Trim())
                             myCmd.Parameters.AddWithValue("@PostCode", txtAddressPostCode.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Country", ddlAddressCountry.SelectedValue)
-                            myCmd.Parameters.AddWithValue("@Tags", thisTags)
                             myCmd.Parameters.AddWithValue("@Note", txtAddressNote.Text.Trim())
+                            myCmd.Parameters.AddWithValue("@Primary", primaryData)
 
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
@@ -774,7 +752,7 @@ Partial Class Setting_Customer_Detail
 
                 If lblActionAddress.Text = "Edit" Then
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerAddress SET CustomerId=@CustomerId, Description=@Description, Address=@Address, Suburb=@Suburb, State=@State, PostCode=@PostCode, Country=@Country, Tags=@Tags, Note=@Note WHERE Id=@Id", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerAddress SET CustomerId=@CustomerId, Description=@Description, Address=@Address, Suburb=@Suburb, State=@State, PostCode=@PostCode, Note=@Note WHERE Id=@Id", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", lblIdAddress.Text)
                             myCmd.Parameters.AddWithValue("@CustomerId", lblId.Text)
                             myCmd.Parameters.AddWithValue("@Description", txtAddressDescription.Text)
@@ -782,8 +760,6 @@ Partial Class Setting_Customer_Detail
                             myCmd.Parameters.AddWithValue("@Suburb", txtAddressSuburb.Text.Trim())
                             myCmd.Parameters.AddWithValue("@State", txtAddressState.Text.Trim())
                             myCmd.Parameters.AddWithValue("@PostCode", txtAddressPostCode.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Country", ddlAddressCountry.SelectedValue)
-                            myCmd.Parameters.AddWithValue("@Tags", thisTags)
                             myCmd.Parameters.AddWithValue("@Note", txtAddressNote.Text.Trim())
 
                             thisConn.Open()
@@ -1019,14 +995,19 @@ Partial Class Setting_Customer_Detail
                 If lblActionBusiness.Text = "Add" Then
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerBusiness ORDER BY Id DESC")
 
+                    Dim checkData As Integer = settingClass.GetItemData_Integer("SELECT COUNT(*) FROM CustomerBusiness WHERE CustomerId='" & lblId.Text & "'")
+                    Dim primaryData As Integer = 0
+                    If checkData = 0 Then primaryData = 1
+
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerBusiness VALUES (@Id, @CustomerId, @ABNNumber, @RegisteredName, @RegisteredDate, @ExpiryDate, 0)", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerBusiness VALUES (@Id, @CustomerId, @ABNNumber, @RegisteredName, @RegisteredDate, @ExpiryDate, @Primary)", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", thisId)
                             myCmd.Parameters.AddWithValue("@CustomerId", lblId.Text)
                             myCmd.Parameters.AddWithValue("@ABNNumber", txtBusinessNumber.Text)
                             myCmd.Parameters.AddWithValue("@RegisteredName", txtBusinessName.Text)
                             myCmd.Parameters.AddWithValue("@RegisteredDate", If(String.IsNullOrEmpty(txtBusinessRegistered.Text), CType(DBNull.Value, Object), txtBusinessRegistered.Text))
                             myCmd.Parameters.AddWithValue("@ExpiryDate", If(String.IsNullOrEmpty(txtBusinessExpiry.Text), CType(DBNull.Value, Object), txtBusinessExpiry.Text))
+                            myCmd.Parameters.AddWithValue("@Primary", primaryData)
 
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
@@ -2385,9 +2366,8 @@ Partial Class Setting_Customer_Detail
                 Dim suburb As String = thisData("Suburb").ToString()
                 Dim state As String = thisData("State").ToString()
                 Dim postCode As String = thisData("PostCode").ToString()
-                Dim country As String = thisData("Country").ToString()
 
-                result = String.Format("{0}, {1}, {2} {3} {4}", address, suburb, state, country, postCode)
+                result = String.Format("{0}, {1}, {2} {3} {4}", address, suburb, state, postCode)
             End If
         End If
         Return result

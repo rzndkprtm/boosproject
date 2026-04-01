@@ -174,7 +174,7 @@ Public Class SuratJalanClass
                 Dim suburb As String = customerAddress("Suburb").ToString()
                 Dim state As String = customerAddress("State").ToString()
                 Dim postCode As String = customerAddress("PostCode").ToString()
-                Dim country As String = customerAddress("Country").ToString()
+                Dim country As String = String.Empty
 
                 fullAddress = address
                 fullAddress &= vbCrLf

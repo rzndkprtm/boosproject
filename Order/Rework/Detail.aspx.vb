@@ -182,7 +182,7 @@ Partial Class Order_Rework_Detail
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
 
-                Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderQuotes VALUES(@NewID, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00); INSERT OrderInvoices(Id, InvoiceNumber, Payment, Amount) VALUES (@NewID, @InvoiceNumber, @Payment, 0);", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderQuotes VALUES(@NewID, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00); INSERT OrderInvoices(Id, InvoiceNumber, Payment, Amount) VALUES (@NewID, @InvoiceNumber, @Payment, 0);", thisConn)
                     myCmd.Parameters.AddWithValue("@NewID", newHeaderId)
                     myCmd.Parameters.AddWithValue("@InvoiceNumber", orderId)
                     myCmd.Parameters.AddWithValue("@Payment", False)

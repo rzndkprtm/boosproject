@@ -36,16 +36,16 @@
                             <div class="form form-vertical">
                                 <div class="form-body">
                                     <div class="row mb-2">
-                                        <div class="col-12 col-sm-12 col-lg-6 mb-2">
+                                        <div class="col-12 col-sm-12 col-lg-5 mb-2">
                                             <div class="form-group">
                                                 <label class="form-label">Design Type</label>
-                                                <asp:DropDownList runat="server" ID="ddlDesign" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlDesign_SelectedIndexChanged"></asp:DropDownList>
+                                                <asp:DropDownList runat="server" ID="ddlDesign" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlDesign_SelectedIndexChanged"></asp:DropDownList>
                                             </div>
                                         </div>
-                                        <div class="col-12 col-sm-12 col-lg-6 mb-2">
+                                        <div class="col-12 col-sm-12 col-lg-7 mb-2">
                                             <div class="form-group">
                                                 <label class="form-label">Blind Type</label>
-                                                <asp:DropDownList runat="server" ID="ddlBlind" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlBlind_SelectedIndexChanged"></asp:DropDownList>
+                                                <asp:DropDownList runat="server" ID="ddlBlind" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlBlind_SelectedIndexChanged"></asp:DropDownList>
                                             </div>
                                         </div>
                                     </div>
@@ -81,21 +81,21 @@
                                         <div class="col-12 col-sm-12 col-lg-4 mb-2">
                                             <div class="form-group">
                                                 <label class="form-label">Tube Type</label>
-                                                <asp:DropDownList runat="server" ID="ddlTube" CssClass="form-select"></asp:DropDownList>
+                                                <asp:DropDownList runat="server" ID="ddlTube" CssClass="choices form-select"></asp:DropDownList>
                                             </div>
                                             <asp:Button runat="server" ID="btnAddTube" CssClass="btn btn-sm btn-primary" Text="Add New" OnClick="btnAddTube_Click" />
                                         </div>
                                         <div class="col-12 col-sm-12 col-lg-4 mb-2">
                                             <div class="form-group">
                                                 <label class="form-label">Control Type</label>
-                                                <asp:DropDownList runat="server" ID="ddlControl" CssClass="form-select"></asp:DropDownList>
+                                                <asp:DropDownList runat="server" ID="ddlControl" CssClass="choices form-select"></asp:DropDownList>
                                             </div>
                                             <asp:Button runat="server" ID="btnAddControl" CssClass="btn btn-sm btn-primary" Text="Add New" OnClick="btnAddControl_Click" />
                                         </div>
                                         <div class="col-12 col-sm-12 col-lg-4 mb-2">
                                             <div class="form-group">
                                                 <label class="form-label">Colour Type</label>
-                                                <asp:DropDownList runat="server" ID="ddlColour" CssClass="form-select"></asp:DropDownList>
+                                                <asp:DropDownList runat="server" ID="ddlColour" CssClass="choices form-select"></asp:DropDownList>
                                             </div>
                                             <asp:Button runat="server" ID="btnAddColour" CssClass="btn btn-sm btn-primary" Text="Add New" OnClick="btnAddColour_Click" />
                                         </div>

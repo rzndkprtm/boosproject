@@ -268,7 +268,10 @@ Public Class InvoiceClass
                 Dim suburb As String = customerAddress("Suburb").ToString()
                 Dim state As String = customerAddress("State").ToString()
                 Dim postCode As String = customerAddress("PostCode").ToString()
-                Dim country As String = customerAddress("Country").ToString()
+                Dim country As String = String.Empty
+
+                If companyId = "2" Then country = "Australia"
+                If companyId = "3" Then country = "Indonesia"
 
                 fullAddress = address
                 fullAddress &= vbCrLf

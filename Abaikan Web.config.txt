@@ -28,3 +28,6 @@ WHERE NOT EXISTS (
       AND cc.[Primary] = 1
 )
 AND c.Active = 1 AND c.CompanyId = 2
+
+no-reply@ordersblindonline.com
+fq95P~38o

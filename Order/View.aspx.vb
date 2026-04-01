@@ -1,4 +1,6 @@
-﻿Partial Class Order_View
+﻿Imports System.Data
+
+Partial Class Order_View
     Inherits Page
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -57,9 +59,21 @@
             Dim quoteClass As New QuoteClass
             Dim pdfBytes As Byte() = quoteClass.BindContentCustomer(headerId)
 
+            Dim orderData As DataRow = quoteClass.GetDataRow("SELECT * FROM OrderHeaders WHERE Id='" & headerId & "'")
+
+            Dim orderNumber As String = String.Empty
+            Dim orderName As String = String.Empty
+
+            If Not orderData Is Nothing Then
+                orderNumber = orderData("OrderNumber")
+                orderName = orderData("OrderName")
+            End If
+
+            Dim fileName As String = String.Format("QUOTE-{0}-{1}", orderNumber, orderName)
+
             Response.Clear()
             Response.ContentType = "application/pdf"
-            Response.AddHeader("Content-Disposition", "inline; filename=QUOTE-" & headerId & ".pdf")
+            Response.AddHeader("Content-Disposition", "inline; filename=" & fileName & ".pdf")
             Response.BinaryWrite(pdfBytes)
             Response.Flush()
             Response.End()

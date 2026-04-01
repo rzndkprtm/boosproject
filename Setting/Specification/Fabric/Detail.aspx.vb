@@ -8,6 +8,7 @@ Partial Class Setting_Specification_Fabric_Detail
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
+    Dim dataLog As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
@@ -114,7 +115,7 @@ Partial Class Setting_Specification_Fabric_Detail
                         End Using
                     End Using
 
-                    Dim dataLog As Object() = {"FabricColours", thisId, Session("LoginId").ToString(), "Fabric Colour Created"}
+                    dataLog = {"FabricColours", thisId, Session("LoginId").ToString(), "Fabric Colour Created"}
                     settingClass.Logs(dataLog)
 
                     url = String.Format("~/setting/specification/fabric/detail?fabricid={0}", lblId.Text)
@@ -138,7 +139,7 @@ Partial Class Setting_Specification_Fabric_Detail
                         End Using
                     End Using
 
-                    Dim dataLog As Object() = {"FabricColours", lblIdColour.Text, Session("LoginId").ToString(), "Fabric Colour Updated"}
+                    dataLog = {"FabricColours", lblIdColour.Text, Session("LoginId").ToString(), "Fabric Colour Updated"}
                     settingClass.Logs(dataLog)
 
                     url = String.Format("~/setting/specification/fabric/detail?fabricid={0}", lblId.Text)
@@ -151,6 +152,15 @@ Partial Class Setting_Specification_Fabric_Detail
                 MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
+        End Try
+    End Sub
+
+    Protected Sub btnActiveColour_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+
+        Catch ex As Exception
+
         End Try
     End Sub
 
@@ -235,6 +245,11 @@ Partial Class Setting_Specification_Fabric_Detail
     Protected Sub MessageError_Process(visible As Boolean, message As String)
         divErrorProcess.Visible = visible : msgErrorProcess.InnerText = message
     End Sub
+
+    Protected Function TextActiveColour(active As Boolean) As String
+        If active = True Then Return "Deactivate"
+        Return "Activate"
+    End Function
 
     Protected Function PageAction(action As String) As Boolean
         Try
