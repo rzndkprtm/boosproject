@@ -555,6 +555,8 @@
                 If subType = "2 on 1 Left-Left" Then newSubType = "2 on 1 Venetian Left-Left"
                 If subType = "2 on 1 Right-Right" Then newSubType = "2 on 1 Venetian Right-Right"
                 If subType = "2 on 1 Left-Right" Then newSubType = "2 on 1 Venetian Left-Right"
+                If subType = "3 on 1 Left-Left-Right" Then newSubType = "3 on 1 Venetian Left-Left-Right"
+                If subType = "3 on 1 Left-Right-Right" Then newSubType = "3 on 1 Venetian Left-Right-Right"
 
                 Dim valancePosition As String = thisData.Rows(i)("ReturnPosition").ToString()
                 If valancePosition = "Both Sides" Then valancePosition = "Right and Left"
