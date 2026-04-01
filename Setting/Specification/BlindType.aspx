@@ -107,7 +107,6 @@
                 <div class="modal-header">
                     <h4 runat="server" class="modal-title" id="titleProcess"></h4>
                 </div>
-
                 <div class="modal-body">
                     <div class="row mb-2" runat="server" id="divErrorProcess">
                         <div class="col-12">
@@ -132,7 +131,7 @@
                     <div class="row">
                         <div class="col-12 form-group">
                             <label class="form-label">Design Name</label>
-                            <asp:DropDownList runat="server" ID="ddlDesign" CssClass="form-select"></asp:DropDownList>
+                            <asp:DropDownList runat="server" ID="ddlDesign" CssClass="choices form-select"></asp:DropDownList>
                         </div>
                     </div>
                     

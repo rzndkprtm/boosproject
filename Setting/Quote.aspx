@@ -166,16 +166,6 @@
                             <asp:TextBox runat="server" ID="txtPostCode" CssClass="form-control" placeholder="Post Code ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-                    <div class="row mb-2" runat="server" visible="false">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Country</label>
-                            <asp:DropDownList runat="server" ID="ddlCountry" CssClass="form-select">
-                                <asp:ListItem Value="" Text=""></asp:ListItem>
-                                <asp:ListItem Value="Australia" Text="Australia"></asp:ListItem>
-                                <asp:ListItem Value="Indonesia" Text="Indonesia"></asp:ListItem>
-                            </asp:DropDownList>
-                        </div>
-                    </div>
                 </div>
 
                 <div class="modal-footer">

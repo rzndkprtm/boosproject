@@ -207,10 +207,15 @@ Partial Class Order_Detail
             'If lblCompanyId.Text = "2" Then
             '    Dim thisId As String = orderClass.GetNewOrderItemId()
 
+            '    Dim productId As String = orderClass.GetItemData("SELECT Id FROM Products WHERE Name='Fuel Surcharge' AND Active=1")
+            '    Dim productGroupId As String = orderClass.GetItemData("SELECT Id FROM PriceProductGroups WHERE Name='Fuel Surcharge' AND Active=1")
+
             '    Using thisConn As New SqlConnection(myConn)
-            '        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, 3511, 204, 1, 0, 0, 1, 0, 1)", thisConn)
+            '        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, 1, 0, 0, 1, 0, 1)", thisConn)
             '            myCmd.Parameters.AddWithValue("@Id", thisId)
             '            myCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
+            '            myCmd.Parameters.AddWithValue("@ProductId", If(String.IsNullOrEmpty(productId), CType(DBNull.Value, Object), productId))
+            '            myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(productGroupId), CType(DBNull.Value, Object), productGroupId))
 
             '            thisConn.Open()
             '            myCmd.ExecuteNonQuery()
@@ -223,6 +228,32 @@ Partial Class Order_Detail
             '    orderClass.ResetPriceDetail(lblHeaderId.Text, thisId)
             '    orderClass.CalculatePrice(lblHeaderId.Text, thisId)
             '    orderClass.FinalCostItem(lblHeaderId.Text, thisId)
+
+            '    Dim totalItems As Integer = orderClass.GetTotalItemOrder(lblHeaderId.Text)
+            '    If minSurcharge = True AndAlso totalItems <= 3 Then
+            '        thisId = orderClass.GetNewOrderItemId()
+            '        productId = orderClass.GetItemData("SELECT Id FROM Products WHERE Name='Minimum Order Surcharge' AND Active=1")
+            '        productGroupId = orderClass.GetItemData("SELECT Id FROM PriceProductGroups WHERE Name='Minimum Order Surcharge' AND Active=1")
+
+            '        Using thisConn As New SqlConnection(myConn)
+            '            Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, 1, 0, 0, 1, 0, 1)", thisConn)
+            '                myCmd.Parameters.AddWithValue("@Id", thisId)
+            '                myCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
+            '                myCmd.Parameters.AddWithValue("@ProductId", If(String.IsNullOrEmpty(productId), CType(DBNull.Value, Object), productId))
+            '                myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(productGroupId), CType(DBNull.Value, Object), productGroupId))
+
+            '                thisConn.Open()
+            '                myCmd.ExecuteNonQuery()
+            '            End Using
+            '        End Using
+
+            '        dataLog = {"OrderDetails", thisId, "2", "Order Item Added"}
+            '        orderClass.Logs(dataLog)
+
+            '        orderClass.ResetPriceDetail(lblHeaderId.Text, thisId)
+            '        orderClass.CalculatePrice(lblHeaderId.Text, thisId)
+            '        orderClass.FinalCostItem(lblHeaderId.Text, thisId)
+            '    End If
             'End If
 
             Dim totalItems As Integer = orderClass.GetTotalItemOrder(lblHeaderId.Text)
@@ -251,16 +282,10 @@ Partial Class Order_Detail
 
             Dim mailingClass As New MailingClass
             If lblCompanyId.Text = "2" Then
-                If cashSale = False Then
-                    mailingClass.ProductionOrder(lblHeaderId.Text)
-                End If
-                If cashSale = True Then
-                    mailingClass.NewOrder_Proforma(lblHeaderId.Text)
-                End If
+                If cashSale = False Then mailingClass.NewOrder(lblHeaderId.Text)
+                If cashSale = True Then mailingClass.NewOrder_Proforma(lblHeaderId.Text)
             End If
-            If lblCompanyId.Text = "3" Then
-                mailingClass.NewOrder(lblHeaderId.Text)
-            End If
+            If lblCompanyId.Text = "3" Then mailingClass.NewOrder(lblHeaderId.Text)
 
             Dim checkPrinting As Integer = orderClass.GetItemData_Integer("SELECT COUNT(*) FROM OrderDetails WHERE HeaderId='" & lblHeaderId.Text & "' AND (NULLIF(LTRIM(RTRIM(Printing)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingB)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingC)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingD)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingE)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingF)),'') IS NOT NULL)")
             If checkPrinting > 0 Then
@@ -303,10 +328,8 @@ Partial Class Order_Detail
                 End Using
             End Using
 
-            If lblCompanyId.Text = "2" Then
-                Dim mailingClass As New MailingClass
-                mailingClass.ProductionOrder(lblHeaderId.Text)
-            End If
+            Dim mailingClass As New MailingClass
+            mailingClass.NewOrder(lblHeaderId.Text)
 
             dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), "New Order"}
             orderClass.Logs(dataLog)
@@ -430,16 +453,6 @@ Partial Class Order_Detail
             Dim salesClass As New SalesClass
             salesClass.RefreshData(lblCompanyId.Text)
 
-            If lblOrderStatus.Text = "Payment Received" Then
-                Dim mailingClass As New MailingClass
-                mailingClass.ProductionOrder(lblHeaderId.Text)
-            End If
-
-            If lblCompanyId.Text = "3" Then
-                Dim mailingClass As New MailingClass
-                mailingClass.ProductionOrder(lblHeaderId.Text)
-            End If
-
             Dim shipmentString As String = "INSERT INTO OrderShipments(Id) VALUES (@Id)"
             If lblOrderStatus.Text = "Shipped Out" Then
                 shipmentString = "UPDATE OrderShipments SET ShipmentNumber=NULL, ShipmentDate=NULL, ContainerNumber=NULL, ContainerETA=NULL, Courier=NULL WHERE Id=@Id"
@@ -452,11 +465,6 @@ Partial Class Order_Detail
                     myCmd.ExecuteNonQuery()
                 End Using
             End Using
-
-            If lblOrderStatus.Text = "Payment Received" Then
-                Dim mailingClass As New MailingClass
-                mailingClass.ProductionOrder(lblHeaderId.Text)
-            End If
 
             url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
             Response.Redirect(url, False)
@@ -765,7 +773,7 @@ Partial Class Order_Detail
                 txtQuoteFreight.Text.Replace(".", ",")
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderQuotes SET Email=@Email, Phone=@Phone, Address=@Address, Suburb=@Suburb, City=@City, State=@State, PostCode=@PostCode, Country=@Country, Discount=@Discount, Installation=@Installation, CheckMeasure=@CheckMeasure, Freight=@Freight WHERE Id=@Id", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderQuotes SET Email=@Email, Phone=@Phone, Address=@Address, Suburb=@Suburb, City=@City, State=@State, PostCode=@PostCode, Discount=@Discount, Installation=@Installation, CheckMeasure=@CheckMeasure, Freight=@Freight WHERE Id=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
                         myCmd.Parameters.AddWithValue("@Email", txtQuoteEmail.Text)
                         myCmd.Parameters.AddWithValue("@Phone", txtQuotePhone.Text.Trim())
@@ -774,7 +782,6 @@ Partial Class Order_Detail
                         myCmd.Parameters.AddWithValue("@City", txtQuoteCity.Text.Trim())
                         myCmd.Parameters.AddWithValue("@State", txtQuoteState.Text.Trim())
                         myCmd.Parameters.AddWithValue("@PostCode", txtQuotePostCode.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Country", ddlQuoteCountry.SelectedValue)
                         myCmd.Parameters.AddWithValue("@Discount", txtQuoteDiscount.Text)
                         myCmd.Parameters.AddWithValue("@CheckMeasure", txtQuoteCheckMeasure.Text)
                         myCmd.Parameters.AddWithValue("@Installation", txtQuoteInstallation.Text)
@@ -814,9 +821,11 @@ Partial Class Order_Detail
             Dim quoteClass As New QuoteClass
             Dim pdfBytes As Byte() = quoteClass.BindContentCustomer(lblHeaderId.Text)
 
+            Dim fileName As String = String.Format("QUOTE-{0}-{1}", lblOrderNumber.Text, lblOrderName.Text)
+
             Response.Clear()
             Response.ContentType = "application/pdf"
-            Response.AddHeader("Content-Disposition", "attachment; filename=Quote" & lblOrderId.Text & ".pdf")
+            Response.AddHeader("Content-Disposition", "attachment; filename=" & fileName & ".pdf")
             Response.BinaryWrite(pdfBytes)
             Response.Flush()
             Response.End()
@@ -849,7 +858,6 @@ Partial Class Order_Detail
             End If
 
             Dim ccCustomer As String = String.Empty
-
             If Not String.IsNullOrEmpty(txtSendInvoiceCCCustomer.Text) Then
                 Dim raw As String = txtSendInvoiceCCCustomer.Text
                 Dim lines As String() = raw.Split(New String() {vbCrLf, vbLf}, StringSplitOptions.RemoveEmptyEntries)
@@ -860,6 +868,19 @@ Partial Class Order_Detail
                     If email <> "" Then cleanedEmails.Add(email)
                 Next
                 ccCustomer = String.Join(";", cleanedEmails)
+            End If
+
+            Dim ccStaff As String = String.Empty
+            If Not String.IsNullOrEmpty(txtSendInvoiceCCStaff.Text) Then
+                Dim raw As String = txtSendInvoiceCCStaff.Text
+                Dim lines As String() = raw.Split(New String() {vbCrLf, vbLf}, StringSplitOptions.RemoveEmptyEntries)
+
+                Dim cleanedEmails As New List(Of String)
+                For Each line As String In lines
+                    Dim email As String = line.Trim()
+                    If email <> "" Then cleanedEmails.Add(email)
+                Next
+                ccStaff = String.Join(";", cleanedEmails)
             End If
 
             If msgErrorSendInvoice.InnerText = "" Then
@@ -883,7 +904,7 @@ Partial Class Order_Detail
                 End Using
 
                 Dim mailingClass As New MailingClass
-                mailingClass.SendInvoice(lblHeaderId.Text, Session("LoginId").ToString(), txtSendInvoiceTo.Text, ccCustomer, txtSendInvoiceCCStaff.Text)
+                mailingClass.SendInvoice(lblHeaderId.Text, Session("LoginId").ToString(), txtSendInvoiceTo.Text, ccCustomer, ccStaff)
 
                 dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), "Send Invoice"}
                 orderClass.Logs(dataLog)
@@ -925,6 +946,9 @@ Partial Class Order_Detail
             End Using
 
             If lblOrderStatus.Text = "Proforma Sent" Then
+                Dim mailingClass As New MailingClass
+                mailingClass.NewOrder(lblHeaderId.Text)
+
                 Dim checkOcean As Integer = orderClass.GetItemData_Integer("SELECT COUNT(OrderDetails.Id) FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.HeaderId='" & lblHeaderId.Text & "' AND OrderDetails.Active=1 AND Products.DesignId='15'")
                 If checkOcean > 0 Then
                     Dim thisId As String = lblHeaderId.Text
@@ -1236,9 +1260,22 @@ Partial Class Order_Detail
                 ccCustomer = String.Join(";", cleanedEmails)
             End If
 
+            Dim ccStaff As String = String.Empty
+            If Not String.IsNullOrEmpty(txtEmailQuoteCCStaff.Text) Then
+                Dim raw As String = txtEmailQuoteCCStaff.Text
+                Dim lines As String() = raw.Split(New String() {vbCrLf, vbLf}, StringSplitOptions.RemoveEmptyEntries)
+
+                Dim cleanedEmails As New List(Of String)
+                For Each line As String In lines
+                    Dim email As String = line.Trim()
+                    If email <> "" Then cleanedEmails.Add(email)
+                Next
+                ccStaff = String.Join(";", cleanedEmails)
+            End If
+
             If msgErrorMoreEmailQuote.InnerText = "" Then
                 Dim mailingClass As New MailingClass
-                mailingClass.SentQuote(lblHeaderId.Text, Session("LoginId").ToString(), txtEmailQuoteTo.Text, ccCustomer, txtEmailQuoteCCStaff.Text)
+                mailingClass.SentQuote(lblHeaderId.Text, Session("LoginId").ToString(), txtEmailQuoteTo.Text, ccCustomer, ccStaff)
 
                 url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
                 Response.Redirect(url, False)
@@ -2547,6 +2584,7 @@ Partial Class Order_Detail
 
     Protected Sub BindDataItem(status As String)
         divMinimumOrderSurcharge.Visible = False
+        divFuelSurcharge.Visible = False
         Try
             Dim param As New List(Of SqlParameter) From {
                 New SqlParameter("@HeaderId", Convert.ToInt32(lblHeaderId.Text))
@@ -2566,8 +2604,11 @@ Partial Class Order_Detail
             If Session("PriceAccess") = "Yes" Then gvListItem.Columns(7).Visible = True
 
             Dim totalItems As Integer = orderClass.GetTotalItemOrder(lblHeaderId.Text)
-            If status = "Unsubmitted" AndAlso lblPriceGroupId.Text = "1" AndAlso totalItems > 0 AndAlso totalItems <= 3 Then
-                divMinimumOrderSurcharge.Visible = True
+            If status = "Unsubmitted" AndAlso lblCompanyId.Text = "1" AndAlso totalItems > 0 Then
+                'divFuelSurcharge.Visible = True
+                If totalItems <= 3 Then
+                    divMinimumOrderSurcharge.Visible = True
+                End If
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -2585,7 +2626,7 @@ Partial Class Order_Detail
 
         If quoteData Is Nothing Then
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderQuotes VALUES(@Id, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00)", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderQuotes VALUES(@Id, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00)", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
 
                     thisConn.Open()
@@ -2594,9 +2635,6 @@ Partial Class Order_Detail
             End Using
             Response.Redirect("~/order/detail", False)
         End If
-
-        imgDetailQuote.ImageUrl = "~/assets/images/quotation/quotefordetail.jpg"
-        If lblCompanyId.Text = "3" OrElse lblCompanyId.Text = "5" Then imgDetailQuote.ImageUrl = "~/assets/images/quotation/quotefordetail_local.jpg"
 
         divQuoteCity.Visible = False
 
@@ -2614,15 +2652,6 @@ Partial Class Order_Detail
             spanFreight.InnerText = "Rp"
         End If
 
-        ddlQuoteCountry.Items.Clear()
-        ddlQuoteCountry.Items.Add(New ListItem("", ""))
-        If lblCompanyId.Text = "2" Then
-            ddlQuoteCountry.Items.Add(New ListItem("Australia", "Australia"))
-        End If
-        If lblCompanyId.Text = "3" Then
-            ddlQuoteCountry.Items.Add(New ListItem("Indonesia", "Indonesia"))
-        End If
-
         txtQuoteEmail.Text = quoteData("Email").ToString()
         txtQuotePhone.Text = quoteData("Phone").ToString()
         txtQuoteAddress.Text = quoteData("Address").ToString()
@@ -2630,7 +2659,6 @@ Partial Class Order_Detail
         txtQuoteCity.Text = quoteData("City").ToString()
         txtQuoteState.Text = quoteData("State").ToString()
         txtQuotePostCode.Text = quoteData("PostCode").ToString()
-        ddlQuoteCountry.SelectedValue = quoteData("Country").ToString()
 
         txtQuoteDiscount.Text = quoteData("Discount").ToString().Replace(",", ".")
         txtQuoteCheckMeasure.Text = quoteData("CheckMeasure").ToString().Replace(",", ".")
@@ -2793,28 +2821,28 @@ Partial Class Order_Detail
                 txtCallForCheckMeasure.Text = String.Empty
                 If Not String.IsNullOrEmpty(dataBuilder("CallForCheckMeasure").ToString()) Then
                     lblCallForCheckMeasure.Text = Convert.ToDateTime(dataBuilder("CallForCheckMeasure")).ToString("dd MMM yyyy")
-                    txtCallForCheckMeasure.Text = Convert.ToDateTime(dataBuilder("CallForCheckMeasure")).ToString("dd MMM yyyy")
+                    txtCallForCheckMeasure.Text = Convert.ToDateTime(dataBuilder("CallForCheckMeasure")).ToString("yyyy-MM-dd")
                 End If
 
                 lblCheckMeasureDue.Text = String.Empty
                 txtCheckMeasureDue.Text = String.Empty
                 If Not String.IsNullOrEmpty(dataBuilder("CheckMeasureDue").ToString()) Then
                     lblCheckMeasureDue.Text = Convert.ToDateTime(dataBuilder("CheckMeasureDue")).ToString("dd MMM yyyy")
-                    txtCheckMeasureDue.Text = Convert.ToDateTime(dataBuilder("CheckMeasureDue")).ToString("dd MMM yyyy")
+                    txtCheckMeasureDue.Text = Convert.ToDateTime(dataBuilder("CheckMeasureDue")).ToString("yyyy-MM-dd")
                 End If
 
                 lblToBeInstalled.Text = String.Empty
                 txtToBeInstalled.Text = String.Empty
                 If Not String.IsNullOrEmpty(dataBuilder("ToBeInstalled").ToString()) Then
                     lblToBeInstalled.Text = Convert.ToDateTime(dataBuilder("ToBeInstalled")).ToString("dd MMM yyyy")
-                    txtToBeInstalled.Text = Convert.ToDateTime(dataBuilder("ToBeInstalled")).ToString("dd MMM yyyy")
+                    txtToBeInstalled.Text = Convert.ToDateTime(dataBuilder("ToBeInstalled")).ToString("yyyy-MM-dd")
                 End If
 
                 lblInstalled.Text = String.Empty
                 txtInstalled.Text = String.Empty
                 If Not String.IsNullOrEmpty(dataBuilder("Installed").ToString()) Then
                     lblInstalled.Text = Convert.ToDateTime(dataBuilder("Installed")).ToString("dd MMM yyyy")
-                    txtInstalled.Text = Convert.ToDateTime(dataBuilder("Installed")).ToString("dd MMM yyyy")
+                    txtInstalled.Text = Convert.ToDateTime(dataBuilder("Installed")).ToString("yyyy-MM-dd")
                 End If
             End If
         Catch ex As Exception
@@ -2886,6 +2914,39 @@ Partial Class Order_Detail
 
                 txtEmailQuoteCCCustomer.Text = String.Join(vbCrLf, listEmail)
             End If
+
+            Dim dataCCMailing As DataTable = orderClass.GetDataTable("SELECT * FROM Mailings WHERE CompanyId='" & lblCompanyId.Text & "' AND Name='Send Quote' AND Active=1")
+            If dataCCMailing.Rows.Count > 0 Then
+                Dim listEmail As New List(Of String)
+
+                For Each row As DataRow In dataCCMailing.Rows
+                    Dim emails As String() = row("Cc").ToString().Split(";"c)
+
+                    For Each email As String In emails
+                        If Not String.IsNullOrWhiteSpace(email) Then
+                            listEmail.Add(email.Trim())
+                        End If
+                    Next
+                Next
+
+                txtEmailQuoteCCStaff.Text = String.Join(vbCrLf, listEmail)
+            End If
+
+            Dim operatorEmail As String = orderClass.GetItemData("SELECT ISNULL(STRING_AGG(CustomerLogins.Email, ';'), '') FROM Customers OUTER APPLY STRING_SPLIT(Customers.Operator, ',') operatorArray LEFT JOIN CustomerLogins ON CustomerLogins.Id = TRY_CAST(operatorArray.value AS INT) WHERE Customers.Id='" & lblCustomerId.Text & "';")
+            If Not String.IsNullOrEmpty(operatorEmail) Then
+                Dim listEmail As New List(Of String)
+                If Not String.IsNullOrWhiteSpace(txtEmailQuoteCCStaff.Text) Then
+                    listEmail.AddRange(txtEmailQuoteCCStaff.Text.Split({vbCrLf}, StringSplitOptions.RemoveEmptyEntries))
+                End If
+                Dim operatorEmails = operatorEmail.Split(";"c)
+                For Each email As String In operatorEmails
+                    If Not String.IsNullOrWhiteSpace(email) Then
+                        listEmail.Add(email.Trim())
+                    End If
+                Next
+                listEmail = listEmail.Distinct().ToList()
+                txtEmailQuoteCCStaff.Text = String.Join(vbCrLf, listEmail)
+            End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
         End Try
@@ -2904,6 +2965,39 @@ Partial Class Order_Detail
                 Next
 
                 txtSendInvoiceCCCustomer.Text = String.Join(vbCrLf, listEmail)
+            End If
+
+            Dim dataCCMailing As DataTable = orderClass.GetDataTable("SELECT * FROM Mailings WHERE CompanyId='" & lblCompanyId.Text & "' AND Name='Send Invoice' AND Active=1")
+            If dataCCMailing.Rows.Count > 0 Then
+                Dim listEmail As New List(Of String)
+
+                For Each row As DataRow In dataCCMailing.Rows
+                    Dim emails As String() = row("Cc").ToString().Split(";"c)
+
+                    For Each email As String In emails
+                        If Not String.IsNullOrWhiteSpace(email) Then
+                            listEmail.Add(email.Trim())
+                        End If
+                    Next
+                Next
+
+                txtSendInvoiceCCStaff.Text = String.Join(vbCrLf, listEmail)
+            End If
+
+            Dim operatorEmail As String = orderClass.GetItemData("SELECT ISNULL(STRING_AGG(CustomerLogins.Email, ';'), '') FROM Customers OUTER APPLY STRING_SPLIT(Customers.Operator, ',') operatorArray LEFT JOIN CustomerLogins ON CustomerLogins.Id = TRY_CAST(operatorArray.value AS INT) WHERE Customers.Id='" & lblCustomerId.Text & "';")
+            If Not String.IsNullOrEmpty(operatorEmail) Then
+                Dim listEmail As New List(Of String)
+                If Not String.IsNullOrWhiteSpace(txtSendInvoiceCCStaff.Text) Then
+                    listEmail.AddRange(txtSendInvoiceCCStaff.Text.Split({vbCrLf}, StringSplitOptions.RemoveEmptyEntries))
+                End If
+                Dim operatorEmails = operatorEmail.Split(";"c)
+                For Each email As String In operatorEmails
+                    If Not String.IsNullOrWhiteSpace(email) Then
+                        listEmail.Add(email.Trim())
+                    End If
+                Next
+                listEmail = listEmail.Distinct().ToList()
+                txtSendInvoiceCCStaff.Text = String.Join(vbCrLf, listEmail)
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())

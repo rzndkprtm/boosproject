@@ -142,6 +142,9 @@
                                                             <li runat="server" visible='<%# PageAction("Detail Colour") %>'>
                                                                 <asp:LinkButton runat="server" ID="linkDetailColour" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                             </li>
+                                                            <li runat="server" visible='<%# PageAction("Active Colour") %>'>
+                                                                <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalActiveColour" onclick='<%# String.Format("return showActiveColour(`{0}`, `{1}`);", Eval("Id").ToString(), Convert.ToInt32(Eval("Active"))) %>'><%# TextActiveColour(Eval("Active")) %></a>
+                                                            </li>
                                                             <li>
                                                                 <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('FabricColours', '<%# Eval("Id") %>')">Log</a>
                                                             </li>
@@ -223,6 +226,25 @@
         </div>
     </div>
 
+    <div class="modal modal-blur fade" id="modalActiveColour" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-secondary">
+                    <h5 class="modal-title white" id="titleActiveColour"></h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <asp:TextBox runat="server" ID="txtIdActiveColour" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtActiveColour" style="display:none;"></asp:TextBox>
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnActiveColour" CssClass="btn btn-secondary" Text="Confirm" OnClick="btnActiveColour_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal modal-blur fade" id="modalLog" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -270,6 +292,19 @@
             $("#modalProcess").modal("show");
         }
 
+        function showActiveColour(id, active) {
+            document.getElementById("<%=txtIdActiveColour.ClientID %>").value = id;
+            document.getElementById("<%=txtActiveColour.ClientID %>").value = active;
+
+            let title = "";
+            if (active === "1") {
+                title = "Deactivate Fabric Colour";
+            } else {
+                title = "Activate Fabric Colour";
+            }
+            document.getElementById("titleActiveColour").innerHTML = title;
+        }
+
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
             $("#tblLogs tbody").html("");
@@ -304,7 +339,7 @@
             });
         }
 
-        ["modalProcess", "modalLog"].forEach(function (id) {
+        ["modalProcess", "modalActiveColour", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

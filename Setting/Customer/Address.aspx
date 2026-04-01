@@ -36,7 +36,7 @@
                                     <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
                                         <div class="input-group">
                                             <span class="input-group-text">Search : </span>
-                                            <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" placeholoder="off"></asp:TextBox>
+                                            <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" placeholoder="" autocomplete="off"></asp:TextBox>
                                             <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />
                                         </div>
                                     </asp:Panel>
@@ -133,49 +133,28 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                        <div class="col-12 col-sm-12 col-lg-5 form-group">
                             <label class="form-label">Description</label>
-                            <asp:TextBox runat="server" ID="txtDescription" CssClass="form-control" placeholder="Description ..." autocomplete="off"></asp:TextBox>
+                            <asp:TextBox runat="server" ID="txtDescription" CssClass="form-control" placeholder="Delivery / Warehouse / Office ..." autocomplete="off"></asp:TextBox>
                         </div>
-                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                        <div class="col-12 col-sm-12 col-lg-7 form-group">
                             <label class="form-label">Address</label>
                             <asp:TextBox runat="server" ID="txtAddress" CssClass="form-control" placeholder="Address ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
                 
                     <div class="row">
-                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                        <div class="col-12 col-sm-12 col-lg-4 form-group">
                             <label class="form-label">Suburb</label>
                             <asp:TextBox runat="server" ID="txtSuburb" CssClass="form-control" placeholder="Suburb ..." autocomplete="off"></asp:TextBox>
                         </div>
-                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                        <div class="col-12 col-sm-12 col-lg-4 form-group">
                             <label class="form-label">State</label>
                             <asp:TextBox runat="server" ID="txtState" CssClass="form-control" placeholder="State ..." autocomplete="off"></asp:TextBox>
                         </div>
-                    </div>
-                
-                    <div class="row">
-                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                        <div class="col-12 col-sm-12 col-lg-4 form-group">
                             <label class="form-label">Post Code</label>
                             <asp:TextBox runat="server" ID="txtPostCode" CssClass="form-control" placeholder="Post Code ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                        <div class="col-12 col-sm-12 col-lg-6 form-group">
-                            <label class="form-label">Country</label>
-                            <asp:DropDownList runat="server" ID="ddlCountry" CssClass="form-select">
-                                <asp:ListItem Value="" Text=""></asp:ListItem>
-                                <asp:ListItem Value="Australia" Text="Australia"></asp:ListItem>
-                                <asp:ListItem Value="Indonesia" Text="Indonesia"></asp:ListItem>
-                            </asp:DropDownList>
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Tags</label>
-                            <asp:ListBox runat="server" ID="lbTags" CssClass="choices form-select multiple-remove" SelectionMode="Multiple">
-                                <asp:ListItem Value="Delivery" Text="Delivery"></asp:ListItem>
-                                <asp:ListItem Value="Warehouse" Text="Warehouse"></asp:ListItem>
-                            </asp:ListBox>
                         </div>
                     </div>
 

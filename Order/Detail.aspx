@@ -123,7 +123,6 @@
                         <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalRecalculate">Re Price Order</a>
                     </li>
                 </ul>
-
                 <a href="javascript:void(0);" class="btn btn-secondary me-1" onclick="showLog('OrderHeaders', '<%= lblHeaderId.Text %>')">Log</a>
             </div>
         </section>
@@ -433,6 +432,14 @@
                         </div>
 
                         <div class="card-body">
+                            <div class="row" runat="server" id="divFuelSurcharge">
+                                <div class="col-12">
+                                    <div class="alert alert-light-warning color-warning">
+                                        <i class="bi bi-exclamation-circle"></i>
+                                        Please note that a $4 fuel surcharge will be applied once the order is submitted.
+                                    </div>
+                                </div>
+                            </div>
                             <div class="row" runat="server" id="divMinimumOrderSurcharge">
                                 <div class="col-12">
                                     <div class="alert alert-light-warning color-warning">
@@ -959,9 +966,6 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-12 col-sm-12 col-lg-6">
-                            <div class="divider">
-                                <div class="divider-text">Section 1</div>
-                            </div>
                             <div class="row mb-1">
                                 <div class="col-6 form-group">
                                     <label class="form-label">Email</label>
@@ -1000,22 +1004,10 @@
                                     <label class="form-label">Post Code</label>
                                     <asp:TextBox runat="server" ID="txtQuotePostCode" CssClass="form-control" placeholder="Post Code ..." autocomplete="off"></asp:TextBox>
                                 </div>
-                                <div class="col-6 form-group">
-                                    <label class="form-label">Country</label>
-                                    <asp:DropDownList runat="server" ID="ddlQuoteCountry" CssClass="form-select">
-                                        <asp:ListItem Value="" Text=""></asp:ListItem>
-                                        <asp:ListItem Value="Australia" Text="Australia"></asp:ListItem>
-                                        <asp:ListItem Value="Indonesia" Text="Indonesia"></asp:ListItem>
-                                    </asp:DropDownList>
-                                </div>
                             </div>
+                        </div>
 
-                            <div class="divider"><hr /></div>
-
-                            <div class="divider">
-                                <div class="divider-text">Section 2</div>
-                            </div>
-
+                        <div class="col-12 col-sm-12 col-lg-6">
                             <div class="row mb-1">
                                 <div class="col-6 form-group">
                                     <label class="form-label">Discount</label>
@@ -1049,15 +1041,9 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="divider"><hr /></div>
-                        </div>
-                        <div class="col-12 col-sm-12 col-lg-6">
-                            <asp:Image runat="server" id="imgDetailQuote" CssClass="w-100" />
                         </div>
                     </div>
                     
-        
                     <div class="row mb-2" runat="server" id="divErrorDetailQuote">
                         <div class="col-12">
                             <div class="alert alert-danger">
@@ -1112,14 +1098,15 @@
                         <div class="col-12 form-group">
                             <label class="form-label">CC Customer</label>
                             <asp:TextBox runat="server" ID="txtSendInvoiceCCCustomer" TextMode="MultiLine" CssClass="form-control" Height="135px" placeholder="CC Customer ..." autocomplete="off" style="resize:none;"></asp:TextBox>
+                            <p><small class="text-muted">* Please enter the required email address in a new line.</small></p>
                         </div>
                     </div>
 
                     <div class="row mb-2">
                         <div class="col-12 form-group">
                             <label class="form-label">CC Staff</label>
-                            <asp:TextBox runat="server" ID="txtSendInvoiceCCStaff" CssClass="form-control" placeholder="CC ..." autocomplete="off"></asp:TextBox>
-                            <p><small class="text-muted">* By default, all Account team members, Matt, and the relevant Operators will be CC’d by the system.</small></p>
+                            <asp:TextBox runat="server" ID="txtSendInvoiceCCStaff" TextMode="MultiLine" CssClass="form-control"  Height="135px" placeholder="CC ..." autocomplete="off" style="resize:none;"></asp:TextBox>
+                            <p><small class="text-muted">* Please enter the required email address in a new line.</small></p>
                         </div>
                     </div>
 
@@ -1394,8 +1381,7 @@
                     <div class="row mb-2">
                         <div class="col-12 form-group">
                             <label class="form-label">CC Staff</label>
-                            <asp:TextBox runat="server" ID="txtEmailQuoteCCStaff" CssClass="form-control" placeholder="CC Staff ..." autocomplete="off"></asp:TextBox>
-                            <p><small class="text-muted">* By default, all Account team members, Matt, and the relevant Operators will be CC’d by the system.</small></p>
+                            <asp:TextBox runat="server" ID="txtEmailQuoteCCStaff" TextMode="MultiLine" CssClass="form-control" Height="135px" placeholder="CC Staff ..." autocomplete="off" style="resize:none;"></asp:TextBox>
                         </div>
                     </div>
 

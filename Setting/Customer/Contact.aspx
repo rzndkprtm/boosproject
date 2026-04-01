@@ -66,9 +66,9 @@
                                                 </asp:TemplateField>
                                                 <asp:BoundField DataField="Id" HeaderText="ID" />
                                                 <asp:BoundField DataField="CustomerName" HeaderText="Customer" />
-                                                <asp:BoundField DataField="ContactName" HeaderText="Name" />
-                                                <asp:BoundField DataField="Role" HeaderText="Role" />
+                                                <asp:BoundField DataField="Name" HeaderText="Name" />
                                                 <asp:BoundField DataField="Email" HeaderText="Email" />
+                                                <asp:BoundField DataField="Phone" HeaderText="Phone" />
                                                 <asp:BoundField DataField="Tags" HeaderText="Tags" />
                                                 <asp:BoundField DataField="DataPrimary" HeaderText="Primary" />
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
@@ -129,44 +129,20 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                        <div class="col-12 form-group">
                             <label class="form-label">Name</label>
                             <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                        <div class="col-12 col-sm-12 col-lg-6 form-group">
-                            <label class="form-label">Salutation</label>
-                            <asp:DropDownList runat="server" ID="ddlSalutation" CssClass="form-select">
-                                <asp:ListItem Value="" Text=""></asp:ListItem>
-                                <asp:ListItem Value="Mr." Text="Mr."></asp:ListItem>
-                                <asp:ListItem Value="Mrs." Text="Mrs."></asp:ListItem>
-                                <asp:ListItem Value="Ms." Text="Ms."></asp:ListItem>
-                            </asp:DropDownList>
                         </div>
                     </div>
 
                     <div class="row">
-                        <div class="col-12 col-sm-12 col-lg-6 form-group">
-                            <label class="form-label">Role</label>
-                            <asp:TextBox runat="server" ID="txtRole" CssClass="form-control" placeholder="Role ..." autocomplete="off"></asp:TextBox>
-                        </div>
                         <div class="col-12 col-sm-12 col-lg-6 form-group">
                             <label class="form-label">Email</label>
                             <asp:TextBox runat="server" ID="txtEmail" TextMode="Email" CssClass="form-control" placeholder="Email ..." autocomplete="off"></asp:TextBox>
                         </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-12 col-sm-12 col-lg-4 form-group">
+                        <div class="col-12 col-sm-12 col-lg-6 form-group">
                             <label class="form-label">Phone</label>
                             <asp:TextBox runat="server" ID="txtPhone" CssClass="form-control" placeholder="Phone ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                        <div class="col-12 col-sm-12 col-lg-4 form-group">
-                            <label class="form-label">Mobile</label>
-                            <asp:TextBox runat="server" ID="txtMobile" CssClass="form-control" placeholder="Mobile ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                        <div class="col-12 col-sm-12 col-lg-4 form-group">
-                            <label class="form-label">FAX</label>
-                            <asp:TextBox runat="server" ID="txtFax" CssClass="form-control" placeholder="FAX ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
 

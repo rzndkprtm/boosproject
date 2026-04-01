@@ -112,6 +112,26 @@ Public Class QuoteClass
         Return result
     End Function
 
+    Public Function GetItemData_Boolean(thisString As String) As Boolean
+        Dim result As Boolean = False
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                thisConn.Open()
+                Using myCmd As New SqlCommand(thisString, thisConn)
+                    Using rdResult = myCmd.ExecuteReader
+                        While rdResult.Read
+                            result = rdResult.Item(0)
+                        End While
+                    End Using
+                End Using
+                thisConn.Close()
+            End Using
+        Catch ex As Exception
+            result = False
+        End Try
+        Return result
+    End Function
+
     Public Function GetFabricColourName(fabricColourId As String) As String
         Dim result As String = String.Empty
         Try
@@ -278,16 +298,6 @@ Public Class QuoteClass
             Dim companyId As String = headerData("CompanyId").ToString()
             Dim companyDetailId As String = headerData("CompanyDetailId").ToString()
 
-            Dim estimator As String = String.Empty
-            Dim supervisor As String = String.Empty
-            If orderType = "Builder" Then
-                Dim builderData As DataRow = GetDataRow("SELECT * FROM OrderBuilders WHERE Id='" & headerId & "'")
-                If builderData IsNot Nothing Then
-                    estimator = builderData("Estimator").ToString()
-                    supervisor = builderData("Supervisor").ToString()
-                End If
-            End If
-
             Dim issueDate As String = Now.ToString("dd MMM yyyy")
 
             Dim fullAddress As String = String.Empty
@@ -297,7 +307,9 @@ Public Class QuoteClass
                 Dim suburb As String = customerAddress("Suburb").ToString()
                 Dim state As String = customerAddress("State").ToString()
                 Dim postCode As String = customerAddress("PostCode").ToString()
-                Dim country As String = customerAddress("Country").ToString()
+                Dim country As String = String.Empty
+                If companyId = "2" Then country = "Australia"
+                If companyId = "3" Then country = "Indonesia"
 
                 fullAddress = address
                 fullAddress &= vbCrLf
@@ -643,7 +655,10 @@ Public Class QuoteClass
                 Dim city As String = orderQuote("City").ToString().Trim()
                 Dim state As String = orderQuote("State").ToString().Trim()
                 Dim postCode As String = orderQuote("PostCode").ToString().Trim()
-                Dim country As String = orderQuote("Country").ToString().Trim()
+                Dim country As String = String.Empty
+
+                If companyId = "2" Then country = "Australia"
+                If companyId = "3" Then country = "Indonesia"
 
                 quoteEmail = orderQuote("Email").ToString()
                 quotePhone = orderQuote("Phone").ToString()
@@ -695,7 +710,9 @@ Public Class QuoteClass
                 Dim suburb As String = quoteData("Suburb").ToString().Trim()
                 Dim state As String = quoteData("State").ToString().Trim()
                 Dim postCode As String = quoteData("PostCode").ToString().Trim()
-                Dim country As String = quoteData("Country").ToString().Trim()
+                Dim country As String = String.Empty
+                If companyId = "2" Then country = "Australia"
+                If companyId = "3" Then country = "Indonesia"
 
                 customerLogo = quoteData("Logo").ToString()
                 customerTerms = quoteData("Terms").ToString()
@@ -1128,6 +1145,11 @@ Public Class QuoteClass
                         itemDescription &= vbCrLf
                         itemDescription &= productName
                     End If
+                    If totalItem = 3 Then
+                        itemDescription = "3 on 1 Headrail"
+                        itemDescription &= vbCrLf
+                        itemDescription &= productName
+                    End If
                 End If
 
                 If designName = "Vertical" Then
@@ -1297,7 +1319,9 @@ Public Class QuoteClass
                 Dim suburb As String = customerAddress("Suburb").ToString()
                 Dim state As String = customerAddress("State").ToString()
                 Dim postCode As String = customerAddress("PostCode").ToString()
-                Dim country As String = customerAddress("Country").ToString()
+                Dim country As String = String.Empty
+                If companyId = "2" Then country = "Australia"
+                If companyId = "3" Then country = "Indonesia"
 
                 fullAddress = address
                 fullAddress &= vbCrLf

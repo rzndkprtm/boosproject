@@ -75,12 +75,8 @@ Partial Class Setting_Customer_Contact
 
                     ddlCustomer.SelectedValue = thisData("CustomerId").ToString()
                     txtName.Text = thisData("Name").ToString()
-                    ddlSalutation.SelectedValue = thisData("Salutation").ToString()
-                    txtRole.Text = thisData("Role").ToString()
                     txtEmail.Text = thisData("Email").ToString()
                     txtPhone.Text = thisData("Phone").ToString()
-                    txtMobile.Text = thisData("Mobile").ToString()
-                    txtFax.Text = thisData("Fax").ToString()
                     txtNote.Text = thisData("Note").ToString()
 
                     Dim tagsArray() As String = thisData("Tags").ToString().Split(",")
@@ -133,16 +129,12 @@ Partial Class Setting_Customer_Contact
                 If lblAction.Text = "Add" Then
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerContacts ORDER BY Id DESC")
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerContacts VALUES (@Id, @CustomerId, @Name, @Salutation, @Role, @Email, @Phone, @Mobile, @Fax, @Tags, @Note, 0)", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerContacts VALUES (@Id, @CustomerId, @Name, @Email, @Phone, @Tags, @Note, 0)", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", thisId)
                             myCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
                             myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Salutation", ddlSalutation.SelectedValue)
-                            myCmd.Parameters.AddWithValue("@Role", txtRole.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Email", txtEmail.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Phone", txtPhone.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Mobile", txtMobile.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Fax", txtFax.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Tags", thisTags)
                             myCmd.Parameters.AddWithValue("@Note", txtNote.Text.Trim())
 
@@ -160,16 +152,12 @@ Partial Class Setting_Customer_Contact
 
                 If lblAction.Text = "Edit" Then
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerContacts SET CustomerId=@CustomerId, Name=@Name, Salutation=@Salutation, Role=@Role, Email=@Email, Phone=@Phone, Mobile=@Mobile, Fax=@Fax, Tags=@Tags, Note=@Note WHERE Id=@Id", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerContacts SET CustomerId=@CustomerId, Name=@Name, Email=@Email, Phone=@Phone, Tags=@Tags, Note=@Note WHERE Id=@Id", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", lblId.Text)
                             myCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
                             myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Salutation", ddlSalutation.SelectedValue)
-                            myCmd.Parameters.AddWithValue("@Role", txtRole.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Email", txtEmail.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Phone", txtPhone.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Mobile", txtMobile.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Fax", txtFax.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Tags", thisTags)
                             myCmd.Parameters.AddWithValue("@Note", txtNote.Text.Trim())
 
@@ -267,7 +255,7 @@ Partial Class Setting_Customer_Contact
                 search = "WHERE Customers.Id LIKE '%" & searchText & "%' OR Customers.Name LIKE '%" & searchText & "%' OR Customers.DebtorCode LIKE '%" & searchText & "%' OR CustomerContacts.Name LIKE '%" & searchText & "%' OR CustomerContacts.Email LIKE '%" & searchText & "%'"
             End If
 
-            Dim thisQuery As String = String.Format("SELECT CustomerContacts.*, Customers.Name AS CustomerName, CONVERT(VARCHAR, CustomerContacts.Salutation) + ' ' + CONVERT(VARCHAR, CustomerContacts.Name) AS ContactName, CASE WHEN CustomerContacts.[Primary]=1 THEN 'Yes' WHEN CustomerContacts.[Primary]=0 THEN 'No' ELSE 'Error' END AS DataPrimary FROM CustomerContacts LEFT JOIN Customers ON CustomerContacts.CustomerId=Customers.Id {0} ORDER BY Customers.Id, CustomerContacts.Id ASC", search)
+            Dim thisQuery As String = String.Format("SELECT CustomerContacts.*, Customers.Name AS CustomerName, CASE WHEN CustomerContacts.[Primary]=1 THEN 'Yes' WHEN CustomerContacts.[Primary]=0 THEN 'No' ELSE 'Error' END AS DataPrimary FROM CustomerContacts LEFT JOIN Customers ON CustomerContacts.CustomerId=Customers.Id {0} ORDER BY Customers.Id, CustomerContacts.Id ASC", search)
 
             gvList.DataSource = settingClass.GetDataTable(thisQuery)
             gvList.DataBind()

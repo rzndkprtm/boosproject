@@ -119,17 +119,13 @@ Partial Class Setting_Quote
         Dim thisScript As String = "window.onload = function() { showAddress(); };"
         Try
             If msgErrorAddress.InnerText = "" Then
-                If Session("CompanyId") = "2" Then ddlCountry.SelectedValue = "Australia"
-                If Session("CompanyId") = "3" OrElse Session("CompanyId") = "5" Then ddlCountry.SelectedValue = "Indonesia"
-
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerQuotes SET Address=@Address, Suburb=@Suburb, State=@State, PostCode=@PostCode, Country=@Country WHERE Id=@Id", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerQuotes SET Address=@Address, Suburb=@Suburb, State=@State, PostCode=@PostCode WHERE Id=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", lblCustomerId.Text)
                         myCmd.Parameters.AddWithValue("@Address", txtAddress.Text.Trim())
                         myCmd.Parameters.AddWithValue("@Suburb", txtSuburb.Text.Trim())
                         myCmd.Parameters.AddWithValue("@State", txtState.Text.Trim())
                         myCmd.Parameters.AddWithValue("@PostCode", txtPostCode.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Country", ddlCountry.SelectedValue)
 
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
@@ -217,7 +213,6 @@ Partial Class Setting_Quote
             txtSuburb.Text = thisData("Suburb").ToString
             txtState.Text = thisData("State").ToString
             txtPostCode.Text = thisData("PostCode").ToString
-            ddlCountry.SelectedValue = thisData("Country").ToString
             txtEmail.Text = thisData("Email").ToString
             txtPhone.Text = thisData("Phone").ToString
 
@@ -239,8 +234,6 @@ Partial Class Setting_Quote
             address &= String.Format("- State : {0}", thisData("State").ToString())
             address &= "<br />"
             address &= String.Format("- Post Code : {0}", thisData("PostCode").ToString())
-            address &= "<br />"
-            address &= String.Format("- Country : {0}", thisData("Country").ToString())
 
             Dim email As String = thisData("Email").ToString()
             Dim phone As String = thisData("Phone").ToString()
