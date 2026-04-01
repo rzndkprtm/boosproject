@@ -368,7 +368,7 @@ Partial Class Order_Default
 
                     Dim amount As Decimal = orderClass.GetItemData_Decimal("SELECT (SUM(SellPrice) * 1.10) AS SumPrice FROM OrderCostings WHERE HeaderId='" & thisId & "' AND Type='Final'")
 
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderInvoices SET PaymentDate=GETDATE(), Payment=1, Amount=@Amount WHERE Id=@Id", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderInvoices SET PaymentDate=GETDATE(), DueDate=NULL, Payment=1, Amount=@Amount WHERE Id=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
                         myCmd.Parameters.AddWithValue("@Amount", amount)
                         myCmd.ExecuteNonQuery()
