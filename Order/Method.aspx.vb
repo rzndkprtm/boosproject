@@ -4049,7 +4049,7 @@ Partial Class Order_Method
             If drop > 3200 Then Return "MAXIMUM DROP IS 3200MM !"
         End If
 
-        If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
+        If data.companyid = "2" AndAlso data.rolename = "Customer" Then
             squareMetre = width * drop / 1000000
             If tubeName.Contains("Gear Reduction") Then
                 If tubeName = "Gear Reduction 38mm" AndAlso width > 1810 Then Return "MAXIMUM WIDTH BLIND FOR GEAR REDUCTION 38MM IS 1810MM !"
@@ -4122,7 +4122,7 @@ Partial Class Order_Method
                 If dropb > 3200 Then Return "MAXIMUM SECOND DROP IS 3200MM !"
             End If
 
-            If data.companyid = "2" Then
+            If data.companyid = "2" AndAlso data.rolename = "Customer" Then
                 squareMetreB = widthb * dropb / 1000000
                 If tubeName.Contains("Gear Reduction") Then
                     If tubeName = "Gear Reduction 38mm" AndAlso widthb > 1810 Then Return "MAXIMUM WIDTH FOR SECOND BLIND GEAR REDUCTION 38MM IS 1810MM !"
