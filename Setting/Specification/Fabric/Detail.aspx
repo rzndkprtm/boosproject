@@ -35,6 +35,7 @@
         <section class="row mb-4">
             <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
                 <asp:Button runat="server" ID="btnEditFabric" CssClass="btn btn-primary me-1" Text="Edit Fabric" OnClick="btnEditFabric_Click" />
+                <a href="#" runat="server" id="aActive" class="btn btn-danger me-1" data-bs-toggle="modal" data-bs-target="#modalActive" onclick="return showActive()"><%= TextActive(lblActive.Text) %></a>
                 <a href="javascript:void(0);" class="btn btn-secondary me-1" onclick="showLog('Fabrics', '<%= lblId.Text %>')">Log</a>
             </div>
         </section>
@@ -198,16 +199,6 @@
                             <asp:TextBox runat="server" ID="txtWidthColour" CssClass="form-control" placeholder="Width ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-                    
-                    <div class="row mb-2">
-                        <div class="col-3 form-group">
-                            <label class="form-label">Active</label>
-                            <asp:DropDownList runat="server" ID="ddlActiveColour" CssClass="form-select">
-                                <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
-                                <asp:ListItem Value="0" Text="No"></asp:ListItem>
-                            </asp:DropDownList>
-                        </div>
-                    </div>
 
                     <div class="row mb-2" runat="server" id="divErrorProcess">
                         <div class="col-12">
@@ -221,6 +212,23 @@
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnProcess" CssClass="btn btn-primary" Text="Submit" OnClick="btnProcess_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal modal-blur fade" id="modalActive" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title white" id="titleActive"></h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnActive" CssClass="btn btn-warning" Text="Confirm" OnClick="btnActive_Click" />
                 </div>
             </div>
         </div>
@@ -292,12 +300,23 @@
             $("#modalProcess").modal("show");
         }
 
+        function showActive(id) {
+            var active = document.getElementById("<%=lblActive.ClientID %>").innerText;
+            let title = "";
+            if (active === "Yes") {
+                title = "Deactivate Fabric";
+            } else {
+                title = "Activate Fabric";
+            }
+            document.getElementById("titleActive").innerHTML = title;
+        }
+
         function showActiveColour(id, active) {
             document.getElementById("<%=txtIdActiveColour.ClientID %>").value = id;
             document.getElementById("<%=txtActiveColour.ClientID %>").value = active;
 
             let title = "";
-            if (active === "1") {
+            if (active === "") {
                 title = "Deactivate Fabric Colour";
             } else {
                 title = "Activate Fabric Colour";
@@ -339,7 +358,7 @@
             });
         }
 
-        ["modalProcess", "modalActiveColour", "modalLog"].forEach(function (id) {
+        ["modalProcess", "modalActive", "modalActiveColour", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

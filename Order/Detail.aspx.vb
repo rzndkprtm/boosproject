@@ -184,6 +184,24 @@ Partial Class Order_Detail
                 Exit Sub
             End If
 
+            Dim checkProduct As DataTable = orderClass.GetDataTable("SELECT ROW_NUMBER() OVER (ORDER BY OrderDetails.Id ASC) AS [Number], OrderDetails.Id, Products.Active FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.HeaderId='" & lblHeaderId.Text & "' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
+
+            If checkProduct.Rows.Count > 0 Then
+                Dim sb As New StringBuilder()
+
+                For i As Integer = 0 To checkProduct.Rows.Count - 1
+                    Dim number As String = checkProduct.Rows(i)("Number").ToString()
+                    Dim active As Boolean = checkProduct.Rows(i)("Active")
+                    If active = False Then
+                        sb.AppendLine("- ITEM " & number & ". THIS PRODUCT IS CURRENTLY UNAVAILABLE. PLEASE CHECK AND CHANGE IT.<br />")
+                    End If
+                Next
+
+                Dim thisMessage As String = sb.ToString()
+                MessageError(True, thisMessage)
+                Exit Sub
+            End If
+
             Dim cashSale As Boolean = orderClass.GetCustomerCashSale(lblCustomerId.Text)
             Dim minSurcharge As Boolean = orderClass.GetCustomerMinimum(lblCustomerId.Text)
 
@@ -1638,6 +1656,37 @@ Partial Class Order_Detail
         End Try
     End Sub
 
+    Protected Sub btnDateOrder_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET CreatedDate=@CreatedDate, SubmittedDate=@SubmittedDate, ProductionDate=@ProductionDate, OnHoldDate=@OnHoldDate, CanceledDate=@CanceledDate, CompletedDate=@CompletedDate WHERE Id=@Id;", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
+                    myCmd.Parameters.AddWithValue("@CreatedDate", If(String.IsNullOrEmpty(txtCreatedDate.Text), CType(DBNull.Value, Object), txtCreatedDate.Text))
+                    myCmd.Parameters.AddWithValue("@SubmittedDate", If(String.IsNullOrEmpty(txtSubmittedDate.Text), CType(DBNull.Value, Object), txtSubmittedDate.Text))
+                    myCmd.Parameters.AddWithValue("@ProductionDate", If(String.IsNullOrEmpty(txtProductionDate.Text), CType(DBNull.Value, Object), txtProductionDate.Text))
+                    myCmd.Parameters.AddWithValue("@OnHoldDate", If(String.IsNullOrEmpty(txtHoldDate.Text), CType(DBNull.Value, Object), txtHoldDate.Text))
+                    myCmd.Parameters.AddWithValue("@CanceledDate", If(String.IsNullOrEmpty(txtCanceledDate.Text), CType(DBNull.Value, Object), txtCanceledDate.Text))
+                    myCmd.Parameters.AddWithValue("@CompletedDate", If(String.IsNullOrEmpty(txtCompletedDate.Text), CType(DBNull.Value, Object), txtCompletedDate.Text))
+
+                    thisConn.Open()
+                    myCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), "Date Order Updated"}
+            orderClass.Logs(dataLog)
+
+            url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
     Protected Sub BindDataOrder(headerId As String)
         Try
             Dim params As New List(Of SqlParameter) From {
@@ -1678,6 +1727,7 @@ Partial Class Order_Detail
             lblCreatedDate.Text = "-"
             If Not String.IsNullOrEmpty(headerData("CreatedDate").ToString()) Then
                 lblCreatedDate.Text = Convert.ToDateTime(headerData("CreatedDate")).ToString("dd MMM yyyy")
+                txtCreatedDate.Text = Convert.ToDateTime(headerData("CreatedDate")).ToString("yyyy-MM-dd")
             End If
 
             lblQuotedDate.Text = String.Empty
@@ -1688,26 +1738,31 @@ Partial Class Order_Detail
             lblSubmittedDate.Text = "-"
             If Not String.IsNullOrEmpty(headerData("SubmittedDate").ToString()) Then
                 lblSubmittedDate.Text = Convert.ToDateTime(headerData("SubmittedDate")).ToString("dd MMM yyyy")
+                txtSubmittedDate.Text = Convert.ToDateTime(headerData("SubmittedDate")).ToString("yyyy-MM-dd")
             End If
 
             lblProductionDate.Text = "-"
             If Not String.IsNullOrEmpty(headerData("ProductionDate").ToString()) Then
                 lblProductionDate.Text = Convert.ToDateTime(headerData("ProductionDate")).ToString("dd MMM yyyy")
+                txtProductionDate.Text = Convert.ToDateTime(headerData("ProductionDate")).ToString("yyyy-MM-dd")
             End If
 
             lblOnHoldDate.Text = "-"
             If Not String.IsNullOrEmpty(headerData("OnHoldDate").ToString()) Then
                 lblOnHoldDate.Text = Convert.ToDateTime(headerData("OnHoldDate")).ToString("dd MMM yyyy")
+                txtHoldDate.Text = Convert.ToDateTime(headerData("OnHoldDate")).ToString("yyyy-MM-dd")
             End If
 
             lblCanceledDate.Text = "-"
             If Not String.IsNullOrEmpty(headerData("CanceledDate").ToString()) Then
                 lblCanceledDate.Text = Convert.ToDateTime(headerData("CanceledDate")).ToString("dd MMM yyyy")
+                txtCanceledDate.Text = Convert.ToDateTime(headerData("CanceledDate")).ToString("yyyy-MM-dd")
             End If
 
             lblCompletedDate.Text = "-"
             If Not String.IsNullOrEmpty(headerData("CompletedDate").ToString()) Then
                 lblCompletedDate.Text = Convert.ToDateTime(headerData("CompletedDate")).ToString("dd MMM yyyy")
+                txtCompletedDate.Text = Convert.ToDateTime(headerData("CompletedDate")).ToString("yyyy-MM-dd")
             End If
 
             BindDesignType()
@@ -1901,6 +1956,9 @@ Partial Class Order_Detail
                         aReworkOrder.Visible = True
                     End If
                 End If
+
+                divDateOrder.Attributes.Add("onclick", "showDateOrder()")
+                divDateOrder.Style.Add("cursor", "pointer")
             End If
 
             If Session("RoleName") = "IT" Then
@@ -3515,8 +3573,8 @@ Partial Class Order_Detail
     End Sub
 
     Protected Sub MessageError(visible As Boolean, message As String)
-        divError.Visible = visible : msgError.InnerText = message
-        divErrorB.Visible = visible : msgErrorB.InnerText = message
+        divError.Visible = visible : msgError.InnerHtml = message
+        divErrorB.Visible = visible : msgErrorB.InnerHtml = message
     End Sub
 
     Protected Sub MessageError_BuilderDetail(visible As Boolean, message As String)

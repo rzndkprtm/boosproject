@@ -84,7 +84,7 @@ Partial Class Order_Edit
 
             If msgError.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET OrderId=@OrderId, CustomerId=@CustomerId, OrderNumber=@OrderNumber, OrderName=@OrderName, OrderNote=@OrderNote, OrderType=@OrderType WHERE Id=@Id", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET OrderId=@OrderId, CustomerId=@CustomerId, OrderNumber=@OrderNumber, OrderName=@OrderName, OrderNote=@OrderNote, OrderType=@OrderType, CreatedBy=@CreatedBy, CreatedDate=@CreatedDate WHERE Id=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
                         myCmd.Parameters.AddWithValue("@OrderId", txtOrderId.Text)
                         myCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
@@ -93,6 +93,7 @@ Partial Class Order_Edit
                         myCmd.Parameters.AddWithValue("@OrderNote", txtOrderNote.Text.Trim())
                         myCmd.Parameters.AddWithValue("@OrderType", ddlOrderType.SelectedValue)
                         myCmd.Parameters.AddWithValue("@CreatedBy", ddlCreatedBy.SelectedValue)
+                        myCmd.Parameters.AddWithValue("@CreatedDate", txtCreatedDate.Text)
 
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()

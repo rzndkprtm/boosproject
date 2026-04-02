@@ -36,7 +36,7 @@
                                     <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
                                         <div class="input-group">
                                             <span class="input-group-text">Search : </span>
-                                            <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" placeholoder="Name" autocomplete="off"></asp:TextBox>
+                                            <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" placeholoder="" autocomplete="off"></asp:TextBox>
                                             <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />
                                         </div>
                                     </asp:Panel>
@@ -73,7 +73,7 @@
                                                     <ItemTemplate>
                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                         <ul class="dropdown-menu">
-                                                            <li>
+                                                            <li runat="server" visible='<%# PageAction("Detail") %>'>
                                                                 <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail/ Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                             </li>
                                                             <li>

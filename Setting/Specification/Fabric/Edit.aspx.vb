@@ -149,6 +149,7 @@ Partial Class Setting_Specification_Fabric_Edit
                     End If
                 Next
             End If
+            divActive.Visible = PageAction("Visible Active")
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then

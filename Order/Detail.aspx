@@ -203,7 +203,7 @@
             <div class="col-12 col-sm-12 col-lg-6">
                 <div class="row">
                     <div class="col-12">
-                        <div class="card">
+                        <div class="card" runat="server" id="divDateOrder">
                             <div class="card-content">
                                 <div class="card-body">
                                     <div class="row mb-2">
@@ -1613,6 +1613,55 @@
         </div>
     </div>
 
+    <div class="modal fade text-left" id="modalDateOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Date Order</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row mb-2">
+                        <div class="col-6 form-group">
+                            <label class="form-label">Created Date</label>
+                            <asp:TextBox runat="server" ID="txtCreatedDate" CssClass="form-control" placeholder="Shipment Number ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                        <div class="col-6 form-group">
+                            <label class="form-label">Submitted Date</label>
+                            <asp:TextBox runat="server" TextMode="Date" ID="txtSubmittedDate" CssClass="form-control"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6 form-group">
+                            <label class="form-label">Production Date</label>
+                            <asp:TextBox runat="server" ID="txtProductionDate" CssClass="form-control" TextMode="Date"></asp:TextBox>
+                        </div>
+                        <div class="col-6 form-group">
+                            <label class="form-label">Hold Date</label>
+                            <asp:TextBox runat="server" TextMode="Date" ID="txtHoldDate" CssClass="form-control"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6 form-group">
+                            <label class="form-label">Canceled Date</label>
+                            <asp:TextBox runat="server" TextMode="Date" ID="txtCanceledDate" CssClass="form-control"></asp:TextBox>
+                        </div>
+                        <div class="col-6 form-group">
+                            <label class="form-label">Completed Date</label>
+                            <asp:TextBox runat="server" TextMode="Date" ID="txtCompletedDate" CssClass="form-control"></asp:TextBox>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnDateOrder" CssClass="btn btn-primary" Text="Submit" OnClick="btnDateOrder_Click" OnClientClick="return showWaiting();" />
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade text-center" id="modalWaiting" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -1668,7 +1717,8 @@
             "modalDetailQuote", "modalDownloadQuote",
             "modalMoreDownloadQuote", "modalMoreEmailQuote",
             "modalAddNote", "modalHistoryNote", "modalRecalculate",
-            "modalAddItem", "modalDeleteItem", "modalCosting", "modalCostingBuy"
+            "modalAddItem", "modalDeleteItem", "modalCosting", "modalCostingBuy",
+            "modalDateOrder"
         ].forEach(id => {
             document.getElementById(id).addEventListener("hide.bs.modal", () => {
                 document.activeElement.blur();
@@ -1877,6 +1927,10 @@
 
         function showCostingBuy() {
             $("#modalCostingBuy").modal("show");
+        }
+
+        function showDateOrder() {
+            $("#modalDateOrder").modal("show");
         }
 
         function showDeleteItem(id) {

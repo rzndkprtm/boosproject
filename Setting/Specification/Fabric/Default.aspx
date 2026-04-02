@@ -1,12 +1,6 @@
 ﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Default.aspx.vb" Inherits="Setting_Specification_Fabric_Default" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Fabric Type" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
-    <style>
-        .grid-container { width: 100%; height: calc(100vh - 150px); overflow: auto; border: 1px solid #ddd; }
-        .grid-container table { width: 100%; border-collapse: collapse; table-layout: auto; }
-        .grid-container td, .grid-container th { white-space: nowrap; padding: 6px 10px; }
-        .grid-container th { position: sticky; top: 0; background: #f5f5f5; z-index: 3; }
-    </style>
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
@@ -50,7 +44,9 @@
                     <div class="card-content">
                         <div class="card-header">
                             <div class="row">
-                                <div class="col-12 col-sm-12 col-lg-6 mb-2"></div>
+                                <div class="col-12 col-sm-12 col-lg-6 mb-2">
+                                    <h5 class="card-title">List Fabric</h5>
+                                </div>
                                 <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
                                     <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
                                         <div class="input-group">
@@ -65,8 +61,8 @@
                         <div class="card-body">
                             <div class="row mb-3">
                                 <div class="col-12">
-                                    <div class="grid-container table-responsive">
-                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowCommand="gvList_RowCommand">
+                                    <div class="table-responsive">
+                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" EmptyDataText="DATA NOT FOUND :)" AllowPaging="True" PagerSettings-Position="TopAndBottom" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" OnPageIndexChanging="gvList_PageIndexChanging" OnRowCommand="gvList_RowCommand">
                                             <RowStyle />
                                             <Columns>
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center">
@@ -104,6 +100,8 @@
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                             </Columns>
+                                            <PagerStyle BackColor="DodgerBlue" ForeColor="White" HorizontalAlign="Center" />
+                                            <PagerSettings PreviousPageText="Prev" NextPageText="Next" Mode="NumericFirstLast" />
                                             <AlternatingRowStyle BackColor="White" />
                                         </asp:GridView>
                                     </div>

@@ -164,13 +164,11 @@
                                                                  <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`);", Eval("Id").ToString(), "BOE Download") %>'>Authorize BOE Download</a>
                                                              </li>
                                                              
-                                                             <li><hr class="dropdown-divider"></li>
-                                                             
                                                              <li runat="server" visible='<%# VisiblePrintDO(Eval("CompanyId").ToString(), Eval("Status").ToString(), Eval("Active")) %>'>
                                                                  <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalPrintDO" onclick='<%# String.Format("return showPrintDO(`{0}`);", Eval("Id").ToString()) %>'>Print Delivery Order</a>
                                                              </li>
 
-                                                             <li>
+                                                             <li runat="server" visible='<%# VisibleLog() %>'>
                                                                  <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('OrderHeaders', '<%# Eval("Id") %>')">Log</a>
                                                              </li>
                                                          </ul>
