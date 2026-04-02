@@ -42,6 +42,19 @@ Partial Class Setting_Specification_Fabric_Default
         BindData(txtSearch.Text, ddlCompanyDetail.SelectedValue)
     End Sub
 
+    Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        MessageError(False, String.Empty)
+        Try
+            gvList.PageIndex = e.NewPageIndex
+            BindData(txtSearch.Text, ddlCompanyDetail.SelectedValue)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
     Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
         If Not String.IsNullOrEmpty(e.CommandArgument) Then
             Session("SearchFabric") = txtSearch.Text
@@ -86,7 +99,7 @@ Partial Class Setting_Specification_Fabric_Default
             Dim dataLog As Object() = {"Fabrics", thisId, Session("LoginId").ToString(), activeDesc}
             settingClass.Logs(dataLog)
 
-            Dim aliasData As DataTable = settingClass.GetDataTable("SELECT * FROM FabricAlias WHERE FirstId='" & thisId & "'")
+            Dim aliasData As DataTable = settingClass.GetDataTable("SELECT * FROM FabricAlias WHERE Type='Fabrics' AND FirstId='" & thisId & "'")
             If aliasData.Rows.Count > 0 Then
                 For i As Integer = 0 To aliasData.Rows.Count - 1
                     Dim aliasId As String = aliasData.Rows(i)("SecondId").ToString()

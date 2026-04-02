@@ -1,6 +1,5 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
-Imports System.Web.Services
 
 Partial Class Setting_Specification_Fabric_Alias
     Inherits Page
@@ -9,11 +8,6 @@ Partial Class Setting_Specification_Fabric_Alias
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataLog As Object() = Nothing
-
-    <WebMethod(EnableSession:=True)>
-    Public Shared Sub UpdateSession(value As String)
-        HttpContext.Current.Session("selectedTab") = value
-    End Sub
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
@@ -24,30 +18,23 @@ Partial Class Setting_Specification_Fabric_Alias
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-            MessageError_Colour(False, String.Empty)
 
             txtSearch.Text = Session("SearchFabricAlias")
-            txtSearchColour.Text = Session("SearchFabricColourAlias")
 
             BindData(txtSearch.Text)
-            BindDataColour(txtSearchColour.Text)
         End If
     End Sub
 
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
         MessageError_Process(False, String.Empty)
-        Session("selectedTab") = "list-fabric"
-
         Session("SearchFabricAlias") = txtSearch.Text
-        Session("SearchFabricColourAlias") = txtSearchColour.Text
-
         Dim thisScript As String = "window.onload = function() { showProcess(); };"
         Try
             lblAction.Text = "Add"
-            lblType.Text = "FabricAlias"
+            lblType.Text = "Fabrics"
             titleProcess.InnerText = "Add Fabric Alias"
 
-            BindFabric("Fabrics")
+            BindFabric(lblType.Text)
 
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         Catch ex As Exception
@@ -61,18 +48,14 @@ Partial Class Setting_Specification_Fabric_Alias
 
     Protected Sub btnAddColour_Click(sender As Object, e As EventArgs)
         MessageError_Process(False, String.Empty)
-        Session("selectedTab") = "list-fabriccolour"
-
         Session("SearchFabricAlias") = txtSearch.Text
-        Session("SearchFabricColourAlias") = txtSearchColour.Text
-
         Dim thisScript As String = "window.onload = function() { showProcess(); };"
         Try
             lblAction.Text = "Add"
-            lblType.Text = "FabricColourAlias"
+            lblType.Text = "FabricColours"
             titleProcess.InnerText = "Add Fabric Colour Alias"
 
-            BindFabric("FabricColours")
+            BindFabric(lblType.Text)
 
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         Catch ex As Exception
@@ -84,15 +67,9 @@ Partial Class Setting_Specification_Fabric_Alias
         End Try
     End Sub
 
-
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         BindData(txtSearch.Text)
-    End Sub
-
-    Protected Sub btnSearchColour_Click(sender As Object, e As EventArgs)
-        MessageError_Colour(False, String.Empty)
-        BindDataColour(txtSearchColour.Text)
     End Sub
 
     Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
@@ -100,59 +77,20 @@ Partial Class Setting_Specification_Fabric_Alias
             Dim dataId As String = e.CommandArgument.ToString()
 
             Session("SearchFabricAlias") = txtSearch.Text
-            Session("SearchFabricColourAlias") = txtSearchColour.Text
-
-            Session("selectedTab") = "list-fabric"
             If e.CommandName = "Detail" Then
                 MessageError_Process(False, String.Empty)
                 Dim thisScript As String = "window.onload = function() { showProcess(); };"
                 Try
                     lblId.Text = dataId
                     lblAction.Text = "Edit"
-                    lblType.Text = "FabricAlias"
-                    titleProcess.InnerText = "Edit Fabric Alias"
+
 
                     Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM FabricAlias WHERE Id='" & lblId.Text & "'")
                     If myData Is Nothing Then Exit Sub
 
-                    BindFabric("Fabrics")
-
-                    ddlFirstId.SelectedValue = myData("FirstID").ToString()
-                    ddlSecondId.SelectedValue = myData("SecondID").ToString()
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-                Catch ex As Exception
-                    MessageError_Process(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                    End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-                End Try
-            End If
-        End If
-    End Sub
-
-    Protected Sub gvListColour_RowCommand(sender As Object, e As GridViewCommandEventArgs)
-        If Not String.IsNullOrEmpty(e.CommandArgument) Then
-            Dim dataId As String = e.CommandArgument.ToString()
-
-            Session("SearchFabricAlias") = txtSearch.Text
-            Session("SearchFabricColourAlias") = txtSearchColour.Text
-
-            Session("selectedTab") = "list-fabriccolour"
-            If e.CommandName = "Detail" Then
-                MessageError_Process(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showProcess(); };"
-                Try
-                    lblId.Text = dataId
-                    lblAction.Text = "Edit"
-                    lblType.Text = "FabricColourAlias"
-                    titleProcess.InnerText = "Edit Fabric Colour Alias"
-
-                    Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM FabricColourAlias WHERE Id='" & lblId.Text & "'")
-                    If myData Is Nothing Then Exit Sub
-
-                    BindFabric("FabricColours")
+                    lblType.Text = myData("Type").ToString()
+                    BindFabric(lblType.Text)
+                    titleProcess.InnerText = "Edit Alias"
 
                     ddlFirstId.SelectedValue = myData("FirstID").ToString()
                     ddlSecondId.SelectedValue = myData("SecondID").ToString()
@@ -187,13 +125,12 @@ Partial Class Setting_Specification_Fabric_Alias
 
             If msgErrorProcess.InnerText = "" Then
                 If lblAction.Text = "Add" Then
-                    Dim thisId As String = settingClass.CreateId(String.Format("SELECT TOP 1 Id FROM {0} ORDER BY Id DESC", lblType.Text))
-
-                    Dim stringInsert As String = String.Format("INSERT INTO {0} VALUES (@Id, @FirstId, @SecondId)", lblType.Text)
+                    Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM FabricAlias ORDER BY Id DESC")
 
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand(stringInsert, thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO FabricAlias VALUES (@Id, @Type, @FirstId, @SecondId)", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", thisId)
+                            myCmd.Parameters.AddWithValue("@Type", lblType.Text)
                             myCmd.Parameters.AddWithValue("@FirstId", ddlFirstId.SelectedValue)
                             myCmd.Parameters.AddWithValue("@SecondId", ddlSecondId.SelectedValue)
 
@@ -202,16 +139,15 @@ Partial Class Setting_Specification_Fabric_Alias
                         End Using
                     End Using
 
-                    dataLog = {lblType.Text, thisId, Session("LoginId").ToString(), "Alias Created"}
+                    dataLog = {"FabricAlias", thisId, Session("LoginId").ToString(), "Alias Created"}
                     settingClass.Logs(dataLog)
 
                     Session("SearchFabricAlias") = txtSearch.Text
-                    Session("SearchFabricColourAlias") = txtSearchColour.Text
                     Response.Redirect("~/setting/specification/fabric/alias", False)
                 End If
 
                 If lblAction.Text = "Edit" Then
-                    Dim stringUpdate As String = String.Format("UPDATE {0} SET FirstId=@FirstId, SecondId=@SecondId WHERE Id=@Id", lblType.Text)
+                    Dim stringUpdate As String = String.Format("UPDATE FabricAlias SET FirstId=@FirstId, SecondId=@SecondId WHERE Id=@Id", lblType.Text)
                     Using thisConn As New SqlConnection(myConn)
                         Using myCmd As SqlCommand = New SqlCommand(stringUpdate, thisConn)
                             myCmd.Parameters.AddWithValue("@Id", lblId.Text)
@@ -223,11 +159,10 @@ Partial Class Setting_Specification_Fabric_Alias
                         End Using
                     End Using
 
-                    dataLog = {lblType.Text, lblId.Text, Session("LoginId").ToString(), "Alias Updated"}
+                    dataLog = {"FabricAlias", lblId.Text, Session("LoginId").ToString(), "Alias Updated"}
                     settingClass.Logs(dataLog)
 
                     Session("SearchFabricAlias") = txtSearch.Text
-                    Session("SearchFabricColourAlias") = txtSearchColour.Text
                     Response.Redirect("~/setting/specification/fabric/alias", False)
                 End If
             End If
@@ -242,7 +177,6 @@ Partial Class Setting_Specification_Fabric_Alias
 
     Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
-        Session("selectedTab") = "list-fabric"
         Try
             Dim thisId As String = txtIdDelete.Text
 
@@ -263,40 +197,6 @@ Partial Class Setting_Specification_Fabric_Alias
             End Using
 
             Session("SearchFabricAlias") = txtSearch.Text
-            Session("SearchFabricColourAlias") = txtSearchColour.Text
-            Response.Redirect("~/setting/specification/fabric/alias", False)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
-    Protected Sub btnDeleteColour_Click(sender As Object, e As EventArgs)
-        MessageError_Colour(False, String.Empty)
-        Session("selectedTab") = "list-fabriccolour"
-        Try
-            Dim thisId As String = txtIdDeleteColour.Text
-
-            Using thisConn As New SqlConnection(myConn)
-                thisConn.Open()
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM FabricColourAlias WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Logs WHERE Type='FabricColourAlias' AND DataId=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                thisConn.Close()
-            End Using
-
-            Session("SearchFabricAlias") = txtSearch.Text
-            Session("SearchFabricColourAlias") = txtSearchColour.Text
             Response.Redirect("~/setting/specification/fabric/alias", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -311,36 +211,15 @@ Partial Class Setting_Specification_Fabric_Alias
         Try
             Dim stringSearch As String = String.Empty
             If Not searchText = "" Then
-                stringSearch = "WHERE FirstFabric.Name LIKE '%" & searchText & "%' OR SecondFabric.Name LIKE '%" & searchText & "%'"
+                stringSearch = "WHERE FF.Name LIKE '%" & searchText & "%' OR FC1.Name LIKE '%" & searchText & "%' OR SF.Name LIKE '%" & searchText & "%' OR FC2.Name LIKE '%" & searchText & "%'"
             End If
 
-            Dim thisString As String = String.Format("SELECT FabricAlias.*, FirstFabric.Name AS FirstName, SecondFabric.Name AS SecondName FROM FabricAlias LEFT JOIN Fabrics FirstFabric ON FabricAlias.FirstId = FirstFabric.Id LEFT JOIN Fabrics SecondFabric ON FabricAlias.SecondId = SecondFabric.Id {0} ORDER BY FabricAlias.Id ASC", stringSearch)
+            Dim thisString As String = String.Format("SELECT FA.*, COALESCE(FF.Name, FC1.Name) AS FirstName, COALESCE(SF.Name, FC2.Name) AS SecondName FROM FabricAlias FA LEFT JOIN Fabrics FF ON FA.FirstId=FF.Id AND FA.Type='Fabrics' LEFT JOIN Fabrics SF ON FA.SecondId=SF.Id AND FA.Type='Fabrics' LEFT JOIN FabricColours FC1 ON FA.FirstId=FC1.Id AND FA.Type='FabricColours' LEFT JOIN FabricColours FC2 ON FA.SecondId = FC2.Id AND FA.Type = 'FabricColours' {0} ORDER BY FA.Id ASC", stringSearch)
             gvList.DataSource = settingClass.GetDataTable(thisString)
             gvList.DataBind()
             gvList.Columns(1).Visible = PageAction("Visible ID")
 
             btnAdd.Visible = PageAction("Add")
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
-    Protected Sub BindDataColour(searchText As String)
-        Session("SearchFabricColourAlias") = String.Empty
-        Try
-            Dim stringSearch As String = String.Empty
-            If Not searchText = "" Then
-                stringSearch = "WHERE FirstFabric.Name LIKE '%" & searchText & "%' OR SecondFabric.Name LIKE '%" & searchText & "%'"
-            End If
-
-            Dim thisString As String = String.Format("SELECT FabricColourAlias.*, FirstFabric.Name AS FirstName, SecondFabric.Name AS SecondName FROM FabricColourAlias LEFT JOIN FabricColours FirstFabric ON FabricColourAlias.FirstId = FirstFabric.Id LEFT JOIN FabricColours SecondFabric ON FabricColourAlias.SecondId = SecondFabric.Id {0} ORDER BY FabricColourAlias.Id ASC", stringSearch)
-            gvListColour.DataSource = settingClass.GetDataTable(thisString)
-            gvListColour.DataBind()
-            gvListColour.Columns(1).Visible = PageAction("Visible ID")
-
             btnAddColour.Visible = PageAction("Add")
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -387,10 +266,6 @@ Partial Class Setting_Specification_Fabric_Alias
         divError.Visible = visible : msgError.InnerText = message
     End Sub
 
-    Protected Sub MessageError_Colour(visible As Boolean, message As String)
-        divErrorColour.Visible = visible : msgErrorColour.InnerText = message
-    End Sub
-
     Protected Sub MessageError_Process(visible As Boolean, message As String)
         divErrorProcess.Visible = visible : msgErrorProcess.InnerText = message
     End Sub
@@ -408,6 +283,4 @@ Partial Class Setting_Specification_Fabric_Alias
             Return False
         End Try
     End Function
-
-
 End Class

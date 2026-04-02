@@ -965,6 +965,11 @@ Partial Class Order_Default
         Return False
     End Function
 
+    Protected Function VisibleLog() As Boolean
+        If Session("RoleName") = "Developer" Then Return True
+        Return False
+    End Function
+
     Protected Function PageAction(action As String) As Boolean
         Try
             Dim roleId As String = Session("RoleId").ToString()

@@ -110,7 +110,7 @@
                                             </asp:DropDownList>
                                         </div>
                                     </div>
-                                    <div class="row mb-3">
+                                    <div class="row mb-3" runat="server" id="divActive">
                                         <div class="col-12 col-sm-12 col-lg-3">
                                             <label>Active</label>
                                         </div>

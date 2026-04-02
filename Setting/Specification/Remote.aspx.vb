@@ -1,7 +1,6 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 
-
 Partial Class Setting_Specification_Remote
     Inherits Page
 

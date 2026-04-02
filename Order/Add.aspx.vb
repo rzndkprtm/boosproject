@@ -29,7 +29,7 @@ Partial Class Order_Add
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             BindDataCustomer()
-            BindDataUser()
+            BindDataUser(ddlCustomer.SelectedValue)
 
             txtCreatedDate.Text = Now.ToString("yyyy-MM-dd")
 
@@ -39,6 +39,7 @@ Partial Class Order_Add
 
     Protected Sub ddlCustomer_SelectedIndexChanged(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
+        BindDataUser(ddlCustomer.SelectedValue)
         BindComponentForm(ddlCustomer.SelectedValue, ddlMethod.SelectedValue)
     End Sub
 
@@ -2754,7 +2755,6 @@ Partial Class Order_Add
         ddlCustomer.Items.Clear()
         Try
             Dim role As String = String.Empty
-            If Session("RoleName") = "IT" Then role = "AND Id<>'1' AND Id<>'2'"
             If Session("RoleName") = "Customer" Then role = "AND Id='" & Session("CustomerId") & "'"
             If Session("RoleName") = "Sales" OrElse Session("RoleName") = "Customer Service" Then role = "AND Id='" & Session("CustomerId") & "'"
 
@@ -2776,19 +2776,25 @@ Partial Class Order_Add
         End Try
     End Sub
 
-    Protected Sub BindDataUser()
+    Protected Sub BindDataUser(customerId As String)
         ddlCreatedBy.Items.Clear()
         Try
-            ddlCreatedBy.DataSource = orderClass.GetDataTable("SELECT * FROM CustomerLogins ORDER BY UserName ASC")
-            ddlCreatedBy.DataTextField = "UserName"
-            ddlCreatedBy.DataValueField = "Id"
-            ddlCreatedBy.DataBind()
+            If Not String.IsNullOrEmpty(customerId) Then
+                Dim thisQuery As String = "SELECT * FROM CustomerLogins WHERE CustomerId='" & customerId & "' OR Id='" & Session("LoginId") & "' ORDER BY UserName ASC"
+                If Session("RoleName") = "Customer" Then
+                    thisQuery = "SELECT * FROM CustomerLogins WHERE CustomerId='" & customerId & "' OR Id='" & Session("LoginId") & "' ORDER BY UserName ASC"
+                End If
+                ddlCreatedBy.DataSource = orderClass.GetDataTable(thisQuery)
+                ddlCreatedBy.DataTextField = "UserName"
+                ddlCreatedBy.DataValueField = "Id"
+                ddlCreatedBy.DataBind()
 
-            If ddlCreatedBy.Items.Count > 0 Then
-                ddlCreatedBy.Items.Insert(0, New ListItem("", ""))
+                If ddlCreatedBy.Items.Count > 0 Then
+                    ddlCreatedBy.Items.Insert(0, New ListItem("", ""))
+                End If
+
+                ddlCreatedBy.SelectedValue = Session("LoginId")
             End If
-
-            ddlCreatedBy.SelectedValue = Session("LoginId")
         Catch ex As Exception
             ddlCreatedBy.Items.Clear()
             If Session("RoleName") = "Developer" Then
