@@ -192,14 +192,19 @@ Partial Class Order_Detail
                 For i As Integer = 0 To checkProduct.Rows.Count - 1
                     Dim number As String = checkProduct.Rows(i)("Number").ToString()
                     Dim active As Boolean = checkProduct.Rows(i)("Active")
+
                     If active = False Then
                         sb.AppendLine("- ITEM " & number & ". THIS PRODUCT IS CURRENTLY UNAVAILABLE. PLEASE CHECK AND CHANGE IT.<br />")
                     End If
                 Next
 
-                Dim thisMessage As String = sb.ToString()
-                MessageError(True, thisMessage)
-                Exit Sub
+                If sb.Length > 0 Then
+                    Dim thisMessage As String = sb.ToString()
+                    MessageError(True, thisMessage)
+                    Exit Sub
+                Else
+                    MessageError(False, String.Empty)
+                End If
             End If
 
             Dim cashSale As Boolean = orderClass.GetCustomerCashSale(lblCustomerId.Text)
