@@ -19,7 +19,7 @@ Partial Class Setting_Customer_Add
             BindSponsor()
             BindCompany()
             BindCompanyDetail(ddlCompany.SelectedValue)
-            BindOperator()
+            BindOperator(ddlCompany.SelectedValue)
             BindPriceGroup(ddlCompany.SelectedValue)
             BindPriceGroup_Shutter(ddlCompany.SelectedValue)
             BindPriceGroup_Door(ddlCompany.SelectedValue)
@@ -31,6 +31,7 @@ Partial Class Setting_Customer_Add
     Protected Sub ddlCompany_SelectedIndexChanged(sender As Object, e As EventArgs)
         BackColor()
         BindCompanyDetail(ddlCompany.SelectedValue)
+        BindOperator(ddlCompany.SelectedValue)
         BindPriceGroup(ddlCompany.SelectedValue)
         BindPriceGroup_Shutter(ddlCompany.SelectedValue)
         BindPriceGroup_Door(ddlCompany.SelectedValue)
@@ -219,7 +220,7 @@ Partial Class Setting_Customer_Add
         ddlCompany.Items.Clear()
         Try
             ddlCompany.DataSource = settingClass.GetDataTable("SELECT * FROM Companys ORDER BY Id ASC")
-            ddlCompany.DataTextField = "Name"
+            ddlCompany.DataTextField = "Alias"
             ddlCompany.DataValueField = "Id"
             ddlCompany.DataBind()
 
@@ -270,22 +271,24 @@ Partial Class Setting_Customer_Add
         End Try
     End Sub
 
-    Protected Sub BindOperator()
+    Protected Sub BindOperator(companyId As String)
         lbOperator.Items.Clear()
         Try
-            lbOperator.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerLogins WHERE RoleId='4' AND LevelId='2' ORDER BY UserName ASC")
-            lbOperator.DataTextField = "FullName"
-            lbOperator.DataValueField = "Id"
-            lbOperator.DataBind()
+            If Not String.IsNullOrEmpty(companyId) Then
+                lbOperator.DataSource = settingClass.GetDataTable("SELECT CustomerLogins.* FROM CustomerLogins LEFT JOIN Customers ON CustomerLogins.CustomerId=Customers.Id WHERE Customers.CompanyId='" & companyId & "' AND CustomerLogins.RoleId='4' AND CustomerLogins.LevelId='2' ORDER BY CustomerLogins.UserName ASC")
+                lbOperator.DataTextField = "FullName"
+                lbOperator.DataValueField = "Id"
+                lbOperator.DataBind()
 
-            If lbOperator.Items.Count > 0 Then
-                lbOperator.Items.Insert(0, New ListItem("", ""))
-            End If
+                If lbOperator.Items.Count > 0 Then
+                    lbOperator.Items.Insert(0, New ListItem("", ""))
+                End If
 
-            lbOperator.Enabled = True
-            If Session("RoleName") = "Sales" AndAlso Session("LevelName") = "Member" Then
-                lbOperator.SelectedValue = Session("LoginId").ToString()
-                lbOperator.Enabled = False
+                lbOperator.Enabled = True
+                If Session("RoleName") = "Sales" AndAlso Session("LevelName") = "Member" Then
+                    lbOperator.SelectedValue = Session("LoginId").ToString()
+                    lbOperator.Enabled = False
+                End If
             End If
         Catch ex As Exception
             lbOperator.Items.Clear()
