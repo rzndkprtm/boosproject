@@ -91,7 +91,7 @@ Partial Class Account_Login
         Dim failedCount As String = settingClass.GetItemData("SELECT FailedCount FROM CustomerLogins WHERE Id='" & loginId & "'")
         If failedCount = "5" Then
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLogins SET Active=0 WHERE Id=@Id", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLogins SET Active=0 WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", loginId)
 
                     thisConn.Open()

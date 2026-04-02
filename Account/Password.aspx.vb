@@ -41,7 +41,7 @@ Partial Class Account_Password
                 Dim loginId As String = Session("LoginId").ToString()
                 Dim newPassword As String = settingClass.Encrypt(txtPassword.Text)
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLogins SET Password=@Password, ResetLogin=0 WHERE Id=@Id", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLogins SET Password=@Password, ResetLogin=0 WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", loginId)
                         myCmd.Parameters.AddWithValue("@Password", newPassword)
 
