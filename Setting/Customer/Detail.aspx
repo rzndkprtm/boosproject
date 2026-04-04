@@ -416,6 +416,9 @@
                                                                     <li runat="server" visible='<%# PageAction("Active Login") %>'>
                                                                         <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalActiveLogin" onclick='<%# String.Format("return showActiveLogin(`{0}`, `{1}`);", Eval("Id").ToString(), Convert.ToInt32(Eval("Active"))) %>'><%# TextActive_Login(Eval("Active")) %></a>
                                                                     </li>
+                                                                    <li runat="server" visible='<%# PageAction("Change Password Login") %>'>
+                                                                        <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangePasswordLogin" onclick='<%# String.Format("return showChangePassword(`{0}`);", Eval("Id").ToString()) %>'>Change Password</a>
+                                                                    </li>
                                                                     <li runat="server" visible='<%# PageAction("Reset Login") %>'>
                                                                         <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalResetPass" onclick='<%# String.Format("return showResetPass(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("UserName").ToString()) %>'>Reset Password</a>
                                                                     </li>
@@ -1109,7 +1112,6 @@
                             <label class="form-label required">Role</label>
                             <asp:DropDownList runat="server" ID="ddlLoginRole" CssClass="form-select"></asp:DropDownList>
                         </div>
-
                         <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
                             <label class="form-label required">Level</label>
                             <asp:DropDownList runat="server" ID="ddlLoginLevel" CssClass="form-select"></asp:DropDownList>
@@ -1121,21 +1123,18 @@
                             <asp:TextBox runat="server" ID="txtLoginFullName" CssClass="form-control" placeholder="Full Name ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row" runat="server" id="divLoginEmail">
                         <div class="col-12 form-group">
                             <label class="form-label required">Email</label>
                             <asp:TextBox runat="server" ID="txtLoginEmail" CssClass="form-control" placeholder="Email ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-                    
                     <div class="row">
                         <div class="col-12 form-group">
                             <label class="form-label required">Username</label>
                             <asp:TextBox runat="server" ID="txtLoginUserName" CssClass="form-control" placeholder="UserName ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row" runat="server" id="divPassword">
                         <div class="col-12 form-group">
                             <label class="form-label">Password</label>
@@ -1143,7 +1142,6 @@
                         </div>
                         <small class="form-hint" id="passwordinfo"></small>
                     </div>
-
                     <div class="row">
                         <div class="col-12 col-sm-12 col-lg-4 mb-2 form-group">
                             <label class="form-label">Pricing</label>
@@ -1154,7 +1152,6 @@
                         </div>
                     </div>
                 </div>
-                
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnProcessLogin" Text="Submit" CssClass="btn btn-primary" OnClick="btnProcessLogin_Click" />
@@ -1218,6 +1215,32 @@
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnActiveLogin" CssClass="btn btn-warning" Text="Confirm" OnClick="btnActiveLogin_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal modal-blur fade" id="modalChangePasswordLogin" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Change Password</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <asp:TextBox runat="server" ID="txtIdChangePassword" style="display:none;"></asp:TextBox>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">New Password</label>
+                            <asp:TextBox runat="server" ID="txtChangePassword" CssClass="form-control" placeholder="Password ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnChangePasswordLogin" Text="Submit" CssClass="btn btn-primary" OnClick="btnChangePasswordLogin_Click" />
                 </div>
             </div>
         </div>
@@ -1734,6 +1757,10 @@
             document.getElementById("titleActiveLogin").innerHTML = title;
         }
 
+        function showChangePassword(id, active) {
+            document.getElementById("<%=txtIdChangePassword.ClientID %>").value = id;
+        }
+
         function showResetPass(id, username) {
             let newPass = generateNewPassword(15);
             let result = `Hi <b><%: Session("FullName") %></b>,<br />Are you sure you want to reset this account password?<br /><br /><b>USERNAME : ${username.toUpperCase()}</b><br /><b>USER ID : ${id.toUpperCase()}</b><br/><br />NEW PASSWORD : <br/><b>${newPass}</b>`;
@@ -1832,7 +1859,7 @@
             "modalProcessContact", "modalDeleteContact", "modalPrimaryContact",
             "modalProcessAddress", "modalDeleteAddress", "modalPrimaryAddress",
             "modalProcessBusiness", "modalDeleteBusiness", "modalPrimaryBusiness",
-            "modalProcessLogin", "modalInstallerAccess", "modalActiveLogin", "modalResetPass", "modalDencryptPass", "modalLoginCredentials",
+            "modalProcessLogin", "modalInstallerAccess", "modalActiveLogin", "modalResetPass", "modalDencryptPass", "modalLoginCredentials", "modalChangePasswordLogin",
             "modalProcessDiscount", "modalResetDiscount", "modalDeleteDiscount",
             "modalProcessPromo", "modalDetailPromo", "modalResetPromo", "modalDeletePromo",
             "modalResetProduct", "modalProcessProduct"

@@ -1185,8 +1185,8 @@ Partial Class Setting_Customer_Detail
                     divPassword.Visible = False
                     If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" Then
                         divLoginEmail.Visible = True
-                        divPassword.Visible = True
                     End If
+                    If Session("RoleName") = "Developer" Then divPassword.Visible = True
 
                     Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerLogins WHERE Id='" & lblIdLogin.Text & "'")
                     If myData Is Nothing Then Exit Sub
@@ -1359,13 +1359,12 @@ Partial Class Setting_Customer_Detail
 
                 If lblActionLogin.Text = "Edit" Then
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLogins SET CustomerId=@CustomerId, RoleId=@RoleId, LevelId=@LevelId, UserName=@UserName, Password=@Password, FullName=@FullName, Email=@Email, Pricing=@Pricing WHERE Id=@Id", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLogins SET CustomerId=@CustomerId, RoleId=@RoleId, LevelId=@LevelId, UserName=@UserName, FullName=@FullName, Email=@Email, Pricing=@Pricing WHERE Id=@Id", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", lblIdLogin.Text)
                             myCmd.Parameters.AddWithValue("@CustomerId", lblId.Text)
                             myCmd.Parameters.AddWithValue("@RoleId", ddlLoginRole.SelectedValue)
                             myCmd.Parameters.AddWithValue("@LevelId", ddlLoginLevel.SelectedValue)
                             myCmd.Parameters.AddWithValue("@UserName", txtLoginUserName.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Password", password)
                             myCmd.Parameters.AddWithValue("@FullName", txtLoginFullName.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Email", txtLoginEmail.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Pricing", ddlPricing.SelectedValue)
@@ -1454,6 +1453,36 @@ Partial Class Setting_Customer_Detail
             If active = 0 Then activeDesc = "Customer Login Has Been Deactivated"
 
             dataLog = {"CustomerLogins", thisId, Session("LoginId").ToString(), activeDesc}
+            settingClass.Logs(dataLog)
+
+            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError_Login(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Login(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnChangePasswordLogin_Click(sender As Object, e As EventArgs)
+        MessageError_Login(False, String.Empty)
+        Session("selectedTabCustomer") = "list-login"
+        Try
+            Dim thisId As String = txtIdChangePassword.Text
+            Dim newPassword As String = settingClass.Encrypt(txtChangePassword.Text)
+
+            Using thisConn As New SqlConnection(myConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLogins SET Password=@Password WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", thisId)
+                    myCmd.Parameters.AddWithValue("@Password", newPassword)
+
+                    thisConn.Open()
+                    myCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            dataLog = {"CustomerLogins", thisId, Session("LoginId").ToString(), "Change Password Login"}
             settingClass.Logs(dataLog)
 
             url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
