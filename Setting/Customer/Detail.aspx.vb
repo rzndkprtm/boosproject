@@ -1186,7 +1186,6 @@ Partial Class Setting_Customer_Detail
                     If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" Then
                         divLoginEmail.Visible = True
                     End If
-                    If Session("RoleName") = "Developer" Then divPassword.Visible = True
 
                     Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerLogins WHERE Id='" & lblIdLogin.Text & "'")
                     If myData Is Nothing Then Exit Sub
@@ -1201,8 +1200,6 @@ Partial Class Setting_Customer_Detail
                     txtLoginFullName.Text = myData("FullName").ToString()
                     txtLoginEmail.Text = myData("Email").ToString()
                     ddlPricing.SelectedValue = Convert.ToInt32(myData("Pricing"))
-                    Dim password As String = myData("Password").ToString()
-                    txtLoginPassword.Text = settingClass.Decrypt(password)
 
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcessLogin", thisScript, True)
                 Catch ex As Exception
