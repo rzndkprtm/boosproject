@@ -218,10 +218,10 @@ Partial Class Setting_Specification_Product_Default
             gvList.Columns(1).Visible = PageAction("Visible ID")
 
             btnAdd.Visible = PageAction("Add")
-            ddlDesignSort.Visible = PageAction("Design Sort")
-            ddlBlindSort.Visible = PageAction("Blind Sort")
-            ddlCompanyDetailSort.Visible = PageAction("Company Detail Sort")
-            ddlActive.Visible = PageAction("Active")
+            divDesignSort.Visible = PageAction("Design Sort")
+            divBlindSort.Visible = PageAction("Blind Sort")
+            divCompanyDetail.Visible = PageAction("Company Detail Sort")
+            divActive.Visible = PageAction("Active")
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then

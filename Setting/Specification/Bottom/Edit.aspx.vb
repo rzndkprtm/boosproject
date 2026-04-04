@@ -133,6 +133,8 @@ Partial Class Setting_Specification_Bottom_Edit
                     End If
                 Next
             End If
+
+            txtName.Enabled = PageAction("Enable Name")
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then

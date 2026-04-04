@@ -34,13 +34,13 @@
                     <div class="card-content">
                         <div class="card-header">
                             <div class="row">
-                                <div class="col-12 col-sm-12 col-lg-3 mb-2">
+                                <div class="col-12 col-sm-12 col-lg-3 mb-2" runat="server" id="divDesignSort">
                                     <div class="input-group">
                                         <span class="input-group-text">Designs : </span>
                                         <asp:DropDownList runat="server" ID="ddlDesignSort" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlDesignSort_SelectedIndexChanged"></asp:DropDownList>
                                     </div>
                                 </div>
-                                <div class="col-12 col-sm-12 col-lg-4 mb-2">
+                                <div class="col-12 col-sm-12 col-lg-4 mb-2" runat="server" id="divBlindSort">
                                     <div class="input-group">
                                         <span class="input-group-text">Blinds : </span>
                                         <asp:DropDownList runat="server" ID="ddlBlindSort" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlBlindSort_SelectedIndexChanged"></asp:DropDownList>
@@ -121,14 +121,21 @@
 
                     <div class="card-footer">
                         <div class="d-flex">
-                            <div class="ms-2 d-inline-block">
-                                <asp:DropDownList runat="server" ID="ddlCompanyDetailSort" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCompanyDetailSort_SelectedIndexChanged"></asp:DropDownList>
+                            <div class="ms-2 d-inline-block" runat="server" id="divCompanyDetail">
+                                <div class="input-group">
+                                    <span class="input-group-text">Company Detail : </span>
+                                    <asp:DropDownList runat="server" ID="ddlCompanyDetailSort" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCompanyDetailSort_SelectedIndexChanged"></asp:DropDownList>
+                                </div>
+                                
                             </div>
-                            <div class="ms-2 d-inline-block">
-                                <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlActive_SelectedIndexChanged">
-                                    <asp:ListItem Value="1" Text="Active"></asp:ListItem>
-                                    <asp:ListItem Value="0" Text="Non Active"></asp:ListItem>
-                                </asp:DropDownList>
+                            <div class="ms-2 d-inline-block" runat="server" id="divActive">
+                                <div class="input-group">
+                                    <span class="input-group-text">Active : </span>
+                                    <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlActive_SelectedIndexChanged">
+                                        <asp:ListItem Value="1" Text="Active"></asp:ListItem>
+                                        <asp:ListItem Value="0" Text="Non Active"></asp:ListItem>
+                                    </asp:DropDownList>
+                                </div>
                             </div>
                         </div>
                     </div>
