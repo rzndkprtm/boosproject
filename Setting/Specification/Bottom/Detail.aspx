@@ -90,6 +90,7 @@
 
                     <div class="card-footer text-center">
                         <asp:Button runat="server" ID="btnEdit" CssClass="btn btn-info" Text="Edit" OnClick="btnEdit_Click" />
+                        <a href="#" runat="server" id="aActive" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalActive" onclick="return showActive()"><%= TextActive(lblActive.Text) %></a>
                         <a href="javascript:void(0);" class="btn btn-secondary" onclick="showLog('Bottoms', '<%= lblId.Text %>')">Log</a>
                     </div>
                 </div>
@@ -154,18 +155,18 @@
         </section>
     </div>
 
-    <div class="modal fade text-center" id="modalDelete" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal modal-blur fade" id="modalActive" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-danger">
-                    <h5 class="modal-title white">Delete Bottom Rail</h5>
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title white" id="titleActive"></h5>
                 </div>
                 <div class="modal-body text-center py-4">
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnDelete" CssClass="btn btn-danger" Text="Submit" OnClick="btnDelete_Click" />
+                    <asp:Button runat="server" ID="btnActive" CssClass="btn btn-warning" Text="Confirm" OnClick="btnActive_Click" />
                 </div>
             </div>
         </div>
@@ -197,7 +198,7 @@
                         </div>
                     </div>
                 
-                    <div class="row mb-2">
+                    <div class="row mb-2" runat="server" id="divActive">
                         <div class="col-12 col-sm-12 col-lg-3 form-group">
                             <label class="form-label">Active</label>
                             <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select">
@@ -250,6 +251,17 @@
     </div>
 
     <script type="text/javascript">
+        function showActive(id) {
+            var active = document.getElementById("<%=lblActive.ClientID %>").innerText;
+            let title = "";
+            if (active === "Yes") {
+                title = "Deactivate Bottom Type";
+            } else {
+                title = "Activate Bottom Type";
+            }
+            document.getElementById("titleActive").innerHTML = title;
+        }
+
         function showProcessColour() {
             $("#modalProcessColour").modal("show");
         }
@@ -288,7 +300,7 @@
             });
         }
 
-        ["modalProcessColour", "modalLog"].forEach(function (id) {
+        ["modalActive", "modalProcessColour", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

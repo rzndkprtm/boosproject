@@ -76,6 +76,38 @@ Partial Class Setting_Specification_Product_Detail
         End If
     End Sub
 
+    Protected Sub btnActive_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim active As Integer = 1
+            If lblActive.Text = "Yes" Then active = 0
+
+            Using thisConn As New SqlConnection(myConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE Products SET Active=@Active WHERE Id=@Id", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                    myCmd.Parameters.AddWithValue("@Active", active)
+
+                    thisConn.Open()
+                    myCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Dim activeDesc As String = "Product Has Been Activated"
+            If active = 0 Then activeDesc = "Product Has Been Deactivated"
+
+            Dim dataLog As Object() = {"Products", lblId.Text, Session("LoginId").ToString(), activeDesc}
+            settingClass.Logs(dataLog)
+
+            url = String.Format("~/setting/specification/product/detail?productid={0}", lblId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
     Protected Sub btnProcessKit_Click(sender As Object, e As EventArgs)
         MessageError_ProcessKit(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showProcessKit(); };"
@@ -215,6 +247,7 @@ Partial Class Setting_Specification_Product_Detail
             gvList.DataBind()
 
             btnEditProduct.Visible = PageAction("Edit")
+            aActive.Visible = PageAction("Active")
             btnAddKit.Visible = PageAction("Add Kit")
         Catch ex As Exception
             MessageError(True, ex.ToString)
@@ -228,6 +261,11 @@ Partial Class Setting_Specification_Product_Detail
     Protected Sub MessageError_ProcessKit(visible As Boolean, message As String)
         divErrorProcessKit.Visible = visible : msgErrorProcessKit.InnerText = message
     End Sub
+
+    Protected Function TextActive(active As String) As String
+        If active = "Yes" Then Return "Deactivate"
+        Return "Activate"
+    End Function
 
     Protected Function PageAction(action As String) As Boolean
         Try

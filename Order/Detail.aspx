@@ -249,7 +249,7 @@
 
                 <div class="row">
                     <div class="col-12">
-                        <div class="card">
+                        <div class="card" runat="server" id="divShipmentOrder">
                             <div class="card-content">
                                 <div class="card-body">
                                     <div class="row mb-2">
@@ -366,7 +366,6 @@
                                     <label>Invoiced Date</label>
                                     <br />
                                     <asp:Label runat="server" ID="lblInvoiceDate" CssClass="font-bold"></asp:Label>
-                                    <asp:Label runat="server" ID="lblDueDate" CssClass="font-bold" Visible="false"></asp:Label>
                                 </div>
 
                                 <div class="col-6 col-sm-6 col-lg-3">
@@ -773,25 +772,21 @@
 
                 <div class="modal-body">
                     <div class="row mb-2">
-                        <div class="col-12 form-group">
+                        <div class="col-6 form-group">
                             <label class="form-label">Shipment Number</label>
                             <asp:TextBox runat="server" ID="txtShipmentNumber" CssClass="form-control" placeholder="Shipment Number ..." autocomplete="off"></asp:TextBox>
                         </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-12 form-group">
+                        <div class="col-6 form-group">
                             <label class="form-label">Shipment Date</label>
                             <asp:TextBox runat="server" TextMode="Date" ID="txtShipmentDate" CssClass="form-control"></asp:TextBox>
                         </div>
                     </div>
                     <div class="row mb-2">
-                        <div class="col-12 form-group">
+                        <div class="col-6 form-group">
                             <label class="form-label">Container Number</label>
                             <asp:TextBox runat="server" ID="txtContainerNumber" CssClass="form-control" placeholder="Container Number ..." autocomplete="off"></asp:TextBox>
                         </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-12 form-group">
+                        <div class="col-6 form-group">
                             <label class="form-label">Container ETA</label>
                             <asp:TextBox runat="server" TextMode="Date" ID="txtContainerEta" CssClass="form-control"></asp:TextBox>
                         </div>
@@ -801,11 +796,7 @@
                             <label class="form-label">Courier</label>
                             <asp:TextBox runat="server" ID="txtCourier" CssClass="form-control" placeholder="Courier ..." autocomplete="off"></asp:TextBox>
                         </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-12 form-group"></div>
-                    </div>
-		
+                    </div>		
 		            <div class="row mb-2" runat="server" id="divErrorShippedOrder">
                         <div class="col-12">
                             <div class="alert alert-danger">
@@ -1223,9 +1214,9 @@
                             <asp:TextBox runat="server" ID="txtInvoiceDate" TextMode="Date" CssClass="form-control"></asp:TextBox>
                         </div>
                         <div class="col-6 form-group">
-                            <label class="form-label">Payment Date</label>
-                            <asp:TextBox runat="server" ID="txtPaymentDate" TextMode="Date" CssClass="form-control"></asp:TextBox>
-                        </div>
+                            <label class="form-label">Due Date</label>
+                            <asp:TextBox runat="server" ID="txtDueDate" TextMode="Date" CssClass="form-control"></asp:TextBox>
+                        </div>                        
                     </div>
 
                     <div class="row mb-2">
@@ -1235,6 +1226,10 @@
                                 <asp:ListItem Value="0" Text="Unpaid"></asp:ListItem>
                                 <asp:ListItem Value="1" Text="Paid"></asp:ListItem>
                             </asp:DropDownList>
+                        </div>
+                        <div class="col-6 form-group">
+                            <label class="form-label">Payment Date</label>
+                            <asp:TextBox runat="server" ID="txtPaymentDate" TextMode="Date" CssClass="form-control"></asp:TextBox>
                         </div>
                     </div>
 
@@ -1625,7 +1620,7 @@
                     <div class="row mb-2">
                         <div class="col-6 form-group">
                             <label class="form-label">Created Date</label>
-                            <asp:TextBox runat="server" ID="txtCreatedDate" CssClass="form-control" placeholder="Shipment Number ..." autocomplete="off"></asp:TextBox>
+                            <asp:TextBox runat="server" ID="txtCreatedDate" CssClass="form-control" TextMode="Date"></asp:TextBox>
                         </div>
                         <div class="col-6 form-group">
                             <label class="form-label">Submitted Date</label>

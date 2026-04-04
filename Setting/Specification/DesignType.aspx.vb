@@ -253,7 +253,7 @@ Partial Class Setting_Specification_Design
             End If
 
             lbCompany.DataSource = settingClass.GetDataTable(thisString)
-            lbCompany.DataTextField = "Name"
+            lbCompany.DataTextField = "Alias"
             lbCompany.DataValueField = "Id"
             lbCompany.DataBind()
 

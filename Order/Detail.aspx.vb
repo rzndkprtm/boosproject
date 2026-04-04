@@ -562,36 +562,12 @@ Partial Class Order_Detail
         MessageError_ShippedOrder(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showShippedOrder(); };"
         Try
-            If txtShipmentNumber.Text = "" Then
-                MessageError_ShippedOrder(True, "SHIPMENT NUMBER IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showShippedOrder", thisScript, True)
-                Exit Sub
-            End If
-
-            If txtShipmentDate.Text = "" Then
-                MessageError_ShippedOrder(True, "SHIPMENT DATE IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showShippedOrder", thisScript, True)
-                Exit Sub
-            End If
-
-            If txtContainerNumber.Text = "" Then
-                MessageError_ShippedOrder(True, "CONTAINER NUMBER IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showShippedOrder", thisScript, True)
-                Exit Sub
-            End If
-
-            If txtCourier.Text = "" Then
-                MessageError_ShippedOrder(True, "COURIER IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showShippedOrder", thisScript, True)
-                Exit Sub
-            End If
-
             If msgErrorShippedOrder.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Shipped Out' WHERE Id=@Id; UPDATE OrderShipments SET ShipmentNumber=@ShipmentNumber, ShipmentDate=@ShipmentDate, ContainerNumber=@ContainerNumber, ContainerETA=@ContainerETA, Courier=@Courier WHERE Id=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
                         myCmd.Parameters.AddWithValue("@ShipmentNumber", txtShipmentNumber.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@ShipmentDate", txtShipmentDate.Text)
+                        myCmd.Parameters.AddWithValue("@ShipmentDate", If(String.IsNullOrEmpty(txtShipmentDate.Text), CType(DBNull.Value, Object), txtShipmentDate.Text))
                         myCmd.Parameters.AddWithValue("@ContainerNumber", txtContainerNumber.Text.Trim())
                         myCmd.Parameters.AddWithValue("@ContainerETA", If(String.IsNullOrEmpty(txtContainerEta.Text), CType(DBNull.Value, Object), txtContainerEta.Text))
                         myCmd.Parameters.AddWithValue("@Courier", txtCourier.Text.Trim())
@@ -2790,7 +2766,6 @@ Partial Class Order_Detail
 
         lblInvoiceNumber.Text = "-"
         lblInvoiceDate.Text = "-"
-        lblDueDate.Text = "-"
         lblCollector.Text = "-"
         lblPaymentDate.Text = "-"
 
@@ -2807,7 +2782,7 @@ Partial Class Order_Detail
             End If
 
             If Not String.IsNullOrEmpty(invoiceData("DueDate").ToString()) Then
-                lblDueDate.Text = Convert.ToDateTime(invoiceData("DueDate")).ToString("dd MMM yyyy")
+                txtDueDate.Text = Convert.ToDateTime(invoiceData("DueDate")).ToString("yyyy-MM-dd")
             End If
 
             If Not String.IsNullOrEmpty(invoiceData("CollectorName").ToString()) Then
@@ -2862,6 +2837,13 @@ Partial Class Order_Detail
             If Not String.IsNullOrEmpty(shipmentData("Courier").ToString()) Then
                 lblCourier.Text = shipmentData("Courier").ToString()
                 txtCourier.Text = shipmentData("Courier").ToString()
+            End If
+        End If
+
+        If lblOrderStatus.Text = "In Production" OrElse lblOrderStatus.Text = "On Hold" OrElse lblOrderStatus.Text = "Shipped Out" OrElse lblOrderStatus.Text = "Completed" Then
+            If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" Then
+                divShipmentOrder.Attributes.Add("onclick", "showShippedOrder()")
+                divShipmentOrder.Style.Add("cursor", "pointer")
             End If
         End If
     End Sub

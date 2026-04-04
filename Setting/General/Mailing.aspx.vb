@@ -112,37 +112,6 @@ Partial Class Setting_General_Mailing
         End If
     End Sub
 
-    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        Try
-            Dim thisId As String = txtIdDelete.Text
-
-            Using thisConn As New SqlConnection(myConn)
-                thisConn.Open()
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Mailings WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Logs WHERE Type='Mailings' AND DataId=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                thisConn.Close()
-            End Using
-
-            Session("SearchMailing") = txtSearch.Text
-            Response.Redirect("~/setting/general/mailing", False)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
     Protected Sub btnProcess_Click(sender As Object, e As EventArgs)
         MessageError_Process(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showProcess(); };"
@@ -245,6 +214,37 @@ Partial Class Setting_General_Mailing
 
             dataLog = {"Mailings", newId, Session("LoginId").ToString(), "Mailing Created | Duplicated of " & lblId.Text}
             settingClass.Logs(dataLog)
+
+            Session("SearchMailing") = txtSearch.Text
+            Response.Redirect("~/setting/general/mailing", False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim thisId As String = txtIdDelete.Text
+
+            Using thisConn As New SqlConnection(myConn)
+                thisConn.Open()
+
+                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Mailings WHERE Id=@Id", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", thisId)
+                    myCmd.ExecuteNonQuery()
+                End Using
+
+                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Logs WHERE Type='Mailings' AND DataId=@Id", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", thisId)
+                    myCmd.ExecuteNonQuery()
+                End Using
+
+                thisConn.Close()
+            End Using
 
             Session("SearchMailing") = txtSearch.Text
             Response.Redirect("~/setting/general/mailing", False)

@@ -32,12 +32,35 @@ Partial Class Setting_Specification_Bottom_Detail
         Response.Redirect(url, False)
     End Sub
 
-    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
+    Protected Sub btnActive_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
+            Dim active As Integer = 1
+            If lblActive.Text = "Yes" Then active = 0
 
+            Using thisConn As New SqlConnection(myConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE Bottoms SET Active=@Active WHERE Id=@Id", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                    myCmd.Parameters.AddWithValue("@Active", active)
+
+                    thisConn.Open()
+                    myCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Dim activeDesc As String = "Bottom Type Has Been Activated"
+            If active = 0 Then activeDesc = "Bottom Type Has Been Deactivated"
+
+            Dim dataLog As Object() = {"Bottoms", lblId.Text, Session("LoginId").ToString(), activeDesc}
+            settingClass.Logs(dataLog)
+
+            url = String.Format("~/setting/specification/bottom/detail?bottomid={0}", lblId.Text)
+            Response.Redirect(url, False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 
@@ -47,6 +70,8 @@ Partial Class Setting_Specification_Bottom_Detail
         Try
             lblAction.Text = "Add"
             titleProcessColour.InnerText = "Add Bottom Colour"
+
+            divActive.Visible = True
 
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcessColour", thisScript, True)
         Catch ex As Exception
@@ -88,6 +113,11 @@ Partial Class Setting_Specification_Bottom_Detail
                     txtColour.Text = myData("Colour").ToString()
                     txtDescription.Text = myData("Description").ToString()
                     ddlActive.SelectedValue = Convert.ToInt32(myData("Active"))
+
+                    divActive.Visible = False
+                    If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" Then
+                        divActive.Visible = True
+                    End If
 
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcessColour", thisScript, True)
                 Catch ex As Exception
@@ -148,14 +178,13 @@ Partial Class Setting_Specification_Bottom_Detail
 
                 If lblAction.Text = "Edit" Then
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE BottomColours SET BottomId=@BottomId, BoeId=@BoeId, Name=@Name, Colour=@Colour, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("UPDATE BottomColours SET BottomId=@BottomId, BoeId=@BoeId, Name=@Name, Colour=@Colour, Description=@Description WHERE Id=@Id", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", lblIdColour.Text)
                             myCmd.Parameters.AddWithValue("@BottomId", lblId.Text)
                             myCmd.Parameters.AddWithValue("@BoeId", If(String.IsNullOrEmpty(txtBoeId.Text), CType(DBNull.Value, Object), txtBoeId.Text))
                             myCmd.Parameters.AddWithValue("@Name", name)
                             myCmd.Parameters.AddWithValue("@Colour", txtColour.Text)
                             myCmd.Parameters.AddWithValue("@Description", descText)
-                            myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
 
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
@@ -222,6 +251,8 @@ Partial Class Setting_Specification_Bottom_Detail
             gvList.DataBind()
             gvList.Columns(1).Visible = PageAction("Visible ID Detail")
 
+            aActive.Visible = PageAction("Active")
+
             btnAddColour.Visible = PageAction("Add Colour")
             btnEdit.Visible = PageAction("Edit")
         Catch ex As Exception
@@ -239,6 +270,11 @@ Partial Class Setting_Specification_Bottom_Detail
     Protected Sub MessageError_ProcessColour(visible As Boolean, message As String)
         divErrorProcessColour.Visible = visible : msgErrorProcessColour.InnerText = message
     End Sub
+
+    Protected Function TextActive(active As String) As String
+        If active = "Yes" Then Return "Deactivate"
+        Return "Activate"
+    End Function
 
     Protected Function PageAction(action As String) As Boolean
         Try

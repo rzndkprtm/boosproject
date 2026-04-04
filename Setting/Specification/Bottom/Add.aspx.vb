@@ -11,7 +11,7 @@ Partial Class Setting_Specification_Bottom_Add
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
         If pageAccess = False Then
-            Response.Redirect("~/setting/specification/fabric", False)
+            Response.Redirect("~/setting/specification/bottom", False)
             Exit Sub
         End If
 

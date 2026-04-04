@@ -19,8 +19,7 @@ Partial Class Setting_Specification_Bottom_Default
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             txtSearch.Text = Session("SearchBottom")
-            BindCompanyDetail()
-            BindData(txtSearch.Text, ddlCompanyDetail.SelectedValue)
+            BindData(txtSearch.Text)
         End If
     End Sub
 
@@ -31,19 +30,19 @@ Partial Class Setting_Specification_Bottom_Default
 
     Protected Sub ddlCompanyDetail_SelectedIndexChanged(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
-        BindData(txtSearch.Text, ddlCompanyDetail.SelectedValue)
+        BindData(txtSearch.Text)
     End Sub
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
-        BindData(txtSearch.Text, ddlCompanyDetail.SelectedValue)
+        BindData(txtSearch.Text)
     End Sub
 
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
         MessageError(False, String.Empty)
         Try
             gvList.PageIndex = e.NewPageIndex
-            BindData(txtSearch.Text, ddlCompanyDetail.SelectedValue)
+            BindData(txtSearch.Text)
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -106,16 +105,14 @@ Partial Class Setting_Specification_Bottom_Default
         End Try
     End Sub
 
-    Protected Sub BindData(searchText As String, companyText As String)
+    Protected Sub BindData(searchText As String)
         Session("SearchBottom") = String.Empty
         Try
-            Dim stringCompanyDetail As String = "WHERE cdArray.VALUE='" & companyText & "'"
             Dim stringSearch As String = String.Empty
             If Not searchText = "" Then
-                stringSearch = "(Id LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%' OR Description LIKE '%" & searchText & "%')"
+                stringSearch = "Id LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%' OR Description LIKE '%" & searchText & "%'"
             End If
-
-            Dim thisString As String = String.Format("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Bottoms CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS cdArray {0} {1} ORDER BY Name ASC", stringCompanyDetail, stringSearch)
+            Dim thisString As String = String.Format("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Bottoms {0} ORDER BY Name ASC", stringSearch)
 
             gvList.DataSource = settingClass.GetDataTable(thisString)
             gvList.DataBind()
@@ -130,61 +127,49 @@ Partial Class Setting_Specification_Bottom_Default
         End Try
     End Sub
 
-    Protected Sub BindCompanyDetail()
-        ddlCompanyDetail.Items.Clear()
-        Try
-            Dim thisString As String = "SELECT * FROM CompanyDetails ORDER BY Id ASC"
-            If Not Session("CompanyDetailId") = "" Then
-                thisString = "SELECT * FROM CompanyDetails WHERE CompanyId='" & Session("CompanyId") & "' ORDER BY Id ASC"
-            End If
-
-            ddlCompanyDetail.DataSource = settingClass.GetDataTable(thisString)
-            ddlCompanyDetail.DataTextField = "Name"
-            ddlCompanyDetail.DataValueField = "Id"
-            ddlCompanyDetail.DataBind()
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
     End Sub
 
     Protected Function BindDesign(bottomId As String) As String
-        If Not String.IsNullOrEmpty(bottomId) Then
-            Dim myData As DataTable = settingClass.GetDataTable("SELECT Designs.Name AS DesignName FROM Bottoms CROSS APPLY STRING_SPLIT(Bottoms.DesignId, ',') AS splitArray LEFT JOIN Designs ON splitArray.VALUE=Designs.Id WHERE Bottoms.Id='" & bottomId & "' ORDER BY Designs.Id ASC")
-            Dim hasil As String = String.Empty
-            If Not myData.Rows.Count = 0 Then
-                For i As Integer = 0 To myData.Rows.Count - 1
-                    Dim designName As String = myData.Rows(i)("DesignName").ToString()
-                    hasil += designName & ", "
-                Next
-            End If
+        Try
+            If Not String.IsNullOrEmpty(bottomId) Then
+                Dim myData As DataTable = settingClass.GetDataTable("SELECT Designs.Name AS DesignName FROM Bottoms CROSS APPLY STRING_SPLIT(Bottoms.DesignId, ',') AS splitArray LEFT JOIN Designs ON splitArray.VALUE=Designs.Id WHERE Bottoms.Id='" & bottomId & "' ORDER BY Designs.Id ASC")
+                Dim hasil As String = String.Empty
+                If Not myData.Rows.Count = 0 Then
+                    For i As Integer = 0 To myData.Rows.Count - 1
+                        Dim designName As String = myData.Rows(i)("DesignName").ToString()
+                        hasil += designName & ", "
+                    Next
+                End If
 
-            Return hasil.Remove(hasil.Length - 2).ToString()
-        End If
-        Return "Error"
+                Return hasil.Remove(hasil.Length - 2).ToString()
+            End If
+            Return String.Empty
+        Catch ex As Exception
+            Return "Error"
+        End Try
     End Function
 
     Protected Function BindCompany(bottomId As String) As String
-        If Not String.IsNullOrEmpty(bottomId) Then
-            Dim myData As DataTable = settingClass.GetDataTable("SELECT CompanyDetails.Name AS CompanyName FROM Bottoms CROSS APPLY STRING_SPLIT(Bottoms.CompanyDetailId, ',') AS splitArray LEFT JOIN CompanyDetails ON splitArray.VALUE=CompanyDetails.Id WHERE Bottoms.Id='" & bottomId & "' ORDER BY CompanyDetails.Id ASC")
-            Dim hasil As String = String.Empty
-            If myData.Rows.Count > 0 Then
-                For i As Integer = 0 To myData.Rows.Count - 1
-                    Dim designName As String = myData.Rows(i)("CompanyName").ToString()
-                    hasil += designName & ","
-                Next
-                Return hasil.Remove(hasil.Length - 1).ToString()
-            Else
-                Return String.Empty
+        Try
+            If Not String.IsNullOrEmpty(bottomId) Then
+                Dim myData As DataTable = settingClass.GetDataTable("SELECT CompanyDetails.Name AS CompanyName FROM Bottoms CROSS APPLY STRING_SPLIT(Bottoms.CompanyDetailId, ',') AS splitArray LEFT JOIN CompanyDetails ON splitArray.VALUE=CompanyDetails.Id WHERE Bottoms.Id='" & bottomId & "' ORDER BY CompanyDetails.Id ASC")
+                Dim hasil As String = String.Empty
+                If myData.Rows.Count > 0 Then
+                    For i As Integer = 0 To myData.Rows.Count - 1
+                        Dim designName As String = myData.Rows(i)("CompanyName").ToString()
+                        hasil += designName & ","
+                    Next
+                    Return hasil.Remove(hasil.Length - 1).ToString()
+                Else
+                    Return String.Empty
+                End If
             End If
-        End If
-        Return "Error"
+            Return String.Empty
+        Catch ex As Exception
+            Return "Error"
+        End Try
     End Function
 
     Protected Function TextActive(active As Boolean) As String
