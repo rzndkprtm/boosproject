@@ -207,6 +207,39 @@ Partial Class Setting_Specification_Bottom_Detail
         End Try
     End Sub
 
+    Protected Sub btnActiveColour_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim thisId As String = txtIdActiveColour.Text
+
+            Dim active As Integer = 1
+            If txtActiveColour.Text = "1" Then : active = 0 : End If
+
+            Using thisConn As New SqlConnection(myConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE BottomColours SET Active=@Active WHERE Id=@Id", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", thisId)
+                    myCmd.Parameters.AddWithValue("@Active", active)
+
+                    thisConn.Open()
+                    myCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Dim activeDesc As String = "Bottom Colour Has Been Activated"
+            If active = 0 Then activeDesc = "Bottom Colour Has Been Deactivated"
+
+            Dim dataLog As Object() = {"BottomColours", thisId, Session("LoginId").ToString(), activeDesc}
+            settingClass.Logs(dataLog)
+
+            url = String.Format("~/setting/specification/bottom/detail?bottomid={0}", lblId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
     Protected Sub BindData(bottomId As String)
         Try
             Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM Bottoms WHERE Id='" & bottomId & "'")
@@ -273,6 +306,11 @@ Partial Class Setting_Specification_Bottom_Detail
 
     Protected Function TextActive(active As String) As String
         If active = "Yes" Then Return "Deactivate"
+        Return "Activate"
+    End Function
+
+    Protected Function TextActiveColour(active As Boolean) As String
+        If active = True Then Return "Deactivate"
         Return "Activate"
     End Function
 

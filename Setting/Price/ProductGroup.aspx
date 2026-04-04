@@ -125,7 +125,7 @@
                     <div class="row">
                         <div class="col-12 form-group">
                             <label class="form-label">Design Type</label>
-                            <asp:DropDownList runat="server" ID="ddlDesign" CssClass="form-select"></asp:DropDownList>
+                            <asp:DropDownList runat="server" ID="ddlDesign" CssClass="choices form-select"></asp:DropDownList>
                         </div>
                     </div>
 
@@ -253,6 +253,7 @@
 
         window.history.replaceState(null, null, window.location.href);
     </script>
+
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblId"></asp:Label>
         <asp:Label runat="server" ID="lblAction"></asp:Label>
