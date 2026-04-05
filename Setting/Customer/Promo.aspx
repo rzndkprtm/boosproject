@@ -100,7 +100,7 @@
     </div>
 
     <div class="modal fade text-left" id="modalProcess" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Add Promo</h5>
@@ -121,11 +121,10 @@
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="row mb-3">
                         <div class="col-12 form-group">
                             <label class="form-label">Promo</label>
-                            <asp:DropDownList runat="server" ID="ddlPromo" CssClass="choices form-select">
-                            </asp:DropDownList>
+                            <asp:DropDownList runat="server" ID="ddlPromo" CssClass="choices form-select"></asp:DropDownList>
                         </div>
                     </div>
                 </div>
