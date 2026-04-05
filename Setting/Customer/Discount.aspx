@@ -65,7 +65,7 @@
                                                 <asp:BoundField DataField="CustomerName" HeaderText="Customer Name" />
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
                                                     <ItemTemplate>
-                                                        <asp:LinkButton runat="server" ID="linkDetail" CssClass="btn btn-sm btn-primary" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                        <asp:LinkButton runat="server" ID="linkDetail" CssClass="btn btn-sm btn-primary" Text="View" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                             </Columns>
@@ -89,7 +89,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Detail Discount</h5>
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><i data-feather="x"></i></button>
                 </div>
                 <div class="modal-body">
                     <div class="row mb-2" runat="server" id="divErrorDetailDiscount">
@@ -112,7 +112,7 @@
                                             </ItemTemplate>
                                         </asp:TemplateField>
                                         <asp:BoundField DataField="Type" HeaderText="Type" />
-                                        <asp:TemplateField HeaderText="Discount Type">
+                                        <asp:TemplateField HeaderText="Product">
                                             <ItemTemplate>
                                                 <%# DiscountTitle(Eval("Type").ToString(), Eval("DataId").ToString()) %>
                                             </ItemTemplate>
