@@ -34,6 +34,8 @@ Partial Class Setting_Specification_Remote
             BindControl()
             BindCompany()
 
+            divActive.Visible = True
+
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         Catch ex As Exception
             MessageError_Process(True, ex.ToString())
@@ -112,6 +114,8 @@ Partial Class Setting_Specification_Remote
                             End If
                         Next
                     End If
+
+                    divActive.Visible = False
 
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Catch ex As Exception
@@ -217,7 +221,7 @@ Partial Class Setting_Specification_Remote
 
                 If lblAction.Text = "Edit" Then
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE Chains SET BoeId=@BoeId, Name=@Name, DesignId=@DesignId, ControlTypeId=@ControlTypeId, CompanyDetailId=@CompanyDetailId, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("UPDATE Chains SET BoeId=@BoeId, Name=@Name, DesignId=@DesignId, ControlTypeId=@ControlTypeId, CompanyDetailId=@CompanyDetailId, Description=@Description WHERE Id=@Id", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", lblId.Text)
                             myCmd.Parameters.AddWithValue("@BoeId", If(String.IsNullOrEmpty(txtBoeId.Text), CType(DBNull.Value, Object), txtBoeId.Text))
                             myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
@@ -225,7 +229,6 @@ Partial Class Setting_Specification_Remote
                             myCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetail)
                             myCmd.Parameters.AddWithValue("@ControlTypeId", controlType)
                             myCmd.Parameters.AddWithValue("@Description", descText)
-                            myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
 
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
@@ -243,6 +246,40 @@ Partial Class Setting_Specification_Remote
             MessageError_Process(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnActive_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim thisId As String = txtIdActive.Text
+
+            Dim active As Integer = 1
+            If txtActive.Text = "1" Then : active = 0 : End If
+
+            Using thisConn As New SqlConnection(myConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE Chains SET Active=@Active WHERE Id=@Id", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", thisId)
+                    myCmd.Parameters.AddWithValue("@Active", active)
+
+                    thisConn.Open()
+                    myCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Dim activeDesc As String = "Remote Has Been Activated"
+            If active = 0 Then activeDesc = "Remote Has Been Deactivated"
+
+            Dim dataLog As Object() = {"Chains", thisId, Session("LoginId").ToString(), activeDesc}
+            settingClass.Logs(dataLog)
+
+            Session("SearchRemote") = txtSearch.Text
+            Response.Redirect("~/setting/specification/remote", False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
         End Try
     End Sub
@@ -333,6 +370,11 @@ Partial Class Setting_Specification_Remote
     Protected Sub MessageError_Process(visible As Boolean, message As String)
         divErrorProcess.Visible = visible : msgErrorProcess.InnerText = message
     End Sub
+
+    Protected Function TextActive(active As Boolean) As String
+        If active = True Then Return "Deactivate"
+        Return "Activate"
+    End Function
 
     Protected Function PageAction(action As String) As Boolean
         Try
