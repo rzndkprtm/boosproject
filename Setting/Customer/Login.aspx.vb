@@ -34,6 +34,8 @@ Partial Class Setting_Customer_Login
             BindRole()
             BindLevel()
 
+            divPassword.Visible = True
+
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         Catch ex As Exception
             MessageError_Process(True, ex.ToString())
@@ -83,8 +85,8 @@ Partial Class Setting_Customer_Login
                     lblUserName.Text = myData("UserName").ToString()
                     txtFullName.Text = myData("FullName").ToString()
                     txtEmail.Text = myData("Email").ToString()
-                    Dim password As String = myData("Password").ToString()
-                    txtPassword.Text = settingClass.Decrypt(password)
+
+                    divPassword.Visible = False
 
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Catch ex As Exception
@@ -223,7 +225,6 @@ Partial Class Setting_Customer_Login
                             myCmd.Parameters.AddWithValue("@RoleId", ddlRole.SelectedValue)
                             myCmd.Parameters.AddWithValue("@LevelId", ddlLevel.SelectedValue)
                             myCmd.Parameters.AddWithValue("@UserName", txtUserName.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Password", password)
                             myCmd.Parameters.AddWithValue("@FullName", txtFullName.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Email", txtEmail.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Pricing", ddlPricing.SelectedValue)
@@ -288,7 +289,7 @@ Partial Class Setting_Customer_Login
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
 
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLogins SET Password=@Password, ResetLogin=1 WHERE Id=@Id", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLogins SET Password=@Password, ResetLogin=1 WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", thisId)
                     myCmd.Parameters.AddWithValue("@Password", newPassword)
                     myCmd.ExecuteNonQuery()

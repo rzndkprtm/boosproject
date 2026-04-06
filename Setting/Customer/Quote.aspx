@@ -35,7 +35,7 @@
                                         <div class="input-group">
                                             <span class="input-group-text">Search : </span>
                                             <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" placeholoder="" autocomplete="off"></asp:TextBox>
-                                            <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search"/>
+                                            <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />
                                         </div>
                                     </asp:Panel>
                                 </div>
@@ -54,7 +54,7 @@
                             <div class="row mb-3">
                                 <div class="col-12">
                                     <div class="table-responsive">
-                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom">
+                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom" OnPageIndexChanging="gvList_PageIndexChanging">
                                             <RowStyle />
                                             <Columns>
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center">
@@ -64,11 +64,23 @@
                                                 </asp:TemplateField>
                                                 <asp:BoundField DataField="Id" HeaderText="ID" />
                                                 <asp:BoundField DataField="CustomerName" HeaderText="Customer" />
+                                                <asp:BoundField DataField="Email" HeaderText="Email" />
+                                                <asp:BoundField DataField="Phone" HeaderText="Phone" />
+                                                <asp:TemplateField HeaderText="Address">
+                                                    <ItemTemplate>
+                                                        <%# BindAddress(Eval("Id").ToString()) %>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
                                                     <ItemTemplate>
                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                         <ul class="dropdown-menu">
-                                                            <li></li>
+                                                            <li>
+                                                                <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalTerms" onclick='<%# String.Format("return showTerms(`{0}`);", Eval("Terms").ToString()) %>'>Show Terms & Conditions</a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalLogo" onclick='<%# String.Format("return showLogo(`{0}`);", Eval("Logo").ToString()) %>'>Show Logo</a>
+                                                            </li>
                                                             <li>
                                                                 <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('CustomerQuotes', '<%# Eval("Id") %>')">Log</a>
                                                             </li>
@@ -91,28 +103,56 @@
         </section>
     </div>
 
-    <div runat="server" visible="false">
-        <asp:Label runat="server" ID="lblId"></asp:Label>
+    <div class="modal modal-blur fade" id="modalTerms" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-secondary">
+                    <h5 class="modal-title white">Terms & Conditions</h5>
+                </div>
+                <div class="modal-body">
+                    <span id="textTerms"></span>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal modal-blur fade" id="modalLogo" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-secondary">
+                    <h5 class="modal-title white">Terms & Conditions</h5>
+                </div>
+                <div class="modal-body">
+                    <asp:Image runat="server" CssClass="w-100" ID="imgLogo" />
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script type="text/javascript">
-        document.addEventListener('DOMContentLoaded', function () {
-            const gv = document.getElementById('<%= gvList.ClientID %>');
-            if (!gv) return;
+        function showTerms(terms) {
+            terms = terms.replace(/\n/g, "<br>");
+            document.getElementById("textTerms").innerHTML = terms;
+        }
 
-            for (let i = 1; i < gv.rows.length; i++) {
-                const row = gv.rows[i];
-                row.style.cursor = 'pointer';
+        function showLogo(logo) {
+            var basePath = '<%= ResolveUrl("~/Assets/images/logo/customers/") %>';
+            var fullPath = basePath + logo;
 
-                row.addEventListener('click', function (e) {
-                    if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]")) {
-                        return;
-                    }
+            document.getElementById("<%= imgLogo.ClientID %>").src = fullPath;
+        }
 
-                    const btn = this.querySelector("a[id*='linkDetail']");
-                    if (btn) btn.click();
-                });
-            }
+        ["modalTerms", "modalLogo"].forEach(function (id) {
+            document.getElementById(id).addEventListener("hide.bs.modal", function () {
+                document.activeElement.blur();
+                document.body.focus();
+            });
         });
 
         window.history.replaceState(null, null, window.location.href);

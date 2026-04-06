@@ -329,8 +329,6 @@
                                                             <asp:BoundField DataField="Id" HeaderText="ID" />
                                                             <asp:BoundField DataField="ABNNumber" HeaderText="ABN Number" />
                                                             <asp:BoundField DataField="RegisteredName" HeaderText="Registered Name" />
-                                                            <asp:BoundField DataField="RegisteredDate" HeaderText="Registered Date" DataFormatString="{0:dd MMM yyyy}" />
-                                                            <asp:BoundField DataField="ExpiryDate" HeaderText="Expiry Date" DataFormatString="{0:dd MMM yyyy}" />
                                                             <asp:TemplateField HeaderText="Primary">
                                                                 <ItemTemplate>
                                                                     <i runat="server" visible='<%# VisibleYesPrimaryBusiness(Eval("Primary")) %>' class="bi bi-check-circle-fill"></i>

@@ -127,8 +127,12 @@ Partial Class Setting_Customer_Address
             If msgErrorProcess.InnerText = "" Then
                 If lblAction.Text = "Add" Then
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerAddress ORDER BY Id DESC")
+                    Dim checkData As Integer = settingClass.GetItemData_Integer("SELECT COUNT(*) FROM CustomerAddress WHERE CustomerId='" & lblId.Text & "'")
+                    Dim primaryData As Integer = 0
+                    If checkData = 0 Then primaryData = 1
+
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerAddress VALUES (@Id, @CustomerId, @Description, @Address, @Suburb, @State, @PostCode, @Note, 0)", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerAddress VALUES (@Id, @CustomerId, @Description, @Address, @Suburb, @State, @PostCode, @Note, @Primary)", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", thisId)
                             myCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
                             myCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
@@ -137,6 +141,7 @@ Partial Class Setting_Customer_Address
                             myCmd.Parameters.AddWithValue("@State", txtState.Text.Trim())
                             myCmd.Parameters.AddWithValue("@PostCode", txtPostCode.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Note", txtNote.Text.Trim())
+                            myCmd.Parameters.AddWithValue("@Primary", primaryData)
 
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
