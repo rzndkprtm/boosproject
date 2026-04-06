@@ -254,11 +254,15 @@ Public Class InvoiceClass
             Dim dueDate As String = String.Empty
 
             If Not String.IsNullOrEmpty(headerData("InvoiceDate").ToString()) Then
-                Dim invDate As Date = Convert.ToDateTime(headerData("InvoiceDate"))
-                Dim dueDt As Date = Convert.ToDateTime(headerData("DueDate"))
+                If Not IsDBNull(headerData("InvoiceDate")) Then
+                    Dim invDate As Date = Convert.ToDateTime(headerData("InvoiceDate"))
+                    issueDate = invDate.ToString("dd MMM yyyy")
+                End If
 
-                issueDate = invDate.ToString("dd MMM yyyy")
-                dueDate = dueDt.ToString("dd MMM yyyy")
+                If Not IsDBNull(headerData("DueDate")) Then
+                    Dim dueDt As Date = Convert.ToDateTime(headerData("DueDate"))
+                    dueDate = dueDt.ToString("dd MMM yyyy")
+                End If
             End If
 
             Dim fullAddress As String = String.Empty
