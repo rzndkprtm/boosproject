@@ -442,10 +442,6 @@ Public Class MailingClass
             Dim companyName As String = GetItemData("SELECT Name FROM Companys WHERE Id='" & companyId & "'")
             If companyId = "3" Then companyName = "PT Bumi Indah Global"
 
-            Dim createdMail As String = GetItemData("SELECT Email FROM CustomerLogins WHERE Id='" & orderCreated & "'")
-            Dim createdRole As String = GetItemData("SELECT RoleId FROM CustomerLogins WHERE Id='" & orderCreated & "'")
-            Dim createdLevel As String = GetItemData("SELECT LevelId FROM CustomerLogins WHERE Id='" & orderCreated & "'")
-
             Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='New Order' AND Active=1")
             If mailData Is Nothing Then Exit Sub
 
@@ -474,12 +470,12 @@ Public Class MailingClass
             mailBody &= "Thank you for your order."
             mailBody &= "<br /><br />"
             mailBody &= "The order below has been successfully registered and has been forwarded directly to our production system for processing."
-            mailBody &= "<br />"
+            mailBody &= "<br /><br />"
             mailBody &= "Please note that due to this streamlined process, we regret to inform you that we are unable to accept cancellations or modifications for this order."
-            mailBody &= "</span>"
-
-            mailBody &= "<span style='font-family: Cambria; font-size: 16px;'>"
-            mailBody &= "For any inquiries or assistance, kindly contact our office. We appreciate your understanding and trust in our products & services."
+            mailBody &= "<br /><br />"
+            mailBody &= "For any inquiries or assistance, kindly contact our office."
+            mailBody &= "<br /><br />"
+            mailBody &= "We appreciate your understanding and trust in our products & services."
             mailBody &= "</span>"
 
             mailBody &= "<br /><br /><br />"

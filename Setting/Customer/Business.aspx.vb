@@ -118,14 +118,19 @@ Partial Class Setting_Customer_Business
                 If lblAction.Text = "Add" Then
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerBusiness ORDER BY Id DESC")
 
+                    Dim checkData As Integer = settingClass.GetItemData_Integer("SELECT COUNT(*) FROM CustomerBusiness WHERE CustomerId='" & lblId.Text & "'")
+                    Dim primaryData As Integer = 0
+                    If checkData = 0 Then primaryData = 1
+
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerBusiness VALUES (@Id, @CustomerId, @ABNNumber, @RegisteredName, @RegisteredDate, @ExpiryDate, 0)", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerBusiness VALUES (@Id, @CustomerId, @ABNNumber, @RegisteredName, @RegisteredDate, @ExpiryDate, @Primary)", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", thisId)
                             myCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
                             myCmd.Parameters.AddWithValue("@ABNNumber", txtNumber.Text)
                             myCmd.Parameters.AddWithValue("@RegisteredName", txtName.Text)
                             myCmd.Parameters.AddWithValue("@RegisteredDate", If(String.IsNullOrEmpty(txtRegistered.Text), CType(DBNull.Value, Object), txtRegistered.Text))
                             myCmd.Parameters.AddWithValue("@ExpiryDate", If(String.IsNullOrEmpty(txtExpiry.Text), CType(DBNull.Value, Object), txtExpiry.Text))
+                            myCmd.Parameters.AddWithValue("@Primary", primaryData)
 
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()

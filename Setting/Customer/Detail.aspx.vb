@@ -2393,7 +2393,7 @@ Partial Class Setting_Customer_Detail
                 Dim state As String = thisData("State").ToString()
                 Dim postCode As String = thisData("PostCode").ToString()
 
-                result = String.Format("{0}, {1}, {2} {3} {4}", address, suburb, state, postCode)
+                result = String.Format("{0}, {1}, {2} {3}", address, suburb, state, postCode)
             End If
         End If
         Return result

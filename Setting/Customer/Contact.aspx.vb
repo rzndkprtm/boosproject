@@ -128,8 +128,15 @@ Partial Class Setting_Customer_Contact
 
                 If lblAction.Text = "Add" Then
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerContacts ORDER BY Id DESC")
+                    Dim checkData As Integer = settingClass.GetItemData_Integer("SELECT COUNT(*) FROM CustomerContacts WHERE CustomerId='" & ddlCustomer.SelectedValue & "'")
+                    Dim primaryData As Integer = 0
+                    If checkData = 0 AndAlso Not String.IsNullOrEmpty(txtEmail.Text) Then
+                        thisTags = "Confirming,Invoicing,Quoting,Newsletter"
+                        primaryData = 1
+                    End If
+
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerContacts VALUES (@Id, @CustomerId, @Name, @Email, @Phone, @Tags, @Note, 0)", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerContacts VALUES (@Id, @CustomerId, @Name, @Email, @Phone, @Tags, @Note, @Primary)", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", thisId)
                             myCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
                             myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
@@ -137,6 +144,7 @@ Partial Class Setting_Customer_Contact
                             myCmd.Parameters.AddWithValue("@Phone", txtPhone.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Tags", thisTags)
                             myCmd.Parameters.AddWithValue("@Note", txtNote.Text.Trim())
+                            myCmd.Parameters.AddWithValue("@Primary", primaryData)
 
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
