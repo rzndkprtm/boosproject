@@ -304,7 +304,7 @@
         function showActive(id) {
             var active = document.getElementById("<%=lblActive.ClientID %>").innerText;
             let title = "";
-            if (active === "1") {
+            if (active === "Yes") {
                 title = "Deactivate Fabric";
             } else {
                 title = "Activate Fabric";
@@ -317,7 +317,7 @@
             document.getElementById("<%=txtActiveColour.ClientID %>").value = active;
 
             let title = "";
-            if (active === "") {
+            if (active === "1") {
                 title = "Deactivate Fabric Colour";
             } else {
                 title = "Activate Fabric Colour";
