@@ -162,7 +162,7 @@ Partial Class Setting_Customer_Promo
         Try
             Dim search As String = String.Empty
             If Not String.IsNullOrEmpty(searchText) Then
-                search = "WHERE Customers.Name LIKE '%" & searchText & "%' OR Customers.DebtorCode LIKE '%" & searchText & "%' OR Promos.Name LIKE '%" & searchText & "%'"
+                search = "WHERE Customers.Name LIKE '%" & searchText.Trim() & "%' OR Customers.DebtorCode LIKE '%" & searchText.Trim() & "%' OR Promos.Name LIKE '%" & searchText.Trim() & "%'"
             End If
             Dim thisQuery As String = String.Format("SELECT CustomerPromos.*, Customers.Name AS CustomerName, Promos.Name AS PromoName FROM CustomerPromos LEFT JOIN Customers ON CustomerPromos.CustomerId=Customers.Id LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id {0} ORDER BY Customers.Id, CustomerPromos.Id ASC", search)
 
