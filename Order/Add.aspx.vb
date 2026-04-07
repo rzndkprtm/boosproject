@@ -1216,7 +1216,7 @@ Partial Class Order_Add
                             Exit For
                         End If
 
-                        Dim tubeName As String = String.Empty
+                        Dim tubeName As String = tubeType
                         If tubeType = "Wide Blade (127mm)" Then tubeName = "127mm"
                         If tubeType = "Narrow Blade (89mm)" Then tubeName = "89mm"
 
@@ -1280,6 +1280,8 @@ Partial Class Order_Add
                                 MessageError(True, "FABRIC TYPE IS REQUIRED !")
                                 Exit For
                             End If
+
+                            If fabricType = "Essentials" Then fabricType = fabricType & " " & tubeName
 
                             fabricId = orderClass.GetItemData("SELECT Id FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(TubeId, ',') AS tubeArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE Name='" & fabricType & "' AND designArray.VALUE='" & designId & "' AND tubeArray.VALUE='" & tubeId & "' AND companyArray.VALUE='" & companyDetailId & "' AND Active=1")
                             If String.IsNullOrEmpty(fabricId) Then

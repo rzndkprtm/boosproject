@@ -112,7 +112,7 @@ Partial Class Setting_Customer_Default
         Try
             Dim params As New List(Of SqlParameter) From {
                 New SqlParameter("@Active", ddlActive.SelectedValue),
-                New SqlParameter("@SearchText", If(String.IsNullOrEmpty(searchText), CType(DBNull.Value, Object), searchText)),
+                New SqlParameter("@SearchText", If(String.IsNullOrEmpty(searchText), CType(DBNull.Value, Object), searchText.Trim())),
                 New SqlParameter("@CompanyText", If(String.IsNullOrEmpty(companyText), CType(DBNull.Value, Object), companyText)),
                 New SqlParameter("@RoleName", Session("RoleName").ToString()),
                 New SqlParameter("@CompanyId", Session("CompanyId")),
