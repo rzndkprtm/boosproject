@@ -68,6 +68,7 @@ Partial Class Sales_Default
                 gvList.DataSource = salesClass.GetDataTable("SELECT * FROM Sales WHERE CompanyId='" & companyId & "' ORDER BY SummaryDate DESC")
                 gvList.DataBind()
                 gvList.Columns(1).Visible = PageAction("Visible ID")
+                gvList.Columns(8).Visible = PageAction("Visible Refresh")
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
