@@ -227,65 +227,18 @@ Partial Class Order_Detail
                 End Using
             End Using
 
-            'If lblCompanyId.Text = "2" Then
-            '    Dim thisId As String = orderClass.GetNewOrderItemId()
-
-            '    Dim productId As String = orderClass.GetItemData("SELECT Id FROM Products WHERE Name='Fuel Surcharge' AND Active=1")
-            '    Dim productGroupId As String = orderClass.GetItemData("SELECT Id FROM PriceProductGroups WHERE Name='Fuel Surcharge' AND Active=1")
-
-            '    Using thisConn As New SqlConnection(myConn)
-            '        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, 1, 0, 0, 1, 0, 1)", thisConn)
-            '            myCmd.Parameters.AddWithValue("@Id", thisId)
-            '            myCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
-            '            myCmd.Parameters.AddWithValue("@ProductId", If(String.IsNullOrEmpty(productId), CType(DBNull.Value, Object), productId))
-            '            myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(productGroupId), CType(DBNull.Value, Object), productGroupId))
-
-            '            thisConn.Open()
-            '            myCmd.ExecuteNonQuery()
-            '        End Using
-            '    End Using
-
-            '    dataLog = {"OrderDetails", thisId, "2", "Order Item Added"}
-            '    orderClass.Logs(dataLog)
-
-            '    orderClass.ResetPriceDetail(lblHeaderId.Text, thisId)
-            '    orderClass.CalculatePrice(lblHeaderId.Text, thisId)
-            '    orderClass.FinalCostItem(lblHeaderId.Text, thisId)
-
-            '    Dim totalItems As Integer = orderClass.GetTotalItemOrder(lblHeaderId.Text)
-            '    If minSurcharge = True AndAlso totalItems <= 3 Then
-            '        thisId = orderClass.GetNewOrderItemId()
-            '        productId = orderClass.GetItemData("SELECT Id FROM Products WHERE Name='Minimum Order Surcharge' AND Active=1")
-            '        productGroupId = orderClass.GetItemData("SELECT Id FROM PriceProductGroups WHERE Name='Minimum Order Surcharge' AND Active=1")
-
-            '        Using thisConn As New SqlConnection(myConn)
-            '            Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, 1, 0, 0, 1, 0, 1)", thisConn)
-            '                myCmd.Parameters.AddWithValue("@Id", thisId)
-            '                myCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
-            '                myCmd.Parameters.AddWithValue("@ProductId", If(String.IsNullOrEmpty(productId), CType(DBNull.Value, Object), productId))
-            '                myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(productGroupId), CType(DBNull.Value, Object), productGroupId))
-
-            '                thisConn.Open()
-            '                myCmd.ExecuteNonQuery()
-            '            End Using
-            '        End Using
-
-            '        dataLog = {"OrderDetails", thisId, "2", "Order Item Added"}
-            '        orderClass.Logs(dataLog)
-
-            '        orderClass.ResetPriceDetail(lblHeaderId.Text, thisId)
-            '        orderClass.CalculatePrice(lblHeaderId.Text, thisId)
-            '        orderClass.FinalCostItem(lblHeaderId.Text, thisId)
-            '    End If
-            'End If
-
-            Dim totalItems As Integer = orderClass.GetTotalItemOrder(lblHeaderId.Text)
-            If lblCompanyId.Text = "2" AndAlso minSurcharge = True AndAlso totalItems <= 3 Then
+            If lblCompanyId.Text = "2" Then
                 Dim thisId As String = orderClass.GetNewOrderItemId()
+
+                Dim productId As String = orderClass.GetItemData("SELECT Id FROM Products WHERE Name='Fuel Surcharge' AND Active=1")
+                Dim productGroupId As String = orderClass.GetItemData("SELECT Id FROM PriceProductGroups WHERE Name='Fuel Surcharge' AND Active=1")
+
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, 2986, 112, 1, 0, 0, 1, 0, 1)", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, 1, 0, 0, 1, 0, 1)", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
                         myCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
+                        myCmd.Parameters.AddWithValue("@ProductId", If(String.IsNullOrEmpty(productId), CType(DBNull.Value, Object), productId))
+                        myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(productGroupId), CType(DBNull.Value, Object), productGroupId))
 
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
@@ -298,7 +251,54 @@ Partial Class Order_Detail
                 orderClass.ResetPriceDetail(lblHeaderId.Text, thisId)
                 orderClass.CalculatePrice(lblHeaderId.Text, thisId)
                 orderClass.FinalCostItem(lblHeaderId.Text, thisId)
+
+                Dim totalItems As Integer = orderClass.GetTotalItemOrder(lblHeaderId.Text)
+                If minSurcharge = True AndAlso totalItems <= 3 Then
+                    thisId = orderClass.GetNewOrderItemId()
+                    productId = orderClass.GetItemData("SELECT Id FROM Products WHERE Name='Minimum Order Surcharge' AND Active=1")
+                    productGroupId = orderClass.GetItemData("SELECT Id FROM PriceProductGroups WHERE Name='Minimum Order Surcharge' AND Active=1")
+
+                    Using thisConn As New SqlConnection(myConn)
+                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, 1, 0, 0, 1, 0, 1)", thisConn)
+                            myCmd.Parameters.AddWithValue("@Id", thisId)
+                            myCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
+                            myCmd.Parameters.AddWithValue("@ProductId", If(String.IsNullOrEmpty(productId), CType(DBNull.Value, Object), productId))
+                            myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(productGroupId), CType(DBNull.Value, Object), productGroupId))
+
+                            thisConn.Open()
+                            myCmd.ExecuteNonQuery()
+                        End Using
+                    End Using
+
+                    dataLog = {"OrderDetails", thisId, "2", "Order Item Added"}
+                    orderClass.Logs(dataLog)
+
+                    orderClass.ResetPriceDetail(lblHeaderId.Text, thisId)
+                    orderClass.CalculatePrice(lblHeaderId.Text, thisId)
+                    orderClass.FinalCostItem(lblHeaderId.Text, thisId)
+                End If
             End If
+
+            'Dim totalItems As Integer = orderClass.GetTotalItemOrder(lblHeaderId.Text)
+            'If lblCompanyId.Text = "2" AndAlso minSurcharge = True AndAlso totalItems <= 3 Then
+            '    Dim thisId As String = orderClass.GetNewOrderItemId()
+            '    Using thisConn As New SqlConnection(myConn)
+            '        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, 2986, 112, 1, 0, 0, 1, 0, 1)", thisConn)
+            '            myCmd.Parameters.AddWithValue("@Id", thisId)
+            '            myCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
+
+            '            thisConn.Open()
+            '            myCmd.ExecuteNonQuery()
+            '        End Using
+            '    End Using
+
+            '    dataLog = {"OrderDetails", thisId, "2", "Order Item Added"}
+            '    orderClass.Logs(dataLog)
+
+            '    orderClass.ResetPriceDetail(lblHeaderId.Text, thisId)
+            '    orderClass.CalculatePrice(lblHeaderId.Text, thisId)
+            '    orderClass.FinalCostItem(lblHeaderId.Text, thisId)
+            'End If
 
             dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), "Order Submitted"}
             orderClass.Logs(dataLog)
