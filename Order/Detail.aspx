@@ -1471,7 +1471,7 @@
                     <div class="row mb-3">
                         <div class="col-12">
                             <label class="form-label required">SELECT PRODUCT</label>
-                            <asp:DropDownList runat="server" ID="ddlDesign" CssClass="form-select"></asp:DropDownList>
+                            <asp:DropDownList runat="server" ID="ddlDesign" CssClass="choices form-select"></asp:DropDownList>
                             <small class="form-hint" style="color:red;">* Please select a product then click the submit button</small>
                         </div>
                     </div>
