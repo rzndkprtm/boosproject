@@ -44,7 +44,7 @@ Partial Class Setting_Customer_Quote
             Dim search As String = String.Empty
 
             If Not String.IsNullOrEmpty(searchText) Then
-                search = "WHERE Customers.Id LIKE '%" & searchText & "%' OR Customers.Name LIKE '%" & searchText & "%' OR Customers.DebtorCode LIKE '%" & searchText & "%'"
+                search = "WHERE Customers.Id LIKE '%" & searchText.Trim() & "%' OR Customers.Name LIKE '%" & searchText.Trim() & "%' OR Customers.DebtorCode LIKE '%" & searchText.Trim() & "%'"
             End If
 
             Dim thisQuery As String = String.Format("SELECT CustomerQuotes.*, Customers.Name AS CustomerName FROM CustomerQuotes LEFT JOIN Customers ON CustomerQuotes.Id=Customers.Id {0} ORDER BY Customers.Id ASC", search)

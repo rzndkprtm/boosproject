@@ -63,7 +63,7 @@ Partial Class Setting_Customer_Discount
         Try
             Dim search As String = String.Empty
             If Not String.IsNullOrEmpty(searchText) Then
-                search = "AND Cust.Name LIKE '%" & searchText & "%' OR Cust.DebtorCode LIKE '%" & searchText & "%'"
+                search = "AND Cust.Name LIKE '%" & searchText.Trim() & "%' OR Cust.DebtorCode LIKE '%" & searchText.Trim() & "%'"
             End If
             Dim thisQuery As String = String.Format("SELECT Cust.Id, Cust.DebtorCode, Cust.Name AS CustomerName FROM Customers Cust WHERE EXISTS (SELECT 1 FROM CustomerDiscounts Disc WHERE Disc.CustomerId = Cust.Id) {0} ORDER BY Cust.Name ASC", search)
 

@@ -145,7 +145,7 @@ Partial Class Setting_Customer_ProductAccess
         Try
             Dim search As String = String.Empty
             If Not String.IsNullOrEmpty(searchText) Then
-                search = "WHERE Customers.Name LIKE '%" & searchText & "%' OR Customers.DebtorCode LIKE '%" & searchText & "%'"
+                search = "WHERE Customers.Name LIKE '%" & searchText.Trim() & "%' OR Customers.DebtorCode LIKE '%" & searchText.Trim() & "%'"
             End If
 
             Dim thisQuery As String = String.Format("SELECT CustomerProductAccess.*, Customers.Name AS CustomerName FROM CustomerProductAccess LEFT JOIN Customers ON CustomerProductAccess.Id=Customers.Id {0} ORDER BY Customers.Name ASC", search)

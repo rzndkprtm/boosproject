@@ -243,7 +243,7 @@ Partial Class Setting_Customer_Business
         Try
             Dim search As String = String.Empty
             If Not String.IsNullOrEmpty(searchText) Then
-                search = "WHERE Customers.Name LIKE '%" & searchText & "%' OR Customers.DebtorCode LIKE '%" & searchText & "%'"
+                search = "WHERE Customers.Name LIKE '%" & searchText.Trim() & "%' OR Customers.DebtorCode LIKE '%" & searchText.Trim() & "%'"
             End If
             Dim thisQuery As String = String.Format("SELECT CustomerBusiness.*, Customers.Name AS CustomerName, CASE WHEN CustomerBusiness.[Primary]=1 THEN 'Yes' WHEN CustomerBusiness.[Primary]=0 THEN 'No' ELSE 'Error' END AS DataPrimary FROM CustomerBusiness LEFT JOIN Customers ON CustomerBusiness.CustomerId=Customers.Id {0} ORDER BY Customers.Id, CustomerBusiness.Id ASC", search)
 
