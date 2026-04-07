@@ -2622,7 +2622,7 @@ Partial Class Order_Detail
             If Session("PriceAccess") = "Yes" Then gvListItem.Columns(7).Visible = True
 
             Dim totalItems As Integer = orderClass.GetTotalItemOrder(lblHeaderId.Text)
-            If status = "Unsubmitted" AndAlso lblCompanyId.Text = "1" AndAlso totalItems > 0 Then
+            If status = "Unsubmitted" AndAlso lblCompanyId.Text = "2" AndAlso totalItems > 0 Then
                 divFuelSurcharge.Visible = True
                 If totalItems <= 3 Then
                     divMinimumOrderSurcharge.Visible = True
