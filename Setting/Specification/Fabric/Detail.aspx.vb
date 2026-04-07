@@ -323,7 +323,7 @@ Partial Class Setting_Specification_Fabric_Detail
             aActive.Visible = PageAction("Active")
             btnAddColour.Visible = PageAction("Add Colour")
 
-            gvList.DataSource = settingClass.GetDataTable("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM FabricColours WHERE FabricId='" & fabricId & "'")
+            gvList.DataSource = settingClass.GetDataTable("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM FabricColours WHERE FabricId='" & fabricId & "' ORDER BY Colour ASC")
             gvList.DataBind()
         Catch ex As Exception
             MessageError(True, ex.ToString)
