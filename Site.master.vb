@@ -144,7 +144,8 @@ Public Partial Class SiteMaster
             liGeneralCompany.Visible = False
             liGeneralMailing.Visible = False
             liGeneralXero.Visible = False
-            liGeneralLoginAccess.Visible = False
+            liGeneralRoleAccess.Visible = False
+            liGeneralLevelAccess.Visible = False
             liGeneralNewsletter.Visible = False
             liGeneralTutorial.Visible = False
             liGeneralAccess.Visible = False
@@ -187,7 +188,8 @@ Public Partial Class SiteMaster
                 liGeneralCompany.Visible = True
                 liGeneralMailing.Visible = True
                 liGeneralXero.Visible = True
-                liGeneralLoginAccess.Visible = True
+                liGeneralRoleAccess.Visible = True
+                liGeneralLevelAccess.Visible = True
                 liGeneralNewsletter.Visible = True
                 liGeneralTutorial.Visible = True
                 liGeneralAccess.Visible = True
@@ -228,7 +230,8 @@ Public Partial Class SiteMaster
                 liGeneral.Visible = True
                 liGeneralCompany.Visible = True
                 liGeneralMailing.Visible = True
-                liGeneralLoginAccess.Visible = True
+                liGeneralRoleAccess.Visible = True
+                liGeneralLevelAccess.Visible = True
                 liGeneralXero.Visible = True
                 liGeneralNewsletter.Visible = True
                 liGeneralTutorial.Visible = True
@@ -263,7 +266,8 @@ Public Partial Class SiteMaster
                 liGeneral.Visible = True
                 liGeneralCompany.Visible = True
                 liGeneralMailing.Visible = True
-                liGeneralLoginAccess.Visible = True
+                liGeneralRoleAccess.Visible = True
+                liGeneralLevelAccess.Visible = True
                 liGeneralXero.Visible = True
                 liGeneralNewsletter.Visible = True
                 liGeneralTutorial.Visible = True

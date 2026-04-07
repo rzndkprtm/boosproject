@@ -162,8 +162,12 @@
                                                             <a runat="server" href="~/setting/general/xero" class="subsubmenu-link">Xero</a>
                                                         </li>
                                                         
-                                                        <li class="subsubmenu-item" runat="server" id="liGeneralLoginAccess">
-                                                            <a runat="server" href="~/setting/general/loginaccess" class="subsubmenu-link">Login Access</a>
+                                                        <li class="subsubmenu-item" runat="server" id="liGeneralRoleAccess">
+                                                            <a runat="server" href="~/setting/general/roleaccess" class="subsubmenu-link">Role Access</a>
+                                                        </li>
+
+                                                        <li class="subsubmenu-item" runat="server" id="liGeneralLevelAccess">
+                                                            <a runat="server" href="~/setting/general/levelaccess" class="subsubmenu-link">Level Access</a>
                                                         </li>
                                                         
                                                         <li class="subsubmenu-item" runat="server" id="liGeneralNewsletter">
