@@ -162,6 +162,7 @@ Public Partial Class SiteMaster
             liSpecificationColour.Visible = False
             liSpecificationFabric.Visible = False
             liSpecificationChain.Visible = False
+            liSpecificationRemote.Visible = False
             liSpecificationBottom.Visible = False
             liSpecificationMounting.Visible = False
 
@@ -205,6 +206,7 @@ Public Partial Class SiteMaster
                 liSpecificationColour.Visible = True
                 liSpecificationFabric.Visible = True
                 liSpecificationChain.Visible = True
+                liSpecificationRemote.Visible = True
                 liSpecificationBottom.Visible = True
                 liSpecificationMounting.Visible = True
 
@@ -244,6 +246,7 @@ Public Partial Class SiteMaster
                 liSpecificationProduct.Visible = True
                 liSpecificationFabric.Visible = True
                 liSpecificationChain.Visible = True
+                liSpecificationRemote.Visible = True
                 liSpecificationBottom.Visible = True
                 liSpecificationMounting.Visible = True
 
@@ -280,6 +283,7 @@ Public Partial Class SiteMaster
                 liSpecificationProduct.Visible = True
                 liSpecificationFabric.Visible = True
                 liSpecificationChain.Visible = True
+                liSpecificationRemote.Visible = True
                 liSpecificationBottom.Visible = True
                 liSpecificationMounting.Visible = True
 

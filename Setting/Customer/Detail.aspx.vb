@@ -2385,17 +2385,28 @@ Partial Class Setting_Customer_Detail
 
     Protected Function BindQuoteddress(customerId As String) As String
         Dim result As String = String.Empty
-        If Not customerId = "" Then
-            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerQuotes WHERE Id='" & customerId & "'")
-            If thisData IsNot Nothing Then
-                Dim address As String = thisData("Address").ToString()
-                Dim suburb As String = thisData("Suburb").ToString()
-                Dim state As String = thisData("State").ToString()
-                Dim postCode As String = thisData("PostCode").ToString()
 
-                result = String.Format("{0}, {1}, {2} {3}", address, suburb, state, postCode)
+        If Not String.IsNullOrEmpty(customerId) Then
+            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerQuotes WHERE Id='" & customerId & "'")
+
+            If thisData IsNot Nothing Then
+                Dim parts As New List(Of String)
+
+                Dim address As String = thisData("Address").ToString().Trim()
+                Dim suburb As String = thisData("Suburb").ToString().Trim()
+                Dim state As String = thisData("State").ToString().Trim()
+                Dim postCode As String = thisData("PostCode").ToString().Trim()
+
+                If Not String.IsNullOrEmpty(address) Then parts.Add(address)
+                If Not String.IsNullOrEmpty(suburb) Then parts.Add(suburb)
+
+                Dim statePostCode As String = (state & " " & postCode).Trim()
+                If Not String.IsNullOrEmpty(statePostCode) Then parts.Add(statePostCode)
+
+                result = String.Join(", ", parts)
             End If
         End If
+
         Return result
     End Function
 
@@ -2403,7 +2414,7 @@ Partial Class Setting_Customer_Detail
         divErrorQuote.Visible = visible : msgErrorQuote.InnerText = message
     End Sub
 
-    ' STENDART CUSTOMER QUOTE
+    ' END CUSTOMER QUOTE
 
     Protected Sub AllMessageError(visible As Boolean, message As String)
         MessageError(visible, message)
