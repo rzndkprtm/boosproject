@@ -279,27 +279,6 @@ Partial Class Order_Detail
                 End If
             End If
 
-            'Dim totalItems As Integer = orderClass.GetTotalItemOrder(lblHeaderId.Text)
-            'If lblCompanyId.Text = "2" AndAlso minSurcharge = True AndAlso totalItems <= 3 Then
-            '    Dim thisId As String = orderClass.GetNewOrderItemId()
-            '    Using thisConn As New SqlConnection(myConn)
-            '        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, 2986, 112, 1, 0, 0, 1, 0, 1)", thisConn)
-            '            myCmd.Parameters.AddWithValue("@Id", thisId)
-            '            myCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
-
-            '            thisConn.Open()
-            '            myCmd.ExecuteNonQuery()
-            '        End Using
-            '    End Using
-
-            '    dataLog = {"OrderDetails", thisId, "2", "Order Item Added"}
-            '    orderClass.Logs(dataLog)
-
-            '    orderClass.ResetPriceDetail(lblHeaderId.Text, thisId)
-            '    orderClass.CalculatePrice(lblHeaderId.Text, thisId)
-            '    orderClass.FinalCostItem(lblHeaderId.Text, thisId)
-            'End If
-
             dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), "Order Submitted"}
             orderClass.Logs(dataLog)
 
@@ -2644,7 +2623,7 @@ Partial Class Order_Detail
 
             Dim totalItems As Integer = orderClass.GetTotalItemOrder(lblHeaderId.Text)
             If status = "Unsubmitted" AndAlso lblCompanyId.Text = "1" AndAlso totalItems > 0 Then
-                'divFuelSurcharge.Visible = True
+                divFuelSurcharge.Visible = True
                 If totalItems <= 3 Then
                     divMinimumOrderSurcharge.Visible = True
                 End If
