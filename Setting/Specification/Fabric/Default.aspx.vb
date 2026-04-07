@@ -20,6 +20,7 @@ Partial Class Setting_Specification_Fabric_Default
             MessageError(False, String.Empty)
             txtSearch.Text = Session("SearchFabric")
             BindCompanyDetail()
+            ddlCompanyDetail.SelectedValue = Session("CompanyFabric")
             BindData(txtSearch.Text, ddlCompanyDetail.SelectedValue)
         End If
     End Sub
@@ -29,6 +30,8 @@ Partial Class Setting_Specification_Fabric_Default
     End Sub
 
     Protected Sub btnAlias_Click(sender As Object, e As EventArgs)
+        Session("SearchFabric") = txtSearch.Text
+        Session("CompanyFabric") = ddlCompanyDetail.SelectedValue
         Response.Redirect("~/setting/specification/fabric/alias", False)
     End Sub
 
@@ -58,6 +61,7 @@ Partial Class Setting_Specification_Fabric_Default
     Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
         If Not String.IsNullOrEmpty(e.CommandArgument) Then
             Session("SearchFabric") = txtSearch.Text
+            Session("CompanyFabric") = ddlCompanyDetail.SelectedValue
 
             Dim dataId As String = e.CommandArgument.ToString()
             If e.CommandName = "Detail" Then
@@ -120,6 +124,7 @@ Partial Class Setting_Specification_Fabric_Default
             End If
 
             Session("SearchFabric") = txtSearch.Text
+            Session("CompanyFabric") = ddlCompanyDetail.SelectedValue
             Response.Redirect("~/setting/specification/fabric", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -131,6 +136,7 @@ Partial Class Setting_Specification_Fabric_Default
 
     Protected Sub BindData(searchText As String, companyText As String)
         Session("SearchFabric") = String.Empty
+        Session("CompanyFabric") = String.Empty
         Try
             Dim conditions As New List(Of String)
             Dim thisArray As String = String.Empty
@@ -149,7 +155,7 @@ Partial Class Setting_Specification_Fabric_Default
                 whereClause = "WHERE " & String.Join(" AND ", conditions)
             End If
 
-            Dim thisString As String = String.Format("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Fabrics {0} {1} ORDER BY Name ASC", thisArray, whereClause)
+            Dim thisString As String = String.Format("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Fabrics {0} {1} ORDER BY Colour ASC", thisArray, whereClause)
 
             gvList.DataSource = settingClass.GetDataTable(thisString)
             gvList.DataBind()
