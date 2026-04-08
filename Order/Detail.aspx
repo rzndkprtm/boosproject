@@ -38,15 +38,10 @@
             <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
                 <button class="btn btn-primary dropdown-toggle me-1" type="button" data-bs-toggle="dropdown" aria-expanded="false">Generate PDF</button>
                 <ul class="dropdown-menu">
-                    <li>
-                        <asp:Button runat="server" ID="btnPreview" CssClass="dropdown-item" Text="Preview" />
-                    </li>
-                    <li>
-                        <asp:Button runat="server" ID="btnDownload" CssClass="dropdown-item" Text="Download" OnClick="btnDownload_Click" />
-                    </li>
+                    <li><asp:Button runat="server" ID="btnPreview" CssClass="dropdown-item" Text="Preview" /></li>
+                    <li><asp:Button runat="server" ID="btnDownload" CssClass="dropdown-item" Text="Download" OnClick="btnDownload_Click" /></li>
                 </ul>
-                
-                <asp:Button runat="server" ID="btnEditHeader" CssClass="btn btn-secondary me-1" Text="Edit Header" OnClick="btnEditHeader_Click" />
+                <asp:Button runat="server" ID="btnEditOrder" CssClass="btn btn-secondary me-1" Text="Edit Order" OnClick="btnEditOrder_Click" />
                 <a href="#" runat="server" id="aDeleteOrder" class="btn btn-danger me-1" data-bs-toggle="modal" data-bs-target="#modalDeleteOrder">Delete Order</a>
                 <a href="#" runat="server" id="aQuoteOrder" class="btn btn-success me-1" data-bs-toggle="modal" data-bs-target="#modalQuoteOrder">Quote</a>
                 <a href="#" runat="server" id="aSubmitOrder" class="btn btn-success me-1" data-bs-toggle="modal" data-bs-target="#modalSubmitOrder">Submit Order</a>
@@ -62,34 +57,18 @@
                 
                 <button class="btn btn-info dropdown-toggle me-1" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnQuoteAction">Quote</button>
                 <ul class="dropdown-menu">
-                    <li>
-                        <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDetailQuote">Quote Details</a>
-                    </li>
-                    <li>
-                        <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDownloadQuote">Download Quote</a>
-                    </li>
-                    <li>
-                        <asp:Button runat="server" ID="btnPreviewQuote" CssClass="dropdown-item" Text="Preview Quote" />
-                    </li>
+                    <li><a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDetailQuote">Quote Details</a></li>
+                    <li><a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDownloadQuote">Download Quote</a></li>
+                    <li><asp:Button runat="server" ID="btnPreviewQuote" CssClass="dropdown-item" Text="Preview Quote" /></li>
                 </ul>
 
                 <button class="btn btn-primary dropdown-toggle me-1" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnInvoice">invoice</button>
                 <ul class="dropdown-menu">
-                    <li>
-                        <a href="#" runat="server" id="aSendInvoice" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalSendInvoice">Send Invoice</a>
-                    </li>
-                    <li>
-                        <a href="#" runat="server" id="aReceivePayment" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalReceivePayment">Receive Payment</a>
-                    </li>
-                    <li>
-                        <asp:Button runat="server" ID="btnPreviewInvoice" CssClass="dropdown-item" Text="Preview Invoice" />
-                    </li>
-                    <li>
-                        <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDownloadInvoice">Download Invoice</a>
-                    </li>
-                    <li>
-                        <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDownloadInvoiceCSV">Download Invoice (CSV)</a>
-                    </li>
+                    <li><a href="#" runat="server" id="aSendInvoice" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalSendInvoice">Send Invoice</a></li>
+                    <li><a href="#" runat="server" id="aReceivePayment" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalReceivePayment">Receive Payment</a></li>
+                    <li><asp:Button runat="server" ID="btnPreviewInvoice" CssClass="dropdown-item" Text="Preview Invoice" /></li>
+                    <li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDownloadInvoice">Download Invoice</a></li>
+                    <li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDownloadInvoiceCSV">Download Invoice (CSV)</a></li>
                     <li runat="server" id="liDividerInvoice"><hr class="dropdown-divider"></li>
                     <li runat="server" id="liUpdateInvoiceNumber">
                         <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalInvoiceNumber">Update Invoice Number</a>
@@ -98,11 +77,8 @@
                         <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalInvoiceData">Update Invoice Data</a>
                     </li>
                 </ul>
-
                 <a href="#" runat="server" id="aBuilder" class="btn btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modalBuilderDetail">Builder Details</a>
-
                 <a href="#" runat="server" id="aFileOrder" class="btn btn-secondary me-1" data-bs-toggle="modal" data-bs-target="#modalFileOrder">Files</a>
-
                 <button class="btn btn-dark dropdown-toggle me-1" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnMoreAction">More</button>
                 <ul class="dropdown-menu">
                     <li runat="server" id="liMoreDownloadQuote">
@@ -123,7 +99,7 @@
                         <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalRecalculate">Re Price Order</a>
                     </li>
                 </ul>
-                <a href="javascript:void(0);" class="btn btn-secondary me-1" onclick="showLog('OrderHeaders', '<%= lblHeaderId.Text %>')">Log</a>
+                <a href="javascript:void(0);" runat="server" id="aLog" class="btn btn-secondary me-1" onclick="showLogFromElement(this)">Log</a>
             </div>
         </section>
 
@@ -352,7 +328,7 @@
 
         <section class="row" runat="server" id="secPricing">
             <div class="col-12 col-sm-12 col-lg-6">
-                <div class="card">
+                <div class="card" runat="server" id="divInvoicing">
                     <div class="card-content">
                         <div class="card-body">
                             <div class="row mb-3">
@@ -386,7 +362,7 @@
             </div>
 
             <div class="col-12 col-sm-12 col-lg-6">
-                <div class="card" runat="server" id="divPricing">
+                <div class="card" runat="server" id="divCosting">
                     <div class="card-content">
                         <div class="card-body">
                             <div class="row mb-3">
@@ -511,10 +487,8 @@
                                                             <li runat="server" visible='<%# VisibleEditPrice() %>'>
                                                                 <asp:LinkButton runat="server" CssClass="dropdown-item" ID="linkEditCosting" Text="Edit Costing" CommandName="EditCosting" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                             </li>
-                                                            <li>
-                                                                <hr class="dropdown-divider">
-                                                            </li>
-                                                            <li>
+                                                            <li runat="server" visible='<%# VisibleLog() %>'><hr class="dropdown-divider"></li>
+                                                            <li runat="server" visible='<%# VisibleLog() %>'>
                                                                 <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('OrderDetails', '<%# Eval("Id") %>')">Log</a>
                                                             </li>
                                                         </ul>
@@ -1727,6 +1701,11 @@
             checkBoxes.forEach(function (cb) {
                 cb.checked = source.checked;
             });
+        }
+
+        function showLogFromElement(el) {
+            var id = el.getAttribute("data-id");
+            showLog('OrderHeaders', id);
         }
 
         function showLog(type, dataId) {

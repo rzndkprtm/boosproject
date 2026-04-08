@@ -108,11 +108,17 @@
                     <div class="card-content">
                         <div class="card-header">
                             <div class="row">
-                                <div class="col-6">
+                                <div class="col-12 col-sm-12 col-lg-6 mb-2">
                                     <h3 class="card-title">List Fabric Colour</h3>
                                 </div>
-                                <div class="col-6 d-flex justify-content-end">
-                                    <asp:Button runat="server" ID="btnAddColour" CssClass="btn btn-primary" Text="Add New" OnClick="btnAddColour_Click" />
+                                <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
+                                    <asp:Panel runat="server" DefaultButton="btnSearchColour" Width="100%">
+                                        <div class="input-group">
+                                            <span class="input-group-text">Search : </span>
+                                            <asp:TextBox runat="server" ID="txtSearchColour" CssClass="form-control" placeholoder="" autocomplete="off"></asp:TextBox>
+                                            <asp:Button runat="server" ID="btnSearchColour" CssClass="btn btn-primary" Text="Search" OnClick="btnSearchColour_Click" />
+                                        </div>
+                                    </asp:Panel>
                                 </div>
                             </div>
                         </div>
@@ -121,7 +127,7 @@
                             <div class="row mb-3">
                                 <div class="col-12">
                                     <div class="table-responsive">
-                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" EmptyDataText="DATA NOT FOUND :)" PageSize="100" EmptyDataRowStyle-HorizontalAlign="Center" OnRowCommand="gvList_RowCommand">
+                                        <asp:GridView runat="server" ID="gvListColour" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" EmptyDataText="DATA NOT FOUND :)" PageSize="100" EmptyDataRowStyle-HorizontalAlign="Center" OnRowCommand="gvListColour_RowCommand">
                                             <RowStyle />
                                             <Columns>
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center">
@@ -160,12 +166,15 @@
                             </div>
                         </div>
                     </div>
+                    <div class="card-footer d-flex justify-content-between">
+                        <asp:Button runat="server" ID="btnAddColour" CssClass="btn btn-primary" Text="Add New" OnClick="btnAddColour_Click" />
+                    </div>
                 </div>
             </div>
         </section>
     </div>
 
-    <div class="modal fade text-left" id="modalProcess" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal fade text-left" id="modalProcessColour" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -211,7 +220,7 @@
 
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnProcess" CssClass="btn btn-primary" Text="Submit" OnClick="btnProcess_Click" />
+                    <asp:Button runat="server" ID="btnProcessColour" CssClass="btn btn-primary" Text="Submit" OnClick="btnProcessColour_Click" />
                 </div>
             </div>
         </div>
@@ -275,7 +284,7 @@
 
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', function () {
-            const gv = document.getElementById('<%= gvList.ClientID %>');
+            const gv = document.getElementById('<%= gvListColour.ClientID %>');
             if (!gv) return;
 
             for (let i = 1; i < gv.rows.length; i++) {
@@ -297,8 +306,8 @@
             }
         });
 
-        function showProcess() {
-            $("#modalProcess").modal("show");
+        function showProcessColour() {
+            $("#modalProcessColour").modal("show");
         }
 
         function showActive(id) {
@@ -359,7 +368,7 @@
             });
         }
 
-        ["modalProcess", "modalActive", "modalActiveColour", "modalLog"].forEach(function (id) {
+        ["modalActive", "modalProcessColour", "modalActiveColour", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

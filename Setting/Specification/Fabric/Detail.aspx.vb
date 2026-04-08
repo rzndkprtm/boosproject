@@ -27,6 +27,7 @@ Partial Class Setting_Specification_Fabric_Detail
             MessageError_Process(False, String.Empty)
 
             BindData(lblId.Text)
+            BindDataColour(lblId.Text, txtSearchColour.Text)
         End If
     End Sub
 
@@ -35,29 +36,17 @@ Partial Class Setting_Specification_Fabric_Detail
         Response.Redirect(url, False)
     End Sub
 
-    Protected Sub btnAddColour_Click(sender As Object, e As EventArgs)
-        MessageError_Process(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showProcess(); };"
-        Try
-            lblAction.Text = "Add"
-            titleProcess.InnerText = "Add Fabric Colour"
-
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-        Catch ex As Exception
-            MessageError_Process(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-        End Try
+    Protected Sub btnSearchColour_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        BindDataColour(lblId.Text, txtSearchColour.Text)
     End Sub
 
-    Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
+    Protected Sub gvListColour_RowCommand(sender As Object, e As GridViewCommandEventArgs)
         If Not String.IsNullOrEmpty(e.CommandArgument) Then
             Dim dataId As String = e.CommandArgument.ToString()
             If e.CommandName = "Detail" Then
                 MessageError_Process(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showProcess(); };"
+                Dim thisScript As String = "window.onload = function() { showProcessColour(); };"
                 Try
                     lblIdColour.Text = dataId
                     lblAction.Text = "Edit"
@@ -71,30 +60,48 @@ Partial Class Setting_Specification_Fabric_Detail
                     txtNameColour.Text = myData("Colour").ToString()
                     txtWidthColour.Text = myData("Width").ToString()
 
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
+                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcessColour", thisScript, True)
                 Catch ex As Exception
                     MessageError_Process(True, ex.ToString())
                     If Not Session("RoleName") = "Developer" Then
                         MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
                     End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
+                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcessColour", thisScript, True)
                 End Try
             End If
         End If
     End Sub
 
-    Protected Sub btnProcess_Click(sender As Object, e As EventArgs)
+    Protected Sub btnAddColour_Click(sender As Object, e As EventArgs)
         MessageError_Process(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showProcess(); };"
+        Dim thisScript As String = "window.onload = function() { showProcessColour(); };"
+        Try
+            lblAction.Text = "Add"
+            titleProcess.InnerText = "Add Fabric Colour"
+
+            ClientScript.RegisterStartupScript(Me.GetType(), "showProcessColour", thisScript, True)
+        Catch ex As Exception
+            MessageError_Process(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+            ClientScript.RegisterStartupScript(Me.GetType(), "showProcessColour", thisScript, True)
+        End Try
+    End Sub
+
+    Protected Sub btnProcessColour_Click(sender As Object, e As EventArgs)
+        MessageError_Process(False, String.Empty)
+        Dim thisScript As String = "window.onload = function() { showProcessColour(); };"
         Try
             If txtNameColour.Text = "" Then
                 MessageError_Process(True, "COLOUR IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
+                ClientScript.RegisterStartupScript(Me.GetType(), "showProcessColour", thisScript, True)
                 Exit Sub
             End If
 
             If msgErrorProcess.InnerText = "" Then
                 Dim fabricColourName As String = String.Format("{0} {1}", lblName.Text, txtNameColour.Text.Trim())
+
                 If lblAction.Text = "Add" Then
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM FabricColours ORDER BY Id DESC")
 
@@ -148,7 +155,7 @@ Partial Class Setting_Specification_Fabric_Detail
             If Not Session("RoleName") = "Developer" Then
                 MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
+            ClientScript.RegisterStartupScript(Me.GetType(), "showProcessColour", thisScript, True)
         End Try
     End Sub
 
@@ -322,9 +329,27 @@ Partial Class Setting_Specification_Fabric_Detail
             btnEditFabric.Visible = PageAction("Edit")
             aActive.Visible = PageAction("Active")
             btnAddColour.Visible = PageAction("Add Colour")
+        Catch ex As Exception
+            MessageError(True, ex.ToString)
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
 
-            gvList.DataSource = settingClass.GetDataTable("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM FabricColours WHERE FabricId='" & fabricId & "' ORDER BY Colour ASC")
-            gvList.DataBind()
+    Protected Sub BindDataColour(fabricId As String, searchText As String)
+        Try
+            Dim stringFabricId As String = "WHERE FabricId='" & fabricId & "'"
+            Dim stringSearch As String = String.Empty
+            If Not String.IsNullOrEmpty(searchText) Then
+                stringSearch = "AND (BoeId LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%' OR Colour LIKE '%" & searchText & "%')"
+            End If
+            Dim thisString As String = String.Format("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM FabricColours {0} {1} ORDER BY Colour ASC", stringFabricId, stringSearch)
+
+            gvListColour.DataSource = settingClass.GetDataTable(thisString)
+            gvListColour.DataBind()
+            gvListColour.Columns(1).Visible = PageAction("Visible ID Detail")
+            gvListColour.Columns(4).Visible = PageAction("Visible Name Detail")
         Catch ex As Exception
             MessageError(True, ex.ToString)
             If Not Session("RoleName") = "Developer" Then
