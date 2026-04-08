@@ -398,7 +398,6 @@
                                 <div class="col-12 col-sm-12 col-lg-5">
                                     <h3 class="card-title">Order Item</h3>
                                 </div>
-
                                 <div class="col-12 col-sm-12 col-lg-7 d-flex justify-content-end">
                                     <a href="#" runat="server" id="aAddItem" class="btn btn-primary me-1" data-bs-toggle="modal" data-bs-target="#modalAddItem">New Item</a>
                                     <a href="#" runat="server" id="aService" class="btn btn-info me-1" data-bs-toggle="modal" data-bs-target="#modalService">New Service</a>
@@ -528,7 +527,6 @@
                     <h5 class="modal-title">Changelog</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
                 <div class="modal-body">
                     <div class="alert alert-danger d-none" id="logError"></div>
                     <div class="table-responsive">
@@ -548,7 +546,6 @@
                     <h5 class="modal-title">Preview Order</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-        
                 <div class="modal-body">
                     <div class="row" runat="server" id="divErrorPreview">
                         <div class="col-12">
@@ -559,8 +556,6 @@
                     </div>
                     <iframe id="framePreview" runat="server" width="100%" height="600px" style="border: none;"></iframe>
                 </div>
-
-                <div class="modal-footer"></div>
             </div>
         </div>
     </div>    
@@ -666,7 +661,6 @@
                             <asp:TextBox runat="server" TextMode="MultiLine" ID="txtCancelDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row" runat="server" id="divErrorCancelOrder">
                         <div class="col-12">
                             <div class="alert alert-danger">
@@ -675,7 +669,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnCancelOrder" CssClass="btn btn-danger" Text="Submit" OnClick="btnCancelOrder_Click" OnClientClick="return showWaiting();" />
@@ -742,7 +735,6 @@
                     <h4 class="modal-title">Shipped Order</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
                 <div class="modal-body">
                     <div class="row mb-2">
                         <div class="col-6 form-group">
@@ -778,7 +770,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnShippedOrder" CssClass="btn btn-primary" Text="Submit" OnClick="btnShippedOrder_Click" OnClientClick="return showWaiting();" />
@@ -811,7 +802,6 @@
                     <h5 class="modal-title">Order File</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
                 <div class="modal-body">
                     <div class="row mb-2" runat="server" id="divErrorFileOrder">
                         <div class="col-12">
@@ -820,7 +810,6 @@
                             </div>
                         </div>
                     </div>
-                    
                     <div class="row mb-3">
                         <div class="col-12">
                             <div class="table-responsive">
@@ -845,13 +834,11 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="row" runat="server" id="divUploadAction">
                         <div class="col-12 form-group">
                             <label class="form-label">Upload New File</label>
                             <asp:FileUpload runat="server" ID="fuOrderFile" CssClass="form-control" />
                         </div>
-
                         <div class="col-12">
                             <asp:Button runat="server" ID="btnUploadFileOrder" CssClass="btn btn-secondary" Text="Upload" OnClick="btnUploadFileOrder_Click" />
                         </div>
@@ -897,7 +884,6 @@
                             <AlternatingRowStyle BackColor="White" />
                         </asp:GridView>
                     </div>
-
                     <div class="row mt-2" runat="server" id="divReworkNote" visible="false">
                         <div class="col-12">
                             <div class="alert alert-primary">
@@ -926,7 +912,6 @@
                     <h4 class="modal-title">Quote Details</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-12 col-sm-12 col-lg-6">
@@ -940,7 +925,6 @@
                                     <asp:TextBox runat="server" ID="txtQuotePhone" CssClass="form-control" placeholder="Phone ..." autocomplete="off"></asp:TextBox>
                                 </div>
                             </div>
-
                             <div class="row mb-1">
                                 <div class="col-6 form-group">
                                     <label class="form-label">Address</label>
@@ -951,7 +935,6 @@
                                     <asp:TextBox runat="server" ID="txtQuoteSuburb" CssClass="form-control" placeholder="Suburb ..." autocomplete="off"></asp:TextBox>
                                 </div>
                             </div>
-
                             <div class="row mb-1">
                                 <div runat="server" id="divQuoteCity" class="col-6 form-group">
                                     <label class="form-label">City</label>
@@ -962,7 +945,6 @@
                                     <asp:TextBox runat="server" ID="txtQuoteState" CssClass="form-control" placeholder="State ..." autocomplete="off"></asp:TextBox>
                                 </div>
                             </div>
-
                             <div class="row mb-1">
                                 <div class="col-6 form-group">
                                     <label class="form-label">Post Code</label>
@@ -970,7 +952,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="col-12 col-sm-12 col-lg-6">
                             <div class="row mb-1">
                                 <div class="col-6 form-group">
@@ -988,7 +969,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="row mb-1">
                                 <div class="col-6 form-group">
                                     <label class="form-label">Installation</label>
@@ -1007,7 +987,6 @@
                             </div>
                         </div>
                     </div>
-                    
                     <div class="row mb-2" runat="server" id="divErrorDetailQuote">
                         <div class="col-12">
                             <div class="alert alert-danger">
@@ -1016,7 +995,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer justify-content-start">
                     <asp:Button runat="server" ID="btnDetailQuote" CssClass="btn btn-primary" Text="Submit" OnClick="btnDetailQuote_Click" OnClientClick="return showWaiting();" />
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
@@ -1049,7 +1027,6 @@
                     <h4 class="modal-title">Send Invoice</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
                 <div class="modal-body">
                     <div class="row mb-2">
                         <div class="col-12 form-group">
@@ -1057,7 +1034,6 @@
                             <asp:TextBox runat="server" ID="txtSendInvoiceTo" CssClass="form-control" placeholder="Customer Email ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row mb-2">
                         <div class="col-12 form-group">
                             <label class="form-label">CC Customer</label>
@@ -1065,7 +1041,6 @@
                             <p><small class="text-muted">* Please enter the required email address in a new line.</small></p>
                         </div>
                     </div>
-
                     <div class="row mb-2">
                         <div class="col-12 form-group">
                             <label class="form-label">CC Staff</label>
@@ -1073,7 +1048,6 @@
                             <p><small class="text-muted">* Please enter the required email address in a new line.</small></p>
                         </div>
                     </div>
-
                     <div class="row mb-2" runat="server" id="divErrorSendInvoice">
                         <div class="col-12">
                             <div class="alert alert-danger">
@@ -1082,7 +1056,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnSendInvoice" CssClass="btn btn-primary" Text="Submit" OnClick="btnSendInvoice_Click" OnClientClick="return showWaiting();" />
@@ -1132,7 +1105,6 @@
                     <h4 class="modal-title">Update Invoice Number</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
                 <div class="modal-body">
                     <div class="row mb-2">
                         <div class="col-12 form-group">
@@ -1140,7 +1112,6 @@
                             <asp:TextBox runat="server" ID="txtUpdateInvoiceNumber" CssClass="form-control" placeholder="Invoice Number ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row mb-2" runat="server" id="divErrorInvoiceNumber">
                         <div class="col-12">
                             <div class="alert alert-danger">
@@ -1149,7 +1120,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnInvoiceNumber" CssClass="btn btn-primary" Text="Submit" OnClick="btnInvoiceNumber_Click" OnClientClick="return showWaiting();" />
@@ -1165,7 +1135,6 @@
                     <h4 class="modal-title">Update Invoice Data</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
                 <div class="modal-body">
                     <div class="row mb-2">
                         <div class="col-12 form-group">
@@ -1173,14 +1142,12 @@
                             <asp:TextBox runat="server" ID="txtInvoiceNumber" CssClass="form-control" placeholder="Invoice Number ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row mb-2">
                         <div class="col-12 form-group">
                             <label class="form-label">Collector</label>
                             <asp:DropDownList runat="server" ID="ddlCollector" CssClass="form-select"></asp:DropDownList>
                         </div>
                     </div>
-
                     <div class="row mb-2">
                         <div class="col-6 form-group">
                             <label class="form-label">Invoice Date</label>
@@ -1191,7 +1158,6 @@
                             <asp:TextBox runat="server" ID="txtDueDate" TextMode="Date" CssClass="form-control"></asp:TextBox>
                         </div>                        
                     </div>
-
                     <div class="row mb-2">
                         <div class="col-6 form-group">
                             <label class="form-label">Payment Status</label>
@@ -1205,7 +1171,6 @@
                             <asp:TextBox runat="server" ID="txtPaymentDate" TextMode="Date" CssClass="form-control"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row" runat="server" id="divErrorInvoiceData">
                         <div class="col-12">
                             <div class="alert alert-danger">
@@ -1214,7 +1179,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnInvoiceData" CssClass="btn btn-primary" Text="Submit" OnClick="btnInvoiceData_Click" OnClientClick="return showWaiting();" />
@@ -1247,7 +1211,6 @@
                     <h5 class="modal-title">Builder Detail</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-    
                 <div class="modal-body">
                     <div class="row" runat="server" id="divErrorBuilderDetail">
                         <div class="col-12">
@@ -1256,7 +1219,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="row">
                         <div class="col-6 form-group">
                             <label class="form-label">Estimator</label>
@@ -1267,14 +1229,12 @@
                             <asp:TextBox runat="server" ID="txtSupervisor" CssClass="form-control" placeholder="Supervisor ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row">
                         <div class="col-12 form-group">
                             <label class="form-label">Address</label>
                             <asp:TextBox runat="server" ID="txtAddress" CssClass="form-control" placeholder="Address ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row">
                         <div class="col-6 form-group">
                             <label class="form-label">Call For Check Measure</label>
@@ -1285,7 +1245,6 @@
                             <asp:TextBox runat="server" TextMode="Date" ID="txtCheckMeasureDue" CssClass="form-control" placeholder="Check Measure ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row">
                         <div class="col-6 form-group">
                             <label class="form-label">To Be Installed</label>
@@ -1297,7 +1256,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnBuilderDetail" CssClass="btn btn-primary" Text="Submit" OnClick="btnBuilderDetail_Click" OnClientClick="return showWaiting();" />
@@ -1330,7 +1288,6 @@
                     <h4 class="modal-title">Email Quote</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
                 <div class="modal-body">
                     <div class="row mb-2">
                         <div class="col-12 form-group">
@@ -1338,21 +1295,18 @@
                             <asp:TextBox runat="server" ID="txtEmailQuoteTo" CssClass="form-control" placeholder="Customer Email ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row mb-2">
                         <div class="col-12 form-group">
                             <label class="form-label">CC Customer</label>
                             <asp:TextBox runat="server" ID="txtEmailQuoteCCCustomer" TextMode="MultiLine" CssClass="form-control" Height="135px" placeholder="CC Customer ..." autocomplete="off" style="resize:none;"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row mb-2">
                         <div class="col-12 form-group">
                             <label class="form-label">CC Staff</label>
                             <asp:TextBox runat="server" ID="txtEmailQuoteCCStaff" TextMode="MultiLine" CssClass="form-control" Height="135px" placeholder="CC Staff ..." autocomplete="off" style="resize:none;"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row mb-2" runat="server" id="divErrorMoreEmailQuote">
                         <div class="col-12">
                             <div class="alert alert-danger">
@@ -1361,7 +1315,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnMoreEmailQuote" CssClass="btn btn-primary" Text="Submit" OnClick="btnMoreEmailQuote_Click" OnClientClick="return showWaiting();" />
@@ -1377,7 +1330,6 @@
                     <h4 class="modal-title">Add Internal Note</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
                 <div class="modal-body">
                     <div class="row mb-2">
                         <div class="col-12 form-group">
@@ -1385,8 +1337,7 @@
                             <asp:TextBox runat="server" TextMode="MultiLine" ID="txtAddNote" CssClass="form-control" Height="130px" placeholder="Note ..." autocomplete="off" style="resize:none;"></asp:TextBox>
                         </div>
                     </div>
-			
-			        <div class="row mb-2" runat="server" id="divErrorAddNote">
+                    <div class="row mb-2" runat="server" id="divErrorAddNote">
                         <div class="col-12">
                             <div class="alert alert-danger">
                                 <span runat="server" id="msgErrorAddNote"></span>
@@ -1394,7 +1345,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnAddNote" CssClass="btn btn-primary" Text="Submit" OnClick="btnAddNote_Click" OnClientClick="return showWaiting();" />
@@ -1410,7 +1360,6 @@
                     <h5 class="modal-title">History Internal Note</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
                 <div class="modal-body">
                     <div class="alert alert-danger d-none" id="historyNoteError"></div>
                     <div class="table-responsive">
@@ -1439,7 +1388,6 @@
                     <h5 class="modal-title">Add Item</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-            
                 <div class="modal-body">
                     <div class="row mb-3">
                         <div class="col-12">
@@ -1449,7 +1397,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnAddItem" CssClass="btn btn-primary" Text="Submit" OnClick="btnAddItem_Click" />
@@ -1465,7 +1412,6 @@
                     <h5 class="modal-title">Add Item</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-            
                 <div class="modal-body">
                     <div class="row mb-3">
                         <div class="col-12">
@@ -1481,7 +1427,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnService" CssClass="btn btn-primary" Text="Submit" OnClick="btnService_Click" />
@@ -1548,7 +1493,6 @@
                     <h5 class="modal-title">Price Details</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                
                 <div class="modal-body">
                     <div class="alert alert-danger d-none" id="costingError"></div>
                     <div class="table-responsive">
@@ -1588,7 +1532,6 @@
                     <h4 class="modal-title">Date Order</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
                 <div class="modal-body">
                     <div class="row mb-2">
                         <div class="col-6 form-group">
@@ -1621,7 +1564,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnDateOrder" CssClass="btn btn-primary" Text="Submit" OnClick="btnDateOrder_Click" OnClientClick="return showWaiting();" />
@@ -1677,6 +1619,7 @@
                 });
             }
         });
+
         [
             "modalLog", "modalPreview", "modalWaiting", "modalBuilderDetail", "modalFileOrder",
             "modalDeleteOrder", "modalQuoteOrder", "modalSubmitOrder", "modalUnsubmitOrder", "modalCancelOrder", "modalProductionOrder", "modalHoldOrder", "modalUnHoldOrder", "modalShippedOrder", "modalCompleteOrder",
