@@ -31,8 +31,6 @@ Partial Class Order_Add
             BindDataCustomer()
             BindDataUser(ddlCustomer.SelectedValue)
 
-            txtCreatedDate.Text = Now.ToString("yyyy-MM-dd")
-
             BindComponentForm(ddlCustomer.SelectedValue, ddlMethod.SelectedValue)
         End If
     End Sub
@@ -113,7 +111,7 @@ Partial Class Order_Add
                         orderId = companyAlias & randomCode
                         Try
                             Using thisConn As New SqlConnection(myConn)
-                                Using myCmd As New SqlCommand("INSERT INTO OrderHeaders (Id, OrderId, CustomerId, OrderNumber, OrderName, OrderNote, OrderType, Status, CreatedBy, CreatedDate, DownloadBOE, Active) VALUES (@Id, @OrderId, @CustomerId, @OrderNumber, @OrderName, @OrderNote, @OrderType, 'Unsubmitted', @CreatedBy, @CreateDate, 0, 1); INSERT INTO OrderQuotes VALUES (@Id, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
+                                Using myCmd As New SqlCommand("INSERT INTO OrderHeaders (Id, OrderId, CustomerId, OrderNumber, OrderName, OrderNote, OrderType, Status, CreatedBy, CreatedDate, DownloadBOE, Active) VALUES (@Id, @OrderId, @CustomerId, @OrderNumber, @OrderName, @OrderNote, @OrderType, 'Unsubmitted', @CreatedBy, GETDATE(), 0, 1); INSERT INTO OrderQuotes VALUES (@Id, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
                                     myCmd.Parameters.AddWithValue("@Id", thisId)
                                     myCmd.Parameters.AddWithValue("@OrderId", orderId)
                                     myCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
@@ -122,7 +120,6 @@ Partial Class Order_Add
                                     myCmd.Parameters.AddWithValue("@OrderNote", txtOrderNote.Text.Trim())
                                     myCmd.Parameters.AddWithValue("@OrderType", ddlOrderType.SelectedValue)
                                     myCmd.Parameters.AddWithValue("@CreatedBy", ddlCreatedBy.SelectedValue)
-                                    myCmd.Parameters.AddWithValue("@CreateDate", txtCreatedDate.Text)
 
                                     thisConn.Open()
                                     myCmd.ExecuteNonQuery()
@@ -1182,7 +1179,7 @@ Partial Class Order_Add
                         Dim controlType As String = (sheetDetail.Cells(row, 4).Text & "").Trim()
                         Dim colourType As String = (sheetDetail.Cells(row, 5).Text & "").Trim()
                         Dim qty As Integer = If(String.IsNullOrWhiteSpace(sheetDetail.Cells(row, 6).Text), 0, CInt(sheetDetail.Cells(row, 6).Text))
-                        Dim qtyBlade As String = If(sheetDetail.Cells(row, 7).Text IsNot Nothing, sheetDetail.Cells(row, 7).Text, "")
+                        Dim qtyBlade As Integer = If(String.IsNullOrWhiteSpace(sheetDetail.Cells(row, 7).Text), 0, CInt(sheetDetail.Cells(row, 7).Text))
                         Dim room As String = (sheetDetail.Cells(row, 8).Text & "").Trim()
                         Dim sizeType As String = (sheetDetail.Cells(row, 9).Text & "").Trim()
                         Dim mounting As String = (sheetDetail.Cells(row, 10).Text & "").Trim()
@@ -1226,12 +1223,14 @@ Partial Class Order_Add
                             Exit For
                         End If
 
+                        If blindType = "Slat Only" Then controlType = "N/A"
                         Dim controlId As String = orderClass.GetItemData("SELECT Id FROM ProductControls WHERE Name='" & controlType & "'")
                         If String.IsNullOrEmpty(controlId) Then
                             MessageError(True, "PLEASE CHECK YOUR CONTROL TYPE !")
                             Exit For
                         End If
 
+                        If blindType = "Slat Only" Then colourType = "N/A"
                         Dim colourId As String = orderClass.GetItemData("SELECT Id FROM ProductColours WHERE Name='" & colourType & "'")
                         If String.IsNullOrEmpty(colourType) Then
                             MessageError(True, "PLEASE CHECK YOUR HEADRAIL COLOUR !")
@@ -1249,23 +1248,35 @@ Partial Class Order_Add
                             Exit For
                         End If
 
-                        Dim validSizeType As String() = {"Opening Size", "Make Size"}
-                        If Not validSizeType.Contains(sizeType) Then
-                            MessageError(True, "PLEASE CHECK YOUR SIZE TYPE !")
+                        If String.IsNullOrEmpty(qtyBlade) Then
+                            MessageError(True, "QTY BLADE IS REQUIRED !")
                             Exit For
+                        End If
+
+                        Dim validSizeType As String() = {"Opening Size", "Make Size"}
+                        If blindType = "Complete Set" OrElse blindType = "Track Only" Then
+                            If Not validSizeType.Contains(sizeType) Then
+                                MessageError(True, "PLEASE CHECK YOUR SIZE TYPE !")
+                                Exit For
+                            End If
                         End If
 
                         Dim validMounting As String() = {"Face Fit", "Reveal Fit"}
-                        If Not validMounting.Contains(mounting) Then
-                            MessageError(True, "PLEASE CHECK YOUR MOUNTING DATA !")
-                            Exit For
+                        If blindType = "Complete Set" OrElse blindType = "Track Only" Then
+                            If Not validMounting.Contains(mounting) Then
+                                MessageError(True, "PLEASE CHECK YOUR MOUNTING DATA !")
+                                Exit For
+                            End If
                         End If
 
-                        If blindType = "Complete Set" OrElse blindType = "Slat Only" Then
+                        If blindType = "Complete Set" OrElse blindType = "Track Only" Then
                             If width < 300 OrElse width > 6000 Then
                                 MessageError(True, "WIDTH MUST BE BETWEEN 300MM - 6000MM !")
                                 Exit For
                             End If
+                        End If
+
+                        If blindType = "Complete Set" OrElse blindType = "Slat Only" Then
                             If drop < 300 OrElse drop > 3050 Then
                                 MessageError(True, "DROP MUST BE BETWEEN 300MM - 3050MM !")
                                 Exit For
@@ -1274,14 +1285,18 @@ Partial Class Order_Add
 
                         Dim fabricId As String = String.Empty
                         Dim fabricColourId As String = String.Empty
+                        If blindType = "Track Only" Then
 
-                        If blindType = "Complete Set" Then
+                        End If
+
+                        If blindType = "Complete Set" OrElse blindType = "Slat Only" Then
                             If String.IsNullOrEmpty(fabricType) Then
                                 MessageError(True, "FABRIC TYPE IS REQUIRED !")
                                 Exit For
                             End If
 
                             If fabricType = "Essentials" Then fabricType = fabricType & " " & tubeName
+                            If fabricType = "Essence Blockout" Then fabricType = fabricType & " " & tubeName
 
                             fabricId = orderClass.GetItemData("SELECT Id FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(TubeId, ',') AS tubeArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE Name='" & fabricType & "' AND designArray.VALUE='" & designId & "' AND tubeArray.VALUE='" & tubeId & "' AND companyArray.VALUE='" & companyDetailId & "' AND Active=1")
                             If String.IsNullOrEmpty(fabricId) Then
@@ -1345,9 +1360,17 @@ Partial Class Order_Add
                             Exit For
                         End If
 
-                        If String.IsNullOrEmpty(bracketExtension) Then
-                            MessageError(True, "BRACKET EXTENSION IS REQUIRED !")
-                            Exit For
+                        If blindType = "Complete Set" OrElse blindType = "Track Only" Then
+                            If String.IsNullOrEmpty(bracketExtension) Then
+                                MessageError(True, "BRACKET EXTENSION IS REQUIRED !")
+                                Exit For
+                            End If
+
+                            Dim validExtension As String() = {"Standard Bracket", "Extension Bracket"}
+                            If Not validExtension.Contains(bracketExtension) Then
+                                MessageError(True, "PLEASE CHECK YOUR BRACKET EXTENSION !")
+                                Exit For
+                            End If
                         End If
 
                         If msgError.InnerText = "" Then
@@ -1367,13 +1390,7 @@ Partial Class Order_Add
                             Dim groupName As String = String.Format("Vertical - {0} - {1}", blindType, tubeName)
                             Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, designId, companyDetailId)
 
-                            Dim linearMetre As Decimal = 0D
-                            Dim squareMetre As Decimal = 0D
 
-                            If blindType = "Complete Set" Then
-                                linearMetre = width / 1000
-                                squareMetre = width * drop / 1000000
-                            End If
 
                             If controlType = "Wand" Then
                                 If stackPosition = "Left" Then controlPosition = "Right"
@@ -1385,6 +1402,18 @@ Partial Class Order_Add
                             If bottomJoining = "Sewn" Then bottomJoining = "Sewn In"
 
                             If Not fabricInsert = "Yes" Then fabricInsert = "No"
+
+                            If blindType = "Slat Only" Then
+                                If tubeName = "127mm" Then
+                                    width = qtyBlade * 115 : If qtyBlade < 6 Then width = 472
+                                End If
+                                If tubeName = "89mm" Then
+                                    width = qtyBlade * 79 : If qtyBlade < 5 Then width = 591
+                                End If
+                            End If
+
+                            Dim linearMetre As Decimal = width / 1000
+                            Dim squareMetre As Decimal = width * drop / 1000000
 
                             Dim itemId As String = orderClass.GetNewOrderItemId()
 
@@ -2714,7 +2743,6 @@ Partial Class Order_Add
         Try
             divCustomer.Visible = False
             divCreatedBy.Visible = False
-            divCreatedDate.Visible = False
 
             divMethod.Visible = False
             divManual.Visible = False
@@ -2730,7 +2758,6 @@ Partial Class Order_Add
 
             If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" Then
                 divCustomer.Visible = True
-                divCreatedDate.Visible = True
                 If companyDetailName = "JPMD BP" Then divOrderType.Visible = True
             End If
             If Session("RoleName") = "Developer" Then

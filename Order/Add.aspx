@@ -33,7 +33,7 @@
                         <div class="card-body">
                             <div class="form form-horizontal">
                                 <div class="form-body">
-                                    <div class="row mb-3" runat="server" id="divCustomer">
+                                    <div class="row" runat="server" id="divCustomer">
                                         <div class="col-12 col-sm-12 col-lg-3">
                                             <label>Customer Account</label>
                                         </div>
@@ -42,21 +42,12 @@
                                         </div>
                                     </div>
                                     
-                                    <div class="row" runat="server" id="divCreatedBy">
+                                    <div class="row mb-3" runat="server" id="divCreatedBy">
                                         <div class="col-12 col-sm-12 col-lg-3">
                                             <label>Created By</label>
                                         </div>
                                         <div class="col-12 col-sm-12 col-lg-9 form-group">
                                             <asp:DropDownList runat="server" ID="ddlCreatedBy" CssClass="choices form-select"></asp:DropDownList>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="row mb-3" runat="server" id="divCreatedDate">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Created Date</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-9 form-group">
-                                            <asp:TextBox runat="server" ID="txtCreatedDate" TextMode="Date" CssClass="form-control"></asp:TextBox>
                                         </div>
                                     </div>
 
@@ -68,7 +59,7 @@
                                             <asp:DropDownList runat="server" ID="ddlMethod" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlMethod_SelectedIndexChanged">
                                                 <asp:ListItem Value="Manual" Text="Manual Entry"></asp:ListItem>
                                                 <asp:ListItem Value="Upload" Text="File Upload"></asp:ListItem>
-                                                <asp:ListItem Value="API" Text="API Integration"></asp:ListItem>
+                                                <%--<asp:ListItem Value="API" Text="API Integration"></asp:ListItem>--%>
                                             </asp:DropDownList>
                                         </div>
                                     </div>

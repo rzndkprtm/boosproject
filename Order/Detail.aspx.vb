@@ -69,8 +69,8 @@ Partial Class Order_Detail
         End Try
     End Sub
 
-    Protected Sub btnEditHeader_Click(sender As Object, e As EventArgs)
-        url = String.Format("~/order/edit?orderidedit={0}", lblHeaderId.Text)
+    Protected Sub btnEditOrder_Click(sender As Object, e As EventArgs)
+        url = String.Format("~/order/edit?boosid={0}", lblHeaderId.Text)
         Response.Redirect(url, False)
     End Sub
 
@@ -1047,12 +1047,13 @@ Partial Class Order_Detail
                 amount = orderClass.GetItemData_Decimal("SELECT (SUM(SellPrice) * 1.10) AS SumPrice FROM OrderCostings WHERE HeaderId='" & lblHeaderId.Text & "' AND Type='Final'")
             End If
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderInvoices SET InvoiceNumber=@InvoiceNumber, Collector=@Collector, InvoiceDate=@InvoiceDate, PaymentDate=@PaymentDate, Payment=@Payment, Amount=@Amount WHERE Id=@Id;", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderInvoices SET InvoiceNumber=@InvoiceNumber, Collector=@Collector, InvoiceDate=@InvoiceDate, PaymentDate=@PaymentDate, DueDate=@DueDate, Payment=@Payment, Amount=@Amount WHERE Id=@Id;", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
                     myCmd.Parameters.AddWithValue("@InvoiceNumber", txtInvoiceNumber.Text.Trim())
                     myCmd.Parameters.AddWithValue("@Collector", ddlCollector.SelectedValue)
                     myCmd.Parameters.AddWithValue("@InvoiceDate", If(String.IsNullOrEmpty(txtInvoiceDate.Text), CType(DBNull.Value, Object), txtInvoiceDate.Text))
                     myCmd.Parameters.AddWithValue("@PaymentDate", If(String.IsNullOrEmpty(txtPaymentDate.Text), CType(DBNull.Value, Object), txtPaymentDate.Text))
+                    myCmd.Parameters.AddWithValue("@DueDate", If(String.IsNullOrEmpty(txtDueDate.Text), CType(DBNull.Value, Object), txtDueDate.Text))
                     myCmd.Parameters.AddWithValue("@Payment", ddlPayment.SelectedValue)
                     myCmd.Parameters.AddWithValue("@Amount", amount)
 
@@ -1176,11 +1177,8 @@ Partial Class Order_Detail
             End If
 
             Dim quoteClass As New QuoteClass
-
-            Dim pdfBytes As Byte() = Nothing
-
             If lblOrderType.Text = "Regular" Then
-                pdfBytes = quoteClass.BindContent(lblHeaderId.Text)
+                Dim pdfBytes As Byte() = quoteClass.BindContent(lblHeaderId.Text)
 
                 Response.Clear()
                 Response.ContentType = "application/pdf"
@@ -1191,7 +1189,7 @@ Partial Class Order_Detail
             End If
 
             If lblOrderType.Text = "Builder" Then
-                pdfBytes = quoteClass.BindContentBuilder(lblHeaderId.Text)
+                Dim pdfBytes As Byte() = quoteClass.BindContentBuilder(lblHeaderId.Text)
 
                 Response.Clear()
                 Response.ContentType = "application/pdf"
@@ -1742,9 +1740,11 @@ Partial Class Order_Detail
             BindEmailInvoice()
             BindDataFile(lblOrderId.Text)
 
+            aLog.Attributes("data-id") = headerId
+
             divInternalNote.Visible = False
             secBuilder.Visible = False
-            btnEditHeader.Visible = False
+            btnEditOrder.Visible = False
             aDeleteOrder.Visible = False
             aQuoteOrder.Visible = False
             aNewOrder.Visible = False
@@ -1777,6 +1777,8 @@ Partial Class Order_Detail
             liMoreDividerRePrice.Visible = False
             liMoreRePrice.Visible = False
 
+            aLog.Visible = False
+
             aAddItem.Visible = False
             aService.Visible = False
 
@@ -1784,17 +1786,16 @@ Partial Class Order_Detail
             Dim roleName As String = orderClass.GetUserRoleName(lblCreatedBy.Text)
 
             If Session("RoleName") = "Developer" Then
-                divInternalNote.Visible = True
-
+                btnEditOrder.Visible = True
                 btnMoreAction.Visible = True
                 liMoreAddNote.Visible = True
                 liMoreHistoryNote.Visible = True
                 liMoreDividerRePrice.Visible = True
                 liMoreRePrice.Visible = True
-
                 aFileOrder.Visible = True
+                aLog.Visible = True
 
-                btnEditHeader.Visible = True
+                divInternalNote.Visible = True
 
                 If lblOrderType.Text = "Regular" Then btnQuoteAction.Visible = True
                 If lblOrderType.Text = "Builder" Then
@@ -1922,13 +1923,13 @@ Partial Class Order_Detail
             End If
 
             If Session("RoleName") = "IT" Then
-                divInternalNote.Visible = True
-
                 btnMoreAction.Visible = True
                 liMoreAddNote.Visible = True
                 liMoreHistoryNote.Visible = True
-
                 aFileOrder.Visible = True
+                aLog.Visible = True
+
+                divInternalNote.Visible = True
 
                 If lblOrderType.Text = "Regular" Then btnQuoteAction.Visible = True
                 If lblOrderType.Text = "Builder" Then aBuilder.Visible = True : secBuilder.Visible = True
@@ -1943,7 +1944,7 @@ Partial Class Order_Detail
                     If lblOrderType.Text = "Regular" Then aSubmitOrder.Visible = True
                     If lblOrderType.Text = "Builder" Then aQuoteOrder.Visible = True
 
-                    btnEditHeader.Visible = True
+                    btnEditOrder.Visible = True
                     aDeleteOrder.Visible = True
 
                     aAddItem.Visible = True : aService.Visible = True
@@ -1956,7 +1957,7 @@ Partial Class Order_Detail
                     liMoreDividerRePrice.Visible = True
                     liMoreRePrice.Visible = True
 
-                    btnEditHeader.Visible = True
+                    btnEditOrder.Visible = True
                     aUnsubmitOrder.Visible = True : aCancelOrder.Visible = True
 
                     aAddItem.Visible = True : aService.Visible = True
@@ -1969,6 +1970,7 @@ Partial Class Order_Detail
                     liMoreDividerRePrice.Visible = True
                     liMoreRePrice.Visible = True
 
+                    btnEditOrder.Visible = True
                     aUnsubmitOrder.Visible = True : aCancelOrder.Visible = True
                 End If
 
@@ -1980,6 +1982,7 @@ Partial Class Order_Detail
                     aHoldOrder.Visible = True
                     aCancelOrder.Visible = True
 
+                    btnEditOrder.Visible = True
                     aAddItem.Visible = True : aService.Visible = True
                 End If
 
@@ -1988,6 +1991,7 @@ Partial Class Order_Detail
                     liMoreEmailQuote.Visible = True
                     liMoreDividerQuote.Visible = True
 
+                    btnEditOrder.Visible = True
                     aUnsubmitOrder.Visible = True : aCancelOrder.Visible = True
                     aProductionOrder.Visible = True : aHoldOrder.Visible = True
 
@@ -2004,6 +2008,8 @@ Partial Class Order_Detail
                     liMoreDownloadQuote.Visible = True
                     liMoreEmailQuote.Visible = True
                     liMoreDividerQuote.Visible = True
+
+                    btnEditOrder.Visible = True
 
                     btnInvoice.Visible = True
                     If lblOrderPaid.Text = "" Then aSendInvoice.Visible = True
@@ -2027,6 +2033,8 @@ Partial Class Order_Detail
                     liDividerInvoice.Visible = True : liUpdateInvoiceData.Visible = True
 
                     aUnHoldOrder.Visible = True : aCancelOrder.Visible = True
+
+                    btnEditOrder.Visible = True
 
                     If lblOrderPaid.Text = "" Then
                         aAddItem.Visible = True : aService.Visible = True
@@ -2076,7 +2084,7 @@ Partial Class Order_Detail
                     If lblOrderType.Text = "Regular" Then aSubmitOrder.Visible = True
                     If lblOrderType.Text = "Builder" Then aQuoteOrder.Visible = True
 
-                    btnEditHeader.Visible = True : aDeleteOrder.Visible = True
+                    btnEditOrder.Visible = True : aDeleteOrder.Visible = True
 
                     aAddItem.Visible = True : aService.Visible = True
                 End If
@@ -2090,7 +2098,7 @@ Partial Class Order_Detail
 
                     btnInvoice.Visible = True : aSendInvoice.Visible = True
 
-                    btnEditHeader.Visible = True
+                    btnEditOrder.Visible = True
                     aUnsubmitOrder.Visible = True
                     aCancelOrder.Visible = True
 
@@ -2105,6 +2113,8 @@ Partial Class Order_Detail
                     liMoreDividerRePrice.Visible = True
                     liMoreRePrice.Visible = True
 
+                    btnEditOrder.Visible = True
+
                     btnInvoice.Visible = True : aSendInvoice.Visible = True : aReceivePayment.Visible = True
                 End If
 
@@ -2112,6 +2122,8 @@ Partial Class Order_Detail
                     liMoreDividerQuote.Visible = True
                     liMoreAddNote.Visible = True
                     liMoreHistoryNote.Visible = True
+
+                    btnEditOrder.Visible = True
 
                     btnInvoice.Visible = True
                     aHoldOrder.Visible = True
@@ -2122,6 +2134,8 @@ Partial Class Order_Detail
                     liMoreDownloadQuote.Visible = True
                     liMoreEmailQuote.Visible = True
                     liMoreDividerQuote.Visible = True
+
+                    btnEditOrder.Visible = True
 
                     aCancelOrder.Visible = True : aHoldOrder.Visible = True : aProductionOrder.Visible = True
 
@@ -2141,6 +2155,8 @@ Partial Class Order_Detail
 
                     aHoldOrder.Visible = True : aCancelOrder.Visible = True : aShippedOrder.Visible = True
 
+                    btnEditOrder.Visible = True
+
                     If lblOrderPaid.Text = "" Then
                         aAddItem.Visible = True : aService.Visible = True
                     End If
@@ -2152,6 +2168,8 @@ Partial Class Order_Detail
                     liDividerInvoice.Visible = True : liUpdateInvoiceData.Visible = True
 
                     aUnHoldOrder.Visible = True : aCancelOrder.Visible = True
+
+                    btnEditOrder.Visible = True
 
                     If lblOrderPaid.Text = "" Then
                         aAddItem.Visible = True : aService.Visible = True
@@ -2200,7 +2218,7 @@ Partial Class Order_Detail
 
                     If lblOrderType.Text = "Regular" Then
                         If Session("LoginId") = lblCreatedBy.Text Then
-                            btnEditHeader.Visible = True
+                            btnEditOrder.Visible = True
                             aDeleteOrder.Visible = True
                         End If
                         aSubmitOrder.Visible = True
@@ -2208,7 +2226,7 @@ Partial Class Order_Detail
                     End If
 
                     If lblOrderType.Text = "Builder" Then
-                        btnEditHeader.Visible = True
+                        btnEditOrder.Visible = True
                         aQuoteOrder.Visible = True
                         aAddItem.Visible = True
                     End If
@@ -2221,7 +2239,7 @@ Partial Class Order_Detail
                     liMoreDividerRePrice.Visible = True
                     liMoreRePrice.Visible = True
 
-                    btnEditHeader.Visible = True
+                    btnEditOrder.Visible = True
                     aCancelOrder.Visible = True
                     aSubmitOrder.Visible = True
 
@@ -2298,10 +2316,8 @@ Partial Class Order_Detail
                     liMoreDividerRePrice.Visible = True
                     liMoreRePrice.Visible = True
 
-                    If Session("LoginId") = lblCreatedBy.Text Then
-                        btnEditHeader.Visible = True
-                        aDeleteOrder.Visible = True
-                    End If
+                    btnEditOrder.Visible = True
+                    aDeleteOrder.Visible = True
 
                     aService.Visible = True
                 End If
@@ -2311,7 +2327,7 @@ Partial Class Order_Detail
                     liMoreEmailQuote.Visible = True
                     liMoreDividerQuote.Visible = True
 
-                    btnEditHeader.Visible = True
+                    btnEditOrder.Visible = True
                     aDeleteOrder.Visible = True
                     aSubmitOrder.Visible = True
 
@@ -2328,6 +2344,8 @@ Partial Class Order_Detail
                     liMoreDividerRePrice.Visible = True
                     liMoreRePrice.Visible = True
 
+                    btnEditOrder.Visible = True
+
                     aUnsubmitOrder.Visible = True : aCancelOrder.Visible = True
 
                     aService.Visible = True
@@ -2335,11 +2353,15 @@ Partial Class Order_Detail
 
                 If lblOrderStatus.Text = "Proforma Sent" Then
                     aCancelOrder.Visible = True : aUnsubmitOrder.Visible = True
+
+                    btnEditOrder.Visible = True
                     btnInvoice.Visible = True : aSendInvoice.Visible = True : aReceivePayment.Visible = True
                     liDividerInvoice.Visible = True : liUpdateInvoiceNumber.Visible = True
                 End If
 
                 If lblOrderStatus.Text = "Payment Received" Then
+                    btnEditOrder.Visible = True
+
                     btnInvoice.Visible = True
                     liDividerInvoice.Visible = True : liUpdateInvoiceData.Visible = True
                 End If
@@ -2404,7 +2426,7 @@ Partial Class Order_Detail
                     If lblOrderType.Text = "Builder" Then aQuoteOrder.Visible = True
                     If lblOrderType.Text = "Regular" Then aSubmitOrder.Visible = True
 
-                    btnEditHeader.Visible = True
+                    btnEditOrder.Visible = True
                     aAddItem.Visible = True
                 End If
 
@@ -2413,7 +2435,7 @@ Partial Class Order_Detail
                     liMoreEmailQuote.Visible = True
                     liMoreDividerQuote.Visible = True
 
-                    btnEditHeader.Visible = True
+                    btnEditOrder.Visible = True
                     aCancelOrder.Visible = True
                     aSubmitOrder.Visible = True
 
@@ -2421,6 +2443,8 @@ Partial Class Order_Detail
                 End If
 
                 If lblOrderStatus.Text = "New Order" Then
+                    btnEditOrder.Visible = True
+
                     aCancelOrder.Visible = True
                     aHoldOrder.Visible = True : aProductionOrder.Visible = True
 
@@ -2428,20 +2452,24 @@ Partial Class Order_Detail
                 End If
 
                 If lblOrderStatus.Text = "Waiting Proforma" Then
+                    btnEditOrder.Visible = True
                     aAddItem.Visible = True : aService.Visible = True
                 End If
 
                 If lblOrderStatus.Text = "Payment Received" Then
+                    btnEditOrder.Visible = True
                     aAddItem.Visible = True : aService.Visible = True
                 End If
 
                 If lblOrderStatus.Text = "In Production" Then
+                    btnEditOrder.Visible = True
                     aAddItem.Visible = True : aService.Visible = True
 
                     aHoldOrder.Visible = True : aCancelOrder.Visible = True
                 End If
 
                 If lblOrderStatus.Text = "On Hold" Then
+                    btnEditOrder.Visible = True
                     aUnHoldOrder.Visible = True
                 End If
 
@@ -2477,7 +2505,7 @@ Partial Class Order_Detail
                 btnQuoteAction.Visible = True
 
                 If lblOrderStatus.Text = "Unsubmitted" Then
-                    btnEditHeader.Visible = True
+                    btnEditOrder.Visible = True
                     aDeleteOrder.Visible = True
                     aSubmitOrder.Visible = True
                     aAddItem.Visible = True
@@ -2503,7 +2531,7 @@ Partial Class Order_Detail
 
                 If lblOrderStatus.Text = "Unsubmitted" Then
                     If lblCreatedRole.Text = Session("RoleId") Then
-                        btnEditHeader.Visible = True
+                        btnEditOrder.Visible = True
                         aDeleteOrder.Visible = True
 
                         aAddItem.Visible = True
@@ -2730,8 +2758,8 @@ Partial Class Order_Detail
 
         If lblCompanyId.Text = "2" Then
             If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse (Session("RoleName") = "Sales" AndAlso Session("LevelName") = "Leader") Then
-                divPricing.Attributes.Add("onclick", "showCostingBuy()")
-                divPricing.Style.Add("cursor", "pointer")
+                divCosting.Attributes.Add("onclick", "showCostingBuy()")
+                divCosting.Style.Add("cursor", "pointer")
             End If
         End If
     End Sub
@@ -2776,6 +2804,11 @@ Partial Class Order_Detail
 
             ddlPayment.SelectedValue = Convert.ToInt32(invoiceData("Payment"))
             lblOrderPaid.Text = invoiceData("OrderPaid").ToString()
+
+            If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" Then
+                divInvoicing.Attributes.Add("onclick", "showInvoiceData()")
+                divInvoicing.Style.Add("cursor", "pointer")
+            End If
         End If
     End Sub
 
@@ -3790,13 +3823,11 @@ Partial Class Order_Detail
         Return result
     End Function
 
-    Protected Function InvoiceItemNote() As Boolean
-        Dim result As Boolean = False
-        If Session("RoleName") = "Developer" Then
-            result = True
+    Protected Function VisibleLog() As Boolean
+        If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" Then
+            Return True
         End If
-
-        Return result
+        Return False
     End Function
 
     Protected Function PageAction(action As String) As Boolean

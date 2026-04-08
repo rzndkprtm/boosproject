@@ -785,6 +785,7 @@
                     writer.WriteAttributeString("Width", thisData.Rows(i)("Width").ToString())
                     writer.WriteAttributeString("Drop", thisData.Rows(i)("Drop").ToString())
                     writer.WriteAttributeString("Panel", thisData.Rows(i)("BracketSize").ToString())
+                    writer.WriteAttributeString("PelmetLayout", thisData.Rows(i)("TopTrack").ToString())
                     writer.WriteAttributeString("Notes", thisData.Rows(i)("Notes").ToString())
                     writer.WriteEndElement()
                 End If

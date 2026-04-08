@@ -297,7 +297,6 @@ Public Partial Class SiteMaster
 
             If Session("RoleName") = "Production" Then
                 liGuide.Visible = True
-                liTicket.Visible = True
             End If
 
             If Session("RoleName") = "Sales" Then
@@ -352,7 +351,6 @@ Public Partial Class SiteMaster
             If Session("RoleName") = "Customer" Then
                 liOldOrder.Visible = True
                 liGuide.Visible = True
-                liTicket.Visible = True
 
                 liSettingQuote.Visible = True
             End If

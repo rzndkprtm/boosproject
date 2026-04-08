@@ -1596,8 +1596,9 @@ Public Class MailingClass
 
             Dim companyId As String = orderData("CompanyId").ToString()
             Dim companyName As String = GetItemData("SELECT Name FROM Companys WHERE Id='" & companyId & "'")
+            If companyId = "3" Then companyName = "PT Bumi Indah Global"
 
-            Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='Send Invoice' AND Active=1")
+            Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='Reset Proforma Order' AND Active=1")
             If mailData Is Nothing Then Exit Sub
 
             Dim mailServer As String = mailData("Server").ToString()
@@ -1623,28 +1624,24 @@ Public Class MailingClass
             Dim mailBody As String = String.Empty
 
             mailBody = "<span style='font-family: Cambria; font-size: 16px;'>"
+            mailBody &= "<i>- THIS IS AN AUTOMATED EMAIL. KINDLY DO NOT REPLY WITHOUT COPYING OUR TEAM. -</i>"
+            mailBody &= "<br /><br /><br />"
             mailBody &= "Dear Valued Customer,"
             mailBody &= "<br /><br />"
-            mailBody &= "We would like to inform you that your order has been reverted to an unsubmitted order."
+            mailBody &= "We would like to inform you that your order has been reverted to an <b><u>unsubmitted order</u></b>."
             mailBody &= "<br /><br />"
             mailBody &= "Please disregard any invoice you have previously received for this order, as it is no longer valid."
-            mailBody &= "<br /><br />"
-
-            mailBody &= "If you wish to proceed with this order to production, kindly resubmit the order to obtain a valid invoice."
+            mailBody &= "<br />"
+            mailBody &= "If you wish to proceed with this order to production, kindly re-submit the order to obtain a valid invoice."
             mailBody &= "<br /><br />"
             mailBody &= "Thank you for your understanding."
             mailBody &= "</span>"
 
-            mailBody &= "<br /><br />"
+            mailBody &= "<br /><br /><br />"
 
             mailBody &= "<span style='font-family: Cambria; font-size:16px;'>Kind Regards,</span>"
-            mailBody &= "<br /><br />"
-            If companyId = "2" Then
-                mailBody &= "<span style='font-family: Cambria; font-size:16px; font-weight: bold;'>" & companyName & "</span>"
-            End If
-            If companyId = "3" Then
-                mailBody &= "<span style='font-family: Cambria; font-size:16px; font-weight: bold;'>PT Bumi Indah Global</span>"
-            End If
+            mailBody &= "<br /><br /><br />"
+            mailBody &= "<span style='font-family: Cambria; font-size:16px; font-weight: bold;'>" & companyName.ToUpper() & "</span>"
 
             Dim myMail As New MailMessage()
 

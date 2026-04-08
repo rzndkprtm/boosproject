@@ -207,10 +207,10 @@ Partial Class Setting_Specification_Fabric_Default
             Dim hasil As String = String.Empty
             If myData.Rows.Count > 0 Then
                 For i As Integer = 0 To myData.Rows.Count - 1
-                    Dim designName As String = myData.Rows(i)("CompanyName").ToString()
-                    hasil += designName & ","
+                    Dim companyDetailName As String = myData.Rows(i)("CompanyName").ToString()
+                    hasil += companyDetailName & ", "
                 Next
-                Return hasil.Remove(hasil.Length - 1).ToString()
+                Return hasil.Remove(hasil.Length - 2).ToString()
             Else
                 Return String.Empty
             End If

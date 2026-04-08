@@ -33,7 +33,7 @@
                         <div class="card-body">
                             <div class="form form-horizontal">
                                 <div class="form-body">
-                                    <div class="row mb-3" runat="server" id="divCustomer">
+                                    <div class="row" runat="server" id="divCustomer">
                                         <div class="col-12 col-sm-12 col-lg-3">
                                             <label>Customer Account</label>
                                         </div>
@@ -42,7 +42,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="row" runat="server" id="divCreatedBy">
+                                    <div class="row mb-3" runat="server" id="divCreatedBy">
                                         <div class="col-12 col-sm-12 col-lg-3">
                                             <label>Created By</label>
                                         </div>
@@ -51,21 +51,12 @@
                                         </div>
                                     </div>
 
-                                    <div class="row mb-3" runat="server" id="divCreatedDate">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Created Date</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-9 form-group">
-                                            <asp:TextBox runat="server" ID="txtCreatedDate" TextMode="Date" CssClass="form-control" placeholder=""></asp:TextBox>
-                                        </div>
-                                    </div>
-
                                     <div class="row mb-3">
                                         <div class="col-12 col-sm-12 col-lg-3">
                                             <label>Order ID</label>
                                         </div>
                                         <div class="col-12 col-sm-12 col-lg-9 form-group">
-                                            <asp:TextBox runat="server" ID="txtOrderId" CssClass="form-control" ReadOnly="true"></asp:TextBox>
+                                            <asp:TextBox runat="server" ID="txtOrderId" CssClass="form-control"></asp:TextBox>
                                         </div>
                                     </div>
 
@@ -74,7 +65,10 @@
                                             <label>Order Number</label>
                                         </div>
                                         <div class="col-12 col-sm-12 col-lg-9 form-group">
-                                            <asp:TextBox runat="server" ID="txtOrderNumber" CssClass="form-control" placeholder="Order Number ..." autocomplete="off"></asp:TextBox>
+                                            <div class="input-group">
+                                                <asp:TextBox runat="server" ID="txtOrderNumber" CssClass="form-control" placeholder="Order Number ..." autocomplete="off"></asp:TextBox>
+                                                <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Order Number');"> ? </a>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -83,7 +77,10 @@
                                             <label>Order Name</label>
                                         </div>
                                         <div class="col-12 col-sm-12 col-lg-9 form-group">
-                                            <asp:TextBox runat="server" ID="txtOrderName" CssClass="form-control" placeholder="Order Name ...." autocomplete="off"></asp:TextBox>
+                                            <div class="input-group">
+                                                <asp:TextBox runat="server" ID="txtOrderName" CssClass="form-control" placeholder="Order Name ...." autocomplete="off"></asp:TextBox>
+                                                <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Order Name');"> ? </a>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -133,4 +130,40 @@
         <asp:Label runat="server" ID="lblHeaderId"></asp:Label>
         <asp:Label runat="server" ID="lblOrderNo"></asp:Label>
     </div>
+
+    <div class="modal modal-blur fade" id="modalInfo" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <h5 class="modal-title white">Information</h5>
+                </div>
+                <div class="modal-body">
+                    <span id="spanInfo"></span>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        function showInfo(type) {
+            let info;
+
+            if (type === "Order Number") {
+                info = "<b>Order Number</b>";
+                info += "<br /><br />";
+            } else if (type === "Order Name") {
+                info = "<b>Order Name</b>";
+                info += "<br /><br />";
+            } else {
+                info = "";
+            }
+
+            document.getElementById("spanInfo").innerHTML = info;
+        }
+
+        window.history.replaceState(null, null, window.location.href);
+    </script>
 </asp:Content>

@@ -108,7 +108,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-footer d-flex justify-content-between"></div>
                 </div>
             </div>
         </section>

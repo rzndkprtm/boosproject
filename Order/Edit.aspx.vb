@@ -16,12 +16,12 @@ Partial Class Order_Edit
             Exit Sub
         End If
 
-        If String.IsNullOrEmpty(Request.QueryString("orderidedit")) Then
+        If String.IsNullOrEmpty(Request.QueryString("boosid")) Then
             Response.Redirect("~/order/", False)
             Exit Sub
         End If
 
-        lblHeaderId.Text = Request.QueryString("orderidedit").ToString()
+        lblHeaderId.Text = Request.QueryString("boosid").ToString()
         If Not IsPostBack Then
             BackColor()
             BindDataHeader(lblHeaderId.Text)
@@ -84,7 +84,7 @@ Partial Class Order_Edit
 
             If msgError.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET OrderId=@OrderId, CustomerId=@CustomerId, OrderNumber=@OrderNumber, OrderName=@OrderName, OrderNote=@OrderNote, OrderType=@OrderType, CreatedBy=@CreatedBy, CreatedDate=@CreatedDate WHERE Id=@Id", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET OrderId=@OrderId, CustomerId=@CustomerId, OrderNumber=@OrderNumber, OrderName=@OrderName, OrderNote=@OrderNote, OrderType=@OrderType, CreatedBy=@CreatedBy WHERE Id=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
                         myCmd.Parameters.AddWithValue("@OrderId", txtOrderId.Text)
                         myCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
@@ -93,7 +93,6 @@ Partial Class Order_Edit
                         myCmd.Parameters.AddWithValue("@OrderNote", txtOrderNote.Text.Trim())
                         myCmd.Parameters.AddWithValue("@OrderType", ddlOrderType.SelectedValue)
                         myCmd.Parameters.AddWithValue("@CreatedBy", ddlCreatedBy.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@CreatedDate", txtCreatedDate.Text)
 
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
@@ -146,7 +145,6 @@ Partial Class Order_Edit
 
             ddlCustomer.SelectedValue = myData("CustomerId").ToString()
             ddlCreatedBy.SelectedValue = myData("CreatedBy").ToString()
-            txtCreatedDate.Text = Convert.ToDateTime(myData("CreatedDate")).ToString("yyyy-MM-dd")
             txtOrderNumber.Text = myData("OrderNumber").ToString()
             lblOrderNo.Text = myData("OrderNumber").ToString()
 
@@ -157,32 +155,26 @@ Partial Class Order_Edit
 
             divCustomer.Visible = False
             divCreatedBy.Visible = False
-            divCreatedDate.Visible = False
             divOrderType.Visible = False
 
             ddlCustomer.Enabled = False
             ddlCreatedBy.Enabled = False
-            txtCreatedDate.Enabled = False
 
             txtOrderId.Enabled = False
             ddlCustomer.Enabled = False
             ddlCreatedBy.Enabled = False
-            txtCreatedDate.Enabled = False
 
             If Session("RoleName") = "Developer" Then
                 divCustomer.Visible = True
                 divCreatedBy.Visible = True
-                divCreatedDate.Visible = True
                 divOrderType.Visible = True
 
                 ddlCustomer.Enabled = True
                 ddlCreatedBy.Enabled = True
-                txtCreatedDate.Enabled = True
 
                 txtOrderId.Enabled = True
                 ddlCustomer.Enabled = True
                 ddlCreatedBy.Enabled = True
-                txtCreatedDate.Enabled = True
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
