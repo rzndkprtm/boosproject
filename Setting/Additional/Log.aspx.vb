@@ -66,7 +66,7 @@ Partial Class Setting_Additional_Log
             If Not String.IsNullOrEmpty(searchText) Then
                 searchString = "WHERE Logs.Type LIKE '%" & searchText.Trim() & "%' OR CustomerLogins.UserName LIKE '%" & searchText.Trim() & "%'"
             End If
-            Dim thisString As String = String.Format("SELECT Logs.*, CustomerLogins.UserName AS ActionName FROM Logs LEFT JOIN CustomerLogins ON Logs.ActionBy=CustomerLogins.Id {0}", searchString)
+            Dim thisString As String = String.Format("SELECT Logs.*, CustomerLogins.UserName AS ActionName FROM Logs LEFT JOIN CustomerLogins ON Logs.ActionBy=CustomerLogins.Id {0} ORDER BY Logs.ActionDate DESC", searchString)
 
             gvList.DataSource = settingClass.GetDataTable(thisString)
             gvList.DataBind()

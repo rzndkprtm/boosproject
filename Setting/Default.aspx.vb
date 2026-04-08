@@ -7,6 +7,12 @@
             Response.Redirect("~/", False)
             Exit Sub
         End If
+
+        divGeneral.Attributes("onclick") = "location.href='general'"
+        divCustomer.Attributes("onclick") = "location.href='customer'"
+        divSpecification.Attributes("onclick") = "location.href='specification'"
+        divPrice.Attributes("onclick") = "location.href='price'"
+        divAdditional.Attributes("onclick") = "location.href='additional'"
     End Sub
 
     Protected Function PageAction(action As String) As Boolean
