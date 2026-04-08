@@ -13,7 +13,6 @@
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a runat="server" href="~/">Home</a></li>
                             <li class="breadcrumb-item"><a runat="server" href="~/setting">Setting</a></li>
-                            <li class="breadcrumb-item"><a runat="server" href="~/setting/additional">Additonal</a></li>
                             <li class="breadcrumb-item active" aria-current="page"><%: Page.Title %></li>
                         </ol>
                     </nav>

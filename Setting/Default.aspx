@@ -35,6 +35,22 @@
     <div class="page-content">
         <section class="row">
             <div class="col-12 col-sm-12 col-lg-3">
+                <div class="card card-clickable" runat="server" id="divGeneral">
+                    <div class="card-body px-3 py-4-5">
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="stats-icon purple">
+                                    <i class="iconly-boldShow"></i>
+                                </div>
+                            </div>
+                            <div class="col-8">
+                                <h6 class="text-muted font-semibold">General</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-12 col-lg-3">
                 <div class="card card-clickable" runat="server" id="divCustomer">
                     <div class="card-body px-3 py-4-5">
                         <div class="row">
@@ -51,7 +67,7 @@
                 </div>
             </div>
             <div class="col-12 col-sm-12 col-lg-3">
-                <div class="card card-clickable" runat="server" id="divGeneral">
+                <div class="card card-clickable" runat="server" id="divSpecification">
                     <div class="card-body px-3 py-4-5">
                         <div class="row">
                             <div class="col-4">
@@ -60,7 +76,39 @@
                                 </div>
                             </div>
                             <div class="col-8">
-                                <h6 class="text-muted font-semibold">General</h6>
+                                <h6 class="text-muted font-semibold">Specification</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-12 col-lg-3">
+                <div class="card card-clickable" runat="server" id="divPrice">
+                    <div class="card-body px-3 py-4-5">
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="stats-icon purple">
+                                    <i class="iconly-boldShow"></i>
+                                </div>
+                            </div>
+                            <div class="col-8">
+                                <h6 class="text-muted font-semibold">Price</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-12 col-lg-3">
+                <div class="card card-clickable" runat="server" id="divAdditional">
+                    <div class="card-body px-3 py-4-5">
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="stats-icon purple">
+                                    <i class="iconly-boldShow"></i>
+                                </div>
+                            </div>
+                            <div class="col-8">
+                                <h6 class="text-muted font-semibold">Additional</h6>
                             </div>
                         </div>
                     </div>
