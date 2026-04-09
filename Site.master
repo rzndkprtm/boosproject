@@ -106,7 +106,7 @@
 
                                 <li class="menu-item" runat="server" id="liStocks">
                                     <a runat="server" href="~/stocks" class='menu-link'>
-                                        <i class="bi bi-book-fill"></i>
+                                        <i class="bi bi-ui-checks"></i>
                                         <span>Stocks</span>
                                     </a>
                                 </li>
