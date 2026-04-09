@@ -28,6 +28,11 @@ Partial Class Order_Printing
         End If
     End Sub
 
+    Protected Sub btnFinish_Click(sender As Object, e As EventArgs)
+        Dim url As String = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+        Response.Redirect(url, False)
+    End Sub
+
     Protected Sub btnUpload_Click(sender As Object, e As EventArgs)
         Try
             Dim folderPath As String = Server.MapPath(String.Format("~/File/Order/{0}", lblOrderId.Text))
