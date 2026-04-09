@@ -64,6 +64,10 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="card-footer text-center">
+                        <asp:Button runat="server" ID="btnFinish" CssClass="btn btn-success" Text="Finish" OnClick="btnFinish_Click" />
+                    </div>
                 </div>
             </div>
             <div class="col-12 col-sm-12 col-lg-9">
