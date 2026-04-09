@@ -847,7 +847,7 @@ function bindComponentForm(tubeType, controlType, colourType) {
 
                 $("#controlcolourtitle").text("Cord Colour");
                 $("#controllengthtitle").text("Cord Length");
-            } else if (controlName === "Altus" || controlName === "Mercure" || controlName === "Sonesse 30 WF" || controlName === "Alpha 1Nm WF" || controlName === "Alpha 2Nm WF" || controlName === "Alpha 3Nm WF") {
+            } else if (controlName === "Altus" || controlName === "Mercure" || controlName === "Sonesse 30 WF" || controlName === "Alpha 1Nm WF" || controlName === "Alpha 2Nm WF" || controlName === "Alpha 3Nm WF" || controlName === "Motorised") {
                 toggleDisplay(chainremote, true);
 
                 $("#controlcolourtitle").text("Remote Type");
