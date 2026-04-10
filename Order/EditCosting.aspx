@@ -21,7 +21,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row mb-3" runat="server" id="divError">
             <div class="col-12">
@@ -30,7 +29,6 @@
                 </div>
             </div>
         </section>
-
         <section class="row">
             <div class="col-12 col-sm-12 col-lg-9">
                 <div class="card">
@@ -38,7 +36,6 @@
                         <div class="card-header">
                             <h4 class="card-title" runat="server" id="hTitle"></h4>
                         </div>
-
                         <div class="card-body">
                             <div class="row mb-3">
                                 <div class="col-12">
@@ -67,7 +64,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="row" runat="server" id="divNote">
                                 <div class="col-12">
                                     <div class="divider divider-left-center">
@@ -79,7 +75,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="card-footer">
                             <div class="row">
                                 <div class="col-12 col-sm-12 col-lg-5">
@@ -105,7 +100,6 @@
                     <h5 class="modal-title">Add Note</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-    
                 <div class="modal-body">
                     <div class="row mb-3">
                         <div class="col-12">
@@ -114,7 +108,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnNote" CssClass="btn btn-primary" Text="Submit" OnClick="btnNote_Click" />

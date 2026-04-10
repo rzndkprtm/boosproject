@@ -54,14 +54,12 @@
                 <a href="#" runat="server" id="aShippedOrder" class="btn btn-success me-1" data-bs-toggle="modal" data-bs-target="#modalShippedOrder">Shipped Order</a>
                 <a href="#" runat="server" id="aCompleteOrder" class="btn btn-danger me-1" data-bs-toggle="modal" data-bs-target="#modalCompleteOrder">Complete Order</a>
                 <a href="#" runat="server" id="aReworkOrder" class="btn btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modalReworkOrder">Rework Order</a>
-                
                 <button class="btn btn-info dropdown-toggle me-1" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnQuoteAction">Quote</button>
                 <ul class="dropdown-menu">
                     <li><a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDetailQuote">Quote Details</a></li>
                     <li><a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDownloadQuote">Download Quote</a></li>
                     <li><asp:Button runat="server" ID="btnPreviewQuote" CssClass="dropdown-item" Text="Preview Quote" /></li>
                 </ul>
-
                 <button class="btn btn-primary dropdown-toggle me-1" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnInvoice">invoice</button>
                 <ul class="dropdown-menu">
                     <li><a href="#" runat="server" id="aSendInvoice" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalSendInvoice">Send Invoice</a></li>
@@ -114,28 +112,24 @@
                                     <br />
                                     <asp:Label runat="server" ID="lblCustomerName" CssClass="font-bold"></asp:Label>
                                 </div>
-
                                 <div class="col-12 col-sm-12 col-lg-3 mb-2">
                                     <label>Order #</label>
                                     <br />
                                     <asp:Label runat="server" ID="lblOrderId" CssClass="font-bold"></asp:Label>
                                 </div>
                             </div>
-
                             <div class="row mb-2">
                                 <div class="col-6 col-sm-6 col-lg-6 mb-2">
                                     <label>Customer Order Number</label>
                                     <br />
                                     <asp:Label runat="server" ID="lblOrderNumber" CssClass="font-bold"></asp:Label>
                                 </div>
-
                                 <div class="col-6 col-sm-6 col-lg-6 mb-2">
                                     <label>Customer Order Name</label>
                                     <br />
                                     <asp:Label runat="server" ID="lblOrderName" CssClass="font-bold"></asp:Label>
                                 </div>
                             </div>
-
                             <div class="row mb-2">
                                 <div class="col-4 col-sm-4 col-lg-4 mb-2">
                                     <label>CreatedBy</label>
@@ -148,14 +142,12 @@
                                     <br />
                                     <asp:Label runat="server" ID="lblOrderStatus" CssClass="font-bold"></asp:Label>
                                 </div>
-
                                 <div class="col-4 col-sm-4 col-lg-4">
                                     <label>Order Type</label>
                                     <br />
                                     <asp:Label runat="server" ID="lblOrderType" CssClass="font-bold"></asp:Label>
                                 </div>
                             </div>
-
                             <div class="row mb-2">
                                 <div class="col-12 col-sm-6 col-lg-7 mb-2">
                                     <label>Order Note</label>
@@ -163,7 +155,6 @@
                                     <asp:Label runat="server" ID="lblOrderNote" CssClass="font-bold"></asp:Label>
                                 </div>
                             </div>
-
                             <div class="row" runat="server" id="divInternalNote">
                                 <div class="col-12">
                                     <label>Internal Note (Latest)</label>
@@ -199,7 +190,6 @@
                                             <asp:Label runat="server" ID="lblProductionDate" CssClass="font-bold"></asp:Label>
                                         </div>
                                     </div>
-
                                     <div class="row">
                                         <div class="col-4 col-sm-4 col-lg-4">
                                             <label>On Hold Date</label>
@@ -234,27 +224,23 @@
                                             <br />
                                             <asp:Label runat="server" ID="lblShipmentNumber" CssClass="font-bold"></asp:Label>
                                         </div>
-
                                         <div class="col-6">
                                             <label>Shipment Date</label>
                                             <br />
                                             <asp:Label runat="server" ID="lblShipmentDate" CssClass="font-bold"></asp:Label>
                                         </div>
                                     </div>
-
                                     <div class="row">
                                         <div class="col-4">
                                             <label>Container No</label>
                                             <br />
                                             <asp:Label runat="server" ID="lblContainerNumber" CssClass="font-bold"></asp:Label>
                                         </div>
-
                                         <div class="col-4">
                                             <label>Container ETA</label>
                                             <br />
                                             <asp:Label runat="server" ID="lblContainerEta" CssClass="font-bold"></asp:Label>
                                         </div>
-
                                         <div class="col-4">
                                             <label>Courier</label>
                                             <br />
@@ -313,7 +299,6 @@
                                     <br />
                                     <asp:Label runat="server" ID="lblToBeInstalled" CssClass="font-bold"></asp:Label>
                                 </div>
-
                                 <div class="col-2 col-sm-2 col-lg-2">
                                     <label>Installed</label>
                                     <br />
@@ -337,19 +322,16 @@
                                     <br />
                                     <asp:Label runat="server" ID="lblInvoiceNumber" CssClass="font-bold"></asp:Label>
                                 </div>
-
                                 <div class="col-6 col-sm-6 col-lg-3 mb-2">
                                     <label>Invoiced Date</label>
                                     <br />
                                     <asp:Label runat="server" ID="lblInvoiceDate" CssClass="font-bold"></asp:Label>
                                 </div>
-
                                 <div class="col-6 col-sm-6 col-lg-3">
                                     <label>Collector</label>
                                     <br />
                                     <asp:Label runat="server" ID="lblCollector" CssClass="font-bold"></asp:Label>
                                 </div>
-
                                 <div class="col-6 col-sm-6 col-lg-3">
                                     <label>Payment Date</label>
                                     <br />
@@ -404,7 +386,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="card-body">
                             <div class="row" runat="server" id="divFuelSurcharge">
                                 <div class="col-12">

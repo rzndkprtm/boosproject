@@ -38,24 +38,19 @@
                                 <i class="bi bi-shield-lock"></i>
                             </div>
                         </div>
-
                         <div class="form-check form-check-lg d-flex align-items-end">
                             <input class="form-check-input me-2" type="checkbox" value="" id="chkShowPass" onclick="togglePassword();">
                             <label class="form-check-label text-gray-600" for="chkShowPass">Show Password</label>
                         </div>
-
                         <div class="alert alert-danger mt-4" runat="server" id="divError">
                             <span runat="server" id="msgError"></span>
                         </div>
-
                         <asp:Button runat="server" ID="btnLogin" CssClass="btn btn-primary btn-block btn-lg shadow-lg mt-5" Text="Log In" OnClick="btnLogin_Click" />
-
                         <div class="text-center mt-3 text-lg fs-4">
                             <p><a runat="server" class="font-bold" href="~/account/forgot">Forgot password?</a></p>
                         </div>
                     </div>
                 </div>
-
                 <div class="col-lg-7 d-none d-lg-block">
                     <div id="auth-right"></div>
                 </div>

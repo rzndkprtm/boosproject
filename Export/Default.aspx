@@ -19,7 +19,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row">
             <div class="col-12 col-sm-12 col-lg-7">
@@ -27,7 +26,6 @@
                     <div class="card-header">
                         <h4 class="card-title">Sort Data</h4>
                     </div>
-
                     <div class="card-content">
                         <div class="card-body">
                             <div class="form form-horizontal">
@@ -40,7 +38,6 @@
                                             <asp:DropDownList runat="server" ID="ddlOrderCompany" CssClass="form-select"></asp:DropDownList>
                                         </div>
                                     </div>
-
                                     <div class="row form-group mb-2">
                                         <div class="col-12 col-sm-12 col-lg-3">
                                             <asp:Label runat="server" Text="Order Status"></asp:Label>
@@ -58,7 +55,6 @@
                                             </asp:DropDownList>
                                         </div>
                                     </div>
-
                                     <div class="row form-group mb-3">
                                         <div class="col-12 col-sm-12 col-lg-3">
                                             <asp:Label runat="server" Text="Order Type"></asp:Label>
@@ -71,7 +67,6 @@
                                             </asp:DropDownList>
                                         </div>
                                     </div>
-
                                     <div class="row" runat="server" id="divError">
                                         <div class="col-12">
                                             <div class="alert alert-danger">
@@ -83,7 +78,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="card-footer text-center">
                         <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" OnClick="btnSubmit_Click" />
                         <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Cancel" OnClick="btnCancel_Click" />

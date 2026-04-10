@@ -21,7 +21,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row mb-3" runat="server" id="divError">
             <div class="col-12">
@@ -30,7 +29,6 @@
                 </div>
             </div>
         </section>
-
         <section class="row">
             <div class="col-12 col-sm-12 col-lg-3">
                 <div class="card">
@@ -64,7 +62,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="card-footer text-center">
                         <asp:Button runat="server" ID="btnFinish" CssClass="btn btn-success" Text="Finish" OnClick="btnFinish_Click" />
                     </div>
@@ -83,7 +80,6 @@
                                 <a class="list-group-item list-group-item-action" runat="server" id="aPrintingC" data-bs-toggle="list" href="#divPrintingC" role="tab">Thrid Fabric</a>
                                 <a class="list-group-item list-group-item-action" runat="server" id="aPrintingD" data-bs-toggle="list" href="#divPrintingD" role="tab">Fourth Fabric</a>
                             </div>
-
                             <div class="tab-content text-justify">
                                 <div runat="server" class="tab-pane fade" id="divPrinting" ClientIDMode="Static" role="tabpanel" aria-labelledby="aPrinting">
                                     <div class="row mt-4 mb-3">
@@ -103,7 +99,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="tab-pane fade" runat="server" id="divPrintingB" ClientIDMode="Static" role="tabpanel" aria-labelledby="aPrintingB">
                                     <div class="row mt-4 mb-3">
                                         <div class="col-12">
@@ -122,7 +117,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="tab-pane fade" runat="server" id="divPrintingC" ClientIDMode="Static" role="tabpanel" aria-labelledby="aPrintingC">
                                     <div class="row mt-4 mb-3">
                                         <div class="col-12">
@@ -141,7 +135,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="tab-pane fade" runat="server" id="divPrintingD" ClientIDMode="Static" role="tabpanel" aria-labelledby="aPrintingD">
                                     <div class="row mt-4 mb-3">
                                         <div class="col-12">
@@ -311,15 +304,15 @@
     <asp:HiddenField ID="selected_tab" runat="server" />
 
     <script type="text/javascript">
-        [
-            "modalUpload", "modalUploadB", "modalUploadC", "modalUploadD",
-            "modalDelete", "modalDeleteB", "modalDeleteC", "modalDeleteD"
-        ].forEach(id => {
+        ["modalUpload", "modalUploadB", "modalUploadC", "modalUploadD",
+            "modalDelete", "modalDeleteB", "modalDeleteC", "modalDeleteD"].forEach(id => {
             document.getElementById(id).addEventListener("hide.bs.modal", () => {
                 document.activeElement.blur();
                 document.body.focus();
             });
-        });
+            });
+
+        window.history.replaceState(null, null, window.location.href);
     </script>
 
     <div runat="server" visible="false">

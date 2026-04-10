@@ -19,7 +19,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row mb-3">
             <div class="col-12">
@@ -32,7 +31,6 @@
                 </div>
             </div>
         </section>
-
         <section class="row mb-3">
             <div class="col-12 d-flex justify-content-end flex-wrap gap-2">
                 <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Create Order" OnClick="btnAdd_Click" />
@@ -41,7 +39,6 @@
                 <asp:Button runat="server" ID="btnFile" CssClass="btn btn-secondary" Text="File Order" OnClick="btnFile_Click" />
             </div>
         </section>
-        
         <section class="row">
             <div class="col-12">
                 <div class="card">
@@ -54,14 +51,12 @@
                                         <asp:DropDownList runat="server" ID="ddlStatus" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlStatus_SelectedIndexChanged"></asp:DropDownList>
                                     </div>
                                 </div>
-
                                 <div class="col-12 col-sm-12 col-lg-3 mb-2">
                                     <div class="input-group" runat="server" id="divType">
                                         <span class="input-group-text">Order Type</span>
                                         <asp:DropDownList runat="server" ID="ddlType" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlType_SelectedIndexChanged"></asp:DropDownList>
                                     </div>
                                 </div>
-
                                 <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
                                     <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
                                         <div class="input-group">
@@ -72,7 +67,6 @@
                                     </asp:Panel>
                                 </div>
                             </div>
-
                             <div class="row mb-1" runat="server" id="divCompany">
                                 <div class="col-12 col-sm-12 col-lg-3 mb-2">
                                     <div class="input-group">
@@ -115,59 +109,45 @@
                                                              <li>
                                                                  <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                              </li>
-                                                             
                                                              <li runat="server" visible='<%# VisibleDelete(New Object() {Eval("Active"), Eval("Status"), Eval("CreatedBy"), Eval("CreatedRole")}) %>'>
                                                                  <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`);", Eval("Id").ToString(), "Delete Order") %>'>Delete</a>
                                                              </li>
-
                                                              <li runat="server" visible='<%# VisibleCopy(Eval("Active").ToString()) %>'>
                                                                  <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`);", Eval("Id").ToString(), "Copy Order") %>'>Copy / Duplicate</a>
                                                              </li>
-
                                                              <li runat="server" visible='<%# VisibleUnsubmitOrder(Eval("Status").ToString(), Eval("Active")) %>'>
                                                                  <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`);", Eval("Id").ToString(), "Unsubmit Order") %>'>Unsubmit Order</a>
                                                              </li>
-
                                                              <li runat="server" visible='<%# VisibleNewOrder(Eval("Status").ToString(), Eval("Active")) %>'>
                                                                  <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`);", Eval("Id").ToString(), "New Order") %>'>New Order</a>
                                                              </li>
-
                                                              <li runat="server" visible='<%# VisibleProductionOrder(Eval("Status").ToString(), Eval("Active")) %>'>
                                                                  <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`);", Eval("Id").ToString(), "Production Order") %>'>Production Order</a>
                                                              </li>
-                                                             
                                                              <li runat="server" visible='<%# VisibleHoldOrder(Eval("Status").ToString(), Eval("Active")) %>'>
                                                                  <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`);", Eval("Id").ToString(), "Hold Order") %>'>Hold Order</a>
                                                              </li>
-
                                                              <li runat="server" visible='<%# VisibleCancelOrder(Eval("Status").ToString(), Eval("Active")) %>'>
                                                                  <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalCancelOrder" onclick='<%# String.Format("return idCancelOrder(`{0}`);", Eval("Id").ToString()) %>'>Cancel Order</a>
                                                              </li>
-                                                             
                                                              <li runat="server" visible='<%# VisibleRestore(Eval("Active")) %>'>
                                                                  <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalRestore" onclick='<%# String.Format("return showRestore(`{0}`);", Eval("Id").ToString()) %>'>Restore</a>
                                                              </li>
-
                                                              <li runat="server" visible='<%# VisibleShipmentOrder(Eval("Status").ToString(), Eval("Active")) %>'>
                                                                  <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalShipmentOrder" onclick='<%# String.Format("return idShipmentOrder(`{0}`);", Eval("Id").ToString()) %>'>Shipment Order</a>
                                                              </li>
-                                                             
                                                              <li runat="server" visible='<%# VisibleReceivePayment(Eval("Status").ToString(), Eval("Active")) %>'>
                                                                  <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`);", Eval("Id").ToString(), "Receive Payment") %>'>Receive Payment</a>
                                                              </li>
-                                                             
                                                              <li runat="server" visible='<%# VisibleCompleteOrder(Eval("Status").ToString(), Eval("Active")) %>'>
                                                                  <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`);", Eval("Id").ToString(), "Complete Order") %>'>Complete Order</a>
                                                              </li>
-
                                                              <li runat="server" visible='<%# VisibleBOEOrder(Eval("Status").ToString(), Eval("Active")) %>'>
                                                                  <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`);", Eval("Id").ToString(), "BOE Download") %>'>Authorize BOE Download</a>
                                                              </li>
-                                                             
                                                              <li runat="server" visible='<%# VisiblePrintDO(Eval("CompanyId").ToString(), Eval("Status").ToString(), Eval("Active")) %>'>
                                                                  <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalPrintDO" onclick='<%# String.Format("return showPrintDO(`{0}`);", Eval("Id").ToString()) %>'>Print Delivery Order</a>
                                                              </li>
-
                                                              <li runat="server" visible='<%# VisibleLog() %>'>
                                                                  <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('OrderHeaders', '<%# Eval("Id") %>')">Log</a>
                                                              </li>
@@ -207,7 +187,6 @@
                 <div class="modal-header">
                     <h5 class="modal-title">Detail Shipment</h5>
                 </div>
-
                 <div class="modal-body">
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover">
@@ -228,7 +207,6 @@
                         </table>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
                 </div>
@@ -242,13 +220,11 @@
                 <div class="modal-header bg-info">
                     <h5 class="modal-title white" id="titleStatus"></h5>
                 </div>
-
                 <div class="modal-body text-center py-4">
                     <asp:TextBox runat="server" ID="txtIdStatusOrder" style="display:none;"></asp:TextBox>
                     <asp:TextBox runat="server" ID="txtStatusOrder" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnStatusOrder" CssClass="btn btn-info" Text="Confirm" OnClick="btnStatusOrder_Click" OnClientClick="return showWaiting();" />
@@ -263,7 +239,6 @@
                 <div class="modal-header bg-danger">
                     <h5 class="modal-title white">Cancel Order</h5>
                 </div>
-
                 <div class="modal-body">
                     <asp:TextBox runat="server" ID="txtIdCancelOrder" style="display:none;"></asp:TextBox>
                     <div class="row mb-3">
@@ -272,7 +247,6 @@
                             <asp:TextBox runat="server" TextMode="MultiLine" ID="txtCancelDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row" runat="server" id="divErrorCancelOrder">
                         <div class="col-12">
                             <div class="alert alert-danger">
@@ -281,7 +255,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnCancelOrder" CssClass="btn btn-danger" Text="Submit" OnClick="btnCancelOrder_Click" />
@@ -297,7 +270,6 @@
                     <h4 class="modal-title">Shipment Order</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
                 <div class="modal-body">
                     <asp:TextBox runat="server" ID="txtIdShipmentOrder" style="display:none;"></asp:TextBox>
                     <div class="row mb-2">
@@ -330,8 +302,7 @@
                             <asp:TextBox runat="server" ID="txtCourier" CssClass="form-control" placeholder="Courier ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-	
-	                <div class="row mb-2" runat="server" id="divErrorShipmentOrder">
+                    <div class="row mb-2" runat="server" id="divErrorShipmentOrder">
                         <div class="col-12">
                             <div class="alert alert-danger">
                                 <span runat="server" id="msgErrorShipmentOrder"></span>
@@ -339,7 +310,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnShipmentOrder" CssClass="btn btn-primary" Text="Submit" OnClick="btnShipmentOrder_Click" />
@@ -354,12 +324,10 @@
                 <div class="modal-header bg-danger">
                     <h5 class="modal-title white">Restore Order</h5>
                 </div>
-
                 <div class="modal-body text-center py-4">
                     <asp:TextBox runat="server" ID="txtIdRestore" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnSubmitRestore" CssClass="btn btn-danger" Text="Confirm" OnClick="btnSubmitRestore_Click" />
@@ -374,12 +342,10 @@
                 <div class="modal-header bg-secondary">
                     <h5 class="modal-title white">Print Delivery Order</h5>
                 </div>
-
                 <div class="modal-body text-center py-4">
                     <asp:TextBox runat="server" ID="txtIdPrintDO" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you want to print the delivery order for this order?
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnPrintDO" CssClass="btn btn-secondary" Text="Confirm" OnClick="btnPrintDO_Click" OnClientClick="return showWaiting($(this).closest('.modal').attr('id'));" />
@@ -395,7 +361,6 @@
                     <h5 class="modal-title">Changelog</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-        
                 <div class="modal-body">
                     <div class="alert alert-danger d-none" id="logError"></div>
                     <div class="table-responsive">

@@ -20,7 +20,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row mb-3">
             <div class="col-12">
@@ -33,13 +32,11 @@
                 </div>
             </div>
         </section>
-
         <section class="row mb-3">
             <div class="col-12 d-flex justify-content-end flex-wrap gap-2">
                 <a runat="server" id="aCreate" class="btn btn-primary" href="#" data-bs-toggle="modal" data-bs-target="#modalCreate">Create Rework</a>
             </div>
         </section>
-
         <section class="row">
             <div class="col-12">
                 <div class="card">
@@ -58,7 +55,6 @@
                                         </asp:DropDownList>
                                     </div>
                                 </div>
-
                                 <div class="col-lg-9 col-md-12 col-sm-12 d-flex justify-content-end">
                                     <asp:Panel runat="server" DefaultButton="btnSearch" Width="50%">
                                         <div class="input-group">
@@ -70,7 +66,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="card-body">
                             <div class="row mb-3">
                                 <div class="col-12">
@@ -121,7 +116,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="card-footer">
                             <div class="row" runat="server" id="divActive">
                                 <div class="col-lg-2 col-md-12 col-sm-12">
@@ -145,7 +139,6 @@
                     <h5 class="modal-title">Changelog</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-        
                 <div class="modal-body">
                     <div class="alert alert-danger d-none" id="logError"></div>
                     <div class="table-responsive">
@@ -164,7 +157,6 @@
                 <div class="modal-header bg-primary">
                     <h5 class="modal-title white">Create Rework</h5>
                 </div>
-
                 <div class="modal-body text-left py-4">
                     <ol>
                         <li>
@@ -177,7 +169,6 @@
                         </li>
                     </ol>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
                     <a runat="server" href="~/order" class="btn btn-primary">Go To Order Page</a>

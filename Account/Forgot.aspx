@@ -30,20 +30,16 @@
                                 <i class="bi bi-person"></i>
                             </div>
                         </div>
-
                         <div class="form-group position-relative has-icon-left">
                             <asp:TextBox runat="server" ID="txtEmail" CssClass="form-control form-control-xl" placeholder="Your Email" autocomplete="off"></asp:TextBox>
                             <div class="form-control-icon">
                                 <i class="bi bi-envelope"></i>
                             </div>
                         </div>
-
                         <div class="alert alert-danger mt-2" runat="server" id="divError">
                             <span runat="server" id="msgError"></span>
                         </div>
-
                         <asp:Button runat="server" ID="btnSend" CssClass="btn btn-primary btn-block btn-lg shadow-lg mt-5" Text="Send" OnClick="btnSend_Click" />
-
                         <div class="text-center mt-3 text-lg fs-4">
                             <p class='text-gray-600'>
                                 Remember your account?
@@ -52,7 +48,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="col-lg-7 d-none d-lg-block">
                     <div id="auth-right"></div>
                 </div>

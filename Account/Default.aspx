@@ -19,7 +19,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row mb-3" runat="server" id="divError">
             <div class="col-12">
@@ -34,7 +33,6 @@
                     <div class="card-header">
                         <h4 class="card-title">Personal Account Information</h4>
                     </div>
-
                     <div class="card-content">
                         <div class="card-body">
                             <div class="row mb-3">
@@ -43,7 +41,6 @@
                                     <br />
                                     <asp:Label runat="server" ID="lblUserName" CssClass="font-bold"></asp:Label>
                                 </div>
-
                                 <div class="col-12 col-sm-12 col-lg-6">
                                     <span>
                                         <label>Full Name</label>
@@ -53,7 +50,6 @@
                                     <asp:Label runat="server" ID="lblFullName" CssClass="font-bold"></asp:Label>
                                 </div>
                             </div>
-
                             <div class="row mb-3">
                                 <div class="col-12 col-sm-12 col-lg-6">
                                     <span>
@@ -64,7 +60,6 @@
                                     <asp:Label runat="server" ID="lblUserEmail" CssClass="font-bold"></asp:Label>
                                 </div>
                             </div>
-
                             <div class="row">
                                 <div class="col-12">
                                     <ul class="list-group list-group-flush">
@@ -79,13 +74,11 @@
                     </div>
                 </div>
             </div>
-
             <div class="col-12 col-sm-12 col-lg-6">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title">Company Account Information</h4>
                     </div>
-
                     <div class="card-content">
                         <div class="card-body">
                             <div class="row mb-5">
@@ -100,7 +93,6 @@
                                     <asp:Label runat="server" ID="lblOperator" CssClass="font-bold"></asp:Label>
                                 </div>
                             </div>
-
                             <div class="row mb-5">
                                 <div class="col-12">
                                     <div class="table-responsive">
@@ -119,7 +111,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="row">
                                 <div class="col-12">
                                     <ul class="list-group list-group-flush">
@@ -146,7 +137,6 @@
                 <div class="modal-header">
                     <h4 class="modal-title">Update Full Name</h4>
                 </div>
-
                 <div class="modal-body">
                     <div class="row mb-2">
                         <div class="col-12 form-group">
@@ -154,7 +144,6 @@
                             <asp:TextBox runat="server" ID="txtFullName" CssClass="form-control" placeholder="Full Name ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row mb-2" runat="server" id="divErrorName">
                         <div class="col-12">
                             <div class="alert alert-danger">
@@ -163,7 +152,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnName" CssClass="btn btn-primary" Text="Submit" OnClick="btnName_Click" />
@@ -178,7 +166,6 @@
                 <div class="modal-header">
                     <h4 class="modal-title">Update Personal Email</h4>
                 </div>
-
                 <div class="modal-body">
                     <div class="row mb-2">
                         <div class="col-12 form-group">
@@ -186,7 +173,6 @@
                             <asp:TextBox runat="server" ID="txtUserEmail" CssClass="form-control" placeholder="Email ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row mb-2" runat="server" id="divErrorEmail">
                         <div class="col-12">
                             <div class="alert alert-danger">
@@ -195,7 +181,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnEmail" CssClass="btn btn-primary" Text="Submit" OnClick="btnEmail_Click" />

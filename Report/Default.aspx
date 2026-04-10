@@ -29,7 +29,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row mb-3" runat="server" id="divError">
             <div class="col-12">
@@ -38,14 +37,12 @@
                 </div>
             </div>
         </section>
-
         <section class="row">
             <div class="col-12 col-sm-12 col-lg-5">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title">Report Filters</h4>
                     </div>
-
                     <div class="card-content">
                         <div class="card-body">
                             <div class="form form-horizontal">
@@ -57,7 +54,6 @@
                                         <asp:DropDownList runat="server" ID="ddlCompany" CssClass="form-select"></asp:DropDownList>
                                     </div>
                                 </div>
-
                                 <div class="row">
                                     <div class="col-12 col-sm-12 col-lg-3">
                                         <label class="form-label">Status</label>
@@ -70,7 +66,6 @@
                                         </asp:DropDownList>
                                     </div>
                                 </div>
-
                                 <div class="row">
                                     <div class="col-12 col-sm-12 col-lg-3">
                                         <label class="form-label">Date</label>
@@ -85,7 +80,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="card-footer text-center">
                         <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" OnClick="btnSubmit_Click" />
                         <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Cancel" OnClick="btnCancel_Click" />
@@ -93,21 +87,18 @@
                 </div>
             </div>
         </section>
-
         <section class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title">Report Output</h4>
                     </div>
-
                     <div class="card-content">
                         <div class="card-body">
                             <div class="list-group list-group-horizontal-sm mb-1 text-center" role="tablist">
                                 <a class="list-group-item list-group-item-action active" id="list-sunday-list" data-bs-toggle="list" href="#list-sunday" role="tab">Output</a>
                                 <a class="list-group-item list-group-item-action" id="list-monday-list" data-bs-toggle="list" href="#list-monday" role="tab">Output Include Customer</a>
                             </div>
-
                             <div class="tab-content text-justify">
                                 <div class="tab-pane fade show active" id="list-sunday" role="tabpanel" aria-labelledby="list-sunday-list">
                                     <div class="row mt-3">
@@ -118,7 +109,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="tab-pane fade" id="list-monday" role="tabpanel" aria-labelledby="list-monday-list">
                                     <div class="row mt-3">
                                         <div class="col-12">
