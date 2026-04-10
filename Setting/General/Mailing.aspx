@@ -33,7 +33,6 @@
                 </div>
             </div>
         </section>
-
         <section class="row">
             <div class="col-12">
                 <div class="card">
@@ -110,7 +109,6 @@
                 <div class="modal-header">
                     <h4 runat="server" class="modal-title" id="titleProcess"></h4>
                 </div>
-
                 <div class="modal-body">
                     <div class="row mb-2">
                         <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
@@ -122,24 +120,20 @@
                             <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Mailing Name ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row mb-2">
                         <div class="col-12 col-sm-12 col-lg-4 mb-2 form-group">
                             <label class="form-label">Server</label>
                             <asp:TextBox runat="server" ID="txtServer" CssClass="form-control" placeholder="Server ..." autocomplete="off"></asp:TextBox>
                         </div>
-
                         <div class="col-12 col-sm-12 col-lg-4 mb-2 form-group">
                             <label class="form-label">Host</label>
                             <asp:TextBox runat="server" ID="txtHost" CssClass="form-control" placeholder="Host ..." autocomplete="off"></asp:TextBox>
                         </div>
-
                         <div class="col-12 col-sm-12 col-lg-4 mb-2 form-group">
                             <label class="form-label">Port</label>
                             <asp:TextBox runat="server" ID="txtPort" CssClass="form-control" placeholder="Port ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row mb-2">
                         <div class="col-12 col-sm-12 col-lg-4 mb-2 form-group">
                             <label class="form-label">Network Credentials</label>
@@ -163,7 +157,6 @@
                             </asp:DropDownList>
                         </div>
                     </div>
-
                     <div class="row mb-2">
                         <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
                             <label class="form-label">Mail Account</label>
@@ -174,7 +167,6 @@
                             <asp:TextBox runat="server" ID="txtPassword" CssClass="form-control" placeholder="Mail Password ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row mb-2">
                         <div class="col-12 col-sm-12 col-lg-6 form-group">
                             <label class="form-label">Mail Alias</label>
@@ -185,7 +177,6 @@
                             <asp:TextBox runat="server" ID="txtSubject" CssClass="form-control" placeholder="Mail Subject ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row mb-2">
                         <div class="col-12 col-sm-12 col-lg-6 form-group">
                             <label class="form-label">Mail TO</label>
@@ -196,21 +187,18 @@
                             <asp:TextBox runat="server" ID="txtCc" CssClass="form-control" placeholder="Mail CC ..." autocomplete="off" TextMode="MultiLine" Height="100px" style="resize:none;"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row mb-2">
                         <div class="col-12 form-group">
                             <label class="form-label">Mail BCC</label>
                             <asp:TextBox runat="server" ID="txtBcc" CssClass="form-control" placeholder="Mail To ..." autocomplete="off" TextMode="MultiLine" Height="100px" style="resize:none;"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row mb-2">
                         <div class="col-12 form-group">
                             <label class="form-label">Description</label>
                             <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row mb-2">
                         <div class="col-12 col-sm-12 col-lg-3 form-group">
                             <label class="form-label">Active</label>
@@ -220,7 +208,6 @@
                             </asp:DropDownList>
                         </div>
                     </div>
-
                     <div class="row mb-2" runat="server" id="divErrorProcess">
                         <div class="col-12">
                             <div class="alert alert-danger">
@@ -229,7 +216,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnProcess" CssClass="btn btn-primary" Text="Submit" OnClick="btnProcess_Click" />
@@ -244,12 +230,10 @@
                 <div class="modal-header bg-info">
                     <h5 class="modal-title white">Copy Mailing</h5>
                 </div>
-
                 <div class="modal-body text-center py-4">
                     <asp:TextBox runat="server" ID="txtIdCopy" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnCopy" CssClass="btn btn-info" Text="Confirm" OnClick="btnCopy_Click" />
@@ -264,12 +248,10 @@
                 <div class="modal-header bg-danger">
                     <h5 class="modal-title white">Delete Mailing</h5>
                 </div>
-
                 <div class="modal-body">
                     <asp:TextBox runat="server" ID="txtIdDelete" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnDelete" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDelete_Click" />
@@ -285,7 +267,6 @@
                     <h5 class="modal-title">Changelog</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
                 <div class="modal-body">
                     <div class="alert alert-danger d-none" id="logError"></div>
                     <div class="table-responsive">

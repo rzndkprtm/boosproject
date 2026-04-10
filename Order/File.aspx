@@ -50,7 +50,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="card-body">
                             <div class="row mb-3">
                                 <div class="col-12">

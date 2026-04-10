@@ -22,7 +22,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row">
             <div class="col-12">
@@ -41,7 +40,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="card-body">
                             <div class="row mb-2" runat="server" id="divError">
                                 <div class="col-12">
@@ -50,7 +48,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="row mb-3">
                                 <div class="col-12">
                                     <div class="table-responsive">
@@ -86,7 +83,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-footer d-flex justify-content-between"></div>
                 </div>
             </div>
         </section>

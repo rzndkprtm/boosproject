@@ -22,7 +22,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row">
             <div class="col-lg-8 col-md-12 col-sm-12">
@@ -30,7 +29,6 @@
                     <div class="card-header">
                         <h4 class="card-title">Add Form</h4>
                     </div>
-
                     <div class="card-content">
                         <div class="card-body">
                             <div class="form form-vertical">
@@ -49,7 +47,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="row mb-2">
                                         <div class="col-12">
                                             <div class="form-group">
@@ -58,7 +55,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="row mb-3">
                                         <div class="col-12">
                                             <div class="form-group">
@@ -67,7 +63,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="row mb-3">
                                         <div class="col-12">
                                             <div class="form-group">
@@ -76,7 +71,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="row mb-3">
                                         <div class="col-12 col-sm-12 col-lg-4 mb-2">
                                             <div class="form-group">
@@ -100,7 +94,6 @@
                                             <asp:Button runat="server" ID="btnAddColour" CssClass="btn btn-sm btn-primary" Text="Add New" OnClick="btnAddColour_Click" />
                                         </div>
                                     </div>
-
                                     <div class="row mb-3">
                                         <div class="col-12">
                                             <div class="form-group">
@@ -109,7 +102,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="row mb-3">
                                         <div class="col-12 col-sm-12 col-lg-3">
                                             <div class="form-group">
@@ -121,7 +113,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="row" runat="server" id="divError">
                                         <div class="col-12">
                                             <div class="alert alert-danger">
@@ -149,7 +140,6 @@
                 <div class="modal-header">
                     <h4 class="modal-title">Add Tube Type</h4>
                 </div>
-
                 <div class="modal-body">
                     <div class="row mb-2">
                         <div class="col-12">
@@ -159,7 +149,6 @@
                             </div>
                         </div>
                     </div>
-            
                     <div class="row mb-2">
                         <div class="col-12">
                             <div class="form-group">
@@ -168,7 +157,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="row mb-2" runat="server" id="divErrorProcessTube">
                         <div class="col-12">
                             <div class="alert alert-danger">
@@ -177,7 +165,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnTube" CssClass="btn btn-primary" Text="Submit" OnClick="btnTube_Click" />
@@ -192,7 +179,6 @@
                 <div class="modal-header">
                     <h4 class="modal-title">Add Control Type</h4>
                 </div>
-
                 <div class="modal-body">
                     <div class="row mb-2">
                         <div class="col-12">
@@ -202,7 +188,6 @@
                             </div>
                         </div>
                     </div>
-                    
                     <div class="row mb-2">
                         <div class="col-12">
                             <div class="form-group">
@@ -211,7 +196,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="row mb-2" runat="server" id="divErrorProcessControl">
                         <div class="col-12">
                             <div class="alert alert-danger">
@@ -220,7 +204,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnControl" CssClass="btn btn-primary" Text="Submit" OnClick="btnControl_Click" />
@@ -235,7 +218,6 @@
                 <div class="modal-header">
                     <h4 class="modal-title">Add Colour Type</h4>
                 </div>
-
                 <div class="modal-body">
                     <div class="row mb-2">
                         <div class="col-12">
@@ -245,7 +227,6 @@
                             </div>
                         </div>
                     </div>
-                
                     <div class="row mb-2">
                         <div class="col-12">
                             <div class="form-group">
@@ -254,7 +235,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="row mb-2" runat="server" id="divErrorProcessColour">
                         <div class="col-12">
                             <div class="alert alert-danger">
@@ -263,7 +243,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnSubmitColour" CssClass="btn btn-primary" Text="Submit" OnClick="btnColour_Click" />

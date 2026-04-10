@@ -21,7 +21,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row" id="divloader">
             <div class="col-12">
@@ -36,7 +35,6 @@
                 </div>
             </div>
         </section>
-
         <div id="divorder" style="display:none;">
             <section class="row">
                 <div class="col-12 col-sm-12 col-lg-7">
@@ -83,7 +81,6 @@
                                                 <select id="blindtype" class="form-select"></select>
                                             </div>
                                         </div>
-
                                         <div class="row">
                                             <div class="col-12 col-sm-12 col-lg-3">
                                                 <label>Colour Type</label>
@@ -92,7 +89,6 @@
                                                 <select id="colourtype" class="form-select"></select>
                                             </div>
                                         </div>
-
                                         <div class="row" id="divsubtype">
                                             <div class="col-12 col-sm-12 col-lg-3">
                                                 <label>Sub Type</label>
@@ -104,7 +100,6 @@
                                                 </div>
                                             </div>
                                         </div>
-
                                         <div id="divdetail">
                                             <hr />
                                             <div class="row">
@@ -115,7 +110,6 @@
                                                     <input type="number" id="qty" class="form-control" autocomplete="off" placeholder="Quantity" value="1" />
                                                 </div>
                                             </div>
-
                                             <div class="row">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Room / Location</label>
@@ -124,7 +118,6 @@
                                                     <input type="text" id="room" class="form-control" autocomplete="off" placeholder="Room / Location" />
                                                 </div>
                                             </div>
-
                                             <div class="row mb-3">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Mounting</label>
@@ -133,7 +126,6 @@
                                                     <select id="mounting" class="form-select"></select>
                                                 </div>
                                             </div>
-
                                             <div class="row mb-2" id="divtassel">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Tassel Option</label>
@@ -147,7 +139,6 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                
                                             <div class="row" id="divfirstblind">
                                                 <div class="col-12">
                                                     <div class="divider divider-left-center">
@@ -155,7 +146,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-
                                             <div id="divsize">
                                                 <div class="row">
                                                     <div class="col-12 col-sm-12 col-lg-3">
@@ -168,7 +158,6 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
                                                 <div class="row">
                                                     <div class="col-12 col-sm-12 col-lg-3">
                                                         <label>Drop</label>
@@ -181,7 +170,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                
                                             <div class="row mt-3" id="divcontrolposition">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Control Position</label>
@@ -190,7 +178,6 @@
                                                     <select id="controlposition" class="form-select"></select>
                                                 </div>
                                             </div>
-
                                             <div class="row" id="divtilterposition">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Tilter Position</label>
@@ -199,7 +186,6 @@
                                                     <select id="tilterposition" class="form-select"></select>
                                                 </div>
                                             </div>
-
                                             <div class="row mt-3" id="divwandlength">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Wand Length</label>
@@ -215,7 +201,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-
                                             <div class="row mt-3" id="divcordlength">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Cord Length</label>
@@ -237,7 +222,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-
                                             <div class="row" id="divfirstend">
                                                 <div class="col-12">
                                                     <div class="divider divider-left-center">
@@ -248,7 +232,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                
                                             <div class="row" id="divsecondblind">
                                                 <div class="col-12">
                                                     <div class="divider divider-left-center">
@@ -256,7 +239,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-
                                             <div id="divsizeb">
                                                 <div class="row">
                                                     <div class="col-12 col-sm-12 col-lg-3">
@@ -269,7 +251,6 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
                                                 <div class="row">
                                                     <div class="col-12 col-sm-12 col-lg-3">
                                                         <label>Drop</label>
@@ -285,7 +266,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                
                                             <div class="row" id="divcordlengthb">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Cord Length</label>
@@ -307,18 +287,15 @@
                                                     </div>
                                                 </div>
                                             </div>
-
                                             <div class="row" id="divsecondend">
                                                 <div class="col-12">
                                                     <div class="divider divider-left-center">
                                                         <div class="divider-text">
                                                             <a class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Second');">Open Layout (Second Blind)</a>
                                                         </div>
-    
                                                     </div>
                                                 </div>
                                             </div>
-
                                             <div class="row" id="divthirdblind">
                                                 <div class="col-12">
                                                     <div class="divider divider-left-center">
@@ -326,7 +303,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-
                                             <div id="divsizec">
                                                 <div class="row">
                                                     <div class="col-12 col-sm-12 col-lg-3">
@@ -339,7 +315,6 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
                                                 <div class="row">
                                                     <div class="col-12 col-sm-12 col-lg-3">
                                                         <label>Drop</label>
@@ -355,7 +330,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                
                                             <div class="row" id="divcordlengthc">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Cord Length</label>
@@ -377,18 +351,15 @@
                                                     </div>
                                                 </div>
                                             </div>
-
                                             <div class="row" id="divthirdend">
                                                 <div class="col-12">
                                                     <div class="divider divider-left-center">
                                                         <div class="divider-text">
                                                             <a class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Third');">Open Layout (Third Blind)</a>
                                                         </div>
-    
                                                     </div>
                                                 </div>
                                             </div>
-
                                             <div id="divvalancesection">
                                                 <div class="row">
                                                     <div class="col-12">
@@ -397,7 +368,6 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
                                                 <div class="row">
                                                     <div class="col-12 col-sm-12 col-lg-3">
                                                         <label>Type</label>
@@ -406,7 +376,6 @@
                                                         <select id="valancetype" class="form-select"></select>
                                                     </div>
                                                 </div>
-
                                                 <div class="row">
                                                     <div class="col-12 col-sm-12 col-lg-3">
                                                         <label>Size</label>
@@ -428,7 +397,6 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
                                                 <div class="row">
                                                     <div class="col-12 col-sm-12 col-lg-3">
                                                         <label>Return Position</label>
@@ -437,7 +405,6 @@
                                                         <select id="returnposition" class="form-select"></select>
                                                     </div>
                                                 </div>
-
                                                 <div class="row">
                                                     <div class="col-12 col-sm-12 col-lg-3">
                                                         <label>Return Length</label>
@@ -460,11 +427,9 @@
                                                     </div>
                                                 </div>
                                             </div>
-
                                             <div class="row">
                                                 <div class="col-12"><hr /></div>
                                             </div>
-                                
                                             <div class="row mt-4 mb-2">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Hold Down Clip</label>
@@ -476,7 +441,6 @@
                                                     </select>
                                                 </div>
                                             </div>
-
                                             <div class="row">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Special Information</label>
@@ -485,7 +449,6 @@
                                                     <textarea class="form-control" id="notes" rows="4" placeholder="Your notes ..." style="resize:none;"></textarea>
                                                 </div>
                                             </div>
-
                                             <div class="row" id="divmarkup">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Mark Up</label>
@@ -502,7 +465,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="card-footer text-center">
                             <a href="javascript:void(0);" id="submit" class="btn btn-primary">Submit</a>
                             <a href="javascript:void(0);" id="cancel" class="btn btn-danger">Cancel</a>
@@ -528,7 +490,6 @@
                                         </ul>
                                         <a class="btn btn-sm btn-primary mt-2 mb-2" data-bs-toggle="modal" data-bs-target="#modalGallery" onclick="return showGallery('Basswood');">Basswood Gallery</a>
                                     </li>
-                                    
                                     <li>
                                         ECONO
                                         <ul>
@@ -539,7 +500,6 @@
                                         </ul>
                                         <a class="btn btn-sm btn-primary mt-2 mb-2" data-bs-toggle="modal" data-bs-target="#modalGallery" onclick="return showGallery('Econo');">Econo Gallery</a>
                                     </li>
-                                    
                                     <li>
                                         ECONO - CORDLESS
                                         <ul>
@@ -565,9 +525,7 @@
                 <div class="modal-header bg-success">
                     <h5 class="modal-title white">Successfully</h5>
                 </div>
-                <div class="modal-body">
-                    Your order has been successfully saved
-                </div>
+                <div class="modal-body">Your order has been successfully saved</div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" id="vieworder" class="btn btn-success w-100" data-bs-dismiss="modal">View Order</a>
                 </div>
@@ -581,11 +539,9 @@
                 <div class="modal-header bg-danger ">
                     <h5 class="modal-title white text-center">Information</h5>
                 </div>
-
                 <div class="modal-body text-center py-4">
                     <span id="errorMsg"></span>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
                 </div>
@@ -620,7 +576,6 @@
                         <a class="list-group-item list-group-item-action" id="list-leftleftright-list" data-bs-toggle="list" href="#list-leftleftright" role="tab">3 on 1 Left - Left - Right</a>
                         <a class="list-group-item list-group-item-action" id="list-leftrightright-list" data-bs-toggle="list" href="#list-leftrightright" role="tab">3 on 1 Left - Right - Right</a>
                     </div>
-
                     <div class="tab-content text-justify">
                         <div class="tab-pane fade show active" id="list-left" role="tabpanel" aria-labelledby="list-left-list">
                             <br />

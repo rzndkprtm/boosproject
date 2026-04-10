@@ -1386,9 +1386,15 @@ Partial Class Order_Add
                             End If
                         End If
 
-                        If blindType = "Complete Set" Then
-                            'If Not String.IsNullOrEmpty(slopi)
-                        End If
+                        'If blindType = "Complete Set" Then
+                        '    If Not String.IsNullOrEmpty(sloping) Then
+                        '        Dim validSloping As String() = {"No", "Yes"}
+                        '        If Not validSloping.Contains(sloping) Then
+                        '            MessageError(True, "PLEASE CHECK YOUR SLOPING !")
+                        '            Exit For
+                        '        End If
+                        '    End If
+                        'End If
 
                         If msgError.InnerText = "" Then
                             Dim totalItems As Integer = 1

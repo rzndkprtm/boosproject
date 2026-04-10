@@ -22,7 +22,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row mb-2" runat="server" id="divError">
             <div class="col-12">
@@ -31,7 +30,6 @@
                 </div>
             </div>
         </section>
-
         <section class="row mb-3">
             <div class="col-12 d-flex flex-wrap justify-content-end gap-1">
                 <asp:Button runat="server" ID="btnEditProduct" CssClass="btn btn-primary" Text="Edit Product" OnClick="btnEditProduct_Click" />
@@ -39,7 +37,6 @@
                 <a href="javascript:void(0);" class="btn btn-secondary" onclick="showLog('Products', '<%= lblId.Text %>')">Log</a>
             </div>
         </section>
-
         <section class="row">
             <div class="col-12">
                 <div class="card">
@@ -51,47 +48,40 @@
                                     <br />
                                     <asp:Label runat="server" ID="lblName" CssClass="form-label font-bold"></asp:Label>
                                 </div>
-
                                 <div class="col-6">
                                     <label>Invoice Name</label>
                                     <br />
                                     <asp:Label runat="server" ID="lblInvoiceName" CssClass="form-label font-bold"></asp:Label>
                                 </div>
                             </div>
-
                             <div class="row mb-3">
                                 <div class="col-12 col-sm-12 col-lg-4 mb-3">
                                     <label>Design Name</label>
                                     <br />
                                     <asp:Label runat="server" ID="lblDesignName" CssClass="form-label font-bold"></asp:Label>
                                 </div>
-
                                 <div class="col-12 col-sm-12 col-lg-4 mb-3">
                                     <label>Blind Name</label>
                                     <br />
                                     <asp:Label runat="server" ID="lblBlindName" CssClass="form-label font-bold"></asp:Label>
                                 </div>
-
                                 <div class="col-12 col-sm-12 col-lg-4 mb-3">
                                     <label>Company Detail</label>
                                     <br />
                                     <asp:Label runat="server" ID="lblCompanyName" CssClass="form-label font-bold"></asp:Label>
                                 </div>
                             </div>
-
                             <div class="row mb-3">
                                 <div class="col-6 col-sm-6 col-lg-4 mb-3">
                                     <label>Tube Type</label>
                                     <br />
                                     <asp:Label runat="server" ID="lblTubeType" CssClass="form-label font-bold"></asp:Label>
                                 </div>
-
                                 <div class="col-6 col-sm-6 col-lg-4 mb-3">
                                     <label>Control Type</label>
                                     <br />
                                     <asp:Label runat="server" ID="lblControlType" CssClass="form-label font-bold"></asp:Label>
                                 </div>
-                                
                                 <div class="col-12 col-sm-12 col-lg-4 mb-3">
                                     <label>Colour Type</label>
                                     <br />
@@ -105,13 +95,11 @@
                                     <br />
                                     <asp:Label runat="server" ID="lblId" CssClass="form-label font-bold"></asp:Label>
                                 </div>
-
                                 <div class="col-6 col-sm-6 col-lg-4 mb-3">
                                     <label>Active</label>
                                     <br />
                                     <asp:Label runat="server" ID="lblActive" CssClass="form-label font-bold"></asp:Label>
                                 </div>
-
                                 <div class="col-12 col-sm-12 col-lg-4 mb-3">
                                     <label>Description</label>
                                     <br />
@@ -123,7 +111,6 @@
                 </div>
             </div>
         </section>
-
         <section class="row">
             <div class="col-12">
                 <div class="card">
@@ -138,7 +125,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="card-body">
                             <div class="row mb-3">
                                 <div class="col-12">
@@ -207,7 +193,6 @@
                 <div class="modal-header">
                     <h4 runat="server" class="modal-title" id="titleProcess"></h4>
                 </div>
-
                 <div class="modal-body">
                     <div class="row mb-2">
                         <div class="col-4 form-group">
@@ -230,21 +215,18 @@
                             </asp:DropDownList>
                         </div>
                     </div>
-
                     <div class="row mb-2">
                         <div class="col-12 form-group">
                             <label class="form-label">Name</label>
                             <asp:TextBox runat="server" ID="txtNameKit" CssClass="form-control" placeholder="Name ..." autocomplete="off" ReadOnly="true"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row mb-2">
                         <div class="col-12 form-group">
                             <label class="form-label">Custom Name</label>
                             <asp:TextBox runat="server" ID="txtCustomName" CssClass="form-control" placeholder="Custom Name ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row mb-2" runat="server" id="divErrorProcessKit">
                         <div class="col-12">
                             <div class="alert alert-danger">
@@ -253,7 +235,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnProcessKit" CssClass="btn btn-primary" Text="Submit" OnClick="btnProcessKit_Click" />
@@ -268,12 +249,10 @@
                 <div class="modal-header bg-danger">
                     <h5 class="modal-title white">Delete Product Kit</h5>
                 </div>
-
                 <div class="modal-body">
                     <asp:TextBox runat="server" ID="txtIdDeleteKit" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnDeleteKit" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDeleteKit_Click" />
@@ -289,7 +268,6 @@
                     <h5 class="modal-title">Changelog</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
                 <div class="modal-body">
                     <div class="alert alert-danger d-none" id="logError"></div>
                     <div class="table-responsive">

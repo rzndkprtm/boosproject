@@ -20,7 +20,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row">
             <div class="col-12">
@@ -46,7 +45,6 @@
                                 <a class="list-group-item list-group-item-action" id="listVideo" data-bs-toggle="list" href="#list-video" role="tab">Video</a>
                                 <a class="list-group-item list-group-item-action" id="listFile" data-bs-toggle="list" href="#list-file" role="tab">PDF</a>
                             </div>
-
                             <div class="tab-content text-justify">
                                 <div class="tab-pane fade show active" id="list-description" role="tabpanel" aria-labelledby="listDescription">
                                     <div class="row mt-5">
@@ -55,7 +53,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="tab-pane fade" id="list-video" role="tabpanel" aria-labelledby="listVideo">
                                     <div class="embed-responsive embed-responsive-item embed-responsive-16by9 w-100">
                                         <div class="row mt-3">
@@ -65,7 +62,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="tab-pane fade" id="list-file" role="tabpanel" aria-labelledby="listFile">
                                     <div class="row mt-3">
                                         <div class="col-12">

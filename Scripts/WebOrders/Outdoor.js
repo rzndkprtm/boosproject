@@ -653,12 +653,6 @@ function bindComponentForm(blindType, controlType, colourType) {
             getBlindName(blindType),
             getControlName(controlType)
         ]).then(([blindName, controlName]) => {
-            if (blindName === "Day & Night") {
-                toggleDisplay(fabday, true);
-                toggleDisplay(fabdays, true);
-                toggleDisplay(fabnight, true);
-            }
-
             if (controlName === "Crank") {
                 toggleDisplay(controllength, true);
             }

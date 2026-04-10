@@ -22,7 +22,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row">
             <div class="col-12 col-sm-12 col-lg-8">
@@ -30,7 +29,6 @@
                     <div class="card-header">
                         <h4 class="card-title">Add Form</h4>
                     </div>
-
                     <div class="card-content">
                         <div class="card-body">
                             <div class="form form-vertical">
@@ -45,14 +43,12 @@
                                             <asp:DropDownList runat="server" ID="ddlBlind" CssClass="form-select"></asp:DropDownList>
                                         </div>
                                     </div>
-
                                     <div class="row mb-2">
                                         <div class="col-12 form-group">
                                             <label>Surcharge Name</label>
                                             <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Surcharge Name ...." autocomplete="off"></asp:TextBox>
                                         </div>
                                     </div>
-
                                     <div class="row mb-2">
                                         <div class="col-3 form-group">
                                             <label>Item Number</label>
@@ -77,14 +73,12 @@
                                             <asp:DropDownList runat="server" ID="ddlPriceGroup" CssClass="form-select"></asp:DropDownList>
                                         </div>
                                     </div>
-
                                     <div class="row mb-2">
                                         <div class="col-12 form-group">
                                             <label>Formula</label>
                                             <asp:TextBox runat="server" TextMode="MultiLine" ID="txtFormula" Height="100px" CssClass="form-control" placeholder="Formula ..." autocomplete="off" style="resize:none;"></asp:TextBox>
                                         </div>
                                     </div>
-
                                     <div class="row mb-2">
                                         <div class="col-6 form-group">
                                             <label>Buy Charge</label>
@@ -95,14 +89,12 @@
                                             <asp:TextBox runat="server" TextMode="MultiLine" ID="txtSellCharge" Height="150px" CssClass="form-control" placeholder="Sell Charge ..." autocomplete="off" style="resize:none;"></asp:TextBox>
                                         </div>
                                     </div>
-
                                     <div class="row mb-2">
                                         <div class="col-12 form-group">
                                             <label>Description</label>
                                             <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
                                         </div>
                                     </div>
-
                                     <div class="row mb-2">
                                         <div class="col-3 form-group">
                                             <label>Active</label>
@@ -112,7 +104,6 @@
                                             </asp:DropDownList>
                                         </div>
                                     </div>
-
                                     <div class="row" runat="server" id="divError">
                                         <div class="col-12">
                                             <div class="alert alert-danger">
@@ -124,7 +115,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="card-footer text-center">
                         <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" OnClick="btnSubmit_Click" />
                         <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Cancel" OnClick="btnCancel_Click" />
@@ -133,4 +123,8 @@
             </div>
         </section>
     </div>
+
+    <script type="text/javascript">
+        window.history.replaceState(null, null, window.location.href);
+    </script>
 </asp:Content>

@@ -282,7 +282,7 @@ Partial Class Setting_General_Mailing
         ddlCompanyId.Items.Clear()
         Try
             ddlCompanyId.DataSource = settingClass.GetDataTable("SELECT * FROM Companys ORDER BY Name ASC")
-            ddlCompanyId.DataTextField = "Name"
+            ddlCompanyId.DataTextField = "Alias"
             ddlCompanyId.DataValueField = "Id"
             ddlCompanyId.DataBind()
 

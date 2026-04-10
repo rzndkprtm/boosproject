@@ -21,7 +21,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row mb-3">
             <div class="col-12 d-flex justify-content-end">
@@ -57,7 +56,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="card-body">
                             <div class="row mb-2" runat="server" id="divError">
                                 <div class="col-12">
@@ -66,7 +64,6 @@
                                     </div>
                                 </div>
                             </div>
-                            
                             <div class="row mb-3">
                                 <div class="col-12">
                                     <div class="table-responsive">
@@ -118,7 +115,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="card-footer">
                         <div class="d-flex">
                             <div class="ms-2 d-inline-block" runat="server" id="divCompanyDetail">
@@ -126,7 +122,6 @@
                                     <span class="input-group-text">Company Detail : </span>
                                     <asp:DropDownList runat="server" ID="ddlCompanyDetailSort" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCompanyDetailSort_SelectedIndexChanged"></asp:DropDownList>
                                 </div>
-                                
                             </div>
                             <div class="ms-2 d-inline-block" runat="server" id="divActive">
                                 <div class="input-group">
@@ -150,12 +145,10 @@
                 <div class="modal-header bg-secondary">
                     <h5 class="modal-title white">Copy Product</h5>
                 </div>
-
                 <div class="modal-body">
                     <asp:TextBox runat="server" ID="txtIdCopy" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnCopy" CssClass="btn btn-secondary" Text="Confirm" OnClick="btnCopy_Click" />
@@ -170,12 +163,10 @@
                 <div class="modal-header bg-danger">
                     <h5 class="modal-title white">Delete Product</h5>
                 </div>
-
                 <div class="modal-body">
                     <asp:TextBox runat="server" ID="txtIdDelete" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnDelete" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDelete_Click" />
@@ -190,13 +181,11 @@
                 <div class="modal-header bg-info">
                     <h5 class="modal-title white" id="titleModalLabelActive"></h5>
                 </div>
-
                 <div class="modal-body">
                     <asp:TextBox runat="server" ID="txtIdActive" style="display:none;"></asp:TextBox>
                     <asp:TextBox runat="server" ID="txtActive" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnActive" CssClass="btn btn-info" Text="Confirm" OnClick="btnActive_Click" />
@@ -212,7 +201,6 @@
                     <h5 class="modal-title">Changelog</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
                 <div class="modal-body">
                     <div class="alert alert-danger d-none" id="logError"></div>
                     <div class="table-responsive">

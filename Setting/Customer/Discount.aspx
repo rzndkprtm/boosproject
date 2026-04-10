@@ -21,7 +21,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row">
             <div class="col-12">
@@ -41,7 +40,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="card-body">
                             <div class="row mb-2" runat="server" id="divError">
                                 <div class="col-12">
@@ -98,7 +96,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="row">
                         <div class="col-12">
                             <div class="table-responsive">

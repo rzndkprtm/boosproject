@@ -21,7 +21,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row mb-3" runat="server" id="divError">
             <div class="col-12">
@@ -30,14 +29,12 @@
                 </div>
             </div>
         </section>
-
         <section class="row mb-3">
             <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
                 <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Add New" OnClick="btnAdd_Click" />
                 <asp:Button runat="server" ID="btnAlias" CssClass="btn btn-secondary" Text="Fabric Alias" OnClick="btnAlias_Click" />
             </div>
         </section>
-
         <section class="row">
             <div class="col-12">
                 <div class="card">
@@ -150,7 +147,6 @@
                     <h5 class="modal-title">Changelog</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
                 <div class="modal-body">
                     <div class="alert alert-danger d-none" id="logError"></div>
                     <div class="table-responsive">

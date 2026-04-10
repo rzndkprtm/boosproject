@@ -21,7 +21,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row">
             <div class="col-12">
@@ -51,7 +50,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="row mb-3">
                                 <div class="col-12">
                                     <div class="table-responsive">
@@ -106,7 +104,6 @@
                 <div class="modal-header">
                     <h4 runat="server" class="modal-title" id="titleProcess"></h4>
                 </div>
-
                 <div class="modal-body">
                     <div class="row mb-2" runat="server" id="divErrorProcess">
                         <div class="col-12">
@@ -115,33 +112,28 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="row">
                         <div class="col-12 form-group">
                             <label class="form-label">Name</label>
                             <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row">
                         <div class="col-6 form-group">
                             <label class="form-label">Item Code</label>
                             <asp:TextBox runat="server" ID="txtItemCode" CssClass="form-control" placeholder="Item Code ..." autocomplete="off"></asp:TextBox>
                         </div>
-
                         <div class="col-6 form-group">
                             <label class="form-label">Account Code</label>
                             <asp:TextBox runat="server" ID="txtAccountCode" CssClass="form-control" placeholder="Account Code ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row">
                         <div class="col-12 form-group">
                             <label class="form-label">Description</label>
                             <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
                         </div>
                     </div>
-                    
                     <div class="row">
                         <div class="col-12 col-sm-12 col-lg-3 form-group">
                             <label class="form-label">Active</label>
@@ -152,7 +144,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnProcess" CssClass="btn btn-primary" Text="Submit" OnClick="btnProcess_Click" />
@@ -167,12 +158,10 @@
                 <div class="modal-header bg-danger">
                     <h5 class="modal-title white">Delete Xero</h5>
                 </div>
-
                 <div class="modal-body">
                     <asp:TextBox runat="server" ID="txtIdDelete" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnDelete" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDelete_Click" />
@@ -188,7 +177,6 @@
                     <h5 class="modal-title">Changelog</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
                 <div class="modal-body">
                     <div class="alert alert-danger d-none" id="logError"></div>
                     <div class="table-responsive">

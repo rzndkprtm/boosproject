@@ -21,7 +21,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row">
             <div class="col-12 col-sm-12 col-lg-8">
@@ -29,7 +28,6 @@
                     <div class="card-header">
                         <h4 class="card-title">Add Form</h4>
                     </div>
-
                     <div class="card-content">
                         <div class="card-body">
                             <div class="form form-vertical">
@@ -46,7 +44,6 @@
                                             <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Customer Name ..." autocomplete="off"></asp:TextBox>
                                         </div>
                                     </div>
-
                                     <div class="row mb-2" runat="server" id="divLevelSponsor">
                                         <div class="col-12 col-sm-12 col-lg-4 mb-2 form-group">
                                             <label class="form-label">Level</label>
@@ -57,13 +54,11 @@
                                                 <asp:ListItem Value="Referral" Text="Referral"></asp:ListItem>
                                             </asp:DropDownList>
                                         </div>
-
                                         <div class="col-12 col-sm-12 col-lg-8 mb-2 form-group">
                                             <label class="form-label">Sponsor</label>
                                             <asp:DropDownList runat="server" ID="ddlSponsor" CssClass="form-select"></asp:DropDownList>
                                         </div>
                                     </div>
-
                                     <div class="row mb-2" runat="server" id="divCompany">
                                         <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
                                             <label class="form-label">Company</label>
@@ -74,7 +69,6 @@
                                             <asp:DropDownList runat="server" ID="ddlCompanyDetail" CssClass="form-select"></asp:DropDownList>
                                         </div>
                                     </div>
-
                                     <div class="row mb-2" runat="server" id="divAreaOperator">
                                         <div class="col-5 col-sm-12 col-lg-6 mb-2 form-group">
                                             <label class="form-label">Area</label>
@@ -98,24 +92,20 @@
                                             <asp:ListBox runat="server" ID="lbOperator" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
                                         </div>
                                     </div>
-
                                     <div class="row mb-2">
                                         <div class="col-12 col-sm-12 col-lg-4 mb-2 form-group">
                                             <label class="form-label">Price Group</label>
                                             <asp:DropDownList runat="server" ID="ddlPriceGroup" CssClass="form-select"></asp:DropDownList>
                                         </div>
-
                                         <div class="col-12 col-sm-12 col-lg-4 form-group">
                                             <label class="form-label">Shutter Price Group</label>
                                             <asp:DropDownList runat="server" ID="ddlPriceGroupShutter" CssClass="form-select"></asp:DropDownList>
                                         </div>
-
                                         <div class="col-12 col-sm-12 col-lg-4 form-group">
                                             <label class="form-label">Door Price Group</label>
                                             <asp:DropDownList runat="server" ID="ddlPriceGroupDoor" CssClass="form-select"></asp:DropDownList>
                                         </div>
                                     </div>
-
                                     <div class="row mb-2">
                                         <div class="col-6 col-sm-12 col-lg-3 mb-2 form-group">
                                             <label class="form-label">On Stop</label>
@@ -146,7 +136,6 @@
                                             </asp:DropDownList>
                                         </div>
                                     </div>
-
                                     <div class="row mb-2">
                                         <div class="col-12 col-sm-12 col-lg-3 form-group">
                                             <label class="form-label">Active</label>
@@ -156,7 +145,6 @@
                                             </asp:DropDownList>
                                         </div>
                                     </div>
-
                                     <div class="row mb-2" runat="server" id="divError">
                                         <div class="col-12">
                                             <div class="alert alert-danger">
@@ -168,7 +156,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="card-footer text-center">
                         <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" OnClick="btnSubmit_Click" />
                         <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Cancel" OnClick="btnCancel_Click" />
@@ -177,4 +164,8 @@
             </div>
         </section>
     </div>
+
+    <script type="text/javascript">
+        window.history.replaceState(null, null, window.location.href);
+    </script>
 </asp:Content>

@@ -50,7 +50,6 @@
                                     </div>
                                 </div>
                             </div>
-                            
                             <div class="row mb-3">
                                 <div class="col-12">
                                     <div class="table-responsive">
@@ -102,14 +101,12 @@
                 <div class="modal-header">
                     <h4 runat="server" class="modal-title" id="titleProcess"></h4>
                 </div>
-
                 <div class="modal-body">
                     <div class="row mb-2">
                         <div class="col-6 form-group">
                             <label class="form-label">Role Access</label>
                             <asp:DropDownList runat="server" ID="ddlRoleId" CssClass="form-select"></asp:DropDownList>
                         </div>
-
                         <div class="col-6 form-group">
                             <label class="form-label">Level Access</label>
                             <asp:DropDownList runat="server" ID="ddlLevelId" CssClass="form-select"></asp:DropDownList>
@@ -121,21 +118,18 @@
                             <asp:TextBox runat="server" ID="txtPage" CssClass="form-control" placeholder="Page ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row mb-2">
                         <div class="col-12 form-group">
                             <label class="form-label">Action</label>
                             <asp:TextBox runat="server" ID="txtAction" CssClass="form-control" placeholder="Action ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row mb-2">
                         <div class="col-12 form-group">
                             <label class="form-label">Description</label>
                             <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row mb-2">
                         <div class="col-12 col-sm-12 col-lg-4 form-group">
                             <label class="form-label">Active</label>
@@ -145,7 +139,6 @@
                             </asp:DropDownList>
                         </div>
                     </div>
-
                     <div class="row mb-2" runat="server" id="divErrorProcess">
                         <div class="col-12">
                             <div class="alert alert-danger">
@@ -154,7 +147,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnProcess" CssClass="btn btn-primary" Text="Submit" OnClick="btnProcess_Click" />
@@ -169,12 +161,10 @@
                 <div class="modal-header bg-danger">
                     <h5 class="modal-title white">Delete Action</h5>
                 </div>
-
                 <div class="modal-body text-center py-4">
                     <asp:TextBox runat="server" ID="txtIdDelete" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnDelete" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDelete_Click" />
@@ -206,12 +196,15 @@
                 });
             }
         });
+
         function showProcess() {
             $("#modalProcess").modal("show");
         }
+
         function showDelete(id) {
             document.getElementById("<%=txtIdDelete.ClientID %>").value = id;
         }
+
         ["modalProcess", "modalDelete"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();

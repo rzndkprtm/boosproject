@@ -1,6 +1,5 @@
 ﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Default.aspx.vb" Inherits="Setting_Price_Promo_Default" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Price Promo" %>
 
-
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-heading">
         <div class="page-title">
@@ -51,7 +50,6 @@
                                     </div>
                                 </div>
                             </div>
-                            
                             <div class="row mb-3">
                                 <div class="col-12">
                                     <div class="table-responsive">
@@ -106,7 +104,6 @@
                 <div class="modal-header">
                     <h4 runat="server" class="modal-title" id="titleProcess"></h4>
                 </div>
-
                 <div class="modal-body">
                     <div class="row mb-2">
                         <div class="col-12 form-group">
@@ -114,7 +111,6 @@
                             <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Promo Name ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row mb-2">
                         <div class="col-6 form-group">
                             <label class="form-label">Start Date</label>
@@ -125,14 +121,12 @@
                             <asp:TextBox runat="server" ID="txtEndDate" TextMode="Date" CssClass="form-control" placeholder="Start Date ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-                    
                     <div class="row mb-2">
                         <div class="col-12 form-group">
                             <label class="form-label">Description</label>
                             <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row mb-2">
                         <div class="col-12 col-sm-12 col-lg-3 form-group">
                             <label class="form-label">Active</label>
@@ -142,7 +136,6 @@
                             </asp:DropDownList>
                         </div>
                     </div>
-
                     <div class="row mb-2" runat="server" id="divErrorProcess">
                         <div class="col-12">
                             <div class="alert alert-danger">
@@ -151,7 +144,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnProcess" CssClass="btn btn-primary" Text="Submit" OnClick="btnProcess_Click" />
@@ -167,7 +159,6 @@
                     <h5 class="modal-title">Changelog</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                
                 <div class="modal-body">
                     <div class="alert alert-danger d-none" id="logError"></div>
                     <div class="table-responsive">

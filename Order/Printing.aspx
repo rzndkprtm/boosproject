@@ -304,13 +304,12 @@
     <asp:HiddenField ID="selected_tab" runat="server" />
 
     <script type="text/javascript">
-        ["modalUpload", "modalUploadB", "modalUploadC", "modalUploadD",
-            "modalDelete", "modalDeleteB", "modalDeleteC", "modalDeleteD"].forEach(id => {
+        ["modalUpload", "modalUploadB", "modalUploadC", "modalUploadD", "modalDelete", "modalDeleteB", "modalDeleteC", "modalDeleteD"].forEach(id => {
             document.getElementById(id).addEventListener("hide.bs.modal", () => {
                 document.activeElement.blur();
                 document.body.focus();
             });
-            });
+        });
 
         window.history.replaceState(null, null, window.location.href);
     </script>

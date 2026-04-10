@@ -21,7 +21,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row mb-3">
             <div class="col-12 d-flex justify-content-end">
@@ -39,7 +38,6 @@
                                         <span class="input-group-text">Designs : </span>
                                         <asp:DropDownList runat="server" ID="ddlDesign" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlDesign_SelectedIndexChanged"></asp:DropDownList>
                                     </div>
-                                    
                                 </div>
                                 <div class="col-12 col-sm-12 col-lg-4 mb-2">
                                     <div class="input-group">
@@ -58,7 +56,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="card-body">
                             <div class="row mb-2" runat="server" id="divError">
                                 <div class="col-12">
@@ -67,7 +64,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="row mb-3">
                                 <div class="col-12">
                                     <div class="table-responsive">
@@ -116,7 +112,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="card-footer">
                         <div class="d-flex">
                             <div class="ms-auto">
@@ -180,7 +175,6 @@
                     <h5 class="modal-title">Changelog</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-    
                 <div class="modal-body">
                     <div class="alert alert-danger d-none" id="logError"></div>
                     <div class="table-responsive">
@@ -216,6 +210,7 @@
                 });
             }
         });
+
         function showDelete(id) {
             document.getElementById("<%=txtIdDelete.ClientID %>").value = id;
         }
