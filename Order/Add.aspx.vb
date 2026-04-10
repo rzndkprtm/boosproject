@@ -1196,6 +1196,9 @@ Partial Class Order_Add
                         Dim bracketExtension As String = (sheetDetail.Cells(row, 21).Text & "").Trim()
                         Dim notes As String = (sheetDetail.Cells(row, 22).Text & "").Trim()
 
+                        'Dim sloping As String = (sheetDetail.Cells(row, 22).Text & "").Trim()
+                        'Dim notes As String = (sheetDetail.Cells(row, 23).Text & "").Trim()
+
                         Dim chainId As String = String.Empty
                         Dim controlLength As String = String.Empty
                         Dim controlLengthValue As Integer = 0
@@ -1248,9 +1251,11 @@ Partial Class Order_Add
                             Exit For
                         End If
 
-                        If String.IsNullOrEmpty(qtyBlade) Then
-                            MessageError(True, "QTY BLADE IS REQUIRED !")
-                            Exit For
+                        If blindType = "Slat Only" OrElse blindType = "Track Only" Then
+                            If String.IsNullOrEmpty(qtyBlade) Then
+                                MessageError(True, "QTY BLADE IS REQUIRED !")
+                                Exit For
+                            End If
                         End If
 
                         Dim validSizeType As String() = {"Opening Size", "Make Size"}
@@ -1285,11 +1290,7 @@ Partial Class Order_Add
 
                         Dim fabricId As String = String.Empty
                         Dim fabricColourId As String = String.Empty
-                        If blindType = "Track Only" Then
-
-                        End If
-
-                        If blindType = "Complete Set" OrElse blindType = "Slat Only" Then
+                        If blindType = "Complete Set" OrElse blindType = "Slat Only" OrElse (blindType = "Track Only" AndAlso fabricInsert = "Yes") Then
                             If String.IsNullOrEmpty(fabricType) Then
                                 MessageError(True, "FABRIC TYPE IS REQUIRED !")
                                 Exit For
@@ -1355,6 +1356,18 @@ Partial Class Order_Add
                             End If
                         End If
 
+                        If blindType = "Track Only" Then
+                            If Not String.IsNullOrEmpty(controlLengthText) AndAlso Not controlLengthText.ToLower().Contains("standard") AndAlso Not controlLengthText.ToLower().Contains("std") Then
+                                controlLength = "Custom"
+                                controlLengthText = controlLengthText.Replace("mm", "")
+
+                                If Not Integer.TryParse(controlLengthText, controlLengthValue) OrElse controlLengthValue < 0 Then
+                                    MessageError(True, "PLEASE CHECK YOUR CONTROL LENGTH !")
+                                    Exit For
+                                End If
+                            End If
+                        End If
+
                         If String.IsNullOrEmpty(bottomJoining) Then
                             MessageError(True, "BOTTOM JOINING IS REQUIRED !")
                             Exit For
@@ -1373,15 +1386,15 @@ Partial Class Order_Add
                             End If
                         End If
 
+                        If blindType = "Complete Set" Then
+                            'If Not String.IsNullOrEmpty(slopi)
+                        End If
+
                         If msgError.InnerText = "" Then
                             Dim totalItems As Integer = 1
 
-                            If bracketExtension = "Standard Bracket" Then
-                                bracketExtension = String.Empty
-                            End If
-                            If bracketExtension = "Extension Bracket" Then
-                                bracketExtension = "Yes"
-                            End If
+                            If bracketExtension = "Standard Bracket" Then bracketExtension = String.Empty
+                            If bracketExtension = "Extension Bracket" Then bracketExtension = "Yes"
 
                             If controlType = "Wand" Then
                                 wandLengthValue = controlLengthValue
@@ -1389,8 +1402,6 @@ Partial Class Order_Add
 
                             Dim groupName As String = String.Format("Vertical - {0} - {1}", blindType, tubeName)
                             Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, designId, companyDetailId)
-
-
 
                             If controlType = "Wand" Then
                                 If stackPosition = "Left" Then controlPosition = "Right"
@@ -1411,6 +1422,8 @@ Partial Class Order_Add
                                     width = qtyBlade * 79 : If qtyBlade < 5 Then width = 591
                                 End If
                             End If
+
+                            If blindType = "Track Only" Then drop = 0
 
                             Dim linearMetre As Decimal = width / 1000
                             Dim squareMetre As Decimal = width * drop / 1000000
