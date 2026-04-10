@@ -3,9 +3,7 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <style>
-        .accordion-button::after {
-            display: none !important;
-        }
+        .accordion-button::after { display: none !important; }
     </style>
     <div class="page-heading">
         <div class="page-title">
@@ -27,7 +25,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row mb-4">
             <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
@@ -38,7 +35,6 @@
                 <a runat="server" href="~/order/rework" class="btn btn-secondary me-1">Close</a>
             </div>
         </section>
-
         <section class="row mb-3">
             <div class="col-12">
                 <div class="row mb-2" runat="server" id="divError">
@@ -50,7 +46,6 @@
                 </div>
             </div>
         </section>
-
         <section class="row">
             <div class="col-12 col-sm-12 col-lg-4">
                 <div class="row">
@@ -89,9 +84,7 @@
                                                 <asp:Label runat="server" ID="lblOrderName" CssClass="font-bold"></asp:Label>
                                             </div>
                                         </div>
-
                                         <hr />
-
                                         <div class="row mb-2">
                                             <div class="col-12">
                                                 <label>Created Date</label>
@@ -128,7 +121,6 @@
                                 <div class="card-header">
                                     <h3 class="card-title">Your Item</h3>
                                 </div>
-                                
                                 <div class="card-body">
                                     <div class="accordion" id="accordionExample">
                                         <asp:Repeater runat="server" ID="rptRework" OnItemDataBound="rptRework_ItemDataBound">
@@ -151,7 +143,6 @@
                                                                             <%# Eval("Category") %>
                                                                         </div>
                                                                     </div>
-
                                                                     <div class="row mb-3">
                                                                         <div class="col-12 col-sm-12 col-lg-3">
                                                                             <label>Install Date :</label>
@@ -160,7 +151,6 @@
                                                                             <%# Eval("InstallDate", "{0:dd MMM yyyy}") %>
                                                                         </div>
                                                                     </div>
-
                                                                     <div class="row mb-3">
                                                                         <div class="col-12 col-sm-12 col-lg-3">
                                                                             <label>Description :</label>
@@ -173,7 +163,6 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
-
                                                                 <div class="col-4 text-end" runat="server" visible='<%# VisibleDetailRework() %>'>
                                                                     <a href="javascript:void(0)" 
                                                                        class="btn btn-sm btn-secondary" 
@@ -191,7 +180,6 @@
                                                                     </a>
                                                                 </div>
                                                             </div>
-
                                                             <div class="row mb-3">
                                                                 <div class="col-12">
                                                                     <div class="table-responsive">
@@ -200,25 +188,17 @@
                                                                             ShowHeaderWhenEmpty="true"
                                                                             CssClass="table table-bordered table-hover mb-0"
                                                                             OnRowCommand="gvFiles_RowCommand">
-
+                                                                            <RowStyle />
                                                                             <Columns>
                                                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="70px">
                                                                                     <ItemTemplate>
                                                                                         <%# Container.DataItemIndex + 1 %>
                                                                                     </ItemTemplate>
                                                                                 </asp:TemplateField>
-
                                                                                 <asp:BoundField DataField="FileName" HeaderText="File Name" />
-
                                                                                 <asp:TemplateField HeaderText="Action" ItemStyle-Width="150px">
                                                                                     <ItemTemplate>
-                                                                                        <a runat="server" 
-                                                                                           class="btn btn-sm btn-primary"
-                                                                                           href='<%# Eval("FilePath") %>' 
-                                                                                           target="_blank">
-                                                                                            View
-                                                                                        </a>
-
+                                                                                        <a runat="server" class="btn btn-sm btn-primary" href='<%# Eval("FilePath") %>' target="_blank">View</a>
                                                                                         <asp:LinkButton runat="server"
                                                                                             CssClass="btn btn-sm btn-danger"
                                                                                             Text="Delete"
@@ -233,7 +213,6 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-
                                                             <div class="row mb-3">
                                                                 <div class="col-8">
                                                                     <div runat="server" visible='<%# VisibleDetailRework() %>'>
@@ -257,7 +236,6 @@
                 </div>
             </div>
         </section>
-
         <section class="row mb-3">
             <div class="col-12">
                 <div class="row mb-2" runat="server" id="divErrorB">

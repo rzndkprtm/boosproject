@@ -19,7 +19,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row">
             <div class="col-12">

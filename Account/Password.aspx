@@ -27,7 +27,6 @@
                     <div class="card-header">
                         <h4 class="card-title">New Password</h4>
                     </div>
-
                     <div class="card-content">
                         <div class="card-body">
                             <div class="form form-horizontal">
@@ -48,7 +47,6 @@
                                             <asp:TextBox runat="server" ID="txtConfirmPassword" TextMode="Password" CssClass="form-control" placeholder="Confirm Password" autocomplete="off"></asp:TextBox>
                                         </div>
                                     </div>
-
                                     <div class="row mb-3">
                                         <div class="col-12 col-sm-12 col-lg-3">&nbsp;</div>
                                         <div class="col-12 col-sm-12 col-lg-3">
@@ -58,7 +56,6 @@
                                             </label>
                                         </div>
                                     </div>
-
                                     <div class="row" runat="server" id="divError">
                                         <div class="col-12">
                                             <div class="alert alert-danger">
@@ -70,7 +67,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="card-footer text-start">
                         <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" OnClick="btnSubmit_Click" />
                     </div>

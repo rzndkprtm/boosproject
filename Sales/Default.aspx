@@ -19,7 +19,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row mb-2" runat="server" id="divError">
             <div class="col-12">
@@ -99,9 +98,12 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-footer text-center"></div>
                 </div>
             </div>
         </section>
     </div>
+
+    <script type="text/javascript">
+        window.history.replaceState(null, null, window.location.href);
+    </script>
 </asp:Content>

@@ -19,7 +19,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row mb-3">
             <div class="col-12">
@@ -32,7 +31,6 @@
                 </div>
             </div>
         </section>
-        
         <div class="container mt-4">
             <div class="mb-5">
                 <h4 class="fw-semibold mb-3">IT</h4>
@@ -43,12 +41,10 @@
                                 <div class="mb-3">
                                     <img runat="server" src="~/Assets/images/avatars.png" class="rounded-circle" style="width:96px;height:96px;object-fit:cover;" />
                                 </div>
-                                
                                 <h6 class="mb-1">Reza Andika Pratama</h6>
                                 <p class="text-muted small mb-3">
                                     System & Application Support
                                 </p>
-                                
                                 <div class="text-start small text-muted">
                                     <p class="mb-2">
                                         <strong>Email</strong><br />
@@ -96,6 +92,5 @@
                 </div>
             </div>--%>
         </div>
-
     </div>
 </asp:Content>

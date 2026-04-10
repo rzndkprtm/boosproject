@@ -20,7 +20,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row">
             <div class="col-12">
@@ -33,7 +32,6 @@
                 </div>
             </div>
         </section>
-
         <section class="row">
             <div class="col-12 col-sm-12 col-lg-8">
                 <div class="card">
@@ -90,7 +88,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-footer"></div>
                 </div>
             </div>
         </section>
@@ -102,7 +99,6 @@
                 <div class="modal-header">
                     <h5 class="modal-title">Detail File</h5>
                 </div>
-
                 <div class="modal-body">
                     <div class="row" runat="server" id="divErrorDetailFile">
                         <div class="col-12">
@@ -111,7 +107,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="row mb-3">
                         <div class="col-12">
                             <div class="table-responsive">
@@ -124,7 +119,6 @@
                                             </ItemTemplate>
                                         </asp:TemplateField>
                                         <asp:BoundField DataField="FileName" HeaderText="File Name" />
-
                                         <asp:TemplateField ItemStyle-Width="200px" ItemStyle-HorizontalAlign="Center">
                                             <ItemTemplate>
                                                 <a class="btn btn-sm btn-primary" href='<%# Eval("FileUrl") %>' target="_blank">Preview</a>
@@ -140,7 +134,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
                 </div>

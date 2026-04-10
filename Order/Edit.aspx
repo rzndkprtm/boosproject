@@ -28,7 +28,6 @@
                     <div class="card-header">
                         <h4 class="card-title">Edit Form</h4>
                     </div>
-
                     <div class="card-content">
                         <div class="card-body">
                             <div class="form form-horizontal">
@@ -41,7 +40,6 @@
                                             <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select"></asp:DropDownList>
                                         </div>
                                     </div>
-
                                     <div class="row mb-3" runat="server" id="divCreatedBy">
                                         <div class="col-12 col-sm-12 col-lg-3">
                                             <label>Created By</label>
@@ -50,7 +48,6 @@
                                             <asp:DropDownList runat="server" ID="ddlCreatedBy" CssClass="choices form-select"></asp:DropDownList>
                                         </div>
                                     </div>
-
                                     <div class="row mb-3">
                                         <div class="col-12 col-sm-12 col-lg-3">
                                             <label>Order ID</label>
@@ -59,7 +56,6 @@
                                             <asp:TextBox runat="server" ID="txtOrderId" CssClass="form-control"></asp:TextBox>
                                         </div>
                                     </div>
-
                                     <div class="row">
                                         <div class="col-12 col-sm-12 col-lg-3">
                                             <label>Order Number</label>
@@ -71,7 +67,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="row mb-3">
                                         <div class="col-12 col-sm-12 col-lg-3">
                                             <label>Order Name</label>
@@ -83,7 +78,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="row mb-3">
                                         <div class="col-12 col-sm-12 col-lg-3">
                                             <label>Order Note</label>
@@ -92,7 +86,6 @@
                                             <asp:TextBox runat="server" TextMode="MultiLine" ID="txtOrderNote" Height="100px" CssClass="form-control" placeholder="Order Note ...." autocomplete="off" style="resize:none;"></asp:TextBox>
                                         </div>
                                     </div>
-
                                     <div class="row mb-3" runat="server" id="divOrderType">
                                         <div class="col-12 col-sm-12 col-lg-3">
                                             <label>Order Type</label>
@@ -104,7 +97,6 @@
                                             </asp:DropDownList>
                                         </div>
                                     </div>
-
                                     <div class="row" runat="server" id="divError">
                                         <div class="col-12">
                                             <div class="alert alert-danger">
@@ -116,7 +108,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="card-footer text-center">
                         <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" OnClick="btnSubmit_Click" />
                         <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Cancel" OnClick="btnCancel_Click" />

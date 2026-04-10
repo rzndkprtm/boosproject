@@ -25,7 +25,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row mb-3">
             <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
@@ -33,7 +32,6 @@
                 <a class="btn btn-secondary" href="#" runat="server" id="aConvert" data-bs-toggle="modal" data-bs-target="#modalConvert">Unarchive Order</a>
             </div>
         </section>
-
         <section class="row mb-3">
             <div class="col-12">
                 <div class="row mb-2" runat="server" id="divError">
@@ -45,7 +43,6 @@
                 </div>
             </div>
         </section>
-
         <section class="row">
             <div class="col-12 col-sm-12 col-lg-7">
                 <div class="card">
@@ -58,7 +55,6 @@
                                     <asp:Label runat="server" ID="lblCustomerName" CssClass="font-bold"></asp:Label>
                                 </div>
                             </div>
-
                             <div class="row mb-3">
                                 <div class="col-12 col-sm-12 col-lg-6 mb-3">
                                     <label>Store Order Number</label>
@@ -75,7 +71,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="col-12 col-sm-12 col-lg-5">
                 <div class="card">
                     <div class="card-content">
@@ -109,7 +104,6 @@
                 </div>
             </div>
         </section>
-
         <section class="row mb-3">
             <div class="col-12">
                 <div class="card">
@@ -117,7 +111,6 @@
                         <div class="card-header">
                             <h3 class="card-title">Your Item</h3>
                         </div>
-
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-12">
@@ -165,11 +158,9 @@
                 <div class="modal-header bg-info">
                     <h5 class="modal-title white">Unarchive Order</h5>
                 </div>
-
                 <div class="modal-body text-center py-4">
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnConvert" CssClass="btn btn-info" Text="Confirm" OnClick="btnConvert_Click" OnClientClick="return showWaiting();" />
@@ -199,7 +190,6 @@
                     $(`#${hideModal}`).modal("hide");
                 }
             }, 30000);
-
             return true;
         }
 
@@ -209,5 +199,7 @@
                 document.body.focus();
             });
         });
+
+        window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

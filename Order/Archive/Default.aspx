@@ -24,7 +24,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row mb-3">
             <div class="col-12">
@@ -61,7 +60,6 @@
                                         </asp:DropDownList>
                                     </div>
                                 </div>
-
                                 <div class="col-12 col-sm-12 col-lg-3 mb-2">
                                     <div class="input-group" runat="server" id="divActive">
                                         <asp:Label runat="server" CssClass="input-group-text" Text="Status"></asp:Label>
@@ -71,7 +69,6 @@
                                         </asp:DropDownList>
                                     </div>
                                 </div>
-
                                 <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
                                     <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
                                         <div class="input-group">
@@ -83,7 +80,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-12">
@@ -108,7 +104,6 @@
                                                         <a class="btn btn-sm btn-secondary" href="#" data-bs-toggle="modal" data-bs-target="#modalShipment" onclick='<%# String.Format("return showShipment(`{0}`, `{1:dd MMM yyyy}`, `{2}`, `{3}`);", Eval("ShipmentNo").ToString(), Eval("Shipped"), Eval("ConNote").ToString(), Eval("Courier").ToString()) %>'>Show</a>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-
                                                 <asp:TemplateField ItemStyle-Width="150px" ItemStyle-HorizontalAlign="Center">
                                                     <ItemTemplate>
                                                         <asp:LinkButton runat="server" ID="linkDetail" CssClass="btn btn-sm btn-primary" Text="Detail" CommandName="Detail" CommandArgument='<%# Eval("OrdID") %>'></asp:LinkButton>
@@ -124,7 +119,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-footer"></div>
                 </div>
             </div>
         </section>
@@ -136,7 +130,6 @@
                 <div class="modal-header">
                     <h5 class="modal-title">Detail Shipment</h5>
                 </div>
-
                 <div class="modal-body">
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover">
@@ -155,7 +148,6 @@
                         </table>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                 </div>
@@ -200,5 +192,7 @@
                 document.body.focus();
             });
         });
+
+        window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>
