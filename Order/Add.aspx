@@ -54,7 +54,7 @@
                                         <div class="col-12 col-sm-12 col-lg-4 form-group">
                                             <asp:DropDownList runat="server" ID="ddlMethod" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlMethod_SelectedIndexChanged">
                                                 <asp:ListItem Value="Manual" Text="Manual Entry"></asp:ListItem>
-                                                <asp:ListItem Value="Upload" Text="File Upload"></asp:ListItem>
+                                                <asp:ListItem Value="Upload" Text="Upload Excel"></asp:ListItem>
                                                 <%--<asp:ListItem Value="API" Text="API Integration"></asp:ListItem>--%>
                                             </asp:DropDownList>
                                         </div>
@@ -122,7 +122,7 @@
                                             </asp:DropDownList>
                                         </div>
                                     </div>
-                                    <div class="row" runat="server" id="divError">
+                                    <div class="row mt-3" runat="server" id="divError">
                                         <div class="col-12">
                                             <div class="alert alert-danger">
                                                 <span runat="server" id="msgError"></span>
