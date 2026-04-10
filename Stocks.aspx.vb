@@ -27,6 +27,8 @@ Partial Class Stocks
             BindDesignShades()
             BindCurtain(txtSearchCurtain.Text)
             BindVertical(txtSearchVertical.Text)
+            BindVenetian()
+            BindAluminium()
         End If
     End Sub
 
@@ -44,9 +46,7 @@ Partial Class Stocks
         End Try
     End Function
 
-    Protected Sub btnSearchRoller_Click(sender As Object, e As EventArgs)
-        BindRoller(txtSearchRoller.Text)
-    End Sub
+    ' ROLLER
 
     Protected Sub BindRoller(searchText As String)
         MessageError_Roller(False, String.Empty)
@@ -60,11 +60,15 @@ Partial Class Stocks
                     New SqlParameter("@CompanyId", companyDetailId),
                     New SqlParameter("@Search", searchText)
                 }
-            gvListRoller.DataSource = stockClass.GetDataTableSP("sp_GetFabricColoursPivot", paramsItem)
+            gvListRoller.DataSource = stockClass.GetDataTableSP("sp_GetStockFabric", paramsItem)
             gvListRoller.DataBind()
         Catch ex As Exception
             MessageError_Roller(True, ex.ToString())
         End Try
+    End Sub
+
+    Protected Sub btnSearchRoller_Click(sender As Object, e As EventArgs)
+        BindRoller(txtSearchRoller.Text)
     End Sub
 
     Protected Sub gvListRoller_RowDataBound(sender As Object, e As GridViewRowEventArgs)
@@ -104,11 +108,15 @@ Partial Class Stocks
                     New SqlParameter("@CompanyId", companyDetailId),
                     New SqlParameter("@Search", String.Empty)
                 }
-            gvListProfile.DataSource = stockClass.GetDataTableSP("sp_GetFabricColoursPivot", paramsItem)
+            gvListProfile.DataSource = stockClass.GetDataTableSP("sp_GetStockFabric", paramsItem)
             gvListProfile.DataBind()
         Catch ex As Exception
             MessageError_Profile(True, ex.ToString())
         End Try
+    End Sub
+
+    Protected Sub MessageError_Profile(visible As Boolean, message As String)
+        divErrorProfile.Visible = visible : msgErrorProfile.InnerText = message
     End Sub
 
     Protected Sub gvListProfile_RowDataBound(sender As Object, e As GridViewRowEventArgs)
@@ -129,10 +137,6 @@ Partial Class Stocks
         End If
     End Sub
 
-    Protected Sub MessageError_Profile(visible As Boolean, message As String)
-        divErrorProfile.Visible = visible : msgErrorProfile.InnerText = message
-    End Sub
-
 
     'CURTAIN
 
@@ -148,11 +152,15 @@ Partial Class Stocks
                     New SqlParameter("@CompanyId", companyDetailId),
                     New SqlParameter("@Search", searchText)
                 }
-            gvListCurtain.DataSource = stockClass.GetDataTableSP("sp_GetFabricColoursPivot", paramsItem)
+            gvListCurtain.DataSource = stockClass.GetDataTableSP("sp_GetStockFabric", paramsItem)
             gvListCurtain.DataBind()
         Catch ex As Exception
             MessageError_Curtain(True, ex.ToString())
         End Try
+    End Sub
+
+    Protected Sub MessageError_Curtain(visible As Boolean, message As String)
+        divErrorCurtain.Visible = visible : msgErrorCurtain.InnerText = message
     End Sub
 
     Protected Sub btnSearchCurtain_Click(sender As Object, e As EventArgs)
@@ -177,10 +185,6 @@ Partial Class Stocks
         End If
     End Sub
 
-    Protected Sub MessageError_Curtain(visible As Boolean, message As String)
-        divErrorCurtain.Visible = visible : msgErrorCurtain.InnerText = message
-    End Sub
-
 
     'VERTICAL
 
@@ -195,7 +199,7 @@ Partial Class Stocks
                     New SqlParameter("@CompanyId", companyDetailId),
                     New SqlParameter("@Search", searchText)
                 }
-            gvListVertical.DataSource = stockClass.GetDataTableSP("sp_GetVerticalFabricColoursPivot", paramsItem)
+            gvListVertical.DataSource = stockClass.GetDataTableSP("sp_GetStockFabricVertical", paramsItem)
             gvListVertical.DataBind()
         Catch ex As Exception
             MessageError_Vertical(True, ex.ToString())
@@ -228,5 +232,88 @@ Partial Class Stocks
         End If
     End Sub
 
+
     ' VENETIAN
+
+    Protected Sub BindVenetian()
+        MessageError_Venetian(False, String.Empty)
+        Try
+            Dim companyDetailId As String = String.Empty
+            If Session("RoleName") = "Customer" OrElse Session("RoleName") = "Sales" OrElse Session("RoleName") = "Customer Service" Then
+                companyDetailId = Session("CompanyDetailId")
+            End If
+            Dim paramsItem As New List(Of SqlParameter) From {
+                    New SqlParameter("@DesignId", "10"),
+                    New SqlParameter("@CompanyDetailId", companyDetailId)
+                }
+            gvListVenetian.DataSource = stockClass.GetDataTableSP("sp_GetStockBlindColour", paramsItem)
+            gvListVenetian.DataBind()
+        Catch ex As Exception
+            MessageError_Venetian(True, ex.ToString())
+        End Try
+    End Sub
+
+    Protected Sub MessageError_Venetian(visible As Boolean, message As String)
+        divErrorVenetian.Visible = visible : msgErrorVenetian.InnerText = message
+    End Sub
+
+    Protected Sub gvListVenetian_RowDataBound(sender As Object, e As GridViewRowEventArgs)
+        If e.Row.RowType = DataControlRowType.DataRow Then
+            For i As Integer = 1 To 6
+                Dim colName As String = "Col" & i & "Active"
+                Dim isActiveObj = DataBinder.Eval(e.Row.DataItem, colName)
+
+                If isActiveObj IsNot Nothing AndAlso Not IsDBNull(isActiveObj) Then
+                    Dim isActive As Integer = Convert.ToInt32(isActiveObj)
+
+                    If isActive = 0 Then
+                        e.Row.Cells(i).BackColor = Drawing.Color.LightCoral
+                        e.Row.Cells(i).ForeColor = Drawing.Color.White
+                    End If
+                End If
+            Next
+        End If
+    End Sub
+
+
+    ' ALUMINIUM
+    Protected Sub BindAluminium()
+        MessageError_Aluminium(False, String.Empty)
+        Try
+            Dim companyDetailId As String = String.Empty
+            If Session("RoleName") = "Customer" OrElse Session("RoleName") = "Sales" OrElse Session("RoleName") = "Customer Service" Then
+                companyDetailId = Session("CompanyDetailId")
+            End If
+            Dim paramsItem As New List(Of SqlParameter) From {
+                    New SqlParameter("@DesignId", "1"),
+                    New SqlParameter("@CompanyDetailId", companyDetailId)
+                }
+            gvListAluminium.DataSource = stockClass.GetDataTableSP("sp_GetStockBlindColour", paramsItem)
+            gvListAluminium.DataBind()
+        Catch ex As Exception
+            MessageError_Aluminium(True, ex.ToString())
+        End Try
+    End Sub
+
+    Protected Sub MessageError_Aluminium(visible As Boolean, message As String)
+        divErrorAluminium.Visible = visible : msgErrorAluminium.InnerText = message
+    End Sub
+
+    Protected Sub gvListAluminium_RowDataBound(sender As Object, e As GridViewRowEventArgs)
+        If e.Row.RowType = DataControlRowType.DataRow Then
+            For i As Integer = 1 To 6
+                Dim colName As String = "Col" & i & "Active"
+                Dim isActiveObj = DataBinder.Eval(e.Row.DataItem, colName)
+
+                If isActiveObj IsNot Nothing AndAlso Not IsDBNull(isActiveObj) Then
+                    Dim isActive As Integer = Convert.ToInt32(isActiveObj)
+
+                    If isActive = 0 Then
+                        e.Row.Cells(i).BackColor = Drawing.Color.LightCoral
+                        e.Row.Cells(i).ForeColor = Drawing.Color.White
+                    End If
+                End If
+            Next
+        End If
+    End Sub
 End Class

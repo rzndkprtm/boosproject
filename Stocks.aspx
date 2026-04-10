@@ -36,6 +36,8 @@
                                 <a class="list-group-item list-group-item-action" id="listVertical" data-bs-toggle="list" href="#list-vertical" role="tab">Vertical</a>
 
                                 <a class="list-group-item list-group-item-action" id="listVenetian" data-bs-toggle="list" href="#list-venetian" role="tab">Venetian</a>
+
+                                <a class="list-group-item list-group-item-action" id="listAluminium" data-bs-toggle="list" href="#list-aluminium" role="tab">Aluminium</a>
                             </div>
                             <div class="tab-content text-justify">
                                 <div class="tab-pane fade show active" id="list-roller" role="tabpanel" aria-labelledby="listRoller">
@@ -206,21 +208,48 @@
                                         </div>
                                     </div>
 
-                                    <div class="row mt-3">
+                                    <div class="row mt-5">
                                         <div class="col-12">
                                             <div class="table-responsive">
-                                                <asp:GridView runat="server" ID="gvListVenetian" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center">
+                                                <asp:GridView runat="server" ID="gvListVenetian" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowDataBound="gvListVenetian_RowDataBound">
                                                     <RowStyle />
                                                     <Columns>
-                                                        <asp:BoundField DataField="FabricType" HeaderText="" />
+                                                        <asp:BoundField DataField="BlindName" HeaderText="" />
                                                         <asp:BoundField DataField="Col1" HeaderText="Colour" />
                                                         <asp:BoundField DataField="Col2" HeaderText="Colour" />
                                                         <asp:BoundField DataField="Col3" HeaderText="Colour" />
                                                         <asp:BoundField DataField="Col4" HeaderText="Colour" />
                                                         <asp:BoundField DataField="Col5" HeaderText="Colour" />
                                                         <asp:BoundField DataField="Col6" HeaderText="Colour" />
-                                                        <asp:BoundField DataField="Col7" HeaderText="Colour" />
-                                                        <asp:BoundField DataField="Col8" HeaderText="Colour" />
+                                                    </Columns>
+                                                </asp:GridView>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="tab-pane fade" id="list-aluminium" role="tabpanel" aria-labelledby="listAluminium">
+                                    <div class="row mt-5" runat="server" id="divErrorAluminium">
+                                        <div class="col-12">
+                                            <div class="alert alert-danger">
+                                                <span runat="server" id="msgErrorAluminium"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mt-5">
+                                        <div class="col-12">
+                                            <div class="table-responsive">
+                                                <asp:GridView runat="server" ID="gvListAluminium" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowDataBound="gvListAluminium_RowDataBound">
+                                                    <RowStyle />
+                                                    <Columns>
+                                                        <asp:BoundField DataField="BlindName" HeaderText="" />
+                                                        <asp:BoundField DataField="Col1" HeaderText="Colour" />
+                                                        <asp:BoundField DataField="Col2" HeaderText="Colour" />
+                                                        <asp:BoundField DataField="Col3" HeaderText="Colour" />
+                                                        <asp:BoundField DataField="Col4" HeaderText="Colour" />
+                                                        <asp:BoundField DataField="Col5" HeaderText="Colour" />
+                                                        <asp:BoundField DataField="Col6" HeaderText="Colour" />
                                                     </Columns>
                                                 </asp:GridView>
                                             </div>
@@ -260,6 +289,9 @@
             });
             $("#listVenetian").on("click", function () {
                 updateSessionValue("list-venetian");
+            });
+            $("#listAluminium").on("click", function () {
+                updateSessionValue("list-aluminium");
             });
         });
 
