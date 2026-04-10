@@ -355,7 +355,7 @@ Partial Class Order_Add
                                 Exit For
                             End If
 
-                            If width <= 300 Then
+                            If width < 300 Then
                                 If controlPosition = "No Control" Then
                                     MessageError(True, "YOUR WIDTH ORDER UNDER 300MM. PLEASE CHANGE PULL CORD POSITION TO NO CONTROL !")
                                     Exit For
@@ -560,7 +560,7 @@ Partial Class Order_Add
                                 Exit For
                             End If
 
-                            If width < 300 Then
+                            If width <= 300 Then
                                 If controlPosition <> "No Control" AndAlso controlPosition <> "N/A" Then
                                     MessageError(True, "YOUR WIDTH ORDER UNDER 300MM. PLEASE CHANGE PULL CORD POSITION TO NO CONTROL !")
                                     Exit For
