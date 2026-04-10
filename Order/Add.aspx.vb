@@ -276,6 +276,7 @@ Partial Class Order_Add
                     Dim blindType As String = If(sheetDetail.Cells(row, 2).Text IsNot Nothing, sheetDetail.Cells(row, 2).Text, "")
 
                     If designType = "Venetian" Then
+                        Dim itemNumber As String = row - 3
                         Dim blindLower As String = blindType.ToLower()
 
                         If blindLower.Contains("aluminium") Then
@@ -308,7 +309,7 @@ Partial Class Order_Add
                             End If
 
                             If qty <> "1" Then
-                                MessageError(True, "PLEASE CHECK YOUR QTY ORDER ! ITEM : " & row.ToString())
+                                MessageError(True, "PLEASE CHECK YOUR QTY ORDER ! ITEM : " & itemNumber)
                                 Exit For
                             End If
 
@@ -1357,20 +1358,20 @@ Partial Class Order_Add
                         End If
 
                         If blindType = "Track Only" Then
-                            If Not String.IsNullOrEmpty(controlLengthText) AndAlso Not controlLengthText.ToLower().Contains("standard") AndAlso Not controlLengthText.ToLower().Contains("std") Then
-                                controlLength = "Custom"
-                                controlLengthText = controlLengthText.Replace("mm", "")
+                            controlLength = "Custom"
+                            controlLengthText = controlLengthText.Replace("mm", "")
 
-                                If Not Integer.TryParse(controlLengthText, controlLengthValue) OrElse controlLengthValue < 0 Then
-                                    MessageError(True, "PLEASE CHECK YOUR CONTROL LENGTH !")
-                                    Exit For
-                                End If
+                            If Not Integer.TryParse(controlLengthText, controlLengthValue) OrElse controlLengthValue < 0 Then
+                                MessageError(True, "PLEASE CHECK YOUR CONTROL LENGTH !")
+                                Exit For
                             End If
                         End If
 
-                        If String.IsNullOrEmpty(bottomJoining) Then
-                            MessageError(True, "BOTTOM JOINING IS REQUIRED !")
-                            Exit For
+                        If blindType = "Complete Set" OrElse blindType = "Slat Only" Then
+                            If String.IsNullOrEmpty(bottomJoining) Then
+                                MessageError(True, "BOTTOM JOINING IS REQUIRED !")
+                                Exit For
+                            End If
                         End If
 
                         If blindType = "Complete Set" OrElse blindType = "Track Only" Then
@@ -2636,6 +2637,8 @@ Partial Class Order_Add
                             End If
                         End If
 
+                        If controlType = "Reg Cord Lock" Then controlColour = "White"
+
                         Dim controlLength As String = String.Empty
                         Dim controlLengthValue As Integer = 0
                         If controlType = "Cord" Then
@@ -2732,6 +2735,10 @@ Partial Class Order_Add
 
                         dataLog = {"OrderDetails", itemId, Session("LoginId").ToString(), "Order Item Added"}
                         orderClass.Logs(dataLog)
+                    End If
+
+                    If designType = "Saphora Drape" Then
+
                     End If
                 Next
             End Using
