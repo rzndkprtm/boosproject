@@ -20,7 +20,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row mb-3">
             <div class="col-12">
@@ -33,7 +32,6 @@
                 </div>
             </div>
         </section>
-
         <section class="row mb-4">
             <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
                 <button class="btn btn-primary dropdown-toggle me-1" type="button" data-bs-toggle="dropdown" aria-expanded="false">Generate PDF</button>
@@ -100,7 +98,6 @@
                 <a href="javascript:void(0);" runat="server" id="aLog" class="btn btn-secondary me-1" onclick="showLogFromElement(this)">Log</a>
             </div>
         </section>
-
         <section class="row">
             <div class="col-12 col-sm-12 col-lg-6">
                 <div class="card">
@@ -166,7 +163,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="col-12 col-sm-12 col-lg-6">
                 <div class="row">
                     <div class="col-12">
@@ -212,7 +208,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="row">
                     <div class="col-12">
                         <div class="card" runat="server" id="divShipmentOrder">
@@ -254,7 +249,6 @@
                 </div>
             </div>
         </section>
-
         <section class="row" runat="server" id="secBuilder">
             <div class="col-12">
                 <div class="card">
@@ -292,7 +286,6 @@
                                     <asp:Label runat="server" ID="lblCheckMeasureDue" CssClass="font-bold"></asp:Label>
                                 </div>
                             </div>
-                            
                             <div class="row mb-1">
                                 <div class="col-2 col-sm-2 col-lg-2">
                                     <label>To Be Installed</label>
@@ -310,7 +303,6 @@
                 </div>
             </div>
         </section>
-
         <section class="row" runat="server" id="secPricing">
             <div class="col-12 col-sm-12 col-lg-6">
                 <div class="card" runat="server" id="divInvoicing">
@@ -342,7 +334,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="col-12 col-sm-12 col-lg-6">
                 <div class="card" runat="server" id="divCosting">
                     <div class="card-content">
@@ -364,13 +355,11 @@
                                     <asp:Label runat="server" ID="lblFinalPriceOrder" CssClass="font-bold"></asp:Label>
                                 </div>
                             </div>
-                            
                         </div>
                     </div>
                 </div>
             </div>
         </section>
-        
         <section class="row mb-3">
             <div class="col-12">
                 <div class="card">
@@ -487,7 +476,6 @@
                 </div>
             </div>
         </section>
-
         <section class="row mb-3">
             <div class="col-12">
                 <div class="row mb-2" runat="server" id="divErrorB">

@@ -21,7 +21,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row">
             <div class="col-12 col-sm-12 col-lg-7">
@@ -29,7 +28,6 @@
                     <div class="card-header">
                         <h4 class="card-title">Edit Form</h4>
                     </div>
-
                     <div class="card-content">
                         <div class="card-body">
                             <div class="form form-horizontal">
@@ -42,7 +40,6 @@
                                             <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
                                         </div>
                                     </div>
-
                                     <div class="row">
                                         <div class="col-12 col-sm-12 col-lg-3">
                                             <label>Design Type</label>
@@ -51,7 +48,6 @@
                                             <asp:ListBox runat="server" ID="lbDesign" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
                                         </div>
                                     </div>
-
                                     <div class="row">
                                         <div class="col-12 col-sm-12 col-lg-3">
                                             <label>Company Detail</label>
@@ -60,7 +56,6 @@
                                             <asp:ListBox runat="server" ID="lbCompanyDetail" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
                                         </div>
                                     </div>
-
                                     <div class="row mb-3">
                                         <div class="col-12 col-sm-12 col-lg-3">
                                             <label>Description</label>
@@ -69,7 +64,6 @@
                                             <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
                                         </div>
                                     </div>
-
                                     <div class="row mb-3">
                                         <div class="col-12 col-sm-12 col-lg-3">
                                             <label>Active</label>
@@ -81,7 +75,6 @@
                                             </asp:DropDownList>
                                         </div>
                                     </div>
-
                                     <div class="row" runat="server" id="divError">
                                         <div class="col-12">
                                             <div class="alert alert-danger">
@@ -93,7 +86,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="card-footer text-center">
                         <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" OnClick="btnSubmit_Click" />
                         <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Cancel" OnClick="btnCancel_Click" />

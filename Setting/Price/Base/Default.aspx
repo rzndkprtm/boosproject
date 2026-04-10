@@ -29,7 +29,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row" runat="server" id="divError">
             <div class="col-12">
@@ -38,13 +37,11 @@
                 </div>
             </div>
         </section>
-
         <section class="row">
             <div class="col-12 d-flex justify-content-end flex-wrap gap-2">
                 <asp:Button runat="server" ID="btnEditable" CssClass="btn btn-primary" Text="Editable Page" OnClick="btnEditable_Click" />
             </div>
         </section>
-
         <section class="row mt-3">
             <div class="col-12 col-sm-12 col-lg-4">
                 <div class="card">
@@ -66,7 +63,6 @@
                                                 </asp:DropDownList>
                                             </div>
                                         </div>
-
                                         <div class="col-12">
                                             <div class="form-group">
                                                 <label>Product Group</label>

@@ -2,15 +2,8 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <style>
-        .card-clickable {
-            cursor: pointer;
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
-            }
-        
-        .card-clickable:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 12px rgba(0,0,0,.15);
-            }
+        .card-clickable { cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; }        
+        .card-clickable:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,.15); }
     </style>
     <div class="page-heading">
         <div class="page-title">
@@ -31,7 +24,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row">
             <div class="col-12 col-sm-12 col-lg-3">
@@ -51,7 +43,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="col-12 col-sm-12 col-lg-3">
                 <div class="card card-clickable" runat="server" id="divBlindType">
                     <div class="card-body px-3 py-4-5">

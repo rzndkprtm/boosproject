@@ -21,7 +21,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row" id="divloader">
             <div class="col-12">
@@ -36,7 +35,6 @@
                 </div>
             </div>
         </section>
-
         <div id="divorder" style="display:none;">
             <section class="row">
                 <div class="col-12 col-sm-12 col-lg-7">
@@ -65,7 +63,6 @@
                     </div>
                 </div>
             </section>
-
             <section class="row">
                 <div class="col-12 col-sm-12 col-lg-7">
                     <div class="card">
@@ -84,7 +81,6 @@
                                                 <select id="blindtype" class="form-select"></select>
                                             </div>
                                         </div>
-
                                         <div class="row">
                                             <div class="col-12 col-sm-12 col-lg-3 mb-1">
                                                 <label>Control Type</label>
@@ -93,7 +89,6 @@
                                                 <select id="controltype" class="form-select"></select>
                                             </div>
                                         </div>
-
                                         <div class="row" style="display:none;">
                                             <div class="col-12 col-sm-12 col-lg-3 mb-1">
                                                 <label>Colour Type</label>
@@ -102,7 +97,6 @@
                                                 <select id="colourtype" class="form-select"></select>
                                             </div>
                                         </div>
-
                                         <div id="divdetail">
                                             <hr />
                                             <div class="row">
@@ -113,7 +107,6 @@
                                                     <input type="number" id="qty" class="form-control" autocomplete="off" placeholder="Quantity" value="1" />
                                                 </div>
                                             </div>
-
                                             <div class="row">
                                                 <div class="col-12 col-sm-12 col-lg-3 mb-1">
                                                     <label>Room / Location</label>
@@ -122,7 +115,6 @@
                                                     <input type="text" id="room" class="form-control" autocomplete="off" placeholder="Room / Location" />
                                                 </div>
                                             </div>
-
                                             <div class="row">
                                                 <div class="col-12 col-sm-12 col-lg-3 mb-1">
                                                     <label>Mounting</label>
@@ -131,7 +123,6 @@
                                                     <select id="mounting" class="form-select"></select>
                                                 </div>
                                             </div>
-
                                             <div class="row mt-3">
                                                 <div class="col-12 col-sm-12 col-lg-3 mb-1">
                                                     <label>Width</label>
@@ -143,7 +134,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-
                                             <div class="row mb-3">
                                                 <div class="col-12 col-sm-12 col-lg-3 mb-1">
                                                     <label>Drop</label>
@@ -155,25 +145,22 @@
                                                     </div>
                                                 </div>
                                             </div>
-
-                                             <div class="row mt-3">
-                                                 <div class="col-12 col-sm-12 col-lg-3 mb-1">
-                                                     <label>Fabric Type</label>
-                                                 </div>
-                                                 <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                                     <select id="fabrictype" class="form-select"></select>
-                                                 </div>
-                                             </div>
-
-                                             <div class="row">
-                                                 <div class="col-12 col-sm-12 col-lg-3 mb-1">
-                                                     <label>Fabric Colour</label>
-                                                 </div>
-                                                 <div class="col-12 col-sm-12 col-lg-5 form-group">
-                                                     <select id="fabriccolour" class="form-select"></select>
-                                                 </div>
-                                             </div>
-
+                                            <div class="row mt-3">
+                                                <div class="col-12 col-sm-12 col-lg-3 mb-1">
+                                                    <label>Fabric Type</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                    <select id="fabrictype" class="form-select"></select>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12 col-sm-12 col-lg-3 mb-1">
+                                                    <label>Fabric Colour</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-5 form-group">
+                                                    <select id="fabriccolour" class="form-select"></select>
+                                                </div>
+                                            </div>
                                             <div class="row mt-3">
                                                 <div class="col-12 col-sm-12 col-lg-3 mb-1">
                                                     <label>Control Position</label>
@@ -186,7 +173,6 @@
                                                     </select>
                                                 </div>
                                             </div>
-
                                             <div class="row" id="divcontrollength">
                                                 <div class="col-12 col-sm-12 col-lg-3 mb-1">
                                                     <label>Control Length</label>
@@ -208,7 +194,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-
                                             <div class="row mt-3">
                                                 <div class="col-12 col-sm-12 col-lg-3 mb-1">
                                                     <label>Special Information</label>
@@ -217,7 +202,6 @@
                                                     <textarea class="form-control" id="notes" rows="4" placeholder="Your notes ..." style="resize:none;"></textarea>
                                                 </div>
                                             </div>
-
                                             <div class="row" id="divmarkup">
                                                 <div class="col-12 col-sm-12 col-lg-3 mb-1">
                                                     <label>Mark Up</label>
@@ -234,7 +218,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="card-footer text-center">
                             <a href="javascript:void(0);" id="submit" class="btn btn-primary">Submit</a>
                             <a href="javascript:void(0);" id="cancel" class="btn btn-danger">Cancel</a>
@@ -266,9 +249,7 @@
                 <div class="modal-header bg-success">
                     <h5 class="modal-title white">Successfully</h5>
                 </div>
-                <div class="modal-body">
-                    Your order has been successfully saved
-                </div>
+                <div class="modal-body">Your order has been successfully saved</div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" id="vieworder" class="btn btn-success w-100" data-bs-dismiss="modal">View Order</a>
                 </div>
@@ -282,11 +263,9 @@
                 <div class="modal-header bg-danger ">
                     <h5 class="modal-title white text-center">Information</h5>
                 </div>
-
                 <div class="modal-body text-center py-4">
                     <span id="errorMsg"></span>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
                 </div>
@@ -323,5 +302,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/WebOrders/Outdoor.js?v=2.0.1"></script>
+    <script src="/Scripts/WebOrders/Outdoor.js?v=2.0.2"></script>
 </asp:Content>

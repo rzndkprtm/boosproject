@@ -22,7 +22,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row" runat="server" id="divError">
             <div class="col-12">
@@ -31,7 +30,6 @@
                 </div>
             </div>
         </section>
-
         <section class="row mt-3">
             <div class="col-12 col-sm-12 col-lg-6">
                 <div class="card">

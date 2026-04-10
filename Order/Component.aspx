@@ -21,7 +21,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row" id="divloader" style="display:none;">
             <div class="col-12">
@@ -36,7 +35,6 @@
                 </div>
             </div>
         </section>
-
         <div id="divorder" style="display:none;">
             <section class="row">
                 <div class="col-12 col-sm-12 col-lg-7">
@@ -72,9 +70,7 @@
                             <h4 class="card-title" id="cardtitle"></h4>
                         </div>
                         <div class="card-content">
-                            <div class="card-body">
-
-                            </div>
+                            <div class="card-body"></div>
                         </div>
                         <div class="card-footer text-center">
                             <a href="javascript:void(0);" id="submit" class="btn btn-primary">Submit</a>
@@ -123,9 +119,7 @@
                 <div class="modal-header bg-success">
                     <h5 class="modal-title white">Successfully</h5>
                 </div>
-                <div class="modal-body">
-                    Your order has been successfully saved
-                </div>
+                <div class="modal-body">Your order has been successfully saved</div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" id="vieworder" class="btn btn-success w-100" data-bs-dismiss="modal">View Order</a>
                 </div>
@@ -139,11 +133,9 @@
                 <div class="modal-header bg-danger ">
                     <h5 class="modal-title white text-center">Information</h5>
                 </div>
-
                 <div class="modal-body text-center py-4">
                     <span id="errorMsg"></span>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
                 </div>

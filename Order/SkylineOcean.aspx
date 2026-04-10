@@ -21,7 +21,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row" id="divloader">
             <div class="col-12">
@@ -65,7 +64,6 @@
                     </div>
                 </div>
             </section>
-
             <section class="row">
                 <div class="col-12 col-sm-12 col-lg-7">
                     <div class="card">
@@ -102,7 +100,6 @@
                                                     <input type="number" id="qty" class="form-control" autocomplete="off" placeholder="Quantity" value="1" />
                                                 </div>
                                             </div>
-
                                             <div class="row">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Room / Location</label>
@@ -111,7 +108,6 @@
                                                     <input type="text" id="room" class="form-control" autocomplete="off" placeholder="Room / Location" />
                                                 </div>
                                             </div>
-
                                             <div class="row mb-3">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Mounting</label>
@@ -120,7 +116,6 @@
                                                     <select id="mounting" class="form-select"></select>
                                                 </div>
                                             </div>
-
                                             <div class="row mb-3" id="divsemiinside">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Semi Inside Mount</label>
@@ -132,7 +127,6 @@
                                                     </select>
                                                 </div>
                                             </div>
-
                                             <div class="row mb-3">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Size</label>
@@ -150,7 +144,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-
                                             <div class="row">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Louvre Size</label>
@@ -164,7 +157,6 @@
                                                     </select>
                                                 </div>
                                             </div>
-
                                             <div class="row" id="divlouvreposition">
                                                 <div class="col-12 col-sm-12 col-lg-4">
                                                     <label>Louvre Position</label>
@@ -177,7 +169,6 @@
                                                     </select>
                                                 </div>
                                             </div>
-
                                             <div class="row mt-3">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Midrail Height</label>
@@ -195,7 +186,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-
                                             <div class="row" id="divmidrailcritical">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Critical Midrail</label>
@@ -204,7 +194,6 @@
                                                     <select id="midrailcritical" class="form-select"></select>
                                                 </div>
                                             </div>
-
                                             <div class="row mt-3" id="divpanelqty">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Panel Qty</label>
@@ -235,7 +224,6 @@
                                                     </select>
                                                 </div>
                                             </div>
-
                                             <div class="row" id="divjoinedpanels">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Co-Joined Panels</label>
@@ -247,7 +235,6 @@
                                                     </select>
                                                 </div>
                                             </div>
-
                                             <div class="row mt-3" id="divhingecolour">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Hinge Colour</label>
@@ -262,7 +249,6 @@
                                                     </select>
                                                 </div>
                                             </div>
-
                                             <div class="row" id="divhingesloose">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Hinges Loose</label>
@@ -274,7 +260,6 @@
                                                     </select>
                                                 </div>
                                             </div>
-
                                             <div class="row mt-3" id="divcustomheaderlength">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Custom Header</label>
@@ -286,7 +271,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-
                                             <div class="row mt-3" id="divlayoutcode">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Layout Code</label>
@@ -301,7 +285,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-
                                             <div class="row mt-3" id="divframetype">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Frame Type</label>
@@ -310,7 +293,6 @@
                                                     <select id="frametype" class="form-select"></select>
                                                 </div>
                                             </div>
-
                                             <div class="row" id="divframeleft">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Left Frame</label>
@@ -319,7 +301,6 @@
                                                     <select id="frameleft" class="form-select"></select>
                                                 </div>
                                             </div>
-
                                             <div class="row" id="divframeright">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Right Frame</label>
@@ -328,7 +309,6 @@
                                                     <select id="frameright" class="form-select"></select>
                                                 </div>
                                             </div>
-
                                             <div class="row" id="divframetop">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Top Frame</label>
@@ -337,7 +317,6 @@
                                                     <select id="frametop" class="form-select"></select>
                                                 </div>
                                             </div>
-
                                             <div class="row" id="divframebottom">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Bottom Frame</label>
@@ -346,7 +325,6 @@
                                                     <select id="framebottom" class="form-select"></select>
                                                 </div>
                                             </div>
-
                                             <div class="row" id="divbottomtracktype">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Bottom Track Type</label>
@@ -355,7 +333,6 @@
                                                     <select id="bottomtracktype" class="form-select"></select>
                                                 </div>
                                             </div>
-
                                             <div class="row" id="divbottomtrackrecess">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Bottom Track Recess</label>
@@ -367,7 +344,6 @@
                                                     </select>
                                                 </div>
                                             </div>
-
                                             <div class="row mt-3" id="divbuildout">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Buildout</label>
@@ -380,7 +356,6 @@
                                                     </select>
                                                 </div>
                                             </div>
-
                                             <div class="row" id="divbuildoutposition">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Buildout Position</label>
@@ -393,7 +368,6 @@
                                                     </select>
                                                 </div>
                                             </div>
-
                                             <div class="row mt-3" id="divsamesizepanel">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Same Size Panel</label>
@@ -405,7 +379,6 @@
                                                     </select>
                                                 </div>
                                             </div>
-
                                             <div class="mb-2 row" id="divgappost">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>GAP / T-Post</label>
@@ -447,9 +420,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            <%--DISINI GAP--%>
-
                                             <div class="row mt-3" id="divhorizontaltpost">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Horizontal T-Post</label>
@@ -470,7 +440,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-
                                             <div class="row mt-3" id="divtiltrodtype">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Tiltrod Type</label>
@@ -486,7 +455,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-
                                             <div class="row" id="divtiltrodsplit">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Split Tiltrod</label>
@@ -497,7 +465,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-
                                             <div class="row" id="divtiltrodheight">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Split Height</label>
@@ -515,7 +482,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                
                                             <div class="row mt-3" id="divpelmetflat">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Pelmet Flat Packed</label>
@@ -527,7 +493,6 @@
                                                     </select>
                                                 </div>
                                             </div>
-
                                             <div class="row" id="divreversehinged">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Reverse Hinged</label>
@@ -539,7 +504,6 @@
                                                     </select>
                                                 </div>
                                             </div>
-
                                             <div class="row" id="divextrafascia">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Extra Fascia</label>
@@ -551,7 +515,6 @@
                                                     </select>
                                                 </div>
                                             </div>
-
                                             <div class="row mt-3" id="divcutout">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>French Door Cut-Out</label>
@@ -563,7 +526,6 @@
                                                     </select>
                                                 </div>
                                             </div>
-
                                             <div class="row" id="divspecialshape">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Special Shape</label>
@@ -575,7 +537,6 @@
                                                     </select>
                                                 </div>
                                             </div>
-
                                             <div class="row" id="divtemplateprovided">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Template Provided</label>
@@ -587,7 +548,6 @@
                                                     </select>
                                                 </div>
                                             </div>
-
                                             <div class="row mt-3">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Special Information</label>
@@ -596,7 +556,6 @@
                                                     <textarea class="form-control" id="notes" rows="4" placeholder="Your notes ..." style="resize:none;"></textarea>
                                                 </div>
                                             </div>
-
                                             <div class="row" id="divmarkup">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Mark Up</label>
@@ -613,7 +572,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="card-footer text-center">
                             <a href="javascript:void(0);" id="submit" class="btn btn-primary">Submit</a>
                             <a href="javascript:void(0);" id="cancel" class="btn btn-danger">Cancel</a>
@@ -641,9 +599,7 @@
                 <div class="modal-header bg-success">
                     <h5 class="modal-title white">Successfully</h5>
                 </div>
-                <div class="modal-body">
-                    Your order has been successfully saved
-                </div>
+                <div class="modal-body">Your order has been successfully saved</div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" id="vieworder" class="btn btn-success w-100" data-bs-dismiss="modal">View Order</a>
                 </div>
@@ -657,11 +613,9 @@
                 <div class="modal-header bg-danger ">
                     <h5 class="modal-title white text-center">Information</h5>
                 </div>
-
                 <div class="modal-body text-center py-4">
                     <span id="errorMsg"></span>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
                 </div>

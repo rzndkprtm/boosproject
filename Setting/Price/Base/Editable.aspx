@@ -22,7 +22,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row" runat="server" id="divError">
             <div class="col-12">
@@ -31,14 +30,12 @@
                 </div>
             </div>
         </section>
-
         <section class="row">
             <div class="col-12 d-flex justify-content-end flex-wrap gap-2">
                 <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Add New" OnClick="btnAdd_Click" />
                 <asp:Button runat="server" ID="btnImport" CssClass="btn btn-secondary" Text="Import" OnClick="btnImport_Click" />
             </div>
         </section>
-
         <section class="row mt-3">
             <div class="col-12 col-sm-12 col-lg-5">
                 <div class="card">
@@ -60,14 +57,12 @@
                                                 </asp:DropDownList>
                                             </div>
                                         </div>
-
                                         <div class="col-12">
                                             <div class="form-group">
                                                 <label>Product Group</label>
                                                 <asp:DropDownList runat="server" ID="ddlProductGroup" CssClass="choices form-select"></asp:DropDownList>
                                             </div>
                                         </div>
-
                                         <div class="col-12">
                                             <div class="form-group">
                                                 <label>Method</label>
@@ -79,14 +74,12 @@
                                                 </asp:DropDownList>
                                             </div>
                                         </div>
-
                                         <div class="col-12">
                                             <div class="form-group">
                                                 <label>Price Group</label>
                                                 <asp:DropDownList runat="server" ID="ddlPriceGroup" CssClass="choices form-select"></asp:DropDownList>
                                             </div>
                                         </div>
-
                                         <div class="col-12">
                                             <div class="form-group">
                                                 <label>Height</label>
@@ -96,7 +89,6 @@
                                                 </div>
                                             </div>
                                         </div>
-
                                         <div class="col-12">
                                             <div class="form-group">
                                                 <label>Width</label>
@@ -149,7 +141,6 @@
                                                             <li runat="server" visible='<%# PageAction("Detail") %>'>
                                                                 <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                             </li>
-
                                                             <li runat="server" visible='<%# PageAction("Delete") %>'>
                                                                 <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                             </li>
@@ -180,7 +171,6 @@
                 <div class="modal-header">
                     <h4 runat="server" class="modal-title" id="titleProcess"></h4>
                 </div>
-
                 <div class="modal-body">
                     <div class="row mb-2" runat="server" id="divCategoryMethod">
                         <div class="col-6 form-group">
@@ -250,7 +240,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnProcess" CssClass="btn btn-primary" Text="Submit" OnClick="btnProcess_Click" />
@@ -284,7 +273,6 @@
                     <h5 class="modal-title">Changelog</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-    
                 <div class="modal-body">
                     <div class="alert alert-danger d-none" id="logError"></div>
                     <div class="table-responsive">

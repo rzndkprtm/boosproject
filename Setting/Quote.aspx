@@ -19,7 +19,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row">
             <div class="col-12">
@@ -33,7 +32,6 @@
             </div>
         </section>
     </div>
-
     <section class="row">
         <div class="col-12 col-sm-12 col-lg-7">
             <div class="card">
@@ -50,21 +48,18 @@
                                 </div>
                                 <asp:Image runat="server" CssClass="w-100" ID="imgQuote" />
                             </a>
-
                             <a href="javascript:void(0);" class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#modalAddress">
                                 <div class="d-flex w-100 justify-content-between">
                                     <h6 class="mb-1">Section 2 - Address</h6>
                                 </div>
                                 <p class="mt-2" runat="server" id="pAddress"></p>
                             </a>
-
                             <a href="javascript:void(0);" class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#modalContact">
                                 <div class="d-flex w-100 justify-content-between">
                                     <h6 class="mb-1">Section 3 - Contact</h6>
                                 </div>
                                 <p class="mt-2" runat="server" id="pContact"></p>
                             </a>
-
                             <a href="javascript:void(0);" class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#modalTerms">
                                 <div class="d-flex w-100 justify-content-between">
                                     <h6 class="mb-1">Section 4 - Terms & Conditions</h6>
@@ -76,7 +71,6 @@
                 </div>
             </div>
         </div>
-
         <div class="col-12 col-sm-12 col-lg-5">
             <div class="card">
                 <div class="card-header">
@@ -93,14 +87,12 @@
             </div>
         </div>
     </section>
-
     <div class="modal fade text-left" id="modalLogo" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">Update Quotation Logo</h4>
                 </div>
-
                 <div class="modal-body">
                     <div class="row mb-2" runat="server" id="divErrorLogo">
                         <div class="col-12">
@@ -109,7 +101,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="row mb-2">
                         <div class="col-12 form-group">
                             <label class="form-label">Your Logo</label>
@@ -117,7 +108,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnLogo" CssClass="btn btn-primary" Text="Submit" OnClick="btnLogo_Click" />
@@ -132,7 +122,6 @@
                 <div class="modal-header">
                     <h4 class="modal-title">Update Quotation Address</h4>
                 </div>
-
                 <div class="modal-body">
                     <div class="row mb-2" runat="server" id="divErrorAddress">
                         <div class="col-12">
@@ -141,14 +130,12 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="row">
                         <div class="col-12 form-group">
                             <label class="form-label">Address</label>
                             <asp:TextBox runat="server" ID="txtAddress" CssClass="form-control" placeholder="Address ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row">
                         <div class="col-6 form-group">
                             <label class="form-label">Suburb</label>
@@ -167,7 +154,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnAddress" CssClass="btn btn-primary" Text="Submit" OnClick="btnAddress_Click" />
@@ -182,7 +168,6 @@
                 <div class="modal-header">
                     <h4 class="modal-title">Update Quotation Contact</h4>
                 </div>
-
                 <div class="modal-body">
                     <div class="row mb-2" runat="server" id="divErrorContact">
                         <div class="col-12">
@@ -191,14 +176,12 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="row mb-2">
                         <div class="col-12 form-group">
                             <label class="form-label">Email</label>
                             <asp:TextBox runat="server" ID="txtEmail" CssClass="form-control" placeholder="Email ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row mb-2">
                         <div class="col-12 form-group">
                             <label class="form-label">Phone</label>
@@ -206,7 +189,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnContact" CssClass="btn btn-primary" Text="Submit" OnClick="btnContact_Click" />
@@ -221,7 +203,6 @@
                 <div class="modal-header">
                     <h4 class="modal-title">Update Quotation Terms & Conditions</h4>
                 </div>
-
                 <div class="modal-body">
                     <div class="row mb-2" runat="server" id="divErrorTerms">
                         <div class="col-12">
@@ -230,7 +211,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="row mb-2">
                         <div class="col-12 form-group">
                             <label class="form-label">Terms & Conditions</label>
@@ -238,7 +218,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnTerms" CssClass="btn btn-primary" Text="Submit" OnClick="btnTerms_Click" />
@@ -266,7 +245,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
@@ -283,12 +261,15 @@
         function showLogo() {
             $("#modalLogo").modal("show");
         }
+
         function showAddress() {
             $("#modalAddress").modal("show");
         }
+
         function showContact() {
             $("#modalContact").modal("show");
         }
+
         function showTerms() {
             $("#modalTerms").modal("show");
         }

@@ -53,20 +53,12 @@
                                         </div>
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-end shadow-lg">
-                                        <li>
-                                            <a class="dropdown-item" href='<%= ResolveUrl("~/account?uid=" & Session("LoginId")) %>'>My Account</a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item" runat="server" href="~/account/password">Change Password</a>
-                                        </li>
-                                        
+                                        <li><a class="dropdown-item" href='<%= ResolveUrl("~/account?uid=" & Session("LoginId")) %>'>My Account</a></li>
+                                        <li><a class="dropdown-item" runat="server" href="~/account/password">Change Password</a></li>
                                         <li><hr class="dropdown-divider"></li>
-                                        <li>
-                                            <asp:LinkButton runat="server" ID="linkLogout" CssClass="dropdown-item" Text="Logout" OnClick="linkLogout_Click"></asp:LinkButton>
-                                        </li>
+                                        <li><asp:LinkButton runat="server" ID="linkLogout" CssClass="dropdown-item" Text="Logout" OnClick="linkLogout_Click"></asp:LinkButton></li>
                                     </ul>
                                 </div>
-                                
                                 <a href="#" class="burger-btn d-block d-xl-none">
                                     <i class="bi bi-justify fs-3"></i>
                                 </a>
@@ -82,70 +74,60 @@
                                         <span>Home</span>
                                     </a>
                                 </li>
-                                
                                 <li class="menu-item">
                                     <a runat="server" href="~/order" class='menu-link'>
                                         <i class="bi bi-basket-fill"></i>
                                         <span>Order</span>
                                     </a>
                                 </li>
-                                
                                 <li class="menu-item" runat="server" id="liOldOrder">
                                     <a runat="server" href="~/order/archive" class='menu-link'>
                                         <i class="bi bi-archive-fill"></i>
                                         <span>Archive Order</span>
                                     </a>
                                 </li>
-                                
                                 <li class="menu-item" runat="server" id="liGuide">
                                     <a runat="server" href="~/guide" class='menu-link'>
                                         <i class="bi bi-book-fill"></i>
                                         <span>Guide</span>
                                     </a>
                                 </li>
-
                                 <li class="menu-item" runat="server" id="liStocks">
                                     <a runat="server" href="~/stocks" class='menu-link'>
                                         <i class="bi bi-ui-checks"></i>
                                         <span>Stocks</span>
                                     </a>
                                 </li>
-
                                 <li class="menu-item" runat="server" id="liTicket">
                                     <a runat="server" href="~/ticket" class='menu-link'>
                                         <i class="bi bi-envelope-fill"></i>
                                         <span>Ticket</span>
                                     </a>
                                 </li>
-
                                 <li class="menu-item" runat="server" id="liExport">
                                     <a runat="server" href="~/export" class='menu-link'>
                                         <i class="bi bi-cloud-download-fill"></i>
                                         <span>Export</span>
                                     </a>
                                 </li>
-
                                 <li class="menu-item" runat="server" id="liReport">
                                     <a runat="server" href="~/report" class='menu-link'>
                                         <i class="bi bi-file-earmark-bar-graph-fill"></i>
                                         <span>Report</span>
                                     </a>
                                 </li>
-
                                 <li class="menu-item" runat="server" id="liSales">
                                     <a runat="server" href="~/sales" class='menu-link'>
                                         <i class="bi bi-wallet-fill"></i>
                                         <span>Sales</span>
                                     </a>
                                 </li>
-
                                 <li class="menu-item" runat="server" id="liSettingQuote">
                                     <a href='<%= ResolveUrl("~/setting/quote?accountid=" & Session("CustomerId")) %>' class="menu-link">
                                         <i class="bi bi-gear-fill"></i>
                                         <span>Quote Setting</span>
                                     </a>
                                 </li>
-
                                 <li class="menu-item has-sub" runat="server" id="liSetting">
                                     <a href="javascript:void(0);" class='menu-link'>
                                         <i class="bi bi-gear-fill"></i>
@@ -160,31 +142,27 @@
                                                         <li class="subsubmenu-item" runat="server" id="liGeneralCompany">
                                                             <a runat="server" href="~/setting/general/company" class="subsubmenu-link">Company</a>
                                                         </li>
-                                                        
                                                         <li class="subsubmenu-item" runat="server" id="liGeneralMailing">
                                                             <a runat="server" href="~/setting/general/mailing" class="subsubmenu-link">Mailing</a>
                                                         </li>
-                                                        
                                                         <li class="subsubmenu-item" runat="server" id="liGeneralXero">
                                                             <a runat="server" href="~/setting/general/xero" class="subsubmenu-link">Xero</a>
                                                         </li>
-                                                        
                                                         <li class="subsubmenu-item" runat="server" id="liGeneralRoleAccess">
                                                             <a runat="server" href="~/setting/general/roleaccess" class="subsubmenu-link">Role Access</a>
                                                         </li>
-
                                                         <li class="subsubmenu-item" runat="server" id="liGeneralLevelAccess">
                                                             <a runat="server" href="~/setting/general/levelaccess" class="subsubmenu-link">Level Access</a>
                                                         </li>
-                                                        
+                                                        <li class="subsubmenu-item" runat="server" id="liGeneralNotification">
+                                                            <a runat="server" href="~/setting/general/notification" class="subsubmenu-link">Notification</a>
+                                                        </li>
                                                         <li class="subsubmenu-item" runat="server" id="liGeneralNewsletter">
                                                             <a runat="server" href="~/setting/general/newsletter" class="subsubmenu-link">Newsletter</a>
                                                         </li>
-                                                        
                                                         <li class="subsubmenu-item" runat="server" id="liGeneralTutorial">
                                                             <a runat="server" href="~/setting/general/tutorial" class="subsubmenu-link">Tutorial</a>
                                                         </li>
-                                                        
                                                         <li class="subsubmenu-item" runat="server" id="liGeneralAccess">
                                                             <a runat="server" href="~/setting/general/actionaccess" class="subsubmenu-link">Action Access</a>
                                                         </li>
@@ -197,39 +175,30 @@
                                                         <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/customer" class="subsubmenu-link">Customer</a>
                                                         </li>
-                                                        
                                                         <li class="subsubmenu-item">
                                                             <hr class="dropdown-divider">
                                                         </li>
-                                                        
                                                         <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/customer/contact" class="subsubmenu-link">Customer Contact</a>
                                                         </li>
-
                                                         <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/customer/address" class="subsubmenu-link">Customer Address</a>
                                                         </li>
-
                                                         <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/customer/business" class="subsubmenu-link">Customer Business</a>
                                                         </li>
-
                                                         <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/customer/login" class="subsubmenu-link">Customer Login</a>
                                                         </li>
-
                                                         <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/customer/discount" class="subsubmenu-link">Customer Discount</a>
                                                         </li>
-
                                                         <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/customer/promo" class="subsubmenu-link">Customer Promo</a>
                                                         </li>
-
                                                         <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/customer/productaccess" class="subsubmenu-link">Customer Product Access</a>
                                                         </li>
-
                                                         <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/customer/quote" class="subsubmenu-link">Customer Quote</a>
                                                         </li>
@@ -239,81 +208,64 @@
                                                 <li class="submenu-item" runat="server" id="liCustomer">
                                                     <a runat="server" href="~/setting/customer" class='submenu-link'>Master Customer</a>
                                                 </li>
-
                                                 <li class="submenu-item has-sub" runat="server" id="liSpecification">
                                                     <a href="javascript:void(0);" class='submenu-link'>Master Specification</a>
                                                     <ul class="subsubmenu">
                                                         <li class="subsubmenu-item" runat="server" id="liSpecificationDesign">
                                                             <a runat="server" href="~/setting/specification/designtype" class="subsubmenu-link">Design Type</a>
                                                         </li>
-                                                        
                                                         <li class="subsubmenu-item" runat="server" id="liSpecificationBlind">
                                                             <a runat="server" href="~/setting/specification/blindtype" class="subsubmenu-link">Blind Type</a>
                                                         </li>
-                                                        
                                                         <li class="subsubmenu-item" runat="server" id="liSpecificationProduct">
                                                             <a runat="server" href="~/setting/specification/product" class="subsubmenu-link">Product</a>
                                                         </li>
-
                                                         <li class="subsubmenu-item" runat="server" id="liSpecificationTube">
                                                             <a runat="server" href="~/setting/specification/tubetype" class="subsubmenu-link">Tube Type</a>
                                                         </li>
-
                                                         <li class="subsubmenu-item" runat="server" id="liSpecificationControl">
                                                             <a runat="server" href="~/setting/specification/controltype" class="subsubmenu-link">Control Type</a>
                                                         </li>
-                                                        
                                                         <li class="subsubmenu-item" runat="server" id="liSpecificationColour">
                                                             <a runat="server" href="~/setting/specification/colourtype" class="subsubmenu-link">Colour Type</a>
                                                         </li>
-
                                                         <li class="subsubmenu-item" runat="server" id="liSpecificationFabric">
                                                             <a runat="server" href="~/setting/specification/fabric" class="subsubmenu-link">Fabric</a>
                                                         </li>
-                                                        
                                                         <li class="subsubmenu-item" runat="server" id="liSpecificationChain">
                                                             <a runat="server" href="~/setting/specification/chain" class="subsubmenu-link">Chain</a>
                                                         </li>
-
                                                         <li class="subsubmenu-item" runat="server" id="liSpecificationRemote">
                                                             <a runat="server" href="~/setting/specification/remote" class="subsubmenu-link">Remote</a>
                                                         </li>
-                                                        
                                                         <li class="subsubmenu-item" runat="server" id="liSpecificationBottom">
                                                             <a runat="server" href="~/setting/specification/bottom" class="subsubmenu-link">Bottom Rail</a>
                                                         </li>
-                                                        
                                                         <li class="subsubmenu-item" runat="server" id="liSpecificationMounting">
                                                             <a runat="server" href="~/setting/specification/mounting" class="subsubmenu-link">Mounting</a>
                                                         </li>
                                                     </ul>
                                                 </li>
-                                                
                                                 <li class="submenu-item has-sub" runat="server" id="liPrice">
                                                     <a href="javascript:void(0);" class='submenu-link'>Master Price</a>
                                                     <ul class="subsubmenu">
                                                         <li class="subsubmenu-item" runat="server" id="liPriceGroup">
                                                             <a runat="server" href="~/setting/price/group" class="subsubmenu-link">Price Group</a>
                                                         </li>
-
                                                         <li class="subsubmenu-item" runat="server" id="liPriceProductGroup">
                                                             <a runat="server" href="~/setting/price/productgroup" class="subsubmenu-link">Price Product Group</a>
                                                         </li>
-
                                                         <li class="subsubmenu-item" runat="server" id="liPriceBase">
                                                             <a runat="server" href="~/setting/price/base" class="subsubmenu-link">Price Base</a>
                                                         </li>
-
                                                         <li class="subsubmenu-item" runat="server" id="liPriceSurcharge">
                                                             <a runat="server" href="~/setting/price/surcharge" class="subsubmenu-link">Price Surcharge</a>
                                                         </li>
-
                                                         <li class="subsubmenu-item" runat="server" id="liPricePromo">
                                                             <a runat="server" href="~/setting/price/promo" class="subsubmenu-link">Price Promo</a>
                                                         </li>
                                                     </ul>
                                                 </li>
-
                                                 <li runat="server" id="liAdditional" class="submenu-item has-sub">
                                                     <a href="javascript:void(0);" class='submenu-link'>Additional</a>
                                                     <ul class="subsubmenu">
@@ -333,37 +285,84 @@
                         </div>
                     </nav>
                 </header>
-
                 <div class="content-wrapper container">
                     <asp:Label runat="server" ID="lblTest"></asp:Label>
                     <asp:ContentPlaceHolder ID="MainContent" runat="server"></asp:ContentPlaceHolder>
                 </div>
-
                 <footer class="mt-4 py-3 border-top">
                     <div class="container">
                         <div class="d-flex justify-content-between align-items-center text-muted small">
+                            <div>&copy; 2026 <strong>BOOS</strong>. All rights reserved.</div>
                             <div>
-                                &copy; 2026 <strong>BOOS</strong>. All rights reserved.
-                            </div>
-                            <div>
-                                <a runat="server" href="~/contact" class="text-muted me-3 text-decoration-none">
-                                    Contact
-                                </a>
-                                <a runat="server" href="~/about" class="text-muted me-3 text-decoration-none">
-                                    About
-                                </a>
-                                <a runat="server" href="~/faq" class="text-muted text-decoration-none">
-                                    Fax
-                                </a>
+                                <a runat="server" href="~/contact" class="text-muted me-3 text-decoration-none">Contact</a>
+                                <a runat="server" href="~/about" class="text-muted me-3 text-decoration-none">About</a>
+                                <a runat="server" href="~/faq" class="text-muted text-decoration-none">Fax</a>
                             </div>
                         </div>
                     </div>
                 </footer>
+            </div>
+        </div>
 
+        <div class="modal fade text-left" id="modalNotification" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="titleNotification"></h4>
+                    </div>
+                    <div class="modal-body">
+                        <p id="messageNotification"></p>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                    </div>
+                </div>
             </div>
         </div>
 
         <script type="text/javascript">
+            var popupQueue = [];
+            var currentPopup = null;
+
+            document.getElementById('modalNotification').addEventListener('hidden.bs.modal', function () {
+                if (!currentPopup) return;
+                savePopupLog(currentPopup.popupId);
+                currentPopup = null;
+                showNextPopup();
+            });
+
+            function showNextPopup() {
+                if (popupQueue.length === 0) return;
+
+                currentPopup = popupQueue.shift();
+
+                document.getElementById("titleNotification").innerText = currentPopup.title;
+                document.getElementById("messageNotification").innerHTML =
+                    currentPopup.message
+                        .replace(/\r\n/g, "<br>")
+                        .replace(/\n/g, "<br>");
+
+                var modalEl = document.getElementById('modalNotification');
+
+                var modal = bootstrap.Modal.getInstance(modalEl);
+                if (!modal) {
+                    modal = new bootstrap.Modal(modalEl, {
+                        backdrop: 'static',
+                        keyboard: false
+                    });
+                }
+
+                modal.show();
+            }
+
+            function savePopupLog(popupId) {
+                fetch('Setting/General/Notification.aspx/SavePopupLog', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ popupId: popupId })
+                });
+            }
+
             function refreshSession() {
                 $.ajax({
                     url: '/Setting/UpdateSession.aspx',
@@ -390,9 +389,6 @@
         <script src="/Assets/vendors/choices.js/choices.min.js"></script>
         <script src="/Assets/js/pages/form-element-select.js"></script>
         <script src="/Assets/js/pages/horizontal-layout.js"></script>
-        
-        <script type="text/javascript">
-        </script>
     </form>
 </body>
 </html>

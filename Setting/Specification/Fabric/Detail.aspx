@@ -22,7 +22,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row mb-3" runat="server" id="divError">
             <div class="col-12">
@@ -31,7 +30,6 @@
                 </div>
             </div>
         </section>
-
         <section class="row mb-4">
             <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
                 <asp:Button runat="server" ID="btnEditFabric" CssClass="btn btn-primary me-1" Text="Edit Fabric" OnClick="btnEditFabric_Click" />
@@ -39,7 +37,6 @@
                 <a href="javascript:void(0);" class="btn btn-secondary me-1" onclick="showLog('Fabrics', '<%= lblId.Text %>')">Log</a>
             </div>
         </section>
-
         <section class="row">
             <div class="col-12">
                 <div class="card">
@@ -101,7 +98,6 @@
                 </div>
             </div>
         </section>
-
         <section class="row">
             <div class="col-12">
                 <div class="card">
@@ -122,7 +118,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="card-body">
                             <div class="row mb-3">
                                 <div class="col-12">
@@ -180,14 +175,12 @@
                 <div class="modal-header">
                     <h4 runat="server" class="modal-title" id="titleProcess"></h4>
                 </div>
-
                 <div class="modal-body">
                     <div class="row mb-2">
                         <div class="col-6 form-group">
                             <label class="form-label">BOE ID</label>
                             <asp:TextBox runat="server" ID="txtBoeId" CssClass="form-control" placeholder="BOE ID ..." autocomplete="off"></asp:TextBox>
                         </div>
-
                         <div class="col-6 form-group">
                             <label class="form-label">Factory</label>
                             <asp:DropDownList runat="server" ID="ddlFactoryColour" CssClass="form-select">
@@ -197,7 +190,6 @@
                             </asp:DropDownList>
                         </div>
                     </div>
-
                     <div class="row mb-2">
                         <div class="col-6 form-group">
                             <label class="form-label">Colour</label>
@@ -208,7 +200,6 @@
                             <asp:TextBox runat="server" ID="txtWidthColour" CssClass="form-control" placeholder="Width ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row mb-2" runat="server" id="divErrorProcess">
                         <div class="col-12">
                             <div class="alert alert-danger">
@@ -217,7 +208,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnProcessColour" CssClass="btn btn-primary" Text="Submit" OnClick="btnProcessColour_Click" />
@@ -269,7 +259,6 @@
                     <h5 class="modal-title">Changelog</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
                 <div class="modal-body">
                     <div class="alert alert-danger d-none" id="logError"></div>
                     <div class="table-responsive">

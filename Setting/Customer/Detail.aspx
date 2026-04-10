@@ -21,7 +21,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row" runat="server" id="divError">
             <div class="col-12">
@@ -30,7 +29,6 @@
                 </div>
             </div>
         </section>
-
         <section class="row mb-3">
             <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
                 <asp:Button runat="server" ID="btnEditCustomer" CssClass="btn btn-primary" Text="Edit" OnClick="btnEditCustomer_Click" />
@@ -41,7 +39,6 @@
                 <a href="javascript:void(0)" class="btn btn-secondary" onclick="showLog('Customers', '<%= lblId.Text %>')">Log</a>
             </div>
         </section>
-
         <section class="row">            
             <div class="col-12 col-sm-12 col-lg-9">
                 <div class="card">
@@ -54,7 +51,6 @@
                                     <asp:Label runat="server" ID="lblName" CssClass="font-bold"></asp:Label>
                                 </div>
                             </div>
-
                             <div class="row mb-3">
                                 <div class="col-6 col-sm-6 col-lg-3 mb-3">
                                     <label>Company</label>
@@ -79,7 +75,6 @@
                                     <asp:Label runat="server" ID="lblOperator" CssClass="font-bold"></asp:Label>
                                 </div>                                
                             </div>
-
                             <div class="row mb-3" runat="server" id="divLevelSponsor">
                                 <div class="col-6 col-sm-6 col-lg-5 mb-3">
                                     <label>Level</label>
@@ -92,7 +87,6 @@
                                     <asp:Label runat="server" ID="lblSponsor" CssClass="font-bold"></asp:Label>
                                 </div>
                             </div>
-
                             <div class="row mb-3">
                                 <div class="col-6 col-sm-6 col-lg-4 mb-3">
                                     <label>Price Group</label>
@@ -110,7 +104,6 @@
                                     <asp:Label runat="server" ID="lblPriceGroupDoor" CssClass="font-bold"></asp:Label>
                                 </div>
                             </div>
-
                             <div class="row mb-3">
                                 <div class="col-6 col-sm-6 col-lg-3 mb-3">
                                     <label>On Stop</label>
@@ -133,7 +126,6 @@
                                     <asp:Label runat="server" ID="lblMinSurcharge" CssClass="font-bold"></asp:Label>
                                 </div>
                             </div>
-
                             <div class="row mb-3">
                                 <div class="col-4 col-sm-4 col-lg-4">
                                     <label>ID</label>
@@ -156,7 +148,6 @@
                 </div>
             </div>
         </section>
-
         <section class="row" runat="server" id="secDetail">
             <div class="col-12">
                 <div class="card">
@@ -172,7 +163,6 @@
                                 <a class="list-group-item list-group-item-action" id="listProduct" data-bs-toggle="list" href="#list-product" role="tab">Product Access</a>
                                 <a class="list-group-item list-group-item-action" id="listQuote" data-bs-toggle="list" href="#list-quote" role="tab">Quote</a>
                             </div>
-
                             <div class="tab-content text-justify">
                                 <div class="tab-pane fade show active" id="list-contact" role="tabpanel" aria-labelledby="listContact">
                                     <div class="row mt-5" runat="server" id="divErrorContact">
@@ -182,7 +172,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="row mt-5">
                                         <div class="col-12">
                                             <div class="table-responsive">
@@ -229,14 +218,12 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="row mt-3">
                                         <div class="col-12">
                                             <asp:Button runat="server" ID="btnAddContact" CssClass="btn btn-primary" Text="Add New" OnClick="btnAddContact_Click" />
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="tab-pane fade" id="list-address" role="tabpanel" aria-labelledby="listAddress">
                                     <div class="row mt-5">
                                         <div class="col-12" runat="server" id="divErrorAddress">
@@ -247,7 +234,6 @@
                                              </div>
                                         </div>
                                     </div>
-
                                     <div class="row mt-5">
                                         <div class="col-12">
                                             <div class="table-responsive">
@@ -297,14 +283,12 @@
                                             </div>
                                         </div> 
                                     </div>
-
                                     <div class="row mt-3">
                                         <div class="col-12">
                                             <asp:Button runat="server" ID="btnAddAddress" CssClass="btn btn-primary" Text="Add New" OnClick="btnAddAddress_Click" />
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="tab-pane fade" id="list-business" role="tabpanel" aria-labelledby="listBusiness">
                                     <div class="row mt-5">
                                         <div class="col-12" runat="server" id="divErrorBusiness">
@@ -314,7 +298,6 @@
                                                  </div>
                                              </div>
                                         </div>
-
                                         <div class="row mt-5">
                                             <div class="col-12">
                                                 <div class="table-responsive">
@@ -359,7 +342,6 @@
                                                 </div>
                                             </div> 
                                         </div>
-
                                         <div class="row mt-3">
                                             <div class="col-12">
                                                 <asp:Button runat="server" ID="btnAddBusiness" CssClass="btn btn-primary" Text="Add New" OnClick="btnAddBusiness_Click" />
@@ -367,7 +349,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="tab-pane fade" id="list-login" role="tabpanel" aria-labelledby="listLogin">
                                     <div class="row mt-5">
                                         <div class="col-12" runat="server" id="divErrorLogin">
@@ -378,7 +359,6 @@
                                              </div>
                                         </div>
                                     </div>
-
                                     <div class="row mt-5">
                                         <div class="col-12">
                                             <div class="table-responsive">
@@ -434,7 +414,6 @@
                                             </div>
                                         </div> 
                                     </div>
-
                                     <div class="row mt-3">
                                         <div class="col-12">
                                             <asp:Button runat="server" ID="btnAddLogin" CssClass="btn btn-primary" Text="Add New" OnClick="btnAddLogin_Click" />
@@ -442,7 +421,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="tab-pane fade" id="list-discount" role="tabpanel" aria-labelledby="listDiscount">
                                     <div class="row mt-5">
                                         <div class="col-12" runat="server" id="divErrorDiscount">
@@ -453,7 +431,6 @@
                                              </div>
                                         </div>
                                     </div>
-                                    
                                     <div class="row mt-5">
                                         <div class="col-12">
                                             <div class="table-responsive">
@@ -499,7 +476,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="row mt-3">
                                         <div class="col-12">
                                             <asp:Button runat="server" ID="btnAddDiscount" CssClass="btn btn-primary" Text="Add Discount (All Products)" OnClick="btnAddDiscount_Click" />
@@ -510,7 +486,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="tab-pane fade" id="list-promo" role="tabpanel" aria-labelledby="listPromo">
                                     <div class="row mt-5">
                                         <div class="col-12" runat="server" id="divErrorPromo">
@@ -521,7 +496,6 @@
                                              </div>
                                         </div>
                                     </div>
-
                                     <div class="row mt-5">
                                         <div class="col-12">
                                             <div class="table-responsive">
@@ -558,7 +532,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="row mt-3">
                                         <div class="col-12">
                                             <asp:Button runat="server" ID="btnAddPromo" CssClass="btn btn-primary" Text="Add Promo" OnClick="btnAddPromo_Click" />
@@ -566,7 +539,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="tab-pane fade" id="list-product" role="tabpanel" aria-labelledby="listProduct">
                                     <div class="row mt-5">
                                         <div class="col-12" runat="server" id="divErrorProduct">
@@ -577,7 +549,6 @@
                                              </div>
                                         </div>
                                     </div>
-
                                     <div class="row mt-5">
                                         <div class="col-12">
                                             <div class="table-responsive">
@@ -617,7 +588,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="tab-pane fade" id="list-quote" role="tabpanel" aria-labelledby="listQuote">
                                     <div class="row mt-5">
                                         <div class="col-12" runat="server" id="divErrorQuote">
@@ -628,7 +598,6 @@
                                              </div>
                                         </div>
                                     </div>
-
                                     <div class="row mt-5">
                                         <div class="col-12">
                                             <div class="table-responsive">
@@ -683,7 +652,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="row">
                         <div class="col-12 form-group">
                             <label class="form-label">Order Number</label>
@@ -696,7 +664,6 @@
                             <asp:TextBox runat="server" ID="txtOrderName" CssClass="form-control" placeholder="Order Name ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row">
                         <div class="col-12 form-group">
                             <label class="form-label">Order Note</label>
@@ -714,7 +681,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnCreateOrder" Text="Submit" CssClass="btn btn-primary" OnClick="btnCreateOrder_Click" />
@@ -783,7 +749,6 @@
                     <h5 class="modal-title">Changelog</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
                 <div class="modal-body">
                     <div class="alert alert-danger d-none" id="logError"></div>
                     <div class="table-responsive">
@@ -823,14 +788,12 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="row mb-2">
                         <div class="col-12 form-group">
                             <label class="form-label">Name</label>
                             <asp:TextBox runat="server" ID="txtContactName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row mb-2">
                         <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
                             <label class="form-label">Email</label>
@@ -841,7 +804,6 @@
                             <asp:TextBox runat="server" ID="txtContactPhone" CssClass="form-control" placeholder="Phone ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row mb-2">
                         <div class="col-12 form-group">
                             <label class="form-label">Tags</label>
@@ -853,7 +815,6 @@
                             </asp:ListBox>
                         </div>
                     </div>
-
                     <div class="mb-2 row">
                         <div class="col-12 form-group">
                             <label class="form-label">Note</label>
@@ -861,7 +822,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnProcessContact" Text="Submit" CssClass="btn btn-primary" OnClick="btnProcessContact_Click" />
@@ -914,7 +874,6 @@
                     <h5 class="modal-title" runat="server" id="titleAddress"></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                
                 <div class="modal-body">
                     <div class="row" runat="server" id="divErrorProcessAddress">
                         <div class="col-12">
@@ -933,7 +892,6 @@
                             <asp:TextBox runat="server" ID="txtAddressName" CssClass="form-control" placeholder="Address ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-                    
                     <div class="mb-2 row">
                         <div class="col-12 col-sm-12 col-lg-4 mb-2 form-group">
                             <label class="form-label">Suburb</label>
@@ -948,7 +906,6 @@
                             <asp:TextBox runat="server" ID="txtAddressPostCode" CssClass="form-control" placeholder="Post Code ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-                    
                     <div class="mb-2 row">
                         <div class="col-12 form-group">
                             <label class="form-label">Note</label>
@@ -956,7 +913,6 @@
                         </div>
                     </div>
                 </div>
-                
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnProcessAddress" Text="Submit" CssClass="btn btn-primary" OnClick="btnProcessAddress_Click" />
@@ -1009,7 +965,6 @@
                     <h5 class="modal-title" runat="server" id="titleBusiness"></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                
                 <div class="modal-body">
                     <div class="row" runat="server" id="divErrorProcessBusiness">
                         <div class="col-12">
@@ -1024,14 +979,12 @@
                             <asp:TextBox runat="server" ID="txtBusinessNumber" CssClass="form-control" placeholder="ABN Number ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="mb-2 row">
                         <div class="col-12 form-group">
                             <label class="form-label">Registered Name</label>
                             <asp:TextBox runat="server" ID="txtBusinessName" CssClass="form-control" placeholder="Registered Name ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="mb-2 row">
                         <div class="col-6 form-group">
                             <label class="form-label">Registered Date</label>
@@ -1043,7 +996,6 @@
                         </div>
                     </div>
                 </div>
-                
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnProcessBusiness" Text="Submit" CssClass="btn btn-primary" OnClick="btnProcessBusiness_Click" />
@@ -1096,7 +1048,6 @@
                     <h5 class="modal-title" runat="server" id="titleLogin"></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
                 <div class="modal-body">
                     <div class="row" runat="server" id="divErrorProcessLogin">
                         <div class="col-12">
@@ -1165,7 +1116,6 @@
                     <h5 class="modal-title">Installer Access</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
                 <div class="modal-body">
                     <div class="row" runat="server" id="divErrorInstallerAccess">
                         <div class="col-12">
@@ -1190,7 +1140,6 @@
                         </div>
                     </div>
                 </div>
-                
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnInstallerAccess" Text="Submit" CssClass="btn btn-primary" OnClick="btnInstallerAccess_Click" />
@@ -1225,7 +1174,6 @@
                     <h5 class="modal-title">Change Password</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
                 <div class="modal-body">
                     <asp:TextBox runat="server" ID="txtIdChangePassword" style="display:none;"></asp:TextBox>
                     <div class="row">
@@ -1235,7 +1183,6 @@
                         </div>
                     </div>
                 </div>
-            
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnChangePasswordLogin" Text="Submit" CssClass="btn btn-primary" OnClick="btnChangePasswordLogin_Click" />
@@ -1315,7 +1262,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="row" id="divDiscountType">
                         <div class="col-12 form-group">
                             <label class="form-label required">Type</label>
@@ -1325,21 +1271,18 @@
                             </asp:DropDownList>
                         </div>
                     </div>
-
                     <div class="row" id="divDiscountDataId">
                         <div class="col-12 form-group">
                             <label class="form-label required">Product</label>
                             <asp:DropDownList runat="server" ID="ddlDiscountDataId" CssClass="choices form-select"></asp:DropDownList>
                         </div>
                     </div>
-
                     <div class="row" id="divDiscountDataIdB">
                         <div class="col-12 form-group">
                             <label class="form-label required">Product</label>
                             <asp:DropDownList runat="server" ID="ddlDiscountDataIdB" CssClass="choices form-select"></asp:DropDownList>
                         </div>
                     </div>
-
                     <div class="row">
                         <div class="col-12 form-group">
                             <label class="form-label required">Discount Value</label>
@@ -1408,7 +1351,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="row" runat="server">
                         <div class="col-12 form-group">
                             <label class="form-label required">Promo</label>
@@ -1439,7 +1381,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="row">
                         <div class="col-12">
                             <div class="table-responsive">
@@ -1526,7 +1467,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="mb-3 row">
                         <div class="col-12 form-group">
                             <label class="form-label">Products</label>
@@ -1534,7 +1474,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnProcessProduct" Text="Submit" CssClass="btn btn-primary" OnClick="btnProcessProduct_Click" />

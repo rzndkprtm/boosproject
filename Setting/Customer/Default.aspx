@@ -20,7 +20,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row" runat="server" id="divError">
             <div class="col-12">
@@ -29,13 +28,11 @@
                 </div>
             </div>
         </section>
-
         <section class="row mb-3">
             <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
                 <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Add New" OnClick="btnAdd_Click" />
             </div>
         </section>
-
         <section class="row">
             <div class="col-12">
                 <div class="card">
@@ -59,7 +56,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="card-body">
                             <div class="row mb-3">
                                 <div class="col-12">
@@ -129,12 +125,10 @@
                 <div class="modal-header bg-danger">
                     <h5 class="modal-title white">Delete Customer</h5>
                 </div>
-
                 <div class="modal-body text-center py-4">
                     <asp:TextBox runat="server" ID="txtIdDelete" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>, Are you sure you would like to do this?
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnDelete" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDelete_Click" />
@@ -150,7 +144,6 @@
                     <h5 class="modal-title">Changelog</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-    
                 <div class="modal-body">
                     <div class="alert alert-danger d-none" id="logError"></div>
                     <div class="table-responsive">

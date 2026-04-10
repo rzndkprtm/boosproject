@@ -22,7 +22,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row">
             <div class="col-12">
@@ -35,7 +34,6 @@
                 </div>
             </div>
         </section>
-
         <section class="row">
             <div class="col-12 col-sm-12 col-lg-4">
                 <div class="card">
@@ -87,7 +85,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="card-footer text-center">
                         <asp:Button runat="server" ID="btnEdit" CssClass="btn btn-info" Text="Edit" OnClick="btnEdit_Click" />
                         <a href="#" runat="server" id="aActive" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalActive" onclick="return showActive()"><%= TextActive(lblActive.Text) %></a>
@@ -108,7 +105,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="card-body">
                             <div class="row mb-3">
                                 <div class="col-12">
@@ -181,7 +177,6 @@
                 <div class="modal-header">
                     <h4 runat="server" class="modal-title" id="titleProcessColour"></h4>
                 </div>
-
                 <div class="modal-body">
                     <div class="row mb-2">
                         <div class="col-12 col-sm-12 col-lg-4 form-group">
@@ -193,14 +188,12 @@
                             <asp:TextBox runat="server" ID="txtColour" CssClass="form-control" placeholder="Colour ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row mb-2">
                         <div class="col-12 form-group">
                             <label class="form-label">Description</label>
                             <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
                         </div>
                     </div>
-                
                     <div class="row mb-2" runat="server" id="divActive">
                         <div class="col-12 col-sm-12 col-lg-3 form-group">
                             <label class="form-label">Active</label>
@@ -210,7 +203,6 @@
                             </asp:DropDownList>
                         </div>
                     </div>
-
                     <div class="row mb-2" runat="server" id="divErrorProcessColour">
                         <div class="col-12">
                             <div class="alert alert-danger">
@@ -219,7 +211,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnProcessColour" CssClass="btn btn-primary" Text="Submit" OnClick="btnProcessColour_Click" />
@@ -254,7 +245,6 @@
                     <h5 class="modal-title">Changelog</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
                 <div class="modal-body">
                     <div class="alert alert-danger d-none" id="logError"></div>
                     <div class="table-responsive">

@@ -22,7 +22,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row">
             <div class="col-lg-8 col-md-12 col-sm-12">
@@ -30,7 +29,6 @@
                     <div class="card-header">
                         <h4 class="card-title">Edit Form</h4>
                     </div>
-
                     <div class="card-content">
                         <div class="card-body">
                             <div class="form form-horizontal">
@@ -49,7 +47,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="row mb-3">
                                         <div class="col-12">
                                             <div class="form-group">
@@ -58,7 +55,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="row mb-3">
                                         <div class="col-12">
                                             <div class="form-group">
@@ -67,7 +63,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="row mb-3">
                                         <div class="col-12">
                                             <div class="form-group">
@@ -76,7 +71,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="row mb-3">
                                         <div class="col-12 col-sm-12 col-lg-4 mb-3">
                                             <div class="form-group">
@@ -100,7 +94,6 @@
                                             <asp:Button runat="server" ID="btnAddColour" CssClass="btn btn-sm btn-primary" Text="Add New" OnClick="btnAddColour_Click" />
                                         </div>
                                     </div>
-
                                     <div class="row mb-3">
                                         <div class="col-12">
                                             <div class="form-group">
@@ -109,7 +102,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="row mb-3">
                                         <div class="col-12 col-sm-12 col-lg-3">
                                             <div class="form-group">
@@ -121,7 +113,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="row" runat="server" id="divError">
                                         <div class="col-12">
                                             <div class="alert alert-danger">
@@ -133,7 +124,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="card-footer text-center">
                         <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" OnClick="btnSubmit_Click" />
                         <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Cancel" OnClick="btnCancel_Click" />
@@ -149,7 +139,6 @@
                 <div class="modal-header">
                     <h4 class="modal-title">Add Tube Type</h4>
                 </div>
-
                 <div class="modal-body">
                     <div class="row mb-2">
                         <div class="col-12">
@@ -159,7 +148,6 @@
                             </div>
                         </div>
                     </div>
-        
                     <div class="row mb-2">
                         <div class="col-12">
                             <div class="form-group">
@@ -168,7 +156,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="row mb-2" runat="server" id="divErrorProcessTube">
                         <div class="col-12">
                             <div class="alert alert-danger">
@@ -177,7 +164,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnSubmitTube" CssClass="btn btn-primary ml-1" Text="Submit" OnClick="btnSubmitTube_Click" />
@@ -192,7 +178,6 @@
                 <div class="modal-header">
                     <h4 class="modal-title">Add Control Type</h4>
                 </div>
-
                 <div class="modal-body">
                     <div class="row mb-2">
                         <div class="col-12">
@@ -202,7 +187,6 @@
                             </div>
                         </div>
                     </div>
-                
                     <div class="row mb-2">
                         <div class="col-12">
                             <div class="form-group">
@@ -211,7 +195,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="row mb-2" runat="server" id="divErrorProcessControl">
                         <div class="col-12">
                             <div class="alert alert-danger">
@@ -220,7 +203,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnSubmitControl" CssClass="btn btn-primary ml-1" Text="Submit" OnClick="btnSubmitControl_Click" />
@@ -235,7 +217,6 @@
                 <div class="modal-header">
                     <h4 class="modal-title">Add Colour Type</h4>
                 </div>
-
                 <div class="modal-body">
                     <div class="row mb-2">
                         <div class="col-12">
@@ -245,7 +226,6 @@
                             </div>
                         </div>
                     </div>
-            
                     <div class="row mb-2">
                         <div class="col-12">
                             <div class="form-group">
@@ -254,7 +234,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="row mb-2" runat="server" id="divErrorProcessColour">
                         <div class="col-12">
                             <div class="alert alert-danger">
@@ -263,7 +242,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnSubmitColour" CssClass="btn btn-primary ml-1" Text="Submit" OnClick="btnSubmitColour_Click" />
@@ -276,9 +254,11 @@
         function showTube() {
             $("#modalTube").modal("show");
         }
+
         function showControl() {
             $("#modalControl").modal("show");
         }
+
         function showColour() {
             $("#modalColour").modal("show");
         }
@@ -297,44 +277,5 @@
         <asp:Label runat="server" ID="lblId"></asp:Label>
         <asp:Label runat="server" ID="lblCompanyDetail"></asp:Label>
         <asp:Label runat="server" ID="lblIdCreate"></asp:Label>
-
-        <asp:SqlDataSource ID="sdsPage" runat="server" ConnectionString="<%$ ConnectionStrings:DefaultConnection %>" UpdateCommand="">
-            <UpdateParameters>
-                <asp:ControlParameter ControlID="lblId" Name="Id" PropertyName="Text" />
-                <asp:ControlParameter ControlID="ddlDesign" Name="DesignId" PropertyName="SelectedItem.Value" />
-                <asp:ControlParameter ControlID="ddlBlind" Name="BlindId" PropertyName="SelectedItem.Value" />
-                <asp:ControlParameter ControlID="lblCompanyDetail" Name="CompanyDetail" PropertyName="Text" />
-                <asp:ControlParameter ControlID="txtName" Name="Name" PropertyName="Text" />
-                <asp:ControlParameter ControlID="ddlControl" Name="ControlType" PropertyName="SelectedItem.Value" />
-                <asp:ControlParameter ControlID="ddlTube" Name="TubeType" PropertyName="SelectedItem.Value" />
-                <asp:ControlParameter ControlID="ddlColour" Name="ColourType" PropertyName="SelectedItem.Value" />
-                <asp:ControlParameter ControlID="txtDescription" Name="Description" PropertyName="Text" />
-                <asp:ControlParameter ControlID="ddlActive" Name="Active" PropertyName="SelectedItem.Value" />
-            </UpdateParameters>
-        </asp:SqlDataSource>
-
-        <asp:SqlDataSource ID="sdsControl" runat="server" ConnectionString="<%$ ConnectionStrings:DefaultConnection %>" InsertCommand="INSERT INTO ProductControls VALUES (@Id, @Name, @Description)">
-            <InsertParameters>
-                <asp:ControlParameter ControlID="lblIdCreate" Name="Id" PropertyName="Text" />
-                <asp:ControlParameter ControlID="txtControlName" Name="Name" PropertyName="Text" />
-                <asp:ControlParameter ControlID="txtControlDescription" Name="Description" PropertyName="Text" />
-            </InsertParameters>
-        </asp:SqlDataSource>
-
-        <asp:SqlDataSource ID="sdsTube" runat="server" ConnectionString="<%$ ConnectionStrings:DefaultConnection %>" InsertCommand="INSERT INTO ProductTubes VALUES (@Id, @Name, @Description)">
-            <InsertParameters>
-                <asp:ControlParameter ControlID="lblIdCreate" Name="Id" PropertyName="Text" />
-                <asp:ControlParameter ControlID="txtTubeName" Name="Name" PropertyName="Text" />
-                <asp:ControlParameter ControlID="txtTubeDescription" Name="Description" PropertyName="Text" />
-            </InsertParameters>
-        </asp:SqlDataSource>
-
-        <asp:SqlDataSource ID="sdsColour" runat="server" ConnectionString="<%$ ConnectionStrings:DefaultConnection %>" InsertCommand="INSERT INTO ProductColours VALUES (@Id, @Name, @Description)">
-            <InsertParameters>
-                <asp:ControlParameter ControlID="lblIdCreate" Name="Id" PropertyName="Text" />
-                <asp:ControlParameter ControlID="txtColourName" Name="Name" PropertyName="Text" />
-                <asp:ControlParameter ControlID="txtColourDescription" Name="Description" PropertyName="Text" />
-            </InsertParameters>
-        </asp:SqlDataSource>
     </div>
 </asp:Content>

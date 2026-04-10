@@ -21,7 +21,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row">
             <div class="col-12">
@@ -43,7 +42,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="card-body">
                             <div class="row mb-2" runat="server" id="divError">
                                 <div class="col-12">
@@ -52,7 +50,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="row mb-3">
                                 <div class="col-12">
                                     <div class="table-responsive">
@@ -120,7 +117,6 @@
                     <h5 class="modal-title" runat="server" id="titleProcess"></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
                 <div class="modal-body">
                     <div class="row" runat="server" id="divErrorProcess">
                         <div class="col-12">
@@ -135,19 +131,16 @@
                             <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select"></asp:DropDownList>
                         </div>
                     </div>
-
                     <div class="row">
                         <div class="col-6 form-group">
                             <label class="form-label">Role</label>
                             <asp:DropDownList runat="server" ID="ddlRole" CssClass="form-select"></asp:DropDownList>
                         </div>
-
                         <div class="col-6 form-group">
                             <label class="form-label">Level</label>
                             <asp:DropDownList runat="server" ID="ddlLevel" CssClass="form-select"></asp:DropDownList>
                         </div>
                     </div>
-
                     <div class="row">
                         <div class="col-6 form-group">
                             <label class="form-label">Full Name</label>
@@ -158,7 +151,6 @@
                             <asp:TextBox runat="server" ID="txtEmail" CssClass="form-control" placeholder="Email ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row">
                         <div class="col-6 form-group">
                             <label class="form-label">Username</label>
@@ -169,7 +161,6 @@
                             <asp:TextBox runat="server" ID="txtPassword" CssClass="form-control" placeholder="Password ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-
                     <div class="row">
                         <div class="col-3 form-group">
                             <label class="form-label">Pricing</label>
@@ -180,7 +171,6 @@
                         </div>
                     </div>
                 </div>
-            
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnProcess" Text="Submit" CssClass="btn btn-primary" OnClick="btnProcess_Click" />
@@ -250,7 +240,6 @@
                     <h5 class="modal-title">Changelog</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
                 <div class="modal-body">
                     <div class="alert alert-danger d-none" id="logError"></div>
                     <div class="table-responsive">
