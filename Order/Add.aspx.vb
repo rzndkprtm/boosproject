@@ -2604,10 +2604,12 @@ Partial Class Order_Add
                             MessageError(True, "MECHANISM COLOUR MUST BE WHITE !")
                             Exit For
                         End If
+
                         Dim chainId As String = String.Empty
                         Dim chainName As String = String.Empty
                         If controlType = "Chain" Then
                             chainName = String.Format("Cont Plastic {0}", controlColour)
+                            If controlColour = "Stainless Steel" Then chainName = String.Format("Cont {0}", controlColour)
                             chainId = orderClass.GetItemData("SELECT Id FROM Chains CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(ControlTypeId, ',') AS controlArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE Name='" & chainName & "' AND designArray.VALUE='" & designId & "' AND controlArray.VALUE='" & controlId & "' AND companyArray.VALUE='" & companyDetailId & "' AND Active=1")
                             If String.IsNullOrEmpty(chainId) Then
                                 MessageError(True, "PLEASE CHECK YOUR CHAIN COLOUR / MOTOR REMOTE DATA !")
@@ -2649,6 +2651,8 @@ Partial Class Order_Add
                                 End If
                             End If
                         End If
+
+                        If controlType = "Chain" Then valanceOption = "Retrousse"
 
                         If String.IsNullOrEmpty(valanceOption) Then
                             MessageError(True, "VALANCE OPTION IS REQUIRED !")
