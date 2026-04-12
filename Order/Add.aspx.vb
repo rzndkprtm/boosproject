@@ -242,7 +242,6 @@ Partial Class Order_Add
                             myCmd.ExecuteNonQuery()
                         End Using
                     End Using
-
                     success = True
                 Catch exSql As SqlException
                     If exSql.Number = 2601 OrElse exSql.Number = 2627 Then
@@ -739,6 +738,8 @@ Partial Class Order_Add
                     End If
 
                     If designType = "Cellular Shades" Then
+                        Dim itemNumber As String = row - 3
+
                         Dim controlType As String = (sheetDetail.Cells(row, 3).Text & "").Trim()
                         Dim qty As Integer = If(String.IsNullOrWhiteSpace(sheetDetail.Cells(row, 4).Text), 0, CInt(sheetDetail.Cells(row, 4).Text))
                         Dim room As String = (sheetDetail.Cells(row, 5).Text & "").Trim()
@@ -1749,6 +1750,7 @@ Partial Class Order_Add
 
                             chainColour = chainColour.Replace("Cream", "Ivory")
                             chainColour = chainColour.Replace("Platinum", "Grey")
+                            chainColour = chainColour.Replace("Metal Nickel Plated", "Nickel Plated")
 
                             chainName = String.Format("Cont {0}", chainColour)
                             chainType = "Continuous"
@@ -2609,7 +2611,7 @@ Partial Class Order_Add
                         If controlType = "Cord" Then controlName = "Reg Cord Lock"
                         If controlType = "Cord Lock" Then controlName = "Reg Cord Lock"
                         Dim controlId As String = orderClass.GetItemData("SELECT Id FROM ProductControls WHERE Name='" & controlName & "'")
-                        If String.IsNullOrEmpty(tubeId) Then
+                        If String.IsNullOrEmpty(controlId) Then
                             MessageError(True, "PLEASE CHECK YOUR MECHANISM TYPE !")
                             Exit For
                         End If
@@ -2620,16 +2622,18 @@ Partial Class Order_Add
                             Exit For
                         End If
 
-                        If controlType = "Cord" AndAlso controlColour <> "White" Then
-                            MessageError(True, "MECHANISM COLOUR MUST BE WHITE !")
+                        If controlType = "Chain" AndAlso String.IsNullOrEmpty(controlColour) Then
+                            MessageError(True, "MECHANISM / CHAIN COLOUR IS REQUIRED !")
                             Exit For
                         End If
 
                         Dim chainId As String = String.Empty
                         Dim chainName As String = String.Empty
-                        If controlType = "Chain" Then
+                        If controlType = "Chain" OrElse controlType = "Motorised" Then
                             chainName = String.Format("Cont Plastic {0}", controlColour)
                             If controlColour = "Stainless Steel" Then chainName = String.Format("Cont {0}", controlColour)
+                            If controlType = "Motorised" Then chainName = "No Remote"
+
                             chainId = orderClass.GetItemData("SELECT Id FROM Chains CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(ControlTypeId, ',') AS controlArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE Name='" & chainName & "' AND designArray.VALUE='" & designId & "' AND controlArray.VALUE='" & controlId & "' AND companyArray.VALUE='" & companyDetailId & "' AND Active=1")
                             If String.IsNullOrEmpty(chainId) Then
                                 MessageError(True, "PLEASE CHECK YOUR CHAIN COLOUR / MOTOR REMOTE DATA !")

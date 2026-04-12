@@ -393,7 +393,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade text-center" id="modalError" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -409,7 +408,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal modal-blur fade" id="modalLayout" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -440,7 +438,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal modal-blur fade" id="modalGallery" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -453,7 +450,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal modal-blur fade" id="modalInfo" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -470,5 +466,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/WebOrders/Aluminium.js?v=2.0.1"></script>
+    <script src="/Scripts/WebOrders/Aluminium.js?v=2.0.2"></script>
 </asp:Content>

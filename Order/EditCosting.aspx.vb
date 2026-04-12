@@ -51,25 +51,16 @@ Partial Class Order_EditCosting
                                 Dim newSell As Decimal = 0
                                 Decimal.TryParse(txtNewSellPrice.Text, NumberStyles.Any, CultureInfo.CurrentCulture, newSell)
 
-                                Dim oldSell As Decimal = 0
+                                Dim txtNewBuyPrice As TextBox = CType(row.FindControl("txtNewSellPrice"), TextBox)
+                                Dim newBuy As Decimal = 0
+                                Decimal.TryParse(txtNewBuyPrice.Text, NumberStyles.Any, CultureInfo.CurrentCulture, newBuy)
 
-                                Using cmdOld As New SqlCommand("SELECT * FROM OrderCostings WHERE Id=@Id", thisConn, tran)
-                                    cmdOld.Parameters.AddWithValue("@Id", costingId)
-
-                                    Using rd = cmdOld.ExecuteReader()
-                                        If rd.Read() Then
-                                            oldSell = If(IsDBNull(rd("SellPrice")), 0D, Convert.ToDecimal(rd("SellPrice")))
-                                        End If
-                                    End Using
+                                Using cmd As New SqlCommand("UPDATE OrderCostings SET SellPrice=@SellPrice, BuyPrice=@BuyPrice WHERE Id=@Id", thisConn, tran)
+                                    cmd.Parameters.AddWithValue("@Id", costingId)
+                                    cmd.Parameters.Add("@SellPrice", SqlDbType.Decimal).Value = newBuy
+                                    cmd.Parameters.Add("@BuyPrice", SqlDbType.Decimal).Value = newSell
+                                    cmd.ExecuteNonQuery()
                                 End Using
-
-                                If oldSell <> newSell Then
-                                    Using cmd As New SqlCommand("UPDATE OrderCostings SET SellPrice=@SellPrice WHERE Id=@Id", thisConn, tran)
-                                        cmd.Parameters.AddWithValue("@Id", costingId)
-                                        cmd.Parameters.Add("@SellPrice", SqlDbType.Decimal).Value = newSell
-                                        cmd.ExecuteNonQuery()
-                                    End Using
-                                End If
                             End If
                         Next
 

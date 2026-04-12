@@ -213,7 +213,6 @@
             </div>
         </div>
     </div>
-    
     <div class="modal fade text-center" id="modalStatusOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -232,7 +231,6 @@
             </div>
         </div>
     </div>
-    
     <div class="modal fade text-left" id="modalCancelOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -262,7 +260,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade text-left" id="modalShipmentOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -281,7 +278,7 @@
                     <div class="row mb-2">
                         <div class="col-12 form-group">
                             <label class="form-label">Shipment Date</label>
-                            <asp:TextBox runat="server" TextMode="Date" ID="txtShipmentDate" CssClass="form-control" autocomplete="off"></asp:TextBox>
+                            <asp:TextBox runat="server" TextMode="Date" ID="txtShipmentDate" CssClass="form-control"></asp:TextBox>
                         </div>
                     </div>
                     <div class="row mb-2">
@@ -293,7 +290,7 @@
                     <div class="row mb-2">
                         <div class="col-12 form-group">
                             <label class="form-label">Container ETA</label>
-                            <asp:TextBox runat="server" TextMode="Date" ID="txtContainerEta" CssClass="form-control" placeholder="Container ETA ..." autocomplete="off"></asp:TextBox>
+                            <asp:TextBox runat="server" TextMode="Date" ID="txtContainerEta" CssClass="form-control"></asp:TextBox>
                         </div>
                     </div>
                     <div class="row mb-2">
@@ -317,7 +314,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade text-center" id="modalRestore" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -335,7 +331,6 @@
             </div>
         </div>
     </div>
-    
     <div class="modal fade text-center" id="modalPrintDO" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -353,7 +348,6 @@
             </div>
         </div>
     </div>
-    
     <div class="modal modal-blur fade" id="modalLog" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -372,7 +366,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade text-center" id="modalWaiting" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">

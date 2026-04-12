@@ -1102,7 +1102,6 @@ function controlForm(status, isEditItem, isCopyItem) {
             }
             return;
         }
-
         el.disabled = status;
     });
 }
@@ -1183,9 +1182,7 @@ function process() {
         companydetailid: companyDetailId
     };
 
-    fields.forEach(id => {
-        formData[id] = document.getElementById(id).value;
-    });
+    fields.forEach(id => { formData[id] = document.getElementById(id).value; });
 
     $.ajax({
         type: "POST",
@@ -1336,4 +1333,11 @@ document.getElementById("modalError").addEventListener("hide.bs.modal", function
 document.getElementById("modalInfo").addEventListener("hide.bs.modal", function () {
     document.activeElement.blur();
     document.body.focus();
+});
+
+document.addEventListener("keydown", function (e) {
+    if (e.key === "F10") {
+        e.preventDefault();
+        document.getElementById("submit").click();
+    }
 });

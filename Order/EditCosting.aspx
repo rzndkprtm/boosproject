@@ -30,7 +30,7 @@
             </div>
         </section>
         <section class="row">
-            <div class="col-12 col-sm-12 col-lg-9">
+            <div class="col-12 col-sm-12 col-lg-8">
                 <div class="card">
                     <div class="card-content">
                         <div class="card-header">
@@ -50,6 +50,14 @@
                                                 </asp:TemplateField>
                                                 <asp:BoundField DataField="Id" HeaderText="ID" />
                                                 <asp:BoundField DataField="Description" HeaderText="Description" />
+                                                <asp:TemplateField HeaderText="New Price (Buy)" ItemStyle-Width="180px">
+                                                    <ItemTemplate>
+                                                        <div class="input-group">
+                                                            <span runat="server" id="spanEditBuyPrice" class="input-group-text">$</span>
+                                                            <asp:TextBox runat="server" ID="txtNewBuyPrice" CssClass="form-control" Text='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:0.##}", Eval("BuyPrice")) %>'></asp:TextBox>
+                                                        </div>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
                                                 <asp:TemplateField HeaderText="New Price (Sell)" ItemStyle-Width="180px">
                                                     <ItemTemplate>
                                                         <div class="input-group">
@@ -90,6 +98,11 @@
                     </div>
                 </div>
             </div>
+            <div class="col-12 col-sm-12 col-lg-4">
+                <div class="card">
+                    <div class="card-content"></div>
+                </div>
+            </div>
         </section>
     </div>
 
@@ -115,7 +128,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade text-center" id="modalDeleteNote" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">

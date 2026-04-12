@@ -862,22 +862,13 @@ function startCountdown(seconds) {
 }
 
 function controlForm(status, isEditItem, isCopyItem) {
-    if (isEditItem === undefined) {
-        isEditItem = false;
-    }
-    if (isCopyItem === undefined) {
-        isCopyItem = false;
-    }
+    if (isEditItem === undefined) isEditItem = false;
+    if (isCopyItem === undefined) isCopyItem = false;
 
     document.getElementById("submit").style.display = status ? "none" : "";
 
     const inputs = [
-        "blindtype", "colourtype", "qty", "room", "mounting", "subtype",
-        "controlposition", "tilterposition",
-        "width", "drop", "widthb", "dropb", "widthc", "dropc",
-        "controllength", "controllengthvalue", "controllengthb", "controllengthvalueb", "controllengthc", "controllengthvaluec",
-        "valancetype", "valancesize", "valancesizevalue", "returnposition", "returnlength", "returnlengthvalue", "wandlengthvalue",
-        "tassel", "supply", "notes", "markup"
+        "blindtype", "colourtype", "qty", "room", "mounting", "subtype", "controlposition", "tilterposition", "width", "drop", "widthb", "dropb", "widthc", "dropc", "controllength", "controllengthvalue", "controllengthb", "controllengthvalueb", "controllengthc", "controllengthvaluec", "valancetype", "valancesize", "valancesizevalue", "returnposition", "returnlength", "returnlengthvalue", "wandlengthvalue", "tassel", "supply", "notes", "markup"
     ];
 
     inputs.forEach(id => {
@@ -963,12 +954,7 @@ function process() {
     toggleButtonState(true, "Processing...");
 
     const fields = [
-        "blindtype", "colourtype", "qty", "room", "mounting", "subtype",
-        "controlposition", "tilterposition",
-        "width", "drop", "widthb", "dropb", "widthc", "dropc",
-        "controllength", "controllengthvalue", "controllengthb", "controllengthvalueb", "controllengthc", "controllengthvaluec",
-        "valancetype", "valancesize", "valancesizevalue", "returnposition", "returnlength", "returnlengthvalue", "wandlengthvalue",
-        "tassel", "supply", "notes", "markup"
+        "blindtype", "colourtype", "qty", "room", "mounting", "subtype", "controlposition", "tilterposition", "width", "drop", "widthb", "dropb", "widthc", "dropc", "controllength", "controllengthvalue", "controllengthb", "controllengthvalueb", "controllengthc", "controllengthvaluec", "valancetype", "valancesize", "valancesizevalue", "returnposition", "returnlength", "returnlengthvalue", "wandlengthvalue", "tassel", "supply", "notes", "markup"
     ];
 
     const formData = {
@@ -984,9 +970,7 @@ function process() {
         companydetailid: companyDetailId
     };
 
-    fields.forEach(id => {
-        formData[id] = document.getElementById(id).value;
-    });
+    fields.forEach(id => { formData[id] = document.getElementById(id).value; });
 
     $.ajax({
         type: "POST",
@@ -1265,4 +1249,11 @@ document.getElementById("modalLayout").addEventListener("hide.bs.modal", functio
 document.getElementById("modalGallery").addEventListener("hide.bs.modal", function () {
     document.activeElement.blur();
     document.body.focus();
+});
+
+document.addEventListener("keydown", function (e) {
+    if (e.key === "F10") {
+        e.preventDefault();
+        document.getElementById("submit").click();
+    }
 });
