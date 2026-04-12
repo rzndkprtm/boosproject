@@ -130,6 +130,23 @@
                 </div>
             </div>
             <div class="col-12 col-sm-12 col-lg-3">
+                <div class="card card-clickable" runat="server" id="divNotification">
+                    <div class="card-body px-3 py-4-5">
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="stats-icon purple">
+                                    <i class="iconly-boldShow"></i>
+                                </div>
+                            </div>
+                            <div class="col-8">
+                                <h6 class="text-muted font-semibold">Notification</h6>
+                                <h6 class="font-extrabold mb-0"><%= GetSumData("Notifications") %></h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-12 col-lg-3">
                 <div class="card card-clickable" runat="server" id="divTutorial">
                     <div class="card-body px-3 py-4-5">
                         <div class="row">

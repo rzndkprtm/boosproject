@@ -16,6 +16,7 @@
         divRoleAccess.Attributes("onclick") = "location.href='roleaccess'"
         divLevelAccess.Attributes("onclick") = "location.href='levelaccess'"
         divNewsletter.Attributes("onclick") = "location.href='newsletter'"
+        divNotification.Attributes("onclick") = "location.href='notification'"
         divTutorial.Attributes("onclick") = "location.href='tutorial'"
         divActionAccess.Attributes("onclick") = "location.href='actionaccess'"
     End Sub
