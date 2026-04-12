@@ -185,7 +185,7 @@ Partial Class Setting_General_Notification
             If Not searchText = "" Then
                 search = "WHERE Notifications.Title LIKE '%" & searchText.Trim() & "%' OR Companys.Name LIKE '%" & searchText.Trim() & "%'"
             End If
-            Dim thisQuery As String = String.Format("SELECT Notifications.*, Companys.Name AS CompanyName, CASE WHEN Notifications.Active=1 THEN 'Yes' WHEN Notifications.Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Notifications LEFT JOIN Companys ON Notifications.CompanyId=Companys.Id {0} ORDER BY Companys.Id, Notifications.Title ASC", search)
+            Dim thisQuery As String = String.Format("SELECT Notifications.*, Companys.Alias AS CompanyName, CASE WHEN Notifications.Active=1 THEN 'Yes' WHEN Notifications.Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Notifications LEFT JOIN Companys ON Notifications.CompanyId=Companys.Id {0} ORDER BY Companys.Id, Notifications.Title ASC", search)
 
             gvList.DataSource = settingClass.GetDataTable(thisQuery)
             gvList.DataBind()

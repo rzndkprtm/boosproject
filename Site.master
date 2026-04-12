@@ -168,7 +168,6 @@
                                                         </li>
                                                     </ul>
                                                 </li>
-                                                
                                                 <li class="submenu-item has-sub" runat="server" id="liCustomerDev">
                                                     <a href="javascript:void(0);" class='submenu-link'>Master Customer</a>
                                                     <ul class="subsubmenu">
@@ -204,7 +203,6 @@
                                                         </li>
                                                     </ul>
                                                 </li>
-
                                                 <li class="submenu-item" runat="server" id="liCustomer">
                                                     <a runat="server" href="~/setting/customer" class='submenu-link'>Master Customer</a>
                                                 </li>
@@ -307,8 +305,8 @@
         <div class="modal fade text-left" id="modalNotification" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
             <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title" id="titleNotification"></h4>
+                    <div class="modal-header bg-info">
+                        <h4 class="modal-title white" id="titleNotification"></h4>
                     </div>
                     <div class="modal-body">
                         <p id="messageNotification"></p>

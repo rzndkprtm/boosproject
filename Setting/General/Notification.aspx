@@ -107,13 +107,11 @@
                 </div>
                 <div class="modal-body">
                     <div class="row mb-2">
-                        <div class="col-12 form-group">
+                        <div class="col-4 form-group">
                             <label class="form-label">Company</label>
                             <asp:DropDownList runat="server" ID="ddlCompanyId" CssClass="form-select"></asp:DropDownList>
                         </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-12 form-group">
+                        <div class="col-8 form-group">
                             <label class="form-label">Title</label>
                             <asp:TextBox runat="server" ID="txtTitle" CssClass="form-control" placeholder="Title ..." autocomplete="off"></asp:TextBox>
                         </div>
@@ -125,17 +123,15 @@
                         </div>
                     </div>
                     <div class="row mb-2">
-                        <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
+                        <div class="col-12 col-sm-12 col-lg-4 mb-2 form-group">
                             <label class="form-label">Start Date</label>
                             <asp:TextBox runat="server" ID="txtStartDate" TextMode="Date" CssClass="form-control"></asp:TextBox>
                         </div>
-                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                        <div class="col-12 col-sm-12 col-lg-4 form-group">
                             <label class="form-label">End Date</label>
                             <asp:TextBox runat="server" ID="txtEndDate" TextMode="Date" CssClass="form-control"></asp:TextBox>
                         </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-12 col-sm-12 col-lg-3 form-group">
+                        <div class="col-12 col-sm-12 col-lg-4 form-group">
                             <label class="form-label">Active</label>
                             <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select">
                                 <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
@@ -143,7 +139,7 @@
                             </asp:DropDownList>
                         </div>
                     </div>
-                    <div class="row mb-2" runat="server" id="divErrorProcess">
+                    <div class="row" runat="server" id="divErrorProcess">
                         <div class="col-12">
                             <div class="alert alert-danger">
                                 <span runat="server" id="msgErrorProcess"></span>
