@@ -1309,12 +1309,8 @@ function startCountdown(seconds) {
 }
 
 function controlForm(status, isEditItem, isCopyItem) {
-    if (isEditItem === undefined) {
-        isEditItem = false;
-    }
-    if (isCopyItem === undefined) {
-        isCopyItem = false;
-    }
+    if (isEditItem === undefined) isEditItem = false;
+    if (isCopyItem === undefined) isCopyItem = false;
 
     document.getElementById("submit").style.display = status ? "none" : "";
 
@@ -1515,7 +1511,6 @@ function cekSameSizePanels(layoutCode) {
 }
 
 function showInfo(type) {
-    let title;
     let info;
 
     if (type === "Tiltrod Type") {
@@ -1534,52 +1529,12 @@ function process() {
     toggleButtonState(true, "Processing...");
 
     const fields = [
-        "blindtype",
-        "colourtype",
-        "qty",
-        "room",
-        "mounting",
-        "width",
-        "drop",
-        "louvresize",
-        "louvreposition",
-        "midrailheight1",
-        "midrailheight2",
-        "midrailcritical",
-        "panelqty",
-        "joinedpanels",
-        "hingecolour",
-        "semiinside",
-        "customheaderlength",
-        "layoutcode",
-        "layoutcodecustom",
-        "frametype",
-        "frameleft",
-        "frameright",
-        "frametop",
-        "framebottom",
-        "bottomtracktype",
-        "bottomtrackrecess",
-        "buildout",
-        "buildoutposition",
-        "samesizepanel",
-        "gap1",
-        "gap2",
-        "gap3",
-        "gap4",
-        "gap5",
-        "horizontaltpostheight",
-        "horizontaltpost",
-        "tiltrodtype",
-        "tiltrodsplit",
-        "splitheight1",
-        "splitheight2",
-        "reversehinged",
-        "pelmetflat",
-        "extrafascia",
-        "hingesloose",
-        "markup",
-        "notes",
+        "blindtype", "colourtype", "qty", "room", "mounting", "width", "drop", "louvresize", "louvreposition", "midrailheight1",
+        "midrailheight2", "midrailcritical", "panelqty", "joinedpanels", "hingecolour", "semiinside", "customheaderlength", "layoutcode", "layoutcodecustom",
+        "frametype", "frameleft", "frameright", "frametop", "framebottom",
+        "bottomtracktype", "bottomtrackrecess",
+        "buildout", "buildoutposition", "samesizepanel", "gap1", "gap2", "gap3", "gap4", "gap5",
+        "horizontaltpostheight", "horizontaltpost", "tiltrodtype", "tiltrodsplit", "splitheight1", "splitheight2", "reversehinged", "pelmetflat", "extrafascia", "hingesloose", "markup", "notes",
     ];
 
     const formData = {
@@ -1598,9 +1553,7 @@ function process() {
         templateprovided: ""
     };
 
-    fields.forEach((id) => {
-        formData[id] = document.getElementById(id).value;
-    });
+    fields.forEach((id) => { formData[id] = document.getElementById(id).value; });
 
     $.ajax({
         type: "POST",
@@ -1770,4 +1723,11 @@ document.getElementById("modalInfo").addEventListener("hide.bs.modal", function 
 document.getElementById("modalGallery").addEventListener("hide.bs.modal", function () {
     document.activeElement.blur();
     document.body.focus();
+});
+
+document.addEventListener("keydown", function (e) {
+    if (e.key === "F10") {
+        e.preventDefault();
+        document.getElementById("submit").click();
+    }
 });

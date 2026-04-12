@@ -131,7 +131,7 @@ Public Partial Class SiteMaster
     Protected Sub BindNotification()
         If Session("RoleName") = "Customer" Then
             Dim loginId As String = Session("LoginId").ToString()
-            Dim dt As DataTable = settingClass.GetDataTable("SELECT * FROM Notifications WHERE CompanyId='" & Session("CompanyId") & "' AND Active = 1 AND CAST(GETDATE() AS DATE) BETWEEN CAST(StartDate AS DATE) AND CAST(EndDate AS DATE) ORDER BY Id ASC")
+            Dim dt As DataTable = settingClass.GetDataTable("SELECT * FROM Notifications WHERE CompanyId='" & Session("CompanyId") & "' AND Active=1 AND CAST(GETDATE() AS DATE) BETWEEN CAST(StartDate AS DATE) AND CAST(EndDate AS DATE) ORDER BY Id ASC")
 
             If dt.Rows.Count > 0 Then
                 Dim scriptBuilder As New StringBuilder()

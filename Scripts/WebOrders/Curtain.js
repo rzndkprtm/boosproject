@@ -584,9 +584,7 @@ function bindTrackType(heading) {
 
                 const selectedValue = tracktype.value || "";
 
-                bindTrackColour(selectedValue)
-                    .then(resolve)
-                    .catch(reject);
+                bindTrackColour(selectedValue).then(resolve).catch(reject);
             },
             error: function (error) {
                 reject(error);
@@ -803,12 +801,8 @@ function startCountdown(seconds) {
 }
 
 function controlForm(status, isEditItem, isCopyItem) {
-    if (isEditItem === undefined) {
-        isEditItem = false;
-    }
-    if (isCopyItem === undefined) {
-        isCopyItem = false;
-    }
+    if (isEditItem === undefined) isEditItem = false;
+    if (isCopyItem === undefined) isCopyItem = false;
 
     document.getElementById("submit").style.display = status ? "none" : "";
 
@@ -909,9 +903,7 @@ function process() {
         companydetailid: companyDetailId
     };
 
-    fields.forEach(id => {
-        formData[id] = document.getElementById(id).value;
-    });
+    fields.forEach(id => { formData[id] = document.getElementById(id).value; });
 
     $.ajax({
         type: "POST",
@@ -1088,4 +1080,11 @@ document.getElementById("modalInfo").addEventListener("hide.bs.modal", function 
 document.getElementById("modalGallery").addEventListener("hide.bs.modal", function () {
     document.activeElement.blur();
     document.body.focus();
+});
+
+document.addEventListener("keydown", function (e) {
+    if (e.key === "F10") {
+        e.preventDefault();
+        document.getElementById("submit").click();
+    }
 });
