@@ -76,6 +76,9 @@
                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                         <ul class="dropdown-menu">
                                                             <li>
+                                                                <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalTest" data-title='<%# Eval("Title") %>' data-message='<%# Eval("Message") %>' onclick="showTest(this)">Test</a>
+                                                            </li>
+                                                            <li>
                                                                 <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                             </li>
                                                             <li>
@@ -119,7 +122,7 @@
                     <div class="row mb-2">
                         <div class="col-12 form-group">
                             <label class="form-label">Message</label>
-                            <asp:TextBox runat="server" TextMode="MultiLine" ID="txtMessage" Height="100px" CssClass="form-control" placeholder="Message ..." autocomplete="off" style="resize:none;"></asp:TextBox>
+                            <asp:TextBox runat="server" TextMode="MultiLine" ID="txtMessage" Height="150px" CssClass="form-control" placeholder="Message ..." autocomplete="off" style="resize:none;"></asp:TextBox>
                         </div>
                     </div>
                     <div class="row mb-2">
@@ -134,8 +137,8 @@
                         <div class="col-12 col-sm-12 col-lg-4 form-group">
                             <label class="form-label">Active</label>
                             <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select">
-                                <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
                                 <asp:ListItem Value="0" Text="No"></asp:ListItem>
+                                <asp:ListItem Value="1" Text="Yes"></asp:ListItem>                                
                             </asp:DropDownList>
                         </div>
                     </div>
@@ -150,6 +153,22 @@
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnProcess" CssClass="btn btn-primary" Text="Submit" OnClick="btnProcess_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade text-left" id="modalTest" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <h4 class="modal-title white" id="titleTest"></h4>
+                </div>
+                <div class="modal-body">
+                    <p id="messageTest"></p>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
                 </div>
             </div>
         </div>
@@ -202,6 +221,15 @@
             $("#modalProcess").modal("show");
         }
 
+        function showTest(el) {
+            var title = el.getAttribute("data-title");
+            var message = el.getAttribute("data-message");
+            message = message.replace(/\n/g, "<br>");
+
+            document.getElementById("titleTest").innerText = title;
+            document.getElementById("messageTest").innerHTML = message;
+        }
+
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
             $("#tblLogs tbody").html("");
@@ -236,7 +264,7 @@
             });
         }
 
-        ["modalProcess", "modalCopy", "modalDelete", "modalLog"].forEach(function (id) {
+        ["modalProcess", "modalTest", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

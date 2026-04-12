@@ -47,9 +47,7 @@
                                                 <%: Session("UserName") %>
                                                 <% End If %>
                                             </h6>
-                                            <p class="user-dropdown-status text-sm text-muted">
-                                                <%: Session("RoleName") %>
-                                            </p>
+                                            <p class="user-dropdown-status text-sm text-muted"><%: Session("RoleName") %></p>
                                         </div>
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-end shadow-lg">
