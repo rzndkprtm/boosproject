@@ -1032,7 +1032,7 @@ Partial Class Order_Method
 
         If data.subtype = "Single" Then
             If width > 250 AndAlso width <= 299 AndAlso data.controlposition = data.tilterposition Then
-                Return "PLEASE USE OPPOSITE CONTROL AND TILTER POSITIONS!"
+                Return "PLEASE USE OPPOSITE CONTROL AND TILTER POSITIONS !"
             End If
         End If
 
@@ -3219,7 +3219,7 @@ Partial Class Order_Method
         If data.subtype = "Single" AndAlso String.IsNullOrEmpty(data.tilterposition) Then Return "TILTER POSITION IS REQUIRED !"
 
         If width > 300 AndAlso width <= 400 AndAlso data.controlposition = data.tilterposition Then
-            Return "PLEASE USE OPPOSITE CONTROL AND TILTER POSITIONS!"
+            Return "PLEASE USE OPPOSITE CONTROL AND TILTER POSITIONS !"
         End If
 
         If blindName = "Basswood 50mm" OrElse blindName = "Basswood 63mm" OrElse blindName = "Econo 50mm" OrElse blindName = "Econo 63mm" Then
@@ -9022,7 +9022,7 @@ Partial Class Order_Method
         Dim linearMetre As Decimal = width / 1000
         Dim squareMetre As Decimal = width * drop / 1000000
 
-        Dim groupName As String = blindName
+        Dim groupName As String = String.Format("{0} - {1}", designName, blindName)
         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
