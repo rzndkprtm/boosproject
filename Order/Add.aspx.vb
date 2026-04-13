@@ -1196,10 +1196,8 @@ Partial Class Order_Add
                         Dim controlLengthText As String = (sheetDetail.Cells(row, 19).Text & "").Trim()
                         Dim bottomJoining As String = (sheetDetail.Cells(row, 20).Text & "").Trim()
                         Dim bracketExtension As String = (sheetDetail.Cells(row, 21).Text & "").Trim()
-                        Dim notes As String = (sheetDetail.Cells(row, 22).Text & "").Trim()
-
-                        'Dim sloping As String = (sheetDetail.Cells(row, 22).Text & "").Trim()
-                        'Dim notes As String = (sheetDetail.Cells(row, 23).Text & "").Trim()
+                        Dim sloping As String = (sheetDetail.Cells(row, 22).Text & "").Trim()
+                        Dim notes As String = (sheetDetail.Cells(row, 23).Text & "").Trim()
 
                         Dim chainId As String = String.Empty
                         Dim controlLength As String = String.Empty
@@ -1388,15 +1386,15 @@ Partial Class Order_Add
                             End If
                         End If
 
-                        'If blindType = "Complete Set" Then
-                        '    If Not String.IsNullOrEmpty(sloping) Then
-                        '        Dim validSloping As String() = {"No", "Yes"}
-                        '        If Not validSloping.Contains(sloping) Then
-                        '            MessageError(True, "PLEASE CHECK YOUR SLOPING !")
-                        '            Exit For
-                        '        End If
-                        '    End If
-                        'End If
+                        If blindType = "Complete Set" Then
+                            If Not String.IsNullOrEmpty(sloping) Then
+                                Dim validSloping As String() = {"No", "Yes"}
+                                If Not validSloping.Contains(sloping) Then
+                                    MessageError(True, "PLEASE CHECK YOUR SLOPING !")
+                                    Exit For
+                                End If
+                            End If
+                        End If
 
                         If msgError.InnerText = "" Then
                             Dim totalItems As Integer = 1
@@ -1462,7 +1460,7 @@ Partial Class Order_Add
                                     myCmd.Parameters.AddWithValue("@WandLengthValue", wandLengthValue)
                                     myCmd.Parameters.AddWithValue("@BottomJoining", bottomJoining)
                                     myCmd.Parameters.AddWithValue("@BracketExtension", bracketExtension)
-                                    myCmd.Parameters.AddWithValue("@Sloping", String.Empty)
+                                    myCmd.Parameters.AddWithValue("@Sloping", sloping)
                                     myCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
                                     myCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
                                     myCmd.Parameters.AddWithValue("@Notes", notes)
