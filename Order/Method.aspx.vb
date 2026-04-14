@@ -328,7 +328,6 @@ Partial Class Order_Method
         End If
 
         If type = "CurtainTrackType" Then
-            result.Add(New With {.Value = "Express Track", .Text = "Express Track"})
             result.Add(New With {.Value = "Styletrack", .Text = "Styletrack"})
             result.Add(New With {.Value = "Commercial", .Text = "Commercial"})
 
