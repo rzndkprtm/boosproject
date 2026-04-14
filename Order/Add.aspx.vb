@@ -173,6 +173,13 @@ Partial Class Order_Add
                     Dim savePath As String = Server.MapPath(String.Format("~/file/cws/{0}", fileName))
                     fuFile.SaveAs(savePath)
 
+                    If ddlCustomer.SelectedValue = "985" Then
+                        ReadFileData(savePath, ddlCustomer.SelectedValue)
+                    End If
+                    If ddlCustomer.SelectedValue = "127" Then
+                        ReadExcelData(savePath)
+                    End If
+
                     ReadExcelData(savePath)
                 End If
             End If
@@ -208,7 +215,7 @@ Partial Class Order_Add
 
             Dim orderNumber As String = worksheet.Cells(2, 1).Text
             Dim orderName As String = worksheet.Cells(2, 2).Text
-            Dim orderNote As String = worksheet.Cells(2, 5).Text
+            Dim orderNote As String = worksheet.Cells(2, 3).Text
 
             If orderNumber = orderClass.IsOrderExist(ddlCustomer.SelectedValue, orderNumber.Trim()) Then
                 MessageError(True, "ORDER NUMBER ALREADY EXISTS !")
@@ -265,7 +272,7 @@ Partial Class Order_Add
 
             Using orderItem As New ExcelPackage(New FileInfo(filePath))
                 Dim sheetDetail As ExcelWorksheet = orderItem.Workbook.Worksheets(0)
-                Dim startRow As Integer = 3
+                Dim startRow As Integer = 4
                 Dim lastRow As Integer = sheetDetail.Dimension.End.Row
 
                 For row As Integer = startRow To lastRow
@@ -276,18 +283,7 @@ Partial Class Order_Add
 
                     Dim designName As String = (sheetDetail.Cells(row, 1).Text & "").Trim()
 
-                    If String.IsNullOrEmpty(designName) Then
-                        Dim thisAlert As String = String.Format("DESIGN TYPE IS REQUIRED FOR ITEM {0} !", itemNumber)
-                        MessageError(True, thisAlert)
-                        Exit For
-                    End If
-
-                    Dim designId As String = orderClass.GetItemData("SELECT Id FROM Designs WHERE Name='" & designName & "'")
-                    If String.IsNullOrEmpty(designId) Then
-                        Dim thisAlert As String = String.Format("THE DESIGN TYPE IN ITEM {0} IS NOT REGISTERED. PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !", itemNumber)
-                        MessageError(True, thisAlert)
-                        Exit For
-                    End If
+                    Dim designId As String = String.Empty
 
                     If designName = "Roller Blind" Then
                         Dim blindName As String = (sheetDetail.Cells(row, 2).Text & "").Trim()
@@ -1597,6 +1593,13 @@ Partial Class Order_Add
                     End If
 
                     If designName = "Venetian Blind" Then
+                        designId = orderClass.GetItemData("SELECT Id FROM Designs WHERE Name='" & designName & "'")
+                        If String.IsNullOrEmpty(designId) Then
+                            Dim thisAlert As String = String.Format("THE DESIGN TYPE IN ITEM {0} IS NOT REGISTERED. PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !", itemNumber)
+                            MessageError(True, thisAlert)
+                            Exit For
+                        End If
+
                         Dim blindName As String = (sheetDetail.Cells(row, 2).Text & "").Trim()
 
                         If String.IsNullOrEmpty(blindName) Then
@@ -1958,6 +1961,13 @@ Partial Class Order_Add
                     End If
 
                     If designName = "Aluminium Blind" Then
+                        designId = orderClass.GetItemData("SELECT Id FROM Designs WHERE Name='" & designName & "'")
+                        If String.IsNullOrEmpty(designId) Then
+                            Dim thisAlert As String = String.Format("THE DESIGN TYPE IN ITEM {0} IS NOT REGISTERED. PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !", itemNumber)
+                            MessageError(True, thisAlert)
+                            Exit For
+                        End If
+
                         Dim blindName As String = (sheetDetail.Cells(row, 2).Text & "").Trim()
 
                         If String.IsNullOrEmpty(blindName) Then
@@ -1988,16 +1998,23 @@ Partial Class Order_Add
                         Dim supply As String = (sheetDetail.Cells(row, 13).Text & "").Trim()
                         Dim notes As String = (sheetDetail.Cells(row, 19).Text & "").Trim()
 
+
+                        Dim productId As String = String.Empty
                         Dim width As Integer
                         Dim drop As Integer
-
                         Dim controlLength As String = String.Empty
                         Dim controlLengthValue As Integer = 0
 
                         Dim wandLength As String = String.Empty
                         Dim wandLengthValue As Integer = 0
 
-                        If qty <> 1 Then
+                        If String.IsNullOrEmpty(qty) Then
+                            Dim thisAlert As String = String.Format("QTY IS REQUIRED FOR ITEM {0} !", itemNumber)
+                            MessageError(True, thisAlert)
+                            Exit For
+                        End If
+
+                        If qty <> "1" Then
                             Dim thisAlert As String = String.Format("THE ORDER QTY MUS BE 1 PER ITEM LINE. PLEASE CHECK ITEM {0} !", itemNumber)
                             MessageError(True, thisAlert)
                             Exit For
@@ -2037,9 +2054,18 @@ Partial Class Order_Add
                             Exit For
                         End If
 
-                        Dim productId As String = orderClass.GetItemData("SELECT Id FROM Products CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designId & "' AND BlindId='" & blindId & "' AND companyArray.value='" & companyDetailId & "' AND TubeType='" & tubeId & "' AND ControlType='" & controlId & "' AND ColourType='" & colourId & "' AND Active=1")
-                        If String.IsNullOrEmpty(productId) Then
-                            Dim thisAlert As String = String.Format("THE PRODUCT YOU REQUESTED IS CURRENTLY NOT AVAILABLE IN OUR STOCKS. PLEASE REVIEW YOUR ORDER OR CONTACT OUR CUSTOMER SERVICE TEAM FOR ASSISTANCE. ITEM {0} !", itemNumber)
+                        rowData = orderClass.GetDataRow("SELECT * FROM Products CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designId & "' AND BlindId='" & blindId & "' AND companyArray.value='" & companyDetailId & "' AND TubeType='" & tubeId & "' AND ControlType='" & controlId & "' AND ColourType='" & colourId & "'")
+                        If rowData Is Nothing Then
+                            Dim thisAlert As String = String.Format("PLEASE CHECK ITEM {0}. THE PRODUCT IS NOT REGISTERED IN OUR SYSTEM !", itemNumber)
+                            MessageError(True, thisAlert)
+                            Exit For
+                        End If
+
+                        productId = rowData("Id").ToString()
+                        rowActive = Convert.ToBoolean(rowData("Active"))
+
+                        If rowActive = False Then
+                            Dim thisAlert As String = String.Format("PLEASE CHECK ITEM {0}. THE PRODUCT IS CURRENTLY NOT AVAILABLE IN OUR STOCK !", itemNumber)
                             MessageError(True, thisAlert)
                             Exit For
                         End If
@@ -2142,7 +2168,7 @@ Partial Class Order_Add
                         controlLengthValue = Math.Ceiling(drop * 2 / 3)
                         If controlLengthValue < 450 Then controlLengthValue = 450
 
-                        If Not String.IsNullOrEmpty(cordLengthText) AndAlso Not cordLengthText.ToLower().Contains("standard") AndAlso Not cordLengthText.ToLower().Contains("std") Then
+                        If Not String.IsNullOrEmpty(cordLengthText) AndAlso Not cordLengthText = "Standard" Then
                             controlLength = "Custom"
                             cordLengthText = cordLengthText.Replace("mm", "")
                             If Not Integer.TryParse(cordLengthText, controlLengthValue) OrElse controlLengthValue < 0 Then
@@ -2156,7 +2182,7 @@ Partial Class Order_Add
                         wandLengthValue = Math.Ceiling(drop * 2 / 3)
                         If wandLengthValue < 450 Then wandLengthValue = 450
 
-                        If Not String.IsNullOrEmpty(wandLengthText) AndAlso Not wandLengthText.ToLower().Contains("standard") AndAlso Not wandLengthText.ToLower().Contains("std") Then
+                        If Not String.IsNullOrEmpty(wandLengthText) AndAlso Not wandLengthText = "Standard" Then
                             wandLength = "Custom"
                             wandLengthText = wandLengthText.Replace("mm", "")
                             If Not Integer.TryParse(wandLengthText, wandLengthValue) OrElse wandLengthValue < 0 Then
@@ -2178,22 +2204,17 @@ Partial Class Order_Add
 
                         If msgError.InnerText = "" Then
                             Dim itemId As String = orderClass.GetNewOrderItemId()
-
-                            Dim groupName As String = blindName
-
-                            Dim productgroupName As String = blindName
-
-                            Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(productgroupName, designId, companyDetailId)
+                            Dim priceProductGroupId As String = orderClass.GetPriceProductGroupId(blindName, designId, companyDetailId)
 
                             Dim linearMetre As Decimal = width / 10000
                             Dim squareMetre As Decimal = width * drop / 1000000
 
                             Using thisConn As SqlConnection = New SqlConnection(myConn)
-                                Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails (Id, HeaderId, ProductId, PriceProductGroupId, SubType, Qty, Room, Mounting, ControlPosition, TilterPosition, Width, [Drop], Supply, Tassel, ControlLength, ControlLengthValue, WandLength, WandLengthValue, LinearMetre, SquareMetre, TotalItems, Notes, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, @SubType, 1, @Room, @Mounting, @ControlPosition, @TilterPosition, @Width, @Drop, @Supply, @Tassel, @ControlLength, @ControlLengthValue, @WandLength, @WandLengthValue, @LinearMetre, @SquareMetre, @TotalItems, @Notes, @MarkUp, 1)", thisConn)
+                                Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails (Id, HeaderId, ProductId, PriceProductGroupId, SubType, Qty, Room, Mounting, ControlPosition, TilterPosition, Width, [Drop], Supply, ControlLength, ControlLengthValue, WandLength, WandLengthValue, LinearMetre, SquareMetre, TotalItems, Notes, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, @SubType, 1, @Room, @Mounting, @ControlPosition, @TilterPosition, @Width, @Drop, @Supply, @ControlLength, @ControlLengthValue, @WandLength, @WandLengthValue, @LinearMetre, @SquareMetre, @TotalItems, @Notes, @MarkUp, 1)", thisConn)
                                     myCmd.Parameters.AddWithValue("@Id", itemId)
                                     myCmd.Parameters.AddWithValue("@HeaderId", headerId)
                                     myCmd.Parameters.AddWithValue("@ProductId", productId)
-                                    myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
+                                    myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroupId), CType(DBNull.Value, Object), priceProductGroupId))
                                     myCmd.Parameters.AddWithValue("@Room", room)
                                     myCmd.Parameters.AddWithValue("@Mounting", mounting)
                                     myCmd.Parameters.AddWithValue("@SubType", subType)
@@ -2232,6 +2253,29 @@ Partial Class Order_Add
                     End If
                 Next
             End Using
+
+            If Not msgError.InnerText = "" Then
+                Using thisConn As New SqlConnection(myConn)
+                    thisConn.Open()
+
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Active=0 WHERE Id=@Id", thisConn)
+                        myCmd.Parameters.AddWithValue("@Id", headerId)
+                        myCmd.ExecuteNonQuery()
+                    End Using
+
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET Active=0 WHERE HeaderId=@Id", thisConn)
+                        myCmd.Parameters.AddWithValue("@Id", headerId)
+                        myCmd.ExecuteNonQuery()
+                    End Using
+
+                    thisConn.Close()
+                End Using
+            End If
+
+            If msgError.InnerText = "" Then
+                url = String.Format("~/order/detail?orderid={0}", headerId)
+                Response.Redirect(url, False)
+            End If
         End Using
     End Sub
 
