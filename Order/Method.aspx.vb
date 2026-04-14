@@ -4035,7 +4035,6 @@ Partial Class Order_Method
         End If
         If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
             If width > 2400 AndAlso (blindName = "Full Cassette" OrElse blindName = "Semi Cassette") Then Return "MAXIMUM WIDTH IS 2400MM !"
-            If width > 1810 AndAlso tubeName = "Standard" AndAlso colourName = "White" Then Return "FOR NOW, WIDTHS GREATER THAN 1810 CANNOT BE USED WITH THE STANDARD TUBE TYPE AND WHITE BRACKET COLOUR !"
             If width > 2910 Then Return "MAXIMUM WIDTH IS 2910MM !"
         End If
 
