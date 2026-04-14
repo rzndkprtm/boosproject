@@ -560,9 +560,7 @@ function bindTrackType(heading) {
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (response) {
-
                 if (Array.isArray(response.d)) {
-
                     if (response.d.length > 0) {
                         const defaultOption = document.createElement("option");
                         defaultOption.value = "";
@@ -761,9 +759,7 @@ function visibleReturnLength(trackType) {
     return new Promise((resolve) => {
         let divreturnlength = document.getElementById("divreturnlength");
 
-        if (!divreturnlength) {
-            return resolve();
-        }
+        if (!divreturnlength) return resolve();
 
         divreturnlength.style.display = "none";
         if (trackType === "Styletrack" || trackType === "Commercial") {
