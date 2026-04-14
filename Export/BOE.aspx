@@ -270,9 +270,8 @@
 
             If designName = "Curtain" Then
                 Dim heading As String = thisData.Rows(i)("Heading").ToString()
-                Dim headingB As String = thisData.Rows(i)("HeadingB").ToString()
 
-                Dim kitName As String = blindName & " " & heading
+                Dim kitName As String = String.Format("{0} {1} {2}", designName, blindName, heading)
                 Dim kitId As String = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "'")
                 If blindName = "Track Only" Then
                     kitId = String.Empty
@@ -280,9 +279,6 @@
                 If blindName = "Fabric Only" Then
                     kitId = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "'")
                 End If
-                Dim kitIdB As String = String.Empty
-
-                If blindName = "Double Curtain & Track" Then kitIdB = kitId
 
                 Dim webFabricId As String = thisData.Rows(i)("FabricColourId").ToString()
                 Dim boeFabricId As String = GetItemData("SELECT BoeId FROM FabricColours WHERE Id='" & webFabricId & "'")
