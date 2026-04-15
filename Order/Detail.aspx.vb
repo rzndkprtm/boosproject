@@ -1892,6 +1892,7 @@ Partial Class Order_Detail
                     liDividerInvoice.Visible = True : liUpdateInvoiceData.Visible = True
 
                     aUnHoldOrder.Visible = True : aCancelOrder.Visible = True
+                    aUnsubmitOrder.Visible = True
 
                     aAddItem.Visible = True : aService.Visible = True
                 End If
