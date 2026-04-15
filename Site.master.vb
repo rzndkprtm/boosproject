@@ -382,8 +382,6 @@ Public Partial Class SiteMaster
 
                 liSetting.Visible = True
 
-                liCustomer.Visible = True
-
                 liSpecification.Visible = True
                 liSpecificationProduct.Visible = True
                 liSpecificationFabric.Visible = True
@@ -398,12 +396,6 @@ Public Partial Class SiteMaster
                 liStocks.Visible = True
 
                 liSettingQuote.Visible = True
-            End If
-
-            If Session("RoleName") = "Data Entry" Then
-                liGuide.Visible = True
-                liSetting.Visible = True
-                liCustomer.Visible = True
             End If
 
             If Session("RoleName") = "Installer" Then
