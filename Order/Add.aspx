@@ -22,7 +22,7 @@
     </div>
     <div class="page-content">
         <section class="row">
-            <div class="col-12 col-sm-12 col-lg-7">
+            <div class="col-12 col-sm-12 col-lg-8">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title">Create Form</h4>
@@ -35,8 +35,11 @@
                                         <div class="col-12 col-sm-12 col-lg-3">
                                             <label>Customer Account</label>
                                         </div>
-                                        <div class="col-12 col-sm-12 col-lg-9 form-group">
+                                        <div class="col-12 col-sm-12 col-lg-7 form-group">
                                             <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCustomer_SelectedIndexChanged"></asp:DropDownList>
+                                        </div>
+                                        <div class="col-12 col-sm-12 col-lg-2 form-group">
+                                            <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Customer Account');">Info</a>
                                         </div>
                                     </div>
                                     <div class="row mb-3" runat="server" id="divCreatedBy">
@@ -60,7 +63,7 @@
                                         </div>
                                     </div>
                                     <div runat="server" id="divManual">
-                                        <div class="row">
+                                        <div class="row mt-3">
                                             <div class="col-12 col-sm-12 col-lg-3">
                                                 <label>Order Number</label>
                                             </div>
@@ -168,6 +171,18 @@
             } else if (type === "Order Name") {
                 info = "<b>Order Name</b>";
                 info += "<br /><br />";
+            } else if (type === "Customer Account") {
+                const roleName = '<%= Session("RoleName")  %>';
+
+                info = "<b>Customer Account</b>";
+                info += "<br /><br />";
+                if (roleName === "Sales" || roleName === "Customer Service") {
+                    info += "Please use the <b>JPM Direct Pty Ltd</b> account for testing purposes or for orders placed by you as a representative."
+                    info += "<br /><br />";
+                    info += "If the order is for a customer, kindly search for and select your customer’s name when creating the order.";
+                } else {
+                    info += "Please select the customer’s name based on the order details you are creating.";
+                }                
             } else {
                 info = "";
             }
