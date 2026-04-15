@@ -280,6 +280,34 @@ Partial Class Setting_Customer_Login
         End Try
     End Sub
 
+    Protected Sub btnChangePassword_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            If Not String.IsNullOrEmpty(txtChangePassword.Text) Then
+                Dim thisId As String = txtIdChangePassword.Text
+                Dim newPassword As String = settingClass.Encrypt(txtChangePassword.Text)
+
+                Using thisConn As New SqlConnection(myConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLogins SET Password=@Password WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
+                        myCmd.Parameters.AddWithValue("@Id", thisId)
+                        myCmd.Parameters.AddWithValue("@Password", newPassword)
+
+                        thisConn.Open()
+                        myCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                dataLog = {"CustomerLogins", thisId, Session("LoginId").ToString(), "Change Password Login"}
+                settingClass.Logs(dataLog)
+
+                Session("SearchCustomerLogin") = txtSearch.Text
+                Response.Redirect("~/setting/customer/login", False)
+            End If
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+        End Try
+    End Sub
+
     Protected Sub btnResetPass_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try

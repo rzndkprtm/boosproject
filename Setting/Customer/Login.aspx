@@ -82,6 +82,9 @@
                                                             <li runat="server" visible='<%# VisibleAction(Eval("RoleName").ToString(), Eval("LevelName").ToString()) %>'>
                                                                 <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalActive" onclick='<%# String.Format("return showActive(`{0}`, `{1}`);", Eval("Id").ToString(), Convert.ToInt32(Eval("Active"))) %>'><%# TextActive(Eval("Active")) %></a>
                                                             </li>
+                                                            <li  runat="server" visible='<%# VisibleAction(Eval("RoleName").ToString(), Eval("LevelName").ToString()) %>'>
+                                                                <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangePassword" onclick='<%# String.Format("return showChangePassword(`{0}`);", Eval("Id").ToString()) %>'>Change Password</a>
+                                                            </li>
                                                             <li runat="server" visible='<%# VisibleAction(Eval("RoleName").ToString(), Eval("LevelName").ToString()) %>'>
                                                                 <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalResetPass" onclick='<%# String.Format("return showResetPass(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("UserName").ToString()) %>'>Reset Password</a>
                                                             </li>
@@ -198,6 +201,30 @@
         </div>
     </div>
 
+    <div class="modal modal-blur fade" id="modalChangePassword" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Change Password</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <asp:TextBox runat="server" ID="txtIdChangePassword" style="display:none;"></asp:TextBox>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">New Password</label>
+                            <asp:TextBox runat="server" ID="txtChangePassword" CssClass="form-control" placeholder="Password ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnChangePassword" Text="Submit" CssClass="btn btn-primary" OnClick="btnChangePassword_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal modal-blur fade" id="modalResetPass" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -270,6 +297,10 @@
             document.getElementById("titleActive").innerHTML = title;
         }
 
+        function showChangePassword(id, active) {
+            document.getElementById("<%=txtIdChangePassword.ClientID %>").value = id;
+        }
+
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
             $("#tblLogs tbody").html("");
@@ -335,7 +366,7 @@
             document.getElementById("spanPassword").innerHTML = body;
         }
 
-        ["modalProcess", "modalActive", "modalResetPass", "modalDencryptPass", "modalLog"].forEach(function (id) {
+        ["modalProcess", "modalActive", "modalChangePassword", "modalResetPass", "modalDencryptPass", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
