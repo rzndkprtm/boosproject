@@ -1466,24 +1466,26 @@ Partial Class Setting_Customer_Detail
         MessageError_Login(False, String.Empty)
         Session("selectedTabCustomer") = "list-login"
         Try
-            Dim thisId As String = txtIdChangePassword.Text
-            Dim newPassword As String = settingClass.Encrypt(txtChangePassword.Text)
+            If Not String.IsNullOrEmpty(txtChangePassword.Text) Then
+                Dim thisId As String = txtIdChangePassword.Text
+                Dim newPassword As String = settingClass.Encrypt(txtChangePassword.Text)
 
-            Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLogins SET Password=@Password WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.Parameters.AddWithValue("@Password", newPassword)
+                Using thisConn As New SqlConnection(myConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLogins SET Password=@Password WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
+                        myCmd.Parameters.AddWithValue("@Id", thisId)
+                        myCmd.Parameters.AddWithValue("@Password", newPassword)
 
-                    thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                        thisConn.Open()
+                        myCmd.ExecuteNonQuery()
+                    End Using
                 End Using
-            End Using
 
-            dataLog = {"CustomerLogins", thisId, Session("LoginId").ToString(), "Change Password Login"}
-            settingClass.Logs(dataLog)
+                dataLog = {"CustomerLogins", thisId, Session("LoginId").ToString(), "Change Password Login"}
+                settingClass.Logs(dataLog)
 
-            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
-            Response.Redirect(url, False)
+                url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
+                Response.Redirect(url, False)
+            End If
         Catch ex As Exception
             MessageError_Login(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then

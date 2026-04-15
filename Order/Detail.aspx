@@ -574,6 +574,9 @@
 
                     <br /><br />
                     <i>* Make sure you have reviewed this order before sending it to the factory.</i>
+                    <br /><br />
+
+                    <asp:CheckBox runat="server" ID="chkSendEmail" CssClass="form-control" Checked="true" Text="&nbsp;&nbsp;&nbsp;AUTO SEND EMAIL" />
                 </div>
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
