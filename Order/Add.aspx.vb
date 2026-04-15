@@ -4950,7 +4950,7 @@ Partial Class Order_Add
                         If blindType = "Ultraslat Venetian 50mm" Then
                             designName = "Venetian Blind" : blindName = "Ultraslat 50mm"
                         End If
-                        If blindType = "Basswood Venetian 63mm" Then
+                        If blindType = "Ultraslat Venetian 63mm" Then
                             designName = "Venetian Blind" : blindName = "Ultraslat 63mm"
                         End If
 
@@ -5042,11 +5042,6 @@ Partial Class Order_Add
                         If String.IsNullOrEmpty(colourId) Then
                             Dim thisAlert As String = String.Format("THE COLOUR YOU REQUESTED IS CURRENTLY NOT AVAILABLE IN OUR STOCKS. PLEASE REVIEW YOUR ORDER OR CONTACT OUR CUSTOMER SERVICE TEAM FOR ASSISTANCE. ITEM {0} !", itemNumber)
                             MessageError(True, thisAlert)
-                            Exit For
-                        End If
-
-                        If Session("RoleName") = "Developer" Then
-                            MessageError(True, "SELECT Id FROM Products CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designId & "' AND BlindId='" & blindId & "' AND companyArray.value='" & companyDetailId & "' AND TubeType='" & tubeId & "' AND ControlType='" & controlId & "' AND ColourType='" & colourId & "' AND Active=1")
                             Exit For
                         End If
 
