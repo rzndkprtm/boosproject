@@ -42,10 +42,6 @@ Partial Class Order_Default
         Response.Redirect("~/order/add", False)
     End Sub
 
-    Protected Sub btnAddMe_Click(sender As Object, e As EventArgs)
-        Response.Redirect("~/order/add", False)
-    End Sub
-
     Protected Sub btnRework_Click(sender As Object, e As EventArgs)
         Response.Redirect("~/order/rework", False)
     End Sub
@@ -779,7 +775,6 @@ Partial Class Order_Default
             gvList.Columns(7).Visible = PageAction("Visible Created Date")
 
             btnAdd.Visible = PageAction("Add")
-            btnAddMe.Visible = PageAction("Add For Me")
             btnRework.Visible = PageAction("Rework")
             btnFile.Visible = PageAction("File")
 

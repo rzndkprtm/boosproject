@@ -6476,7 +6476,7 @@ Partial Class Order_Add
                 companyDetailName = orderClass.GetCompanyDetailNameByCustomer(ddlCustomer.SelectedValue)
             End If
 
-            If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" Then
+            If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Sales" OrElse Session("RoleName") = "Customer Service" Then
                 divCustomer.Visible = True
                 If companyDetailName = "JPMD BP" Then divOrderType.Visible = True
             End If
@@ -6503,9 +6503,20 @@ Partial Class Order_Add
     Protected Sub BindDataCustomer()
         ddlCustomer.Items.Clear()
         Try
+            Dim splitArray As String = String.Empty
             Dim role As String = String.Empty
+
             If Session("RoleName") = "Customer" Then role = "AND Id='" & Session("CustomerId") & "'"
-            If Session("RoleName") = "Sales" OrElse Session("RoleName") = "Customer Service" Then role = "AND Id='" & Session("CustomerId") & "'"
+            If Session("RoleName") = "Sales" Then
+                role = "AND CompanyId='" & Session("CompanyId").ToString() & "'"
+                If Session("LevelName") = "Member" Then
+                    role = "AND (Id = '" & Session("CustomerId") & "' OR EXISTS (SELECT 1 FROM STRING_SPLIT(Operator, ',') WHERE value = '" & Session("LoginId") & "'))"
+                End If
+            End If
+
+            If Session("RoleName") = "Customer Service" Then
+                role = "AND CompanyId='" & Session("CompanyId").ToString() & "'"
+            End If
 
             Dim thisQuery As String = String.Format("SELECT * FROM Customers WHERE Active=1 {0} ORDER BY Name ASC", role)
 
@@ -6517,6 +6528,8 @@ Partial Class Order_Add
             If ddlCustomer.Items.Count > 1 Then
                 ddlCustomer.Items.Insert(0, New ListItem("", ""))
             End If
+
+            ddlCustomer.SelectedValue = Session("CustomerId").ToString()
         Catch ex As Exception
             ddlCustomer.Items.Clear()
             If Session("RoleName") = "Developer" Then
