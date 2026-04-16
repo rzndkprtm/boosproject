@@ -229,7 +229,7 @@
                                                             <option value="Standard">Standard</option>
                                                             <option value="Custom">Custom</option>
                                                         </select>
-                                                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Cord Length');"> ? </a>
+                                                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Wand Length');"> ? </a>
                                                     </div>
                                                 </div>
                                                 <div class="col-12 col-sm-12 col-lg-4 form-group" id="divcontrollengthvalue">
@@ -356,5 +356,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/WebOrders/Saphora.js?v=2.0.3"></script>
+    <script src="/Scripts/WebOrders/Saphora.js?v=2.0.4"></script>
 </asp:Content>

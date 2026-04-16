@@ -1079,16 +1079,16 @@ async function bindItemOrder(itemId, companyDetailId, action) {
 function showInfo(type) {
     let info;
 
-    if (type === "Cord Length") {
-        info = "<b>Cord Length Information</b>";
+    if (type === "Wand Length") {
+        info = "<b>Wand Length Information</b>";
         info += "<br /><br />";
         info += "- Standard";
         info += "<br />";
-        info += "Our standard pull cord length is 2/3 from your drop.";
+        info += "Our standard wand length is 2/3 of the drop, with a maximum of 1000 mm.";
         info += "<br /><br />";
         info += "- Custom";
         info += "<br />";
-        info += "Minimum custom cord length is 450mm.";
+        info += "Made according to your requirements, with a maximum of 1000 mm.";
     }
     document.getElementById("spanInfo").innerHTML = info;
 }
