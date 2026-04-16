@@ -8960,19 +8960,13 @@ Partial Class Order_Method
                 Return "WAND COLOUR IS REQUIRED !"
             End If
 
-            If String.IsNullOrEmpty(data.controllength) Then Return "CONTROL LENGTH IS REQUIRED !"
+            If String.IsNullOrEmpty(data.controllength) Then Return "WAND LENGTH IS REQUIRED !"
 
             If data.controllength = "Custom" Then
-                If String.IsNullOrEmpty(data.controllengthvalue) Then Return "CONTROL LENGTH VALUE IS REQUIRED !"
-                If Not Integer.TryParse(data.controllengthvalue, controllength) OrElse controllength <= 0 Then Return "PLEASE CHECK YOUR CONTROL LENGTH ORDER !"
+                If String.IsNullOrEmpty(data.controllengthvalue) Then Return "WAND LENGTH VALUE IS REQUIRED !"
+                If Not Integer.TryParse(data.controllengthvalue, controllength) OrElse controllength <= 0 Then Return "PLEASE CHECK YOUR WAND LENGTH ORDER !"
 
-                Dim thisStandard As Integer = Math.Ceiling(drop * 2 / 3)
-                If thisStandard > 1000 Then thisStandard = 1000
-                If controllength < thisStandard Then
-                    If thisStandard = 1000 Then Return "MINIMUM CONTROL LENGTH IS 1000MM !"
-                    Return String.Format("CONTROL LENGTH MUST BE BETWEEN {0}MM - 1000MM !", thisStandard)
-                End If
-                If controllength > 1000 Then Return "MAXIMUM CONTROL LENGTH IS 1000MM !"
+                If controllength > 2000 Then Return "MAXIMUM CONTROL LENGTH IS 2000MM !"
             End If
         End If
 
@@ -8997,7 +8991,7 @@ Partial Class Order_Method
             End If
 
             If controlName = "Wand" Then
-                If controllength > 1000 Then controllength = 1000
+                If controllength > 2000 Then controllength = 2000
                 wandlength = controllength
 
                 data.chaincolour = String.Empty

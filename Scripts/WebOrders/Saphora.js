@@ -1084,11 +1084,11 @@ function showInfo(type) {
         info += "<br /><br />";
         info += "- Standard";
         info += "<br />";
-        info += "Our standard wand length is 2/3 of the drop, with a maximum of 1000 mm.";
+        info += "Our standard wand length is 2/3 of the drop, with a maximum of 2000mm.";
         info += "<br /><br />";
         info += "- Custom";
         info += "<br />";
-        info += "Made according to your requirements, with a maximum of 1000 mm.";
+        info += "Made according to your requirements, with a maximum of 2000mm.";
     }
     document.getElementById("spanInfo").innerHTML = info;
 }

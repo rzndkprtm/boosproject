@@ -1000,33 +1000,34 @@ function visibleDetail(blindtype, tubetype, controltype, colourtype) {
         getBlindName(blindtype).then(blindName => {
             let divShow = [];
 
+            $("#controllengthtitle").text("Control Length");
+
             if (blindName === "Complete Set") {
                 divShow = [
-                    "divmounting", "divfabric", "divwidth", "divdrop", "divstackposition", "divcontrollength", "divcontrollengthoption",
-                    "divfabricinsert", "divbottomjoining", "divbracketextension", "divsloping"
+                    "divmounting", "divfabric", "divwidth", "divdrop", "divstackposition", "divcontrollength", "divcontrollengthoption", "divfabricinsert", "divbottomjoining", "divbracketextension", "divsloping"
                 ];
 
                 return getControlName(controltype).then(controlName => {
                     if (controlName === "Chain") {
                         divShow.push("divcontrolposition", "divchaincolour");
+                        $("#controllengthtitle").text("Chain Length");
                     } else if (controlName === "Wand") {
                         divShow.push("divwandcolour");
+                        $("#controllengthtitle").text("Wand Length");
                     }
                     divShow.forEach(id => toggleDisplay(document.getElementById(id), true));
                 });
 
             } else if (blindName === "Track Only") {
-                divShow = [
-                    "divmounting", "divqtyblade", "divwidth", "divstackposition",
-                    "divcontrollength", "divcontrollengthvalue", "divfabricinsert",
-                    "divbracketextension"
-                ];
+                divShow = [ "divmounting", "divqtyblade", "divwidth", "divstackposition", "divcontrollength", "divcontrollengthvalue", "divfabricinsert", "divbracketextension" ];
 
                 return getControlName(controltype).then(controlName => {
                     if (controlName === "Chain") {
                         divShow.push("divcontrolposition", "divchaincolour");
+                        $("#controllengthtitle").text("Chain Length");
                     } else if (controlName === "Wand") {
                         divShow.push("divwandcolour");
+                        $("#controllengthtitle").text("Wand Length");
                     }
 
                     divShow.forEach(id => toggleDisplay(document.getElementById(id), true));
@@ -1181,37 +1182,46 @@ async function bindItemOrder(itemId, companyDetailId, action) {
 function showInfo(type) {
     let info;
 
-    if (type === "Extension Bracket") {
-        info = "<b>Extension Bracket</b>";
-        info += "<br /><br />";
-        info += "<img src='https://ordersblindonline.com/assets/images/products/vertical/extensionbracket.jpg' alt='' style='max - width: 100%; height: auto;' />";
-    }
-    else if (type === "Bottom Joining") {
-        info = "<b>Bottom Joining</b>";
-        info += "<br /><br />";
-        info += "Please open the Detail Gallery";
-    }
-    else if (type === "Fabric Insert") {
-        info = "<b>Fabric Insert</b>";
-        info += "<br /><br />";
-        info += "<img src='https://ordersblindonline.com/assets/images/products/vertical/fabricinsert.JPG' alt='' style='max - width: 100%; height: auto;' />";
-    }
-    else if (type === "Control Length") {
-        info = "Control Length Information";
-        info += "<br /><br />";
-        info += "- Standard";
-        info += "<br />";
-        info += "Our standard wand length is 2/3 from your drop & maximum wand length is 1000mm";
-        info += "<br /><br />";
-        info += "- Custom";
-        info += "<br />";
-        info += "Minimum custom wand length is 2 / 3 from your drop";
-        info += "<br />";
-        info += "Maximum custom wand length is 1000mm.";
-    } else if (type === "Bottom Joining") {
+    const controltype = document.getElementById("controltype").value;
 
-    }
-    document.getElementById("spanInfo").innerHTML = info;
+    getControlName(controltype).then(controlName => {
+        if (type === "Extension Bracket") {
+            info = "<b>Extension Bracket</b>";
+            info += "<br /><br />";
+            info += "<img src='https://ordersblindonline.com/assets/images/products/vertical/extensionbracket.jpg' alt='' style='max - width: 100%; height: auto;' />";
+        }
+        else if (type === "Bottom Joining") {
+            info = "<b>Bottom Joining</b>";
+            info += "<br /><br />";
+            info += "Please open the Detail Gallery";
+        }
+        else if (type === "Fabric Insert") {
+            info = "<b>Fabric Insert</b>";
+            info += "<br /><br />";
+            info += "<img src='https://ordersblindonline.com/assets/images/products/vertical/fabricinsert.JPG' alt='' style='max - width: 100%; height: auto;' />";
+        }
+        else if (type === "Control Length") {
+            if (controlName === "Wand") {
+                info = "Wand Length Information";
+                info += "<br /><br />";
+                info += "- Standard";
+                info += "<br />";
+                info += "Our standard wand length is 2/3 from your drop & maximum wand length is 1000mm";
+                info += "<br /><br />";
+                info += "- Custom";
+                info += "<br />";
+                info += "Made according to your requirements, with a maximum of 1000mm.";
+            } else if (controlName === "Chain") {
+                info = "Chain Length Information";
+            } else {
+                info = "Control Length Information";
+            }
+        }
+
+        document.getElementById("spanInfo").innerHTML = info;
+    }).catch(function (error) {
+        document.getElementById("spanInfo").innerHTML = error;
+    });
 }
 
 function redirectOrder() {

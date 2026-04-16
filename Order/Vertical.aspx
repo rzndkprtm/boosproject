@@ -244,7 +244,7 @@
                                             </div>
                                             <div class="row" id="divcontrollength">
                                                 <div class="col-12 col-sm-12 col-lg-3">
-                                                    <label>Control Length</label>
+                                                    <label id="controllengthtitle">Control Length</label>
                                                 </div>
                                                 <div class="col-12 col-sm-12 col-lg-3 form-group" id="divcontrollengthoption">
                                                     <div class="input-group">
@@ -413,5 +413,5 @@
         </div>
     </div>
     
-    <script src="/Scripts/WebOrders/Vertical.js?v=2.0.1"></script>
+    <script src="/Scripts/WebOrders/Vertical.js?v=2.0.2"></script>
 </asp:Content>
