@@ -5298,9 +5298,9 @@ Partial Class Order_Add
 
                     If designType = "Venetian" Then
                         Dim itemNumber As String = row - 3
-                        Dim blindType As String = If(sheetDetail.Cells(row, 2).Text IsNot Nothing, sheetDetail.Cells(row, 2).Text, "")
+                        Dim blindType As String = (sheetDetail.Cells(row, 2).Text & "").Trim()
 
-                        Dim designName As String = blindType
+                        Dim designName As String = String.Empty
                         Dim blindName As String = String.Empty
                         If blindType = "Aluminium Venetian" OrElse blindType = "Aluminium" Then
                             designName = "Aluminium Blind" : blindName = "Aluminium 25mm x 0.21mm"
@@ -5322,11 +5322,6 @@ Partial Class Order_Add
                         End If
                         If blindType = "Ultraslat Venetian 63mm" Then
                             designName = "Venetian Blind" : blindName = "Ultraslat 63mm"
-                        End If
-
-                        If Session("RoleName") = "Developer" Then
-                            MessageError(True, "SELECT Id FROM Designs WHERE Name='" & designName & "'")
-                            Exit For
                         End If
 
                         Dim designId As String = orderClass.GetItemData("SELECT Id FROM Designs WHERE Name='" & designName & "'")
