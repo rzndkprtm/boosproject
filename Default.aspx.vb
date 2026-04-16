@@ -21,12 +21,9 @@ Partial Class _Default
             End If
 
             secDefault.Visible = True
-            secNewsletter.Visible = False
 
             Dim companyId As String = If(Session("CompanyId"), "").ToString()
             If String.IsNullOrEmpty(companyId) OrElse companyId = "2" Then
-                secDefault.Visible = False
-                secNewsletter.Visible = True
                 Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM Newsletters WHERE CompanyId='2' AND Active=1")
                 If thisData Is Nothing Then
                     Exit Sub
@@ -35,7 +32,7 @@ Partial Class _Default
             End If
         Catch ex As Exception
             If Session("RoleName") = "Developer" Then
-                lblError.Text = ex.ToString()
+                'lblError.Text = ex.ToString()
             End If
         End Try
     End Sub
