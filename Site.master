@@ -102,6 +102,12 @@
                                         <span>Ticket</span>
                                     </a>
                                 </li>
+                                <li class="menu-item" runat="server" id="liChat">
+                                    <a runat="server" href="~/chat" class='menu-link'>
+                                        <i class="bi bi-envelope-fill"></i>
+                                        <span>Chat</span>
+                                    </a>
+                                </li>
                                 <li class="menu-item" runat="server" id="liExport">
                                     <a runat="server" href="~/export" class='menu-link'>
                                         <i class="bi bi-cloud-download-fill"></i>
