@@ -2031,6 +2031,9 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
             }
             else if (blindName === "Wire Guide") {
                 divShow.push("divfabric", "divcontrolposition", "divbottomtype", "divsize");
+                if (controlName === "Chain") {
+                    divShow.push("divchainstopper", "divcontrollength");
+                }
 
                 document.getElementById("roll").value = "Standard";
             }
