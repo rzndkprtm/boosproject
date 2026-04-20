@@ -2040,6 +2040,10 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
             else if (blindName === "Full Cassette" || blindName === "Semi Cassette") {
                 divShow.push("divfabric", "divcontrolposition", "divsize");
 
+                if (controlName === "Chain") {
+                    divShow.push("divchainstopper", "divcontrollength");
+                }
+
                 document.getElementById("roll").value = "Standard";
             }
             else if (blindName === "Dual Blinds") {
