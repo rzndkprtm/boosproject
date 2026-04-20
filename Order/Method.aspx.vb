@@ -539,10 +539,10 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "Pearl White (Express)", .Text = "Pearl White (Express)"})
             End If
             If blindName = "Security" Then
-                result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
+                ' result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
                 'result.Add(New With {.Value = "Monument (Express)", .Text = "Monument (Express)"})
-                result.Add(New With {.Value = "Primrose (Express)", .Text = "Primrose (Express)"})
-                result.Add(New With {.Value = "White Birch (Express)", .Text = "White Birch (Express)"})
+                ' result.Add(New With {.Value = "Primrose (Express)", .Text = "Primrose (Express)"})
+                ' result.Add(New With {.Value = "White Birch (Express)", .Text = "White Birch (Express)"})
                 'result.Add(New With {.Value = "Pearl White (Express)", .Text = "Pearl White (Express)"})
             End If
             If blindName = "Flyscreen" Then
