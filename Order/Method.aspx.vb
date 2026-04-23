@@ -598,11 +598,18 @@ Partial Class Order_Method
         If type = "ValanceRoman" Then
             Dim controlName As String = orderClass.GetControlName(controltype)
             If Not String.IsNullOrEmpty(controlName) Then
-                result.Add(New With {.Value = "Facade", .Text = "Facade"})
-                result.Add(New With {.Value = "Retrousse", .Text = "Retrousse"})
+                'result.Add(New With {.Value = "Facade", .Text = "Facade"})
+                'result.Add(New With {.Value = "Retrousse", .Text = "Retrousse"})
+                'If controlName = "Chain" Then
+                '    result.Clear()
+                '    result.Add(New With {.Value = "Retrousse", .Text = "Retrousse"})
+                'End If
+
+                result.Add(New With {.Value = "Front", .Text = "Front"})
+                result.Add(New With {.Value = "Back", .Text = "Back"})
                 If controlName = "Chain" Then
                     result.Clear()
-                    result.Add(New With {.Value = "Retrousse", .Text = "Retrousse"})
+                    result.Add(New With {.Value = "Back", .Text = "Back"})
                 End If
             End If
         End If
