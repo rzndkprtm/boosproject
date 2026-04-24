@@ -605,11 +605,18 @@ Partial Class Order_Method
                 '    result.Add(New With {.Value = "Retrousse", .Text = "Retrousse"})
                 'End If
 
-                result.Add(New With {.Value = "Front", .Text = "Front"})
-                result.Add(New With {.Value = "Back", .Text = "Back"})
+                'result.Add(New With {.Value = "Front", .Text = "Front"})
+                'result.Add(New With {.Value = "Back", .Text = "Back"})
+                'If controlName = "Chain" Then
+                '    result.Clear()
+                '    result.Add(New With {.Value = "Back", .Text = "Back"})
+                'End If
+
+                result.Add(New With {.Value = "Cover Valance and Cord at Front", .Text = "Cover Valance & Cord at Front"})
+                result.Add(New With {.Value = "No Cover Valance and Cord at Back", .Text = "No Cover Valance & Cord at Back"})
                 If controlName = "Chain" Then
                     result.Clear()
-                    result.Add(New With {.Value = "Back", .Text = "Back"})
+                    result.Add(New With {.Value = "No Cover Valance and Cord at Back", .Text = "No Cover Valance & Cord at Back"})
                 End If
             End If
         End If
