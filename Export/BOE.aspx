@@ -505,7 +505,7 @@
                 writer.WriteAttributeString("RomanChainColour", controlColour)
                 writer.WriteAttributeString("RomanChainOption", mechanismeOption)
                 writer.WriteAttributeString("RomanChainLength", thisData.Rows(i)("ControlLengthValue").ToString())
-                writer.WriteAttributeString("RomanValanceOption", thisData.Rows(i)("ValanceOption").ToString())
+                writer.WriteAttributeString("RomanValanceOption", valanceOption)
 
                 writer.WriteAttributeString("TotalItems", thisData.Rows(i)("TotalItems").ToString())
                 writer.WriteAttributeString("MarkUp", thisData.Rows(i)("MarkUp").ToString())
