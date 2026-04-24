@@ -479,6 +479,10 @@
                 If String.IsNullOrEmpty(kitId) Then Continue For
                 If String.IsNullOrEmpty(boeFabricId) Then Continue For
 
+                Dim valanceOption As String = thisData.Rows(i)("ValanceOption").ToString()
+                If valanceOption = "Cover Valance and Cord at Front" Then valanceOption = "Cover Valance"
+                If valanceOption = "No Cover Valance and Cord at Back" Then valanceOption = "No Cover Valance"
+
                 writer.WriteStartElement("OrderDetails")
                 writer.WriteAttributeString("OrddID", thisData.Rows(i)("Id").ToString())
                 writer.WriteAttributeString("FKOrdID", thisData.Rows(i)("HeaderId").ToString())
