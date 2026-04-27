@@ -161,7 +161,7 @@ Partial Class Setting_Specification_Fabric_Edit
     Protected Sub BindDesign()
         lbDesign.Items.Clear()
         Try
-            Dim thisString As String = "SELECT * FROM Designs CROSS APPLY STRING_SPLIT(AppliesTo, ',') AS thisArray WHERE Active=1 ORDER BY Name ASC"
+            Dim thisString As String = "SELECT * FROM Designs CROSS APPLY STRING_SPLIT(AppliesTo, ',') AS thisArray WHERE thisArray.VALUE='Fabrics' AND Active=1 ORDER BY Name ASC"
             lbDesign.DataSource = settingClass.GetDataTable(thisString)
             lbDesign.DataTextField = "Name"
             lbDesign.DataValueField = "Id"
