@@ -57,8 +57,8 @@ Partial Class Order_EditCosting
 
                                 Using cmd As New SqlCommand("UPDATE OrderCostings SET SellPrice=@SellPrice, BuyPrice=@BuyPrice WHERE Id=@Id", thisConn, tran)
                                     cmd.Parameters.AddWithValue("@Id", costingId)
-                                    cmd.Parameters.Add("@SellPrice", SqlDbType.Decimal).Value = newBuy
-                                    cmd.Parameters.Add("@BuyPrice", SqlDbType.Decimal).Value = newSell
+                                    cmd.Parameters.Add("@SellPrice", SqlDbType.Decimal).Value = newSell
+                                    cmd.Parameters.Add("@BuyPrice", SqlDbType.Decimal).Value = newBuy
                                     cmd.ExecuteNonQuery()
                                 End Using
                             End If

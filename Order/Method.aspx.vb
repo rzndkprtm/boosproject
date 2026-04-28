@@ -11205,7 +11205,7 @@ Public Class ProccessData
     Public Property layoutcode As String
     Public Property layoutcodecustom As String
     Public Property tracktype As String
-    Public Property tracktypeB As String
+    Public Property tracktypeb As String
     Public Property trackcolour As String
     Public Property trackcolourb As String
     Public Property trackdraw As String

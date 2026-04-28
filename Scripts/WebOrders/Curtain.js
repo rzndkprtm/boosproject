@@ -69,6 +69,26 @@ $("#trackdrawb").on("change", function () {
     visibleControlColourLengthB($(this).val());
 });
 
+$("#width").on("input", function () {
+    const blindtype = document.getElementById("blindtype").value;
+    otomatisWidth(blindtype, 1, $(this).val());
+});
+
+$("#widthb").on("input", function () {
+    const blindtype = document.getElementById("blindtype").value;
+    otomatisWidth(blindtype, 2, $(this).val());
+});
+
+$("#drop").on("input", function () {
+    const blindtype = document.getElementById("blindtype").value;
+    otomatisDrop(blindtype, 1, $(this).val());
+});
+
+$("#dropb").on("input", function () {
+    const blindtype = document.getElementById("blindtype").value;
+    otomatisDrop(blindtype, 2, $(this).val());
+});
+
 function loader(itemAction) {
     return new Promise((resolve) => {
         if (itemAction === "create") {
@@ -963,6 +983,46 @@ function bindTrackDrawB(trackType) {
             error: function (error) {
                 reject(error);
             }
+        });
+    });
+}
+
+function otomatisWidth(blindType, blindNumber, width) {
+    return new Promise((resolve, reject) => {
+        if (!blindType || !blindNumber) {
+            return resolve();
+        }
+
+        getBlindName(blindType).then(blindName => {
+            if (blindName === "Complete Set (Double)") {
+                if (blindNumber === 1) {
+                    document.getElementById("widthb").value = width;
+                } else if (blindNumber === 2) {
+                    document.getElementById("width").value = width;
+                }
+            }
+        }).catch(error => {
+            reject(error);
+        });
+    });
+}
+
+function otomatisDrop(blindType, blindNumber, drop) {
+    return new Promise((resolve, reject) => {
+        if (!blindType || !blindNumber) {
+            return resolve();
+        }
+
+        getBlindName(blindType).then(blindName => {
+            if (blindName === "Complete Set (Double)") {
+                if (blindNumber === 1) {
+                    document.getElementById("dropb").value = drop;
+                } else if (blindNumber === 2) {
+                    document.getElementById("drop").value = drop;
+                }
+            }
+        }).catch(error => {
+            reject(error);
         });
     });
 }
