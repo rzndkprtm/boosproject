@@ -73,9 +73,9 @@
                             <div class="card-body">
                                 <div class="form form-horizontal">
                                     <div class="form-body">
-                                        <div class="row">
+                                        <div class="row" style="display:none;">
                                             <div class="col-12 col-sm-12 col-lg-3 mb-1">
-                                                <label>Aluminium Type</label>
+                                                <label>Blind Type</label>
                                             </div>
                                             <div class="col-12 col-sm-12 col-lg-5 form-group">
                                                 <select id="blindtype" class="form-select"></select>
@@ -83,7 +83,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-12 col-sm-12 col-lg-3 mb-1">
-                                                <label>Colour Type</label>
+                                                <label>Item</label>
                                             </div>
                                             <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                 <select id="colourtype" class="form-select"></select>
