@@ -271,7 +271,7 @@
             If designName = "Curtain" Then
                 Dim heading As String = thisData.Rows(i)("Heading").ToString()
 
-                Dim kitName As String = String.Format("{0} {1} {2}", designName, blindName, heading)
+                Dim kitName As String = String.Format("{0} {1}", blindName, heading)
                 Dim kitId As String = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "'")
                 If blindName = "Track Only" Then
                     kitId = String.Empty
