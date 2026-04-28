@@ -283,7 +283,7 @@
                 Dim webFabricId As String = thisData.Rows(i)("FabricColourId").ToString()
                 Dim boeFabricId As String = GetItemData("SELECT BoeId FROM FabricColours WHERE Id='" & webFabricId & "'")
 
-                'If String.IsNullOrEmpty(kitId) Then Continue For
+                If String.IsNullOrEmpty(kitId) Then Continue For
                 'If String.IsNullOrEmpty(boeFabricId) Then Continue For
 
                 writer.WriteStartElement("OrderDetails")

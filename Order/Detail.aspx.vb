@@ -1494,17 +1494,37 @@ Partial Class Order_Detail
         End Try
     End Sub
 
+    Protected Sub btnAddService_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim page As String = orderClass.GetDesignPage("16")
+            Dim queryString As String = String.Format("do={0}&orderid={1}&itemid={2}&dtype={3}&uid={4}", "create", lblHeaderId.Text, String.Empty, "16", Session("LoginId").ToString())
+            Dim contextId As String = InsertContext(queryString)
+
+            url = String.Format("{0}?boos={1}", page, contextId)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                If Session("RoleName") = "Customer" Then
+                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
+                End If
+            End If
+        End Try
+    End Sub
+
     Protected Sub btnService_Click(sender As Object, e As EventArgs)
         MessageError_Service(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showService(); };"
         Try
-            If ddlBlindService.SelectedValue = "" Then
+            If ddlItemService.SelectedValue = "" Then
                 MessageError_Service(True, "TYPE IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showService", thisScript, True)
                 Exit Sub
             End If
 
-            Dim checkData As Integer = orderClass.GetItemData_Integer("SELECT COUNT(*) FROM OrderDetails WHERE HeaderId='" & lblHeaderId.Text & "' AND ProductId='" & ddlBlindService.SelectedValue & "' AND Active=1")
+            Dim checkData As Integer = orderClass.GetItemData_Integer("SELECT COUNT(*) FROM OrderDetails WHERE HeaderId='" & lblHeaderId.Text & "' AND ProductId='" & ddlItemService.SelectedValue & "' AND Active=1")
             If checkData > 0 Then
                 MessageError_Service(True, "SERVICE ALREADY EXISTS !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showService", thisScript, True)
@@ -1514,14 +1534,14 @@ Partial Class Order_Detail
             If msgErrorService.InnerText = "" Then
                 Dim newItemId As String = orderClass.GetNewOrderItemId()
 
-                Dim groupName As String = orderClass.GetItemData("SELECT Name FROM Products WHERE Id='" & ddlBlindService.SelectedValue & "'")
+                Dim groupName As String = orderClass.GetItemData("SELECT Name FROM Products WHERE Id='" & ddlItemService.SelectedValue & "'")
                 Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, "16", lblCompanyDetailId.Text)
 
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, 1, 0, 0, 1, 0, 1)", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", newItemId)
                         myCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
-                        myCmd.Parameters.AddWithValue("@ProductId", ddlBlindService.SelectedValue)
+                        myCmd.Parameters.AddWithValue("@ProductId", ddlItemService.SelectedValue)
                         myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
 
                         thisConn.Open()
@@ -2595,20 +2615,20 @@ Partial Class Order_Detail
     End Sub
 
     Protected Sub BindBlindTypeService()
-        ddlBlindService.Items.Clear()
+        ddlItemService.Items.Clear()
         Try
-            ddlBlindService.DataSource = orderClass.GetDataTable("SELECT * FROM Products WHERE DesignId='16' AND Active=1 ORDER BY Name ASC")
-            ddlBlindService.DataTextField = "Name"
-            ddlBlindService.DataValueField = "Id"
-            ddlBlindService.DataBind()
+            ddlItemService.DataSource = orderClass.GetDataTable("SELECT Products.* FROM Products LEFT JOIN Designs ON Products.DesignId=Designs.Id WHERE Designs.Type='Additional' AND Products.Active=1 ORDER BY Products.Name ASC")
+            ddlItemService.DataTextField = "Name"
+            ddlItemService.DataValueField = "Id"
+            ddlItemService.DataBind()
 
-            If ddlBlindService.Items.Count > 0 Then
-                ddlBlindService.Items.Insert(0, New ListItem("", ""))
+            If ddlItemService.Items.Count > 0 Then
+                ddlItemService.Items.Insert(0, New ListItem("", ""))
             End If
         Catch ex As Exception
-            ddlBlindService.Items.Clear()
+            ddlItemService.Items.Clear()
             If Session("RoleName") = "Developer" Then
-                MessageError(True, ex.ToString())
+                MessageError_Service(True, ex.ToString())
             End If
         End Try
     End Sub
