@@ -371,6 +371,7 @@
                                 </div>
                                 <div class="col-12 col-sm-12 col-lg-7 d-flex justify-content-end">
                                     <a href="#" runat="server" id="aAddItem" class="btn btn-primary me-1" data-bs-toggle="modal" data-bs-target="#modalAddItem">New Item</a>
+                                    <%--<asp:Button runat="server" ID="btnAddService" CssClass="btn btn-info me-1" OnClick="btnAddService_Click" Text="New Service" />--%>
                                     <a href="#" runat="server" id="aService" class="btn btn-info me-1" data-bs-toggle="modal" data-bs-target="#modalService">New Service</a>
                                 </div>
                             </div>
@@ -507,7 +508,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal modal-blur fade" id="modalPreview" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-full modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -527,8 +527,7 @@
                 </div>
             </div>
         </div>
-    </div>    
-
+    </div>
     <div class="modal fade text-center" id="modalDeleteOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -544,8 +543,7 @@
                 </div>
             </div>
         </div>
-    </div>
-    
+    </div>    
     <div class="modal fade text-center" id="modalQuoteOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -562,7 +560,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade text-center" id="modalSubmitOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -585,7 +582,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade text-center" id="modalNewOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -602,7 +598,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade text-center" id="modalUnsubmitOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -619,7 +614,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade text-left" id="modalCancelOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -647,8 +641,7 @@
                 </div>
             </div>
         </div>
-    </div>
-    
+    </div>    
     <div class="modal fade text-center" id="modalProductionOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -665,7 +658,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade text-center" id="modalHoldOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -682,7 +674,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade text-center" id="modalUnHoldOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -699,7 +690,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade text-left" id="modalShippedOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -749,7 +739,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade text-center" id="modalCompleteOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -766,7 +755,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal modal-blur fade" id="modalFileOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -819,7 +807,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade" id="modalReworkOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -876,7 +863,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade text-left" id="modalDetailQuote" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-full modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -974,7 +960,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade text-center" id="modalDownloadQuote" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -991,7 +976,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade text-left" id="modalSendInvoice" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -1035,7 +1019,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade text-center" id="modalDownloadInvoice" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -1052,7 +1035,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade text-center" id="modalDownloadInvoiceCSV" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -1068,8 +1050,7 @@
                 </div>
             </div>
         </div>
-    </div>
-    
+    </div>    
     <div class="modal fade text-left" id="modalInvoiceNumber" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -1099,7 +1080,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade text-left" id="modalInvoiceData" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -1381,16 +1361,22 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Add Item</h5>
+                    <h5 class="modal-title">Add Service</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row mb-3">
                         <div class="col-12">
-                            <label class="form-label required">SELECT SERVICE</label>
-                            <asp:DropDownList runat="server" ID="ddlBlindService" CssClass="form-select"></asp:DropDownList>
+                            <label class="form-label required">ITEM SERVICE</label>
+                            <asp:DropDownList runat="server" ID="ddlItemService" CssClass="form-select"></asp:DropDownList>
                         </div>
                     </div>
+                    <%--<div class="row mb-3">
+                        <div class="col-12">
+                            <label class="form-label required">NOTE</label>
+                            <asp:TextBox runat="server" TextMode="MultiLine" ID="txtNoteService" CssClass="form-control" Height="130px" placeholder="Note ..." autocomplete="off" style="resize:none;"></asp:TextBox>
+                        </div>
+                    </div>--%>
                     <div class="row" runat="server" id="divErrorService">
                         <div class="col-12">
                             <div class="alert alert-danger">
