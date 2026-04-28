@@ -20,7 +20,7 @@ Public Partial Class SiteMaster
         If Not IsPostBack Then
             MyLoad()
             BindListNavigation()
-            BindNotification()
+            'BindNotification()
         End If
     End Sub
 
@@ -129,36 +129,38 @@ Public Partial Class SiteMaster
     End Sub
 
     Protected Sub BindNotification()
-        If Session("RoleName") = "Customer" Then
-            Dim loginId As String = Session("LoginId").ToString()
-            Dim dt As DataTable = settingClass.GetDataTable("SELECT * FROM Notifications WHERE CompanyId='" & Session("CompanyId") & "' AND Active=1 AND CAST(GETDATE() AS DATE) BETWEEN CAST(StartDate AS DATE) AND CAST(EndDate AS DATE) ORDER BY Id ASC")
+        'Try
+        '    Dim loginId As String = Session("LoginId").ToString()
+        '    Dim dt As DataTable = settingClass.GetDataTable("SELECT * FROM Notifications CROSS APPLY STRING_SPLIT(LoginId, ',') AS thisArray WHERE thisArray.VALUE='" & loginId & "' AND Active=1 AND CAST(GETDATE() AS DATE) BETWEEN CAST(StartDate AS DATE) AND CAST(EndDate AS DATE) ORDER BY Id ASC")
 
-            If dt.Rows.Count > 0 Then
-                Dim scriptBuilder As New StringBuilder()
-                Dim serializer As New Script.Serialization.JavaScriptSerializer()
+        '    If dt.Rows.Count > 0 Then
+        '        Dim scriptBuilder As New StringBuilder()
+        '        Dim serializer As New Script.Serialization.JavaScriptSerializer()
 
-                For Each row As DataRow In dt.Rows
-                    Dim notificationId As String = row("Id").ToString()
+        '        For Each row As DataRow In dt.Rows
+        '            Dim notificationId As String = row("Id").ToString()
 
-                    Dim checkDt As DataTable = settingClass.GetDataTable("SELECT 1 FROM NotificationLogs WHERE LoginId = '" & loginId & "' AND NotificationId = '" & notificationId & "'")
+        '            Dim checkDt As DataTable = settingClass.GetDataTable("SELECT 1 FROM NotificationLogs WHERE LoginId = '" & loginId & "' AND NotificationId = '" & notificationId & "'")
 
-                    If checkDt.Rows.Count = 0 Then
-                        Dim obj = New With {
-                            .title = row("Title").ToString(),
-                            .message = row("Message").ToString(),
-                            .popupId = notificationId
-                        }
-                        Dim json As String = serializer.Serialize(obj)
-                        scriptBuilder.Append("popupQueue.push(" & json & ");")
-                    End If
-                Next
+        '            If checkDt.Rows.Count = 0 Then
+        '                Dim obj = New With {
+        '                        .title = row("Title").ToString(),
+        '                        .message = row("Message").ToString(),
+        '                        .popupId = notificationId
+        '                    }
+        '                Dim json As String = serializer.Serialize(obj)
+        '                scriptBuilder.Append("popupQueue.push(" & json & ");")
+        '            End If
+        '        Next
 
-                If scriptBuilder.Length > 0 Then
-                    Dim script As String = "var popupQueue = []; " & scriptBuilder.ToString() & " showNextPopup();"
-                    ScriptManager.RegisterStartupScript(Me, Me.GetType(), "popupQueue", script, True)
-                End If
-            End If
-        End If
+        '        If scriptBuilder.Length > 0 Then
+        '            Dim script As String = "var popupQueue = []; " & scriptBuilder.ToString() & " showNextPopup();"
+        '            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "popupQueue", script, True)
+        '        End If
+        '    End If
+        'Catch ex As Exception
+
+        'End Try
     End Sub
 
     Private Sub BindListNavigation()

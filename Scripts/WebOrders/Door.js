@@ -779,7 +779,7 @@ function bindComponentForm(blindType, tubeType, colourType) {
                 } else if (tubeName === "Sliding Stacker") {
                     divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divinterlocktype", "divtoptrack", "divbottomtrack", "divreceiver", "divslidingqty", "divmidrailposition", "divangle");
                 }
-            } else if (blindName === "Standard") {
+            } else if (blindName === "Diamond Grille") {
                 if (tubeName === "Hinged Single") {
                     divShow.push("divlayoutcode", "divhandlelength", "divbugseal", "divpetdoor", "divdoorcloser", "divbeading", "divjambadaptor", "divmidrailposition", "divangle");
                 } else if (tubeName === "Hinged Double") {

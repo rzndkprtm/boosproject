@@ -2064,6 +2064,9 @@ Partial Class Order_Detail
                         aReworkOrder.Visible = True
                     End If
                 End If
+
+                divDateOrder.Attributes.Add("onclick", "showDateOrder()")
+                divDateOrder.Style.Add("cursor", "pointer")
             End If
 
             If Session("RoleName") = "Factory Office" Then
@@ -3214,6 +3217,13 @@ Partial Class Order_Detail
             result &= "<br />"
             result &= String.Format("{0} {1} {2} | {3} ({4}) {5}", fabricColourName, size, squareMetreText, trackType, width, linearMetreText)
 
+            If blindName = "Complete Set (Double)" Then
+                result = itemDescription
+                result &= "<br />"
+                result &= String.Format("{0} {1} {2} | {3} ({4}) {5}", fabricColourName, size, squareMetreText, trackType, width, linearMetreText)
+                result &= "<br />"
+                result &= String.Format("{0} {1} {2} | {3} ({4}) {5}", fabricColourNameB, sizeB, squareMetreTextB, trackTypeB, widthB, linearMetreTextB)
+            End If
             If blindName = "Curtain Only" Then
                 result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
             End If

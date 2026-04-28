@@ -540,5 +540,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/WebOrders/Door.js?v=2.0.5"></script>
+    <script src="/Scripts/WebOrders/Door.js?v=2.0.6"></script>
 </asp:Content>

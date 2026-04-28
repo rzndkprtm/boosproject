@@ -546,7 +546,7 @@ function bindComponentForm(blindType, colourType) {
         getBlindName(blindType).then((blindName) => {
             if (blindName === "Safety") {
                 divShow.push("divbrace");
-            } else if (blindName === "Standard") {
+            } else if (blindName === "Diamond Grille") {
                 divShow.push("divbrace");
             } else if (blindName === "Flyscreen") {
                 divShow.push("divbrace", "divporthole", "divplungerpin", "divswivelcolour", "divswivelqty", "divspringqty", "divtopplasticqty");
@@ -570,11 +570,7 @@ function bindComponentForm(blindType, colourType) {
 }
 
 function toggleButtonState(disabled, text) {
-    $("#submit")
-        .prop("disabled", disabled)
-        .css("pointer-events", disabled ? "none" : "auto")
-        .text(text);
-
+    $("#submit").prop("disabled", disabled).css("pointer-events", disabled ? "none" : "auto").text(text);
     $("#cancel").prop("disabled", disabled).css("pointer-events", disabled ? "none" : "auto");
 }
 

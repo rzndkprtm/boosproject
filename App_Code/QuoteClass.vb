@@ -979,10 +979,10 @@ Public Class QuoteClass
 
                     itemDescription = productName
 
-                    If blindName = "Single Curtain & Track" Then
+                    If blindName = "Complete Set (Single)" Then
                         itemDescription = String.Format("{0} {1} {2}", productName, fabricColourName, trackType)
                     End If
-                    If blindName = "Double Curtain & Track" Then
+                    If blindName = "Complete Set (Double)" Then
                         itemDescription = productName
                         itemDescription &= vbCrLf
                         itemDescription &= String.Format("1st Curtain : {0} | {1}", fabricColourName, trackType)
@@ -1584,10 +1584,10 @@ Public Class QuoteClass
 
                     itemDescription = productName
 
-                    If blindName = "Single Curtain & Track" Then
+                    If blindName = "Complete Set (Single)" Then
                         itemDescription = String.Format("{0} {1} {2}", productName, fabricColourName, trackType)
                     End If
-                    If blindName = "Double Curtain & Track" Then
+                    If blindName = "Complete Set (Double)" Then
                         itemDescription = productName
                         itemDescription &= vbCrLf
                         itemDescription &= String.Format("1st Curtain : {0} | {1}", fabricColourName, trackType)
