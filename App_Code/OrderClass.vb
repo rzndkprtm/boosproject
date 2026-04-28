@@ -1661,8 +1661,11 @@ Public Class OrderClass
                     Dim costingArray As Object() = {headerId, itemId, itemNumber, "Base", costingDescription, thisBuy, thisSell}
                     OrderCostings(costingArray)
 
-                    If designName = "Curtain" AndAlso blindName = "Complete Set" Then
+                    If designName = "Curtain" AndAlso (blindName = "Complete Set (Single)" OrElse blindName = "Complete Set (Double)") Then
                         costingDescription = priceAdditionalName
+                        If blindName = "Complete Set (Double)" Then
+                            costingDescription = String.Format("#1 {0}", priceAdditionalName)
+                        End If
                         costingArray = {headerId, itemId, itemNumber, "Base", costingDescription, thisBuyAdditional, thisSellAdditional}
                         OrderCostings(costingArray)
                     End If
@@ -1839,6 +1842,12 @@ Public Class OrderClass
 
                     objectArray = {headerId, itemId, itemNumber, "Base", costingDescription, thisBuy, thisSell}
                     OrderCostings(objectArray)
+
+                    If designName = "Curtain" AndAlso blindName = "Complete Set (Double)" Then
+                        costingDescription = String.Format("#2 {0}", priceAdditionalNameB)
+                        objectArray = {headerId, itemId, itemNumber, "Base", costingDescription, thisBuyAdditional, thisSellAdditional}
+                        OrderCostings(objectArray)
+                    End If
 
                     objectArray = {headerId, itemId, itemNumber, priceGroup}
                     If designName = "Door" Then

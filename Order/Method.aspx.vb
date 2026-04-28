@@ -1,5 +1,6 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
+Imports System.IO
 Imports System.Web.Services
 
 Partial Class Order_Method
@@ -433,7 +434,7 @@ Partial Class Order_Method
             If blindName = "Safety" Then
                 result.Add(New With {.Value = "304 SS Mesh", .Text = "304 SS Mesh"})
             End If
-            If blindName = "Standard" Then
+            If blindName = "Diamond Grille" Then
                 result.Add(New With {.Value = "Fibreglass Mesh", .Text = "Fibreglass Mesh"})
                 result.Add(New With {.Value = "Pawproof", .Text = "Pawproof"})
                 result.Add(New With {.Value = "SS Mesh", .Text = "SS Mesh"})
@@ -453,7 +454,7 @@ Partial Class Order_Method
             If blindName = "Safety" Then
                 result.Add(New With {.Value = "304 SS Mesh", .Text = "304 SS Mesh"})
             End If
-            If blindName = "Standard" Then
+            If blindName = "Diamond Grille" Then
                 result.Add(New With {.Value = "Fibreglass Mesh", .Text = "Fibreglass Mesh"})
                 result.Add(New With {.Value = "Pawproof", .Text = "Pawproof"})
                 result.Add(New With {.Value = "SS Mesh", .Text = "SS Mesh"})
@@ -477,7 +478,7 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "Pearl White (Express)", .Text = "Pearl White (Express)"})
                 result.Add(New With {.Value = "White Birch (Express)", .Text = "White Birch (Express)"})
             End If
-            If blindName = "Standard" Then
+            If blindName = "Diamond Grille" Then
                 'result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
                 result.Add(New With {.Value = "Monument (Express)", .Text = "Monument (Express)"})
                 result.Add(New With {.Value = "Primrose (Express)", .Text = "Primrose (Express)"})
@@ -531,7 +532,7 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "White Birch (Express)", .Text = "White Birch (Express)"})
                 result.Add(New With {.Value = "Pearl White (Express)", .Text = "Pearl White (Express)"})
             End If
-            If blindName = "Standard" Then
+            If blindName = "Diamond Grille" Then
                 'result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
                 result.Add(New With {.Value = "Monument (Express)", .Text = "Monument (Express)"})
                 result.Add(New With {.Value = "Primrose (Express)", .Text = "Primrose (Express)"})
@@ -1581,13 +1582,20 @@ Partial Class Order_Method
 
         Dim qty As Integer
         Dim width As Integer
+        Dim widthb As Integer
         Dim drop As Integer
+        Dim dropb As Integer
         Dim controllength As Integer
+        Dim controllengthB As Integer
         Dim returnLengthValue As Integer
         Dim returnLengthValueB As Integer
+        Dim returnLengthValueC As Integer
+        Dim returnLengthValueD As Integer
 
         Dim linearmetre As Decimal
+        Dim linearmetreB As Decimal
         Dim squaremetre As Decimal
+        Dim squaremetreB As Decimal
 
         Dim totalitems As Integer = 1
 
@@ -1614,60 +1622,159 @@ Partial Class Order_Method
             Return "ROOM TO INSTALL IS REQUIRED AND MUST NOT CONTAIN: , & ` ' &= &+"
         End If
 
-        If blindName = "Complete Set" OrElse blindName = "Curtain Only" OrElse blindName = "Track Only" Then
+        If blindName = "Complete Set (Single)" OrElse blindName = "Complete Set (Double)" OrElse blindName = "Curtain Only" OrElse blindName = "Track Only" Then
             If String.IsNullOrEmpty(data.mounting) Then Return "FITTING IS REQUIRED !"
-            If String.IsNullOrEmpty(data.heading) Then Return "CURTAIN HEADING IS REQUIRED !"
+            If String.IsNullOrEmpty(data.heading) Then
+                If blindName = "Complete Set (Double)" Then Return "FIRST CURTAIN HEADING IS REQUIRED !"
+                Return "CURTAIN HEADING IS REQUIRED !"
+            End If
         End If
-        If blindName = "Complete Set" OrElse blindName = "Curtain Only" OrElse blindName = "Fabric Only" Then
-            If String.IsNullOrEmpty(data.fabrictype) Then Return "FABRIC TYPE IS REQUIRED !"
-            If String.IsNullOrEmpty(data.fabriccolour) Then Return "FABRIC COLOUR IS REQUIRED !"
+        If blindName = "Complete Set (Single)" OrElse blindName = "Complete Set (Double)" OrElse blindName = "Curtain Only" OrElse blindName = "Fabric Only" Then
+            If String.IsNullOrEmpty(data.fabrictype) Then
+                If blindName = "Complete Set (Double)" Then Return "FIRST FABRIC TYPE IS REQUIRED !"
+                Return "FABRIC TYPE IS REQUIRED !"
+            End If
+            If String.IsNullOrEmpty(data.fabriccolour) Then
+                If blindName = "Complete Set (Double)" Then Return "FIRST FABRIC COLOUR IS REQUIRED !"
+                Return "FABRIC COLOUR IS REQUIRED !"
+            End If
         End If
-        If blindName = "Complete Set" OrElse blindName = "Track Only" Then
-            If String.IsNullOrEmpty(data.tracktype) Then Return "TRACK TYPE IS REQUIRED !"
-            If String.IsNullOrEmpty(data.trackcolour) Then Return "TRACK COLOUR IS REQUIRED !"
-            If String.IsNullOrEmpty(data.trackdraw) Then Return "TRACK DRAW IS REQUIRED !"
+        If blindName = "Complete Set (Single)" OrElse blindName = "Complete Set (Double)" OrElse blindName = "Track Only" Then
+            If String.IsNullOrEmpty(data.tracktype) Then
+                If blindName = "Complete Set (Double)" Then Return "FIRST TRACK TYPE IS REQUIRED !"
+                Return "TRACK TYPE IS REQUIRED !"
+            End If
+            If blindName = "Complete Set (Double)" AndAlso data.tracktypeB = "Express Track" Then
+                Return "PLEASE CHECK YOUR FIRST TRACK TYPE. CURRENTLY, COMPLETE SET (DOUBLE) CANNOT USE THE EXPRESS TRACK TYPE. !"
+            End If
+            If String.IsNullOrEmpty(data.trackcolour) Then
+                If blindName = "Complete Set (Double)" Then Return "FIRST TRACK COLOUR IS REQUIRED !"
+                Return "TRACK COLOUR IS REQUIRED !"
+            End If
+            If String.IsNullOrEmpty(data.trackdraw) Then
+                If blindName = "Complete Set (Double)" Then Return "FIRST TRACK DRAW IS REQUIRED !"
+                Return "TRACK DRAW IS REQUIRED !"
+            End If
         End If
-        If blindName = "Complete Set" OrElse blindName = "Track Only" OrElse blindName = "Curtain Only" Then
-            If String.IsNullOrEmpty(data.stackposition) Then Return "STACK POSITION IS REQUIRED !"
+        If blindName = "Complete Set (Single)" OrElse blindName = "Complete Set (Double)" OrElse blindName = "Track Only" OrElse blindName = "Curtain Only" Then
+            If String.IsNullOrEmpty(data.stackposition) Then
+                If blindName = "Complete Set (Double)" Then Return "FIRST STACK POSITION IS REQUIRED !"
+                Return "STACK POSITION IS REQUIRED !"
+            End If
         End If
 
-        If String.IsNullOrEmpty(data.width) Then Return "WIDTH IS REQUIRED !"
-        If Not Integer.TryParse(data.width, width) OrElse width <= 0 Then Return "PLEASE CHECK YOUR WIDTH ORDER !"
+        If String.IsNullOrEmpty(data.width) Then
+            If blindName = "Complete Set (Double)" Then Return "FIRST WIDTH IS REQUIRED !"
+            Return "WIDTH IS REQUIRED !"
+        End If
+        If Not Integer.TryParse(data.width, width) OrElse width <= 0 Then
+            If blindName = "Complete Set (Double)" Then Return "PLEASE CHECK YOUR FIRST WIDTH ORDER !"
+            Return "PLEASE CHECK YOUR WIDTH ORDER !"
+        End If
 
         If data.rolename = "Customer" OrElse data.rolename = "Installer" Then
-            If width < 600 Then Return "MINIMUM WIDTH IS 600MM !"
+            If width < 600 Then
+                If blindName = "Complete Set (Double)" Then Return "MINIMUM FIRST WIDTH IS 600MM !"
+                Return "MINIMUM WIDTH IS 600MM !"
+            End If
             If blindName = "Fabric Only" AndAlso width > 2800 Then Return "MAXIMUM WIDTH IS 2800MM !"
-            If width > 6000 Then Return "MAXIMUM WIDTH IS 6000MM !"
+            If width > 6000 Then
+                If blindName = "Complete Set (Double)" Then Return "MAXIMUM FIRST WIDTH IS 6000MM !"
+                Return "MAXIMUM WIDTH IS 6000MM !"
+            End If
         End If
 
-        If blindName = "Complete Set" OrElse blindName = "Curtain Only" OrElse blindName = "Fabric Only" Then
-            If String.IsNullOrEmpty(data.drop) Then Return "DROP IS REQUIRED !"
-            If Not Integer.TryParse(data.drop, drop) OrElse drop <= 0 Then Return "PLEASE CHECK YOUR DROP ORDER !"
+        If blindName = "Complete Set (Single)" OrElse blindName = "Complete Set (Double)" OrElse blindName = "Curtain Only" OrElse blindName = "Fabric Only" Then
+            If String.IsNullOrEmpty(data.drop) Then
+                If blindName = "Complete Set (Double)" Then Return "FIRST DROP IS REQUIRED !"
+                Return "DROP IS REQUIRED !"
+            End If
+            If Not Integer.TryParse(data.drop, drop) OrElse drop <= 0 Then
+                If blindName = "Complete Set (Double)" Then Return "PLEASE CHECK YOUR FIRST DROP ORDER !"
+                Return "PLEASE CHECK YOUR DROP ORDER !"
+            End If
             If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
-                If drop < 600 Then Return "MINIMUM DROP IS 600MM !"
-                If drop > 4000 Then Return "MAXIMUM DROP IS 4000MM !"
+                If drop < 600 Then
+                    If blindName = "Complete Set (Double)" Then Return "MINIMUM FIRST DROP IS 600MM !"
+                    Return "MINIMUM DROP IS 600MM !"
+                End If
+                If drop > 4000 Then
+                    If blindName = "Complete Set (Double)" Then Return "MAXIMUM FIRST DROP IS 4000MM !"
+                    Return "MAXIMUM DROP IS 4000MM !"
+                End If
             End If
         End If
 
         If data.trackdraw = "Flick Stick" Then
-            If String.IsNullOrEmpty(data.controlcolour) Then Return "CONTROL COLOUR IS REQUIRED !"
-            If String.IsNullOrEmpty(data.controllength) Then Return "CONTROL LENGTH IS REQUIRED !"
-            If Not Integer.TryParse(data.controllength, controllength) OrElse controllength <= 0 Then Return "PLEASE CHECK YOUR CONTROL LENGTH ORDER !"
+            If String.IsNullOrEmpty(data.controlcolour) Then
+                If blindName = "Complete Set (Double)" Then Return "FIRST CONTROL COLOUR IS REQUIRED !"
+                Return "CONTROL COLOUR IS REQUIRED !"
+            End If
+            If String.IsNullOrEmpty(data.controllength) Then
+                If blindName = "Complete Set (Double)" Then Return "FIRST CONTROL LENGTH IS REQUIRED !"
+                Return "CONTROL LENGTH IS REQUIRED !"
+            End If
+            If Not Integer.TryParse(data.controllength, controllength) OrElse controllength <= 0 Then
+                If blindName = "Complete Set (Double)" Then Return "PLEASE CHECK YOUR FIRST CONTROL LENGTH ORDER !"
+                Return "PLEASE CHECK YOUR CONTROL LENGTH ORDER !"
+            End If
         End If
 
-        If blindName = "Complete Set" OrElse blindName = "Track Only" Then
+        If blindName = "Complete Set (Single)" OrElse blindName = "Complete Set (Double)" OrElse blindName = "Track Only" Then
             If data.tracktype = "Styletrack" OrElse data.tracktype = "Commercial" Then
                 If Not String.IsNullOrEmpty(data.returnlengthvalue) Then
-                    If Not Integer.TryParse(data.returnlengthvalue, returnLengthValue) OrElse returnLengthValue <= 0 Then Return "PLEASE CHECK YOUR LEFT RETURN LENGTH !"
+                    If Not Integer.TryParse(data.returnlengthvalue, returnLengthValue) OrElse returnLengthValue <= 0 Then
+                        If blindName = "Complete Set (Double)" Then Return "PLEASE CHECK YOUR FIRST LEFT RETURN LENGTH !"
+                        Return "PLEASE CHECK YOUR LEFT RETURN LENGTH !"
+                    End If
                 End If
-
                 If Not String.IsNullOrEmpty(data.returnlengthvalueb) Then
-                    If Not Integer.TryParse(data.returnlengthvalueb, returnLengthValueB) OrElse returnLengthValueB <= 0 Then Return "PLEASE CHECK YOUR RIGHT RETURN LENGTH !"
+                    If Not Integer.TryParse(data.returnlengthvalueb, returnLengthValueB) OrElse returnLengthValueB <= 0 Then
+                        If blindName = "Complete Set (Double)" Then Return "PLEASE CHECK YOUR FIRST RIGHT RETURN LENGTH !"
+                        Return "PLEASE CHECK YOUR RIGHT RETURN LENGTH !"
+                    End If
                 End If
             End If
         End If
 
-        If blindName = "Complete Set" OrElse blindName = "Curtain Only" Then
+        If blindName = "Complete Set (Double)" Then
+            If String.IsNullOrEmpty(data.headingb) Then Return "SECOND CURTAIN HEADING IS REQUIRED !"
+            If String.IsNullOrEmpty(data.fabrictypeb) Then Return "SECOND FABRIC TYPE IS REQUIRED !"
+            If String.IsNullOrEmpty(data.fabriccolourb) Then Return "SECOND FABRIC COLOUR IS REQUIRED !"
+            If String.IsNullOrEmpty(data.tracktypeB) Then Return "SECOND TRACK TYPE IS REQUIRED !"
+            If data.tracktypeB = "Express Track" Then Return "PLEASE CHECK YOUR SECOND TRACK TYPE. CURRENTLY, COMPLETE SET (DOUBLE) CANNOT USE THE EXPRESS TRACK TYPE. !"
+            If String.IsNullOrEmpty(data.trackcolourb) Then Return "SECOND TRACK COLOUR IS REQUIRED !"
+            If String.IsNullOrEmpty(data.trackdrawb) Then Return "SECOND TRACK DRAW IS REQUIRED !"
+            If String.IsNullOrEmpty(data.stackpositionb) Then Return "SECOND STACK POSITION IS REQUIRED !"
+            If String.IsNullOrEmpty(data.widthb) Then Return "SECOND WIDTH IS REQUIRED !"
+            If Not Integer.TryParse(data.widthb, widthb) OrElse widthb <= 0 Then Return "PLEASE CHECK YOUR SECOND WIDTH ORDER !"
+            If data.rolename = "Customer" OrElse data.rolename = "Installer" Then
+                If widthb < 600 Then Return "MINIMUM SECOND WIDTH IS 600MM !"
+                If widthb > 6000 Then Return "MAXIMUM SECOND WIDTH IS 6000MM !"
+            End If
+            If String.IsNullOrEmpty(data.dropb) Then Return "SECOND DROP IS REQUIRED !"
+            If Not Integer.TryParse(data.dropb, dropb) OrElse dropb <= 0 Then Return "PLEASE CHECK YOUR SECOND DROP ORDER !"
+            If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
+                If dropb < 600 Then Return "MINIMUM SECOND DROP IS 600MM !"
+                If dropb > 4000 Then Return "MAXIMUM SECOND DROP IS 4000MM !"
+            End If
+            If data.trackdrawb = "Flick Stick" Then
+                If String.IsNullOrEmpty(data.controlcolourb) Then Return "SECOND CONTROL COLOUR IS REQUIRED !"
+                If String.IsNullOrEmpty(data.controllengthb) Then Return "SECOND CONTROL LENGTH IS REQUIRED !"
+                If Not Integer.TryParse(data.controllengthb, controllengthB) OrElse controllengthB <= 0 Then Return "PLEASE CHECK YOUR SECOND CONTROL LENGTH ORDER !"
+
+                If data.tracktypeB = "Styletrack" OrElse data.tracktypeB = "Commercial" Then
+                    If Not String.IsNullOrEmpty(data.returnlengthvaluec) Then
+                        If Not Integer.TryParse(data.returnlengthvaluec, returnLengthValueC) OrElse returnLengthValueC <= 0 Then Return "PLEASE CHECK YOUR SECOND LEFT RETURN LENGTH !"
+                    End If
+                    If Not String.IsNullOrEmpty(data.returnlengthvalued) Then
+                        If Not Integer.TryParse(data.returnlengthvalued, returnLengthValueD) OrElse returnLengthValueD <= 0 Then Return "PLEASE CHECK YOUR SECOND RIGHT RETURN LENGTH !"
+                    End If
+                End If
+            End If
+        End If
+
+        If blindName = "Complete Set (Single)" OrElse blindName = "Complete Set (Double)" OrElse blindName = "Curtain Only" Then
             If String.IsNullOrEmpty(data.bottomhem) Then Return "BOTTOM HEM IS REQUIRED !"
         End If
 
@@ -1682,12 +1789,32 @@ Partial Class Order_Method
             If Not Integer.TryParse(data.markup, markup) OrElse markup < 0 Then Return "PLEASE CHECK YOUR MARK UP ORDER !"
         End If
 
-        If blindName = "Complete Set" Then
+        If blindName = "Complete Set (Single)" Then
             If Not data.trackdraw = "Flick Stick" Then data.controlcolour = String.Empty : controllength = 0
             If data.tracktype = "Express Track" Then returnLengthValue = 0 : returnLengthValueB = 0
 
+            widthb = 0 : dropb = 0
+            data.headingb = String.Empty
+            data.fabrictypeb = String.Empty : data.fabriccolourb = String.Empty
+            data.tracktypeB = String.Empty : data.trackcolourb = String.Empty : data.trackdrawb = String.Empty
+            data.stackpositionb = String.Empty
+            data.controlcolourb = String.Empty : controllengthB = 0
+            returnLengthValueC = 0 : returnLengthValueD = 0
+
             linearmetre = width / 1000
             squaremetre = Math.Ceiling(width * drop / 1000000)
+        End If
+
+        If blindName = "Complete Set (Double)" Then
+            If Not data.trackdrawb = "Flick Stick" Then data.controlcolourb = String.Empty : controllengthB = 0
+            If data.tracktypeB = "Express Track" Then returnLengthValueC = 0 : returnLengthValueD = 0
+
+            totalitems = 2
+
+            linearmetre = width / 1000
+            linearmetreB = widthb / 1000
+            squaremetre = Math.Ceiling(width * drop / 1000000)
+            squaremetreB = Math.Ceiling(widthb * dropb / 1000000)
         End If
 
         If blindName = "Fabric Only" Then
@@ -1702,6 +1829,14 @@ Partial Class Order_Method
 
             linearmetre = width / 1000
             squaremetre = Math.Ceiling(width * drop / 1000000)
+
+            widthb = 0 : dropb = 0
+            data.headingb = String.Empty
+            data.fabrictypeb = String.Empty : data.fabriccolourb = String.Empty
+            data.tracktypeB = String.Empty : data.trackcolourb = String.Empty : data.trackdrawb = String.Empty
+            data.stackpositionb = String.Empty
+            data.controlcolourb = String.Empty : controllengthB = 0
+            returnLengthValueC = 0 : returnLengthValueD = 0
         End If
 
         If blindName = "Curtain Only" Then
@@ -1711,6 +1846,14 @@ Partial Class Order_Method
 
             returnLengthValue = 0
             returnLengthValueB = 0
+
+            widthb = 0 : dropb = 0
+            data.headingb = String.Empty
+            data.fabrictypeb = String.Empty : data.fabriccolourb = String.Empty
+            data.tracktypeB = String.Empty : data.trackcolourb = String.Empty : data.trackdrawb = String.Empty
+            data.stackpositionb = String.Empty
+            data.controlcolourb = String.Empty : controllengthB = 0
+            returnLengthValueC = 0 : returnLengthValueD = 0
 
             linearmetre = width / 1000
             squaremetre = Math.Ceiling(width * drop / 1000000)
@@ -1727,18 +1870,38 @@ Partial Class Order_Method
                 returnLengthValue = 0 : returnLengthValueB = 0
             End If
 
+            widthb = 0 : dropb = 0
+            data.headingb = String.Empty
+            data.fabrictypeb = String.Empty : data.fabriccolourb = String.Empty
+            data.tracktypeB = String.Empty : data.trackcolourb = String.Empty : data.trackdrawb = String.Empty
+            data.stackpositionb = String.Empty
+            data.controlcolourb = String.Empty : controllengthB = 0
+            returnLengthValueC = 0 : returnLengthValueD = 0
+
             linearmetre = width / 1000
         End If
 
         Dim priceProductGroup As String = String.Empty
+        Dim priceProductGroupB As String = String.Empty
         Dim priceAdditional As String = String.Empty
+        Dim priceAdditionalB As String = String.Empty
 
         If data.companyid = "2" Then
             Dim sellName As String = designName
             Dim groupFabric As String = orderClass.GetFabricGroup(data.fabrictype)
+            Dim groupFabricB As String = String.Empty
 
             Dim groupName As String = String.Format("{0} - {1}", designName, groupFabric)
+            Dim groupNameB As String = String.Empty
             Dim trackGroupName As String = String.Format("{0} - {1}", designName, data.tracktype)
+            Dim trackGroupNameB As String = String.Empty
+
+            If blindName = "Complete Set (Double)" Then
+                groupFabricB = orderClass.GetFabricGroup(data.fabrictypeb)
+
+                groupNameB = String.Format("{0} - {1}", designName, groupFabricB)
+                trackGroupNameB = String.Format("{0} - {1}", designName, data.tracktypeB)
+            End If
 
             If blindName = "Curtain Only" Then
                 trackGroupName = String.Empty
@@ -1751,6 +1914,10 @@ Partial Class Order_Method
 
             priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
             priceAdditional = orderClass.GetPriceProductGroupId(trackGroupName, data.designid, data.companydetailid)
+            If blindName = "Complete Set (Double)" Then
+                priceProductGroupB = orderClass.GetPriceProductGroupId(groupNameB, data.designid, data.companydetailid)
+                priceAdditionalB = orderClass.GetPriceProductGroupId(trackGroupNameB, data.designid, data.companydetailid)
+            End If
         End If
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
@@ -1758,33 +1925,49 @@ Partial Class Order_Method
                 Dim itemId As String = orderClass.GetNewOrderItemId()
 
                 Using thisConn As SqlConnection = New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricColourId, PriceProductGroupId, PriceAdditional,  Qty, Room, Mounting, Width, [Drop], Heading, TrackType,  TrackColour, TrackDraw, StackPosition, ControlColour, ControlLengthValue, ReturnLengthValue, ReturnLengthValueB, BottomHem, Supply, LinearMetre, SquareMetre, TotalItems, Notes, MarkUp, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricColourId, @PriceProductGroupId, @PriceAdditional, @Qty, @Room, @Mounting, @Width, @Drop, @Heading, @TrackType, @TrackColour, @TrackDraw, @StackPosition, @ControlColour, @ControlLengthValue, @ReturnLengthValue, @ReturnLengthValueB, @BottomHem, @Supply, @LinearMetre, @SquareMetre, @TotalItems, @Notes, @MarkUp, 1)", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricIdB, FabricColourId, FabricColourIdB, PriceProductGroupId, PriceProductGroupIdB, PriceAdditional, PriceAdditionalB, Qty, Room, Mounting, Width, WidthB, [Drop], DropB, Heading, HeadingB, TrackType, TrackTypeB, TrackColour, TrackColourB, TrackDraw, TrackDrawB, StackPosition, StackPositionB, ControlColour, ControlColourB, ControlLengthValue, ControlLengthValueB, ReturnLengthValue, ReturnLengthValueB, ReturnLengthValueC, ReturnLengthValueD, BottomHem, Supply, LinearMetre, LinearMetreB, SquareMetre, SquareMetreB, TotalItems, Notes, MarkUp, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricIdB, @FabricColourId, @FabricColourIdB, @PriceProductGroupId, @PriceProductGroupIdB, @PriceAdditional, @PriceAdditionalB, @Qty, @Room, @Mounting, @Width, @WidthB, @Drop, @DropB, @Heading, @HeadingB, @TrackType, @TrackTypeB, @TrackColour, @TrackColourB, @TrackDraw, @TrackDrawB, @StackPosition, @StackPositionB, @ControlColour, @ControlColourB, @ControlLengthValue, @ControlLengthValueB, @ReturnLengthValue, @ReturnLengthValueB, @ReturnLengthValueC, @ReturnLengthValueD, @BottomHem, @Supply, @LinearMetre, @LinearMetreB, @SquareMetre, @SquareMetreB, @TotalItems, @Notes, @MarkUp, 1)", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", itemId)
                         myCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                         myCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                         myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
+                        myCmd.Parameters.AddWithValue("@PriceProductGroupIdB", If(String.IsNullOrEmpty(priceProductGroupB), CType(DBNull.Value, Object), priceProductGroupB))
                         myCmd.Parameters.AddWithValue("@PriceAdditional", If(String.IsNullOrEmpty(priceAdditional), CType(DBNull.Value, Object), priceAdditional))
+                        myCmd.Parameters.AddWithValue("@PriceAdditionalB", If(String.IsNullOrEmpty(priceAdditionalB), CType(DBNull.Value, Object), priceAdditionalB))
                         myCmd.Parameters.AddWithValue("@Qty", "1")
                         myCmd.Parameters.AddWithValue("@FabricId", If(String.IsNullOrEmpty(data.fabrictype), CType(DBNull.Value, Object), data.fabrictype))
+                        myCmd.Parameters.AddWithValue("@FabricIdB", If(String.IsNullOrEmpty(data.fabrictypeb), CType(DBNull.Value, Object), data.fabrictypeb))
                         myCmd.Parameters.AddWithValue("@FabricColourId", If(String.IsNullOrEmpty(data.fabriccolour), CType(DBNull.Value, Object), data.fabriccolour))
-
+                        myCmd.Parameters.AddWithValue("@FabricColourIdB", If(String.IsNullOrEmpty(data.fabriccolourb), CType(DBNull.Value, Object), data.fabriccolourb))
                         myCmd.Parameters.AddWithValue("@Room", data.room)
                         myCmd.Parameters.AddWithValue("@Mounting", data.mounting)
                         myCmd.Parameters.AddWithValue("@Width", width)
+                        myCmd.Parameters.AddWithValue("@WidthB", widthb)
                         myCmd.Parameters.AddWithValue("@Drop", drop)
+                        myCmd.Parameters.AddWithValue("@DropB", dropb)
                         myCmd.Parameters.AddWithValue("@Heading", data.heading)
+                        myCmd.Parameters.AddWithValue("@HeadingB", data.headingb)
                         myCmd.Parameters.AddWithValue("@TrackType", data.tracktype)
+                        myCmd.Parameters.AddWithValue("@TrackTypeB", data.tracktypeB)
                         myCmd.Parameters.AddWithValue("@TrackColour", data.trackcolour)
+                        myCmd.Parameters.AddWithValue("@TrackColourB", data.trackcolourb)
                         myCmd.Parameters.AddWithValue("@TrackDraw", data.trackdraw)
+                        myCmd.Parameters.AddWithValue("@TrackDrawB", data.trackdrawb)
                         myCmd.Parameters.AddWithValue("@StackPosition", data.stackposition)
+                        myCmd.Parameters.AddWithValue("@StackPositionB", data.stackpositionb)
                         myCmd.Parameters.AddWithValue("@ControlColour", data.controlcolour)
+                        myCmd.Parameters.AddWithValue("@ControlColourB", data.controlcolourb)
                         myCmd.Parameters.AddWithValue("@ControlLengthValue", controllength)
+                        myCmd.Parameters.AddWithValue("@ControlLengthValueB", controllengthB)
                         myCmd.Parameters.AddWithValue("@ReturnLengthValue", returnLengthValue)
                         myCmd.Parameters.AddWithValue("@ReturnLengthValueB", returnLengthValueB)
+                        myCmd.Parameters.AddWithValue("@ReturnLengthValueC", returnLengthValueC)
+                        myCmd.Parameters.AddWithValue("@ReturnLengthValueD", returnLengthValueD)
                         myCmd.Parameters.AddWithValue("@BottomHem", data.bottomhem)
                         myCmd.Parameters.AddWithValue("@Supply", data.tieback)
                         myCmd.Parameters.AddWithValue("@LinearMetre", linearmetre)
+                        myCmd.Parameters.AddWithValue("@LinearMetreB", linearmetreB)
                         myCmd.Parameters.AddWithValue("@SquareMetre", squaremetre)
+                        myCmd.Parameters.AddWithValue("@SquareMetreB", squaremetreB)
                         myCmd.Parameters.AddWithValue("@TotalItems", totalitems)
                         myCmd.Parameters.AddWithValue("@Notes", data.notes)
                         myCmd.Parameters.AddWithValue("@MarkUp", markup)
@@ -1808,32 +1991,49 @@ Partial Class Order_Method
             Dim itemId As String = data.itemid
 
             Using thisConn As SqlConnection = New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET ProductId=@ProductId, FabricId=@FabricId, FabricColourId=@FabricColourId, PriceProductGroupId=@PriceProductGroupId, PriceAdditional=@PriceAdditional, Qty=@Qty, Room=@Room, Mounting=@Mounting, Width=@Width, [Drop]=@Drop, Heading=@Heading, TrackType=@TrackType, TrackColour=@TrackColour, TrackDraw=@TrackDraw, StackPosition=@StackPosition, ControlColour=@ControlColour, ControlLengthValue=@ControlLengthValue, ReturnLengthValue=@ReturnLengthValue, ReturnLengthValueB=@ReturnLengthValueB, BottomHem=@BottomHem, Supply=@Supply, LinearMetre=@LinearMetre, SquareMetre=@SquareMetre, TotalItems=@TotalItems, Notes=@Notes, MarkUp=@MarkUp, Active=1 WHERE Id=@Id", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET ProductId=@ProductId, FabricId=@FabricId, FabricIdB=@FabricIdB, FabricColourId=@FabricColourId, FabricColourIdB=@FabricColourIdB, PriceProductGroupId=@PriceProductGroupId, PriceProductGroupIdB=@PriceProductGroupIdB, PriceAdditional=@PriceAdditional, PriceAdditionalB=@PriceAdditionalB, Qty=@Qty, Room=@Room, Mounting=@Mounting, Width=@Width, WidthB=@WidthB, [Drop]=@Drop, DropB=@DropB, Heading=@Heading, HeadingB=@HeadingB, TrackType=@TrackType, TrackTypeB=@TrackTypeB, TrackColour=@TrackColour, TrackColourB=@TrackColourB, TrackDraw=@TrackDraw, TrackDrawB=@TrackDrawB, StackPosition=@StackPosition, StackPositionB=@StackPositionB, ControlColour=@ControlColour, ControlColourB=@ControlColourB, ControlLengthValue=@ControlLengthValue, ControlLengthValueB=@ControlLengthValueB, ReturnLengthValue=@ReturnLengthValue, ReturnLengthValueB=@ReturnLengthValueB, ReturnLengthValueC=@ReturnLengthValueC, ReturnLengthValueD=@ReturnLengthValueD, BottomHem=@BottomHem, Supply=@Supply, LinearMetre=@LinearMetre, LinearMetreB=@LinearMetreB, SquareMetre=@SquareMetre, SquareMetreB=@SquareMetreB, TotalItems=@TotalItems, Notes=@Notes, MarkUp=@MarkUp, Active=1 WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", itemId)
                     myCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                     myCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                     myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
+                    myCmd.Parameters.AddWithValue("@PriceProductGroupIdB", If(String.IsNullOrEmpty(priceProductGroupB), CType(DBNull.Value, Object), priceProductGroupB))
                     myCmd.Parameters.AddWithValue("@PriceAdditional", If(String.IsNullOrEmpty(priceAdditional), CType(DBNull.Value, Object), priceAdditional))
+                    myCmd.Parameters.AddWithValue("@PriceAdditionalB", If(String.IsNullOrEmpty(priceAdditionalB), CType(DBNull.Value, Object), priceAdditionalB))
                     myCmd.Parameters.AddWithValue("@Qty", "1")
                     myCmd.Parameters.AddWithValue("@FabricId", If(String.IsNullOrEmpty(data.fabrictype), CType(DBNull.Value, Object), data.fabrictype))
+                    myCmd.Parameters.AddWithValue("@FabricIdB", If(String.IsNullOrEmpty(data.fabrictypeb), CType(DBNull.Value, Object), data.fabrictypeb))
                     myCmd.Parameters.AddWithValue("@FabricColourId", If(String.IsNullOrEmpty(data.fabriccolour), CType(DBNull.Value, Object), data.fabriccolour))
+                    myCmd.Parameters.AddWithValue("@FabricColourIdB", If(String.IsNullOrEmpty(data.fabriccolourb), CType(DBNull.Value, Object), data.fabriccolourb))
                     myCmd.Parameters.AddWithValue("@Room", data.room)
                     myCmd.Parameters.AddWithValue("@Mounting", data.mounting)
                     myCmd.Parameters.AddWithValue("@Width", width)
+                    myCmd.Parameters.AddWithValue("@WidthB", widthb)
                     myCmd.Parameters.AddWithValue("@Drop", drop)
+                    myCmd.Parameters.AddWithValue("@DropB", dropb)
                     myCmd.Parameters.AddWithValue("@Heading", data.heading)
+                    myCmd.Parameters.AddWithValue("@HeadingB", data.headingb)
                     myCmd.Parameters.AddWithValue("@TrackType", data.tracktype)
+                    myCmd.Parameters.AddWithValue("@TrackTypeB", data.tracktypeB)
                     myCmd.Parameters.AddWithValue("@TrackColour", data.trackcolour)
+                    myCmd.Parameters.AddWithValue("@TrackColourB", data.trackcolourb)
                     myCmd.Parameters.AddWithValue("@TrackDraw", data.trackdraw)
+                    myCmd.Parameters.AddWithValue("@TrackDrawB", data.trackdrawb)
                     myCmd.Parameters.AddWithValue("@StackPosition", data.stackposition)
+                    myCmd.Parameters.AddWithValue("@StackPositionB", data.stackpositionb)
                     myCmd.Parameters.AddWithValue("@ControlColour", data.controlcolour)
+                    myCmd.Parameters.AddWithValue("@ControlColourB", data.controlcolourb)
                     myCmd.Parameters.AddWithValue("@ControlLengthValue", controllength)
+                    myCmd.Parameters.AddWithValue("@ControlLengthValueB", controllengthB)
                     myCmd.Parameters.AddWithValue("@ReturnLengthValue", returnLengthValue)
                     myCmd.Parameters.AddWithValue("@ReturnLengthValueB", returnLengthValueB)
+                    myCmd.Parameters.AddWithValue("@ReturnLengthValueC", returnLengthValueC)
+                    myCmd.Parameters.AddWithValue("@ReturnLengthValueD", returnLengthValueD)
                     myCmd.Parameters.AddWithValue("@BottomHem", data.bottomhem)
                     myCmd.Parameters.AddWithValue("@Supply", data.tieback)
                     myCmd.Parameters.AddWithValue("@LinearMetre", linearmetre)
+                    myCmd.Parameters.AddWithValue("@LinearMetreB", linearmetreB)
                     myCmd.Parameters.AddWithValue("@SquareMetre", squaremetre)
+                    myCmd.Parameters.AddWithValue("@SquareMetreB", squaremetreB)
                     myCmd.Parameters.AddWithValue("@TotalItems", totalitems)
                     myCmd.Parameters.AddWithValue("@Notes", data.notes)
                     myCmd.Parameters.AddWithValue("@MarkUp", markup)
@@ -9456,7 +9656,7 @@ Partial Class Order_Method
 
         If Not tubeName = "Hinged Double" Then data.flushbold = String.Empty
 
-        If blindName = "Standard" OrElse blindName = "Safety" OrElse blindName = "Security" Then
+        If blindName = "Diamond Grille" OrElse blindName = "Safety" OrElse blindName = "Security" Then
             data.handletype = String.Empty
         End If
 
@@ -9485,7 +9685,10 @@ Partial Class Order_Method
         If tubeName.Contains("Hinged") Then mechanism = "Hinged"
         If tubeName.Contains("Sliding") Then mechanism = "Sliding"
 
-        Dim groupName As String = String.Format("{0} {1} {2} {3}", designName, blindName, mechanism, factory)
+        Dim typeDoor As String = blindName
+        If blindName = "Diamond Grille" Then typeDoor = "Standard"
+
+        Dim groupName As String = String.Format("{0} {1} {2} {3}", designName, typeDoor, mechanism, factory)
         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
         Dim priceProductGroupB As String = String.Empty
         If tubeName = "Hinged Double" OrElse tubeName = "Sliding Double" Then
@@ -9753,9 +9956,12 @@ Partial Class Order_Method
         If data.framecolour.Contains("Express") Then factory = "Express"
         If data.framecolour.Contains("Regular") Then factory = "Regular"
 
-        Dim groupName As String = String.Format("{0} {1} {2}", designName, blindName, factory)
-        If blindName = "Standard" AndAlso (data.meshtype = "Fibreglass Mesh" OrElse data.meshtype = "Pawproof" OrElse data.meshtype = "SS Mesh") Then
-            groupName = String.Format("{0} {1} {2} + Flyscreen Mesh", designName, blindName, factory)
+        Dim typeWindow As String = blindName
+        If blindName = "Diamond Grille" Then typeWindow = "Standard"
+
+        Dim groupName As String = String.Format("{0} {1} {2}", designName, typeWindow, factory)
+        If blindName = "Diamond Grille" AndAlso (data.meshtype = "Fibreglass Mesh" OrElse data.meshtype = "Pawproof" OrElse data.meshtype = "SS Mesh") Then
+            groupName = String.Format("{0} {1} {2} + Flyscreen Mesh", designName, typeWindow, factory)
         End If
         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
 
@@ -9958,9 +10164,12 @@ Partial Class Order_Method
         Dim tubeId As String = detailData("TubeType").ToString()
         Dim controlId As String = detailData("ControlType").ToString()
         Dim fabricId As String = detailData("FabricId").ToString()
+        Dim fabricIdB As String = detailData("FabricIdB").ToString()
 
         Dim heading As String = detailData("Heading").ToString()
+        Dim headingb As String = detailData("HeadingB").ToString()
         Dim trackType As String = detailData("TrackType").ToString()
+        Dim trackTypeb As String = detailData("TrackTypeB").ToString()
 
         Dim itemDetail As New Dictionary(Of String, Object)
         For Each col As DataColumn In detailData.Table.Columns
@@ -9974,14 +10183,19 @@ Partial Class Order_Method
         Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .action = action}
 
         Dim fabricReq As New JSONList With {.type = "FabricTypeByDesign", .designtype = designId, .companydetailid = companyDetailId, .action = action}
+        Dim fabricReqB As New JSONList With {.type = "FabricTypeByDesign", .designtype = designId, .companydetailid = companyDetailId, .action = action}
 
         Dim fabricColourReq As New JSONList With {.type = "FabricColour", .fabrictype = fabricId, .action = action}
+        Dim fabricColourReqB As New JSONList With {.type = "FabricColour", .fabrictype = fabricIdB, .action = action}
 
         Dim trackTypeReq As New JSONList With {.type = "CurtainTrackType", .customtype = heading, .action = action}
+        Dim trackTypeReqB As New JSONList With {.type = "CurtainTrackType", .customtype = headingb, .action = action}
 
         Dim trackColourReq As New JSONList With {.type = "CurtainTrackColour", .customtype = trackType, .action = action}
+        Dim trackColourReqB As New JSONList With {.type = "CurtainTrackColour", .customtype = trackTypeb, .action = action}
 
         Dim trackDrawReq As New JSONList With {.type = "CurtainTrackDraw", .customtype = trackType, .action = action}
+        Dim trackDrawReqB As New JSONList With {.type = "CurtainTrackDraw", .customtype = trackTypeb, .action = action}
 
         Dim result = New With {
                 .ItemData = itemDetail,
@@ -9989,10 +10203,15 @@ Partial Class Order_Method
                 .ColourTypes = ListData(colourReq),
                 .Mountings = ListData(mountingReq),
                 .Fabrics = ListData(fabricReq),
+                .FabricsB = ListData(fabricReqB),
                 .FabricColours = ListData(fabricColourReq),
+                .FabricColoursB = ListData(fabricColourReqB),
                 .TrackTypes = ListData(trackTypeReq),
+                .TrackTypesB = ListData(trackTypeReqB),
                 .TrackColours = ListData(trackColourReq),
-                .TrackDraws = ListData(trackDrawReq)
+                .TrackColoursB = ListData(trackColourReqB),
+                .TrackDraws = ListData(trackDrawReq),
+                .TrackDrawsB = ListData(trackDrawReqB)
             }
         Return result
     End Function
@@ -11003,8 +11222,12 @@ Public Class ProccessData
     Public Property returnposition As String
     Public Property returnlength As String
     Public Property returnlengthb As String
+    Public Property returnlengthc As String
+    Public Property returnlengthd As String
     Public Property returnlengthvalue As String
     Public Property returnlengthvalueb As String
+    Public Property returnlengthvaluec As String
+    Public Property returnlengthvalued As String
     Public Property fabrictype As String
     Public Property fabrictypeb As String
     Public Property fabrictypec As String
@@ -11060,6 +11283,7 @@ Public Class ProccessData
     Public Property fabricinsert As String
     Public Property bottomjoining As String
     Public Property heading As String
+    Public Property headingb As String
     Public Property bottomhem As String
     Public Property tieback As String
     Public Property panelqty As String

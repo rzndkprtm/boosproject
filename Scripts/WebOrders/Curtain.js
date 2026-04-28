@@ -31,12 +31,24 @@ $("#heading").on("change", function () {
     bindTrackType($(this).val());
 });
 
+$("#headingb").on("change", function () {
+    bindTrackTypeB($(this).val());
+});
+
 $("#tracktype").on("change", function () {
     bindTrackColour($(this).val());
 });
 
+$("#tracktypeb").on("change", function () {
+    bindTrackColourB($(this).val());
+});
+
 $("#fabrictype").on("change", function () {
     bindFabricColour($(this).val());
+});
+
+$("#fabrictypeb").on("change", function () {
+    bindFabricColourB($(this).val());
 });
 
 $("#tracktype").on("change", function () {
@@ -44,8 +56,17 @@ $("#tracktype").on("change", function () {
     visibleReturnLength($(this).val());
 });
 
+$("#tracktypeb").on("change", function () {
+    bindTrackDrawB($(this).val());
+    visibleReturnLengthB($(this).val());
+});
+
 $("#trackdraw").on("change", function () {
     visibleControlColourLength($(this).val());
+});
+
+$("#trackdrawb").on("change", function () {
+    visibleControlColourLengthB($(this).val());
 });
 
 function loader(itemAction) {
@@ -495,6 +516,67 @@ function bindFabricType(designType) {
     });
 }
 
+function bindFabricTypeB(designType) {
+    return new Promise((resolve, reject) => {
+        const fabrictypeb = document.getElementById("fabrictypeb");
+        fabrictypeb.innerHTML = "";
+
+        if (!designType) {
+            const selectedValue = fabrictypeb.value || "";
+            Promise.resolve(
+                bindFabricColour(selectedValue)
+            ).then(resolve).catch(reject);
+            return;
+        }
+
+        const listData = { type: "FabricTypeByDesign", designtype: designType, companydetailid: companyDetailId, action: itemAction };
+
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/ListData",
+            data: JSON.stringify({ data: listData }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (Array.isArray(response.d)) {
+                    fabrictypeb.innerHTML = "";
+
+                    if (response.d.length > 1) {
+                        const defaultOption = document.createElement("option");
+                        defaultOption.text = "";
+                        defaultOption.value = "";
+                        fabrictypeb.add(defaultOption);
+                    }
+
+                    response.d.forEach(function (item) {
+                        const option = document.createElement("option");
+                        option.value = item.Value;
+                        option.text = item.Text;
+                        fabrictypeb.add(option);
+                    });
+
+                    if (response.d.length === 1) {
+                        fabrictypeb.selectedIndex = 0;
+                    }
+
+                    const selectedValue = fabrictypeb.value || "";
+                    Promise.resolve(
+                        bindFabricColourB(selectedValue)
+                    ).then(resolve).catch(reject);
+                } else {
+                    const selectedValue = fabrictypeb.value || "";
+                    Promise.resolve(
+                        bindFabricColourB(selectedValue)
+                    ).then(resolve).catch(reject);
+                }
+            },
+            error: function (error) {
+                reject(error);
+            }
+        });
+    });
+}
+
 function bindFabricColour(fabricType) {
     return new Promise((resolve, reject) => {
         const fabriccolour = document.getElementById("fabriccolour");
@@ -533,6 +615,55 @@ function bindFabricColour(fabricType) {
 
                     if (response.d.length === 1) {
                         fabriccolour.selectedIndex = 0;
+                    }
+                }
+                resolve();
+            },
+            error: function (error) {
+                reject(error);
+            }
+        });
+    });
+}
+
+function bindFabricColourB(fabricType) {
+    return new Promise((resolve, reject) => {
+        const fabriccolourb = document.getElementById("fabriccolourb");
+        fabriccolourb.innerHTML = "";
+
+        if (!fabricType) {
+            resolve();
+            return;
+        }
+
+        const listData = { type: "FabricColour", fabrictype: fabricType, action: itemAction };
+
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/ListData",
+            data: JSON.stringify({ data: listData }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (Array.isArray(response.d)) {
+                    fabriccolourb.innerHTML = "";
+
+                    if (response.d.length > 1) {
+                        const defaultOption = document.createElement("option");
+                        defaultOption.text = "";
+                        defaultOption.value = "";
+                        fabriccolourb.add(defaultOption);
+                    }
+
+                    response.d.forEach(function (item) {
+                        const option = document.createElement("option");
+                        option.value = item.Value;
+                        option.text = item.Text;
+                        fabriccolourb.add(option);
+                    });
+
+                    if (response.d.length === 1) {
+                        fabriccolourb.selectedIndex = 0;
                     }
                 }
                 resolve();
@@ -592,6 +723,54 @@ function bindTrackType(heading) {
     });
 }
 
+function bindTrackTypeB(heading) {
+    return new Promise((resolve, reject) => {
+        const tracktypeb = document.getElementById("tracktypeb");
+        tracktypeb.innerHTML = "";
+
+        const safeHeading = heading || "";
+
+        const listData = { type: "CurtainTrackType", customtype: safeHeading, companyid: companyId, action: itemAction };
+
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/ListData",
+            data: JSON.stringify({ data: listData }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (Array.isArray(response.d)) {
+                    if (response.d.length > 0) {
+                        const defaultOption = document.createElement("option");
+                        defaultOption.value = "";
+                        defaultOption.text = "";
+                        tracktypeb.add(defaultOption);
+                    }
+
+                    response.d.forEach(function (item) {
+                        const option = document.createElement("option");
+                        option.value = item.Value;
+                        option.text = item.Text;
+                        tracktypeb.add(option);
+                    });
+
+                    if (response.d.length === 1) {
+                        tracktypeb.selectedIndex = 0;
+                    }
+                }
+
+                const selectedValue = tracktypeb.value || "";
+
+                bindTrackColourB(selectedValue).then(resolve).catch(reject);
+            },
+            error: function (error) {
+                reject(error);
+            }
+        });
+
+    });
+}
+
 function bindTrackColour(trackType) {
     return new Promise((resolve, reject) => {
         const trackcolour = document.getElementById("trackcolour");
@@ -630,6 +809,55 @@ function bindTrackColour(trackType) {
 
                     if (response.d.length === 1) {
                         trackcolour.selectedIndex = 0;
+                    }
+                }
+                resolve();
+            },
+            error: function (error) {
+                reject(error);
+            }
+        });
+    });
+}
+
+function bindTrackColourB(trackType) {
+    return new Promise((resolve, reject) => {
+        const trackcolourb = document.getElementById("trackcolourb");
+
+        if (!trackType) {
+            trackcolourb.innerHTML = "";
+            resolve();
+            return;
+        }
+
+        const listData = { type: "CurtainTrackColour", customtype: trackType, action: itemAction };
+
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/ListData",
+            data: JSON.stringify({ data: listData }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (Array.isArray(response.d)) {
+                    trackcolourb.innerHTML = "";
+
+                    if (response.d.length > 1) {
+                        const defaultOption = document.createElement("option");
+                        defaultOption.text = "";
+                        defaultOption.value = "";
+                        trackcolourb.add(defaultOption);
+                    }
+
+                    response.d.forEach(function (item) {
+                        const option = document.createElement("option");
+                        option.value = item.Value;
+                        option.text = item.Text;
+                        trackcolourb.add(option);
+                    });
+
+                    if (response.d.length === 1) {
+                        trackcolourb.selectedIndex = 0;
                     }
                 }
                 resolve();
@@ -690,12 +918,61 @@ function bindTrackDraw(trackType) {
     });
 }
 
+function bindTrackDrawB(trackType) {
+    return new Promise((resolve, reject) => {
+        const trackdrawb = document.getElementById("trackdrawb");
+
+        if (!trackType) {
+            trackdrawb.innerHTML = "";
+            resolve();
+            return;
+        }
+
+        const listData = { type: "CurtainTrackDraw", customtype: trackType, action: itemAction };
+
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/ListData",
+            data: JSON.stringify({ data: listData }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (Array.isArray(response.d)) {
+                    trackdrawb.innerHTML = "";
+
+                    if (response.d.length > 0) {
+                        const defaultOption = document.createElement("option");
+                        defaultOption.text = "";
+                        defaultOption.value = "";
+                        trackdrawb.add(defaultOption);
+                    }
+
+                    response.d.forEach(function (item) {
+                        const option = document.createElement("option");
+                        option.value = item.Value;
+                        option.text = item.Text;
+                        trackdrawb.add(option);
+                    });
+
+                    if (response.d.length === 1) {
+                        trackdrawb.selectedIndex = 0;
+                    }
+                }
+                resolve();
+            },
+            error: function (error) {
+                reject(error);
+            }
+        });
+    });
+}
+
 function bindComponentForm(blindType, colourType) {
     return new Promise((resolve) => {
         const detail = document.getElementById("divdetail");
         const markup = document.getElementById("divmarkup");
 
-        const divsToHide = ["divmouting", "divheading", "divfabric", "divtrack", "divstackposition", "divwidth", "divdrop", "divcontrolcolour", "divcontrollength", "divreturnlength", "divbottomhem", "divtieback"].map(id => document.getElementById(id));
+        const divsToHide = ["divfirst", "divfirstend", "divsecond", "divsecondend", "divmouting", "divheading", "divheadingb", "divfabric", "divfabricb", "divtrack", "divtrackb", "divstackposition", "divstackpositionb", "divwidth", "divwidthb", "divdrop", "divdropb", "divcontrolcolour", "divcontrolcolourb", "divcontrollength", "divcontrollengthb", "divreturnlength", "divreturnlengthb", "divbottomhem", "divtieback"].map(id => document.getElementById(id));
 
         const toggleDisplay = (el, show) => {
             if (el) el.style.display = show ? "" : "none";
@@ -712,8 +989,10 @@ function bindComponentForm(blindType, colourType) {
         getBlindName(blindType).then(blindName => {
             let divShow = [];
 
-            if (blindName === "Complete Set") {
+            if (blindName === "Complete Set (Single)") {
                 divShow.push("divmouting", "divheading", "divfabric", "divtrack", "divstackposition", "divwidth", "divdrop", "divbottomhem", "divtieback");
+            } else if (blindName === "Complete Set (Double)") {
+                divShow.push("divfirst", "divfirstend", "divsecond", "divsecondend", "divmouting", "divheading", "divheadingb", "divfabric", "divfabricb", "divtrack", "divtrackb", "divstackposition", "divstackpositionb", "divwidth", "divwidthb", "divdrop", "divdropb", "divbottomhem", "divtieback");
             } else if (blindName === "Curtain Only") {
                 divShow.push("divmouting", "divheading", "divfabric", "divwidth", "divdrop", "divstackposition", "divbottomhem", "divtieback");
             } else if (blindName === "Track Only") {
@@ -755,9 +1034,44 @@ function visibleControlColourLength(trackDraw) {
     });
 }
 
+function visibleControlColourLengthB(trackDraw) {
+    return new Promise((resolve) => {
+        let controlColour = document.getElementById("divcontrolcolourb");
+        let controlLength = document.getElementById("divcontrollengthb");
+
+        if (!controlColour || !controlLength) {
+            return resolve();
+        }
+
+        controlColour.style.display = "none";
+        controlLength.style.display = "none";
+
+        if (trackDraw === "Flick Stick") {
+            controlColour.style.display = "";
+            controlLength.style.display = "";
+        }
+        resolve();
+    });
+}
+
 function visibleReturnLength(trackType) {
     return new Promise((resolve) => {
         let divreturnlength = document.getElementById("divreturnlength");
+
+        if (!divreturnlength) return resolve();
+
+        divreturnlength.style.display = "none";
+        if (trackType === "Styletrack" || trackType === "Commercial") {
+            divreturnlength.style.display = "";
+        }
+
+        resolve();
+    });
+}
+
+function visibleReturnLengthB(trackType) {
+    return new Promise((resolve) => {
+        let divreturnlength = document.getElementById("divreturnlengthb");
 
         if (!divreturnlength) return resolve();
 
@@ -804,7 +1118,7 @@ function controlForm(status, isEditItem, isCopyItem) {
 
     const inputs = [
         "blindtype", "colourtype", "qty", "room", "mounting",
-        "heading", "fabrictype", "fabriccolour", "tracktype", "trackcolour", "trackdraw", "stackposition", "width", "drop", "controlcolour", "controllength", "returnlengthvalue", "returnlengthvalueb", "bottomhem", "tieback", "notes", "markup"
+        "heading", "headingb", "fabrictype", "fabrictypeb", "fabriccolour", "fabriccolourb", "tracktype", "tracktypeb", "trackcolour", "trackcolourb", "trackdraw", "trackdrawb", "stackposition", "stackpositionb", "width", "widthb", "drop", "dropb", "controlcolour", "controlcolourb", "controllength", "controllengthc", "returnlengthvalue", "returnlengthvalueb", "returnlengthvaluec", "returnlengthvalued", "bottomhem", "tieback", "notes", "markup"
     ];
 
     inputs.forEach(id => {
@@ -841,18 +1155,31 @@ function setFormValues(itemData) {
         room: "Room",
         mounting: "Mounting",
         heading: "Heading",
+        headingb: "HeadingB",
         fabrictype: "FabricId",
+        fabrictypeb: "FabricIdB",
         fabriccolour: "FabricColourId",
+        fabriccolourb: "FabricColourIdB",
         tracktype: "TrackType",
+        tracktypeb: "TrackTypeB",
         trackcolour: "TrackColour",
+        trackcolourb: "TrackColourB",
         trackdraw: "TrackDraw",
+        trackdrawb: "TrackDrawB",
         stackposition: "StackPosition",
+        stackpositionb: "StackPositionB",
         controlcolour: "ControlColour",
+        controlcolourb: "ControlColourB",
         controllength: "ControlLengthValue",
+        controllengthb: "ControlLengthValueB",
         returnlengthvalue: "ReturnLengthValue",
         returnlengthvalueb: "ReturnLengthValueB",
+        returnlengthvaluec: "ReturnLengthValueC",
+        returnlengthvalued: "ReturnLengthValueD",
         width: "Width",
+        widthb: "WidthB",
         drop: "Drop",
+        dropb: "DropB",
         bottomhem: "BottomHem",
         tieback: "Supply",
         notes: "Notes",
@@ -882,7 +1209,7 @@ function process() {
 
     const fields = [
         "blindtype", "colourtype", "qty", "room", "mounting",
-        "heading", "fabrictype", "fabriccolour", "tracktype", "trackcolour", "trackdraw", "stackposition", "width", "drop", "controlcolour", "controllength", "returnlengthvalue", "returnlengthvalueb", "bottomhem", "tieback",
+        "heading", "headingb", "fabrictype", "fabrictypeb", "fabriccolour", "fabriccolourb", "tracktype", "tracktypeb", "trackcolour", "trackcolourb", "trackdraw", "trackdrawb", "stackposition", "stackpositionb", "width", "widthb", "drop", "dropb", "controlcolour", "controlcolourb", "controllength", "controllengthb", "returnlengthvalue", "returnlengthvalueb", "returnlengthvaluec", "returnlengthvalued", "bottomhem", "tieback",
         "notes", "markup"
     ];
 
@@ -971,7 +1298,9 @@ async function iniCurtain() {
         controlForm(false);
         bindBlindType(designId);
         bindFabricType(designId);
+        bindFabricTypeB(designId);
         bindTrackType("");
+        bindTrackTypeB("");
         loader(itemAction);
     } else if (["edit", "view", "copy"].includes(itemAction)) {
         await bindItemOrder(itemId, companyDetailId, itemAction);
@@ -999,10 +1328,15 @@ async function bindItemOrder(itemId, companyDetailId, action) {
         fillSelect("#colourtype", data.ColourTypes);
         fillSelect("#mounting", data.Mountings);
         fillSelect("#fabrictype", data.Fabrics);
+        fillSelect("#fabrictypeb", data.FabricsB);
         fillSelect("#fabriccolour", data.FabricColours);
+        fillSelect("#fabriccolourb", data.FabricColoursB);
         fillSelect("#tracktype", data.TrackTypes);
+        fillSelect("#tracktypeb", data.TrackTypesB);
         fillSelect("#trackcolour", data.TrackColours);
+        fillSelect("#trackcolourb", data.TrackColoursB);
         fillSelect("#trackdraw", data.TrackDraws);
+        fillSelect("#trackdrawb", data.TrackDrawsB);
 
         document.getElementById("divloader").style.display = "none";
         document.getElementById("divorder").style.display = "";
@@ -1011,7 +1345,9 @@ async function bindItemOrder(itemId, companyDetailId, action) {
 
         bindComponentForm(data.ItemData.BlindType, data.ItemData.ProductId);
         visibleControlColourLength(data.ItemData.TrackDraw);
+        visibleControlColourLengthB(data.ItemData.TrackDrawB);
         visibleReturnLength(data.ItemData.TrackType);
+        visibleReturnLengthB(data.ItemData.TrackTypeB);
     } catch (error) {
         document.getElementById("divloader").style.display = "none";
     }

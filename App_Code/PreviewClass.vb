@@ -389,13 +389,16 @@ Public Class PreviewClass
 
                         Dim number As Integer = i + 1
 
+                        Dim fabricType As String = GetItemData("SELECT Name FROM Fabrics WHERE Id='" & curtainData.Rows(i)("FabricType").ToString() & "'")
+                        Dim fabricColour As String = GetItemData("SELECT Colour FROM FabricColours WHERE Id='" & curtainData.Rows(i)("FabricColour").ToString() & "'")
+
                         items(0, i) = "Item : " & number
                         items(1, i) = curtainData.Rows(i)("Room").ToString()
                         items(2, i) = curtainData.Rows(i)("Mounting").ToString()
                         items(3, i) = curtainData.Rows(i)("BlindAlias").ToString()
                         items(4, i) = curtainData.Rows(i)("Heading").ToString()
-                        items(5, i) = curtainData.Rows(i)("FabricType").ToString()
-                        items(6, i) = curtainData.Rows(i)("FabricColour").ToString()
+                        items(5, i) = fabricType
+                        items(6, i) = fabricColour
                         items(7, i) = curtainData.Rows(i)("Width").ToString()
                         items(8, i) = curtainData.Rows(i)("Height").ToString()
                         items(9, i) = curtainData.Rows(i)("TrackType").ToString()
@@ -404,8 +407,8 @@ Public Class PreviewClass
                         items(12, i) = curtainData.Rows(i)("StackPosition").ToString()
                         items(13, i) = curtainData.Rows(i)("ControlColour").ToString()
                         items(14, i) = controlLengthText
-                        items(15, i) = curtainData.Rows(i)("ReturnLengthValue").ToString()
-                        items(16, i) = curtainData.Rows(i)("ReturnLengthValueB").ToString()
+                        items(15, i) = curtainData.Rows(i)("RetLengthLeft").ToString()
+                        items(16, i) = curtainData.Rows(i)("RetLengthRight").ToString()
                         items(17, i) = curtainData.Rows(i)("BottomHem").ToString()
                         items(18, i) = curtainData.Rows(i)("Supply").ToString()
                         items(19, i) = curtainData.Rows(i)("Notes").ToString()
