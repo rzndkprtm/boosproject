@@ -374,5 +374,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/WebOrders/Window.js?v=2.0.3"></script>
+    <script src="/Scripts/Gabuts/Window.js?v=1.0.0"></script>
 </asp:Content>

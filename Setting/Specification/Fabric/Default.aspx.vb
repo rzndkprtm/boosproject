@@ -35,6 +35,12 @@ Partial Class Setting_Specification_Fabric_Default
         Response.Redirect("~/setting/specification/fabric/alias", False)
     End Sub
 
+    Protected Sub btnGroupLocal_Click(sender As Object, e As EventArgs)
+        Session("SearchFabric") = txtSearch.Text
+        Session("CompanyFabric") = ddlCompanyDetail.SelectedValue
+        Response.Redirect("~/setting/specification/fabric/jakarta", False)
+    End Sub
+
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         BindData(txtSearch.Text, ddlCompanyDetail.SelectedValue)
@@ -164,6 +170,7 @@ Partial Class Setting_Specification_Fabric_Default
 
             btnAdd.Visible = PageAction("Add")
             btnAlias.Visible = PageAction("Visible Fabric Alias")
+            btnGroupLocal.Visible = PageAction("Visible Group Local")
 
             divCompanyDetail.Visible = PageAction("Visible Sort Company Detail")
         Catch ex As Exception

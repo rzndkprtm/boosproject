@@ -457,6 +457,8 @@ Public Class QuoteClass
                 Dim trackType As String = detailData.Rows(i)("TrackType").ToString()
                 Dim trackColour As String = detailData.Rows(i)("TrackColour").ToString()
 
+                Dim itemNote As String = detailData.Rows(i)("Notes").ToString()
+
                 Dim linearMetre As Decimal = 0D
                 Dim squareMetre As Decimal = 0D
 
@@ -473,8 +475,8 @@ Public Class QuoteClass
                 Dim invoiceName As String = detailData.Rows(i)("InvoiceName").ToString()
                 Dim itemDescription As String = invoiceName
 
-                If designName = "Additional" Then
-                    itemDescription = GetItemData("SELECT Description FROM OrderCostings WHERE HeaderId='" & headerId & "' AND ItemId='" & itemId & "' AND Number='" & itemNumber & "' AND Type='Base'")
+                If designName = "Services" Then
+                    itemDescription = itemNote
                 End If
 
                 If designName = "Aluminium Blind" OrElse designName = "Privacy Venetian" OrElse designName = "Venetian Blind" OrElse designName = "Skyline Shutter Express" Then
@@ -825,7 +827,7 @@ Public Class QuoteClass
 
             Dim sumItemPrice As Decimal = 0D
 
-            Dim detailData As DataTable = GetDataTable("SELECT OrderDetails.*, Products.Name AS ProductName, Designs.Name AS DesignName, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND Products.DesignId<>'16' ORDER BY CASE WHEN Designs.Type='Blinds' OR Designs.Type='Shutters' THEN 1 ELSE 2 END, OrderDetails.Id ASC")
+            Dim detailData As DataTable = GetDataTable("SELECT OrderDetails.*, Products.Name AS ProductName, Designs.Name AS DesignName, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND Designs.Type<>'Service' ORDER BY CASE WHEN Designs.Type='Blinds' OR Designs.Type='Shutters' OR Designs.Type='Doors' OR Designs.Type='Samples' THEN 1 ELSE 2 END, OrderDetails.Id ASC")
             For i As Integer = 0 To detailData.Rows.Count - 1
                 Dim itemId As String = detailData.Rows(i)("Id").ToString()
                 Dim room As String = detailData.Rows(i)("Room").ToString()
@@ -1431,7 +1433,7 @@ Public Class QuoteClass
 
             Dim sumItemPrice As Decimal = 0D
 
-            Dim detailData As DataTable = GetDataTable("SELECT OrderDetails.*, Products.Name AS ProductName, Designs.Name AS DesignName, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND Products.DesignId<>'16' ORDER BY CASE WHEN Designs.Type='Blinds' OR Designs.Type='Shutters' THEN 1 ELSE 2 END, OrderDetails.Id ASC")
+            Dim detailData As DataTable = GetDataTable("SELECT OrderDetails.*, Products.Name AS ProductName, Designs.Name AS DesignName, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND Designs.Type<>'Service' ORDER BY CASE WHEN Designs.Type='Blinds' OR Designs.Type='Shutters' OR Designs.Type='Doors' OR Designs.Type='Samples' THEN 1 ELSE 2 END, OrderDetails.Id ASC")
             For i As Integer = 0 To detailData.Rows.Count - 1
                 Dim itemId As String = detailData.Rows(i)("Id").ToString()
 

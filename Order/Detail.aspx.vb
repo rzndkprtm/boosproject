@@ -1324,15 +1324,11 @@ Partial Class Order_Detail
             If e.CommandName = "Detail" Then
                 MessageError(False, String.Empty)
                 Try
-                    Dim thisData As DataRow = orderClass.GetDataRow("SELECT Products.DesignId FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.Id='" & dataId & "' AND OrderDetails.Active=1")
+                    Dim thisData As DataRow = orderClass.GetDataRow("SELECT Designs.Id AS DesignId, Designs.Type AS DesignType, Designs.Page AS DesignPage FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id WHERE OrderDetails.Id='" & dataId & "' AND OrderDetails.Active=1")
 
                     Dim designId As String = thisData("DesignId").ToString()
-                    Dim page As String = orderClass.GetDesignPage(designId)
-
-                    If designId = "16" Then
-                        MessageError(True, "ACCESS DENIED. YOU ARE NOT AUTHORIZED TO PERFORM THIS ACTION !")
-                        Exit Sub
-                    End If
+                    Dim designType As String = thisData("DesignType").ToString()
+                    Dim designPage As String = thisData("DesignPage").ToString()
 
                     Dim itemAction As String = String.Empty
                     If Session("RoleName") = "Developer" Then itemAction = "edit"
@@ -1389,6 +1385,11 @@ Partial Class Order_Detail
                     If Session("RoleName") = "Customer" Then
                         itemAction = "view"
                         If lblOrderStatus.Text = "Unsubmitted" Then itemAction = "edit"
+
+                        If designType = "Services" Then
+                            MessageError(True, "ACCESS DENIED. YOU ARE NOT AUTHORIZED TO PERFORM THIS ACTION !")
+                            Exit Sub
+                        End If
                     End If
 
                     If String.IsNullOrEmpty(itemAction) Then
@@ -1399,7 +1400,7 @@ Partial Class Order_Detail
                     Dim queryString As String = String.Format("do={0}&orderid={1}&itemid={2}&dtype={3}&uid={4}", itemAction, lblHeaderId.Text, dataId, designId, Session("LoginId").ToString())
 
                     Dim contextId As String = InsertContext(queryString)
-                    url = String.Format("{0}?boos={1}", page, contextId)
+                    url = String.Format("{0}?boos={1}", designPage, contextId)
 
                     Response.Redirect(url, False)
                 Catch ex As Exception
@@ -2972,7 +2973,7 @@ Partial Class Order_Detail
 
     Protected Sub BindDataRework(headerId As String)
         If Not String.IsNullOrEmpty(headerId) Then
-            gvListItemRework.DataSource = orderClass.GetDataTable("SELECT OrderDetails.* FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN OrderReworks ON OrderReworks.HeaderId=OrderDetails.HeaderId AND OrderReworks.Status='Unsubmitted' AND OrderReworks.Active=1 LEFT JOIN OrderReworkDetails ON OrderReworkDetails.ItemId=OrderDetails.Id AND OrderReworkDetails.ReworkId=OrderReworks.Id AND OrderReworkDetails.Active=1 WHERE OrderDetails.HeaderId=" & headerId & " AND OrderDetails.Active=1 AND (Designs.Type='Blinds' OR Designs.Type='Shutters') AND OrderReworkDetails.ItemId IS NULL ORDER BY OrderDetails.Id ASC"
+            gvListItemRework.DataSource = orderClass.GetDataTable("SELECT OrderDetails.* FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN OrderReworks ON OrderReworks.HeaderId=OrderDetails.HeaderId AND OrderReworks.Status='Unsubmitted' AND OrderReworks.Active=1 LEFT JOIN OrderReworkDetails ON OrderReworkDetails.ItemId=OrderDetails.Id AND OrderReworkDetails.ReworkId=OrderReworks.Id AND OrderReworkDetails.Active=1 WHERE OrderDetails.HeaderId=" & headerId & " AND OrderDetails.Active=1 AND (Designs.Type='Blinds' OR Designs.Type='Shutters' OR Designs.Type='Doors' OR Designs.Type='Samples') AND OrderReworkDetails.ItemId IS NULL ORDER BY OrderDetails.Id ASC"
 )
             gvListItemRework.DataBind()
 
@@ -3141,6 +3142,8 @@ Partial Class Order_Detail
 
         Dim layoutCode As String = thisData("LayoutCode").ToString()
         Dim frameColour As String = thisData("FrameColour").ToString()
+
+        Dim itemNote As String = thisData("Notes").ToString()
 
         Dim size As String = String.Format("({0}x{1})", width, drop)
         Dim sizeB As String = String.Format("({0}x{1})", widthB, dropB)
@@ -3529,12 +3532,11 @@ Partial Class Order_Detail
             result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
         End If
 
-        If designName = "Additional" Then
+        If designName = "Services" Then
             result = productName
-            Dim thisNote As String = orderClass.GetItemData("SELECT Description FROM OrderCostings WHERE HeaderId='" & lblHeaderId.Text & "' AND ItemId='" & itemId & "' AND Type='Note'")
-            If Not String.IsNullOrEmpty(thisNote) Then
+            If Not String.IsNullOrEmpty(itemNote) Then
                 result &= "<br />"
-                result &= thisNote
+                result &= itemNote
             End If
         End If
         Return result

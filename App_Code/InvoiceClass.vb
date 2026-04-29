@@ -439,6 +439,8 @@ Public Class InvoiceClass
                 Dim trackType As String = detailData.Rows(i)("TrackType").ToString()
                 Dim trackColour As String = detailData.Rows(i)("TrackColour").ToString()
 
+                Dim itemNote As String = detailData.Rows(i)("Notes").ToString()
+
                 Dim linearMetre As Decimal = 0D
                 Dim squareMetre As Decimal = 0D
 
@@ -455,8 +457,12 @@ Public Class InvoiceClass
                 Dim invoiceName As String = detailData.Rows(i)("InvoiceName").ToString()
                 Dim itemDescription As String = invoiceName
 
-                If designName = "Additional" Then
-                    itemDescription = GetItemData("SELECT Description FROM OrderCostings WHERE HeaderId='" & headerId & "' AND ItemId='" & itemId & "' AND Number='" & itemNumber & "' AND Type='Base'")
+                If designName = "Services" Then
+                    itemDescription = String.Format("{0}", invoiceName)
+                    If Not String.IsNullOrEmpty(itemNote) Then
+                        itemDescription &= vbCrLf
+                        itemDescription = itemNote
+                    End If
                 End If
 
                 If designName = "Aluminium Blind" OrElse designName = "Privacy Venetian" OrElse designName = "Venetian Blind" OrElse designName = "Skyline Shutter Express" OrElse designName = "Skyline Shutter Ocean" Then
@@ -665,8 +671,8 @@ Public Class InvoiceClass
                 Dim invoiceName As String = detailData.Rows(i)("InvoiceName").ToString()
                 Dim itemDescription As String = invoiceName
 
-                If designName = "Additional" Then
-                    itemDescription = GetItemData("SELECT Description FROM OrderCostings WHERE HeaderId='" & headerId & "' AND ItemId='" & itemId & "' AND Number='" & itemNumber & "' AND Type='Base'")
+                If designName = "Services" Then
+                    itemDescription = String.Empty
                 End If
 
                 If designName = "Aluminium Blind" OrElse designName = "Privacy Venetian" OrElse designName = "Venetian Blind" OrElse designName = "Skyline Shutter Express" OrElse designName = "Skyline Shutter Ocean" Then
@@ -769,7 +775,7 @@ Public Class InvoiceClass
                 Dim finalCostText As String = finalCost.ToString("N2", enUS)
 
                 Dim xeroName As String = designName
-                If designName = "Additional" Then xeroName = blindName
+                If designName = "Services" Then xeroName = blindName
 
                 Dim xeroItem As String = GetItemData("SELECT ItemCode FROM Xeros WHERE Name='" & xeroName & "' AND Active=1")
                 Dim xeroAccount As String = GetItemData("SELECT AccountCode FROM Xeros WHERE Name='" & xeroName & "' AND Active=1")

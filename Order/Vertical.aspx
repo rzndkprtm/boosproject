@@ -413,5 +413,5 @@
         </div>
     </div>
     
-    <script src="/Scripts/WebOrders/Vertical.js?v=2.0.2"></script>
+    <script src="/Scripts/Gabuts/Vertical.js?v=1.0.0"></script>
 </asp:Content>

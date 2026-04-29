@@ -336,6 +336,7 @@
                                 <ul>
                                     <li>Minimum width for Chain and Reg Cord Lock : 360mm</li>
                                     <li>Minimum width for motorised : 700mm</li>
+                                    <li>Maximum width for Reg Cord Lock : 2110mm</li>
                                     <li>Maximum width : 2910mm</li>
                                     <li>Minimum drop : 600mm</li>
                                     <li>Maximum drop : 3200mm</li>
@@ -407,5 +408,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/WebOrders/Roman.js?v=2.0.2"></script>
+    <script src="/Scripts/Gabuts/Roman.js?v=1.0.0"></script>
 </asp:Content>

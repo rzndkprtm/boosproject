@@ -85,7 +85,7 @@
                                             <div class="col-12 col-sm-12 col-lg-3 mb-1">
                                                 <label>Item</label>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                            <div class="col-12 col-sm-12 col-lg-6 form-group">
                                                 <select id="colourtype" class="form-select"></select>
                                             </div>
                                         </div>
@@ -93,16 +93,16 @@
                                             <div class="col-12 col-sm-12 col-lg-3 mb-1">
                                                 <label>Additional Note</label>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                                <textarea class="form-control" id="notes" rows="4" placeholder="Your notes ..." style="resize:none;"></textarea>
+                                            <div class="col-12 col-sm-12 col-lg-9 form-group">
+                                                <textarea class="form-control" id="notes" rows="4" placeholder="Notes ..." style="resize:none;"></textarea>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-12 col-sm-12 col-lg-3 mb-1">
                                                 <label>Price</label>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                                <input type="number" id="price" class="form-control" autocomplete="off" />
+                                            <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                <input type="text" id="price" class="form-control" autocomplete="off" placeholder="Price" value="0.00" />
                                             </div>
                                         </div>
                                     </div>
@@ -158,5 +158,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/WebOrders/Service.js?v=1.0.0"></script>
+    <script src="/Scripts/Gabuts/Service.js?v=1.0.0"></script>
 </asp:Content>

@@ -2306,14 +2306,14 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                 }
             }
 
-            if (["Alpha 1Nm WF", "Alpha 2Nm WF", "Alpha 3Nm WF", "Alpha 5Nm HW", "Altus", "Mercure", "Sonesse 30 WF", "LSN40", "Basics Wand", "E6", "M6", "Zero Q 1.1", "Zero Q 2.0", "Sonesse 6Nm"].includes(controlName)) {
+            if (["Alpha 1Nm", "Alpha 2Nm", "Alpha 3Nm", "Altus", "Mercure", "Sonesse 30 WF", "LSN40", "Basics Wand", "E6", "M6", "Zero Q 1.1", "Zero Q 2.0", "Sonesse 6Nm"].includes(controlName)) {
                 divShow.push("divremote");
             }
-            if (["Alpha 1Nm WF", "Alpha 2Nm WF", "Alpha 3Nm WF", "Alpha 5Nm HW", "Sonesse 30 WF"].includes(controlName)) {
+            if (["Alpha 1Nm", "Alpha 2Nm", "Alpha 3Nm", "Sonesse 30 WF"].includes(controlName)) {
                 divShow.push("divcharger");
             }
 
-            if (["Alpha 1Nm WF", "Alpha 2Nm WF", "Alpha 3Nm WF", "Alpha 5Nm HW"].includes(controlName)) {
+            if (["Alpha 1Nm", "Alpha 2Nm", "Alpha 3Nm"].includes(controlName)) {
                 divShow.push("divcharger");
                 if (companyDetailName === "BIG" || companyDetailName === "JPMD" || companyDetailName === "JPMD BP" || companyDetailName === "CWS") {
                     divShow.push("divextensioncable", "divsupply");
@@ -2666,21 +2666,7 @@ function controlForm(status, isEditItem, isCopyItem) {
         "printing", "printingb", "printingc", "printingd", "printinge", "printingf", "printingg", "printingh"
     ];
 
-    const installerDisabledIds = [
-        "tubetype",
-        "controltype",
-        "colourtype",
-        "room",
-        "fabrictype", "fabriccolour",
-        "fabrictypeb", "fabriccolourb",
-        "fabrictypec", "fabriccolourc",
-        "fabrictyped", "fabriccolourd",
-        "fabrictypee", "fabriccoloure",
-        "fabrictypef", "fabriccolourf",
-        "chaincolour", "chainstopper",
-        "bottomtype", "bottomcolour",
-        "bracketextension"
-    ];
+    const installerDisabledIds = ["tubetype", "controltype", "colourtype", "room", "fabrictype", "fabriccolour", "fabrictypeb", "fabriccolourb", "fabrictypec", "fabriccolourc", "fabrictyped", "fabriccolourd", "fabrictypee", "fabriccoloure", "fabrictypef", "fabriccolourf", "chaincolour", "chainstopper", "bottomtype", "bottomcolour", "bracketextension"];
 
     inputs.forEach(id => {
         const el = document.getElementById(id);
