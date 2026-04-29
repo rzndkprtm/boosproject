@@ -2309,7 +2309,7 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                 }
             }
 
-            if (["Alpha 1Nm WF", "Alpha 2Nm WF", "Alpha 3Nm WF", "Alpha 5Nm HW", "Altus", "Mercure", "Sonesse 30 WF", "LSN40", "Basics Wand", "E6", "M6", "Zero Q 1.1", "Zero Q 2.0"].includes(controlName)) {
+            if (["Alpha 1Nm WF", "Alpha 2Nm WF", "Alpha 3Nm WF", "Alpha 5Nm HW", "Altus", "Mercure", "Sonesse 30 WF", "LSN40", "Basics Wand", "E6", "M6", "Zero Q 1.1", "Zero Q 2.0", "Sonesse 6Nm"].includes(controlName)) {
                 divShow.push("divremote");
             }
             if (["Alpha 1Nm WF", "Alpha 2Nm WF", "Alpha 3Nm WF", "Alpha 5Nm HW", "Sonesse 30 WF"].includes(controlName)) {
