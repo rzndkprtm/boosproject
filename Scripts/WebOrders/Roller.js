@@ -2316,7 +2316,7 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                 divShow.push("divcharger");
             }
 
-            if (["Alpha 1Nm WF", "Alpha 2Nm WF", "Alpha 3Nm WF", "Alpha 5Nm HW"].includes(controlName)) {
+            if (["Alpha 1Nm WF", "Alpha 2Nm WF", "Alpha 3Nm WF", "Alpha 5Nm HW", "Sonesse 6Nm"].includes(controlName)) {
                 divShow.push("divcharger");
                 if (companyDetailName === "BIG" || companyDetailName === "JPMD" || companyDetailName === "JPMD BP" || companyDetailName === "CWS") {
                     divShow.push("divextensioncable", "divsupply");
