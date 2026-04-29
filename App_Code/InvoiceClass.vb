@@ -461,7 +461,7 @@ Public Class InvoiceClass
                     itemDescription = String.Format("{0}", invoiceName)
                     If Not String.IsNullOrEmpty(itemNote) Then
                         itemDescription &= vbCrLf
-                        itemDescription = itemNote
+                        itemDescription &= itemNote
                     End If
                 End If
 

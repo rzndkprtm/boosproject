@@ -476,7 +476,10 @@ Public Class QuoteClass
                 Dim itemDescription As String = invoiceName
 
                 If designName = "Service" Then
-                    itemDescription = itemNote
+                    If Not String.IsNullOrEmpty(itemNote) Then
+                        itemDescription &= vbCrLf
+                        itemDescription &= itemNote
+                    End If
                 End If
 
                 If designName = "Aluminium Blind" OrElse designName = "Privacy Venetian" OrElse designName = "Venetian Blind" OrElse designName = "Skyline Shutter Express" Then
