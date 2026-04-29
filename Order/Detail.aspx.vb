@@ -1803,7 +1803,7 @@ Partial Class Order_Detail
             aLog.Visible = False
 
             aAddItem.Visible = False
-            aService.Visible = False
+            btnAddService.Visible = False
 
             Dim isReworkOrder As Boolean = orderClass.IsReworkOrder(headerId)
             Dim roleName As String = orderClass.GetUserRoleName(lblCreatedBy.Text)
@@ -1835,7 +1835,7 @@ Partial Class Order_Detail
                     If lblOrderType.Text = "Regular" Then aSubmitOrder.Visible = True : chkSendEmail.Visible = True
                     If lblOrderType.Text = "Builder" Then aQuoteOrder.Visible = True
 
-                    aAddItem.Visible = True : aService.Visible = True
+                    aAddItem.Visible = True : btnAddService.Visible = True
                 End If
 
                 If lblOrderStatus.Text = "Quoted" Then
@@ -1856,7 +1856,7 @@ Partial Class Order_Detail
                     liDividerInvoice.Visible = True : liUpdateInvoiceNumber.Visible = True
                     aNewOrder.Visible = True
 
-                    aAddItem.Visible = True : aService.Visible = True
+                    aAddItem.Visible = True : btnAddService.Visible = True
                 End If
 
                 If lblOrderStatus.Text = "Proforma Sent" Then
@@ -1867,8 +1867,7 @@ Partial Class Order_Detail
                     aSendInvoice.Visible = True : aReceivePayment.Visible = True
                     liDividerInvoice.Visible = True : liUpdateInvoiceNumber.Visible = True
 
-                    aAddItem.Visible = True
-                    aService.Visible = True
+                    aAddItem.Visible = True : btnAddService.Visible = True
                 End If
 
                 If lblOrderStatus.Text = "Payment Received" Then
@@ -1879,7 +1878,7 @@ Partial Class Order_Detail
                     aHoldOrder.Visible = True
                     aCancelOrder.Visible = True
 
-                    aAddItem.Visible = True : aService.Visible = True
+                    aAddItem.Visible = True : btnAddService.Visible = True
                 End If
 
                 If lblOrderStatus.Text = "New Order" Then
@@ -1894,7 +1893,7 @@ Partial Class Order_Detail
                     If lblOrderPaid.Text = "" Then aSendInvoice.Visible = True
                     liDividerInvoice.Visible = True : liUpdateInvoiceData.Visible = True
 
-                    aAddItem.Visible = True : aService.Visible = True
+                    aAddItem.Visible = True : btnAddService.Visible = True
                 End If
 
                 If lblOrderStatus.Text = "In Production" Then
@@ -1906,7 +1905,7 @@ Partial Class Order_Detail
                     If lblOrderPaid.Text = "" Then aSendInvoice.Visible = True
                     liDividerInvoice.Visible = True : liUpdateInvoiceData.Visible = True
 
-                    aAddItem.Visible = True : aService.Visible = True
+                    aAddItem.Visible = True : btnAddService.Visible = True
                 End If
 
                 If lblOrderStatus.Text = "On Hold" Then
@@ -1917,7 +1916,7 @@ Partial Class Order_Detail
                     aUnHoldOrder.Visible = True : aCancelOrder.Visible = True
                     aUnsubmitOrder.Visible = True
 
-                    aAddItem.Visible = True : aService.Visible = True
+                    aAddItem.Visible = True : btnAddService.Visible = True
                 End If
 
                 If lblOrderStatus.Text = "Shipped Out" Then
@@ -1971,7 +1970,7 @@ Partial Class Order_Detail
                     btnEditOrder.Visible = True
                     aDeleteOrder.Visible = True
 
-                    aAddItem.Visible = True : aService.Visible = True
+                    aAddItem.Visible = True : btnAddService.Visible = True
                 End If
 
                 If lblOrderStatus.Text = "Waiting Proforma" Then
@@ -1984,7 +1983,7 @@ Partial Class Order_Detail
                     btnEditOrder.Visible = True
                     aUnsubmitOrder.Visible = True : aCancelOrder.Visible = True
 
-                    aAddItem.Visible = True : aService.Visible = True
+                    aAddItem.Visible = True : btnAddService.Visible = True
                 End If
 
                 If lblOrderStatus.Text = "Proforma Sent" Then
@@ -2007,7 +2006,7 @@ Partial Class Order_Detail
                     aCancelOrder.Visible = True
 
                     btnEditOrder.Visible = True
-                    aAddItem.Visible = True : aService.Visible = True
+                    aAddItem.Visible = True : btnAddService.Visible = True
                 End If
 
                 If lblOrderStatus.Text = "New Order" Then
@@ -2024,7 +2023,7 @@ Partial Class Order_Detail
                     liDividerInvoice.Visible = True : liUpdateInvoiceData.Visible = True
 
                     If lblOrderPaid.Text = "" Then
-                        aAddItem.Visible = True : aService.Visible = True
+                        aAddItem.Visible = True : btnAddService.Visible = True
                     End If
                 End If
 
@@ -2043,7 +2042,7 @@ Partial Class Order_Detail
                     aShippedOrder.Visible = True
 
                     If lblOrderPaid.Text = "" Then
-                        aAddItem.Visible = True : aService.Visible = True
+                        aAddItem.Visible = True : btnAddService.Visible = True
                     End If
                 End If
 
@@ -2061,7 +2060,7 @@ Partial Class Order_Detail
                     btnEditOrder.Visible = True
 
                     If lblOrderPaid.Text = "" Then
-                        aAddItem.Visible = True : aService.Visible = True
+                        aAddItem.Visible = True : btnAddService.Visible = True
                     End If
                 End If
 
@@ -2113,7 +2112,7 @@ Partial Class Order_Detail
 
                     btnEditOrder.Visible = True : aDeleteOrder.Visible = True
 
-                    aAddItem.Visible = True : aService.Visible = True
+                    aAddItem.Visible = True : btnAddService.Visible = True
                 End If
 
                 If lblOrderStatus.Text = "Waiting Proforma" Then
@@ -2129,8 +2128,7 @@ Partial Class Order_Detail
                     aUnsubmitOrder.Visible = True
                     aCancelOrder.Visible = True
 
-                    aAddItem.Visible = True
-                    aService.Visible = True
+                    aAddItem.Visible = True : btnAddService.Visible = True
                 End If
 
                 If lblOrderStatus.Text = "Proforma Sent" Then
@@ -2171,7 +2169,7 @@ Partial Class Order_Detail
                     liDividerInvoice.Visible = True : liUpdateInvoiceData.Visible = True
 
                     If lblOrderPaid.Text = "" Then
-                        aAddItem.Visible = True : aService.Visible = True
+                        aAddItem.Visible = True : btnAddService.Visible = True
                     End If
                 End If
 
@@ -2185,7 +2183,7 @@ Partial Class Order_Detail
                     btnEditOrder.Visible = True
 
                     If lblOrderPaid.Text = "" Then
-                        aAddItem.Visible = True : aService.Visible = True
+                        aAddItem.Visible = True : btnAddService.Visible = True
                     End If
                 End If
 
@@ -2199,7 +2197,7 @@ Partial Class Order_Detail
                     btnEditOrder.Visible = True
 
                     If lblOrderPaid.Text = "" Then
-                        aAddItem.Visible = True : aService.Visible = True
+                        aAddItem.Visible = True : btnAddService.Visible = True
                     End If
                 End If
 
@@ -2270,7 +2268,7 @@ Partial Class Order_Detail
                     aCancelOrder.Visible = True
                     aSubmitOrder.Visible = True
 
-                    aAddItem.Visible = True : aService.Visible = True
+                    aAddItem.Visible = True : btnAddService.Visible = True
                 End If
 
                 If lblOrderStatus.Text = "Waiting Proforma" Then
@@ -2281,7 +2279,7 @@ Partial Class Order_Detail
 
                     aUnsubmitOrder.Visible = True : aCancelOrder.Visible = True
 
-                    aAddItem.Visible = True : aService.Visible = True
+                    aAddItem.Visible = True : btnAddService.Visible = True
                 End If
 
                 If lblOrderStatus.Text = "Proforma Sent" Then
@@ -2346,7 +2344,7 @@ Partial Class Order_Detail
                     btnEditOrder.Visible = True
                     aDeleteOrder.Visible = True
 
-                    aService.Visible = True
+                    btnAddService.Visible = True
                 End If
 
                 If lblOrderStatus.Text = "Quoted" Then
@@ -2358,7 +2356,7 @@ Partial Class Order_Detail
                     aDeleteOrder.Visible = True
                     aSubmitOrder.Visible = True
 
-                    aAddItem.Visible = True : aService.Visible = True
+                    aAddItem.Visible = True : btnAddService.Visible = True
                 End If
 
                 If lblOrderStatus.Text = "Waiting Proforma" Then
@@ -2375,7 +2373,7 @@ Partial Class Order_Detail
 
                     aUnsubmitOrder.Visible = True : aCancelOrder.Visible = True
 
-                    aService.Visible = True
+                    btnAddService.Visible = True
                 End If
 
                 If lblOrderStatus.Text = "Proforma Sent" Then
@@ -2402,7 +2400,7 @@ Partial Class Order_Detail
                     If lblOrderPaid.Text = "" Then aSendInvoice.Visible = True
                     liDividerInvoice.Visible = True : liUpdateInvoiceData.Visible = True
 
-                    aService.Visible = True
+                    btnAddService.Visible = True
                 End If
 
                 If lblOrderStatus.Text = "In Production" Then
@@ -2410,7 +2408,7 @@ Partial Class Order_Detail
                     If lblOrderPaid.Text = "" Then aSendInvoice.Visible = True
                     liDividerInvoice.Visible = True : liUpdateInvoiceData.Visible = True
 
-                    aService.Visible = True
+                    btnAddService.Visible = True
                 End If
 
                 If lblOrderStatus.Text = "On Hold" Then
@@ -2418,7 +2416,7 @@ Partial Class Order_Detail
                     If lblOrderPaid.Text = "" Then aSendInvoice.Visible = True
                     liDividerInvoice.Visible = True : liUpdateInvoiceData.Visible = True
 
-                    aService.Visible = True
+                    btnAddService.Visible = True
                 End If
 
                 If lblOrderStatus.Text = "Shipped Out" Then
@@ -2426,7 +2424,7 @@ Partial Class Order_Detail
                     If lblOrderPaid.Text = "" Then aSendInvoice.Visible = True
                     liDividerInvoice.Visible = True : liUpdateInvoiceData.Visible = True
 
-                    aService.Visible = True
+                    btnAddService.Visible = True
                 End If
 
                 If lblOrderStatus.Text = "Completed" Then
@@ -2434,7 +2432,7 @@ Partial Class Order_Detail
                     If lblOrderPaid.Text = "" Then aSendInvoice.Visible = True
                     liDividerInvoice.Visible = True : liUpdateInvoiceData.Visible = True
 
-                    aService.Visible = True
+                    btnAddService.Visible = True
                 End If
             End If
 
@@ -2466,7 +2464,7 @@ Partial Class Order_Detail
                     aCancelOrder.Visible = True
                     aSubmitOrder.Visible = True
 
-                    aAddItem.Visible = True : aService.Visible = True
+                    aAddItem.Visible = True : btnAddService.Visible = True
                 End If
 
                 If lblOrderStatus.Text = "New Order" Then
@@ -2480,17 +2478,17 @@ Partial Class Order_Detail
 
                 If lblOrderStatus.Text = "Waiting Proforma" Then
                     btnEditOrder.Visible = True
-                    aAddItem.Visible = True : aService.Visible = True
+                    aAddItem.Visible = True : btnAddService.Visible = True
                 End If
 
                 If lblOrderStatus.Text = "Payment Received" Then
                     btnEditOrder.Visible = True
-                    aAddItem.Visible = True : aService.Visible = True
+                    aAddItem.Visible = True : btnAddService.Visible = True
                 End If
 
                 If lblOrderStatus.Text = "In Production" Then
                     btnEditOrder.Visible = True
-                    aAddItem.Visible = True : aService.Visible = True
+                    aAddItem.Visible = True : btnAddService.Visible = True
 
                     aHoldOrder.Visible = True : aCancelOrder.Visible = True
                 End If

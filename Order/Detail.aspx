@@ -371,8 +371,8 @@
                                 </div>
                                 <div class="col-12 col-sm-12 col-lg-7 d-flex justify-content-end">
                                     <a href="#" runat="server" id="aAddItem" class="btn btn-primary me-1" data-bs-toggle="modal" data-bs-target="#modalAddItem">New Item</a>
-                                    <%--<asp:Button runat="server" ID="btnAddService" CssClass="btn btn-info me-1" OnClick="btnAddService_Click" Text="New Service" />--%>
-                                    <a href="#" runat="server" id="aService" class="btn btn-info me-1" data-bs-toggle="modal" data-bs-target="#modalService">New Service</a>
+                                    <asp:Button runat="server" ID="btnAddService" CssClass="btn btn-info me-1" OnClick="btnAddService_Click" Text="New Service" />
+                                    <%--<a href="#" runat="server" id="aService" class="btn btn-info me-1" data-bs-toggle="modal" data-bs-target="#modalService">New Service</a>--%>
                                 </div>
                             </div>
                         </div>
