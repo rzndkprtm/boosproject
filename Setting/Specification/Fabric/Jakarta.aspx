@@ -32,7 +32,44 @@
         </section>
         <section class="row">
             <div class="col-12">
-
+                <div class="card">
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-12 col-sm-12 col-lg-6 mb-2">
+                                    <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Add Group" />
+                                </div>
+                                <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
+                                    <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
+                                        <div class="input-group">
+                                            <span class="input-group-text">Search : </span>
+                                            <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" placeholoder="" autocomplete="off"></asp:TextBox>
+                                            <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" />
+                                        </div>
+                                    </asp:Panel>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <div class="table-responsive">
+                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center">
+                                            <RowStyle />
+                                            <Columns>
+                                                <asp:TemplateField ItemStyle-HorizontalAlign="Center">
+                                                    <ItemTemplate>
+                                                        <%# Container.DataItemIndex + 1 %>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                            </Columns>
+                                        </asp:GridView>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
     </div>
