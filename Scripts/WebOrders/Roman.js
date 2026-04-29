@@ -104,7 +104,7 @@ function getFormAction(itemAction) {
             return;
         }
 
-        const actionMap = { create: "Add Item", edit: "Edit Item", view: "View Item", copy: "Copy Item" };
+        const actionMap = {create: "Add Item", edit: "Edit Item", view: "View Item", copy: "Copy Item"};
 
         pageAction.innerText = actionMap[itemAction];
         resolve();
@@ -895,11 +895,7 @@ function visibleCustom(controlType, text) {
 }
 
 function toggleButtonState(disabled, text) {
-    $("#submit")
-        .prop("disabled", disabled)
-        .css("pointer-events", disabled ? "none" : "auto")
-        .text(text);
-
+    $("#submit").prop("disabled", disabled).css("pointer-events", disabled ? "none" : "auto").text(text);
     $("#cancel").prop("disabled", disabled).css("pointer-events", disabled ? "none" : "auto");
 }
 
@@ -926,12 +922,7 @@ function controlForm(status, isEditItem, isCopyItem) {
 
     document.getElementById("submit").style.display = status ? "none" : "";
 
-    const inputs = [
-        "blindtype", "tubetype", "controltype", "colourtype", "qty", "room", "mounting",
-        "controlposition", "chaincolour", "controlcolour", "charger", "controllength", "chainlengthvalue", "cordlengthvalue", "extensioncable", "supply",
-        "width", "drop", "fabrictype", "fabriccolour",
-        "valanceoption", "batten", "notes", "markup", "printing"
-    ];
+    const inputs = ["blindtype", "tubetype", "controltype", "colourtype", "qty", "room", "mounting", "controlposition", "chaincolour", "controlcolour", "charger", "controllength", "chainlengthvalue", "cordlengthvalue", "extensioncable", "supply", "width", "drop", "fabrictype", "fabriccolour", "valanceoption", "batten", "notes", "markup", "printing"];
 
     inputs.forEach(id => {
         const inputElement = document.getElementById(id);
@@ -1009,12 +1000,7 @@ function fillSelect(selector, list, selected = null) {
 function process() {
     toggleButtonState(true, "Processing...");
 
-    const fields = [
-        "blindtype", "tubetype", "controltype", "colourtype", "qty", "room", "mounting",
-        "controlposition", "chaincolour", "controlcolour", "charger", "controllength", "chainlengthvalue", "cordlengthvalue", "extensioncable", "supply",
-        "width", "drop", "fabrictype", "fabriccolour",
-        "valanceoption", "batten", "notes", "markup", "printing"
-    ];
+    const fields = ["blindtype", "tubetype", "controltype", "colourtype", "qty", "room", "mounting", "controlposition", "chaincolour", "controlcolour", "charger", "controllength", "chainlengthvalue", "cordlengthvalue", "extensioncable", "supply", "width", "drop", "fabrictype", "fabriccolour", "valanceoption", "batten", "notes", "markup", "printing"];
 
     const formData = {
         headerid: headerId,
@@ -1102,11 +1088,7 @@ async function initRoman() {
         loader(itemAction);
     } else if (["edit", "view", "copy"].includes(itemAction)) {
         await bindItemOrder(itemId, companyDetailId, itemAction);
-        controlForm(
-            itemAction === "view",
-            itemAction === "edit",
-            itemAction === "copy"
-        );
+        controlForm(itemAction === "view", itemAction === "edit", itemAction === "copy");
     }
 }
 

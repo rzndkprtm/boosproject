@@ -174,7 +174,7 @@ Public Class PreviewClass
             Dim orderName As String = headerData("OrderName").ToString()
             Dim orderNote As String = headerData("OrderNote").ToString()
 
-            Dim totalItems As Integer = GetItemData_Integer("SELECT SUM(CASE WHEN Designs.Type='Blinds' THEN OrderDetails.TotalItems ELSE OrderDetails.Qty END) AS TotalItem FROM OrderDetails INNER JOIN Products ON OrderDetails.ProductId=Products.Id INNER JOIN Designs ON Products.DesignId=Designs.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND Products.DesignId <> '16'")
+            Dim totalItems As Integer = GetItemData_Integer("SELECT SUM(CASE WHEN Designs.Type='Blinds' THEN OrderDetails.TotalItems ELSE OrderDetails.Qty END) AS TotalItem FROM OrderDetails INNER JOIN Products ON OrderDetails.ProductId=Products.Id INNER JOIN Designs ON Products.DesignId=Designs.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND Designs.Type<>'Service'")
             Dim pageTotalItem As String = String.Format("{0} Item", totalItems)
             If totalItems > 1 Then pageTotalItem = String.Format("{0} Items", totalItems)
 

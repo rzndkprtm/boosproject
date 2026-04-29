@@ -1142,7 +1142,7 @@ Public Class OrderClass
         Dim result As String = 0
         Try
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As New SqlCommand("SELECT SUM (CASE WHEN Designs.Type='Blinds' THEN OrderDetails.TotalItems WHEN Designs.Type='Shutters' THEN 1 ELSE 0 END) AS totalOrder FROM OrderHeaders INNER JOIN OrderDetails ON OrderHeaders.Id=OrderDetails.HeaderId INNER JOIN Products ON OrderDetails.ProductId=Products.Id INNER JOIN Designs ON Products.DesignId=Designs.Id WHERE OrderHeaders.Id=@Id AND OrderHeaders.Active=1 AND OrderDetails.Active=1 AND Designs.Type IN ('Blinds', 'Shutters', 'Component', 'Doors', 'Samples');", thisConn)
+                Using myCmd As New SqlCommand("SELECT SUM (CASE WHEN Designs.Type='Blinds' THEN OrderDetails.TotalItems WHEN Designs.Type='Shutters' THEN 1 ELSE 0 END) AS totalOrder FROM OrderHeaders INNER JOIN OrderDetails ON OrderHeaders.Id=OrderDetails.HeaderId INNER JOIN Products ON OrderDetails.ProductId=Products.Id INNER JOIN Designs ON Products.DesignId=Designs.Id WHERE OrderHeaders.Id=@Id AND OrderHeaders.Active=1 AND OrderDetails.Active=1 AND Designs.Type IN ('Blinds', 'Shutters', 'Doors', 'Samples');", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", headerId)
 
                     thisConn.Open()
@@ -1183,8 +1183,8 @@ Public Class OrderClass
     ' PRICING
 
     Public Function GetGridPrice(data As Object()) As DataRow
-        'Try
-        Dim productGroupId As String = Convert.ToString(data(0))
+        Try
+            Dim productGroupId As String = Convert.ToString(data(0))
             Dim priceGroupId As String = Convert.ToString(data(1))
             Dim drop As Integer = Convert.ToInt32(data(2))
             Dim width As Integer = Convert.ToInt32(data(3))
@@ -1211,17 +1211,33 @@ Public Class OrderClass
                     End Using
                 End Using
             End Using
-        'Catch ex As Exception
-        '    Return Nothing
-        'End Try
+        Catch ex As Exception
+            Return Nothing
+        End Try
     End Function
 
     Public Sub ResetPriceDetail(headerId As String, itemId As String)
-        Try
-            Using thisConn As SqlConnection = New SqlConnection(myConn)
+        'Try
+        Using thisConn As SqlConnection = New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("DELETE FROM OrderCostings WHERE HeaderId=@HeaderId AND ItemId=@ItemId", thisConn)
                     myCmd.Parameters.AddWithValue("@HeaderId", headerId)
                     myCmd.Parameters.AddWithValue("@ItemId", itemId)
+
+                    thisConn.Open()
+                    myCmd.ExecuteNonQuery()
+                End Using
+            End Using
+        'Catch ex As Exception
+        'End Try
+    End Sub
+
+    Public Sub UpdateServiceItem(headerId As String, itemId As String, price As Decimal)
+        Try
+            Using thisConn As SqlConnection = New SqlConnection(myConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderCostings SET BuyPrice=0.00, SellPrice=@Price WHERE HeaderId=@HeaderId AND ItemId=@ItemId AND Type='Base'", thisConn)
+                    myCmd.Parameters.AddWithValue("@HeaderId", headerId)
+                    myCmd.Parameters.AddWithValue("@ItemId", itemId)
+                    myCmd.Parameters.AddWithValue("@Price", price)
 
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
@@ -1232,8 +1248,8 @@ Public Class OrderClass
     End Sub
 
     Public Sub FinalCostItem(headerId As String, itemId As String)
-        Try
-            Using thisConn As New SqlConnection(myConn)
+        'Try
+        Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("DELETE FROM OrderCostings WHERE ItemId=@ItemId AND Type='Final'", thisConn)
                     myCmd.Parameters.AddWithValue("@ItemId", itemId)
 
@@ -1247,13 +1263,13 @@ Public Class OrderClass
 
             Dim dataCosting As Object() = {headerId, itemId, 0, "Final", "Final Cost This Item", buyPrice, sellPrice}
             OrderCostings(dataCosting)
-        Catch ex As Exception
-        End Try
+        'Catch ex As Exception
+        'End Try
     End Sub
 
     Public Sub CalculatePriceByOrder(headerId As String)
         Try
-            Dim thisData As DataTable = GetDataTable("SELECT OrderDetails.* FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND Designs.Type<>'Additional'")
+            Dim thisData As DataTable = GetDataTable("SELECT OrderDetails.* FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND Designs.Type<>'Service'")
             If Not thisData.Rows.Count = 0 Then
                 For i As Integer = 0 To thisData.Rows.Count - 1
                     Dim itemId As String = thisData.Rows(i)("Id").ToString()
@@ -1268,8 +1284,8 @@ Public Class OrderClass
     End Sub
 
     Public Sub CalculatePrice(headerId As String, itemId As String)
-        Try
-            Dim thisData As DataRow = GetDataRow("SELECT * FROM OrderDetails WHERE Id='" & itemId & "' AND Active=1")
+        'Try
+        Dim thisData As DataRow = GetDataRow("SELECT * FROM OrderDetails WHERE Id='" & itemId & "' AND Active=1")
             If thisData IsNot Nothing Then
                 Dim customerId As String = GetCustomerIdByOrder(headerId)
 
@@ -2497,8 +2513,8 @@ Public Class OrderClass
                     CalculateCharge(objectArray)
                 End If
             End If
-        Catch ex As Exception
-        End Try
+        'Catch ex As Exception
+        'End Try
     End Sub
 
     Public Sub CalculateCharge(data As Object())

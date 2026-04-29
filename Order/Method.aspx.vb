@@ -1,6 +1,5 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
-Imports System.IO
 Imports System.Web.Services
 
 Partial Class Order_Method
@@ -2942,10 +2941,12 @@ Partial Class Order_Method
         Dim designName As String = String.Empty
         Dim tubeName As String = String.Empty
         Dim controlName As String = String.Empty
+        Dim controlType As String = String.Empty
 
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.tubetype) Then tubeName = orderClass.GetTubeName(data.tubetype)
         If Not String.IsNullOrEmpty(data.controltype) Then controlName = orderClass.GetControlName(data.controltype)
+        If Not String.IsNullOrEmpty(data.controltype) Then controlType = orderClass.GetControlType(data.controltype)
 
         Dim customerPriceGroup As String = orderClass.GetPriceGroupByOrder(data.headerid)
 
@@ -2970,11 +2971,11 @@ Partial Class Order_Method
             If controlName = "Chain" OrElse controlName = "Reg Cord Lock" OrElse controlName = "Cord Lock" Then
                 If width < 360 Then Return "MINIMUM WIDTH IS 360MM !"
             End If
+            If controlType = "Motorised" AndAlso width < 700 Then Return "MINIMUM WIDTH FOR MOTORISED IS 700MM !"
 
-            If controlName = "Alpha 1Nm WF" OrElse controlName = "Alpha 2Nm WF" OrElse controlName = "Alpha 3Nm WF" OrElse controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "Sonesse 30 WF" Then
-                If width < 700 Then Return "MINIMUM WIDTH FOR MOTORISED IS 700MM !"
+            If controlName = "Reg Cord Lock" OrElse controlName = "Cord Lock" Then
+                If width > 2110 Then Return "MAXIMUM WIDTH FOR REG CORD LOCK IS 2110MM. PLEASE USE CHAIN OR MOTORISED !"
             End If
-
             If width > 2910 Then Return "MAXIMUM WIDTH IS 2910MM !"
         End If
 
@@ -2987,8 +2988,8 @@ Partial Class Order_Method
 
         If String.IsNullOrEmpty(data.valanceoption) Then Return "VALANCE OPTION IS REQUIRED !"
         If String.IsNullOrEmpty(data.controlposition) Then Return "CONTROL POSITION IS REQUIRED !"
-        If String.IsNullOrEmpty(data.chaincolour) AndAlso (controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "Sonesse 30 WF" OrElse controlName = "Alpha 1Nm WF" OrElse controlName = "Alpha 2Nm WF" OrElse controlName = "Alpha 3Nm WF" OrElse controlName = "Chain") Then
-            If controlName = "Chain" Then Return "CHAIN COLOUR IS REQUIRED"
+        If String.IsNullOrEmpty(data.chaincolour) AndAlso (controlType = "Chain" OrElse controlType = "Motorised") Then
+            If controlType = "Chain" Then Return "CHAIN COLOUR IS REQUIRED"
             Return "REMOTE TYPE IS REQUIRED !"
         End If
         If controlName.Contains("Cord Lock") AndAlso String.IsNullOrEmpty(data.controlcolour) Then Return "CORD COLOUR IS REQUIRED !"
@@ -3026,26 +3027,19 @@ Partial Class Order_Method
 
         If tubeName = "Classic" OrElse tubeName = "Sewless" Then data.batten = String.Empty
 
-        If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "Sonesse 30 WF" OrElse controlName = "Alpha 1Nm WF" OrElse controlName = "Alpha 2Nm WF" OrElse controlName = "Alpha 3Nm WF" OrElse controlName = "Chain" Then
-            data.controlcolour = String.Empty
-        End If
+        If controlType = "Chain" OrElse controlType = "Motorised" Then data.controlcolour = String.Empty
         If controlName = "Reg Cord Lock" OrElse controlName = "Cord Lock" Then
-            data.chaincolour = String.Empty
+            data.chaincolour = Nothing
         End If
 
         If controlName = "Chain" OrElse controlName = "Reg Cord Lock" OrElse controlName = "Cord Lock" OrElse controlName = "Altus" OrElse controlName = "Mercure" Then
             data.charger = String.Empty
         End If
-        If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "Sonesse 30 WF" OrElse controlName = "Alpha 1Nm WF" OrElse controlName = "Alpha 2Nm WF" OrElse controlName = "Alpha 3Nm WF" Then
-            data.controllength = String.Empty
+        If controlType = "Motorised" Then
+            data.controllength = String.Empty : controllength = 0
         End If
         If controlName = "Chain" OrElse controlName = "Reg Cord Lock" OrElse controlName = "Cord Lock" OrElse controlName = "Mercure" OrElse controlName = "Altus" OrElse controlName = "Sonesse 30 WF" Then
             data.extensioncable = String.Empty : data.supply = String.Empty
-        End If
-
-        If data.companyid = "2" Then data.drycontact = String.Empty
-        If controlName = "Mercure" OrElse controlName = "Alpha 1Nm WF" OrElse controlName = "Alpha 2Nm WF" OrElse controlName = "Alpha 3Nm WF" OrElse controlName = "Chain" Then
-            data.drycontact = String.Empty
         End If
 
         Dim linearMetre As Decimal = width / 1000
@@ -3081,7 +3075,7 @@ Partial Class Order_Method
                 Dim itemId As String = orderClass.GetNewOrderItemId()
 
                 Using thisConn As SqlConnection = New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricColourId, ChainId, PriceProductGroupId, Qty, Room, Mounting, Width, [Drop], ControlPosition, ControlColour, ControlLength, ControlLengthValue, ValanceOption, Batten, DryContact, Charger, ExtensionCable, Supply, Printing, LinearMetre, SquareMetre, TotalItems, Notes, MarkUp, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricColourId, @ChainId, @PriceProductGroupId, @Qty, @Room, @Mounting, @Width, @Drop, @ControlPosition, @ControlColour, @ControlLength, @ControlLengthValue, @ValanceOption, @Batten, @DryContact, @Charger, @ExtensionCable, @Supply, @Printing, @LinearMetre, @SquareMetre, 1, @Notes, @MarkUp, 1)", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricColourId, ChainId, PriceProductGroupId, Qty, Room, Mounting, Width, [Drop], ControlPosition, ControlColour, ControlLength, ControlLengthValue, ValanceOption, Batten, Charger, ExtensionCable, Supply, Printing, LinearMetre, SquareMetre, TotalItems, Notes, MarkUp, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricColourId, @ChainId, @PriceProductGroupId, @Qty, @Room, @Mounting, @Width, @Drop, @ControlPosition, @ControlColour, @ControlLength, @ControlLengthValue, @ValanceOption, @Batten, @Charger, @ExtensionCable, @Supply, @Printing, @LinearMetre, @SquareMetre, 1, @Notes, @MarkUp, 1)", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", itemId)
                         myCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                         myCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
@@ -3095,12 +3089,11 @@ Partial Class Order_Method
                         myCmd.Parameters.AddWithValue("@Width", width)
                         myCmd.Parameters.AddWithValue("@Drop", drop)
                         myCmd.Parameters.AddWithValue("@ControlPosition", data.controlposition)
-                        myCmd.Parameters.AddWithValue("@ControlColour", data.controlcolour)
+                        myCmd.Parameters.AddWithValue("@ControlColour", If(String.IsNullOrEmpty(data.controlcolour), CType(DBNull.Value, Object), data.controlcolour))
                         myCmd.Parameters.AddWithValue("@ControlLength", data.controllength)
                         myCmd.Parameters.AddWithValue("@ControlLengthValue", controllength)
                         myCmd.Parameters.AddWithValue("@ValanceOption", data.valanceoption)
                         myCmd.Parameters.AddWithValue("@Batten", data.batten)
-                        myCmd.Parameters.AddWithValue("@DryContact", data.drycontact)
                         myCmd.Parameters.AddWithValue("@Charger", data.charger)
                         myCmd.Parameters.AddWithValue("@ExtensionCable", data.extensioncable)
                         myCmd.Parameters.AddWithValue("@Supply", data.supply)
@@ -3129,7 +3122,7 @@ Partial Class Order_Method
             Dim itemId As String = data.itemid
 
             Using thisConn As SqlConnection = New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET ProductId=@ProductId, FabricId=@FabricId, FabricColourId=@FabricColourId, ChainId=@ChainId, PriceProductGroupId=@PriceProductGroupId, Qty=@Qty, Room=@Room, Mounting=@Mounting, Width=@Width, [Drop]=@Drop, ControlPosition=@ControlPosition, ControlColour=@ControlColour, ControlLength=@ControlLength, ControlLengthValue=@ControlLengthValue, ValanceOption=@ValanceOption, Batten=@Batten, DryContact=@DryContact, Charger=@Charger, ExtensionCable=@ExtensionCable, Supply=@Supply, Printing=@Printing, LinearMetre=@LinearMetre, SquareMetre=@SquareMetre, TotalItems=1, Notes=@Notes, MarkUp=@MarkUp, Active=1 WHERE Id=@Id", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET ProductId=@ProductId, FabricId=@FabricId, FabricColourId=@FabricColourId, ChainId=@ChainId, PriceProductGroupId=@PriceProductGroupId, Qty=@Qty, Room=@Room, Mounting=@Mounting, Width=@Width, [Drop]=@Drop, ControlPosition=@ControlPosition, ControlColour=@ControlColour, ControlLength=@ControlLength, ControlLengthValue=@ControlLengthValue, ValanceOption=@ValanceOption, Batten=@Batten, Charger=@Charger, ExtensionCable=@ExtensionCable, Supply=@Supply, Printing=@Printing, LinearMetre=@LinearMetre, SquareMetre=@SquareMetre, TotalItems=1, Notes=@Notes, MarkUp=@MarkUp, Active=1 WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", itemId)
                     myCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                     myCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
@@ -3143,12 +3136,11 @@ Partial Class Order_Method
                     myCmd.Parameters.AddWithValue("@Width", width)
                     myCmd.Parameters.AddWithValue("@Drop", drop)
                     myCmd.Parameters.AddWithValue("@ControlPosition", data.controlposition)
-                    myCmd.Parameters.AddWithValue("@ControlColour", data.controlcolour)
+                    myCmd.Parameters.AddWithValue("@ControlColour", If(String.IsNullOrEmpty(data.controlcolour), CType(DBNull.Value, Object), data.controlcolour))
                     myCmd.Parameters.AddWithValue("@ControlLength", data.controllength)
                     myCmd.Parameters.AddWithValue("@ControlLengthValue", controllength)
                     myCmd.Parameters.AddWithValue("@ValanceOption", data.valanceoption)
                     myCmd.Parameters.AddWithValue("@Batten", data.batten)
-                    myCmd.Parameters.AddWithValue("@DryContact", data.drycontact)
                     myCmd.Parameters.AddWithValue("@Charger", data.charger)
                     myCmd.Parameters.AddWithValue("@ExtensionCable", data.extensioncable)
                     myCmd.Parameters.AddWithValue("@Supply", data.supply)
@@ -3165,6 +3157,112 @@ Partial Class Order_Method
 
             orderClass.ResetPriceDetail(data.headerid, itemId)
             orderClass.CalculatePrice(data.headerid, itemId)
+            orderClass.FinalCostItem(data.headerid, itemId)
+
+            Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
+            orderClass.Logs(dataLog)
+
+            Return "Success"
+        End If
+
+        Return "PLEASE CONTACT YOUR CUSTOMER SERVICE !"
+    End Function
+
+    Private Shared Function BuildSql(cmd As SqlCommand) As String
+        Dim query As String = cmd.CommandText
+
+        ' Urutkan parameter dari nama terpanjang
+        Dim parameters = cmd.Parameters.Cast(Of SqlParameter)() _
+        .OrderByDescending(Function(p) p.ParameterName.Length)
+
+        For Each p In parameters
+            Dim value As String
+
+            If p.Value Is Nothing OrElse p.Value Is DBNull.Value Then
+                value = "NULL"
+            ElseIf TypeOf p.Value Is String Then
+                value = "'" & p.Value.ToString().Replace("'", "''") & "'"
+            ElseIf TypeOf p.Value Is DateTime Then
+                value = "'" & CType(p.Value, DateTime).ToString("yyyy-MM-dd HH:mm:ss") & "'"
+            ElseIf TypeOf p.Value Is Decimal Then
+                value = CType(p.Value, Decimal).ToString(System.Globalization.CultureInfo.InvariantCulture)
+            Else
+                value = p.Value.ToString()
+            End If
+
+            query = query.Replace(p.ParameterName, value)
+        Next
+
+        Return query
+    End Function
+
+    <WebMethod()>
+    Public Shared Function ServiceProcess(data As ProccessData) As String
+        Dim orderClass As New OrderClass
+
+        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+
+        Dim designName As String = String.Empty
+        Dim blindName As String = String.Empty
+
+        If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
+        If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
+
+        If String.IsNullOrEmpty(data.blindtype) Then Return "TYPE IS REQUIRED !"
+        If String.IsNullOrEmpty(data.colourtype) Then Return "ITEM IS REQUIRED !"
+
+        Dim productName As String = orderClass.GetProductName(data.colourtype)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(productName, data.designid, data.companydetailid)
+
+        If data.itemaction = "create" OrElse data.itemaction = "copy" Then
+            Dim itemId As String = orderClass.GetNewOrderItemId()
+
+            Using thisConn As SqlConnection = New SqlConnection(myConn)
+                Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails (Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], LinearMetre, SquareMetre, TotalItems, Notes, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, 1, 0, 0, 0, 0, 1, @Notes, 0, 1)", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", itemId)
+                    myCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
+                    myCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
+                    myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
+                    myCmd.Parameters.AddWithValue("@Notes", data.notes)
+
+                    thisConn.Open()
+                    myCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            orderClass.ResetPriceDetail(data.headerid, itemId)
+            orderClass.CalculatePrice(data.headerid, itemId)
+            If Not String.IsNullOrEmpty(data.price) Then
+                orderClass.UpdateServiceItem(data.headerid, itemId, data.price)
+            End If
+            orderClass.FinalCostItem(data.headerid, itemId)
+
+            Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Added"}
+            orderClass.Logs(dataLog)
+            Return "Success"
+        End If
+
+        If data.itemaction = "edit" OrElse data.itemaction = "view" Then
+            Dim itemId As String = data.itemid
+
+            Using thisConn As New SqlConnection(myConn)
+                Using myCmd As New SqlCommand("UPDATE OrderDetails SET ProductId=@ProductId, PriceProductGroupId=@PriceProductGroupId, Qty=1, Width=0, [Drop]=0, LinearMetre=0, SquareMetre=0, TotalItems=1, Notes=@Notes, MarkUp=0 WHERE Id=@Id", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", itemId)
+                    myCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
+                    myCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
+                    myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
+                    myCmd.Parameters.AddWithValue("@Notes", data.notes)
+
+                    thisConn.Open()
+                    myCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            orderClass.ResetPriceDetail(data.headerid, itemId)
+            orderClass.CalculatePrice(data.headerid, itemId)
+            If Not String.IsNullOrEmpty(data.price) Then
+                orderClass.UpdateServiceItem(data.headerid, itemId, data.price)
+            End If
             orderClass.FinalCostItem(data.headerid, itemId)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
@@ -4987,7 +5085,7 @@ Partial Class Order_Method
             End If
 
             If data.companyid = "2" Then data.drycontact = String.Empty
-            If controlName = "Alpha 1Nm WF" OrElse controlName = "Alpha 2Nm WF" OrElse controlName = "Alpha 3Nm WF" OrElse controlName = "Alpha 5Nm HW" OrElse controlName = "Mercure" OrElse controlName = "Chain" Then
+            If controlName.Contains("Alpha") OrElse controlName = "Mercure" OrElse controlName = "Chain" Then
                 data.drycontact = String.Empty
             End If
 
@@ -5146,7 +5244,7 @@ Partial Class Order_Method
             End If
 
             If data.companyid = "2" Then data.drycontact = String.Empty
-            If controlName = "Alpha 1Nm WF" OrElse controlName = "Alpha 2Nm WF" OrElse controlName = "Alpha 3Nm WF" OrElse controlName = "Alpha 5Nm HW" OrElse controlName = "Mercure" OrElse controlName = "Chain" Then
+            If controlName.Contains("Alpha") OrElse controlName = "Mercure" OrElse controlName = "Chain" Then
                 data.drycontact = String.Empty
             End If
 
@@ -5331,7 +5429,7 @@ Partial Class Order_Method
             End If
 
             If data.companyid = "2" Then data.drycontact = String.Empty
-            If controlName = "Alpha 1Nm WF" OrElse controlName = "Alpha 2Nm WF" OrElse controlName = "Alpha 3Nm WF" OrElse controlName = "Alpha 5Nm HW" OrElse controlName = "Mercure" OrElse controlName = "Chain" Then
+            If controlName.Contains("Alpha") OrElse controlName = "Mercure" OrElse controlName = "Chain" Then
                 data.drycontact = String.Empty
             End If
 
@@ -5497,7 +5595,7 @@ Partial Class Order_Method
             End If
 
             If data.companyid = "2" Then data.drycontact = String.Empty
-            If controlName = "Alpha 1Nm WF" OrElse controlName = "Alpha 2Nm WF" OrElse controlName = "Alpha 3Nm WF" OrElse controlName = "Alpha 5Nm HW" OrElse controlName = "Mercure" OrElse controlName = "Chain" Then
+            If controlName.Contains("Alpha") OrElse controlName = "Mercure" OrElse controlName = "Chain" Then
                 data.drycontact = String.Empty
             End If
 
@@ -5703,7 +5801,7 @@ Partial Class Order_Method
             End If
 
             If data.companyid = "2" Then data.drycontact = String.Empty
-            If controlName = "Alpha 1Nm WF" OrElse controlName = "Alpha 2Nm WF" OrElse controlName = "Alpha 3Nm WF" OrElse controlName = "Alpha 5Nm HW" OrElse controlName = "Mercure" OrElse controlName = "Chain" Then
+            If controlName.Contains("Alpha") OrElse controlName = "Mercure" OrElse controlName = "Chain" Then
                 data.drycontact = String.Empty
             End If
 
@@ -5899,7 +5997,7 @@ Partial Class Order_Method
             End If
 
             If data.companyid = "2" Then data.drycontact = String.Empty
-            If controlName = "Alpha 1Nm WF" OrElse controlName = "Alpha 2Nm WF" OrElse controlName = "Alpha 3Nm WF" OrElse controlName = "Alpha 5Nm HW" OrElse controlName = "Mercure" OrElse controlName = "Chain" Then
+            If controlName.Contains("Alpha") OrElse controlName = "Mercure" OrElse controlName = "Chain" Then
                 data.drycontact = String.Empty
             End If
 
@@ -6172,7 +6270,7 @@ Partial Class Order_Method
             End If
 
             If data.companyid = "2" Then data.drycontact = String.Empty
-            If controlName = "Alpha 1Nm WF" OrElse controlName = "Alpha 2Nm WF" OrElse controlName = "Alpha 3Nm WF" OrElse controlName = "Alpha 5Nm HW" OrElse controlName = "Mercure" OrElse controlName = "Chain" Then
+            If controlName.Contains("Alpha") OrElse controlName = "Mercure" OrElse controlName = "Chain" Then
                 data.drycontact = String.Empty
             End If
 
@@ -6393,7 +6491,7 @@ Partial Class Order_Method
             End If
 
             If data.companyid = "2" Then data.drycontact = String.Empty
-            If controlName = "Alpha 1Nm WF" OrElse controlName = "Alpha 2Nm WF" OrElse controlName = "Alpha 3Nm WF" OrElse controlName = "Alpha 5Nm HW" OrElse controlName = "Mercure" OrElse controlName = "Chain" Then
+            If controlName.Contains("Alpha") OrElse controlName = "Mercure" OrElse controlName = "Chain" Then
                 data.drycontact = String.Empty
             End If
 
@@ -6587,7 +6685,7 @@ Partial Class Order_Method
                 data.printingf = String.Empty
             End If
 
-            If controlName = "Alpha 1Nm WF" OrElse controlName = "Alpha 2Nm WF" OrElse controlName = "Alpha 3Nm WF" OrElse controlName = "Alpha 5Nm HW" OrElse controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Sonesse 30 WF" Then
+            If controlType = "Motorised" Then
                 data.chaincolour = data.remote : data.chaincolourc = String.Empty
                 data.chaincolourd = String.Empty : data.chaincolourf = String.Empty
                 data.chainstopper = String.Empty : data.chainstopperc = String.Empty
@@ -6714,7 +6812,7 @@ Partial Class Order_Method
                 End If
 
                 If data.companyid = "2" Then data.drycontact = String.Empty
-                If controlName = "Alpha 1Nm WF" OrElse controlName = "Alpha 2Nm WF" OrElse controlName = "Alpha 3Nm WF" OrElse controlName = "Alpha 5Nm HW" OrElse controlName = "Mercure" OrElse controlName = "Chain" Then
+                If controlName.Contains("Alpha") OrElse controlName = "Mercure" OrElse controlName = "Chain" Then
                     data.drycontact = String.Empty
                 End If
 
@@ -11025,6 +11123,41 @@ Partial Class Order_Method
     End Function
 
     <WebMethod()>
+    Public Shared Function ServiceDetail(itemId As Integer, companyDetailId As String, action As String) As Object
+        Dim orderClass As New OrderClass
+
+        Dim detailData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Products.DesignId AS DesignId, Products.BlindId AS BlindType, Products.TubeType AS TubeType, Products.ControlType AS ControlType FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.Id='" & itemId & "'")
+        If detailData Is Nothing Then Return Nothing
+
+        Dim designId As String = detailData("DesignId").ToString()
+        Dim blindId As String = detailData("BlindType").ToString()
+        Dim tubeId As String = detailData("TubeType").ToString()
+        Dim controlId As String = detailData("ControlType").ToString()
+
+        Dim itemDetail As New Dictionary(Of String, Object)
+        For Each col As DataColumn In detailData.Table.Columns
+            itemDetail(col.ColumnName) = detailData(col.ColumnName)
+        Next
+
+        Dim priceService As DataRow = orderClass.GetDataRow("SELECT SellPrice FROM OrderCostings WHERE ItemId='" & itemId & "' AND Type='Base'")
+        If priceService IsNot Nothing AndAlso Not IsDBNull(priceService("SellPrice")) Then
+            itemDetail("SellPrice") = priceService("SellPrice")
+        Else
+            itemDetail("SellPrice") = 0
+        End If
+
+        Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetailid = companyDetailId, .action = action}
+
+        Dim colourReq As New JSONList With {.type = "ProductName", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .action = action}
+
+        Dim result = New With {
+            .ItemData = itemDetail,
+            .BlindTypes = ListData(blindReq),
+            .ColourTypes = ListData(colourReq)
+        }
+        Return result
+    End Function
+    <WebMethod()>
     Public Shared Function EvolveDetail(itemId As Integer, companyDetailId As String) As Object
         Dim orderClass As New OrderClass
 
@@ -11371,6 +11504,7 @@ Public Class ProccessData
     Public Property topplasticqty As String
     Public Property notes As String
     Public Property markup As String
+    Public Property price As Decimal
 End Class
 
 Public Class JSONList

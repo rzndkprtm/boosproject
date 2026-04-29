@@ -108,67 +108,6 @@ Partial Class Order_EditCosting
         Response.Redirect(String.Format("~/order/detail?orderid={0}", lblHeaderId.Text), False)
     End Sub
 
-    Protected Sub btnNote_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        Try
-            If String.IsNullOrEmpty(txtNote.Text) Then
-                Using thisConn As SqlConnection = New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("DELETE FROM OrderCostings WHERE HeaderId=@HeaderId AND ItemId=@ItemId AND Type=@Type", thisConn)
-                        myCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
-                        myCmd.Parameters.AddWithValue("@ItemId", lblItemId.Text)
-                        myCmd.Parameters.AddWithValue("@Type", "Note")
-
-                        thisConn.Open()
-                        myCmd.ExecuteNonQuery()
-                    End Using
-                End Using
-            End If
-            If Not String.IsNullOrEmpty(txtNote.Text) Then
-                Using thisConn As SqlConnection = New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("DELETE FROM OrderCostings WHERE HeaderId=@HeaderId AND ItemId=@ItemId AND Type=@Type; INSERT INTO OrderCostings VALUES(NEWID(), @HeaderId, @ItemId, @Number, @Type, @Description, @BuyPrice, @SellPrice)", thisConn)
-                        myCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
-                        myCmd.Parameters.AddWithValue("@ItemId", lblItemId.Text)
-                        myCmd.Parameters.AddWithValue("@Number", 0)
-                        myCmd.Parameters.AddWithValue("@Type", "Note")
-                        myCmd.Parameters.AddWithValue("@Description", txtNote.Text)
-                        myCmd.Parameters.AddWithValue("@BuyPrice", 0)
-                        myCmd.Parameters.AddWithValue("@SellPrice", 0)
-
-                        thisConn.Open()
-                        myCmd.ExecuteNonQuery()
-                    End Using
-                End Using
-            End If
-            Response.Redirect(String.Format("~/order/editcosting?boos={0}", lblId.Text), False)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
-    Protected Sub btnDeleteNote_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        Try
-            Using thisConn As SqlConnection = New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM OrderCostings WHERE HeaderId=@HeaderId AND ItemId=@ItemId AND Type='Note'", thisConn)
-                    myCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
-                    myCmd.Parameters.AddWithValue("@ItemId", lblItemId.Text)
-
-                    thisConn.Open()
-                    myCmd.ExecuteNonQuery()
-                End Using
-            End Using
-            Response.Redirect(String.Format("~/order/editcosting?boos={0}", lblId.Text), False)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
     Protected Sub BindData(id As String)
         Try
             Dim queryString As String = orderClass.GetItemData("SELECT QueryString FROM OrderActionContext WHERE Id='" & id & "'")
@@ -189,7 +128,7 @@ Partial Class Order_EditCosting
             lblOrderStatus.Text = headerData("Status").ToString()
             lblCompanyId.Text = headerData("CompanyId").ToString()
 
-            hTitle.InnerText = orderClass.GetItemData("SELECT CONVERT(VARCHAR(200), OrderDetails.Room) + ' - ' + CONVERT(VARCHAR(200), Products.Name) FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.Id='" & lblItemId.Text & "'")
+            hTitle.InnerText = orderClass.GetItemData("SELECT ISNULL(CONVERT(VARCHAR(200), OrderDetails.Room), '') + ' - ' + ISNULL(CONVERT(VARCHAR(200), Products.Name), '') FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId = Products.Id WHERE OrderDetails.Id = '" & lblItemId.Text & "'")
 
             Dim thisQuery As String = "SELECT *, FORMAT(BuyPrice, 'C', 'en-US') AS BuyPricing, FORMAT(SellPrice, 'C', 'en-US') AS SellPricing FROM OrderCostings WHERE ItemId='" & lblItemId.Text & "' AND Type<>'Final' AND Number<>0 ORDER BY Number, CASE WHEN Type='Base' THEN 1 WHEN Type='Surcharge' THEN 2 ELSE 3 END ASC"
             If lblCompanyId.Text = "3" Then
@@ -200,12 +139,16 @@ Partial Class Order_EditCosting
             gvList.Columns(1).Visible = False
 
             divNote.Visible = False
-            aAdd.Visible = False
-            aDelete.Visible = False
-            Dim note As String = orderClass.GetItemData("SELECT Description FROM OrderCostings WHERE HeaderId='" & lblHeaderId.Text & "' AND ItemId='" & lblItemId.Text & "' AND Type='Note'")
-            lblNote.Text = String.Format("* {0}", note)
-            If Not String.IsNullOrEmpty(note) Then aDelete.Visible = True : divNote.Visible = True
-            If String.IsNullOrEmpty(note) Then aAdd.Visible = True
+            Dim itemNote As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Designs.Name AS DesignName, Designs.Type AS DesignType FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id WHERE OrderDetails.Id='" & lblItemId.Text & "' AND OrderDetails.HeaderId='" & lblHeaderId.Text & "'")
+            If Not itemNote Is Nothing Then
+                Dim designName As String = itemNote("DesignName").ToString()
+                Dim designType As String = itemNote("DesignType").ToString()
+                Dim note As String = itemNote("Notes").ToString()
+                If designType = "Services" Then
+                    divNote.Visible = True
+                    lblNote.Text = String.Format("* {0}", note)
+                End If
+            End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then

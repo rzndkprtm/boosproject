@@ -125,10 +125,11 @@
                             <asp:DropDownList runat="server" ID="ddlType" CssClass="form-select">
                                 <asp:ListItem Value="" Text=""></asp:ListItem>
                                 <asp:ListItem Value="Blinds" Text="Blinds"></asp:ListItem>
-                                <asp:ListItem Value="Shutters" Text="Shutters"></asp:ListItem>
-                                <asp:ListItem Value="Doors" Text="Doors"></asp:ListItem>
                                 <asp:ListItem Value="Components" Text="Components"></asp:ListItem>
-                                <asp:ListItem Value="Additional" Text="Additional"></asp:ListItem>
+                                <asp:ListItem Value="Doors" Text="Doors"></asp:ListItem>
+                                <asp:ListItem Value="Samples" Text="Samples"></asp:ListItem>
+                                <asp:ListItem Value="Services" Text="Services"></asp:ListItem>
+                                <asp:ListItem Value="Shutters" Text="Shutters"></asp:ListItem>
                             </asp:DropDownList>
                         </div>
                         <div class="col-7 form-group">

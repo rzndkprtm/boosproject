@@ -356,5 +356,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/WebOrders/PanelGlide.js?v=2.0.2"></script>
+    <script src="/Scripts/Gabuts/PanelGlide.js?v=1.0.0"></script>
 </asp:Content>

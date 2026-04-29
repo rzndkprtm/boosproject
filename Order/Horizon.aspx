@@ -349,5 +349,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/WebOrders/Horizon.js?v=1.1.1"></script>
+    <script src="/Scripts/Gabuts/Horizon.js?v=1.0.0"></script>
 </asp:Content>

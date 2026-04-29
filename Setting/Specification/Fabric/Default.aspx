@@ -33,6 +33,7 @@
             <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
                 <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Add New" OnClick="btnAdd_Click" />
                 <asp:Button runat="server" ID="btnAlias" CssClass="btn btn-secondary" Text="Fabric Alias" OnClick="btnAlias_Click" />
+                <asp:Button runat="server" ID="btnGroupLocal" CssClass="btn btn-info" Text="Group JKT" OnClick="btnGroupLocal_Click" />
             </div>
         </section>
         <section class="row">
