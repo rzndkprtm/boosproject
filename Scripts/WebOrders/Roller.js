@@ -2316,14 +2316,14 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                 divShow.push("divcharger");
             }
 
-            if (["Alpha 1Nm WF", "Alpha 2Nm WF", "Alpha 3Nm WF", "Alpha 5Nm HW", "Sonesse 6Nm"].includes(controlName)) {
+            if (["Alpha 1Nm WF", "Alpha 2Nm WF", "Alpha 3Nm WF", "Alpha 5Nm HW"].includes(controlName)) {
                 divShow.push("divcharger");
                 if (companyDetailName === "BIG" || companyDetailName === "JPMD" || companyDetailName === "JPMD BP" || companyDetailName === "CWS") {
                     divShow.push("divextensioncable", "divsupply");
                 }
             }
 
-            if (["Altus", "Sonesse 30 WF", "LSN40"].includes(controlName)) {
+            if (["Altus", "Sonesse 30 WF", "Sonesse 6Nm", "LSN40"].includes(controlName)) {
                 if (companyDetailName === "ACCENT" || companyDetailName === "OASIS") {
                     divShow.push("divdrycontact");
                 }
