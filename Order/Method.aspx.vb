@@ -6425,7 +6425,7 @@ Partial Class Order_Method
                 data.printingf = String.Empty
             End If
 
-            If controlName = "Alpha 1Nm WF" OrElse controlName = "Alpha 2Nm WF" OrElse controlName = "Alpha 3Nm WF" OrElse controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "Sonesse 30 WF" OrElse controlName = "LSN40" Then
+            If controlType = "Motorised" Then
                 data.chaincolour = data.remote
                 data.chaincolourd = String.Empty
                 data.chainstopper = String.Empty : data.chainstopperd = String.Empty
