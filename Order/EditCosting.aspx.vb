@@ -51,7 +51,7 @@ Partial Class Order_EditCosting
                                 Dim newSell As Decimal = 0
                                 Decimal.TryParse(txtNewSellPrice.Text, NumberStyles.Any, CultureInfo.CurrentCulture, newSell)
 
-                                Dim txtNewBuyPrice As TextBox = CType(row.FindControl("txtNewSellPrice"), TextBox)
+                                Dim txtNewBuyPrice As TextBox = CType(row.FindControl("txtNewBuyPrice"), TextBox)
                                 Dim newBuy As Decimal = 0
                                 Decimal.TryParse(txtNewBuyPrice.Text, NumberStyles.Any, CultureInfo.CurrentCulture, newBuy)
 
