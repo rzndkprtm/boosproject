@@ -457,7 +457,7 @@ Public Class InvoiceClass
                 Dim invoiceName As String = detailData.Rows(i)("InvoiceName").ToString()
                 Dim itemDescription As String = invoiceName
 
-                If designName = "Services" Then
+                If designName = "Service" Then
                     itemDescription = String.Format("{0}", invoiceName)
                     If Not String.IsNullOrEmpty(itemNote) Then
                         itemDescription &= vbCrLf
@@ -671,7 +671,7 @@ Public Class InvoiceClass
                 Dim invoiceName As String = detailData.Rows(i)("InvoiceName").ToString()
                 Dim itemDescription As String = invoiceName
 
-                If designName = "Services" Then
+                If designName = "Service" Then
                     itemDescription = String.Empty
                 End If
 
@@ -775,7 +775,7 @@ Public Class InvoiceClass
                 Dim finalCostText As String = finalCost.ToString("N2", enUS)
 
                 Dim xeroName As String = designName
-                If designName = "Services" Then xeroName = blindName
+                If designName = "Service" Then xeroName = blindName
 
                 Dim xeroItem As String = GetItemData("SELECT ItemCode FROM Xeros WHERE Name='" & xeroName & "' AND Active=1")
                 Dim xeroAccount As String = GetItemData("SELECT AccountCode FROM Xeros WHERE Name='" & xeroName & "' AND Active=1")
