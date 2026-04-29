@@ -360,11 +360,7 @@ function bindColourType(blindType) {
 }
 
 function toggleButtonState(disabled, text) {
-    $("#submit")
-        .prop("disabled", disabled)
-        .css("pointer-events", disabled ? "none" : "auto")
-        .text(text);
-
+    $("#submit").prop("disabled", disabled).css("pointer-events", disabled ? "none" : "auto").text(text);
     $("#cancel").prop("disabled", disabled).css("pointer-events", disabled ? "none" : "auto");
 }
 
@@ -391,16 +387,14 @@ function controlForm(status, isEditItem, isCopyItem) {
 
     document.getElementById("submit").style.display = status ? "none" : "";
 
-    const inputs = [
-        "blindtype", "colourtype", "notes"
-    ];
+    const inputs = [ "blindtype", "colourtype", "notes", "price" ];
 
     inputs.forEach(id => {
         const inputElement = document.getElementById(id);
         if (inputElement) {
             if (isCopyItem) {
                 inputElement.disabled = (id === "blindtype");
-            } else if (isEditItem && (id === "blindtype")) {
+            } else if (isEditItem && (id === "blindtype" || id === "colourtype")) {
                 inputElement.disabled = true;
             } else {
                 inputElement.disabled = status;
@@ -422,10 +416,7 @@ function fillSelect(selector, list, selected = null) {
 }
 
 function setFormValues(itemData) {
-    const mapping = {
-        blindtype: "BlindType",
-        colourtype: "ProductId"
-    };
+    const mapping = { blindtype: "BlindType", colourtype: "ProductId", notes: "Notes", price: "SellPrice" };
 
     Object.keys(mapping).forEach(id => {
         const el = document.getElementById(id);
@@ -440,9 +431,7 @@ function setFormValues(itemData) {
 function process() {
     toggleButtonState(true, "Processing...");
 
-    const fields = [
-        "blindtype", "colourtype", "notes"
-    ];
+    const fields = [ "blindtype", "colourtype", "notes", "price" ];
 
     const formData = {
         headerid: headerId,
