@@ -3530,7 +3530,7 @@ Partial Class Order_Detail
             result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
         End If
 
-        If designName = "Services" Then
+        If designName = "Service" Then
             result = productName
             If Not String.IsNullOrEmpty(itemNote) Then
                 result &= "<br />"

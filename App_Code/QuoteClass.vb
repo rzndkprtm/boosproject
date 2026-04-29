@@ -475,7 +475,7 @@ Public Class QuoteClass
                 Dim invoiceName As String = detailData.Rows(i)("InvoiceName").ToString()
                 Dim itemDescription As String = invoiceName
 
-                If designName = "Services" Then
+                If designName = "Service" Then
                     itemDescription = itemNote
                 End If
 
