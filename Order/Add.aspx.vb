@@ -3501,7 +3501,7 @@ Partial Class Order_Add
                         End If
 
                         If blindName = "Basswood 50mm" OrElse blindName = "Basswood 63mm" Then
-                            If valanceType <> "75mm Valance" Then
+                            If valanceType <> "75mm Valance" AndAlso valanceType <> "89mm Valance" Then
                                 Dim thisAlert As String = String.Format("PLEASE CHECK THE VALANCE TYPE FOR ITEM {0} !", itemNumber)
                                 MessageError(True, thisAlert)
                                 Exit For
