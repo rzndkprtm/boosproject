@@ -121,6 +121,14 @@
                         <div class="card-body">
                             <div class="row mb-3">
                                 <div class="col-12">
+                                    <div class="alert alert-light-info color-info">
+                                        <i class="bi bi-exclamation-circle"></i>
+                                        Info tentang active
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
                                     <div class="table-responsive">
                                         <asp:GridView runat="server" ID="gvListColour" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" EmptyDataText="DATA NOT FOUND :)" PageSize="100" EmptyDataRowStyle-HorizontalAlign="Center" OnRowCommand="gvListColour_RowCommand">
                                             <RowStyle />
