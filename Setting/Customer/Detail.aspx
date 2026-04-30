@@ -688,7 +688,6 @@
             </div>
         </div>
     </div>
-    
     <div class="modal modal-blur fade" id="modalRecalculate" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -706,7 +705,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal modal-blur fade" id="modalWelcome" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -723,7 +721,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade text-center" id="modalDelete" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -741,7 +738,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal modal-blur fade" id="modalLog" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -760,7 +756,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade text-center" id="modalWaiting" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -829,7 +824,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal modal-blur fade" id="modalDeleteContact" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -847,7 +841,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal modal-blur fade" id="modalPrimaryContact" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -867,6 +860,7 @@
     </div>
     
     <%--CUSTOMER ADDRESS--%>
+
     <div class="modal modal-blur fade" id="modalProcessAddress" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -920,7 +914,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal modal-blur fade" id="modalDeleteAddress" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -938,7 +931,6 @@
             </div>
         </div>
     </div>
-    
     <div class="modal modal-blur fade" id="modalPrimaryAddress" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -958,6 +950,7 @@
     </div>
 
     <%--CUSTOMER BUSINESS--%>
+
     <div class="modal modal-blur fade" id="modalProcessBusiness" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -1003,7 +996,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal modal-blur fade" id="modalDeleteBusiness" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -1021,7 +1013,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal modal-blur fade" id="modalPrimaryBusiness" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -1041,6 +1032,7 @@
     </div>
 
     <%--CUSTOMER LOGIN--%>
+
     <div class="modal modal-blur fade" id="modalProcessLogin" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -1108,7 +1100,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal modal-blur fade" id="modalInstallerAccess" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -1147,7 +1138,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal modal-blur fade" id="modalActiveLogin" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -1166,7 +1156,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal modal-blur fade" id="modalChangePasswordLogin" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -1190,7 +1179,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal modal-blur fade" id="modalResetPass" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -1208,8 +1196,7 @@
                 </div>
             </div>
         </div>
-    </div>    
-
+    </div>
     <div class="modal modal-blur fade" id="modalDencryptPass" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -1225,7 +1212,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal modal-blur fade" id="modalLoginCredentials" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -1248,6 +1234,7 @@
     </div>
 
     <%--CUSTOMER DISCOUNT--%>
+
     <div class="modal modal-blur fade" id="modalProcessDiscount" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -1300,7 +1287,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal modal-blur fade" id="modalResetDiscount" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -1317,7 +1303,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal modal-blur fade" id="modalDeleteDiscount" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -1337,6 +1322,7 @@
     </div>
 
     <%--CUSTOMER PROMO--%>
+
     <div class="modal modal-blur fade" id="modalProcessPromo" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -1365,7 +1351,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal modal-blur fade" id="modalDetailPromo" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -1415,7 +1400,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal modal-blur fade" id="modalResetPromo" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -1432,7 +1416,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal modal-blur fade" id="modalDeletePromo" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -1481,7 +1464,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal modal-blur fade" id="modalResetProduct" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -1497,6 +1479,29 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <div runat="server" visible="false">
+        <asp:Label runat="server" ID="lblIdContact"></asp:Label>
+        <asp:Label runat="server" ID="lblActionContact"></asp:Label>
+
+        <asp:Label runat="server" ID="lblIdAddress"></asp:Label>
+        <asp:Label runat="server" ID="lblActionAddress"></asp:Label>
+
+        <asp:Label runat="server" ID="lblIdBusiness"></asp:Label>
+        <asp:Label runat="server" ID="lblActionBusiness"></asp:Label>
+
+        <asp:Label runat="server" ID="lblIdLogin"></asp:Label>        
+        <asp:Label runat="server" ID="lblActionLogin"></asp:Label>
+        <asp:Label runat="server" ID="lblLoginUserNameOld"></asp:Label>
+
+        <asp:Label runat="server" ID="lblIdDiscount"></asp:Label>
+        <asp:Label runat="server" ID="lblActionDiscount" ClientIDMode="Static"></asp:Label>
+
+        <asp:Label runat="server" ID="lblIdPromo"></asp:Label>
+        <asp:Label runat="server" ID="lblActionPromo"></asp:Label>
+
+        <asp:Label runat="server" ID="lblIdProduct"></asp:Label>
     </div>
     
     <script type="text/javascript">
@@ -1809,27 +1814,4 @@
 
         window.history.replaceState(null, null, window.location.href);
     </script>
-
-    <div runat="server" visible="false">
-        <asp:Label runat="server" ID="lblIdContact"></asp:Label>
-        <asp:Label runat="server" ID="lblActionContact"></asp:Label>
-
-        <asp:Label runat="server" ID="lblIdAddress"></asp:Label>
-        <asp:Label runat="server" ID="lblActionAddress"></asp:Label>
-
-        <asp:Label runat="server" ID="lblIdBusiness"></asp:Label>
-        <asp:Label runat="server" ID="lblActionBusiness"></asp:Label>
-
-        <asp:Label runat="server" ID="lblIdLogin"></asp:Label>        
-        <asp:Label runat="server" ID="lblActionLogin"></asp:Label>
-        <asp:Label runat="server" ID="lblLoginUserNameOld"></asp:Label>
-
-        <asp:Label runat="server" ID="lblIdDiscount"></asp:Label>
-        <asp:Label runat="server" ID="lblActionDiscount" ClientIDMode="Static"></asp:Label>
-
-        <asp:Label runat="server" ID="lblIdPromo"></asp:Label>
-        <asp:Label runat="server" ID="lblActionPromo"></asp:Label>
-
-        <asp:Label runat="server" ID="lblIdProduct"></asp:Label>
-    </div>
 </asp:Content>
