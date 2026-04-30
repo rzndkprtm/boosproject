@@ -6091,10 +6091,7 @@ Partial Class Order_Add
                         End If
 
                         If controlType = "Motorized" OrElse controlType = "Motorised" Then
-                            controlType = motorType
-                            If motorType = "Altus 40" Then controlType = "Altus"
-                            If motorType = "Sonesse 30" Then controlType = "Sonesse 30 WF"
-                            chainName = "No Remote"
+                            controlType = chainColour
                         End If
 
                         Dim tubeType As String = mechanism
