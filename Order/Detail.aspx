@@ -1138,7 +1138,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade text-center" id="modalReceivePayment" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -1155,7 +1154,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal modal-blur fade" id="modalBuilderDetail" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -1215,7 +1213,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade text-center" id="modalMoreDownloadQuote" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -1232,7 +1229,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade text-left" id="modalMoreEmailQuote" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -1274,7 +1270,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade text-left" id="modalAddNote" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -1304,7 +1299,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal modal-blur fade" id="modalHistoryNote" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -1332,7 +1326,6 @@
             </div>
         </div>
     </div>
-    
     <div class="modal modal-blur fade" id="modalAddItem" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -1356,7 +1349,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal modal-blur fade" id="modalService" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -1392,7 +1384,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade text-center" id="modalDeleteItem" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -1410,7 +1401,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade" id="modalCostingBuy" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -1443,7 +1433,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal modal-blur fade" id="modalCosting" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -1464,7 +1453,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal modal-blur fade" id="modalRecalculate" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -1482,7 +1470,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade text-left" id="modalDateOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -1529,7 +1516,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade text-center" id="modalWaiting" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
