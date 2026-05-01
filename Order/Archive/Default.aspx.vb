@@ -112,9 +112,6 @@
 
             If Session("RoleName") = "Sales" Then
                 byRole = "AND Users.CompanyGroup='JPMD'"
-                If Session("LevelName") = "Member" Then
-                    byRole = "AND (Left(Users.DebtorCode,1) = '1' OR Left(Users.DebtorCode,2) = '31' Or Users.DebtorCode = '2P-012')"
-                End If
                 byStatus = String.Empty
                 If Not status = "" Then
                     byStatus = "AND Order_Header.Status='" & status & "'"
