@@ -143,9 +143,12 @@ Public Partial Class SiteMaster
                     Dim checkDt As DataTable = settingClass.GetDataTable("SELECT 1 FROM NotificationLogs WHERE LoginId='" & loginId & "' AND NotificationId='" & notificationId & "'")
 
                     If checkDt.Rows.Count = 0 Then
+                        Dim thisMsg As String = row("Message").ToString()
+                        thisMsg = thisMsg.Replace("@FullName", "<strong>" & Session("FullName").ToString() & "</strong>")
+
                         Dim obj = New With {
                                 .title = row("Title").ToString(),
-                                .message = row("Message").ToString(),
+                                .message = thisMsg,
                                 .popupId = notificationId
                             }
                         Dim json As String = serializer.Serialize(obj)
