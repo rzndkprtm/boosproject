@@ -13,7 +13,7 @@ Partial Class Setting_General_Notification_Default
     Public Shared Sub SavePopupLog(popupId As String)
         Dim loginId As String = HttpContext.Current.Session("LoginId").ToString()
 
-        Dim query As String = "IF NOT EXISTS ( SELECT 1 FROM NotificationLogs WHERE LoginId = '" & loginId & "' AND NotificationId = '" & popupId & "' ) BEGIN INSERT INTO NotificationLogs VALUES (NEWID(), '" & popupId & "', '" & loginId & "', GETDATE()) END"
+        Dim query As String = "IF NOT EXISTS (SELECT 1 FROM NotificationLogs WHERE LoginId='" & loginId & "' AND NotificationId='" & popupId & "') BEGIN INSERT INTO NotificationLogs VALUES (NEWID(), '" & popupId & "', '" & loginId & "', GETDATE()) END"
 
         Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
@@ -70,11 +70,33 @@ Partial Class Setting_General_Notification_Default
             If e.CommandName = "Detail" Then
                 MessageError(False, String.Empty)
                 Try
-
+                    Dim url As String = String.Format("~/setting/general/notification/edit?notifid={0}", dataId)
+                    Response.Redirect(url, False)
                 Catch ex As Exception
                 End Try
             End If
         End If
+    End Sub
+
+    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim thisId As String = txtIdDelete.Text
+
+            Using thisConn As New SqlConnection(myConn)
+                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Notifications WHERE Id=@Id; DELETE FROM NotificationLogs WHERE NotificationId=@Id;", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", thisId)
+
+                    thisConn.Open()
+                    myCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Session("SearchNotification") = txtSearch.Text
+            Response.Redirect("~/setting/general/notification", False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+        End Try
     End Sub
 
     Protected Sub BindData(searchText As String)

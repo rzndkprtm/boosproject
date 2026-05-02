@@ -358,7 +358,7 @@
             }
 
             function savePopupLog(popupId) {
-                fetch('Setting/General/Notification.aspx/SavePopupLog', {
+                fetch('/Setting/General/Notification/Default.aspx/SavePopupLog', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ popupId: popupId })
@@ -366,16 +366,7 @@
             }
 
             function refreshSession() {
-                $.ajax({
-                    url: '/Setting/UpdateSession.aspx',
-                    type: 'GET',
-                    success: function (response) {
-                        console.log("Session diperbarui: " + response);
-                    },
-                    error: function () {
-                        console.log("Gagal memperbarui session");
-                    }
-                });
+                $.ajax({url: '/Setting/UpdateSession.aspx', type: 'GET'});
             }
             setInterval(refreshSession, 240000);
 
