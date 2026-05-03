@@ -6092,6 +6092,7 @@ Partial Class Order_Add
 
                         If controlType = "Motorized" OrElse controlType = "Motorised" Then
                             controlType = chainColour
+                            chainName = "No Remote"
                         End If
 
                         Dim tubeType As String = mechanism
