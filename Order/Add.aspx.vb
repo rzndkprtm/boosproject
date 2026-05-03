@@ -180,8 +180,8 @@ Partial Class Order_Add
                     '    ReadExcelData(savePath)
                     'End If
 
-                    ReadExcelData(savePath)
-                    'ReadFileData(savePath, ddlCustomer.SelectedValue)
+                    'ReadExcelData(savePath)
+                    ReadFileData(savePath, ddlCustomer.SelectedValue)
                 End If
             End If
 
@@ -636,7 +636,7 @@ Partial Class Order_Add
                             Exit For
                         End If
 
-                        Dim colourId As String = orderClass.GetItemData("SELECT Id FROM ProductControls WHERE Name='N/A'")
+                        Dim colourId As String = orderClass.GetItemData("SELECT Id FROM ProductColours WHERE Name='N/A'")
 
                         rowData = orderClass.GetDataRow("SELECT * FROM Products CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designId & "' AND BlindId='" & blindId & "' AND companyArray.value='" & companyDetailId & "' AND TubeType='" & tubeId & "' AND ControlType='" & controlId & "' AND ColourType='" & colourId & "'")
                         If rowData Is Nothing Then
@@ -2210,14 +2210,14 @@ Partial Class Order_Add
                             Exit For
                         End If
 
-                        Dim validValanceOption As String() = {"Facade", "Retrousse"}
+                        Dim validValanceOption As String() = {"Cover Valance", "No Cover Valance"}
                         If Not validValanceOption.Contains(valanceOption) Then
                             Dim thisAlert As String = String.Format("PLEASE CHECK THE VALANCE OPTION FOR ITEM {0} !", itemNumber)
                             MessageError(True, thisAlert)
                             Exit For
                         End If
 
-                        If controlType = "Chain" AndAlso Not valanceOption = "Retrousse" Then
+                        If controlType = "Chain" AndAlso Not valanceOption = "No Cover Valance" Then
                             Dim thisAlert As String = String.Format("THE VALANCE OPTION MUST BE SET TO RETROUSSE. PLEASE CHECK ITEM {0} !", itemNumber)
                             MessageError(True, thisAlert)
                             Exit For
@@ -2307,6 +2307,9 @@ Partial Class Order_Add
                             If batten = "Garnet" Then batten = "Cherry"
                             If batten = "Earth" Then batten = "Brown"
                             If batten = "Midnight" Then batten = "Black"
+
+                            If valanceOption = "No Cover Valance" Then valanceOption = "No Cover Valance and Cord at Back"
+                            If valanceOption = "Cover Valance" Then valanceOption = "Cover Valance and Cord at Front"
 
                             Dim linearMetre As Decimal = width / 1000
                             Dim squareMetre As Decimal = width * drop / 1000000
