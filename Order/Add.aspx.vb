@@ -2210,6 +2210,10 @@ Partial Class Order_Add
                             Exit For
                         End If
 
+                        If controlType = "Chain" AndAlso String.IsNullOrEmpty(valanceOption) Then
+                            valanceOption = "No Cover Valance"
+                        End If
+
                         Dim validValanceOption As String() = {"Cover Valance", "No Cover Valance"}
                         If Not validValanceOption.Contains(valanceOption) Then
                             Dim thisAlert As String = String.Format("PLEASE CHECK THE VALANCE OPTION FOR ITEM {0} !", itemNumber)
@@ -2227,6 +2231,10 @@ Partial Class Order_Add
                             Dim thisAlert As String = String.Format("CONTROL POSITION IS REQUIRED FOR ITEM {0} !", itemNumber)
                             MessageError(True, thisAlert)
                             Exit For
+                        End If
+
+                        If controlType = "Reg Cord Lock" AndAlso String.IsNullOrEmpty(controlColour) Then
+                            controlColour = "White"
                         End If
 
                         If String.IsNullOrEmpty(controlColour) Then
