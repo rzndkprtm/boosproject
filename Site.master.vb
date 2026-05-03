@@ -170,7 +170,6 @@ Public Partial Class SiteMaster
             liOldOrder.Visible = False
             liGuide.Visible = False
             liTicket.Visible = False
-            liChat.Visible = False
             liExport.Visible = False
             liReport.Visible = False
             liSales.Visible = False
@@ -220,7 +219,6 @@ Public Partial Class SiteMaster
                 liOldOrder.Visible = True
                 liGuide.Visible = True
                 liTicket.Visible = True
-                liChat.Visible = True
                 liExport.Visible = True
                 liReport.Visible = True
                 liSales.Visible = True
