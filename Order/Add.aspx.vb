@@ -180,8 +180,8 @@ Partial Class Order_Add
                     '    ReadExcelData(savePath)
                     'End If
 
-                    'ReadExcelData(savePath)
-                    ReadFileData(savePath, ddlCustomer.SelectedValue)
+                    ReadExcelData(savePath)
+                    'ReadFileData(savePath, ddlCustomer.SelectedValue)
                 End If
             End If
 
