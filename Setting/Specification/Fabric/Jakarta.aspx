@@ -71,9 +71,15 @@
                                                     <ItemTemplate>
                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                         <ul class="dropdown-menu">
-                                                            <li><asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton></li>
-                                                            <li><a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a></li>
-                                                            <li><a href="javascript:void(0)" class="dropdown-item" onclick="showLog('FabricGroupLocals', '<%# Eval("Id") %>')">Log</a></li>
+                                                            <li>
+                                                                <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                            </li>
+                                                            <li>
+                                                                <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('FabricGroupLocals', '<%# Eval("Id") %>')">Log</a>
+                                                            </li>
                                                         </ul>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>

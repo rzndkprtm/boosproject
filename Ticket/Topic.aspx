@@ -39,7 +39,7 @@
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-12 col-sm-12 col-lg-6 mb-2">
-                                    <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Add New" />
+                                    <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Add New" OnClick="btnAdd_Click" />
                                 </div>
                                 <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
                                     <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
@@ -56,7 +56,7 @@
                             <div class="row mb-3">
                                 <div class="col-12">
                                     <div class="table-responsive">
-                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom">
+                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom" OnPageIndexChanging="gvList_PageIndexChanging" OnRowCommand="gvList_RowCommand">
                                             <RowStyle />
                                             <Columns>
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center">
@@ -102,6 +102,12 @@
                 <div class="modal-body">
                     <div class="row mb-2">
                         <div class="col-12 form-group">
+                            <label class="form-label">Role / Team</label>
+                            <asp:DropDownList runat="server" ID="ddlRole" CssClass="form-select"></asp:DropDownList>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
                             <label class="form-label">Name</label>
                             <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
                         </div>
@@ -131,7 +137,7 @@
                 </div>
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnProcess" CssClass="btn btn-primary" Text="Submit" />
+                    <asp:Button runat="server" ID="btnProcess" CssClass="btn btn-primary" Text="Submit" OnClick="btnProcess_Click" />
                 </div>
             </div>
         </div>

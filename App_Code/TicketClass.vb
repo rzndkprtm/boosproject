@@ -105,4 +105,26 @@ Public Class TicketClass
         End Try
         Return result
     End Function
+
+    Public Function CreateId(thisString As String) As String
+        Dim result As String = String.Empty
+        Try
+            Dim id As Integer = 0
+            Using thisConn As New SqlConnection(myConn)
+                thisConn.Open()
+                Using myCmd As New SqlCommand(thisString, thisConn)
+                    Using rdResult As SqlDataReader = myCmd.ExecuteReader()
+                        If rdResult.Read() Then
+                            Integer.TryParse(rdResult(0).ToString(), id)
+                        End If
+                    End Using
+                End Using
+            End Using
+
+            result = (id + 1).ToString()
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
 End Class
