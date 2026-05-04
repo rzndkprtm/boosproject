@@ -1,7 +1,6 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 Imports System.IO
-Imports OfficeOpenXml.LoadFunctions
 
 Partial Class Ticket_Default
     Inherits Page
@@ -102,7 +101,7 @@ Partial Class Ticket_Default
 
                 End If
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO TicketDetails VALUES (NEWID(), @TicketId, @SenderId, @MessageText, GETDATE())", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO TicketDetails VALUES (NEWID(), @TicketId, @SenderId, 'Text', @MessageText, NULL, GETDATE())", thisConn)
                         myCmd.Parameters.AddWithValue("@TicketId", lblId.Text)
                         myCmd.Parameters.AddWithValue("@SenderId", Session("LoginId").ToString())
                         myCmd.Parameters.AddWithValue("@MessageText", txtMessage.Text.Trim())
@@ -126,7 +125,8 @@ Partial Class Ticket_Default
 
     Protected Sub btnUpload_Click(sender As Object, e As EventArgs)
         If fuMessage.HasFile Then
-
+            MessageError(True, "TEST")
+            Exit Sub
             Dim fileName As String = Path.GetFileName(fuMessage.FileName)
             Dim thisPath As String = String.Format("~/File/Ticket/{0}/", lblId.Text.ToUpper())
 

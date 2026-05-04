@@ -110,18 +110,19 @@
                     </div>
                     <div class="card-footer">
                         <div class="message-form d-flex align-items-center">
-                            <asp:Panel runat="server" DefaultButton="btnSend" Width="100%">
-                                <div class="d-flex">
-                                    <asp:TextBox runat="server" ID="txtMessage" CssClass="form-control" autocomplete="off" placeholder="Type your message.."></asp:TextBox>
+                            <div class="d-flex">
+                                    <asp:Panel runat="server" DefaultButton="btnSend">
+                                        <asp:TextBox runat="server" ID="txtMessage" CssClass="form-control" autocomplete="off" placeholder="Type your message.."></asp:TextBox>
+                                        <asp:Button ID="btnSend" runat="server" Text="Send" CssClass="btn btn-primary ms-2" OnClick="btnSend_Click" style="display:none;" />
+                                    </asp:Panel>
+                                    
                                     <button type="button" class="btn btn-primary ms-2 d-flex align-items-center justify-content-center" style="height:38px; width:42px; padding:0;" onclick="document.getElementById('fuMessage').click();">
                                         <i class="bi bi-paperclip"></i>
                                     </button>
-
-                                    <asp:Button ID="btnSend" runat="server" Text="Send" CssClass="btn btn-primary ms-2" OnClick="btnSend_Click" style="display:none;" />
+                                    
                                     <asp:FileUpload runat="server" ID="fuMessage" ClientIDMode="Static" style="opacity:0; position:absolute; width:0; height:0;" onchange="__doPostBack('<%= btnUpload.UniqueID %>', '')" />
                                     <asp:Button ID="btnUpload" runat="server" OnClick="btnUpload_Click" style="display:none;" />
                                 </div>
-                            </asp:Panel>
                         </div>
                     </div>
                 </div>
