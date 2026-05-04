@@ -10,6 +10,7 @@
 
     <link rel="stylesheet" href="/Assets/vendors/choices.js/choices.min.css" />
     <link rel="stylesheet" href="/Assets/css/bootstrap.css" />
+    <link rel="stylesheet" href="/Assets/css/widgets/chat.css" />
     <link rel="stylesheet" href="/Assets/vendors/sweetalert2/sweetalert2.min.css" />
     <link rel="stylesheet" href="/Assets/vendors/iconly/bold.css" />
     <link rel="stylesheet" href="/Assets/vendors/perfect-scrollbar/perfect-scrollbar.css" />
