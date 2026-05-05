@@ -390,6 +390,7 @@ Public Partial Class SiteMaster
                 liSpecificationProduct.Visible = True
                 liSpecificationFabric.Visible = True
                 liSpecificationChain.Visible = True
+                liSpecificationRemote.Visible = True
                 liSpecificationBottom.Visible = True
                 liSpecificationMounting.Visible = True
             End If

@@ -1362,6 +1362,10 @@ Partial Class Order_Method
             Return "FABRIC COLOUR IS REQUIRED !"
         End If
 
+        If controlName = "Motorised" AndAlso factory = "Express" Then
+            Return "MOTORISED CONTROL AND EXPRESS FABRIC CANNOT BE PROCESSED AT THIS TIME. PLEASE REPLACE THE FABRIC WITH A REGULAR OPTION !"
+        End If
+
         If blindName = "Day & Night" Then
             If String.IsNullOrEmpty(data.fabrictypeb) Then Return "BOTTOM FABRIC TYPE IS REQUIRED !"
             If String.IsNullOrEmpty(data.fabriccolourb) Then Return "BOTTOM FABRIC COLOUR IS REQUIRED !"
@@ -1407,8 +1411,8 @@ Partial Class Order_Method
             End If
         End If
 
-        If controlName = "Corded" AndAlso blindName = "Standard" Then
-            If String.IsNullOrEmpty(data.controlposition) Then Return "CORD POSITION IS REQUIRED!"
+        If blindName = "Standard" AndAlso (controlName = "Corded" OrElse controlName = "Motorised") Then
+            If String.IsNullOrEmpty(data.controlposition) Then Return "CONTROL POSITION IS REQUIRED!"
         End If
 
         If controlName = "Corded" Then
@@ -1455,8 +1459,15 @@ Partial Class Order_Method
             clvalue = Math.Ceiling(drop * 2 / 3)
         End If
 
+        If controlName = "Corded" Then
+            data.remote = String.Empty
+        End If
         If controlName = "Cordless" Then
+            data.remote = String.Empty
             data.controlposition = String.Empty : data.controllength = String.Empty : clvalue = 0
+        End If
+        If controlName = "Motorised" Then
+            data.controllength = String.Empty : clvalue = 0
         End If
 
         Dim fabricGroup As String = orderClass.GetFabricGroup(data.fabrictype)
@@ -1479,7 +1490,7 @@ Partial Class Order_Method
                 Dim itemId As String = orderClass.GetNewOrderItemId()
 
                 Using thisConn As SqlConnection = New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricIdB, FabricColourId, FabricColourIdB, PriceProductGroupId, PriceProductGroupIdB, Qty, Room, Mounting, Width, WidthB, [Drop], DropB, ControlPosition, ControlLength, ControlLengthValue, Supply, LinearMetre, LinearMetreB, SquareMetre, SquareMetreB, TotalItems, Notes, MarkUp, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricIdB, @FabricColourId, @FabricColourIdB, @PriceProductGroupId, @PriceProductGroupIdB, @Qty, @Room, @Mounting, @Width, @WidthB, @Drop, @DropB, @ControlPosition, @ControlLength, @ControlLengthValue, @Supply, @LinearMetre, @LinearMetreB, @SquareMetre, @SquareMetreB, @TotalItems, @Notes, @MarkUp, 1)", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricIdB, FabricColourId, FabricColourIdB, ChainId, PriceProductGroupId, PriceProductGroupIdB, Qty, Room, Mounting, Width, WidthB, [Drop], DropB, ControlPosition, ControlLength, ControlLengthValue, Supply, LinearMetre, LinearMetreB, SquareMetre, SquareMetreB, TotalItems, Notes, MarkUp, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricIdB, @FabricColourId, @FabricColourIdB, @ChainId, @PriceProductGroupId, @PriceProductGroupIdB, @Qty, @Room, @Mounting, @Width, @WidthB, @Drop, @DropB, @ControlPosition, @ControlLength, @ControlLengthValue, @Supply, @LinearMetre, @LinearMetreB, @SquareMetre, @SquareMetreB, @TotalItems, @Notes, @MarkUp, 1)", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", itemId)
                         myCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                         myCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
@@ -1491,6 +1502,7 @@ Partial Class Order_Method
                         myCmd.Parameters.AddWithValue("@FabricColourId", data.fabriccolour)
                         myCmd.Parameters.AddWithValue("@FabricIdB", If(String.IsNullOrEmpty(data.fabrictypeb), CType(DBNull.Value, Object), data.fabrictypeb))
                         myCmd.Parameters.AddWithValue("@FabricColourIdB", If(String.IsNullOrEmpty(data.fabriccolourb), CType(DBNull.Value, Object), data.fabriccolourb))
+                        myCmd.Parameters.AddWithValue("@ChainId", If(String.IsNullOrEmpty(data.remote), CType(DBNull.Value, Object), data.remote))
                         myCmd.Parameters.AddWithValue("@Mounting", data.mounting)
                         myCmd.Parameters.AddWithValue("@ControlPosition", data.controlposition)
                         myCmd.Parameters.AddWithValue("@Width", width)
@@ -1526,7 +1538,7 @@ Partial Class Order_Method
         If data.itemaction = "edit" OrElse data.itemaction = "view" Then
             Dim itemId As String = data.itemid
             Using thisConn As SqlConnection = New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET ProductId=@ProductId, FabricId=@FabricId, FabricIdB=@FabricIdB, FabricColourId=@FabricColourId, FabricColourIdB=@FabricColourIdB,  PriceProductGroupId=@PriceProductGroupId, PriceProductGroupIdB=@PriceProductGroupIdB, Qty=@Qty, Room=@Room, Mounting=@Mounting, Width=@Width, WidthB=@WidthB, [Drop]=@Drop, DropB=@DropB, ControlPosition=@ControlPosition, ControlLength=@ControlLength, ControlLengthValue=@ControlLengthValue, Supply=@Supply, LinearMetre=@LinearMetre, LinearMetreB=@LinearMetreB, SquareMetre=@SquareMetre, SquareMetreB=@SquareMetreB, TotalItems=@TotalItems, Notes=@Notes, MarkUp=@MarkUp, Active=1 WHERE Id=@Id", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET ProductId=@ProductId, FabricId=@FabricId, FabricIdB=@FabricIdB, FabricColourId=@FabricColourId, FabricColourIdB=@FabricColourIdB, ChainId=@ChainId,  PriceProductGroupId=@PriceProductGroupId, PriceProductGroupIdB=@PriceProductGroupIdB, Qty=@Qty, Room=@Room, Mounting=@Mounting, Width=@Width, WidthB=@WidthB, [Drop]=@Drop, DropB=@DropB, ControlPosition=@ControlPosition, ControlLength=@ControlLength, ControlLengthValue=@ControlLengthValue, Supply=@Supply, LinearMetre=@LinearMetre, LinearMetreB=@LinearMetreB, SquareMetre=@SquareMetre, SquareMetreB=@SquareMetreB, TotalItems=@TotalItems, Notes=@Notes, MarkUp=@MarkUp, Active=1 WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", itemId)
                     myCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                     myCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
@@ -1538,6 +1550,7 @@ Partial Class Order_Method
                     myCmd.Parameters.AddWithValue("@FabricColourId", data.fabriccolour)
                     myCmd.Parameters.AddWithValue("@FabricIdB", If(String.IsNullOrEmpty(data.fabrictypeb), CType(DBNull.Value, Object), data.fabrictypeb))
                     myCmd.Parameters.AddWithValue("@FabricColourIdB", If(String.IsNullOrEmpty(data.fabriccolourb), CType(DBNull.Value, Object), data.fabriccolourb))
+                    myCmd.Parameters.AddWithValue("@ChainId", If(String.IsNullOrEmpty(data.remote), CType(DBNull.Value, Object), data.remote))
                     myCmd.Parameters.AddWithValue("@Mounting", data.mounting)
                     myCmd.Parameters.AddWithValue("@ControlPosition", data.controlposition)
                     myCmd.Parameters.AddWithValue("@Width", width)
@@ -3171,7 +3184,6 @@ Partial Class Order_Method
     Private Shared Function BuildSql(cmd As SqlCommand) As String
         Dim query As String = cmd.CommandText
 
-        ' Urutkan parameter dari nama terpanjang
         Dim parameters = cmd.Parameters.Cast(Of SqlParameter)() _
         .OrderByDescending(Function(p) p.ParameterName.Length)
 
@@ -10236,6 +10248,8 @@ Partial Class Order_Method
 
         Dim fabricColourReqB As New JSONList With {.type = "FabricColour", .fabrictype = fabricIdB, .companydetailid = companyDetailId, .action = action}
 
+        Dim chainReq As New JSONList With {.type = "ControlColour", .designtype = designId, .companydetailid = companyDetailId, .controltype = controlId, .action = action}
+
         Dim result = New With {
                 .ItemData = itemDetail,
                 .BlindTypes = ListData(blindReq),
@@ -10245,7 +10259,8 @@ Partial Class Order_Method
                 .Mountings = ListData(mountingReq),
                 .Fabrics = ListData(fabricReq),
                 .FabricColours = ListData(fabricColourReq),
-                .FabricColoursB = ListData(fabricColourReqB)
+                .FabricColoursB = ListData(fabricColourReqB),
+                .Chains = ListData(chainReq)
             }
         Return result
     End Function
@@ -10676,8 +10691,6 @@ Partial Class Order_Method
         Dim blindName As String = detailData("BlindName").ToString()
 
         Dim fabricId As String = detailData("FabricId").ToString()
-
-        Dim chainId As String = detailData("ChainId").ToString()
 
         Dim itemDetail As New Dictionary(Of String, Object)
         For Each col As DataColumn In detailData.Table.Columns

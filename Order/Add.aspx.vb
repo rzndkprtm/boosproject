@@ -943,35 +943,37 @@ Partial Class Order_Add
                         Dim wandLength As String = String.Empty
                         Dim wandLengthValue As String = String.Empty
 
+                        Dim thisAlert As String = String.Empty
+
                         designId = orderClass.GetItemData("SELECT Id FROM Designs WHERE Name='" & designName & "'")
                         If String.IsNullOrEmpty(designId) Then
-                            Dim thisAlert As String = String.Format("THE DESIGN TYPE IN ITEM {0} IS NOT REGISTERED. PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !", itemNumber)
+                            thisAlert = String.Format("THE DESIGN TYPE IN ITEM {0} IS NOT REGISTERED. PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !", itemNumber)
                             MessageError(True, thisAlert)
                             Exit For
                         End If
 
                         If String.IsNullOrEmpty(blindName) Then
-                            Dim thisAlert As String = String.Format("BLIND TYPE IS REQUIRED FOR ITEM {0} !", itemNumber)
+                            thisAlert = String.Format("BLIND TYPE IS REQUIRED FOR ITEM {0} !", itemNumber)
                             MessageError(True, thisAlert)
                             Exit For
                         End If
 
                         Dim blindId As String = orderClass.GetItemData("SELECT Id FROM Blinds CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designId & "' AND Name='" & blindName & "' AND companyArray.value='" & companyDetailId & "' AND Active=1")
                         If String.IsNullOrEmpty(blindId) Then
-                            Dim thisAlert As String = String.Format("THE BLIND TYPE IN ITEM {0} IS NOT REGISTERED. PLEASE CHECK AGAIN !", itemNumber)
+                            thisAlert = String.Format("THE BLIND TYPE IN ITEM {0} IS NOT REGISTERED. PLEASE CHECK AGAIN !", itemNumber)
                             MessageError(True, thisAlert)
                             Exit For
                         End If
 
                         If String.IsNullOrEmpty(tubeName) Then
-                            Dim thisAlert As String = String.Format("PANEL STYLE IS REQUIRED FOR ITEM {0} !", itemNumber)
+                            thisAlert = String.Format("PANEL STYLE IS REQUIRED FOR ITEM {0} !", itemNumber)
                             MessageError(True, thisAlert)
                             Exit For
                         End If
 
                         Dim tubeId As String = orderClass.GetItemData("SELECT Id FROM ProductTubes WHERE Name='" & tubeName & "'")
                         If String.IsNullOrEmpty(tubeId) Then
-                            Dim thisAlert As String = String.Format("THE PANEL STYLE IN ITEM {0} IS NOT REGISTERED. PLEASE CHECK AGAIN !", itemNumber)
+                            thisAlert = String.Format("THE PANEL STYLE IN ITEM {0} IS NOT REGISTERED. PLEASE CHECK AGAIN !", itemNumber)
                             MessageError(True, thisAlert)
                             Exit For
                         End If
@@ -979,21 +981,21 @@ Partial Class Order_Add
                         Dim controlId As String = orderClass.GetItemData("SELECT Id FROM ProductControls WHERE Name='N/A'")
 
                         If String.IsNullOrEmpty(colourName) Then
-                            Dim thisAlert As String = String.Format("TRACK & WAND COLOUR IS REQUIRED FOR ITEM {0} !", itemNumber)
+                            thisAlert = String.Format("TRACK & WAND COLOUR IS REQUIRED FOR ITEM {0} !", itemNumber)
                             MessageError(True, thisAlert)
                             Exit For
                         End If
 
                         Dim colourId As String = orderClass.GetItemData("SELECT Id FROM ProductColours WHERE Name='" & colourName & "'")
                         If String.IsNullOrEmpty(colourId) Then
-                            Dim thisAlert As String = String.Format("THE TRACK & WAND COLOUR IN ITEM {0} IS NOT REGISTERED. PLEASE CHECK AGAIN !", itemNumber)
+                            thisAlert = String.Format("THE TRACK & WAND COLOUR IN ITEM {0} IS NOT REGISTERED. PLEASE CHECK AGAIN !", itemNumber)
                             MessageError(True, thisAlert)
                             Exit For
                         End If
 
                         rowData = orderClass.GetDataRow("SELECT * FROM Products CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designId & "' AND BlindId='" & blindId & "' AND companyArray.value='" & companyDetailId & "' AND TubeType='" & tubeId & "' AND ControlType='" & controlId & "' AND ColourType='" & colourId & "'")
                         If rowData Is Nothing Then
-                            Dim thisAlert As String = String.Format("PLEASE CHECK ITEM {0}. THE PRODUCT IS NOT REGISTERED IN OUR SYSTEM !", itemNumber)
+                            thisAlert = String.Format("PLEASE CHECK ITEM {0}. THE PRODUCT IS NOT REGISTERED IN OUR SYSTEM !", itemNumber)
                             MessageError(True, thisAlert)
                             Exit For
                         End If
@@ -1002,44 +1004,44 @@ Partial Class Order_Add
                         rowActive = Convert.ToBoolean(rowData("Active"))
 
                         If rowActive = False Then
-                            Dim thisAlert As String = String.Format("PLEASE CHECK ITEM {0}. THE PRODUCT IS CURRENTLY NOT AVAILABLE IN OUR STOCK !", itemNumber)
+                            thisAlert = String.Format("PLEASE CHECK ITEM {0}. THE PRODUCT IS CURRENTLY NOT AVAILABLE IN OUR STOCK !", itemNumber)
                             MessageError(True, thisAlert)
                             Exit For
                         End If
 
                         If String.IsNullOrEmpty(qty) Then
-                            Dim thisAlert As String = String.Format("QTY IS REQUIRED FOR ITEM {0} !", itemNumber)
+                            thisAlert = String.Format("QTY IS REQUIRED FOR ITEM {0} !", itemNumber)
                             MessageError(True, thisAlert)
                             Exit For
                         End If
 
                         If qty <> "1" Then
-                            Dim thisAlert As String = String.Format("THE ORDER QTY MUS BE 1 PER ITEM LINE. PLEASE CHECK ITEM {0} !", itemNumber)
+                            thisAlert = String.Format("THE ORDER QTY MUS BE 1 PER ITEM LINE. PLEASE CHECK ITEM {0} !", itemNumber)
                             MessageError(True, thisAlert)
                             Exit For
                         End If
 
                         If String.IsNullOrEmpty(room) Then
-                            Dim thisAlert As String = String.Format("ROOM / LOCATION IS REQUIRED FOR ITEM {0} !", itemNumber)
+                            thisAlert = String.Format("ROOM / LOCATION IS REQUIRED FOR ITEM {0} !", itemNumber)
                             MessageError(True, thisAlert)
                             Exit For
                         End If
 
                         If String.IsNullOrEmpty(mounting) Then
-                            Dim thisAlert As String = String.Format("MOUNTING IS REQUIRED FOR ITEM {0}", itemNumber)
+                            thisAlert = String.Format("MOUNTING IS REQUIRED FOR ITEM {0}", itemNumber)
                             MessageError(True, thisAlert)
                             Exit For
                         End If
 
                         Dim validMounting As String() = {"Opening Size Face Fit", "Opening Size Reveal Fit", "Make Size Face Fit", "Make Size Reveal Fit"}
                         If Not validMounting.Contains(mounting) Then
-                            Dim thisAlert As String = String.Format("PLEASE CHECK THE MOUNTING FOR ITEM {0} !", itemNumber)
+                            thisAlert = String.Format("PLEASE CHECK THE MOUNTING FOR ITEM {0} !", itemNumber)
                             MessageError(True, thisAlert)
                             Exit For
                         End If
 
                         If String.IsNullOrEmpty(fabricType) Then
-                            Dim thisAlert As String = String.Format("FABRIC TYPE IS REQUIRED FOR ITEM {0} !", itemNumber)
+                            thisAlert = String.Format("FABRIC TYPE IS REQUIRED FOR ITEM {0} !", itemNumber)
                             MessageError(True, thisAlert)
                             Exit For
                         End If
@@ -1047,7 +1049,7 @@ Partial Class Order_Add
                         rowData = orderClass.GetDataRow("SELECT * FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(TubeId, ',') AS tubeArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE Name='" & fabricType & "' AND designArray.VALUE='" & designId & "' AND tubeArray.VALUE='" & tubeId & "' AND companyArray.VALUE='" & companyDetailId & "'")
 
                         If rowData Is Nothing Then
-                            Dim thisAlert As String = String.Format("PLEASE CHECK ITEM {0}. THE FABRIC TYPE IS NOT REGISTERED IN OUR SYSTEM !", itemNumber)
+                            thisAlert = String.Format("PLEASE CHECK ITEM {0}. THE FABRIC TYPE IS NOT REGISTERED IN OUR SYSTEM !", itemNumber)
                             MessageError(True, thisAlert)
                             Exit For
                         End If
@@ -1056,13 +1058,13 @@ Partial Class Order_Add
                         rowActive = Convert.ToBoolean(rowData("Active"))
 
                         If rowActive = False Then
-                            Dim thisAlert As String = String.Format("PLEASE CHECK ITEM {0}. THE FABRIC TYPE IS CURRENTLY NOT AVAILABLE IN OUR STOCK !", itemNumber)
+                            thisAlert = String.Format("PLEASE CHECK ITEM {0}. THE FABRIC TYPE IS CURRENTLY NOT AVAILABLE IN OUR STOCK !", itemNumber)
                             MessageError(True, thisAlert)
                             Exit For
                         End If
 
                         If String.IsNullOrEmpty(fabricColour) Then
-                            Dim thisAlert As String = String.Format("FABRIC COLOUR IS REQUIRED FOR ITEM {0} !", itemNumber)
+                            thisAlert = String.Format("FABRIC COLOUR IS REQUIRED FOR ITEM {0} !", itemNumber)
                             MessageError(True, thisAlert)
                             Exit For
                         End If
@@ -1070,7 +1072,7 @@ Partial Class Order_Add
                         rowData = orderClass.GetDataRow("SELECT * FROM FabricColours WHERE FabricId='" & fabricId & "' AND Colour='" & fabricColour & "'")
 
                         If rowData Is Nothing Then
-                            Dim thisAlert As String = String.Format("PLEASE CHECK ITEM {0}. THE FABRIC COLOUR IS NOT REGISTERED IN OUR SYSTEM !", itemNumber)
+                            thisAlert = String.Format("PLEASE CHECK ITEM {0}. THE FABRIC COLOUR IS NOT REGISTERED IN OUR SYSTEM !", itemNumber)
                             MessageError(True, thisAlert)
                             Exit For
                         End If
@@ -1079,44 +1081,89 @@ Partial Class Order_Add
                         rowActive = Convert.ToBoolean(rowData("Active"))
 
                         If rowActive = False Then
-                            Dim thisAlert As String = String.Format("PLEASE CHECK ITEM {0}. THE FABRIC COLOUR IS CURRENTLY NOT AVAILABLE IN OUR STOCK !", itemNumber)
+                            thisAlert = String.Format("PLEASE CHECK ITEM {0}. THE FABRIC COLOUR IS CURRENTLY NOT AVAILABLE IN OUR STOCK !", itemNumber)
                             MessageError(True, thisAlert)
                             Exit For
                         End If
 
                         If String.IsNullOrEmpty(widthText) Then
-                            Dim thisAlert As String = String.Format("WIDTH IS REQUIRED FOR ITEM {0} !", itemNumber)
+                            thisAlert = String.Format("WIDTH IS REQUIRED FOR ITEM {0} !", itemNumber)
                             MessageError(True, thisAlert)
                             Exit For
                         End If
 
                         If Not Integer.TryParse(widthText, width) Then
-                            Dim thisAlert As String = String.Format("PLEASE CHECK THE WIDTH FOR ITEM {0} !", itemNumber)
+                            thisAlert = String.Format("PLEASE CHECK THE WIDTH FOR ITEM {0} !", itemNumber)
                             MessageError(True, thisAlert)
                             Exit For
                         End If
 
                         If String.IsNullOrEmpty(dropText) Then
-                            Dim thisAlert As String = String.Format("DROP IS REQUIRED FOR ITEM {0} !", itemNumber)
+                            thisAlert = String.Format("DROP IS REQUIRED FOR ITEM {0} !", itemNumber)
                             MessageError(True, thisAlert)
                             Exit For
                         End If
 
                         If Not Integer.TryParse(dropText, drop) Then
-                            Dim thisAlert As String = String.Format("PLEASE CHECK THE DROP FOR ITEM {0} !", itemNumber)
+                            thisAlert = String.Format("PLEASE CHECK THE DROP FOR ITEM {0} !", itemNumber)
                             MessageError(True, thisAlert)
                             Exit For
                         End If
 
-                        wandLength = "Standard"
-                        wandLengthValue = Math.Ceiling(drop * 2 / 3)
-                        If wandLengthValue > 1000 Then wandLengthValue = 1000
+                        If blindName = "Complete Set" Then
+                            wandLength = "Standard"
+                            wandLengthValue = Math.Ceiling(drop * 2 / 3)
+                            If wandLengthValue > 1000 Then wandLengthValue = 1000
 
-                        If Not String.IsNullOrEmpty(wandLengthText) AndAlso Not wandLengthText = "Standard" Then
+                            If Not String.IsNullOrEmpty(wandLengthText) AndAlso Not wandLengthText = "Standard" Then
+                                wandLength = "Custom"
+                                wandLengthText = wandLengthText.Replace("mm", "")
+                                If Not Integer.TryParse(wandLengthText, wandLengthValue) OrElse wandLengthValue < 0 OrElse wandLengthValue > 1000 Then
+                                    thisAlert = String.Format("PLEASE CHECK YOUR CONTROL LENGTH & MAXIMUM 1000MM !", itemNumber)
+                                    MessageError(True, thisAlert)
+                                    Exit For
+                                End If
+                            End If
+                        End If
+
+                        If blindName = "Track Only" Then
+                            If String.IsNullOrEmpty(wandLengthText) Then
+                                thisAlert = String.Format("WAND LENGTH IS REQUIRED FOR ITEM {0} !", itemNumber)
+                                MessageError(True, thisAlert)
+                                Exit For
+                            End If
+
                             wandLength = "Custom"
-                            wandLengthText = wandLengthText.Replace("mm", "")
-                            If Not Integer.TryParse(wandLengthText, wandLengthText) OrElse wandLengthText < 0 OrElse wandLengthText > 1000 Then
-                                Dim thisAlert As String = String.Format("PLEASE CHECK YOUR CONTROL LENGTH & MAXIMUM 1000MM !", itemNumber)
+                            If Not Integer.TryParse(wandLengthText, wandLengthValue) OrElse wandLengthValue < 0 OrElse wandLengthValue > 1000 Then
+                                thisAlert = String.Format("PLEASE CHECK YOUR CONTROL LENGTH & MAXIMUM 1000MM !", itemNumber)
+                                MessageError(True, thisAlert)
+                                Exit For
+                            End If
+                        End If
+
+                        If blindName = "Complete Set" OrElse blindName = "Track Only" Then
+                            If String.IsNullOrEmpty(trackType) Then
+                                thisAlert = String.Format("NUMBER OF TRACKS IS REQUIRED FOR ITEM {0} !", itemNumber)
+                                MessageError(True, thisAlert)
+                                Exit For
+                            End If
+                            If String.IsNullOrEmpty(layoutCode) Then
+                                thisAlert = String.Format("LAYOUT CODE IS REQUIRED FOR ITEM {0} !", itemNumber)
+                                MessageError(True, thisAlert)
+                                Exit For
+                            End If
+                        End If
+
+                        If tubeName = "Plantation" Then
+                            If String.IsNullOrEmpty(batten) Then
+                                thisAlert = String.Format("BATTEN COLOUR IS REQUIRED FOR ITEM {0} !", itemNumber)
+                                MessageError(True, thisAlert)
+                                Exit For
+                            End If
+
+                            Dim validBatten As String() = {"Baltic", "Black", "Brown", "Cherry", "Natural", "Teak", "White"}
+                            If Not validBatten.Contains(batten) Then
+                                thisAlert = String.Format("PLEASE CHECK THE BATTEN COLOUR FOR ITEM {0} !", itemNumber)
                                 MessageError(True, thisAlert)
                                 Exit For
                             End If
