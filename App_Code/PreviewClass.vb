@@ -295,7 +295,7 @@ Public Class PreviewClass
                     Dim table As New PdfPTable(7)
                     table.WidthPercentage = 100
 
-                    Dim items(15, cellularData.Rows.Count - 1) As String
+                    Dim items(16, cellularData.Rows.Count - 1) As String
 
                     For i As Integer = 0 To cellularData.Rows.Count - 1
                         Dim number As Integer = i + 1
@@ -321,10 +321,11 @@ Public Class PreviewClass
                         items(8, i) = cellularData.Rows(i)("FabricColour").ToString()
                         items(9, i) = cellularData.Rows(i)("FabricNameB").ToString()
                         items(10, i) = cellularData.Rows(i)("FabricColourB").ToString()
-                        items(11, i) = cellularData.Rows(i)("ControlPosition").ToString()
-                        items(12, i) = cordLengthText
-                        items(13, i) = cellularData.Rows(i)("Supply").ToString()
-                        items(14, i) = cellularData.Rows(i)("Notes").ToString()
+                        items(11, i) = cellularData.Rows(i)("ChainName").ToString()
+                        items(12, i) = cellularData.Rows(i)("ControlPosition").ToString()
+                        items(13, i) = cordLengthText
+                        items(14, i) = cellularData.Rows(i)("Supply").ToString()
+                        items(15, i) = cellularData.Rows(i)("Notes").ToString()
                     Next
 
                     For i As Integer = 0 To items.GetLength(1) - 1 Step 6
@@ -333,7 +334,7 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Mounting", "Cellular Type", "Control Type", "Width (mm)", "Drop (mm)", "Fabric Type", "Fabric Colour", "Fabric Type (N)", "Fabric Colour (N)", "Control Position", "Control Length", "Hold Down Clip", "Notes"}
+                        Dim headers As String() = {"", "Location", "Mounting", "Cellular Type", "Control Type", "Width (mm)", "Drop (mm)", "Fabric Type", "Fabric Colour", "Fabric Type (N)", "Fabric Colour (N)", "Remote Type", "Control Position", "Control Length", "Hold Down Clip", "Notes"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
