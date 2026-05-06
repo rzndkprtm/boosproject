@@ -213,7 +213,7 @@ Partial Class Order_Method
         End If
 
         If type = "FabricType" Then
-            Dim thisQuery As String = "SELECT * FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(TubeId, ',') AS tubeArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND tubeArray.VALUE='" & tubetype & "' AND companyArray.VALUE='" & companydetailid & "' AND Active=1 ORDER BY Name ASC"
+            Dim thisQuery As String = "SELECT * FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(TubeId, ',') AS tubeArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND tubeArray.VALUE='" & tubetype & "' AND companyArray.VALUE='" & companydetailid & "' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY Name ASC"
             If action = "view" Then
                 thisQuery = "SELECT * FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(TubeId, ',') AS tubeArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND tubeArray.VALUE='" & tubetype & "' AND companyArray.VALUE='" & companydetailid & "' ORDER BY Name ASC"
             End If
@@ -225,11 +225,11 @@ Partial Class Order_Method
         End If
 
         If type = "FabricTypeByDesign" Then
-            Dim thisQuery As String = "SELECT *, Name AS FinalName FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Active=1 ORDER BY Name ASC"
+            Dim thisQuery As String = "SELECT *, Name AS FinalName FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY Name ASC"
             If designtype = "3" Then
-                thisQuery = "SELECT *, Name AS FinalName FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Active=1 ORDER BY CASE WHEN [Group] LIKE '%Express%' THEN 1 ELSE 2 END, Name ASC"
+                thisQuery = "SELECT *, Name AS FinalName FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY CASE WHEN [Group] LIKE '%Express%' THEN 1 ELSE 2 END, Name ASC"
                 If companydetailid = "5" Or companydetailid = "6" OrElse companydetailid = "8" Then
-                    thisQuery = "SELECT *, REPLACE(Name, ' (Express)', '') AS FinalName FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Active=1 ORDER BY CASE WHEN [Group] LIKE '%Express%' THEN 1 ELSE 2 END, Name ASC"
+                    thisQuery = "SELECT *, REPLACE(Name, ' (Express)', '') AS FinalName FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY CASE WHEN [Group] LIKE '%Express%' THEN 1 ELSE 2 END, Name ASC"
                 End If
             End If
             If action = "view" Then
@@ -250,12 +250,12 @@ Partial Class Order_Method
         End If
 
         If type = "FabricColour" Then
-            Dim thisQuery As String = "SELECT *, Colour AS FinalColour FROM FabricColours WHERE FabricId='" & fabrictype & "' AND Active=1 ORDER BY CASE WHEN Factory='Express' THEN 1 ELSE 2 END, Colour ASC"
+            Dim thisQuery As String = "SELECT *, Colour AS FinalColour FROM FabricColours WHERE FabricId='" & fabrictype & "' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY CASE WHEN Factory='Express' THEN 1 ELSE 2 END, Colour ASC"
             If action = "view" Then
                 thisQuery = "SELECT *, Colour AS FinalColour FROM FabricColours WHERE FabricId='" & fabrictype & "' ORDER BY CASE WHEN Factory='Express' THEN 1 ELSE 2 END, Colour ASC"
             End If
             If companyid = "3" OrElse companyid = "4" Then
-                thisQuery = "SELECT *, REPLACE(Colour, '(Express)', '') AS FinalColour FROM FabricColours WHERE FabricId='" & fabrictype & "' AND Factory='Express' AND Active=1 ORDER BY Colour ASC"
+                thisQuery = "SELECT *, REPLACE(Colour, '(Express)', '') AS FinalColour FROM FabricColours WHERE FabricId='" & fabrictype & "' AND Factory='Express' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY Colour ASC"
                 If action = "view" Then
                     thisQuery = "SELECT *, REPLACE(Colour   , '(Express)', '') AS FinalColour FROM FabricColours WHERE FabricId='" & fabrictype & "' AND Factory='Express' ORDER BY Colour ASC"
                 End If
@@ -268,13 +268,13 @@ Partial Class Order_Method
         End If
 
         If type = "ControlColour" Then
-            Dim thisQuery As String = "SELECT * FROM Chains CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(ControlTypeId, ',') AS controlArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND controlArray.VALUE='" & controltype & "' AND companyArray.VALUE='" & companydetailid & "' AND Active=1 ORDER BY Name ASC"
+            Dim thisQuery As String = "SELECT * FROM Chains CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(ControlTypeId, ',') AS controlArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND controlArray.VALUE='" & controltype & "' AND companyArray.VALUE='" & companydetailid & "' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY Name ASC"
             If action = "view" Then
                 thisQuery = "SELECT * FROM Chains CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(ControlTypeId, ',') AS controlArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND controlArray.VALUE='" & controltype & "' AND companyArray.VALUE='" & companydetailid & "' ORDER BY Name ASC"
             End If
 
             If customtype = "Cassette" Then
-                thisQuery = "SELECT * FROM Chains CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(ControlTypeId, ',') AS controlArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND controlArray.VALUE='" & controltype & "' AND companyArray.VALUE='" & companydetailid & "' AND Active=1 ORDER BY Name ASC"
+                thisQuery = "SELECT * FROM Chains CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(ControlTypeId, ',') AS controlArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND controlArray.VALUE='" & controltype & "' AND companyArray.VALUE='" & companydetailid & "' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY Name ASC"
                 If action = "view" Then
                     thisQuery = "SELECT * FROM Chains CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(ControlTypeId, ',') AS controlArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND controlArray.VALUE='" & controltype & "' AND companyArray.VALUE='" & companydetailid & "' ORDER BY Name ASC"
                 End If
@@ -293,7 +293,7 @@ Partial Class Order_Method
         End If
 
         If type = "BottomType" Then
-            Dim thisQuery As String = "SELECT * FROM Bottoms CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Active=1 ORDER BY Name ASC"
+            Dim thisQuery As String = "SELECT * FROM Bottoms CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY Name ASC"
             If action = "view" Then
                 thisQuery = "SELECT * FROM Bottoms CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' ORDER BY Name ASC"
             End If
@@ -305,7 +305,7 @@ Partial Class Order_Method
         End If
 
         If type = "BottomColour" Then
-            Dim thisQuery As String = "SELECT * FROM BottomColours WHERE BottomId='" & bottomtype & "' AND Active=1 ORDER BY Colour ASC"
+            Dim thisQuery As String = "SELECT * FROM BottomColours WHERE BottomId='" & bottomtype & "' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY Colour ASC"
             If action = "view" Then
                 thisQuery = "SELECT * FROM BottomColours WHERE BottomId='" & bottomtype & "' ORDER BY Colour ASC"
             End If
@@ -1472,14 +1472,17 @@ Partial Class Order_Method
 
         Dim fabricGroup As String = orderClass.GetFabricGroup(data.fabrictype)
 
-        Dim groupName As String = String.Format("{0} - {1} - {2} - {3}", blindName, controlName, fabricGroup, factory)
+        Dim controlNameGroup As String = controlName
+        If controlName = "Motorised" Then controlNameGroup = "Corded"
+
+        Dim groupName As String = String.Format("{0} - {1} - {2} - {3}", blindName, controlNameGroup, fabricGroup, factory)
 
         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
         Dim priceProductGroupB As String = String.Empty
 
         If blindName = "Day & Night" Then
-            groupName = String.Format("{0} - {1} - {2}", blindName, controlName, factory)
-            Dim groupNameB As String = String.Format("{0} - {1} - {2}", blindName, controlName, factoryB)
+            groupName = String.Format("{0} - {1} - {2}", blindName, controlNameGroup, factory)
+            Dim groupNameB As String = String.Format("{0} - {1} - {2}", blindName, controlNameGroup, factoryB)
 
             priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
             priceProductGroupB = orderClass.GetPriceProductGroupId(groupNameB, data.designid, data.companydetailid)
@@ -4896,7 +4899,7 @@ Partial Class Order_Method
                 If Not tubeName = "Acmeda 49mm" Then data.springassist = String.Empty
             End If
 
-            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" Then
+            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery" OrElse controlName = "240V (Hardwired) Remote" Then
                 data.charger = String.Empty
             End If
 
@@ -5060,7 +5063,7 @@ Partial Class Order_Method
                 End If
             End If
 
-            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" Then
+            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery" OrElse controlName = "240V (Hardwired) Remote" Then
                 data.charger = String.Empty
             End If
 
@@ -5219,7 +5222,7 @@ Partial Class Order_Method
                 End If
             End If
 
-            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" Then
+            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery" OrElse controlName = "240V (Hardwired) Remote" Then
                 data.charger = String.Empty
             End If
 
@@ -5404,7 +5407,7 @@ Partial Class Order_Method
                 End If
             End If
 
-            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" Then
+            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery" OrElse controlName = "240V (Hardwired) Remote" Then
                 data.charger = String.Empty
             End If
 
@@ -5570,7 +5573,7 @@ Partial Class Order_Method
                 End If
             End If
 
-            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" Then
+            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery" OrElse controlName = "240V (Hardwired) Remote" Then
                 data.charger = String.Empty
             End If
 
@@ -5776,7 +5779,7 @@ Partial Class Order_Method
                 End If
             End If
 
-            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" Then
+            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery" OrElse controlName = "240V (Hardwired) Remote" Then
                 data.charger = String.Empty
             End If
 
@@ -5972,7 +5975,7 @@ Partial Class Order_Method
                 End If
             End If
 
-            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" Then
+            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery" OrElse controlName = "240V (Hardwired) Remote" Then
                 data.charger = String.Empty
             End If
 
@@ -6245,7 +6248,7 @@ Partial Class Order_Method
                 End If
             End If
 
-            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" Then
+            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery" OrElse controlName = "240V (Hardwired) Remote" Then
                 data.charger = String.Empty
             End If
 
@@ -6466,7 +6469,7 @@ Partial Class Order_Method
                 End If
             End If
 
-            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" Then
+            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery" OrElse controlName = "240V (Hardwired) Remote" Then
                 data.charger = String.Empty
             End If
 
@@ -6787,7 +6790,7 @@ Partial Class Order_Method
                     End If
                 End If
 
-                If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" Then
+                If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery" OrElse controlName = "240V (Hardwired) Remote" Then
                     data.charger = String.Empty
                 End If
 

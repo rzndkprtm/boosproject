@@ -69,7 +69,7 @@ Partial Class Setting_Specification_Fabric_Edit
                 End If
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Fabrics SET DesignId=@DesignId, TubeId=@TubeId, CompanyDetailId=@CompanyDetailId, Name=@Name, Type=@Type, [Group]=@Group, NoRailRoad=@NoRailRoad, Active=@Active WHERE Id=@Id", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Fabrics SET DesignId=@DesignId, TubeId=@TubeId, CompanyDetailId=@CompanyDetailId, Name=@Name, Type=@Type, [Group]=@Group, NoRailRoad=@NoRailRoad WHERE Id=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         myCmd.Parameters.AddWithValue("@DesignId", designType)
                         myCmd.Parameters.AddWithValue("@TubeId", tubeType)
@@ -78,14 +78,13 @@ Partial Class Setting_Specification_Fabric_Edit
                         myCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
                         myCmd.Parameters.AddWithValue("@Group", ddlGroup.SelectedValue)
                         myCmd.Parameters.AddWithValue("@NoRailRoad", ddlNoRailRoad.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
 
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
                     End Using
                 End Using
 
-                Dim dataLog As Object() = {"Fabrics", lblId.Text, Session("LoginId").ToString(), "Fabric Updated"}
+                Dim dataLog As Object() = {"Fabrics", lblId.Text, Session("LoginId").ToString(), "Fabric Type Updated"}
                 settingClass.Logs(dataLog)
 
                 url = String.Format("~/setting/specification/fabric/detail?fabricid={0}", lblId.Text)
@@ -120,7 +119,6 @@ Partial Class Setting_Specification_Fabric_Edit
             ddlType.SelectedValue = thisData("Type").ToString()
             ddlGroup.SelectedValue = thisData("Group").ToString()
             ddlNoRailRoad.SelectedValue = Convert.ToInt32(thisData("NoRailRoad"))
-            ddlActive.SelectedValue = Convert.ToInt32(thisData("Active"))
 
             If Not thisData("DesignId").ToString() = "" Then
                 Dim designArray() As String = thisData("DesignId").ToString().Split(",")
@@ -149,7 +147,6 @@ Partial Class Setting_Specification_Fabric_Edit
                     End If
                 Next
             End If
-            divActive.Visible = PageAction("Visible Active")
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -161,8 +158,7 @@ Partial Class Setting_Specification_Fabric_Edit
     Protected Sub BindDesign()
         lbDesign.Items.Clear()
         Try
-            Dim thisString As String = "SELECT * FROM Designs CROSS APPLY STRING_SPLIT(AppliesTo, ',') AS thisArray WHERE thisArray.VALUE='Fabrics' AND Active=1 ORDER BY Name ASC"
-            lbDesign.DataSource = settingClass.GetDataTable(thisString)
+            lbDesign.DataSource = settingClass.GetDataTable("SELECT * FROM Designs CROSS APPLY STRING_SPLIT(AppliesTo, ',') AS thisArray WHERE thisArray.VALUE='Fabrics' AND Active=1 ORDER BY Name ASC")
             lbDesign.DataTextField = "Name"
             lbDesign.DataValueField = "Id"
             lbDesign.DataBind()

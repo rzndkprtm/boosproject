@@ -68,13 +68,12 @@ Partial Class Setting_Specification_Bottom_Edit
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Bottoms SET Name=@Name, DesignId=@DesignId, CompanyDetailId=@CompanyDetailId, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Bottoms SET Name=@Name, DesignId=@DesignId, CompanyDetailId=@CompanyDetailId, Description=@Description WHERE Id=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                         myCmd.Parameters.AddWithValue("@DesignId", designType)
                         myCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetail)
                         myCmd.Parameters.AddWithValue("@Description", descText)
-                        myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
 
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
@@ -113,7 +112,6 @@ Partial Class Setting_Specification_Bottom_Edit
 
             txtName.Text = thisData("Name").ToString()
             txtDescription.Text = thisData("Description").ToString()
-            ddlActive.SelectedValue = Convert.ToInt32(thisData("Active"))
 
             If Not thisData("DesignId").ToString() = "" Then
                 Dim designArray() As String = thisData("DesignId").ToString().Split(",")

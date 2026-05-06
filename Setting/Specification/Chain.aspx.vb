@@ -29,11 +29,9 @@ Partial Class Setting_Specification_Chain
         Try
             lblAction.Text = "Add"
             titleProcess.InnerText = "Add Chain"
+            divStatus.Visible = True
 
-            BindDesign()
-            BindCompany()
-
-            divActive.Visible = True
+            BindDesign() : BindCompany()
 
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         Catch ex As Exception
@@ -78,15 +76,13 @@ Partial Class Setting_Specification_Chain
                     Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Chains WHERE Id='" & lblId.Text & "'")
                     If myData Is Nothing Then Exit Sub
 
-                    BindDesign()
-                    BindCompany()
+                    BindDesign() : BindCompany()
 
                     txtBoeId.Text = myData("BoeId").ToString()
                     txtName.Text = myData("Name").ToString()
                     ddlChainType.SelectedValue = myData("ChainType").ToString()
                     ddlChainLength.SelectedValue = myData("ChainLength").ToString()
                     txtDescription.Text = myData("Description").ToString()
-                    ddlActive.SelectedValue = Convert.ToInt32(myData("Active"))
 
                     If Not myData("DesignId").ToString() = "" Then
                         Dim thisArray() As String = myData("DesignId").ToString().Split(",")
@@ -106,7 +102,7 @@ Partial Class Setting_Specification_Chain
                         Next
                     End If
 
-                    divActive.Visible = False
+                    divStatus.Visible = False
 
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Catch ex As Exception
@@ -175,7 +171,7 @@ Partial Class Setting_Specification_Chain
                         Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Chains ORDER BY Id DESC")
 
                         Using thisConn As New SqlConnection(myConn)
-                            Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Chains VALUES (@Id, @BoeId, @Name, @DesignId, '1', @CompanyDetailId, @ChainType, @ChainLength, @Description, @Active)", thisConn)
+                            Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Chains VALUES (@Id, @BoeId, @Name, @DesignId, '1', @CompanyDetailId, @ChainType, @ChainLength, @Description, @Status)", thisConn)
                                 myCmd.Parameters.AddWithValue("@Id", thisId)
                                 myCmd.Parameters.AddWithValue("@BoeId", If(String.IsNullOrEmpty(txtBoeId.Text), CType(DBNull.Value, Object), txtBoeId.Text))
                                 myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
@@ -184,7 +180,7 @@ Partial Class Setting_Specification_Chain
                                 myCmd.Parameters.AddWithValue("@ChainType", ddlChainType.SelectedValue)
                                 myCmd.Parameters.AddWithValue("@ChainLength", ddlChainLength.SelectedValue)
                                 myCmd.Parameters.AddWithValue("@Description", descText)
-                                myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
+                                myCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
 
                                 thisConn.Open()
                                 myCmd.ExecuteNonQuery()
@@ -231,31 +227,29 @@ Partial Class Setting_Specification_Chain
         End Try
     End Sub
 
-    Protected Sub btnActive_Click(sender As Object, e As EventArgs)
+    Protected Sub btnChangeStatus_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim thisId As String = txtIdActive.Text
-
-            Dim active As Integer = 1
-            If txtActive.Text = "1" Then : active = 0 : End If
+            Dim thisId As String = txtIdStatus.Text
+            Dim newStatus As String = ddlNewStatus.SelectedValue
+            Dim oldStatus As String = txtOldStatus.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE Chains SET Active=@Active WHERE Id=@Id", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE Chains SET Status=@Status WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.Parameters.AddWithValue("@Active", active)
+                    myCmd.Parameters.AddWithValue("@Status", newStatus)
 
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
             End Using
 
-            Dim activeDesc As String = "Chain Has Been Activated"
-            If active = 0 Then activeDesc = "Chain Has Been Deactivated"
+            Dim changeDesc As String = String.Format("Change Status Chain : {0}", newStatus)
 
-            Dim dataLog As Object() = {"Chains", thisId, Session("LoginId").ToString(), activeDesc}
+            dataLog = {"Chains", thisId, Session("LoginId").ToString(), changeDesc}
             settingClass.Logs(dataLog)
 
-            Session("SearchChain") = txtSearch.Text
+            Session("SearchChain") = String.Empty
             Response.Redirect("~/setting/specification/chain", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -270,9 +264,9 @@ Partial Class Setting_Specification_Chain
         Try
             Dim search As String = String.Empty
             If Not searchText = "" Then
-                search = "AND (Id LIKE '%" & searchText & "%' OR BoeId LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%' OR Description LIKE '%" & searchText & "%')"
+                search = "AND (Id LIKE '%" & searchText & "%' OR BoeId LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%' OR Description LIKE '%" & searchText & "%' OR Status LIKE '%" & searchText & "%')"
             End If
-            Dim thisString As String = String.Format("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Chains WHERE ControlTypeId='1' {0} ORDER BY ControlTypeId, Name ASC", search)
+            Dim thisString As String = String.Format("SELECT * FROM Chains WHERE ControlTypeId='1' {0} ORDER BY ControlTypeId, Name ASC", search)
 
             gvList.DataSource = settingClass.GetDataTable(thisString)
             gvList.DataBind()
@@ -332,11 +326,6 @@ Partial Class Setting_Specification_Chain
     Protected Sub MessageError_Process(visible As Boolean, message As String)
         divErrorProcess.Visible = visible : msgErrorProcess.InnerText = message
     End Sub
-
-    Protected Function TextActive(active As Boolean) As String
-        If active = True Then Return "Deactivate"
-        Return "Activate"
-    End Function
 
     Protected Function PageAction(action As String) As Boolean
         Try

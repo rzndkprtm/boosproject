@@ -66,12 +66,15 @@
                                     </div>
                                     <div class="row mb-3">
                                         <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Active</label>
+                                            <label>Status</label>
                                         </div>
-                                        <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                            <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select">
-                                                <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
-                                                <asp:ListItem Value="0" Text="No"></asp:ListItem>
+                                        <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                            <asp:DropDownList runat="server" ID="ddlStatus" CssClass="form-select">
+                                                <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                <asp:ListItem Value="In Stock" Text="In Stock"></asp:ListItem>
+                                                <asp:ListItem Value="Limited Stock" Text="Limited Stock"></asp:ListItem>
+                                                <asp:ListItem Value="Out of Stock" Text="Out of Stock"></asp:ListItem>
+                                                <asp:ListItem Value="Discontinued" Text="Discontinued"></asp:ListItem>
                                             </asp:DropDownList>
                                         </div>
                                     </div>

@@ -32,6 +32,11 @@ Partial Class Setting_Specification_Fabric_Add
                 Exit Sub
             End If
 
+            If ddlStatus.SelectedValue = "" Then
+                MessageError(True, "STATUS FABRIC IS REQUIRED !")
+                Exit Sub
+            End If
+
             If msgError.InnerText = "" Then
                 Dim designType As String = String.Empty
                 If Not lbDesign.SelectedValue = "" Then
@@ -69,7 +74,7 @@ Partial Class Setting_Specification_Fabric_Add
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Fabrics ORDER BY Id DESC")
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Fabrics VALUES (@Id, @DesignId, @TubeId, @CompanyId, @Name, @Type, @Group, @NoRailRoad, @Active)", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Fabrics VALUES (@Id, @DesignId, @TubeId, @CompanyId, @Name, @Type, @Group, @NoRailRoad, @Status)", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
                         myCmd.Parameters.AddWithValue("@DesignId", designType)
                         myCmd.Parameters.AddWithValue("@TubeId", tubeType)
@@ -78,14 +83,14 @@ Partial Class Setting_Specification_Fabric_Add
                         myCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
                         myCmd.Parameters.AddWithValue("@Group", ddlGroup.SelectedValue)
                         myCmd.Parameters.AddWithValue("@NoRailRoad", ddlNoRailRoad.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
+                        myCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
 
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
                     End Using
                 End Using
 
-                Dim dataLog As Object() = {"Fabrics", thisId, Session("LoginId").ToString(), "Fabric Created"}
+                Dim dataLog As Object() = {"Fabrics", thisId, Session("LoginId").ToString(), "Fabric Type Created"}
                 settingClass.Logs(dataLog)
 
                 url = String.Format("~/setting/specification/fabric/detail?fabricid={0}", thisId)
@@ -106,8 +111,7 @@ Partial Class Setting_Specification_Fabric_Add
     Protected Sub BindDesign()
         lbDesign.Items.Clear()
         Try
-            Dim thisString As String = "SELECT * FROM Designs CROSS APPLY STRING_SPLIT(AppliesTo, ',') AS thisArray WHERE thisArray.VALUE='Fabrics' AND Active=1 ORDER BY Name ASC"
-            lbDesign.DataSource = settingClass.GetDataTable(thisString)
+            lbDesign.DataSource = settingClass.GetDataTable("SELECT * FROM Designs CROSS APPLY STRING_SPLIT(AppliesTo, ',') AS thisArray WHERE thisArray.VALUE='Fabrics' AND Active=1 ORDER BY Name ASC")
             lbDesign.DataTextField = "Name"
             lbDesign.DataValueField = "Id"
             lbDesign.DataBind()

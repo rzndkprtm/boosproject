@@ -2306,7 +2306,7 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                 }
             }
 
-            if (["Alpha 1Nm", "Alpha 2Nm", "Alpha 3Nm", "Altus", "Mercure", "Sonesse 30 WF", "LSN40", "Basics Wand", "E6", "M6", "Zero Q 1.1", "Zero Q 2.0", "Sonesse 6Nm"].includes(controlName)) {
+            if (["Alpha 1Nm", "Alpha 2Nm", "Alpha 3Nm", "Altus", "Mercure", "Sonesse 30 WF", "LSN40", "Battery", "240V (Hardwired) Remote"].includes(controlName)) {
                 divShow.push("divremote");
             }
             if (["Alpha 1Nm", "Alpha 2Nm", "Alpha 3Nm", "Sonesse 30 WF"].includes(controlName)) {

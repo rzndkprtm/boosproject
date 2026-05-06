@@ -33,7 +33,7 @@
         <section class="row mb-4">
             <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
                 <asp:Button runat="server" ID="btnEditFabric" CssClass="btn btn-primary me-1" Text="Edit Fabric" OnClick="btnEditFabric_Click" />
-                <a href="#" runat="server" id="aActive" class="btn btn-danger me-1" data-bs-toggle="modal" data-bs-target="#modalActive" onclick="return showActive()"><%= TextActive(lblActive.Text) %></a>
+                <a href="#" runat="server" id="aChangeStatus" class="btn btn-danger me-1" data-bs-toggle="modal" data-bs-target="#modalChangeStatus">Change Status</a>
                 <a href="javascript:void(0);" class="btn btn-secondary me-1" onclick="showLog('Fabrics', '<%= lblId.Text %>')">Log</a>
             </div>
         </section>
@@ -88,9 +88,9 @@
                                     <asp:Label runat="server" ID="lblNoRailRoad" CssClass="form-label font-bold"></asp:Label>
                                 </div>
                                 <div class="col-4">
-                                    <label>Active</label>
+                                    <label>Status</label>
                                     <br />
-                                    <asp:Label runat="server" ID="lblActive" CssClass="form-label font-bold"></asp:Label>
+                                    <asp:Label runat="server" ID="lblStatus" CssClass="form-label font-bold"></asp:Label>
                                 </div>
                             </div>
                         </div>
@@ -119,14 +119,6 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <div class="row mb-3">
-                                <div class="col-12">
-                                    <div class="alert alert-light-info color-info">
-                                        <i class="bi bi-exclamation-circle"></i>
-                                        Info tentang active
-                                    </div>
-                                </div>
-                            </div>
                             <div class="row">
                                 <div class="col-12">
                                     <div class="table-responsive">
@@ -144,7 +136,7 @@
                                                 <asp:BoundField DataField="Name" HeaderText="Name" />
                                                 <asp:BoundField DataField="Colour" HeaderText="Colour" />
                                                 <asp:BoundField DataField="Width" HeaderText="Width" />
-                                                <asp:BoundField DataField="DataActive" HeaderText="Active" />
+                                                <asp:BoundField DataField="Status" HeaderText="Status" />
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="150px">
                                                     <ItemTemplate>
                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
@@ -152,8 +144,8 @@
                                                             <li runat="server" visible='<%# PageAction("Detail Colour") %>'>
                                                                 <asp:LinkButton runat="server" ID="linkDetailColour" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                             </li>
-                                                            <li runat="server" visible='<%# PageAction("Active Colour") %>'>
-                                                                <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalActiveColour" onclick='<%# String.Format("return showActiveColour(`{0}`, `{1}`);", Eval("Id").ToString(), Convert.ToInt32(Eval("Active"))) %>'><%# TextActiveColour(Eval("Active")) %></a>
+                                                            <li runat="server" visible='<%# PageAction("Change Status Colour") %>'>
+                                                                <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeStatusColour" onclick='<%# String.Format("return showChangeStatusColour(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("Name").ToString(), Eval("Status").ToString()) %>'>Change Status</a>
                                                             </li>
                                                             <li>
                                                                 <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('FabricColours', '<%# Eval("Id") %>')">Log</a>
@@ -177,6 +169,33 @@
         </section>
     </div>
 
+    <div class="modal fade text-left" id="modalChangeStatus" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Change Status</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">New Status</label>
+                            <asp:DropDownList runat="server" ID="ddlNewStatus" CssClass="form-select">
+                                <asp:ListItem Value="" Text=""></asp:ListItem>
+                                <asp:ListItem Value="In Stock" Text="In Stock"></asp:ListItem>
+                                <asp:ListItem Value="Limited Stock" Text="Limited Stock"></asp:ListItem>
+                                <asp:ListItem Value="Out of Stock" Text="Out of Stock"></asp:ListItem>
+                                <asp:ListItem Value="Discontinued" Text="Discontinued"></asp:ListItem>
+                            </asp:DropDownList>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnChangeStatus" CssClass="btn btn-primary" Text="Submit" OnClick="btnChangeStatus_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade text-left" id="modalProcessColour" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -208,6 +227,18 @@
                             <asp:TextBox runat="server" ID="txtWidthColour" CssClass="form-control" placeholder="Width ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
+                    <div class="row mb-2" runat="server" id="divStatusColour">
+                        <div class="col-6 form-group">
+                            <label class="form-label">Status</label>
+                            <asp:DropDownList runat="server" ID="ddlStatusColour" CssClass="form-select">
+                                <asp:ListItem Value="" Text=""></asp:ListItem>
+                                <asp:ListItem Value="In Stock" Text="In Stock"></asp:ListItem>
+                                <asp:ListItem Value="Limited Stock" Text="Limited Stock"></asp:ListItem>
+                                <asp:ListItem Value="Out of Stock" Text="Out of Stock"></asp:ListItem>
+                                <asp:ListItem Value="Discontinued" Text="Discontinued"></asp:ListItem>
+                            </asp:DropDownList>
+                        </div>
+                    </div>
                     <div class="row mb-2" runat="server" id="divErrorProcess">
                         <div class="col-12">
                             <div class="alert alert-danger">
@@ -223,36 +254,48 @@
             </div>
         </div>
     </div>
-    <div class="modal modal-blur fade" id="modalActive" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+    <div class="modal fade text-left" id="modalChangeStatusColour" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-warning">
-                    <h5 class="modal-title white" id="titleActive"></h5>
+                <div class="modal-header">
+                    <h4 class="modal-title">Change Status</h4>
                 </div>
-                <div class="modal-body text-center py-4">
-                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                <div class="modal-body">
+                    <asp:TextBox runat="server" ID="txtIdStatusColour" style="display:none;"></asp:TextBox>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Name</label>
+                            <asp:TextBox runat="server" ID="txtChangeName" CssClass="form-control" ReadOnly="true"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Old Status</label>
+                            <asp:DropDownList runat="server" ID="ddlOldStatusColour" CssClass="form-select" Enabled="false">
+                                <asp:ListItem Value="" Text=""></asp:ListItem>
+                                <asp:ListItem Value="In Stock" Text="In Stock"></asp:ListItem>
+                                <asp:ListItem Value="Limited Stock" Text="Limited Stock"></asp:ListItem>
+                                <asp:ListItem Value="Out of Stock" Text="Out of Stock"></asp:ListItem>
+                                <asp:ListItem Value="Discontinued" Text="Discontinued"></asp:ListItem>
+                            </asp:DropDownList>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">New Status</label>
+                            <asp:DropDownList runat="server" ID="ddlNewStatusColour" CssClass="form-select">
+                                <asp:ListItem Value="" Text=""></asp:ListItem>
+                                <asp:ListItem Value="In Stock" Text="In Stock"></asp:ListItem>
+                                <asp:ListItem Value="Limited Stock" Text="Limited Stock"></asp:ListItem>
+                                <asp:ListItem Value="Out of Stock" Text="Out of Stock"></asp:ListItem>
+                                <asp:ListItem Value="Discontinued" Text="Discontinued"></asp:ListItem>
+                            </asp:DropDownList>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnActive" CssClass="btn btn-warning" Text="Confirm" OnClick="btnActive_Click" />
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal modal-blur fade" id="modalActiveColour" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-secondary">
-                    <h5 class="modal-title white" id="titleActiveColour"></h5>
-                </div>
-                <div class="modal-body text-center py-4">
-                    <asp:TextBox runat="server" ID="txtIdActiveColour" style="display:none;"></asp:TextBox>
-                    <asp:TextBox runat="server" ID="txtActiveColour" style="display:none;"></asp:TextBox>
-                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
-                </div>
-                <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnActiveColour" CssClass="btn btn-secondary" Text="Confirm" OnClick="btnActiveColour_Click" />
+                    <asp:Button runat="server" ID="btnChangeStatusColour" CssClass="btn btn-primary" Text="Submit" OnClick="btnChangeStatusColour_Click" />
                 </div>
             </div>
         </div>
@@ -309,28 +352,10 @@
             $("#modalProcessColour").modal("show");
         }
 
-        function showActive(id) {
-            var active = document.getElementById("<%=lblActive.ClientID %>").innerText;
-            let title = "";
-            if (active === "Yes") {
-                title = "Deactivate Fabric";
-            } else {
-                title = "Activate Fabric";
-            }
-            document.getElementById("titleActive").innerHTML = title;
-        }
-
-        function showActiveColour(id, active) {
-            document.getElementById("<%=txtIdActiveColour.ClientID %>").value = id;
-            document.getElementById("<%=txtActiveColour.ClientID %>").value = active;
-
-            let title = "";
-            if (active === "1") {
-                title = "Deactivate Fabric Colour";
-            } else {
-                title = "Activate Fabric Colour";
-            }
-            document.getElementById("titleActiveColour").innerHTML = title;
+        function showChangeStatusColour(id, name, status) {
+            document.getElementById("<%=txtIdStatusColour.ClientID %>").value = id;
+            document.getElementById("<%=txtChangeName.ClientID %>").value = name;
+            document.getElementById("<%=ddlOldStatusColour.ClientID %>").value = status;
         }
 
         function showLog(type, dataId) {
@@ -367,7 +392,7 @@
             });
         }
 
-        ["modalActive", "modalProcessColour", "modalActiveColour", "modalLog"].forEach(function (id) {
+        ["modalChangeStatus", "modalProcessColour", "modalChangeStatusColour", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

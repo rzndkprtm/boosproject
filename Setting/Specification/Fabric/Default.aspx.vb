@@ -7,6 +7,7 @@ Partial Class Setting_Specification_Fabric_Default
     Dim settingClass As New SettingClass
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim dataLog As Object() = Nothing
     Dim url As String = String.Empty
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -85,48 +86,88 @@ Partial Class Setting_Specification_Fabric_Default
         End If
     End Sub
 
-    Protected Sub btnActive_Click(sender As Object, e As EventArgs)
+    Protected Sub btnChangeStatus_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim thisId As String = txtIdActive.Text
-
-            Dim active As Integer = 1
-            If txtActive.Text = "1" Then : active = 0 : End If
+            Dim thisId As String = txtIdStatus.Text
+            Dim newStatus As String = ddlNewStatus.SelectedValue
+            Dim oldStatus As String = txtOldStatus.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE Fabrics SET Active=@Active WHERE Id=@Id", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE Fabrics SET Status=@Status WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.Parameters.AddWithValue("@Active", active)
+                    myCmd.Parameters.AddWithValue("@Status", newStatus)
 
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
             End Using
 
-            Dim activeDesc As String = "Fabric Has Been Activated"
-            If active = 0 Then activeDesc = "Fabric Has Been Deactivated"
-
-            Dim dataLog As Object() = {"Fabrics", thisId, Session("LoginId").ToString(), activeDesc}
+            Dim changeDesc As String = String.Format("Change Status Fabric Type : {0}", newStatus)
+            dataLog = {"Fabrics", thisId, Session("LoginId").ToString(), changeDesc}
             settingClass.Logs(dataLog)
 
-            Dim aliasData As DataTable = settingClass.GetDataTable("SELECT * FROM FabricAlias WHERE Type='Fabrics' AND FirstId='" & thisId & "'")
-            If aliasData.Rows.Count > 0 Then
-                For i As Integer = 0 To aliasData.Rows.Count - 1
-                    Dim aliasId As String = aliasData.Rows(i)("SecondId").ToString()
+            Dim detailData As DataTable = settingClass.GetDataTable("SELECT * FROM FabricColours WHERE FabricId='" & thisId & "' AND Status='" & oldStatus & "'")
+            If Not detailData.Rows.Count = 0 Then
+                For i As Integer = 0 To detailData.Rows.Count - 1
+                    Dim detailId As String = detailData.Rows(i)("Id").ToString()
 
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE Fabrics SET Active=@Active WHERE Id=@Id", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", aliasId)
-                            myCmd.Parameters.AddWithValue("@Active", active)
+                        Using myCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET Status=@Status WHERE Id=@Id", thisConn)
+                            myCmd.Parameters.AddWithValue("@Id", detailId)
+                            myCmd.Parameters.AddWithValue("@Status", newStatus)
 
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
                         End Using
                     End Using
 
-                    dataLog = {"Fabrics", aliasId, Session("LoginId").ToString(), activeDesc}
+                    changeDesc = String.Format("Change Status Fabric Colour : {0}", newStatus)
+
+                    dataLog = {"FabricColours", detailId, Session("LoginId").ToString(), changeDesc}
                     settingClass.Logs(dataLog)
                 Next
+            End If
+
+            Dim aliasData As DataRow = settingClass.GetDataRow("SELECT SecondId FROM FabricAlias WHERE Type='Fabrics' AND FirstId='" & thisId & "'")
+            If aliasData IsNot Nothing Then
+                Dim aliasId As String = aliasData(0).ToString()
+
+                Using thisConn As New SqlConnection(myConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Fabrics SET Status=@Status WHERE Id=@Id", thisConn)
+                        myCmd.Parameters.AddWithValue("@Id", aliasId)
+                        myCmd.Parameters.AddWithValue("@Status", newStatus)
+
+                        thisConn.Open()
+                        myCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                changeDesc = String.Format("Change Status Fabric Type : {0}", newStatus)
+                dataLog = {"Fabrics", aliasId, Session("LoginId").ToString(), changeDesc}
+                settingClass.Logs(dataLog)
+
+                Dim detailAliasData As DataTable = settingClass.GetDataTable("SELECT * FROM FabricColours WHERE FabricId='" & aliasId & "' AND Status='" & oldStatus & "'")
+                If Not detailAliasData.Rows.Count = 0 Then
+                    For i As Integer = 0 To detailAliasData.Rows.Count - 1
+                        Dim detailId As String = detailAliasData.Rows(i)("Id").ToString()
+
+                        Using thisConn As New SqlConnection(myConn)
+                            Using myCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET Status=@Status WHERE Id=@Id", thisConn)
+                                myCmd.Parameters.AddWithValue("@Id", detailId)
+                                myCmd.Parameters.AddWithValue("@Status", newStatus)
+
+                                thisConn.Open()
+                                myCmd.ExecuteNonQuery()
+                            End Using
+                        End Using
+
+                        changeDesc = String.Format("Change Status Fabric Colour : {0}", newStatus)
+
+                        dataLog = {"FabricColours", detailId, Session("LoginId").ToString(), changeDesc}
+                        settingClass.Logs(dataLog)
+                    Next
+                End If
             End If
 
             Session("SearchFabric") = txtSearch.Text
@@ -141,8 +182,7 @@ Partial Class Setting_Specification_Fabric_Default
     End Sub
 
     Protected Sub BindData(searchText As String, companyText As String)
-        Session("SearchFabric") = String.Empty
-        Session("CompanyFabric") = String.Empty
+        Session("SearchFabric") = String.Empty : Session("CompanyFabric") = String.Empty
         Try
             Dim conditions As New List(Of String)
             Dim thisArray As String = String.Empty
@@ -153,15 +193,15 @@ Partial Class Setting_Specification_Fabric_Default
             End If
 
             If Not String.IsNullOrEmpty(searchText) Then
-                conditions.Add("(Id LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%')")
+                conditions.Add("(Id LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%' OR Status LIKE '%" & searchText & "%')")
             End If
 
-            Dim whereClause As String = ""
+            Dim whereClause As String = String.Empty
             If conditions.Count > 0 Then
                 whereClause = "WHERE " & String.Join(" AND ", conditions)
             End If
 
-            Dim thisString As String = String.Format("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Fabrics {0} {1} ORDER BY Name ASC", thisArray, whereClause)
+            Dim thisString As String = String.Format("SELECT * FROM Fabrics {0} {1} ORDER BY Name ASC", thisArray, whereClause)
 
             gvList.DataSource = settingClass.GetDataTable(thisString)
             gvList.DataBind()
@@ -223,11 +263,6 @@ Partial Class Setting_Specification_Fabric_Default
             End If
         End If
         Return "Error"
-    End Function
-
-    Protected Function TextActive(active As Boolean) As String
-        If active = True Then Return "Deactivate"
-        Return "Activate"
     End Function
 
     Protected Function PageAction(action As String) As Boolean

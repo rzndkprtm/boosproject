@@ -108,17 +108,6 @@
                                             </asp:DropDownList>
                                         </div>
                                     </div>
-                                    <div class="row mb-3" runat="server" id="divActive">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Active</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                            <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select">
-                                                <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
-                                                <asp:ListItem Value="0" Text="No"></asp:ListItem>
-                                            </asp:DropDownList>
-                                        </div>
-                                    </div>
                                     <div class="row" runat="server" id="divError">
                                         <div class="col-12">
                                             <div class="alert alert-danger">

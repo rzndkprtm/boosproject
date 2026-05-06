@@ -7,6 +7,7 @@ Partial Class Setting_Specification_ControlType
     Dim settingClass As New SettingClass
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim dataLog As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
@@ -31,6 +32,8 @@ Partial Class Setting_Specification_ControlType
         Try
             lblAction.Text = "Add"
             titleProcess.InnerText = "Add Control Type"
+
+            divStatus.Visible = True
 
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         Catch ex As Exception
@@ -81,6 +84,8 @@ Partial Class Setting_Specification_ControlType
                     txtAlias.Text = myData("Alias").ToString()
                     txtDescription.Text = myData("Description").ToString()
 
+                    divStatus.Visible = False
+
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Catch ex As Exception
                     MessageError_Process(True, ex.ToString())
@@ -113,19 +118,20 @@ Partial Class Setting_Specification_ControlType
                 If lblAction.Text = "Add" Then
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM ProductControls ORDER BY Id DESC")
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO ProductControls VALUES (@Id, @Type, @Name, @Alias, @Description)", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO ProductControls VALUES (@Id, @Type, @Name, @Alias, @Description, @Status)", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", thisId)
                             myCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
                             myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Alias", aliasName)
                             myCmd.Parameters.AddWithValue("@Description", descText)
+                            myCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
 
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
                         End Using
                     End Using
 
-                    Dim dataLog As Object() = {"ProductControls", thisId, Session("LoginId").ToString(), "Product Control Created"}
+                    dataLog = {"ProductControls", thisId, Session("LoginId").ToString(), "Product Control Created"}
                     settingClass.Logs(dataLog)
 
                     Session("SearchControl") = txtSearch.Text
@@ -146,7 +152,7 @@ Partial Class Setting_Specification_ControlType
                         End Using
                     End Using
 
-                    Dim dataLog As Object() = {"ProductControls", lblId.Text, Session("LoginId").ToString(), "Product Control Updated"}
+                    dataLog = {"ProductControls", lblId.Text, Session("LoginId").ToString(), "Product Control Updated"}
                     settingClass.Logs(dataLog)
 
                     Session("SearchControl") = txtSearch.Text
@@ -162,12 +168,44 @@ Partial Class Setting_Specification_ControlType
         End Try
     End Sub
 
+    Protected Sub btnChangeStatus_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim thisId As String = txtIdStatus.Text
+            Dim newStatus As String = ddlNewStatus.SelectedValue
+            Dim oldStatus As String = txtOldStatus.Text
+
+            Using thisConn As New SqlConnection(myConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE Chains SET Status=@Status WHERE Id=@Id", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", thisId)
+                    myCmd.Parameters.AddWithValue("@Status", newStatus)
+
+                    thisConn.Open()
+                    myCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Dim changeDesc As String = String.Format("Change Status Product Control : {0}", newStatus)
+
+            dataLog = {"ProductControls", thisId, Session("LoginId").ToString(), changeDesc}
+            settingClass.Logs(dataLog)
+
+            Session("SearchControl") = txtSearch.Text
+            Response.Redirect("~/setting/specification/controltype", False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
     Protected Sub BindData(searchText As String)
         Session("SearchControl") = String.Empty
         Try
             Dim search As String = String.Empty
             If Not searchText = "" Then
-                search = "WHERE Id LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%' OR Alias LIKE '%" & searchText & "%' OR Description LIKE '%" & searchText & "%'"
+                search = "WHERE Id LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%' OR Alias LIKE '%" & searchText & "%' OR Description LIKE '%" & searchText & "%' OR Status LIKE '%" & searchText & "%'"
             End If
 
             Dim thisString As String = String.Format("SELECT * FROM ProductControls {0} ORDER BY Name ASC", search)
