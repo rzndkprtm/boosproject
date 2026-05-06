@@ -36,11 +36,11 @@
                                     <div class="row mb-2">
                                         <div class="col-6 form-group">
                                             <label>Design Type</label>
-                                            <asp:DropDownList runat="server" ID="ddlDesign" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlDesign_SelectedIndexChanged"></asp:DropDownList>
+                                            <asp:DropDownList runat="server" ID="ddlDesign" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlDesign_SelectedIndexChanged"></asp:DropDownList>
                                         </div>
                                         <div class="col-6 form-group">
                                             <label>Blind Type</label>
-                                            <asp:DropDownList runat="server" ID="ddlBlind" CssClass="form-select"></asp:DropDownList>
+                                            <asp:DropDownList runat="server" ID="ddlBlind" CssClass="choices form-select"></asp:DropDownList>
                                         </div>
                                     </div>
                                     <div class="row mb-2">
@@ -52,7 +52,7 @@
                                     <div class="row mb-2">
                                         <div class="col-3 form-group">
                                             <label>Item Number</label>
-                                            <asp:DropDownList runat="server" ID="ddlBlindNumber" CssClass="form-select">
+                                            <asp:DropDownList runat="server" ID="ddlBlindNumber" CssClass="choices form-select">
                                                 <asp:ListItem Value="" Text=""></asp:ListItem>
                                                 <asp:ListItem Value="1" Text="1"></asp:ListItem>
                                                 <asp:ListItem Value="2" Text="2"></asp:ListItem>
@@ -66,11 +66,11 @@
                                         </div>
                                         <div class="col-5 form-group">
                                             <label>Field Name</label>
-                                            <asp:DropDownList runat="server" ID="ddlFieldName" CssClass="form-select"></asp:DropDownList>
+                                            <asp:DropDownList runat="server" ID="ddlFieldName" CssClass="choices form-select"></asp:DropDownList>
                                         </div>
                                         <div class="col-4 form-group">
                                             <label>Price Group</label>
-                                            <asp:DropDownList runat="server" ID="ddlPriceGroup" CssClass="form-select"></asp:DropDownList>
+                                            <asp:DropDownList runat="server" ID="ddlPriceGroup" CssClass="choices form-select"></asp:DropDownList>
                                         </div>
                                     </div>
                                     <div class="row mb-2">
@@ -82,11 +82,11 @@
                                     <div class="row mb-2">
                                         <div class="col-6 form-group">
                                             <label>Buy Charge</label>
-                                            <asp:TextBox runat="server" TextMode="MultiLine" ID="txtBuyCharge" Height="150px" CssClass="form-control" placeholder="Buy Charge ..." autocomplete="off" style="resize:none;"></asp:TextBox>
+                                            <asp:TextBox runat="server" TextMode="MultiLine" ID="txtBuyCharge" Height="200px" CssClass="form-control" placeholder="Buy Charge ..." autocomplete="off" style="resize:none;"></asp:TextBox>
                                         </div>
                                         <div class="col-6 form-group">
                                             <label>Sell Charge</label>
-                                            <asp:TextBox runat="server" TextMode="MultiLine" ID="txtSellCharge" Height="150px" CssClass="form-control" placeholder="Sell Charge ..." autocomplete="off" style="resize:none;"></asp:TextBox>
+                                            <asp:TextBox runat="server" TextMode="MultiLine" ID="txtSellCharge" Height="200px" CssClass="form-control" placeholder="Sell Charge ..." autocomplete="off" style="resize:none;"></asp:TextBox>
                                         </div>
                                     </div>
                                     <div class="row mb-2">

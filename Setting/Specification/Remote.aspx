@@ -64,7 +64,7 @@
                                                 <asp:BoundField DataField="Id" HeaderText="ID" />
                                                 <asp:BoundField DataField="BoeId" HeaderText="BOE ID" />
                                                 <asp:BoundField DataField="Name" HeaderText="Name" />
-                                                <asp:BoundField DataField="DataActive" HeaderText="Active" />
+                                                <asp:BoundField DataField="Status" HeaderText="Status" />
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
                                                     <ItemTemplate>
                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
@@ -72,8 +72,8 @@
                                                             <li runat="server" visible='<%# PageAction("Detail") %>'>
                                                                 <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                             </li>
-                                                            <li runat="server" visible='<%# PageAction("Active") %>'>
-                                                                <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalActive" onclick='<%# String.Format("return showActive(`{0}`, `{1}`);", Eval("Id").ToString(), Convert.ToInt32(Eval("Active"))) %>'><%# TextActive(Eval("Active")) %></a>
+                                                            <li runat="server" visible='<%# PageAction("Change Status") %>'>
+                                                                <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeStatus" onclick='<%# String.Format("return showChangeStatus(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("Name").ToString(), Eval("Status").ToString()) %>'>Change Status</a>
                                                             </li>
                                                             <li>
                                                                 <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('Chains', '<%# Eval("Id") %>')">Log</a>
@@ -142,12 +142,15 @@
                             <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
                         </div>
                     </div>
-                    <div class="row" runat="server" id="divActive">
+                    <div class="row" runat="server" id="divStatus">
                         <div class="col-12 col-sm-12 col-lg-3 form-group">
-                            <label class="form-label">Active</label>
-                            <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select">
-                                <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
-                                <asp:ListItem Value="0" Text="No"></asp:ListItem>
+                            <label class="form-label">Status</label>
+                            <asp:DropDownList runat="server" ID="ddlStatus" CssClass="form-select">
+                                <asp:ListItem Value="" Text=""></asp:ListItem>
+                                <asp:ListItem Value="In Stock" Text="In Stock"></asp:ListItem>
+                                <asp:ListItem Value="Limited Stock" Text="Limited Stock"></asp:ListItem>
+                                <asp:ListItem Value="Out of Stock" Text="Out of Stock"></asp:ListItem>
+                                <asp:ListItem Value="Discontinued" Text="Discontinued"></asp:ListItem>
                             </asp:DropDownList>
                         </div>
                     </div>
@@ -159,20 +162,49 @@
             </div>
         </div>
     </div>
-    <div class="modal modal-blur fade" id="modalActive" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+    <div class="modal fade text-left" id="modalChangeStatus" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-warning">
-                    <h5 class="modal-title white" id="titleActive"></h5>
+                <div class="modal-header">
+                    <h4 class="modal-title">Change Status</h4>
                 </div>
-                <div class="modal-body text-center py-4">
-                    <asp:TextBox runat="server" ID="txtIdActive" style="display:none;"></asp:TextBox>
-                    <asp:TextBox runat="server" ID="txtActive" style="display:none;"></asp:TextBox>
-                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                <div class="modal-body">
+                    <asp:TextBox runat="server" ID="txtIdStatus" style="display:none;"></asp:TextBox>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Name</label>
+                            <asp:TextBox runat="server" ID="txtNameStatus" CssClass="form-control" ReadOnly="true"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Old Status</label>
+                            <asp:TextBox runat="server" ID="txtOldStatus" style="display:none;"></asp:TextBox>
+                            <asp:DropDownList runat="server" ID="ddlOldStatus" ClientIDMode="Static" CssClass="form-select" Enabled="false">
+                                <asp:ListItem Value="" Text=""></asp:ListItem>
+                                <asp:ListItem Value="In Stock" Text="In Stock"></asp:ListItem>
+                                <asp:ListItem Value="Limited Stock" Text="Limited Stock"></asp:ListItem>
+                                <asp:ListItem Value="Out of Stock" Text="Out of Stock"></asp:ListItem>
+                                <asp:ListItem Value="Discontinued" Text="Discontinued"></asp:ListItem>
+                            </asp:DropDownList>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">New Status</label>
+                            <asp:DropDownList runat="server" ID="ddlNewStatus" CssClass="form-select">
+                                <asp:ListItem Value="" Text=""></asp:ListItem>
+                                <asp:ListItem Value="In Stock" Text="In Stock"></asp:ListItem>
+                                <asp:ListItem Value="Limited Stock" Text="Limited Stock"></asp:ListItem>
+                                <asp:ListItem Value="Out of Stock" Text="Out of Stock"></asp:ListItem>
+                                <asp:ListItem Value="Discontinued" Text="Discontinued"></asp:ListItem>
+                            </asp:DropDownList>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnActive" CssClass="btn btn-warning" Text="Confirm" OnClick="btnActive_Click" />
+                    <asp:Button runat="server" ID="btnChangeStatus" CssClass="btn btn-primary" Text="Submit" OnClick="btnChangeStatus_Click" />
                 </div>
             </div>
         </div>
@@ -229,17 +261,11 @@
             $("#modalProcess").modal("show");
         }
 
-        function showActive(id, active) {
-            document.getElementById("<%=txtIdActive.ClientID %>").value = id;
-            document.getElementById("<%=txtActive.ClientID %>").value = active;
-
-            let title = "";
-            if (active === "1") {
-                title = "Deactivate Remote";
-            } else {
-                title = "Activate Remote";
-            }
-            document.getElementById("titleActive").innerHTML = title;
+        function showChangeStatus(id, name, status) {
+            document.getElementById("<%=txtIdStatus.ClientID %>").value = id;
+            document.getElementById("<%=txtNameStatus.ClientID %>").value = name;
+            document.getElementById("<%=txtOldStatus.ClientID %>").value = status;
+            document.getElementById("<%=ddlOldStatus.ClientID %>").value = status;
         }
 
         function showLog(type, dataId) {
@@ -276,7 +302,7 @@
             });
         }
 
-        ["modalProcess", "modalActive", "modalLog"].forEach(function (id) {
+        ["modalProcess", "modalChangeStatus", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

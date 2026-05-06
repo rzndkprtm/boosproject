@@ -7,6 +7,7 @@ Partial Class Setting_Specification_Bottom_Default
     Dim settingClass As New SettingClass
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim dataLog As Object() = Nothing
     Dim url As String = String.Empty
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -71,29 +72,49 @@ Partial Class Setting_Specification_Bottom_Default
         End If
     End Sub
 
-    Protected Sub btnActive_Click(sender As Object, e As EventArgs)
+    Protected Sub btnChangeStatus_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim thisId As String = txtIdActive.Text
-
-            Dim active As Integer = 1
-            If txtActive.Text = "1" Then : active = 0 : End If
+            Dim thisId As String = txtIdStatus.Text
+            Dim newStatus As String = ddlNewStatus.SelectedValue
+            Dim oldStatus As String = txtOldStatus.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE Bottoms SET Active=@Active WHERE Id=@Id", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE Bottoms SET Status=@Status WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.Parameters.AddWithValue("@Active", active)
+                    myCmd.Parameters.AddWithValue("@Status", newStatus)
 
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
             End Using
 
-            Dim activeDesc As String = "Bottom Type Has Been Activated"
-            If active = 0 Then activeDesc = "Bottom Type Has Been Deactivated"
+            Dim changeDesc As String = String.Format("Change Status Bottom Type : {0}", newStatus)
 
-            Dim dataLog As Object() = {"Bottoms", thisId, Session("LoginId").ToString(), activeDesc}
+            dataLog = {"Bottoms", thisId, Session("LoginId").ToString(), changeDesc}
             settingClass.Logs(dataLog)
+
+            Dim detailData As DataTable = settingClass.GetDataTable("SELECT * FROM BottomColours WHERE BottomId='" & thisId & "' AND Status='" & oldStatus & "'")
+            If Not detailData.Rows.Count = 0 Then
+                For i As Integer = 0 To detailData.Rows.Count - 1
+                    Dim detailId As String = detailData.Rows(i)("Id").ToString()
+
+                    Using thisConn As New SqlConnection(myConn)
+                        Using myCmd As SqlCommand = New SqlCommand("UPDATE BottomColours SET Status=@Status WHERE Id=@Id", thisConn)
+                            myCmd.Parameters.AddWithValue("@Id", detailId)
+                            myCmd.Parameters.AddWithValue("@Status", newStatus)
+
+                            thisConn.Open()
+                            myCmd.ExecuteNonQuery()
+                        End Using
+                    End Using
+
+                    changeDesc = String.Format("Change Status Bottom Colour : {0}", newStatus)
+
+                    dataLog = {"BottomColours", detailId, Session("LoginId").ToString(), changeDesc}
+                    settingClass.Logs(dataLog)
+                Next
+            End If
 
             Session("SearchBottom") = txtSearch.Text
             Response.Redirect("~/setting/specification/bottom", False)
@@ -110,9 +131,9 @@ Partial Class Setting_Specification_Bottom_Default
         Try
             Dim stringSearch As String = String.Empty
             If Not searchText = "" Then
-                stringSearch = "Id LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%' OR Description LIKE '%" & searchText & "%'"
+                stringSearch = "Id LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%' OR Description LIKE '%" & searchText & "%' OR Status LIKE '%" & searchText & "%'"
             End If
-            Dim thisString As String = String.Format("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Bottoms {0} ORDER BY Name ASC", stringSearch)
+            Dim thisString As String = String.Format("SELECT * FROM Bottoms {0} ORDER BY Name ASC", stringSearch)
 
             gvList.DataSource = settingClass.GetDataTable(thisString)
             gvList.DataBind()
@@ -170,11 +191,6 @@ Partial Class Setting_Specification_Bottom_Default
         Catch ex As Exception
             Return "Error"
         End Try
-    End Function
-
-    Protected Function TextActive(active As Boolean) As String
-        If active = True Then Return "Deactivate"
-        Return "Activate"
     End Function
 
     Protected Function PageAction(action As String) As Boolean

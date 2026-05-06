@@ -7,8 +7,8 @@ Partial Class Setting_Specification_Fabric_Detail
     Dim settingClass As New SettingClass
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-    Dim url As String = String.Empty
     Dim dataLog As Object() = Nothing
+    Dim url As String = String.Empty
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
@@ -36,6 +36,104 @@ Partial Class Setting_Specification_Fabric_Detail
         Response.Redirect(url, False)
     End Sub
 
+    Protected Sub btnChangeStatus_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim newStatus As String = ddlNewStatus.SelectedValue
+
+            If newStatus = "" Then
+                url = String.Format("~/setting/specification/fabric/detail?fabricid={0}", lblId.Text)
+                Response.Redirect(url, False)
+                Exit Sub
+            End If
+
+            Using thisConn As New SqlConnection(myConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE Fabrics SET Status=@Status WHERE Id=@Id", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                    myCmd.Parameters.AddWithValue("@Status", newStatus)
+
+                    thisConn.Open()
+                    myCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Dim changeDesc As String = String.Format("Change Status Fabric Type : {0}", newStatus)
+            dataLog = {"Fabrics", lblId.Text, Session("LoginId").ToString(), changeDesc}
+            settingClass.Logs(dataLog)
+
+            Dim detailData As DataTable = settingClass.GetDataTable("SELECT * FROM FabricColours WHERE FabricId='" & lblId.Text & "' AND Status='" & lblStatus.Text & "'")
+            If Not detailData.Rows.Count = 0 Then
+                For i As Integer = 0 To detailData.Rows.Count - 1
+                    Dim detailId As String = detailData.Rows(i)("Id").ToString()
+
+                    Using thisConn As New SqlConnection(myConn)
+                        Using myCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET Status=@Status WHERE Id=@Id", thisConn)
+                            myCmd.Parameters.AddWithValue("@Id", detailId)
+                            myCmd.Parameters.AddWithValue("@Status", newStatus)
+
+                            thisConn.Open()
+                            myCmd.ExecuteNonQuery()
+                        End Using
+                    End Using
+
+                    changeDesc = String.Format("Change Status Fabric Colour : {0}", newStatus)
+
+                    dataLog = {"FabricColours", detailId, Session("LoginId").ToString(), changeDesc}
+                    settingClass.Logs(dataLog)
+                Next
+            End If
+
+            Dim aliasData As DataRow = settingClass.GetDataRow("SELECT SecondId FROM FabricAlias WHERE Type='Fabrics' AND FirstId='" & lblId.Text & "'")
+            If aliasData IsNot Nothing Then
+                Dim aliasId As String = aliasData(0).ToString()
+
+                Using thisConn As New SqlConnection(myConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Fabrics SET Status=@Status WHERE Id=@Id", thisConn)
+                        myCmd.Parameters.AddWithValue("@Id", aliasId)
+                        myCmd.Parameters.AddWithValue("@Status", newStatus)
+
+                        thisConn.Open()
+                        myCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                changeDesc = String.Format("Change Status Fabric Type : {0}", newStatus)
+                dataLog = {"Fabrics", aliasId, Session("LoginId").ToString(), changeDesc}
+                settingClass.Logs(dataLog)
+
+                Dim detailAliasData As DataTable = settingClass.GetDataTable("SELECT * FROM FabricColours WHERE FabricId='" & aliasId & "' AND Status='" & lblStatus.Text & "'")
+                If Not detailAliasData.Rows.Count = 0 Then
+                    For i As Integer = 0 To detailAliasData.Rows.Count - 1
+                        Dim detailId As String = detailAliasData.Rows(i)("Id").ToString()
+
+                        Using thisConn As New SqlConnection(myConn)
+                            Using myCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET Status=@Status WHERE Id=@Id", thisConn)
+                                myCmd.Parameters.AddWithValue("@Id", detailId)
+                                myCmd.Parameters.AddWithValue("@Status", newStatus)
+
+                                thisConn.Open()
+                                myCmd.ExecuteNonQuery()
+                            End Using
+                        End Using
+
+                        changeDesc = String.Format("Change Status Fabric Colour : {0}", newStatus)
+
+                        dataLog = {"FabricColours", detailId, Session("LoginId").ToString(), changeDesc}
+                        settingClass.Logs(dataLog)
+                    Next
+                End If
+            End If
+
+            url = String.Format("~/setting/specification/fabric/detail?fabricid={0}", lblId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
     Protected Sub btnSearchColour_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         BindDataColour(lblId.Text, txtSearchColour.Text)
@@ -51,6 +149,8 @@ Partial Class Setting_Specification_Fabric_Detail
                     lblIdColour.Text = dataId
                     lblAction.Text = "Edit"
                     titleProcess.InnerText = "Edit Fabric Colour"
+
+                    divStatusColour.Visible = False
 
                     Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM FabricColours WHERE Id='" & lblIdColour.Text & "'")
                     If myData Is Nothing Then Exit Sub
@@ -79,6 +179,8 @@ Partial Class Setting_Specification_Fabric_Detail
             lblAction.Text = "Add"
             titleProcess.InnerText = "Add Fabric Colour"
 
+            divStatusColour.Visible = True
+
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcessColour", thisScript, True)
         Catch ex As Exception
             MessageError_Process(True, ex.ToString())
@@ -106,7 +208,7 @@ Partial Class Setting_Specification_Fabric_Detail
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM FabricColours ORDER BY Id DESC")
 
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO FabricColours VALUES (@Id, @FabricId, @BoeId, @Factory, @Name, @Colour, @Width, 0)", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO FabricColours VALUES (@Id, @FabricId, @BoeId, @Factory, @Name, @Colour, @Width, @Status)", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", thisId)
                             myCmd.Parameters.AddWithValue("@FabricId", lblId.Text)
                             myCmd.Parameters.AddWithValue("@BoeId", If(String.IsNullOrEmpty(txtBoeId.Text), CType(DBNull.Value, Object), txtBoeId.Text))
@@ -114,6 +216,7 @@ Partial Class Setting_Specification_Fabric_Detail
                             myCmd.Parameters.AddWithValue("@Name", fabricColourName)
                             myCmd.Parameters.AddWithValue("@Colour", txtNameColour.Text)
                             myCmd.Parameters.AddWithValue("@Width", txtWidthColour.Text)
+                            myCmd.Parameters.AddWithValue("@Status", ddlStatusColour.SelectedValue)
 
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
@@ -159,100 +262,44 @@ Partial Class Setting_Specification_Fabric_Detail
         End Try
     End Sub
 
-    Protected Sub btnActive_Click(sender As Object, e As EventArgs)
+    Protected Sub btnChangeStatusColour_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim active As Integer = 1
-            If lblActive.Text = "Yes" Then active = 0
+            Dim thisId As String = txtIdStatusColour.Text
+            Dim newStatus As String = ddlNewStatusColour.SelectedValue
+            Dim oldStatus As String = ddlOldStatusColour.SelectedValue
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE Fabrics SET Active=@Active WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                    myCmd.Parameters.AddWithValue("@Active", active)
-
-                    thisConn.Open()
-                    myCmd.ExecuteNonQuery()
-                End Using
-            End Using
-
-            Dim activeDesc As String = "Fabric Has Been Activated"
-            If active = 0 Then activeDesc = "Fabric Has Been Deactivated"
-
-            Dim dataLog As Object() = {"Fabrics", lblId.Text, Session("LoginId").ToString(), activeDesc}
-            settingClass.Logs(dataLog)
-
-            Dim aliasData As DataTable = settingClass.GetDataTable("SELECT * FROM FabricAlias WHERE Type='Fabrics' AND FirstId='" & lblId.Text & "'")
-            If aliasData.Rows.Count > 0 Then
-                For i As Integer = 0 To aliasData.Rows.Count - 1
-                    Dim aliasId As String = aliasData.Rows(i)("SecondId").ToString()
-
-                    Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE Fabrics SET Active=@Active WHERE Id=@Id", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", aliasId)
-                            myCmd.Parameters.AddWithValue("@Active", active)
-
-                            thisConn.Open()
-                            myCmd.ExecuteNonQuery()
-                        End Using
-                    End Using
-
-                    dataLog = {"Fabrics", aliasId, Session("LoginId").ToString(), activeDesc}
-                    settingClass.Logs(dataLog)
-                Next
-            End If
-
-            url = String.Format("~/setting/specification/fabric/detail?fabricid={0}", lblId.Text)
-            Response.Redirect(url, False)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
-    Protected Sub btnActiveColour_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        Try
-            Dim thisId As String = txtIdActiveColour.Text
-
-            Dim active As Integer = 1
-            If txtActiveColour.Text = "1" Then : active = 0 : End If
-
-            Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET Active=@Active WHERE Id=@Id", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET Status=@Status WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.Parameters.AddWithValue("@Active", active)
+                    myCmd.Parameters.AddWithValue("@Status", newStatus)
 
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
             End Using
 
-            Dim activeDesc As String = "Fabric Colour Has Been Activated"
-            If active = 0 Then activeDesc = "Fabric Colour Has Been Deactivated"
-
-            Dim dataLog As Object() = {"FabricColours", thisId, Session("LoginId").ToString(), activeDesc}
+            Dim changeDesc As String = String.Format("Change Status Fabric Colour : {0}", newStatus)
+            dataLog = {"FabricColours", thisId, Session("LoginId").ToString(), changeDesc}
             settingClass.Logs(dataLog)
 
-            Dim aliasData As DataTable = settingClass.GetDataTable("SELECT * FROM FabricAlias WHERE Type='FabricColours' AND FirstId='" & thisId & "'")
-            If aliasData.Rows.Count > 0 Then
-                For i As Integer = 0 To aliasData.Rows.Count - 1
-                    Dim aliasId As String = aliasData.Rows(i)("SecondId").ToString()
+            Dim aliasData As DataRow = settingClass.GetDataRow("SELECT SecondId FROM FabricAlias WHERE Type='FabricColours' AND FirstId='" & thisId & "'")
+            If aliasData IsNot Nothing Then
+                Dim aliasId As String = aliasData(0).ToString()
 
-                    Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET Active=@Active WHERE Id=@Id", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", aliasId)
-                            myCmd.Parameters.AddWithValue("@Active", active)
+                Using thisConn As New SqlConnection(myConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET Status=@Status WHERE Id=@Id", thisConn)
+                        myCmd.Parameters.AddWithValue("@Id", aliasId)
+                        myCmd.Parameters.AddWithValue("@Status", newStatus)
 
-                            thisConn.Open()
-                            myCmd.ExecuteNonQuery()
-                        End Using
+                        thisConn.Open()
+                        myCmd.ExecuteNonQuery()
                     End Using
+                End Using
 
-                    dataLog = {"Fabrics", aliasId, Session("LoginId").ToString(), activeDesc}
-                    settingClass.Logs(dataLog)
-                Next
+                changeDesc = String.Format("Change Status Fabric Colour : {0}", newStatus)
+                dataLog = {"FabricColours", aliasId, Session("LoginId").ToString(), changeDesc}
+                settingClass.Logs(dataLog)
             End If
 
             url = String.Format("~/setting/specification/fabric/detail?fabricid={0}", lblId.Text)
@@ -282,10 +329,7 @@ Partial Class Setting_Specification_Fabric_Detail
             If norailroad = 1 Then lblNoRailRoad.Text = "Yes"
             If norailroad = 0 Then lblNoRailRoad.Text = "No"
 
-            Dim active As Integer = Convert.ToInt32(thisData("Active"))
-            lblActive.Text = "Error"
-            If active = 1 Then lblActive.Text = "Yes"
-            If active = 0 Then lblActive.Text = "No"
+            lblStatus.Text = thisData("Status").ToString()
 
             lblDesignName.Text = String.Empty
             If Not thisData("DesignId").ToString() = "" Then
@@ -327,7 +371,7 @@ Partial Class Setting_Specification_Fabric_Detail
             End If
 
             btnEditFabric.Visible = PageAction("Edit")
-            aActive.Visible = PageAction("Active")
+            aChangeStatus.Visible = PageAction("Change Status")
             btnAddColour.Visible = PageAction("Add Colour")
         Catch ex As Exception
             MessageError(True, ex.ToString)
@@ -342,9 +386,9 @@ Partial Class Setting_Specification_Fabric_Detail
             Dim stringFabricId As String = "WHERE FabricId='" & fabricId & "'"
             Dim stringSearch As String = String.Empty
             If Not String.IsNullOrEmpty(searchText) Then
-                stringSearch = "AND (BoeId LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%' OR Colour LIKE '%" & searchText & "%')"
+                stringSearch = "AND (BoeId LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%' OR Colour LIKE '%" & searchText & "%' OR Status LIKE '%" & searchText & "%')"
             End If
-            Dim thisString As String = String.Format("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM FabricColours {0} {1} ORDER BY Colour ASC", stringFabricId, stringSearch)
+            Dim thisString As String = String.Format("SELECT * FROM FabricColours {0} {1} ORDER BY Colour ASC", stringFabricId, stringSearch)
 
             gvListColour.DataSource = settingClass.GetDataTable(thisString)
             gvListColour.DataBind()
@@ -365,16 +409,6 @@ Partial Class Setting_Specification_Fabric_Detail
     Protected Sub MessageError_Process(visible As Boolean, message As String)
         divErrorProcess.Visible = visible : msgErrorProcess.InnerText = message
     End Sub
-
-    Protected Function TextActive(active As String) As String
-        If active = "Yes" Then Return "Deactivate"
-        Return "Activate"
-    End Function
-
-    Protected Function TextActiveColour(active As Boolean) As String
-        If active = True Then Return "Deactivate"
-        Return "Activate"
-    End Function
 
     Protected Function PageAction(action As String) As Boolean
         Try

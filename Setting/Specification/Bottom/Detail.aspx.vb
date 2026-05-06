@@ -7,6 +7,7 @@ Partial Class Setting_Specification_Bottom_Detail
     Dim settingClass As New SettingClass
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim dataLog As Object() = Nothing
     Dim url As String = String.Empty
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -32,27 +33,46 @@ Partial Class Setting_Specification_Bottom_Detail
         Response.Redirect(url, False)
     End Sub
 
-    Protected Sub btnActive_Click(sender As Object, e As EventArgs)
+    Protected Sub btnChangeStatus_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim active As Integer = 1
-            If lblActive.Text = "Yes" Then active = 0
+            Dim newStatus As String = ddlNewStatus.SelectedValue
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE Bottoms SET Active=@Active WHERE Id=@Id", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE Bottoms SET Status=@Status WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                    myCmd.Parameters.AddWithValue("@Active", active)
+                    myCmd.Parameters.AddWithValue("@Status", newStatus)
 
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
             End Using
 
-            Dim activeDesc As String = "Bottom Type Has Been Activated"
-            If active = 0 Then activeDesc = "Bottom Type Has Been Deactivated"
-
-            Dim dataLog As Object() = {"Bottoms", lblId.Text, Session("LoginId").ToString(), activeDesc}
+            Dim changeDesc As String = String.Format("Change Status Bottom Type : {0}", newStatus)
+            dataLog = {"Bottoms", lblId.Text, Session("LoginId").ToString(), changeDesc}
             settingClass.Logs(dataLog)
+
+            Dim detailData As DataTable = settingClass.GetDataTable("SELECT * FROM BottomColours WHERE BottomId='" & lblId.Text & "' AND Status='" & lblStatus.Text & "'")
+            If Not detailData.Rows.Count = 0 Then
+                For i As Integer = 0 To detailData.Rows.Count - 1
+                    Dim detailId As String = detailData.Rows(i)("Id").ToString()
+
+                    Using thisConn As New SqlConnection(myConn)
+                        Using myCmd As SqlCommand = New SqlCommand("UPDATE BottomColours SET Status=@Status WHERE Id=@Id", thisConn)
+                            myCmd.Parameters.AddWithValue("@Id", detailId)
+                            myCmd.Parameters.AddWithValue("@Status", newStatus)
+
+                            thisConn.Open()
+                            myCmd.ExecuteNonQuery()
+                        End Using
+                    End Using
+
+                    changeDesc = String.Format("Change Status Bottom Colour : {0}", newStatus)
+
+                    dataLog = {"BottomColours", detailId, Session("LoginId").ToString(), changeDesc}
+                    settingClass.Logs(dataLog)
+                Next
+            End If
 
             url = String.Format("~/setting/specification/bottom/detail?bottomid={0}", lblId.Text)
             Response.Redirect(url, False)
@@ -71,7 +91,7 @@ Partial Class Setting_Specification_Bottom_Detail
             lblAction.Text = "Add"
             titleProcessColour.InnerText = "Add Bottom Colour"
 
-            divActive.Visible = True
+            divStatus.Visible = True
 
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcessColour", thisScript, True)
         Catch ex As Exception
@@ -112,11 +132,11 @@ Partial Class Setting_Specification_Bottom_Detail
 
                     txtColour.Text = myData("Colour").ToString()
                     txtDescription.Text = myData("Description").ToString()
-                    ddlActive.SelectedValue = Convert.ToInt32(myData("Active"))
+                    ddlStatus.SelectedValue = myData("Status").ToString()
 
-                    divActive.Visible = False
+                    divStatus.Visible = False
                     If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" Then
-                        divActive.Visible = True
+                        divStatus.Visible = True
                     End If
 
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcessColour", thisScript, True)
@@ -155,14 +175,14 @@ Partial Class Setting_Specification_Bottom_Detail
                 If lblAction.Text = "Add" Then
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM BottomColours ORDER BY Id DESC")
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO BottomColours VALUES (@Id, @BottomId, @BoeId, @Name, @Colour, @Description, @Active)", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO BottomColours VALUES (@Id, @BottomId, @BoeId, @Name, @Colour, @Description, @Status)", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", thisId)
                             myCmd.Parameters.AddWithValue("@BottomId", lblId.Text)
                             myCmd.Parameters.AddWithValue("@BoeId", If(String.IsNullOrEmpty(txtBoeId.Text), CType(DBNull.Value, Object), txtBoeId.Text))
                             myCmd.Parameters.AddWithValue("@Name", name)
                             myCmd.Parameters.AddWithValue("@Colour", txtColour.Text)
                             myCmd.Parameters.AddWithValue("@Description", descText)
-                            myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
+                            myCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
 
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
@@ -207,28 +227,26 @@ Partial Class Setting_Specification_Bottom_Detail
         End Try
     End Sub
 
-    Protected Sub btnActiveColour_Click(sender As Object, e As EventArgs)
+    Protected Sub btnChangeStatusColour_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim thisId As String = txtIdActiveColour.Text
-
-            Dim active As Integer = 1
-            If txtActiveColour.Text = "1" Then : active = 0 : End If
+            Dim thisId As String = txtIdStatusColour.Text
+            Dim newStatus As String = ddlNewStatusColour.SelectedValue
+            Dim oldStatus As String = ddlOldStatusColour.SelectedValue
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE BottomColours SET Active=@Active WHERE Id=@Id", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE BottomColours SET Status=@Status WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.Parameters.AddWithValue("@Active", active)
+                    myCmd.Parameters.AddWithValue("@Status", newStatus)
 
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
             End Using
 
-            Dim activeDesc As String = "Bottom Colour Has Been Activated"
-            If active = 0 Then activeDesc = "Bottom Colour Has Been Deactivated"
+            Dim changeDesc As String = String.Format("Change Status Bottom Colour : {0}", newStatus)
 
-            Dim dataLog As Object() = {"BottomColours", thisId, Session("LoginId").ToString(), activeDesc}
+            Dim dataLog As Object() = {"BottomColours", thisId, Session("LoginId").ToString(), changeDesc}
             settingClass.Logs(dataLog)
 
             url = String.Format("~/setting/specification/bottom/detail?bottomid={0}", lblId.Text)
@@ -240,6 +258,7 @@ Partial Class Setting_Specification_Bottom_Detail
             End If
         End Try
     End Sub
+
     Protected Sub BindData(bottomId As String)
         Try
             Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM Bottoms WHERE Id='" & bottomId & "'")
@@ -252,10 +271,7 @@ Partial Class Setting_Specification_Bottom_Detail
             lblName.Text = thisData("Name").ToString()
             lblDescription.Text = thisData("Description").ToString()
 
-            Dim active As Integer = Convert.ToInt32(thisData("Active"))
-            lblActive.Text = "Error"
-            If active = 1 Then lblActive.Text = "Yes"
-            If active = 0 Then lblActive.Text = "No"
+            lblStatus.Text = thisData("Status").ToString()
 
             If Not String.IsNullOrEmpty(bottomId) Then
                 Dim designData As DataTable = settingClass.GetDataTable("SELECT Designs.Name AS DesignName FROM Bottoms CROSS APPLY STRING_SPLIT(Bottoms.DesignId, ',') AS splitArray LEFT JOIN Designs ON splitArray.VALUE=Designs.Id WHERE Bottoms.Id='" & bottomId & "' ORDER BY Designs.Id ASC")
@@ -280,11 +296,11 @@ Partial Class Setting_Specification_Bottom_Detail
                 lblCompanyDetail.Text = companyDetail.Remove(companyDetail.Length - 2).ToString()
             End If
 
-            gvList.DataSource = settingClass.GetDataTable("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM BottomColours WHERE BottomId='" & bottomId & "' ORDER BY Colour ASC")
+            gvList.DataSource = settingClass.GetDataTable("SELECT * FROM BottomColours WHERE BottomId='" & bottomId & "' ORDER BY Colour ASC")
             gvList.DataBind()
             gvList.Columns(1).Visible = PageAction("Visible ID Detail")
 
-            aActive.Visible = PageAction("Active")
+            aChangeStatus.Visible = PageAction("Change Status")
 
             btnAddColour.Visible = PageAction("Add Colour")
             btnEdit.Visible = PageAction("Edit")
@@ -303,16 +319,6 @@ Partial Class Setting_Specification_Bottom_Detail
     Protected Sub MessageError_ProcessColour(visible As Boolean, message As String)
         divErrorProcessColour.Visible = visible : msgErrorProcessColour.InnerText = message
     End Sub
-
-    Protected Function TextActive(active As String) As String
-        If active = "Yes" Then Return "Deactivate"
-        Return "Activate"
-    End Function
-
-    Protected Function TextActiveColour(active As Boolean) As String
-        If active = True Then Return "Deactivate"
-        Return "Activate"
-    End Function
 
     Protected Function PageAction(action As String) As Boolean
         Try

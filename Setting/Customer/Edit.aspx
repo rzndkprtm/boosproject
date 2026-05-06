@@ -48,7 +48,7 @@
                                     <div class="row mb-2" runat="server" id="divLevelSponsor">
                                         <div class="col-12 col-sm-12 col-lg-4 mb-2 form-group">
                                             <label class="form-label">Level</label>
-                                            <asp:DropDownList runat="server" ID="ddlLevel" CssClass="form-select">
+                                            <asp:DropDownList runat="server" ID="ddlLevel" CssClass="choices form-select">
                                                 <asp:ListItem Value="" Text=""></asp:ListItem>
                                                 <asp:ListItem Value="Sponsor" Text="Sponsor"></asp:ListItem>
                                                 <asp:ListItem Value="Member" Text="Member"></asp:ListItem>
@@ -57,23 +57,23 @@
                                         </div>
                                         <div class="col-12 col-sm-12 col-lg-8 mb-2 form-group">
                                             <label class="form-label">Sponsor</label>
-                                            <asp:DropDownList runat="server" ID="ddlSponsor" CssClass="form-select"></asp:DropDownList>
+                                            <asp:DropDownList runat="server" ID="ddlSponsor" CssClass="choices form-select"></asp:DropDownList>
                                         </div>
                                     </div>
                                     <div class="row mb-2" runat="server" id="divCompany">
                                         <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
                                             <label class="form-label">Company</label>
-                                            <asp:DropDownList runat="server" ID="ddlCompany" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCompany_SelectedIndexChanged"></asp:DropDownList>
+                                            <asp:DropDownList runat="server" ID="ddlCompany" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCompany_SelectedIndexChanged"></asp:DropDownList>
                                         </div>
                                         <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
                                             <label class="form-label">Company Detail</label>
-                                            <asp:DropDownList runat="server" ID="ddlCompanyDetail" CssClass="form-select"></asp:DropDownList>
+                                            <asp:DropDownList runat="server" ID="ddlCompanyDetail" CssClass="choices form-select"></asp:DropDownList>
                                         </div>
                                     </div>
                                     <div class="row mb-2" runat="server" id="divAreaOperator">
                                         <div class="col-5 col-sm-12 col-lg-6 mb-2 form-group">
                                             <label class="form-label">Area</label>
-                                            <asp:DropDownList runat="server" ID="ddlArea" CssClass="form-select">
+                                            <asp:DropDownList runat="server" ID="ddlArea" CssClass="choices form-select">
                                                 <asp:ListItem Value="" Text=""></asp:ListItem>
                                                 <asp:ListItem Value="NSW" Text="NSW"></asp:ListItem>
                                                 <asp:ListItem Value="NSW 1" Text="NSW 1"></asp:ListItem>
@@ -96,15 +96,15 @@
                                     <div class="row mb-3">
                                         <div class="col-12 col-sm-12 col-lg-4 mb-2 form-group">
                                             <label class="form-label">Price Group</label>
-                                            <asp:DropDownList runat="server" ID="ddlPriceGroup" CssClass="form-select"></asp:DropDownList>
+                                            <asp:DropDownList runat="server" ID="ddlPriceGroup" CssClass="choices form-select"></asp:DropDownList>
                                         </div>
                                         <div class="col-12 col-sm-12 col-lg-4 mb-2 form-group">
                                             <label class="form-label">Shutter Price Group</label>
-                                            <asp:DropDownList runat="server" ID="ddlPriceGroupShutter" CssClass="form-select"></asp:DropDownList>
+                                            <asp:DropDownList runat="server" ID="ddlPriceGroupShutter" CssClass="choices form-select"></asp:DropDownList>
                                         </div>
                                         <div class="col-12 col-sm-12 col-lg-4 mb-2 form-group">
                                             <label class="form-label">Door Price Group</label>
-                                            <asp:DropDownList runat="server" ID="ddlPriceGroupDoor" CssClass="form-select"></asp:DropDownList>
+                                            <asp:DropDownList runat="server" ID="ddlPriceGroupDoor" CssClass="choices form-select"></asp:DropDownList>
                                         </div>
                                     </div>
                                     <div class="row mb-2">

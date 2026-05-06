@@ -60,6 +60,23 @@
                                         </div>
                                     </div>
 
+                                    <div class="row mt-5">
+                                        <div class="col-12">
+                                            <div class="table-responsive">
+                                                <table class="table mb-0">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td style="background-color: darkgreen; color: white; text-align:center;">In Stock</td>
+                                                            <td style="background-color: yellow; text-align:center;">Limited Stock</td>
+                                                            <td style="background-color: darkred; color: white; text-align:center;">Out of Stock</td>
+                                                            <td style="background-color: darkgray; color: white; text-align:center;">Discontinued</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <div class="row mt-3">
                                         <div class="col-12">
                                             <div class="table-responsive">
@@ -90,7 +107,25 @@
                                             </div>
                                         </div>
                                     </div>
+
                                     <div class="row mt-5">
+                                        <div class="col-12">
+                                            <div class="table-responsive">
+                                                <table class="table mb-0">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td style="background-color: darkgreen; color: white; text-align:center;">In Stock</td>
+                                                            <td style="background-color: yellow; text-align:center;">Limited Stock</td>
+                                                            <td style="background-color: darkred; color: white; text-align:center;">Out of Stock</td>
+                                                            <td style="background-color: darkgray; color: white; text-align:center;">Discontinued</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mt-3">
                                         <div class="col-12">
                                             <div class="table-responsive">
                                                 <asp:GridView runat="server" ID="gvListProfile" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowDataBound="gvListProfile_RowDataBound">
@@ -121,7 +156,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="row mt-5" runat="server">
+                                    <div class="row mt-5">
                                         <div class="col-12 col-sm-12 col-lg-7">
                                             <asp:Panel runat="server" DefaultButton="btnSearchCurtain" Width="100%">
                                                 <div class="input-group">
@@ -130,6 +165,23 @@
                                                     <asp:Button runat="server" ID="btnSearchCurtain" CssClass="btn btn-primary" Text="Search" OnClick="btnSearchCurtain_Click" />
                                                 </div>
                                             </asp:Panel>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mt-5">
+                                        <div class="col-12">
+                                            <div class="table-responsive">
+                                                <table class="table mb-0">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td style="background-color: darkgreen; color: white; text-align:center;">In Stock</td>
+                                                            <td style="background-color: yellow; text-align:center;">Limited Stock</td>
+                                                            <td style="background-color: darkred; color: white; text-align:center;">Out of Stock</td>
+                                                            <td style="background-color: darkgray; color: white; text-align:center;">Discontinued</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -164,7 +216,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="row mt-5" runat="server">
+                                    <div class="row mt-5">
                                         <div class="col-12 col-sm-12 col-lg-7">
                                             <asp:Panel runat="server" DefaultButton="btnSearchVertical" Width="100%">
                                                 <div class="input-group">
@@ -173,6 +225,23 @@
                                                     <asp:Button runat="server" ID="btnSearchVertical" CssClass="btn btn-primary" Text="Search" OnClick="btnSearchVertical_Click" />
                                                 </div>
                                             </asp:Panel>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mt-5">
+                                        <div class="col-12">
+                                            <div class="table-responsive">
+                                                <table class="table mb-0">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td style="background-color: darkgreen; color: white; text-align:center;">In Stock</td>
+                                                            <td style="background-color: yellow; text-align:center;">Limited Stock</td>
+                                                            <td style="background-color: darkred; color: white; text-align:center;">Out of Stock</td>
+                                                            <td style="background-color: darkgray; color: white; text-align:center;">Discontinued</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -207,7 +276,24 @@
                                         </div>
                                     </div>
 
-                                    <div class="row mt-5">
+                                    <%--<div class="row mt-5">
+                                        <div class="col-12">
+                                            <div class="table-responsive">
+                                                <table class="table mb-0">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td style="background-color: darkgreen; color: white; text-align:center;">In Stock</td>
+                                                            <td style="background-color: yellow; text-align:center;">Limited Stock</td>
+                                                            <td style="background-color: darkred; color: white; text-align:center;">Out of Stock</td>
+                                                            <td style="background-color: darkgray; color: white; text-align:center;">Discontinued</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>--%>
+
+                                    <div class="row mt-3">
                                         <div class="col-12">
                                             <div class="table-responsive">
                                                 <asp:GridView runat="server" ID="gvListVenetian" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowDataBound="gvListVenetian_RowDataBound">
@@ -236,7 +322,24 @@
                                         </div>
                                     </div>
 
-                                    <div class="row mt-5">
+                                    <%--<div class="row mt-5">
+                                        <div class="col-12">
+                                            <div class="table-responsive">
+                                                <table class="table mb-0">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td style="background-color: darkgreen; color: white; text-align:center;">In Stock</td>
+                                                            <td style="background-color: yellow; text-align:center;">Limited Stock</td>
+                                                            <td style="background-color: darkred; color: white; text-align:center;">Out of Stock</td>
+                                                            <td style="background-color: darkgray; color: white; text-align:center;">Discontinued</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>--%>
+
+                                    <div class="row mt-3">
                                         <div class="col-12">
                                             <div class="table-responsive">
                                                 <asp:GridView runat="server" ID="gvListAluminium" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowDataBound="gvListAluminium_RowDataBound">
