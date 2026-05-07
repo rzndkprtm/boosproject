@@ -272,9 +272,12 @@
                 Dim heading As String = thisData.Rows(i)("Heading").ToString()
                 Dim headingB As String = thisData.Rows(i)("HeadingB").ToString()
 
+                Dim orderType As String = blindName
+
                 Dim kitName As String = String.Format("{0} {1}", blindName, heading)
                 Dim kitId As String = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "'")
                 Dim kitIdB As String = String.Empty
+
                 If blindName = "Track Only" Then
                     kitId = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "'")
                 End If
@@ -283,7 +286,7 @@
                 End If
 
                 If blindName = "Complete Set (Double)" Then
-                    blindName = "Double Bracket"
+                    orderType = "Double Bracket"
 
                     kitName = String.Format("{0} {1}", blindName, headingB)
                     kitIdB = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "'")
@@ -291,6 +294,9 @@
 
                 Dim webFabricId As String = thisData.Rows(i)("FabricColourId").ToString()
                 Dim boeFabricId As String = GetItemData("SELECT BoeId FROM FabricColours WHERE Id='" & webFabricId & "'")
+
+                Dim webFabricIdB As String = thisData.Rows(i)("FabricColourIdB").ToString()
+                Dim boeFabricIdB As String = GetItemData("SELECT BoeId FROM FabricColours WHERE Id='" & webFabricIdB & "'")
 
                 If String.IsNullOrEmpty(kitId) Then Continue For
 
@@ -302,10 +308,11 @@
                 writer.WriteAttributeString("Mounting", thisData.Rows(i)("Mounting").ToString())
 
                 writer.WriteAttributeString("BlindType", "Curtain")
-                writer.WriteAttributeString("OrderType", blindName)
+                writer.WriteAttributeString("OrderType", orderType)
                 writer.WriteAttributeString("IDHK", kitId)
                 writer.WriteAttributeString("IDHK2", kitIdB)
                 writer.WriteAttributeString("FabricID", boeFabricId)
+                writer.WriteAttributeString("FabricID_DoubleBracket", boeFabricIdB)
                 writer.WriteAttributeString("Width", thisData.Rows(i)("Width").ToString())
                 writer.WriteAttributeString("Drop", thisData.Rows(i)("Drop").ToString())
                 writer.WriteAttributeString("StackOption", thisData.Rows(i)("StackPosition").ToString())
