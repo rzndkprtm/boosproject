@@ -306,7 +306,6 @@
                 writer.WriteAttributeString("Qty", thisData.Rows(i)("Qty").ToString())
                 writer.WriteAttributeString("Room", thisData.Rows(i)("Room").ToString())
                 writer.WriteAttributeString("Mounting", thisData.Rows(i)("Mounting").ToString())
-
                 writer.WriteAttributeString("BlindType", "Curtain")
                 writer.WriteAttributeString("OrderType", orderType)
                 writer.WriteAttributeString("IDHK", kitId)
