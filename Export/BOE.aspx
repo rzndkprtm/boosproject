@@ -270,6 +270,7 @@
 
             If designName = "Curtain" Then
                 Dim heading As String = thisData.Rows(i)("Heading").ToString()
+                Dim headingB As String = thisData.Rows(i)("HeadingB").ToString()
 
                 Dim kitName As String = String.Format("{0} {1}", blindName, heading)
                 Dim kitId As String = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "'")
@@ -283,7 +284,9 @@
 
                 If blindName = "Complete Set (Double)" Then
                     blindName = "Double Bracket"
-                    kitIdB = kitId
+
+                    kitName = String.Format("{0} {1}", blindName, headingB)
+                    kitIdB = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "'")
                 End If
 
                 Dim webFabricId As String = thisData.Rows(i)("FabricColourId").ToString()
