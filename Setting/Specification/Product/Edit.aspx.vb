@@ -112,7 +112,7 @@ Partial Class Setting_Specification_Product_Edit
                 Dim descText As String = txtControlDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO ProductControls VALUES (@Id, @Name, @Description)", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO ProductControls VALUES (@Id, @Name, @Description, NULL)", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
                         myCmd.Parameters.AddWithValue("@Name", txtControlName.Text.Trim())
                         myCmd.Parameters.AddWithValue("@Description", descText)
@@ -213,7 +213,7 @@ Partial Class Setting_Specification_Product_Edit
                 If String.IsNullOrEmpty(txtInvoiceName.Text) Then txtInvoiceName.Text = txtName.Text
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Products SET DesignId=@DesignId, BlindId=@BlindId, CompanyDetailId=@CompanyDetailId, Name=@Name, InvoiceName=@InvoiceName, TubeType=@TubeType, ControlType=@ControlType, ColourType=@ColourType, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Products SET DesignId=@DesignId, BlindId=@BlindId, CompanyDetailId=@CompanyDetailId, Name=@Name, InvoiceName=@InvoiceName, TubeType=@TubeType, ControlType=@ControlType, ColourType=@ColourType, Description=@Description, Status=@Status WHERE Id=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         myCmd.Parameters.AddWithValue("@DesignId", ddlDesign.SelectedValue)
                         myCmd.Parameters.AddWithValue("@BlindId", ddlBlind.SelectedValue)
@@ -224,7 +224,7 @@ Partial Class Setting_Specification_Product_Edit
                         myCmd.Parameters.AddWithValue("@ControlType", ddlControl.SelectedValue)
                         myCmd.Parameters.AddWithValue("@ColourType", ddlColour.SelectedValue)
                         myCmd.Parameters.AddWithValue("@Description", descText)
-                        myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
+                        myCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
 
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
@@ -275,7 +275,7 @@ Partial Class Setting_Specification_Product_Edit
             ddlTube.SelectedValue = myData("TubeType").ToString()
             ddlColour.SelectedValue = myData("ColourType").ToString()
             txtDescription.Text = myData("Description").ToString()
-            ddlActive.SelectedValue = Convert.ToInt32(myData("Active"))
+            ddlStatus.SelectedValue = myData("Status").ToString()
 
             If Not myData("CompanyDetailId").ToString() = "" Then
                 Dim companyArray() As String = myData("CompanyDetailId").ToString().Split(",")

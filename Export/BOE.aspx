@@ -273,6 +273,7 @@
 
                 Dim kitName As String = String.Format("{0} {1}", blindName, heading)
                 Dim kitId As String = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "'")
+                Dim kitIdB As String = String.Empty
                 If blindName = "Track Only" Then
                     kitId = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "'")
                 End If
@@ -282,6 +283,7 @@
 
                 If blindName = "Complete Set (Double)" Then
                     blindName = "Double Bracket"
+                    kitIdB = kitId
                 End If
 
                 Dim webFabricId As String = thisData.Rows(i)("FabricColourId").ToString()
@@ -299,6 +301,7 @@
                 writer.WriteAttributeString("BlindType", "Curtain")
                 writer.WriteAttributeString("OrderType", blindName)
                 writer.WriteAttributeString("IDHK", kitId)
+                writer.WriteAttributeString("IDHK2", kitIdB)
                 writer.WriteAttributeString("FabricID", boeFabricId)
                 writer.WriteAttributeString("Width", thisData.Rows(i)("Width").ToString())
                 writer.WriteAttributeString("Drop", thisData.Rows(i)("Drop").ToString())

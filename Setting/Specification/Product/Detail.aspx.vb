@@ -7,6 +7,7 @@ Partial Class Setting_Specification_Product_Detail
     Dim settingClass As New SettingClass
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim dataLog As Object() = Nothing
     Dim url As String = String.Empty
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -31,6 +32,41 @@ Partial Class Setting_Specification_Product_Detail
     Protected Sub btnEditProduct_Click(sender As Object, e As EventArgs)
         url = String.Format("~/setting/specification/product/edit?id={0}", lblId.Text)
         Response.Redirect(url, False)
+    End Sub
+
+    Protected Sub btnChangeStatus_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim newStatus As String = ddlNewStatus.SelectedValue
+
+            If newStatus = "" Then
+                url = String.Format("~/setting/specification/fabric/detail?fabricid={0}", lblId.Text)
+                Response.Redirect(url, False)
+                Exit Sub
+            End If
+
+            Using thisConn As New SqlConnection(myConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE Products SET Status=@Status WHERE Id=@Id", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                    myCmd.Parameters.AddWithValue("@Status", newStatus)
+
+                    thisConn.Open()
+                    myCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Dim changeDesc As String = String.Format("Change Status Product : {0}", newStatus)
+            dataLog = {"Products", lblId.Text, Session("LoginId").ToString(), changeDesc}
+            settingClass.Logs(dataLog)
+
+            url = String.Format("~/setting/specification/product/detail?productid={0}", lblId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
     End Sub
 
     Protected Sub btnAddKit_Click(sender As Object, e As EventArgs)
@@ -74,38 +110,6 @@ Partial Class Setting_Specification_Product_Detail
                 End Try
             End If
         End If
-    End Sub
-
-    Protected Sub btnActive_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        Try
-            Dim active As Integer = 1
-            If lblActive.Text = "Yes" Then active = 0
-
-            Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE Products SET Active=@Active WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                    myCmd.Parameters.AddWithValue("@Active", active)
-
-                    thisConn.Open()
-                    myCmd.ExecuteNonQuery()
-                End Using
-            End Using
-
-            Dim activeDesc As String = "Product Has Been Activated"
-            If active = 0 Then activeDesc = "Product Has Been Deactivated"
-
-            Dim dataLog As Object() = {"Products", lblId.Text, Session("LoginId").ToString(), activeDesc}
-            settingClass.Logs(dataLog)
-
-            url = String.Format("~/setting/specification/product/detail?productid={0}", lblId.Text)
-            Response.Redirect(url, False)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
     End Sub
 
     Protected Sub btnProcessKit_Click(sender As Object, e As EventArgs)
@@ -225,6 +229,7 @@ Partial Class Setting_Specification_Product_Detail
             lblControlType.Text = thisData("ControlName").ToString()
             lblColourType.Text = thisData("ColourName").ToString()
             lblDescription.Text = thisData("Description").ToString()
+            lblStatus.Text = thisData("Status").ToString()
 
             Dim company As String = thisData("CompanyDetailId").ToString()
             If Not String.IsNullOrEmpty(company) Then
@@ -239,15 +244,11 @@ Partial Class Setting_Specification_Product_Detail
                 lblCompanyName.Text = hasil.Remove(hasil.Length - 2).ToString()
             End If
 
-            Dim active As Integer = Convert.ToInt32(thisData("Active"))
-            If active = 1 Then lblActive.Text = "Yes"
-            If active = 0 Then lblActive.Text = "No"
-
             gvList.DataSource = settingClass.GetDataTable("SELECT * FROM ProductKits WHERE ProductId='" & productId & "'")
             gvList.DataBind()
 
             btnEditProduct.Visible = PageAction("Edit")
-            aActive.Visible = PageAction("Active")
+            aChangeStatus.Visible = PageAction("Change Status")
             btnAddKit.Visible = PageAction("Add Kit")
         Catch ex As Exception
             MessageError(True, ex.ToString)
@@ -261,11 +262,6 @@ Partial Class Setting_Specification_Product_Detail
     Protected Sub MessageError_ProcessKit(visible As Boolean, message As String)
         divErrorProcessKit.Visible = visible : msgErrorProcessKit.InnerText = message
     End Sub
-
-    Protected Function TextActive(active As String) As String
-        If active = "Yes" Then Return "Deactivate"
-        Return "Activate"
-    End Function
 
     Protected Function PageAction(action As String) As Boolean
         Try

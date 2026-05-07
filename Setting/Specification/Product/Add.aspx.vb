@@ -109,7 +109,7 @@ Partial Class Setting_Specification_Product_Add
                 Dim descText As String = txtControlDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO ProductControls VALUES (@Id, @Name, @Description)", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO ProductControls VALUES (@Id, @Name, @Description, NULL)", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
                         myCmd.Parameters.AddWithValue("@Name", txtControlName.Text.Trim())
                         myCmd.Parameters.AddWithValue("@Description", descText)
@@ -209,7 +209,7 @@ Partial Class Setting_Specification_Product_Add
 
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Products ORDER BY Id DESC")
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Products VALUES (@Id, @DesignId, @BlindId, @CompanyDetailId, @Name, @InvoiceName, @TubeType, @ControlType, @ColourType, @Description, @Active)", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Products VALUES (@Id, @DesignId, @BlindId, @CompanyDetailId, @Name, @InvoiceName, @TubeType, @ControlType, @ColourType, @Description, @Status)", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
                         myCmd.Parameters.AddWithValue("@DesignId", ddlDesign.SelectedValue)
                         myCmd.Parameters.AddWithValue("@BlindId", ddlBlind.SelectedValue)
@@ -220,7 +220,7 @@ Partial Class Setting_Specification_Product_Add
                         myCmd.Parameters.AddWithValue("@ControlType", ddlControl.SelectedValue)
                         myCmd.Parameters.AddWithValue("@ColourType", ddlColour.SelectedValue)
                         myCmd.Parameters.AddWithValue("@Description", descText)
-                        myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
+                        myCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
 
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()

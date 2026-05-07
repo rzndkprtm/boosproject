@@ -122,9 +122,9 @@ Partial Class Order_Method
         End If
 
         If type = "TubeType" Then
-            Dim thisQuery As String = "SELECT Products.TubeType AS TextValue, ProductTubes.Name AS TextName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductTubes ON Products.TubeType=ProductTubes.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Products.Active=1 GROUP BY Products.TubeType, ProductTubes.Name ORDER BY ProductTubes.Name ASC"
+            Dim thisQuery As String = "SELECT Products.TubeType AS TextValue, ProductTubes.Name AS TextName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductTubes ON Products.TubeType=ProductTubes.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetailid & "' AND (Products.Status='In Stock' OR Products.Status='Limited Stock') GROUP BY Products.TubeType, ProductTubes.Name ORDER BY ProductTubes.Name ASC"
             If blindtype = "73" OrElse blindtype = "74" OrElse blindtype = "75" OrElse blindtype = "76" Then
-                thisQuery = "SELECT Products.TubeType AS TextValue, ProductTubes.Name AS TextName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductTubes ON Products.TubeType=ProductTubes.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Products.Active=1 GROUP BY Products.TubeType, ProductTubes.Name ORDER BY CASE WHEN ProductTubes.Name = 'Hinged Single' THEN 0 WHEN ProductTubes.Name = 'Hinged Double' THEN 1 WHEN ProductTubes.Name = 'Sliding Single' THEN 2 WHEN ProductTubes.Name = 'Sliding Double' THEN 3 WHEN ProductTubes.Name = 'Sliding Stacker' THEN 4 ELSE 5 END ASC"
+                thisQuery = "SELECT Products.TubeType AS TextValue, ProductTubes.Name AS TextName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductTubes ON Products.TubeType=ProductTubes.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetailid & "' AND (Products.Status='In Stock' OR Products.Status='Limited Stock') GROUP BY Products.TubeType, ProductTubes.Name ORDER BY CASE WHEN ProductTubes.Name = 'Hinged Single' THEN 0 WHEN ProductTubes.Name = 'Hinged Double' THEN 1 WHEN ProductTubes.Name = 'Sliding Single' THEN 2 WHEN ProductTubes.Name = 'Sliding Double' THEN 3 WHEN ProductTubes.Name = 'Sliding Stacker' THEN 4 ELSE 5 END ASC"
             End If
             If action = "view" Then
                 thisQuery = "SELECT Products.TubeType AS TextValue, ProductTubes.Name AS TextName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductTubes ON Products.TubeType=ProductTubes.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetailid & "' GROUP BY Products.TubeType, ProductTubes.Name ORDER BY ProductTubes.Name ASC"
@@ -141,7 +141,7 @@ Partial Class Order_Method
         End If
 
         If type = "ControlTypeRoller" Then
-            Dim thisQuery As String = "SELECT Products.ControlType AS TextValue, ProductControls.Name AS TextName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductControls ON Products.ControlType=ProductControls.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Products.Active=1 GROUP BY Products.ControlType, ProductControls.Name ORDER BY ProductControls.Name ASC"
+            Dim thisQuery As String = "SELECT Products.ControlType AS TextValue, ProductControls.Name AS TextName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductControls ON Products.ControlType=ProductControls.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetailid & "' AND (Products.Status='In Stock' OR Products.Status='Limited Stock') GROUP BY Products.ControlType, ProductControls.Name ORDER BY ProductControls.Name ASC"
             If action = "view" Then
                 thisQuery = "SELECT Products.ControlType AS TextValue, ProductControls.Name AS TextName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductControls ON Products.ControlType=ProductControls.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetailid & "' GROUP BY Products.ControlType, ProductControls.Name ORDER BY ProductControls.Name ASC"
             End If
@@ -153,7 +153,7 @@ Partial Class Order_Method
         End If
 
         If type = "TubeTypeRoller" Then
-            Dim thisQuery As String = "SELECT ProductTubes.Id, Products.TubeType AS TextValue, ProductTubes.Name AS TextName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductTubes ON Products.TubeType=ProductTubes.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Products.ControlType='" & controltype & "' AND Products.Active=1 GROUP BY ProductTubes.Id, Products.TubeType, ProductTubes.Name ORDER BY ProductTubes.Id ASC"
+            Dim thisQuery As String = "SELECT ProductTubes.Id, Products.TubeType AS TextValue, ProductTubes.Name AS TextName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductTubes ON Products.TubeType=ProductTubes.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Products.ControlType='" & controltype & "' AND (Products.Status='In Stock' OR Products.Status='Limited Stock') GROUP BY ProductTubes.Id, Products.TubeType, ProductTubes.Name ORDER BY ProductTubes.Id ASC"
             If action = "view" Then
                 thisQuery = "SELECT ProductTubes.Id, Products.TubeType AS TextValue, ProductTubes.Name AS TextName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductTubes ON Products.TubeType=ProductTubes.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Products.ControlType='" & controltype & "' GROUP BY ProductTubes.Id, Products.TubeType, ProductTubes.Name ORDER BY ProductTubes.Id ASC"
             End If
@@ -165,7 +165,7 @@ Partial Class Order_Method
         End If
 
         If type = "ControlType" Then
-            Dim thisQuery As String = "SELECT Products.ControlType AS TextValue, ProductControls.Name AS TextName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductControls ON Products.ControlType=ProductControls.Id WHERE Products.BlindId='" & blindtype & "' AND Products.TubeType='" & tubetype & "' AND companyArray.VALUE='" & companydetailid & "' AND Products.Active=1 GROUP BY Products.ControlType, ProductControls.Name ORDER BY ProductControls.Name ASC"
+            Dim thisQuery As String = "SELECT Products.ControlType AS TextValue, ProductControls.Name AS TextName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductControls ON Products.ControlType=ProductControls.Id WHERE Products.BlindId='" & blindtype & "' AND Products.TubeType='" & tubetype & "' AND companyArray.VALUE='" & companydetailid & "' AND (Products.Status='In Stock' OR Products.Status='Limited Stock') GROUP BY Products.ControlType, ProductControls.Name ORDER BY ProductControls.Name ASC"
             If action = "view" Then
                 thisQuery = "SELECT Products.ControlType AS TextValue, ProductControls.Name AS TextName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductControls ON Products.ControlType=ProductControls.Id WHERE Products.BlindId='" & blindtype & "' AND Products.TubeType='" & tubetype & "' AND companyArray.VALUE='" & companydetailid & "' GROUP BY Products.ControlType, ProductControls.Name ORDER BY ProductControls.Name ASC"
             End If
@@ -177,7 +177,7 @@ Partial Class Order_Method
         End If
 
         If type = "ColourType" Then
-            Dim thisQuery As String = "SELECT Products.*, ProductColours.Name AS ColourName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Products.TubeType='" & tubetype & "' AND Products.ControlType='" & controltype & "' AND Products.Active=1 ORDER BY ProductColours.Name ASC"
+            Dim thisQuery As String = "SELECT Products.*, ProductColours.Name AS ColourName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Products.TubeType='" & tubetype & "' AND Products.ControlType='" & controltype & "' AND (Products.Status='In Stock' OR Products.Status='Limited Stock') ORDER BY ProductColours.Name ASC"
             If action = "view" Then
                 thisQuery = "SELECT Products.*, ProductColours.Name AS ColourName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Products.TubeType='" & tubetype & "' AND Products.ControlType='" & controltype & "' ORDER BY ProductColours.Name ASC"
             End If
@@ -189,7 +189,7 @@ Partial Class Order_Method
         End If
 
         If type = "ProductName" Then
-            Dim thisQuery As String = "SELECT * FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Products.TubeType='" & tubetype & "' AND Products.ControlType='" & controltype & "' AND Products.Active=1 ORDER BY Products.Name ASC"
+            Dim thisQuery As String = "SELECT * FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Products.TubeType='" & tubetype & "' AND Products.ControlType='" & controltype & "' AND (Products.Status='In Stock' OR Products.Status='Limited Stock') ORDER BY Products.Name ASC"
             If action = "view" Then
                 thisQuery = "SELECT * FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Products.TubeType='" & tubetype & "' AND Products.ControlType='" & controltype & "' ORDER BY Products.Name ASC"
             End If

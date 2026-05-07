@@ -23,146 +23,147 @@
         </div>
     </div>
     <div class="page-content">
-        <section class="row mb-3" runat="server" id="divError">
-            <div class="col-12">
-                <div class="alert alert-danger">
-                    <span runat="server" id="msgError"></span>
-                </div>
-            </div>
-        </section>
-        <section class="row mb-4">
-            <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
-                <asp:Button runat="server" ID="btnEditFabric" CssClass="btn btn-primary me-1" Text="Edit Fabric" OnClick="btnEditFabric_Click" />
-                <a href="#" runat="server" id="aChangeStatus" class="btn btn-danger me-1" data-bs-toggle="modal" data-bs-target="#modalChangeStatus">Change Status</a>
-                <a href="javascript:void(0);" class="btn btn-secondary me-1" onclick="showLog('Fabrics', '<%= lblId.Text %>')">Log</a>
-            </div>
-        </section>
         <section class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-content">
                         <div class="card-body">
-                            <div class="row mb-3">
-                                <div class="col-12 col-sm-12 col-lg-4 mb-3">
-                                    <label>Fabric Name</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblName" CssClass="form-label font-bold"></asp:Label>
-                                </div>
-                                <div class="col-6 col-sm-6 col-lg-4 mb-3">
-                                    <label>Type</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblType" CssClass="form-label font-bold"></asp:Label>
-                                </div>
-                                <div class="col-6 col-sm-6 col-lg-4 mb-3">
-                                    <label>Group</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblGroup" CssClass="form-label font-bold"></asp:Label>
-                                </div>
+                            <div class="list-group list-group-horizontal-sm mb-1 text-center" id="dvTab" role="tablist">
+                                <a class="list-group-item list-group-item-action active" id="listGeneral" data-bs-toggle="list" href="#list-general" role="tab">General Data</a>
+                                <a class="list-group-item list-group-item-action" id="listColour" data-bs-toggle="list" href="#list-colour" role="tab">Colour Data</a>
                             </div>
-                            <div class="row mb-3">
-                                <div class="col-12 col-sm-12 col-lg-4 mb-3">
-                                    <label>Design Name</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblDesignName" CssClass="form-label font-bold"></asp:Label>
-                                </div>
-                                <div class="col-12 col-sm-12 col-lg-4 mb-3">
-                                    <label>Tube Type</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblTubeType" CssClass="form-label font-bold"></asp:Label>
-                                </div>
-                                <div class="col-12 col-sm-12 col-lg-4 mb-3">
-                                    <label>Company Detail</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblCompanyDetailName" CssClass="form-label font-bold"></asp:Label>
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-4">
-                                    <label>ID</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblId" CssClass="form-label font-bold"></asp:Label>
-                                </div>
-                                <div class="col-4">
-                                    <label>No Rail Road</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblNoRailRoad" CssClass="form-label font-bold"></asp:Label>
-                                </div>
-                                <div class="col-4">
-                                    <label>Status</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblStatus" CssClass="form-label font-bold"></asp:Label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <section class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-content">
-                        <div class="card-header">
-                            <div class="row">
-                                <div class="col-12 col-sm-12 col-lg-6 mb-2">
-                                    <h3 class="card-title">List Fabric Colour</h3>
-                                </div>
-                                <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
-                                    <asp:Panel runat="server" DefaultButton="btnSearchColour" Width="100%">
-                                        <div class="input-group">
-                                            <span class="input-group-text">Search : </span>
-                                            <asp:TextBox runat="server" ID="txtSearchColour" CssClass="form-control" placeholoder="" autocomplete="off"></asp:TextBox>
-                                            <asp:Button runat="server" ID="btnSearchColour" CssClass="btn btn-primary" Text="Search" OnClick="btnSearchColour_Click" />
+                            <div class="tab-content text-justify">
+                                <div class="tab-pane fade show active" id="list-general" role="tabpanel" aria-labelledby="listGeneral">
+                                    <div class="row mt-3">
+                                        <div class="col-12">
+                                            <asp:Label runat="server" ID="lblName" CssClass="form-label font-bold" Font-Size="XX-Large"></asp:Label>
                                         </div>
-                                    </asp:Panel>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-6 col-sm-6 col-lg-3 mb-3">
+                                            <label>Type</label>
+                                            <br />
+                                            <asp:Label runat="server" ID="lblType" CssClass="form-label font-bold"></asp:Label>
+                                        </div>
+                                        <div class="col-6 col-sm-6 col-lg-3 mb-3">
+                                            <label>Group</label>
+                                            <br />
+                                            <asp:Label runat="server" ID="lblGroup" CssClass="form-label font-bold"></asp:Label>
+                                        </div>
+                                        <div class="col-6 col-sm-6 col-lg-3 mb-3">
+                                            <label>No Rail Road</label>
+                                            <br />
+                                            <asp:Label runat="server" ID="lblNoRailRoad" CssClass="form-label font-bold"></asp:Label>
+                                        </div>
+                                        <div class="col-6 col-sm-6 col-lg-3 mb-3">
+                                            <label>Status</label>
+                                            <br />
+                                            <asp:Label runat="server" ID="lblStatus" CssClass="form-label font-bold"></asp:Label>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-12 col-sm-12 col-lg-4 mb-3">
+                                            <label>Design Name</label>
+                                            <br />
+                                            <asp:Label runat="server" ID="lblDesignName" CssClass="form-label font-bold"></asp:Label>
+                                        </div>
+                                        <div class="col-12 col-sm-12 col-lg-4 mb-3">
+                                            <label>Tube Type</label>
+                                            <br />
+                                            <asp:Label runat="server" ID="lblTubeType" CssClass="form-label font-bold"></asp:Label>
+                                        </div>
+                                        <div class="col-12 col-sm-12 col-lg-4 mb-3">
+                                            <label>Company Detail</label>
+                                            <br />
+                                            <asp:Label runat="server" ID="lblCompanyDetailName" CssClass="form-label font-bold"></asp:Label>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-5" runat="server" id="divError">
+                                        <div class="col-12">
+                                            <div class="alert alert-danger">
+                                                <span runat="server" id="msgError"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12"><hr /></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-12 d-flex flex-wrap justify-content-start gap-1">
+                                            <asp:Button runat="server" ID="btnEditFabric" CssClass="btn btn-primary me-1" Text="Edit Fabric" OnClick="btnEditFabric_Click" />
+                                            <a href="#" runat="server" id="aChangeStatus" class="btn btn-danger me-1" data-bs-toggle="modal" data-bs-target="#modalChangeStatus">Change Status</a>
+                                            <a href="javascript:void(0);" class="btn btn-secondary me-1" onclick="showLog('Fabrics', '<%= lblId.Text %>')">Log</a>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="table-responsive">
-                                        <asp:GridView runat="server" ID="gvListColour" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" EmptyDataText="DATA NOT FOUND :)" PageSize="100" EmptyDataRowStyle-HorizontalAlign="Center" OnRowCommand="gvListColour_RowCommand">
-                                            <RowStyle />
-                                            <Columns>
-                                                <asp:TemplateField ItemStyle-HorizontalAlign="Center">
-                                                    <ItemTemplate>
-                                                        <%# Container.DataItemIndex + 1 %>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:BoundField DataField="Id" HeaderText="ID" />
-                                                <asp:BoundField DataField="BoeId" HeaderText="BOE ID" />
-                                                <asp:BoundField DataField="Factory" HeaderText="Factory" />
-                                                <asp:BoundField DataField="Name" HeaderText="Name" />
-                                                <asp:BoundField DataField="Colour" HeaderText="Colour" />
-                                                <asp:BoundField DataField="Width" HeaderText="Width" />
-                                                <asp:BoundField DataField="Status" HeaderText="Status" />
-                                                <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="150px">
-                                                    <ItemTemplate>
-                                                        <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
-                                                        <ul class="dropdown-menu">
-                                                            <li runat="server" visible='<%# PageAction("Detail Colour") %>'>
-                                                                <asp:LinkButton runat="server" ID="linkDetailColour" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
-                                                            </li>
-                                                            <li runat="server" visible='<%# PageAction("Change Status Colour") %>'>
-                                                                <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeStatusColour" onclick='<%# String.Format("return showChangeStatusColour(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("Name").ToString(), Eval("Status").ToString()) %>'>Change Status</a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('FabricColours', '<%# Eval("Id") %>')">Log</a>
-                                                            </li>
-                                                        </ul>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                            </Columns>
-                                            <AlternatingRowStyle BackColor="White" />
-                                        </asp:GridView>
+
+                                <div class="tab-pane fade" id="list-colour" role="tabpanel" aria-labelledby="listColour">
+                                    <div class="row mt-5" runat="server" id="divErrorColour">
+                                        <div class="col-12">
+                                            <div class="alert alert-danger">
+                                                <span runat="server" id="msgErrorColour"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mt-4">
+                                        <div class="col-12 col-sm-12 col-lg-6 mb-2">
+                                            <asp:Button runat="server" ID="btnAddColour" CssClass="btn btn-primary" Text="Add New" OnClick="btnAddColour_Click" />
+                                        </div>
+                                        <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
+                                            <asp:Panel runat="server" DefaultButton="btnSearchColour" Width="100%">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">Search : </span>
+                                                    <asp:TextBox runat="server" ID="txtSearchColour" CssClass="form-control" placeholoder="" autocomplete="off"></asp:TextBox>
+                                                    <asp:Button runat="server" ID="btnSearchColour" CssClass="btn btn-primary" Text="Search" OnClick="btnSearchColour_Click" />
+                                                </div>
+                                            </asp:Panel>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mt-3">
+                                        <div class="col-12">
+                                            <div class="table-responsive">
+                                                <asp:GridView runat="server" ID="gvListColour" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" EmptyDataText="DATA NOT FOUND :)" PageSize="100" EmptyDataRowStyle-HorizontalAlign="Center" OnRowCommand="gvListColour_RowCommand">
+                                                    <RowStyle />
+                                                    <Columns>
+                                                        <asp:TemplateField ItemStyle-HorizontalAlign="Center">
+                                                            <ItemTemplate>
+                                                                <%# Container.DataItemIndex + 1 %>
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                        <asp:BoundField DataField="Id" HeaderText="ID" />
+                                                        <asp:BoundField DataField="BoeId" HeaderText="BOE ID" />
+                                                        <asp:BoundField DataField="Factory" HeaderText="Factory" />
+                                                        <asp:BoundField DataField="Name" HeaderText="Name" />
+                                                        <asp:BoundField DataField="Colour" HeaderText="Colour" />
+                                                        <asp:BoundField DataField="Width" HeaderText="Width" />
+                                                        <asp:BoundField DataField="Status" HeaderText="Status" />
+                                                        <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="150px">
+                                                            <ItemTemplate>
+                                                                <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
+                                                                <ul class="dropdown-menu">
+                                                                    <li runat="server" visible='<%# PageAction("Detail Colour") %>'>
+                                                                        <asp:LinkButton runat="server" ID="linkDetailColour" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                                    </li>
+                                                                    <li runat="server" visible='<%# PageAction("Change Status Colour") %>'>
+                                                                        <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeStatusColour" onclick='<%# String.Format("return showChangeStatusColour(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("Name").ToString(), Eval("Status").ToString()) %>'>Change Status</a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('FabricColours', '<%# Eval("Id") %>')">Log</a>
+                                                                    </li>
+                                                                </ul>
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                    </Columns>
+                                                    <AlternatingRowStyle BackColor="White" />
+                                                </asp:GridView>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="card-footer d-flex justify-content-between">
-                        <asp:Button runat="server" ID="btnAddColour" CssClass="btn btn-primary" Text="Add New" OnClick="btnAddColour_Click" />
                     </div>
                 </div>
             </div>
@@ -319,12 +320,30 @@
         </div>
     </div>
 
+    <asp:HiddenField ID="selected_tab" runat="server" />
+
     <div runat="server" visible="false">
+        <asp:Label runat="server" ID="lblId"></asp:Label>
         <asp:Label runat="server" ID="lblIdColour"></asp:Label>
         <asp:Label runat="server" ID="lblAction"></asp:Label>
     </div>
 
     <script type="text/javascript">
+        $(document).ready(function () {
+            var selectedTab = $("#<%=selected_tab.ClientID%>");
+            var tabId = selectedTab.val() != "" ? selectedTab.val() : "list-general";
+            $('#dvTab a[href="#' + tabId + '"]').tab('show');
+            $("#dvTab a").click(function () {
+                selectedTab.val($(this).attr("href").substring(1));
+            });
+            $("#listGeneral").on("click", function () {
+                updateSessionValue("list-general");
+            });
+            $("#listColour").on("click", function () {
+                updateSessionValue("list-colour");
+            });
+        });
+
         document.addEventListener('DOMContentLoaded', function () {
             const gv = document.getElementById('<%= gvListColour.ClientID %>');
             if (!gv) return;
@@ -356,6 +375,16 @@
             document.getElementById("<%=txtIdStatusColour.ClientID %>").value = id;
             document.getElementById("<%=txtChangeName.ClientID %>").value = name;
             document.getElementById("<%=ddlOldStatusColour.ClientID %>").value = status;
+        }
+
+        function updateSessionValue(session) {
+            $.ajax({
+                type: "POST",
+                url: "Detail.aspx/UpdateSession",
+                data: JSON.stringify({ value: session }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json"
+            });
         }
 
         function showLog(type, dataId) {
