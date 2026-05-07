@@ -1,5 +1,6 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
+Imports System.Web.Services
 
 Partial Class Setting_Specification_Fabric_Detail
     Inherits Page
@@ -9,6 +10,11 @@ Partial Class Setting_Specification_Fabric_Detail
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataLog As Object() = Nothing
     Dim url As String = String.Empty
+
+    <WebMethod(EnableSession:=True)>
+    Public Shared Sub UpdateSession(value As String)
+        HttpContext.Current.Session("selectedTabFabric") = value
+    End Sub
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
@@ -21,9 +27,14 @@ Partial Class Setting_Specification_Fabric_Detail
             Exit Sub
         End If
 
+        If Not Session("selectedTabFabric") = "" Then
+            selected_tab.Value = Session("selectedTabFabric").ToString()
+        End If
+
         lblId.Text = Request.QueryString("fabricid").ToString()
         If Not IsPostBack Then
             MessageError(False, String.Empty)
+            MessageError_Colour(False, String.Empty)
             MessageError_Process(False, String.Empty)
 
             BindData(lblId.Text)
@@ -135,12 +146,14 @@ Partial Class Setting_Specification_Fabric_Detail
     End Sub
 
     Protected Sub btnSearchColour_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
+        MessageError_Colour(False, String.Empty)
         BindDataColour(lblId.Text, txtSearchColour.Text)
     End Sub
 
     Protected Sub gvListColour_RowCommand(sender As Object, e As GridViewCommandEventArgs)
         If Not String.IsNullOrEmpty(e.CommandArgument) Then
+            Session("selectedTabFabric") = "list-colour"
+
             Dim dataId As String = e.CommandArgument.ToString()
             If e.CommandName = "Detail" Then
                 MessageError_Process(False, String.Empty)
@@ -175,6 +188,7 @@ Partial Class Setting_Specification_Fabric_Detail
     Protected Sub btnAddColour_Click(sender As Object, e As EventArgs)
         MessageError_Process(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showProcessColour(); };"
+        Session("selectedTabFabric") = "list-colour"
         Try
             lblAction.Text = "Add"
             titleProcess.InnerText = "Add Fabric Colour"
@@ -263,7 +277,8 @@ Partial Class Setting_Specification_Fabric_Detail
     End Sub
 
     Protected Sub btnChangeStatusColour_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
+        MessageError_Colour(False, String.Empty)
+        Session("selectedTabFabric") = "list-colour"
         Try
             Dim thisId As String = txtIdStatusColour.Text
             Dim newStatus As String = ddlNewStatusColour.SelectedValue
@@ -305,9 +320,9 @@ Partial Class Setting_Specification_Fabric_Detail
             url = String.Format("~/setting/specification/fabric/detail?fabricid={0}", lblId.Text)
             Response.Redirect(url, False)
         Catch ex As Exception
-            MessageError(True, ex.ToString())
+            MessageError_Colour(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                MessageError_Colour(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
         End Try
     End Sub
@@ -395,15 +410,19 @@ Partial Class Setting_Specification_Fabric_Detail
             gvListColour.Columns(1).Visible = PageAction("Visible ID Detail")
             gvListColour.Columns(4).Visible = PageAction("Visible Name Detail")
         Catch ex As Exception
-            MessageError(True, ex.ToString)
+            MessageError_Colour(True, ex.ToString)
             If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                MessageError_Colour(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
         End Try
     End Sub
 
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
+    End Sub
+
+    Protected Sub MessageError_Colour(visible As Boolean, message As String)
+        divErrorColour.Visible = visible : msgErrorColour.InnerText = message
     End Sub
 
     Protected Sub MessageError_Process(visible As Boolean, message As String)

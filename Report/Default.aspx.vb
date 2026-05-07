@@ -15,9 +15,6 @@ Partial Class Report_Default
         If Not IsPostBack Then
             MessageError(False, String.Empty)
 
-            txtStartDate.Text = Now.ToString("dd-mm-yyyy")
-            txtEndDate.Text = Now.ToString("dd-mm-yyyy")
-
             BindCompany()
 
             gvList.DataSource = Nothing

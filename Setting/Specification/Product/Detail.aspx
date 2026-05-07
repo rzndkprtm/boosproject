@@ -33,7 +33,7 @@
         <section class="row mb-3">
             <div class="col-12 d-flex flex-wrap justify-content-end gap-1">
                 <asp:Button runat="server" ID="btnEditProduct" CssClass="btn btn-primary" Text="Edit Product" OnClick="btnEditProduct_Click" />
-                <a href="#" runat="server" id="aActive" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalActive" onclick="return showActive()"><%= TextActive(lblActive.Text) %></a>
+                <a href="#" runat="server" id="aChangeStatus" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalChangeStatus">Change Status</a>
                 <a href="javascript:void(0);" class="btn btn-secondary" onclick="showLog('Products', '<%= lblId.Text %>')">Log</a>
             </div>
         </section>
@@ -96,9 +96,9 @@
                                     <asp:Label runat="server" ID="lblId" CssClass="form-label font-bold"></asp:Label>
                                 </div>
                                 <div class="col-6 col-sm-6 col-lg-4 mb-3">
-                                    <label>Active</label>
+                                    <label>Status</label>
                                     <br />
-                                    <asp:Label runat="server" ID="lblActive" CssClass="form-label font-bold"></asp:Label>
+                                    <asp:Label runat="server" ID="lblStatus" CssClass="form-label font-bold"></asp:Label>
                                 </div>
                                 <div class="col-12 col-sm-12 col-lg-4 mb-3">
                                     <label>Description</label>
@@ -170,18 +170,29 @@
         </section>
     </div>
 
-    <div class="modal modal-blur fade" id="modalActive" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+    <div class="modal fade text-left" id="modalChangeStatus" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-warning">
-                    <h5 class="modal-title white" id="titleActive"></h5>
+                <div class="modal-header">
+                    <h4 class="modal-title">Change Status</h4>
                 </div>
-                <div class="modal-body text-center py-4">
-                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">New Status</label>
+                            <asp:DropDownList runat="server" ID="ddlNewStatus" CssClass="form-select">
+                                <asp:ListItem Value="" Text=""></asp:ListItem>
+                                <asp:ListItem Value="In Stock" Text="In Stock"></asp:ListItem>
+                                <asp:ListItem Value="Limited Stock" Text="Limited Stock"></asp:ListItem>
+                                <asp:ListItem Value="Out of Stock" Text="Out of Stock"></asp:ListItem>
+                                <asp:ListItem Value="Discontinued" Text="Discontinued"></asp:ListItem>
+                            </asp:DropDownList>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnActive" CssClass="btn btn-warning" Text="Confirm" OnClick="btnActive_Click" />
+                    <asp:Button runat="server" ID="btnChangeStatus" CssClass="btn btn-primary" Text="Submit" OnClick="btnChangeStatus_Click" />
                 </div>
             </div>
         </div>
@@ -306,17 +317,6 @@
             }
         });
 
-        function showActive(id) {
-            var active = document.getElementById("<%=lblActive.ClientID %>").innerText;
-            let title = "";
-            if (active === "Yes") {
-                title = "Deactivate Product";
-            } else {
-                title = "Activate Product";
-            }
-            document.getElementById("titleActive").innerHTML = title;
-        }
-
         function showProcessKit() {
             $("#modalProcessKit").modal("show");
         }
@@ -359,7 +359,7 @@
             });
         }
 
-        ["modalProcessKit", "modalDeleteKit", "modalLog"].forEach(function (id) {
+        ["modalChangeStatus", "modalProcessKit", "modalDeleteKit", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

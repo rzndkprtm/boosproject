@@ -28,15 +28,17 @@
                             <div class="list-group list-group-horizontal-sm mb-1 text-center" id="dvTab" role="tablist">
                                 <a class="list-group-item list-group-item-action active" id="listRoller" data-bs-toggle="list" href="#list-roller" role="tab">Roller</a>
 
+                                <a class="list-group-item list-group-item-action" id="listVertical" data-bs-toggle="list" href="#list-vertical" role="tab">Vertical</a>
+
+                                <a class="list-group-item list-group-item-action" id="listCellular" data-bs-toggle="list" href="#list-cellular" role="tab">Cellular Shades</a>
+
                                 <a class="list-group-item list-group-item-action" id="listProfile" data-bs-toggle="list" href="#list-profile" role="tab">Design Shades</a>
 
                                 <a class="list-group-item list-group-item-action" id="listCurtain" data-bs-toggle="list" href="#list-curtain" role="tab">Curtain</a>
+                                
+                                <a class="list-group-item list-group-item-action" id="listVenetian" data-bs-toggle="list" href="#list-venetian" role="tab">Venetian Blind</a>
 
-                                <a class="list-group-item list-group-item-action" id="listVertical" data-bs-toggle="list" href="#list-vertical" role="tab">Vertical</a>
-
-                                <a class="list-group-item list-group-item-action" id="listVenetian" data-bs-toggle="list" href="#list-venetian" role="tab">Venetian</a>
-
-                                <a class="list-group-item list-group-item-action" id="listAluminium" data-bs-toggle="list" href="#list-aluminium" role="tab">Aluminium</a>
+                                <a class="list-group-item list-group-item-action" id="listAluminium" data-bs-toggle="list" href="#list-aluminium" role="tab">Aluminium Blind</a>
                             </div>
                             <div class="tab-content text-justify">
                                 <div class="tab-pane fade show active" id="list-roller" role="tabpanel" aria-labelledby="listRoller">
@@ -66,10 +68,10 @@
                                                 <table class="table mb-0">
                                                     <tbody>
                                                         <tr>
-                                                            <td style="background-color: darkgreen; color: white; text-align:center;">In Stock</td>
-                                                            <td style="background-color: yellow; text-align:center;">Limited Stock</td>
-                                                            <td style="background-color: darkred; color: white; text-align:center;">Out of Stock</td>
-                                                            <td style="background-color: darkgray; color: white; text-align:center;">Discontinued</td>
+                                                            <td style="background-color: darkgreen; color: white; text-align:center;">IN STOCK</td>
+                                                            <td style="background-color: yellow; color:black; text-align:center;">LIMITED STOCK</td>
+                                                            <td style="background-color: darkred; color: white; text-align:center;">OUT OF STOCK</td>
+                                                            <td style="background-color: gray; color: white; text-align:center;">DISCONTINUED</td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -114,10 +116,10 @@
                                                 <table class="table mb-0">
                                                     <tbody>
                                                         <tr>
-                                                            <td style="background-color: darkgreen; color: white; text-align:center;">In Stock</td>
-                                                            <td style="background-color: yellow; text-align:center;">Limited Stock</td>
-                                                            <td style="background-color: darkred; color: white; text-align:center;">Out of Stock</td>
-                                                            <td style="background-color: darkgray; color: white; text-align:center;">Discontinued</td>
+                                                            <td style="background-color: darkgreen; color: white; text-align:center;">IN STOCK</td>
+                                                            <td style="background-color: yellow; color:black; text-align:center;">LIMITED STOCK</td>
+                                                            <td style="background-color: darkred; color: white; text-align:center;">OUT OF STOCK</td>
+                                                            <td style="background-color: gray; color: white; text-align:center;">DISCONTINUED</td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -174,10 +176,10 @@
                                                 <table class="table mb-0">
                                                     <tbody>
                                                         <tr>
-                                                            <td style="background-color: darkgreen; color: white; text-align:center;">In Stock</td>
-                                                            <td style="background-color: yellow; text-align:center;">Limited Stock</td>
-                                                            <td style="background-color: darkred; color: white; text-align:center;">Out of Stock</td>
-                                                            <td style="background-color: darkgray; color: white; text-align:center;">Discontinued</td>
+                                                            <td style="background-color: darkgreen; color: white; text-align:center;">IN STOCK</td>
+                                                            <td style="background-color: yellow; color:black; text-align:center;">LIMITED STOCK</td>
+                                                            <td style="background-color: darkred; color: white; text-align:center;">OUT OF STOCK</td>
+                                                            <td style="background-color: gray; color: white; text-align:center;">DISCONTINUED</td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -234,10 +236,10 @@
                                                 <table class="table mb-0">
                                                     <tbody>
                                                         <tr>
-                                                            <td style="background-color: darkgreen; color: white; text-align:center;">In Stock</td>
-                                                            <td style="background-color: yellow; text-align:center;">Limited Stock</td>
-                                                            <td style="background-color: darkred; color: white; text-align:center;">Out of Stock</td>
-                                                            <td style="background-color: darkgray; color: white; text-align:center;">Discontinued</td>
+                                                            <td style="background-color: darkgreen; color: white; text-align:center;">IN STOCK</td>
+                                                            <td style="background-color: yellow; color:black; text-align:center;">LIMITED STOCK</td>
+                                                            <td style="background-color: darkred; color: white; text-align:center;">OUT OF STOCK</td>
+                                                            <td style="background-color: gray; color: white; text-align:center;">DISCONTINUED</td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -276,22 +278,22 @@
                                         </div>
                                     </div>
 
-                                    <%--<div class="row mt-5">
+                                    <div class="row mt-5">
                                         <div class="col-12">
                                             <div class="table-responsive">
                                                 <table class="table mb-0">
                                                     <tbody>
                                                         <tr>
-                                                            <td style="background-color: darkgreen; color: white; text-align:center;">In Stock</td>
-                                                            <td style="background-color: yellow; text-align:center;">Limited Stock</td>
-                                                            <td style="background-color: darkred; color: white; text-align:center;">Out of Stock</td>
-                                                            <td style="background-color: darkgray; color: white; text-align:center;">Discontinued</td>
+                                                            <td style="background-color: darkgreen; color: white; text-align:center;">IN STOCK</td>
+                                                            <td style="background-color: yellow; color:black; text-align:center;">LIMITED STOCK</td>
+                                                            <td style="background-color: darkred; color: white; text-align:center;">OUT OF STOCK</td>
+                                                            <td style="background-color: gray; color: white; text-align:center;">DISCONTINUED</td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
                                             </div>
                                         </div>
-                                    </div>--%>
+                                    </div>
 
                                     <div class="row mt-3">
                                         <div class="col-12">
@@ -322,22 +324,22 @@
                                         </div>
                                     </div>
 
-                                    <%--<div class="row mt-5">
+                                    <div class="row mt-5">
                                         <div class="col-12">
                                             <div class="table-responsive">
                                                 <table class="table mb-0">
                                                     <tbody>
                                                         <tr>
-                                                            <td style="background-color: darkgreen; color: white; text-align:center;">In Stock</td>
-                                                            <td style="background-color: yellow; text-align:center;">Limited Stock</td>
-                                                            <td style="background-color: darkred; color: white; text-align:center;">Out of Stock</td>
-                                                            <td style="background-color: darkgray; color: white; text-align:center;">Discontinued</td>
+                                                            <td style="background-color: darkgreen; color: white; text-align:center;">IN STOCK</td>
+                                                            <td style="background-color: yellow; color:black; text-align:center;">LIMITED STOCK</td>
+                                                            <td style="background-color: darkred; color: white; text-align:center;">OUT OF STOCK</td>
+                                                            <td style="background-color: gray; color: white; text-align:center;">DISCONTINUED</td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
                                             </div>
                                         </div>
-                                    </div>--%>
+                                    </div>
 
                                     <div class="row mt-3">
                                         <div class="col-12">
@@ -352,6 +354,54 @@
                                                         <asp:BoundField DataField="Col4" HeaderText="Colour" />
                                                         <asp:BoundField DataField="Col5" HeaderText="Colour" />
                                                         <asp:BoundField DataField="Col6" HeaderText="Colour" />
+                                                    </Columns>
+                                                </asp:GridView>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="tab-pane fade" id="list-cellular" role="tabpanel" aria-labelledby="listCellular">
+                                    <div class="row mt-5" runat="server" id="divErrorCellular">
+                                        <div class="col-12">
+                                            <div class="alert alert-danger">
+                                                <span runat="server" id="msgErrorCellular"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mt-5">
+                                        <div class="col-12">
+                                            <div class="table-responsive">
+                                                <table class="table mb-0">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td style="background-color: darkgreen; color: white; text-align:center;">IN STOCK</td>
+                                                            <td style="background-color: yellow; color:black; text-align:center;">LIMITED STOCK</td>
+                                                            <td style="background-color: darkred; color: white; text-align:center;">OUT OF STOCK</td>
+                                                            <td style="background-color: gray; color: white; text-align:center;">DISCONTINUED</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mt-3">
+                                        <div class="col-12">
+                                            <div class="table-responsive">
+                                                <asp:GridView runat="server" ID="gvListCellular" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowDataBound="gvListCellular_RowDataBound">
+                                                    <RowStyle />
+                                                    <Columns>
+                                                        <asp:BoundField DataField="FabricType" HeaderText="" />
+                                                        <asp:BoundField DataField="Col1" HeaderText="Colour" />
+                                                        <asp:BoundField DataField="Col2" HeaderText="Colour" />
+                                                        <asp:BoundField DataField="Col3" HeaderText="Colour" />
+                                                        <asp:BoundField DataField="Col4" HeaderText="Colour" />
+                                                        <asp:BoundField DataField="Col5" HeaderText="Colour" />
+                                                        <asp:BoundField DataField="Col6" HeaderText="Colour" />
+                                                        <asp:BoundField DataField="Col7" HeaderText="Colour" />
+                                                        <asp:BoundField DataField="Col8" HeaderText="Colour" />
                                                     </Columns>
                                                 </asp:GridView>
                                             </div>
@@ -394,6 +444,9 @@
             });
             $("#listAluminium").on("click", function () {
                 updateSessionValue("list-aluminium");
+            });
+            $("#listCellular").on("click", function () {
+                updateSessionValue("list-cellular");
             });
         });
 

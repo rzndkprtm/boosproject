@@ -26,10 +26,10 @@ Partial Class Setting_Specification_Product_Default
             ddlBlindSort.SelectedValue = Session("BlindProduct")
             BindCompanyDetailSort()
             ddlCompanyDetailSort.SelectedValue = Session("CompanyDetailProduct")
-            ddlActive.SelectedValue = Session("ActiveProduct")
+            ddlStatusSort.SelectedValue = Session("ActiveProduct")
             txtSearch.Text = Session("SearchProduct")
 
-            BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlActive.SelectedValue, txtSearch.Text)
+            BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlStatusSort.SelectedValue, txtSearch.Text)
         End If
     End Sub
 
@@ -37,28 +37,28 @@ Partial Class Setting_Specification_Product_Default
         MessageError(False, String.Empty)
         BindBlindSort(ddlDesignSort.SelectedValue)
 
-        BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlActive.SelectedValue, txtSearch.Text)
+        BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlStatusSort.SelectedValue, txtSearch.Text)
     End Sub
 
     Protected Sub ddlBlindSort_SelectedIndexChanged(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
-        BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlActive.SelectedValue, txtSearch.Text)
+        BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlStatusSort.SelectedValue, txtSearch.Text)
     End Sub
 
     Protected Sub ddlCompanyDetailSort_SelectedIndexChanged(sender As Object, e As EventArgs)
-        BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlActive.SelectedValue, txtSearch.Text)
+        BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlStatusSort.SelectedValue, txtSearch.Text)
     End Sub
 
-    Protected Sub ddlActive_SelectedIndexChanged(sender As Object, e As EventArgs)
+    Protected Sub ddlStatusSort_SelectedIndexChanged(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
-        BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlActive.SelectedValue, txtSearch.Text)
+        BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlStatusSort.SelectedValue, txtSearch.Text)
     End Sub
 
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
         Session("DesignProduct") = ddlDesignSort.SelectedValue
         Session("BlindProduct") = ddlBlindSort.SelectedValue
         Session("CompanyDetailProduct") = ddlCompanyDetailSort.SelectedValue
-        Session("ActiveProduct") = ddlActive.SelectedValue
+        Session("ActiveProduct") = ddlStatusSort.SelectedValue
         Session("SearchProduct") = txtSearch.Text
 
         Response.Redirect("~/setting/specification/product/add", False)
@@ -66,14 +66,14 @@ Partial Class Setting_Specification_Product_Default
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
-        BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlActive.SelectedValue, txtSearch.Text)
+        BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlStatusSort.SelectedValue, txtSearch.Text)
     End Sub
 
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
         MessageError(False, String.Empty)
         Try
             gvList.PageIndex = e.NewPageIndex
-            BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlActive.SelectedValue, txtSearch.Text)
+            BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlStatusSort.SelectedValue, txtSearch.Text)
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -91,7 +91,7 @@ Partial Class Setting_Specification_Product_Default
                     Session("DesignProduct") = ddlDesignSort.SelectedValue
                     Session("BlindProduct") = ddlBlindSort.SelectedValue
                     Session("CompanyDetailProduct") = ddlCompanyDetailSort.SelectedValue
-                    Session("ActiveProduct") = ddlActive.SelectedValue
+                    Session("ActiveProduct") = ddlStatusSort.SelectedValue
                     Session("SearchProduct") = txtSearch.Text
 
                     url = String.Format("~/setting/specification/product/detail?productid={0}", dataId)
@@ -106,19 +106,34 @@ Partial Class Setting_Specification_Product_Default
         End If
     End Sub
 
-    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
+    Protected Sub btnChangeStatus_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim thisId As String = txtIdDelete.Text
+            Dim thisId As String = txtIdStatus.Text
+            Dim newStatus As String = ddlNewStatus.SelectedValue
+            Dim oldStatus As String = txtOldStatus.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Products WHERE Id=@Id", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE Products SET Status=@Status WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", thisId)
+                    myCmd.Parameters.AddWithValue("@Status", newStatus)
 
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
             End Using
+
+            Dim changeDesc As String = String.Format("Change Status Products : {0}", newStatus)
+            dataLog = {"Products", lblId.Text, Session("LoginId").ToString(), changeDesc}
+            settingClass.Logs(dataLog)
+
+            Session("DesignProduct") = ddlDesignSort.SelectedValue
+            Session("BlindProduct") = ddlBlindSort.SelectedValue
+            Session("CompanyDetailProduct") = ddlCompanyDetailSort.SelectedValue
+            Session("ActiveProduct") = ddlStatusSort.SelectedValue
+            Session("SearchProduct") = txtSearch.Text
+
+            Response.Redirect("~/setting/specification/product", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -134,7 +149,7 @@ Partial Class Setting_Specification_Product_Default
             Dim newId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Products ORDER BY Id DESC")
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Products SELECT @NewId, DesignId, BlindId, CompanyDetailId, Name + ' - Copy', InvoiceName, TubeType, ControlType, ColourType, Description, Active FROM Products WHERE Id=@Id", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Products SELECT @NewId, DesignId, BlindId, CompanyDetailId, Name + ' - Copy', InvoiceName, TubeType, ControlType, ColourType, Description, NULL FROM Products WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@NewId", newId)
                     myCmd.Parameters.AddWithValue("@Id", thisId)
 
@@ -149,10 +164,11 @@ Partial Class Setting_Specification_Product_Default
             Session("DesignProduct") = ddlDesignSort.SelectedValue
             Session("BlindProduct") = ddlBlindSort.SelectedValue
             Session("CompanyDetailProduct") = ddlCompanyDetailSort.SelectedValue
-            Session("ActiveProduct") = ddlActive.SelectedValue
+            Session("ActiveProduct") = ddlStatusSort.SelectedValue
             Session("SearchProduct") = txtSearch.Text
 
-            Response.Redirect("~/setting/specification/product", False)
+            url = String.Format("~/setting/specification/product/detail?productid={0}", newId)
+            Response.Redirect(url, False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -161,50 +177,10 @@ Partial Class Setting_Specification_Product_Default
         End Try
     End Sub
 
-    Protected Sub btnActive_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        Try
-            Dim thisId As String = txtIdActive.Text
-
-            Dim oldActive As String = txtActive.Text
-            Dim newActive As Boolean = False
-            If oldActive = "0" Then newActive = True
-
-            Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE Products SET Active=@Active WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.Parameters.AddWithValue("@Active", newActive)
-
-                    thisConn.Open()
-                    myCmd.ExecuteNonQuery()
-                End Using
-            End Using
-
-            Dim descAction As String = "Product Activated"
-            If newActive = False Then descAction = "Product Deactivated"
-
-            dataLog = {"Products", thisId, Session("LoginId").ToString(), descAction}
-            settingClass.Logs(dataLog)
-
-            Session("DesignProduct") = ddlDesignSort.SelectedValue
-            Session("BlindProduct") = ddlBlindSort.SelectedValue
-            Session("CompanyDetailProduct") = ddlCompanyDetailSort.SelectedValue
-            Session("ActiveProduct") = ddlActive.SelectedValue
-            Session("SearchProduct") = txtSearch.Text
-
-            Response.Redirect("~/setting/specification/product", False)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
-    Private Sub BindData(designText As String, blindText As String, companyText As String, active As String, searchText As String)
+    Private Sub BindData(designText As String, blindText As String, companyText As String, status As String, searchText As String)
         Try
             Dim params As New List(Of SqlParameter) From {
-                New SqlParameter("@Active", active),
+                New SqlParameter("@Status", If(String.IsNullOrEmpty(status), CType(DBNull.Value, Object), status)),
                 New SqlParameter("@DesignId", If(String.IsNullOrEmpty(designText), CType(DBNull.Value, Object), designText)),
                 New SqlParameter("@BlindId", If(String.IsNullOrEmpty(blindText), CType(DBNull.Value, Object), blindText)),
                 New SqlParameter("@CompanyDetailId", If(String.IsNullOrEmpty(companyText), CType(DBNull.Value, Object), companyText)),
@@ -221,7 +197,7 @@ Partial Class Setting_Specification_Product_Default
             divDesignSort.Visible = PageAction("Design Sort")
             divBlindSort.Visible = PageAction("Blind Sort")
             divCompanyDetail.Visible = PageAction("Company Detail Sort")
-            divActive.Visible = PageAction("Active")
+            divStatus.Visible = PageAction("Status Sort")
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -299,11 +275,6 @@ Partial Class Setting_Specification_Product_Default
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
     End Sub
-
-    Protected Function TextActive(active As Integer) As String
-        If active = 1 Then : Return "Deactivate" : End If
-        Return "Activate"
-    End Function
 
     Protected Function PageAction(action As String) As Boolean
         Try

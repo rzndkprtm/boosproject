@@ -1,6 +1,7 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 Imports System.Globalization
+Imports System.IdentityModel.Protocols.WSTrust
 Imports System.Threading.Tasks
 
 Partial Class Order_Detail
@@ -184,17 +185,25 @@ Partial Class Order_Detail
                 Exit Sub
             End If
 
-            Dim checkProduct As DataTable = orderClass.GetDataTable("SELECT ROW_NUMBER() OVER (ORDER BY OrderDetails.Id ASC) AS [Number], OrderDetails.Id, Products.Active FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.HeaderId='" & lblHeaderId.Text & "' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
+            Dim checkProduct As DataTable = orderClass.GetDataTable("SELECT ROW_NUMBER() OVER (ORDER BY OrderDetails.Id ASC) AS [Number], OrderDetails.Id, Products.Status FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.HeaderId='" & lblHeaderId.Text & "' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
 
             If checkProduct.Rows.Count > 0 Then
                 Dim sb As New StringBuilder()
 
                 For i As Integer = 0 To checkProduct.Rows.Count - 1
                     Dim number As String = checkProduct.Rows(i)("Number").ToString()
-                    Dim active As Boolean = checkProduct.Rows(i)("Active")
+                    Dim status As String = checkProduct.Rows(i)("Status").ToString()
 
-                    If active = False Then
-                        sb.AppendLine("- ITEM " & number & ". THIS PRODUCT IS CURRENTLY UNAVAILABLE. PLEASE CHECK AND CHANGE IT.<br />")
+                    If status = "" Then
+                        Dim thisString As String = "- ITEM " & number & ". THIS PRODUCT IS CURRENTLY UNAVAILABLE. PLEASE CHECK AND CHANGE IT.<br />"
+                    End If
+                    If status = "Out of Stock" Then
+                        Dim thisString As String = "- ITEM " & number & ". THIS PRODUCT IS CURRENTLY " & status.ToUpper() & ". PLEASE CHECK AND CHANGE IT.<br />"
+                        sb.AppendLine()
+                    End If
+                    If status = "Discontinued" Then
+                        Dim thisString As String = "- ITEM " & number & ". THIS PRODUCT IS HAS BEEN " & status.ToUpper() & ". PLEASE CHECK AND CHANGE IT.<br />"
+                        sb.AppendLine()
                     End If
                 Next
 
@@ -230,7 +239,7 @@ Partial Class Order_Detail
             If lblCompanyId.Text = "2" Then
                 Dim thisId As String = orderClass.GetNewOrderItemId()
 
-                Dim productId As String = orderClass.GetItemData("SELECT Id FROM Products WHERE Name='Fuel Surcharge' AND Active=1")
+                Dim productId As String = orderClass.GetItemData("SELECT Id FROM Products WHERE Name='Fuel Surcharge' AND (Status='In Stock' OR Status='Limited Stock')")
                 Dim productGroupId As String = orderClass.GetItemData("SELECT Id FROM PriceProductGroups WHERE Name='Fuel Surcharge' AND Active=1")
 
                 Using thisConn As New SqlConnection(myConn)
@@ -255,7 +264,7 @@ Partial Class Order_Detail
                 Dim totalItems As Integer = orderClass.GetTotalItemOrder(lblHeaderId.Text)
                 If minSurcharge = True AndAlso totalItems <= 3 Then
                     thisId = orderClass.GetNewOrderItemId()
-                    productId = orderClass.GetItemData("SELECT Id FROM Products WHERE Name='Minimum Order Surcharge' AND Active=1")
+                    productId = orderClass.GetItemData("SELECT Id FROM Products WHERE Name='Minimum Order Surcharge' AND (Status='In Stock' OR Status='Limited Stock')")
                     productGroupId = orderClass.GetItemData("SELECT Id FROM PriceProductGroups WHERE Name='Minimum Order Surcharge' AND Active=1")
 
                     Using thisConn As New SqlConnection(myConn)
@@ -2616,7 +2625,7 @@ Partial Class Order_Detail
     Protected Sub BindBlindTypeService()
         ddlItemService.Items.Clear()
         Try
-            ddlItemService.DataSource = orderClass.GetDataTable("SELECT Products.* FROM Products LEFT JOIN Designs ON Products.DesignId=Designs.Id WHERE Designs.Type='Additional' AND Products.Active=1 ORDER BY Products.Name ASC")
+            ddlItemService.DataSource = orderClass.GetDataTable("SELECT Products.* FROM Products LEFT JOIN Designs ON Products.DesignId=Designs.Id WHERE Designs.Type='Additional' AND (Products.Status='In Stock' OR Products.Status='Limited Stock') ORDER BY Products.Name ASC")
             ddlItemService.DataTextField = "Name"
             ddlItemService.DataValueField = "Id"
             ddlItemService.DataBind()

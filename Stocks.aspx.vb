@@ -29,6 +29,7 @@ Partial Class Stocks
             BindVertical(txtSearchVertical.Text)
             BindVenetian()
             BindAluminium()
+            BindCellularShades()
         End If
     End Sub
 
@@ -93,7 +94,7 @@ Partial Class Stocks
                         e.Row.Cells(i).ForeColor = Drawing.Color.Black
                     End If
                     If thisStatus = "Discontinued" Then
-                        e.Row.Cells(i).BackColor = Drawing.Color.DarkGray
+                        e.Row.Cells(i).BackColor = Drawing.Color.Gray
                         e.Row.Cells(i).ForeColor = Drawing.Color.White
                     End If
                 End If
@@ -153,7 +154,7 @@ Partial Class Stocks
                         e.Row.Cells(i).ForeColor = Drawing.Color.Black
                     End If
                     If thisStatus = "Discontinued" Then
-                        e.Row.Cells(i).BackColor = Drawing.Color.DarkGray
+                        e.Row.Cells(i).BackColor = Drawing.Color.Gray
                         e.Row.Cells(i).ForeColor = Drawing.Color.White
                     End If
                 End If
@@ -213,7 +214,7 @@ Partial Class Stocks
                         e.Row.Cells(i).ForeColor = Drawing.Color.Black
                     End If
                     If thisStatus = "Discontinued" Then
-                        e.Row.Cells(i).BackColor = Drawing.Color.DarkGray
+                        e.Row.Cells(i).BackColor = Drawing.Color.Gray
                         e.Row.Cells(i).ForeColor = Drawing.Color.White
                     End If
                 End If
@@ -272,7 +273,7 @@ Partial Class Stocks
                         e.Row.Cells(i).ForeColor = Drawing.Color.Black
                     End If
                     If thisStatus = "Discontinued" Then
-                        e.Row.Cells(i).BackColor = Drawing.Color.DarkGray
+                        e.Row.Cells(i).BackColor = Drawing.Color.Gray
                         e.Row.Cells(i).ForeColor = Drawing.Color.White
                     End If
                 End If
@@ -308,14 +309,26 @@ Partial Class Stocks
     Protected Sub gvListVenetian_RowDataBound(sender As Object, e As GridViewRowEventArgs)
         If e.Row.RowType = DataControlRowType.DataRow Then
             For i As Integer = 1 To 6
-                Dim colName As String = "Col" & i & "Active"
+                Dim colName As String = "Col" & i & "Status"
                 Dim isActiveObj = DataBinder.Eval(e.Row.DataItem, colName)
 
                 If isActiveObj IsNot Nothing AndAlso Not IsDBNull(isActiveObj) Then
-                    Dim isActive As Integer = Convert.ToInt32(isActiveObj)
+                    Dim thisStatus As String = isActiveObj.ToString()
 
-                    If isActive = 0 Then
-                        e.Row.Cells(i).BackColor = Drawing.Color.LightCoral
+                    If thisStatus = "In Stock" Then
+                        e.Row.Cells(i).BackColor = Drawing.Color.DarkGreen
+                        e.Row.Cells(i).ForeColor = Drawing.Color.White
+                    End If
+                    If thisStatus = "Out of Stock" Then
+                        e.Row.Cells(i).BackColor = Drawing.Color.DarkRed
+                        e.Row.Cells(i).ForeColor = Drawing.Color.White
+                    End If
+                    If thisStatus = "Limited Stock" Then
+                        e.Row.Cells(i).BackColor = Drawing.Color.Yellow
+                        e.Row.Cells(i).ForeColor = Drawing.Color.Black
+                    End If
+                    If thisStatus = "Discontinued" Then
+                        e.Row.Cells(i).BackColor = Drawing.Color.Gray
                         e.Row.Cells(i).ForeColor = Drawing.Color.White
                     End If
                 End If
@@ -350,14 +363,81 @@ Partial Class Stocks
     Protected Sub gvListAluminium_RowDataBound(sender As Object, e As GridViewRowEventArgs)
         If e.Row.RowType = DataControlRowType.DataRow Then
             For i As Integer = 1 To 6
-                Dim colName As String = "Col" & i & "Active"
+                Dim colName As String = "Col" & i & "Status"
                 Dim isActiveObj = DataBinder.Eval(e.Row.DataItem, colName)
 
                 If isActiveObj IsNot Nothing AndAlso Not IsDBNull(isActiveObj) Then
-                    Dim isActive As Integer = Convert.ToInt32(isActiveObj)
+                    Dim thisStatus As String = isActiveObj.ToString()
 
-                    If isActive = 0 Then
-                        e.Row.Cells(i).BackColor = Drawing.Color.LightCoral
+                    If thisStatus = "In Stock" Then
+                        e.Row.Cells(i).BackColor = Drawing.Color.DarkGreen
+                        e.Row.Cells(i).ForeColor = Drawing.Color.White
+                    End If
+                    If thisStatus = "Out of Stock" Then
+                        e.Row.Cells(i).BackColor = Drawing.Color.DarkRed
+                        e.Row.Cells(i).ForeColor = Drawing.Color.White
+                    End If
+                    If thisStatus = "Limited Stock" Then
+                        e.Row.Cells(i).BackColor = Drawing.Color.Yellow
+                        e.Row.Cells(i).ForeColor = Drawing.Color.Black
+                    End If
+                    If thisStatus = "Discontinued" Then
+                        e.Row.Cells(i).BackColor = Drawing.Color.Gray
+                        e.Row.Cells(i).ForeColor = Drawing.Color.White
+                    End If
+                End If
+            Next
+        End If
+    End Sub
+
+    ' CELLULAR SHADES
+
+    Protected Sub BindCellularShades()
+        MessageError_Cellular(False, String.Empty)
+        Try
+            Dim companyDetailId As String = String.Empty
+            If Session("RoleName") = "Customer" OrElse Session("RoleName") = "Sales" OrElse Session("RoleName") = "Customer Service" Then
+                companyDetailId = Session("CompanyDetailId")
+            End If
+            Dim paramsItem As New List(Of SqlParameter) From {
+                    New SqlParameter("@DesignId", "2"),
+                    New SqlParameter("@CompanyId", companyDetailId),
+                    New SqlParameter("@Search", String.Empty)
+                }
+            gvListCellular.DataSource = stockClass.GetDataTableSP("sp_GetStockFabric", paramsItem)
+            gvListCellular.DataBind()
+        Catch ex As Exception
+            MessageError_Cellular(True, ex.ToString())
+        End Try
+    End Sub
+
+    Protected Sub MessageError_Cellular(visible As Boolean, message As String)
+        divErrorCellular.Visible = visible : msgErrorCellular.InnerText = message
+    End Sub
+
+    Protected Sub gvListCellular_RowDataBound(sender As Object, e As GridViewRowEventArgs)
+        If e.Row.RowType = DataControlRowType.DataRow Then
+            For i As Integer = 1 To 8
+                Dim colName As String = "Col" & i & "Status"
+                Dim isActiveObj = DataBinder.Eval(e.Row.DataItem, colName)
+
+                If isActiveObj IsNot Nothing AndAlso Not IsDBNull(isActiveObj) Then
+                    Dim thisStatus As String = isActiveObj.ToString()
+
+                    If thisStatus = "In Stock" Then
+                        e.Row.Cells(i).BackColor = Drawing.Color.DarkGreen
+                        e.Row.Cells(i).ForeColor = Drawing.Color.White
+                    End If
+                    If thisStatus = "Out of Stock" Then
+                        e.Row.Cells(i).BackColor = Drawing.Color.DarkRed
+                        e.Row.Cells(i).ForeColor = Drawing.Color.White
+                    End If
+                    If thisStatus = "Limited Stock" Then
+                        e.Row.Cells(i).BackColor = Drawing.Color.Yellow
+                        e.Row.Cells(i).ForeColor = Drawing.Color.Black
+                    End If
+                    If thisStatus = "Discontinued" Then
+                        e.Row.Cells(i).BackColor = Drawing.Color.Gray
                         e.Row.Cells(i).ForeColor = Drawing.Color.White
                     End If
                 End If
