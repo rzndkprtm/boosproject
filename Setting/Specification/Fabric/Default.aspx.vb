@@ -217,6 +217,7 @@ Partial Class Setting_Specification_Fabric_Default
             gvList.Columns(5).Visible = PageAction("Visible Company Detail")
 
             btnAdd.Visible = PageAction("Add")
+            btnListColour.Visible = PageAction("Visible Fabric + Colour")
             btnAlias.Visible = PageAction("Visible Fabric Alias")
             btnGroupLocal.Visible = PageAction("Visible Group Local")
 
