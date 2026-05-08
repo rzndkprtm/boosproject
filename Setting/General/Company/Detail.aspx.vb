@@ -25,7 +25,6 @@ Partial Class Setting_General_Company_Detail
         lblId.Text = Request.QueryString("boosid").ToString()
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-            MessageError_Process(False, String.Empty)
 
             BindData(lblId.Text)
         End If
@@ -93,16 +92,16 @@ Partial Class Setting_General_Company_Detail
     End Sub
 
     Protected Sub btnProcess_Click(sender As Object, e As EventArgs)
-        MessageError_Process(False, String.Empty)
+        MessageError(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showProcess(); };"
         Try
             If txtName.Text = "" Then
-                MessageError_Process(True, "COMPANY NAME IS REQUIRED !")
+                MessageError(True, "COMPANY NAME IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
             End If
 
-            If msgErrorProcess.InnerText = "" Then
+            If msgError.InnerText = "" Then
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 
                 Using thisConn As New SqlConnection(myConn)
@@ -125,9 +124,9 @@ Partial Class Setting_General_Company_Detail
                 Response.Redirect(url, False)
             End If
         Catch ex As Exception
-            MessageError_Process(True, ex.ToString())
+            MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
-                MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         End Try
@@ -206,26 +205,32 @@ Partial Class Setting_General_Company_Detail
                 Exit Sub
             End If
 
-            lblName.Text = thisData("Name").ToString()
             txtName.Text = thisData("Name").ToString()
-            lblAlias.Text = thisData("Alias").ToString()
             txtAlias.Text = thisData("Alias").ToString()
-            lblDescription.Text = thisData("Description").ToString()
-            If lblDescription.Text = "" Then lblDescription.Text = "&nbsp;"
             txtDescription.Text = thisData("Description").ToString()
+            ddlActive.SelectedValue = Convert.ToInt32(thisData("Active"))
 
-            Dim active As Integer = Convert.ToInt32(thisData("Active"))
-            lblActive.Text = "Error"
-            If active = 1 Then lblActive.Text = "Yes"
-            If active = 0 Then lblActive.Text = "No"
-            ddlActive.SelectedValue = active
+            divEdit.Visible = PageAction("Edit")
+
+            txtName.ReadOnly = True
+            txtAlias.ReadOnly = True
+            txtDescription.ReadOnly = True
+            ddlActive.Enabled = False
+
+            Dim editAccess As Boolean = PageAction("Edit")
+            If editAccess = True Then
+                txtName.ReadOnly = False
+                txtAlias.ReadOnly = False
+                txtDescription.ReadOnly = False
+                ddlActive.Enabled = True
+            End If
 
             gvList.DataSource = settingClass.GetDataTable("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM CompanyDetails WHERE CompanyId='" & companyId & "'")
             gvList.DataBind()
             gvList.Columns(1).Visible = PageAction("Visible ID Detail")
 
             btnAddDetail.Visible = PageAction("Add Detail")
-            divEdit.Visible = PageAction("Edit")
+
         Catch ex As Exception
             MessageError(True, ex.ToString)
             If Not Session("RoleName") = "Developer" Then
@@ -236,10 +241,6 @@ Partial Class Setting_General_Company_Detail
 
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
-    End Sub
-
-    Protected Sub MessageError_Process(visible As Boolean, message As String)
-        divErrorProcess.Visible = visible : msgErrorProcess.InnerText = message
     End Sub
 
     Protected Sub MessageError_ProcessDetail(visible As Boolean, message As String)

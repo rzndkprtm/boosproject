@@ -33,40 +33,42 @@
         <section class="row">
             <div class="col-12 col-sm-12 col-lg-4">
                 <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">General Data</h4>
+                    </div>
                     <div class="card-content">
                         <div class="card-body">
                             <div class="row mb-2">
-                                <div class="col-12">
+                                <div class="col-12 form-group">
                                     <label>Company Name</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblName" CssClass="form-control font-bold"></asp:Label>
+                                    <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off" Font-Bold="true"></asp:TextBox>
                                 </div>
                             </div>
                             <div class="row mb-2">
-                                <div class="col-12">
+                                <div class="col-12 form-group">
                                     <label>Alias</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblAlias" CssClass="form-control font-bold"></asp:Label>
+                                    <asp:TextBox runat="server" ID="txtAlias" CssClass="form-control" placeholder="Alias ..." autocomplete="off" Font-Bold="true"></asp:TextBox>
                                 </div>
                             </div>
                             <div class="row mb-2">
-                                <div class="col-12">
+                                <div class="col-12 form-group">
                                     <label>Description</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblDescription" CssClass="form-control font-bold"></asp:Label>
+                                    <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" Height="100px" CssClass="form-control" placeholder="Description ..." Font-Bold="true" autocomplete="off" style="resize:none;"></asp:TextBox>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-12">
+                                <div class="col-12 form-group">
                                     <label>Active</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblActive" CssClass="form-control font-bold"></asp:Label>
+                                    <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select">
+                                        <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
+                                        <asp:ListItem Value="0" Text="No"></asp:ListItem>
+                                    </asp:DropDownList>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="card-footer text-start" runat="server" id="divEdit">
-                        <a href="#" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalProcess">Edit Company</a>
+                        <asp:Button runat="server" ID="btnProcess" CssClass="btn btn-primary" Text="Submit" OnClick="btnProcess_Click" />
                     </div>
                 </div>
             </div>
@@ -127,55 +129,6 @@
         </section>
     </div>
 
-    <div class="modal fade text-left" id="modalProcess" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Edit Company</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="row mb-2">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Name</label>
-                            <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Alias</label>
-                            <asp:TextBox runat="server" ID="txtAlias" CssClass="form-control" placeholder="Alias ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Description</label>
-                            <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-12 col-sm-12 col-lg-4 form-group">
-                            <label class="form-label">Active</label>
-                            <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select">
-                                <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
-                                <asp:ListItem Value="0" Text="No"></asp:ListItem>
-                            </asp:DropDownList>
-                        </div>
-                    </div>
-                    <div class="row mb-2" runat="server" id="divErrorProcess">
-                        <div class="col-12">
-                            <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorProcess"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnProcess" CssClass="btn btn-primary" Text="Submit" OnClick="btnProcess_Click" />
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="modal fade text-left" id="modalProcessDetail" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -268,10 +221,6 @@
             }
         });
 
-        function showProcess() {
-            $("#modalProcess").modal("show");
-        }
-
         function showProcessDetail() {
             $("#modalProcessDetail").modal("show");
         }
@@ -310,7 +259,7 @@
             });
         }
 
-        ["modalProcess", "modalProcessDetail", "modalLog"].forEach(function (id) {
+        ["modalProcessDetail", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

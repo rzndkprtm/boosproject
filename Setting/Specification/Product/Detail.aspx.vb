@@ -1,5 +1,6 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
+Imports System.Web.Services
 
 Partial Class Setting_Specification_Product_Detail
     Inherits Page
@@ -9,6 +10,11 @@ Partial Class Setting_Specification_Product_Detail
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataLog As Object() = Nothing
     Dim url As String = String.Empty
+
+    <WebMethod(EnableSession:=True)>
+    Public Shared Sub UpdateSession(value As String)
+        HttpContext.Current.Session("selectedTabProduct") = value
+    End Sub
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
@@ -22,9 +28,14 @@ Partial Class Setting_Specification_Product_Detail
             Exit Sub
         End If
 
+        If Not Session("selectedTabProduct") = "" Then
+            selected_tab.Value = Session("selectedTabProduct").ToString()
+        End If
+
         lblId.Text = Request.QueryString("productid").ToString()
         If Not IsPostBack Then
             MessageError(False, String.Empty)
+            MessageError_Kit(False, String.Empty)
             BindData(lblId.Text)
         End If
     End Sub
@@ -72,6 +83,7 @@ Partial Class Setting_Specification_Product_Detail
     Protected Sub btnAddKit_Click(sender As Object, e As EventArgs)
         MessageError_ProcessKit(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showProcessKit(); };"
+        Session("selectedTabProduct") = "list-kit"
         Try
             lblAction.Text = "Add"
             titleProcess.InnerText = "Add Product Kit"
@@ -86,6 +98,7 @@ Partial Class Setting_Specification_Product_Detail
     Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
         If Not String.IsNullOrEmpty(e.CommandArgument) Then
             Dim dataId As String = e.CommandArgument.ToString()
+            Session("selectedTabProduct") = "list-kit"
 
             If e.CommandName = "Detail" Then
                 MessageError_ProcessKit(False, String.Empty)
@@ -186,6 +199,7 @@ Partial Class Setting_Specification_Product_Detail
 
     Protected Sub btnDeleteKit_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
+        Session("selectedTabProduct") = "list-kit"
         Try
             Dim thisId As String = txtIdDeleteKit.Text
 
@@ -257,6 +271,10 @@ Partial Class Setting_Specification_Product_Detail
 
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
+    End Sub
+
+    Protected Sub MessageError_Kit(visible As Boolean, message As String)
+        divErrorKit.Visible = visible : msgErrorKit.InnerText = message
     End Sub
 
     Protected Sub MessageError_ProcessKit(visible As Boolean, message As String)

@@ -26,10 +26,20 @@ Partial Class Setting_Specification_Product_Default
             ddlBlindSort.SelectedValue = Session("BlindProduct")
             BindCompanyDetailSort()
             ddlCompanyDetailSort.SelectedValue = Session("CompanyDetailProduct")
+
+            BindTubeSort()
+            ddlTubeSort.SelectedValue = Session("TubeProduct")
+
+            BindControlSort()
+            ddlControlSort.SelectedValue = Session("ControlProduct")
+
+            BindColourSort()
+            ddlColourSort.SelectedValue = Session("ColourProduct")
+
             ddlStatusSort.SelectedValue = Session("ActiveProduct")
             txtSearch.Text = Session("SearchProduct")
 
-            BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlStatusSort.SelectedValue, txtSearch.Text)
+            'BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlTubeSort.SelectedValue, ddlControlSort.SelectedValue, ddlColourSort.SelectedValue, ddlStatusSort.SelectedValue, txtSearch.Text)
         End If
     End Sub
 
@@ -37,43 +47,75 @@ Partial Class Setting_Specification_Product_Default
         MessageError(False, String.Empty)
         BindBlindSort(ddlDesignSort.SelectedValue)
 
-        BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlStatusSort.SelectedValue, txtSearch.Text)
+        BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlTubeSort.SelectedValue, ddlControlSort.SelectedValue, ddlColourSort.SelectedValue, ddlStatusSort.SelectedValue, txtSearch.Text)
     End Sub
 
     Protected Sub ddlBlindSort_SelectedIndexChanged(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
-        BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlStatusSort.SelectedValue, txtSearch.Text)
+        BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlTubeSort.SelectedValue, ddlControlSort.SelectedValue, ddlColourSort.SelectedValue, ddlStatusSort.SelectedValue, txtSearch.Text)
     End Sub
 
     Protected Sub ddlCompanyDetailSort_SelectedIndexChanged(sender As Object, e As EventArgs)
-        BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlStatusSort.SelectedValue, txtSearch.Text)
+        MessageError(False, String.Empty)
+        BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlTubeSort.SelectedValue, ddlControlSort.SelectedValue, ddlColourSort.SelectedValue, ddlStatusSort.SelectedValue, txtSearch.Text)
+    End Sub
+
+    Protected Sub ddlTubeSort_SelectedIndexChanged(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlTubeSort.SelectedValue, ddlControlSort.SelectedValue, ddlColourSort.SelectedValue, ddlStatusSort.SelectedValue, txtSearch.Text)
+    End Sub
+
+    Protected Sub ddlControlSort_SelectedIndexChanged(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlTubeSort.SelectedValue, ddlControlSort.SelectedValue, ddlColourSort.SelectedValue, ddlStatusSort.SelectedValue, txtSearch.Text)
+    End Sub
+
+    Protected Sub ddlColourSort_SelectedIndexChanged(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlTubeSort.SelectedValue, ddlControlSort.SelectedValue, ddlColourSort.SelectedValue, ddlStatusSort.SelectedValue, txtSearch.Text)
     End Sub
 
     Protected Sub ddlStatusSort_SelectedIndexChanged(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
-        BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlStatusSort.SelectedValue, txtSearch.Text)
+        BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlTubeSort.SelectedValue, ddlControlSort.SelectedValue, ddlColourSort.SelectedValue, ddlStatusSort.SelectedValue, txtSearch.Text)
     End Sub
 
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
         Session("DesignProduct") = ddlDesignSort.SelectedValue
         Session("BlindProduct") = ddlBlindSort.SelectedValue
         Session("CompanyDetailProduct") = ddlCompanyDetailSort.SelectedValue
+        Session("TubeProduct") = ddlTubeSort.SelectedValue
+        Session("ControlProduct") = ddlControlSort.SelectedValue
+        Session("ColourProduct") = ddlColourSort.SelectedValue
         Session("ActiveProduct") = ddlStatusSort.SelectedValue
         Session("SearchProduct") = txtSearch.Text
 
         Response.Redirect("~/setting/specification/product/add", False)
     End Sub
 
+    Protected Sub btnChange_Click(sender As Object, e As EventArgs)
+        Session("DesignProduct") = ddlDesignSort.SelectedValue
+        Session("BlindProduct") = ddlBlindSort.SelectedValue
+        Session("CompanyDetailProduct") = ddlCompanyDetailSort.SelectedValue
+        Session("TubeProduct") = ddlTubeSort.SelectedValue
+        Session("ControlProduct") = ddlControlSort.SelectedValue
+        Session("ColourProduct") = ddlColourSort.SelectedValue
+        Session("ActiveProduct") = ddlStatusSort.SelectedValue
+        Session("SearchProduct") = txtSearch.Text
+
+        Response.Redirect("~/setting/specification/product/change", False)
+    End Sub
+
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
-        BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlStatusSort.SelectedValue, txtSearch.Text)
+        BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlTubeSort.SelectedValue, ddlControlSort.SelectedValue, ddlColourSort.SelectedValue, ddlStatusSort.SelectedValue, txtSearch.Text)
     End Sub
 
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
         MessageError(False, String.Empty)
         Try
             gvList.PageIndex = e.NewPageIndex
-            BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlStatusSort.SelectedValue, txtSearch.Text)
+            BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlTubeSort.SelectedValue, ddlControlSort.SelectedValue, ddlColourSort.SelectedValue, ddlStatusSort.SelectedValue, txtSearch.Text)
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -91,6 +133,9 @@ Partial Class Setting_Specification_Product_Default
                     Session("DesignProduct") = ddlDesignSort.SelectedValue
                     Session("BlindProduct") = ddlBlindSort.SelectedValue
                     Session("CompanyDetailProduct") = ddlCompanyDetailSort.SelectedValue
+                    Session("TubeProduct") = ddlTubeSort.SelectedValue
+                    Session("ControlProduct") = ddlControlSort.SelectedValue
+                    Session("ColourProduct") = ddlColourSort.SelectedValue
                     Session("ActiveProduct") = ddlStatusSort.SelectedValue
                     Session("SearchProduct") = txtSearch.Text
 
@@ -130,6 +175,9 @@ Partial Class Setting_Specification_Product_Default
             Session("DesignProduct") = ddlDesignSort.SelectedValue
             Session("BlindProduct") = ddlBlindSort.SelectedValue
             Session("CompanyDetailProduct") = ddlCompanyDetailSort.SelectedValue
+            Session("TubeProduct") = ddlTubeSort.SelectedValue
+            Session("ControlProduct") = ddlControlSort.SelectedValue
+            Session("ColourProduct") = ddlColourSort.SelectedValue
             Session("ActiveProduct") = ddlStatusSort.SelectedValue
             Session("SearchProduct") = txtSearch.Text
 
@@ -164,6 +212,9 @@ Partial Class Setting_Specification_Product_Default
             Session("DesignProduct") = ddlDesignSort.SelectedValue
             Session("BlindProduct") = ddlBlindSort.SelectedValue
             Session("CompanyDetailProduct") = ddlCompanyDetailSort.SelectedValue
+            Session("TubeProduct") = ddlTubeSort.SelectedValue
+            Session("ControlProduct") = ddlControlSort.SelectedValue
+            Session("ColourProduct") = ddlColourSort.SelectedValue
             Session("ActiveProduct") = ddlStatusSort.SelectedValue
             Session("SearchProduct") = txtSearch.Text
 
@@ -177,14 +228,17 @@ Partial Class Setting_Specification_Product_Default
         End Try
     End Sub
 
-    Private Sub BindData(designText As String, blindText As String, companyText As String, status As String, searchText As String)
+    Private Sub BindData(designText As String, blindText As String, companyText As String, tubeText As String, controlText As String, colourText As String, status As String, searchText As String)
         Try
             Dim params As New List(Of SqlParameter) From {
                 New SqlParameter("@Status", If(String.IsNullOrEmpty(status), CType(DBNull.Value, Object), status)),
                 New SqlParameter("@DesignId", If(String.IsNullOrEmpty(designText), CType(DBNull.Value, Object), designText)),
                 New SqlParameter("@BlindId", If(String.IsNullOrEmpty(blindText), CType(DBNull.Value, Object), blindText)),
                 New SqlParameter("@CompanyDetailId", If(String.IsNullOrEmpty(companyText), CType(DBNull.Value, Object), companyText)),
-                New SqlParameter("@SearchText", If(String.IsNullOrEmpty(searchText), CType(DBNull.Value, Object), searchText))
+                New SqlParameter("@SearchText", If(String.IsNullOrEmpty(searchText), CType(DBNull.Value, Object), searchText)),
+                New SqlParameter("@TubeType", If(String.IsNullOrEmpty(tubeText), CType(DBNull.Value, Object), tubeText)),
+                New SqlParameter("@ControlType", If(String.IsNullOrEmpty(controlText), CType(DBNull.Value, Object), controlText)),
+                New SqlParameter("@ColourType", If(String.IsNullOrEmpty(colourText), CType(DBNull.Value, Object), colourText))
             }
 
             Dim thisData As DataTable = settingClass.GetDataTableSP("sp_ProductList", params)
@@ -194,10 +248,6 @@ Partial Class Setting_Specification_Product_Default
             gvList.Columns(1).Visible = PageAction("Visible ID")
 
             btnAdd.Visible = PageAction("Add")
-            divDesignSort.Visible = PageAction("Design Sort")
-            divBlindSort.Visible = PageAction("Blind Sort")
-            divCompanyDetail.Visible = PageAction("Company Detail Sort")
-            divStatus.Visible = PageAction("Status Sort")
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -240,7 +290,6 @@ Partial Class Setting_Specification_Product_Default
         End Try
     End Sub
 
-
     Protected Sub BindCompanyDetailSort()
         ddlCompanyDetailSort.Items.Clear()
         Try
@@ -251,6 +300,54 @@ Partial Class Setting_Specification_Product_Default
 
             If ddlCompanyDetailSort.Items.Count > 1 Then
                 ddlCompanyDetailSort.Items.Insert(0, New ListItem("", ""))
+            End If
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+        End Try
+    End Sub
+
+    Protected Sub BindTubeSort()
+        ddlTubeSort.Items.Clear()
+        Try
+            ddlTubeSort.DataSource = settingClass.GetDataTable("SELECT * FROM ProductTubes ORDER BY Name ASC")
+            ddlTubeSort.DataTextField = "Name"
+            ddlTubeSort.DataValueField = "Id"
+            ddlTubeSort.DataBind()
+
+            If ddlTubeSort.Items.Count > 1 Then
+                ddlTubeSort.Items.Insert(0, New ListItem("", ""))
+            End If
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+        End Try
+    End Sub
+
+    Protected Sub BindControlSort()
+        ddlControlSort.Items.Clear()
+        Try
+            ddlControlSort.DataSource = settingClass.GetDataTable("SELECT * FROM ProductControls ORDER BY Name ASC")
+            ddlControlSort.DataTextField = "Name"
+            ddlControlSort.DataValueField = "Id"
+            ddlControlSort.DataBind()
+
+            If ddlControlSort.Items.Count > 1 Then
+                ddlControlSort.Items.Insert(0, New ListItem("", ""))
+            End If
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+        End Try
+    End Sub
+
+    Protected Sub BindColourSort()
+        ddlColourSort.Items.Clear()
+        Try
+            ddlColourSort.DataSource = settingClass.GetDataTable("SELECT * FROM ProductColours ORDER BY Name ASC")
+            ddlColourSort.DataTextField = "Name"
+            ddlColourSort.DataValueField = "Id"
+            ddlColourSort.DataBind()
+
+            If ddlColourSort.Items.Count > 1 Then
+                ddlColourSort.Items.Insert(0, New ListItem("", ""))
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())

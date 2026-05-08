@@ -27,7 +27,15 @@ Partial Class Setting_Specification_Fabric_Default
     End Sub
 
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
+        Session("SearchFabric") = txtSearch.Text
+        Session("CompanyFabric") = ddlCompanyDetail.SelectedValue
         Response.Redirect("~/setting/specification/fabric/add", False)
+    End Sub
+
+    Protected Sub btnListColour_Click(sender As Object, e As EventArgs)
+        Session("SearchFabric") = txtSearch.Text
+        Session("CompanyFabric") = ddlCompanyDetail.SelectedValue
+        Response.Redirect("~/setting/specification/fabric/colour", False)
     End Sub
 
     Protected Sub btnAlias_Click(sender As Object, e As EventArgs)
