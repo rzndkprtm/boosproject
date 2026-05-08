@@ -51,7 +51,7 @@ Partial Class Setting_Specification_Product_Detail
             Dim newStatus As String = ddlNewStatus.SelectedValue
 
             If newStatus = "" Then
-                url = String.Format("~/setting/specification/fabric/detail?fabricid={0}", lblId.Text)
+                url = String.Format("~/setting/specification/product/detail?id={0}", lblId.Text)
                 Response.Redirect(url, False)
                 Exit Sub
             End If

@@ -43,6 +43,45 @@ Partial Class Setting_Specification_Product_Default
         End If
     End Sub
 
+    Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
+        Session("DesignProduct") = ddlDesignSort.SelectedValue
+        Session("BlindProduct") = ddlBlindSort.SelectedValue
+        Session("CompanyDetailProduct") = ddlCompanyDetailSort.SelectedValue
+        Session("TubeProduct") = ddlTubeSort.SelectedValue
+        Session("ControlProduct") = ddlControlSort.SelectedValue
+        Session("ColourProduct") = ddlColourSort.SelectedValue
+        Session("ActiveProduct") = ddlStatusSort.SelectedValue
+        Session("SearchProduct") = txtSearch.Text
+
+        Response.Redirect("~/setting/specification/product/add", False)
+    End Sub
+
+    Protected Sub btnChange_Click(sender As Object, e As EventArgs)
+        Session("DesignProduct") = ddlDesignSort.SelectedValue
+        Session("BlindProduct") = ddlBlindSort.SelectedValue
+        Session("CompanyDetailProduct") = ddlCompanyDetailSort.SelectedValue
+        Session("TubeProduct") = ddlTubeSort.SelectedValue
+        Session("ControlProduct") = ddlControlSort.SelectedValue
+        Session("ColourProduct") = ddlColourSort.SelectedValue
+        Session("ActiveProduct") = ddlStatusSort.SelectedValue
+        Session("SearchProduct") = txtSearch.Text
+
+        Response.Redirect("~/setting/specification/product/change", False)
+    End Sub
+
+    Protected Sub btnAlias_Click(sender As Object, e As EventArgs)
+        Session("DesignProduct") = ddlDesignSort.SelectedValue
+        Session("BlindProduct") = ddlBlindSort.SelectedValue
+        Session("CompanyDetailProduct") = ddlCompanyDetailSort.SelectedValue
+        Session("TubeProduct") = ddlTubeSort.SelectedValue
+        Session("ControlProduct") = ddlControlSort.SelectedValue
+        Session("ColourProduct") = ddlColourSort.SelectedValue
+        Session("ActiveProduct") = ddlStatusSort.SelectedValue
+        Session("SearchProduct") = txtSearch.Text
+
+        Response.Redirect("~/setting/specification/product/alias", False)
+    End Sub
+
     Protected Sub ddlDesignSort_SelectedIndexChanged(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         BindBlindSort(ddlDesignSort.SelectedValue)
@@ -78,32 +117,6 @@ Partial Class Setting_Specification_Product_Default
     Protected Sub ddlStatusSort_SelectedIndexChanged(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlTubeSort.SelectedValue, ddlControlSort.SelectedValue, ddlColourSort.SelectedValue, ddlStatusSort.SelectedValue, txtSearch.Text)
-    End Sub
-
-    Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
-        Session("DesignProduct") = ddlDesignSort.SelectedValue
-        Session("BlindProduct") = ddlBlindSort.SelectedValue
-        Session("CompanyDetailProduct") = ddlCompanyDetailSort.SelectedValue
-        Session("TubeProduct") = ddlTubeSort.SelectedValue
-        Session("ControlProduct") = ddlControlSort.SelectedValue
-        Session("ColourProduct") = ddlColourSort.SelectedValue
-        Session("ActiveProduct") = ddlStatusSort.SelectedValue
-        Session("SearchProduct") = txtSearch.Text
-
-        Response.Redirect("~/setting/specification/product/add", False)
-    End Sub
-
-    Protected Sub btnChange_Click(sender As Object, e As EventArgs)
-        Session("DesignProduct") = ddlDesignSort.SelectedValue
-        Session("BlindProduct") = ddlBlindSort.SelectedValue
-        Session("CompanyDetailProduct") = ddlCompanyDetailSort.SelectedValue
-        Session("TubeProduct") = ddlTubeSort.SelectedValue
-        Session("ControlProduct") = ddlControlSort.SelectedValue
-        Session("ColourProduct") = ddlColourSort.SelectedValue
-        Session("ActiveProduct") = ddlStatusSort.SelectedValue
-        Session("SearchProduct") = txtSearch.Text
-
-        Response.Redirect("~/setting/specification/product/change", False)
     End Sub
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)

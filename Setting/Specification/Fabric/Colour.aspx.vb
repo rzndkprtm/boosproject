@@ -80,6 +80,7 @@ Partial Class Setting_Specification_Fabric_Colour
                 dataLog = {"FabricColours", aliasId, Session("LoginId").ToString(), changeDesc}
                 settingClass.Logs(dataLog)
             End If
+
             Response.Redirect("~/setting/specification/fabric/colour", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -93,6 +94,7 @@ Partial Class Setting_Specification_Fabric_Colour
                 searchString = "WHERE Fabrics.Name LIKE '%" & searchText & "%' OR FabricColours.Colour LIKE '%" & searchText & "%'"
             End If
             Dim thisString As String = String.Format("SELECT FabricColours.*, Fabrics.Name AS FabricName FROM FabricColours LEFT JOIN Fabrics ON FabricColours.FabricId=Fabrics.Id {0} ORDER BY FabricColours.Name ASC", searchString)
+
             gvList.DataSource = settingClass.GetDataTable(thisString)
             gvList.DataBind()
         Catch ex As Exception

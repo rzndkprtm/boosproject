@@ -72,6 +72,19 @@ Partial Class Setting_Specification_Fabric_Alias
         BindData(txtSearch.Text)
     End Sub
 
+    Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        MessageError(False, String.Empty)
+        Try
+            gvList.PageIndex = e.NewPageIndex
+            BindData(txtSearch.Text)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
     Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
         If Not String.IsNullOrEmpty(e.CommandArgument) Then
             Dim dataId As String = e.CommandArgument.ToString()
@@ -83,7 +96,6 @@ Partial Class Setting_Specification_Fabric_Alias
                 Try
                     lblId.Text = dataId
                     lblAction.Text = "Edit"
-
 
                     Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM FabricAlias WHERE Id='" & lblId.Text & "'")
                     If myData Is Nothing Then Exit Sub
@@ -230,8 +242,7 @@ Partial Class Setting_Specification_Fabric_Alias
     End Sub
 
     Protected Sub BindFabric(type As String)
-        ddlFirstId.Items.Clear()
-        ddlSecondId.Items.Clear()
+        ddlFirstId.Items.Clear() : ddlSecondId.Items.Clear()
         Try
             If Not String.IsNullOrEmpty(type) Then
                 Dim thisQuery As String = String.Format("SELECT * FROM {0} ORDER BY Name ASC", type)
