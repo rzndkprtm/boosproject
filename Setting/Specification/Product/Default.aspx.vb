@@ -262,6 +262,7 @@ Partial Class Setting_Specification_Product_Default
 
             btnAdd.Visible = PageAction("Add")
             btnChange.Visible = PageAction("Change")
+            btnAlias.Visible = PageAction("Alias")
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
