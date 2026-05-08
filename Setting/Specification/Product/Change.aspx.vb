@@ -7,6 +7,7 @@ Partial Class Setting_Specification_Product_Change
     Dim settingClass As New SettingClass
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim dataLog As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
@@ -31,15 +32,16 @@ Partial Class Setting_Specification_Product_Change
         BindBlindType(ddlDesignType.SelectedValue)
     End Sub
 
-    Protected Sub ddlBlindType_SelectedIndexChanged(sender As Object, e As EventArgs)
-
-    End Sub
-
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
             If ddlDesignType.SelectedValue = "" Then
                 MessageError(True, "DESIGN TYPE IS REQUIRED !")
+                Exit Sub
+            End If
+
+            If ddlStatus.SelectedValue = "" Then
+                MessageError(True, "STATUS IS REQUIRED !")
                 Exit Sub
             End If
 
@@ -53,23 +55,32 @@ Partial Class Setting_Specification_Product_Change
                 Dim colourString As String = String.Empty
                 If Not ddlColourType.SelectedValue = "" Then colourString = "AND ColourType='" & ddlColourType.SelectedValue & "'"
 
-                Dim changeString As String = String.Format("UPDATE Products SET Status=@Status WHERE Status<>'' AND DesignId=@DesignId {0} {1} {2} {3}", blindString, tubeString, controlString, colourString)
+                Dim thisString As String = String.Format("SELECT DISTINCT * FROM Products WHERE DesignId={0} AND (Status='In Stock' OR Status='Limited Stock' OR Status='Out of Stock' OR Status='Discontinued') {1} {2} {3} {4} ORDER BY Id ASC", ddlDesignType.SelectedValue, blindString, tubeString, controlString, colourString)
+                Dim thisData As DataTable = settingClass.GetDataTable(thisString)
 
-                Dim thisData As DataTable = settingClass.GetDataTable("")
+                If Not thisData.Rows.Count = 0 Then
+                    For i As Integer = 0 To thisData.Rows.Count - 1
+                        Dim productId As String = thisData.Rows(i)("Id").ToString()
 
-                Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand(changeString, thisConn)
-                        myCmd.Parameters.AddWithValue("@DesignId", ddlDesignType.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@BlindId", ddlBlindType.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@TubeType", ddlTubeType.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@ControlType", ddlControlType.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@ColourType", ddlColourType.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
+                        Using thisConn As New SqlConnection(myConn)
+                            Using myCmd As SqlCommand = New SqlCommand("UPDATE Products SET Status=@Status WHERE Id=@Id", thisConn)
+                                myCmd.Parameters.AddWithValue("@Id", productId)
+                                myCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
 
-                        thisConn.Open()
-                        myCmd.ExecuteNonQuery()
-                    End Using
-                End Using
+                                thisConn.Open()
+                                myCmd.ExecuteNonQuery()
+                            End Using
+                        End Using
+
+                        Dim changeDesc As String = String.Format("Change Status Product : {0}", ddlStatus.SelectedValue)
+
+                        dataLog = {"Products", productId, Session("LoginId").ToString(), changeDesc}
+                        settingClass.Logs(dataLog)
+                    Next
+
+                    Response.Redirect("~/setting/specification/product", False)
+                    Exit Sub
+                End If
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
