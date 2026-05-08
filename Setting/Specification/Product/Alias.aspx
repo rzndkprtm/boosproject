@@ -70,10 +70,10 @@
                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                         <ul class="dropdown-menu">
                                                             <li runat="server" visible='<%# PageAction("Detail") %>'>
-
+                                                                <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                             </li>
                                                             <li runat="server" visible='<%# PageAction("Delete") %>'>
-
+                                                                <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                             </li>
                                                             <li>
                                                                 <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('ProductAlias', '<%# Eval("Id") %>')">Log</a>
@@ -101,11 +101,13 @@
                 </div>
                 <div class="modal-body">
                     <div class="row mb-2">
-                        <div class="col-6 form-group">
+                        <div class="col-12 form-group">
                             <label class="form-label">First ID</label>
                             <asp:DropDownList runat="server" ID="ddlFirstId" CssClass="choices form-select"></asp:DropDownList>
                         </div>
-                        <div class="col-6 form-group">
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
                             <label class="form-label">Second ID</label>
                             <asp:DropDownList runat="server" ID="ddlSecondId" CssClass="choices form-select"></asp:DropDownList>
                         </div>

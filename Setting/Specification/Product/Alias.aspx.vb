@@ -70,7 +70,19 @@ Partial Class Setting_Specification_Product_Alias
                 MessageError_Process(False, String.Empty)
                 Dim thisScript As String = "window.onload = function() { showProcess(); };"
                 Try
+                    lblId.Text = dataId
+                    lblAction.Text = "Edit"
+                    titleProcess.InnerText = "Edit Alias"
 
+                    Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM ProductAlias WHERE Id='" & lblId.Text & "'")
+                    If myData Is Nothing Then Exit Sub
+
+                    BindProduct()
+
+                    ddlFirstId.SelectedValue = myData("FirstID").ToString()
+                    ddlSecondId.SelectedValue = myData("SecondID").ToString()
+
+                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Catch ex As Exception
                     MessageError_Process(True, ex.ToString())
                     If Not Session("RoleName") = "Developer" Then
@@ -86,7 +98,60 @@ Partial Class Setting_Specification_Product_Alias
         MessageError_Process(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showProcess(); };"
         Try
+            If ddlFirstId.SelectedValue = "" Then
+                MessageError_Process(True, "FIRST PRODUCT IS REQUIRED !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
+                Exit Sub
+            End If
 
+            If ddlSecondId.SelectedValue = "" Then
+                MessageError_Process(True, "SECOND PRODUCT IS REQUIRED !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
+                Exit Sub
+            End If
+
+            If msgErrorProcess.InnerText = "" Then
+                If lblAction.Text = "Add" Then
+                    Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM ProductAlias ORDER BY Id DESC")
+
+                    Using thisConn As New SqlConnection(myConn)
+                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO ProductAlias VALUES (@Id, @FirstId, @SecondId)", thisConn)
+                            myCmd.Parameters.AddWithValue("@Id", thisId)
+                            myCmd.Parameters.AddWithValue("@Type", lblType.Text)
+                            myCmd.Parameters.AddWithValue("@FirstId", ddlFirstId.SelectedValue)
+                            myCmd.Parameters.AddWithValue("@SecondId", ddlSecondId.SelectedValue)
+
+                            thisConn.Open()
+                            myCmd.ExecuteNonQuery()
+                        End Using
+                    End Using
+
+                    dataLog = {"ProductAlias", thisId, Session("LoginId").ToString(), "Alias Created"}
+                    settingClass.Logs(dataLog)
+
+                    Session("SearchProductAlias") = txtSearch.Text
+                    Response.Redirect("~/setting/specification/product/alias", False)
+                End If
+
+                If lblAction.Text = "Edit" Then
+                    Using thisConn As New SqlConnection(myConn)
+                        Using myCmd As SqlCommand = New SqlCommand("UPDATE ProductAlias SET FirstId=@FirstId, SecondId=@SecondId WHERE Id=@Id", thisConn)
+                            myCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                            myCmd.Parameters.AddWithValue("@FirstId", ddlFirstId.SelectedValue)
+                            myCmd.Parameters.AddWithValue("@SecondId", ddlSecondId.SelectedValue)
+
+                            thisConn.Open()
+                            myCmd.ExecuteNonQuery()
+                        End Using
+                    End Using
+
+                    dataLog = {"ProductAlias", lblId.Text, Session("LoginId").ToString(), "Alias Updated"}
+                    settingClass.Logs(dataLog)
+
+                    Session("SearchProductAlias") = txtSearch.Text
+                    Response.Redirect("~/setting/specification/product/alias", False)
+                End If
+            End If
         Catch ex As Exception
             MessageError_Process(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -138,9 +203,8 @@ Partial Class Setting_Specification_Product_Alias
             Dim thisString As String = String.Format("SELECT ProductAlias.*, P1.Name AS FirstName, P2.Name AS SecondName FROM ProductAlias LEFT JOIN Products P1 ON ProductAlias.FirstId = P1.Id LEFT JOIN Products P2 ON ProductAlias.SecondId = P2.Id {0} ORDER BY ProductAlias.Id ASC", stringSearch)
             gvList.DataSource = settingClass.GetDataTable(thisString)
             gvList.DataBind()
-            'gvList.Columns(1).Visible = PageAction("Visible ID")
 
-            'btnAdd.Visible = PageAction("Add")
+            btnAdd.Visible = PageAction("Add")
         Catch ex As Exception
             MessageError(True, ex.ToString())
         End Try
