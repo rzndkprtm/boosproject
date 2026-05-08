@@ -4899,7 +4899,7 @@ Partial Class Order_Method
                 If Not tubeName = "Acmeda 49mm" Then data.springassist = String.Empty
             End If
 
-            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery" OrElse controlName = "240V (Hardwired) Remote" Then
+            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" Then
                 data.charger = String.Empty
             End If
 
@@ -5063,7 +5063,7 @@ Partial Class Order_Method
                 End If
             End If
 
-            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery" OrElse controlName = "240V (Hardwired) Remote" Then
+            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" Then
                 data.charger = String.Empty
             End If
 
@@ -5222,7 +5222,7 @@ Partial Class Order_Method
                 End If
             End If
 
-            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery" OrElse controlName = "240V (Hardwired) Remote" Then
+            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" Then
                 data.charger = String.Empty
             End If
 
@@ -5407,7 +5407,7 @@ Partial Class Order_Method
                 End If
             End If
 
-            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery" OrElse controlName = "240V (Hardwired) Remote" Then
+            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" Then
                 data.charger = String.Empty
             End If
 
@@ -5573,7 +5573,7 @@ Partial Class Order_Method
                 End If
             End If
 
-            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery" OrElse controlName = "240V (Hardwired) Remote" Then
+            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" Then
                 data.charger = String.Empty
             End If
 
@@ -5779,7 +5779,7 @@ Partial Class Order_Method
                 End If
             End If
 
-            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery" OrElse controlName = "240V (Hardwired) Remote" Then
+            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" Then
                 data.charger = String.Empty
             End If
 
@@ -5975,7 +5975,7 @@ Partial Class Order_Method
                 End If
             End If
 
-            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery" OrElse controlName = "240V (Hardwired) Remote" Then
+            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" Then
                 data.charger = String.Empty
             End If
 
@@ -6248,7 +6248,7 @@ Partial Class Order_Method
                 End If
             End If
 
-            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery" OrElse controlName = "240V (Hardwired) Remote" Then
+            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" Then
                 data.charger = String.Empty
             End If
 
@@ -6469,7 +6469,7 @@ Partial Class Order_Method
                 End If
             End If
 
-            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery" OrElse controlName = "240V (Hardwired) Remote" Then
+            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" Then
                 data.charger = String.Empty
             End If
 
@@ -6790,7 +6790,7 @@ Partial Class Order_Method
                     End If
                 End If
 
-                If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery" OrElse controlName = "240V (Hardwired) Remote" Then
+                If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" Then
                     data.charger = String.Empty
                 End If
 
@@ -9236,7 +9236,7 @@ Partial Class Order_Method
             If width < 300 Then Return "MINIMUM WIDTH IS 300MM !"
         End If
         If data.companyid = "2" OrElse (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
-            If width > 5799 Then Return "MAXIMUM WIDTH IS 5799"
+            If width > 5477 Then Return "MAXIMUM WIDTH IS 5477"
         End If
 
         If String.IsNullOrEmpty(data.drop) Then Return "DROP IS REQUIRED !"
