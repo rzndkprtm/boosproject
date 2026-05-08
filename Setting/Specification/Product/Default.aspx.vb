@@ -39,7 +39,7 @@ Partial Class Setting_Specification_Product_Default
             ddlStatusSort.SelectedValue = Session("ActiveProduct")
             txtSearch.Text = Session("SearchProduct")
 
-            'BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlTubeSort.SelectedValue, ddlControlSort.SelectedValue, ddlColourSort.SelectedValue, ddlStatusSort.SelectedValue, txtSearch.Text)
+            BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlTubeSort.SelectedValue, ddlControlSort.SelectedValue, ddlColourSort.SelectedValue, ddlStatusSort.SelectedValue, txtSearch.Text)
         End If
     End Sub
 
@@ -248,6 +248,7 @@ Partial Class Setting_Specification_Product_Default
             gvList.Columns(1).Visible = PageAction("Visible ID")
 
             btnAdd.Visible = PageAction("Add")
+            btnChange.Visible = PageAction("Change")
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
