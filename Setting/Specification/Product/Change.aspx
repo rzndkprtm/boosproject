@@ -46,7 +46,7 @@
                                             <label>Blind Type</label>
                                         </div>
                                         <div class="col-12 col-sm-12 col-lg-8 form-group">
-                                            <asp:DropDownList runat="server" ID="ddlBlindType" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlBlindType_SelectedIndexChanged"></asp:DropDownList>
+                                            <asp:DropDownList runat="server" ID="ddlBlindType" CssClass="choices form-select"></asp:DropDownList>
                                         </div>
                                     </div>
                                     <div class="row">
