@@ -289,7 +289,10 @@
                             <div class="card-body">
                                 <b>LIMITATIONS</b>
                                 <ul>
-                                    <li></li>
+                                    <li>Minimum width : 300mm</li>
+                                    <li>Maximum width : 5477mm</li>
+                                    <li>Minimum drop : 300mm</li>
+                                    <li>Maximum drop : 3050mm</li>
                                 </ul>
                                 <a class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalGallery">Detail Gallery</a>
                             </div>
