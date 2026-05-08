@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Default.aspx.vb" Inherits="Setting_Specification_Fabric_Default" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Fabric Type" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Colour.aspx.vb" Inherits="Setting_Specification_Fabric_Colour" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Fabric + Colour" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-heading">
@@ -14,6 +14,7 @@
                             <li class="breadcrumb-item"><a runat="server" href="~/">Home</a></li>
                             <li class="breadcrumb-item"><a runat="server" href="~/setting">Setting</a></li>
                             <li class="breadcrumb-item"><a runat="server" href="~/setting/specification">Specification</a></li>
+                            <li class="breadcrumb-item"><a runat="server" href="~/setting/specification/fabric">Fabric</a></li>
                             <li class="breadcrumb-item active" aria-current="page"><%: Page.Title %></li>
                         </ol>
                     </nav>
@@ -31,19 +32,7 @@
         </section>
         <section class="row mb-3">
             <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
-                <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Add New" OnClick="btnAdd_Click" />
-                <button class="btn btn-info dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Another</button>
-                <ul class="dropdown-menu">
-                    <li>
-                         <asp:Button runat="server" ID="btnAlias" CssClass="dropdown-item" Text="List Fabric Alias" OnClick="btnAlias_Click" />
-                    </li>
-                    <li>
-                        <asp:Button runat="server" ID="btnGroupLocal" CssClass="dropdown-item" Text="List Group JKT" OnClick="btnGroupLocal_Click" />
-                    </li>
-                    <li>
-                        <asp:Button runat="server" ID="btnListColour" CssClass="dropdown-item" Text="List Fabric + Colour" OnClick="btnListColour_Click" />
-                    </li>
-                </ul>
+
             </div>
         </section>
         <section class="row">
@@ -53,7 +42,7 @@
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-12 col-sm-12 col-lg-6 mb-2">
-                                    <h5 class="card-title">List Fabric</h5>
+                                    <h5 class="card-title">List Fabric + Colour</h5>
                                 </div>
                                 <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
                                     <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
@@ -70,7 +59,7 @@
                             <div class="row mb-3">
                                 <div class="col-12">
                                     <div class="table-responsive">
-                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" EmptyDataText="DATA NOT FOUND :)" AllowPaging="True" PagerSettings-Position="TopAndBottom" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" OnPageIndexChanging="gvList_PageIndexChanging" OnRowCommand="gvList_RowCommand">
+                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" EmptyDataText="DATA NOT FOUND :)" AllowPaging="True" PagerSettings-Position="TopAndBottom" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" OnPageIndexChanging="gvList_PageIndexChanging">
                                             <RowStyle />
                                             <Columns>
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center">
@@ -79,31 +68,17 @@
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:BoundField DataField="Id" HeaderText="ID" />
-                                                <asp:BoundField DataField="Name" HeaderText="Name" />
-                                                <asp:BoundField DataField="Type" HeaderText="Type" />
-                                                <asp:BoundField DataField="Group" HeaderText="Group" />
-                                                <asp:TemplateField HeaderText="Company Detail">
-                                                    <ItemTemplate>
-                                                        <%# BindCompany(Eval("Id").ToString()) %>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
+                                                <asp:BoundField DataField="FabricName" HeaderText="Fabric Type" />
+                                                <asp:BoundField DataField="Colour" HeaderText="Colour" />
                                                 <asp:BoundField DataField="Status" HeaderText="Status" />
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="200px">
                                                     <ItemTemplate>
                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                         <ul class="dropdown-menu">
-                                                            <li runat="server" visible='<%# PageAction("Detail") %>'>
-                                                                <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
-                                                            </li>
-                                                            <li runat="server" visible='<%# PageAction("Edit") %>'>
-                                                                <asp:LinkButton runat="server" ID="linkEdit" CssClass="dropdown-item" Text="Edit" CommandName="Ubah" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
-                                                            </li>
-                                                            <li runat="server" visible='<%# PageAction("Change Status") %>'>
+                                                            <li>
                                                                 <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeStatus" onclick='<%# String.Format("return showChangeStatus(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("Name").ToString(), Eval("Status").ToString()) %>'>Change Status</a>
                                                             </li>
-                                                            <li>
-                                                                <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('Fabrics', '<%# Eval("Id") %>')">Log</a>
-                                                            </li>
+                                                            <li><a href="javascript:void(0)" class="dropdown-item" onclick="showLog('FabricColours', '<%# Eval("Id") %>')">Log</a></li>
                                                         </ul>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
@@ -113,16 +88,6 @@
                                             <AlternatingRowStyle BackColor="White" />
                                         </asp:GridView>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <div class="row" runat="server" id="divCompanyDetail">
-                            <div class="col-12 col-sm-12 col-lg-4">
-                                <div class="input-group">
-                                    <span class="input-group-text">Company : </span>
-                                    <asp:DropDownList runat="server" ID="ddlCompanyDetail" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCompanyDetail_SelectedIndexChanged"></asp:DropDownList>
                                 </div>
                             </div>
                         </div>
@@ -198,29 +163,7 @@
         </div>
     </div>
 
-    <div runat="server" visible="false">
-        <asp:Label runat="server" ID="lblId"></asp:Label>
-        <asp:Label runat="server" ID="lblAction"></asp:Label>
-    </div>
-
     <script type="text/javascript">
-        document.addEventListener('DOMContentLoaded', function () {
-            const gv = document.getElementById('<%= gvList.ClientID %>');
-            if (!gv) return;
-
-            for (let i = 1; i < gv.rows.length; i++) {
-                const row = gv.rows[i];
-                row.style.cursor = 'pointer';
-
-                row.addEventListener('click', function (e) {
-                    if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]")) { return; }
-
-                    const btn = this.querySelector("a[id*='linkDetail']");
-                    if (btn) btn.click();
-                });
-            }
-        });
-
         function showChangeStatus(id, name, status) {
             document.getElementById("<%=txtIdStatus.ClientID %>").value = id;
             document.getElementById("<%=txtName.ClientID %>").value = name;

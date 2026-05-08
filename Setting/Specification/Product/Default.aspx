@@ -25,6 +25,74 @@
         <section class="row mb-3">
             <div class="col-12 d-flex justify-content-end">
                 <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary me-1" Text="Add New" OnClick="btnAdd_Click" />
+                <asp:Button runat="server" ID="btnChange" CssClass="btn btn-secondary me-1" Text="Change Multiple Statuses" OnClick="btnChange_Click" />
+            </div>
+        </section>
+        <section class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Filter Form</h4>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="form form-vertical">
+                                <div class="form-body">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <label class="form-label">Design Type</label>
+                                                <asp:DropDownList runat="server" ID="ddlDesignSort" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlDesignSort_SelectedIndexChanged"></asp:DropDownList>
+                                            </div>
+                                        </div>
+                                        <div class="col-5">
+                                            <div class="form-group">
+                                                <label class="form-label">Blind Type</label>
+                                                <asp:DropDownList runat="server" ID="ddlBlindSort" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlBlindSort_SelectedIndexChanged"></asp:DropDownList>
+                                            </div>
+                                        </div>
+                                        <div class="col-3">
+                                            <label class="form-label">Company Detail</label>
+                                            <asp:DropDownList runat="server" ID="ddlCompanyDetailSort" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCompanyDetailSort_SelectedIndexChanged"></asp:DropDownList>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <div class="form-group">
+                                                <label class="form-label">Tube Type</label>
+                                                <asp:DropDownList runat="server" ID="ddlTubeSort" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlTubeSort_SelectedIndexChanged"></asp:DropDownList>
+                                            </div>
+                                        </div>
+                                        <div class="col-3">
+                                            <div class="form-group">
+                                                <label class="form-label">Control Type</label>
+                                                <asp:DropDownList runat="server" ID="ddlControlSort" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlControlSort_SelectedIndexChanged"></asp:DropDownList>
+                                            </div>
+                                        </div>
+                                        <div class="col-3">
+                                            <div class="form-group">
+                                                <label class="form-label">Colour Type</label>
+                                                <asp:DropDownList runat="server" ID="ddlColourSort" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlColourSort_SelectedIndexChanged"></asp:DropDownList>
+                                            </div>
+                                        </div>
+                                        <div class="col-3">
+                                            <div class="form-group">
+                                                <label class="form-label">Status</label>
+                                                <asp:DropDownList runat="server" ID="ddlStatusSort" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlStatusSort_SelectedIndexChanged">
+                                                    <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                    <asp:ListItem Value="In Stock" Text="In Stock"></asp:ListItem>
+                                                    <asp:ListItem Value="Limited Stock" Text="Limited Stock"></asp:ListItem>
+                                                    <asp:ListItem Value="Out of Stock" Text="Out of Stock"></asp:ListItem>
+                                                    <asp:ListItem Value="Discontinued" Text="Discontinued"></asp:ListItem>
+                                                </asp:DropDownList>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
         <section class="row">
@@ -33,17 +101,8 @@
                     <div class="card-content">
                         <div class="card-header">
                             <div class="row">
-                                <div class="col-12 col-sm-12 col-lg-3 mb-2" runat="server" id="divDesignSort">
-                                    <div class="input-group">
-                                        <span class="input-group-text">Designs : </span>
-                                        <asp:DropDownList runat="server" ID="ddlDesignSort" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlDesignSort_SelectedIndexChanged"></asp:DropDownList>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-sm-12 col-lg-4 mb-2" runat="server" id="divBlindSort">
-                                    <div class="input-group">
-                                        <span class="input-group-text">Blinds : </span>
-                                        <asp:DropDownList runat="server" ID="ddlBlindSort" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlBlindSort_SelectedIndexChanged"></asp:DropDownList>
-                                    </div>
+                                <div class="col-12 col-sm-12 col-lg-7">
+                                    <h4 class="card-title">List Product</h4>
                                 </div>
                                 <div class="col-12 col-sm-12 col-lg-5 d-flex justify-content-end">
                                     <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
@@ -113,28 +172,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-footer">
-                        <div class="d-flex">
-                            <div class="ms-2 d-inline-block" runat="server" id="divCompanyDetail">
-                                <div class="input-group">
-                                    <span class="input-group-text">Company Detail : </span>
-                                    <asp:DropDownList runat="server" ID="ddlCompanyDetailSort" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCompanyDetailSort_SelectedIndexChanged"></asp:DropDownList>
-                                </div>
-                            </div>
-                            <div class="ms-2 d-inline-block" runat="server" id="divStatus">
-                                <div class="input-group">
-                                    <span class="input-group-text">Status : </span>
-                                    <asp:DropDownList runat="server" ID="ddlStatusSort" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlStatusSort_SelectedIndexChanged">
-                                        <asp:ListItem Value="" Text=""></asp:ListItem>
-                                        <asp:ListItem Value="In Stock" Text="In Stock"></asp:ListItem>
-                                        <asp:ListItem Value="Limited Stock" Text="Limited Stock"></asp:ListItem>
-                                        <asp:ListItem Value="Out of Stock" Text="Out of Stock"></asp:ListItem>                                        
-                                        <asp:ListItem Value="Discontinued" Text="Discontinued"></asp:ListItem>
-                                    </asp:DropDownList>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="card-footer"></div>
                 </div>
             </div>
         </section>

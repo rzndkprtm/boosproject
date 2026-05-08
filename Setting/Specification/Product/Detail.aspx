@@ -23,143 +23,143 @@
         </div>
     </div>
     <div class="page-content">
-        <section class="row mb-2" runat="server" id="divError">
-            <div class="col-12">
-                <div class="alert alert-danger">
-                    <span runat="server" id="msgError"></span>
-                </div>
-            </div>
-        </section>
-        <section class="row mb-3">
-            <div class="col-12 d-flex flex-wrap justify-content-end gap-1">
-                <asp:Button runat="server" ID="btnEditProduct" CssClass="btn btn-primary" Text="Edit Product" OnClick="btnEditProduct_Click" />
-                <a href="#" runat="server" id="aChangeStatus" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalChangeStatus">Change Status</a>
-                <a href="javascript:void(0);" class="btn btn-secondary" onclick="showLog('Products', '<%= lblId.Text %>')">Log</a>
-            </div>
-        </section>
         <section class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-content">
                         <div class="card-body">
-                            <div class="row mb-3">
-                                <div class="col-6">
-                                    <label>Product Name</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblName" CssClass="form-label font-bold"></asp:Label>
-                                </div>
-                                <div class="col-6">
-                                    <label>Invoice Name</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblInvoiceName" CssClass="form-label font-bold"></asp:Label>
-                                </div>
+                            <div class="list-group list-group-horizontal-sm mb-1 text-center" id="dvTab" role="tablist">
+                                <a class="list-group-item list-group-item-action active" id="listGeneral" data-bs-toggle="list" href="#list-general" role="tab">General Data</a>
+                                <a class="list-group-item list-group-item-action" id="listKit" data-bs-toggle="list" href="#list-kit" role="tab">Kit Data</a>
                             </div>
-                            <div class="row mb-3">
-                                <div class="col-12 col-sm-12 col-lg-4 mb-3">
-                                    <label>Design Name</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblDesignName" CssClass="form-label font-bold"></asp:Label>
+                            <div class="tab-content text-justify">
+                                <div class="tab-pane fade show active" id="list-general" role="tabpanel" aria-labelledby="listGeneral">
+                                    <div class="row mt-3">
+                                        <div class="col-12">
+                                            <asp:Label runat="server" ID="lblName" CssClass="form-label font-bold" Font-Size="XX-Large"></asp:Label>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-12 col-sm-12 col-lg-3 mb-3">
+                                            <label>Design Name</label>
+                                            <br />
+                                            <asp:Label runat="server" ID="lblDesignName" CssClass="form-label font-bold"></asp:Label>
+                                        </div>
+                                        <div class="col-6 col-sm-6 col-lg-3 mb-3">
+                                            <label>Blind Name</label>
+                                            <br />
+                                            <asp:Label runat="server" ID="lblBlindName" CssClass="form-label font-bold"></asp:Label>
+                                        </div>
+                                        <div class="col-6 col-sm-6 col-lg-3 mb-3">
+                                            <label>Invoice Name</label>
+                                            <br />
+                                            <asp:Label runat="server" ID="lblInvoiceName" CssClass="form-label font-bold"></asp:Label>
+                                        </div>
+                                        <div class="col-12 col-sm-12 col-lg-3 mb-3">
+                                            <label>Company Detail</label>
+                                            <br />
+                                            <asp:Label runat="server" ID="lblCompanyName" CssClass="form-label font-bold"></asp:Label>
+                                        </div>
+                                        
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-12 col-sm-12 col-lg-3 mb-3">
+                                            <label>Tube Name</label>
+                                            <br />
+                                            <asp:Label runat="server" ID="lblTubeType" CssClass="form-label font-bold"></asp:Label>
+                                        </div>
+                                        <div class="col-12 col-sm-12 col-lg-3 mb-3">
+                                            <label>Control Name</label>
+                                            <br />
+                                            <asp:Label runat="server" ID="lblControlType" CssClass="form-label font-bold"></asp:Label>
+                                        </div>
+                                        <div class="col-12 col-sm-12 col-lg-3 mb-3">
+                                            <label>Colour Name</label>
+                                            <br />
+                                            <asp:Label runat="server" ID="lblColourType" CssClass="form-label font-bold"></asp:Label>
+                                        </div>
+                                        <div class="col-12 col-sm-12 col-lg-3 mb-3">
+                                            <label>Status</label>
+                                            <br />
+                                            <asp:Label runat="server" ID="lblStatus" CssClass="form-label font-bold"></asp:Label>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-12 col-sm-12 col-lg-8">
+                                            <label>Description</label>
+                                            <br />
+                                            <asp:Label runat="server" ID="lblDescription" CssClass="form-label font-bold"></asp:Label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12"><hr /></div>
+                                    </div>
+                                    <div class="row mb-2" runat="server" id="divError">
+                                        <div class="col-12">
+                                            <div class="alert alert-danger">
+                                                <span runat="server" id="msgError"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-12 d-flex flex-wrap justify-content-start gap-1">
+                                            <asp:Button runat="server" ID="btnEditProduct" CssClass="btn btn-primary" Text="Edit Product" OnClick="btnEditProduct_Click" />
+                                            <a href="#" runat="server" id="aChangeStatus" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalChangeStatus">Change Status</a>
+                                            <a href="javascript:void(0);" class="btn btn-secondary" onclick="showLog('Products', '<%= lblId.Text %>')">Log</a>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-12 col-sm-12 col-lg-4 mb-3">
-                                    <label>Blind Name</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblBlindName" CssClass="form-label font-bold"></asp:Label>
-                                </div>
-                                <div class="col-12 col-sm-12 col-lg-4 mb-3">
-                                    <label>Company Detail</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblCompanyName" CssClass="form-label font-bold"></asp:Label>
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-6 col-sm-6 col-lg-4 mb-3">
-                                    <label>Tube Type</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblTubeType" CssClass="form-label font-bold"></asp:Label>
-                                </div>
-                                <div class="col-6 col-sm-6 col-lg-4 mb-3">
-                                    <label>Control Type</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblControlType" CssClass="form-label font-bold"></asp:Label>
-                                </div>
-                                <div class="col-12 col-sm-12 col-lg-4 mb-3">
-                                    <label>Colour Type</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblColourType" CssClass="form-label font-bold"></asp:Label>
-                                </div>
-                            </div>
+                                <div class="tab-pane fade" id="list-kit" role="tabpanel" aria-labelledby="listKit">
+                                    <div class="row mt-5" runat="server" id="divErrorKit">
+                                        <div class="col-12">
+                                            <div class="alert alert-danger">
+                                                <span runat="server" id="msgErrorKit"></span>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                            <div class="row mb-3">
-                                <div class="col-6 col-sm-6 col-lg-4 mb-3">
-                                    <label>ID</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblId" CssClass="form-label font-bold"></asp:Label>
-                                </div>
-                                <div class="col-6 col-sm-6 col-lg-4 mb-3">
-                                    <label>Status</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblStatus" CssClass="form-label font-bold"></asp:Label>
-                                </div>
-                                <div class="col-12 col-sm-12 col-lg-4 mb-3">
-                                    <label>Description</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblDescription" CssClass="form-label font-bold"></asp:Label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <section class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-content">
-                        <div class="card-header">
-                            <div class="row">
-                                <div class="col-12 col-sm-12 col-lg-6">
-                                    <h4 class="card-title">List Hardware / Ven Kit</h4>
-                                </div>
-                                <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
-                                    <asp:Button runat="server" ID="btnAddKit" CssClass="btn btn-primary" Text="Add New" OnClick="btnAddKit_Click" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="row mb-3">
-                                <div class="col-12">
-                                    <div class="table-responsive">
-                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowCommand="gvList_RowCommand">
-                                            <RowStyle />
-                                            <Columns>
-                                                <asp:TemplateField ItemStyle-HorizontalAlign="Center">
-                                                    <ItemTemplate>
-                                                        <%# Container.DataItemIndex + 1 %>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:BoundField DataField="Id" HeaderText="ID" />
-                                                <asp:BoundField DataField="KitId" HeaderText="KIT ID" />
-                                                <asp:BoundField DataField="VenId" HeaderText="VEN ID" />
-                                                <asp:BoundField DataField="Name" HeaderText="Name" />
-                                                <asp:BoundField DataField="BlindStatus" HeaderText="Blind Status" />
-                                                <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="200px">
-                                                    <ItemTemplate>
-                                                        <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
-                                                        <ul class="dropdown-menu">
-                                                            <li runat="server" visible='<%# PageAction("Detail Kit") %>'>
-                                                                <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
-                                                            </li>
-                                                            <li runat="server" visible='<%# PageAction("Delete Kit") %>'>
-                                                                <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteKit" onclick='<%# String.Format("return showDeleteKit(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('ProductKits', '<%# Eval("Id") %>')">Log</a>
-                                                            </li>
-                                                        </ul>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                            </Columns>
-                                        </asp:GridView>
+                                    <div class="row mt-4">
+                                        <div class="col-12 col-sm-12 col-lg-6 mb-2">
+                                            <asp:Button runat="server" ID="btnAddKit" CssClass="btn btn-primary" Text="Add New" OnClick="btnAddKit_Click" />
+                                        </div>
+                                    </div>
+
+                                    <div class="row mt-3">
+                                        <div class="col-12">
+                                            <div class="table-responsive">
+                                                <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowCommand="gvList_RowCommand">
+                                                    <RowStyle />
+                                                    <Columns>
+                                                        <asp:TemplateField ItemStyle-HorizontalAlign="Center">
+                                                            <ItemTemplate>
+                                                                <%# Container.DataItemIndex + 1 %>
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                        <asp:BoundField DataField="Id" HeaderText="ID" />
+                                                        <asp:BoundField DataField="KitId" HeaderText="KIT ID" />
+                                                        <asp:BoundField DataField="VenId" HeaderText="VEN ID" />
+                                                        <asp:BoundField DataField="Name" HeaderText="Name" />
+                                                        <asp:BoundField DataField="BlindStatus" HeaderText="Blind Status" />
+                                                        <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="200px">
+                                                            <ItemTemplate>
+                                                                <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
+                                                                <ul class="dropdown-menu">
+                                                                    <li runat="server" visible='<%# PageAction("Detail Kit") %>'>
+                                                                        <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                                    </li>
+                                                                    <li runat="server" visible='<%# PageAction("Delete Kit") %>'>
+                                                                        <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteKit" onclick='<%# String.Format("return showDeleteKit(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('ProductKits', '<%# Eval("Id") %>')">Log</a>
+                                                                    </li>
+                                                                </ul>
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                    </Columns>
+                                                </asp:GridView>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -288,12 +288,30 @@
         </div>
     </div>
 
+    <asp:HiddenField ID="selected_tab" runat="server" />
+
     <div runat="server" visible="false">
+        <asp:Label runat="server" ID="lblId"></asp:Label>
         <asp:Label runat="server" ID="lblIdKit"></asp:Label>
         <asp:Label runat="server" ID="lblAction"></asp:Label>
     </div>
 
     <script type="text/javascript">
+        $(document).ready(function () {
+            var selectedTab = $("#<%=selected_tab.ClientID%>");
+            var tabId = selectedTab.val() != "" ? selectedTab.val() : "list-general";
+            $('#dvTab a[href="#' + tabId + '"]').tab('show');
+            $("#dvTab a").click(function () {
+                selectedTab.val($(this).attr("href").substring(1));
+            });
+            $("#listGeneral").on("click", function () {
+                updateSessionValue("list-general");
+            });
+            $("#listKit").on("click", function () {
+                updateSessionValue("list-kit");
+            });
+        });
+
         document.addEventListener('DOMContentLoaded', function () {
             const gv = document.getElementById('<%= gvList.ClientID %>');
             if (!gv) return;
@@ -323,6 +341,16 @@
 
         function showDeleteKit(id) {
             document.getElementById("<%=txtIdDeleteKit.ClientID %>").value = id;
+        }
+
+        function updateSessionValue(session) {
+            $.ajax({
+                type: "POST",
+                url: "Detail.aspx/UpdateSession",
+                data: JSON.stringify({ value: session }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json"
+            });
         }
 
         function showLog(type, dataId) {

@@ -69,31 +69,6 @@ Partial Class Setting_General_Company_Default
             If e.CommandName = "Detail" Then
                 url = String.Format("~/setting/general/company/detail?boosid={0}", dataId)
                 Response.Redirect(url, False)
-            ElseIf e.CommandName = "Ubah" Then
-                MessageError_Process(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showProcess(); };"
-                Try
-                    lblAction.Text = "Edit"
-                    titleProcess.InnerText = "Edit Company"
-
-                    lblId.Text = dataId
-
-                    Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM Companys WHERE Id='" & lblId.Text & "'")
-                    If thisData Is Nothing Then Exit Sub
-
-                    txtName.Text = thisData("Name").ToString()
-                    txtAlias.Text = thisData("Alias").ToString()
-                    txtDescription.Text = thisData("Description").ToString()
-                    ddlActive.SelectedValue = Convert.ToInt32(thisData("Active"))
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-                Catch ex As Exception
-                    MessageError_Process(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                    End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-                End Try
             End If
         End If
     End Sub
