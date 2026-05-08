@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Alias.aspx.vb" Inherits="Setting_Specification_Fabric_Alias" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Fabric Alias" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Alias.aspx.vb" Inherits="Setting_Specification_Product_Alias" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Product Alias" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-heading">
@@ -14,7 +14,7 @@
                             <li class="breadcrumb-item"><a runat="server" href="~/">Home</a></li>
                             <li class="breadcrumb-item"><a runat="server" href="~/setting">Setting</a></li>
                             <li class="breadcrumb-item"><a runat="server" href="~/setting/specification">Specification</a></li>
-                            <li class="breadcrumb-item"><a runat="server" href="~/setting/specification/fabric">Fabric</a></li>
+                            <li class="breadcrumb-item"><a runat="server" href="~/setting/specification/product">Product</a></li>
                             <li class="breadcrumb-item active" aria-current="page"><%: Page.Title %></li>
                         </ol>
                     </nav>
@@ -37,8 +37,7 @@
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-12 col-sm-12 col-lg-6 mb-2">
-                                    <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Add Fabric" OnClick="btnAdd_Click" />
-                                    <asp:Button runat="server" ID="btnAddColour" CssClass="btn btn-primary" Text="Add Fabric Colour" OnClick="btnAddColour_Click" />
+                                    <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Add Alias" OnClick="btnAdd_Click" />
                                 </div>
                                 <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
                                     <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
@@ -64,21 +63,20 @@
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:BoundField DataField="Id" HeaderText="ID" />
-                                                <asp:BoundField DataField="Type" HeaderText="Type" />
-                                                <asp:BoundField DataField="FirstName" HeaderText="Fabric Name" />
-                                                <asp:BoundField DataField="SecondName" HeaderText="Fabric Name" />
+                                                <asp:BoundField DataField="FirstName" HeaderText="Product Name" />
+                                                <asp:BoundField DataField="SecondName" HeaderText="Product Name" />
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="200px">
                                                     <ItemTemplate>
                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                         <ul class="dropdown-menu">
                                                             <li runat="server" visible='<%# PageAction("Detail") %>'>
-                                                                <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+
                                                             </li>
                                                             <li runat="server" visible='<%# PageAction("Delete") %>'>
-                                                                <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+
                                                             </li>
                                                             <li>
-                                                                <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('FabricAlias', '<%# Eval("Id") %>')">Log</a>
+                                                                <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('ProductAlias', '<%# Eval("Id") %>')">Log</a>
                                                             </li>
                                                         </ul>
                                                     </ItemTemplate>
