@@ -119,7 +119,7 @@
                                             <div class="row" id="divfirst">
                                                 <div class="col-12">
                                                     <div class="divider divider-left-center">
-                                                        <div class="divider-text">First Curtain</div>
+                                                        <div class="divider-text">FRONT SIDE CURTAIN</div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -281,7 +281,7 @@
                                             <div class="row" id="divsecond">
                                                 <div class="col-12">
                                                     <div class="divider divider-left-center">
-                                                        <div class="divider-text">Second Curtain</div>
+                                                        <div class="divider-text">BACK SIDE CURTAIN (SIDE CLOSEST TO THE WINDOW)</div>
                                                     </div>
                                                 </div>
                                             </div>

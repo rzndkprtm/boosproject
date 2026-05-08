@@ -2057,8 +2057,8 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                     divShow.push("divchainstopper", "divcontrollength", "divchainstopperb", "divcontrollengthb");
                 }
 
-                textdbfront.innerHTML = "FIRST ROLLER";
-                textdbback.innerHTML = "SECOND ROLLER";
+                textdbfront.innerHTML = "FRONT SIDE BLINDS";
+                textdbback.innerHTML = "BACK SIDE BLIND (SIDE CLOSEST TO THE WINDOW)";
             }
             else if (blindName === "Link 2 Blinds Dependent") {
                 divShow.push(
@@ -2306,7 +2306,7 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                 }
             }
 
-            if (["Alpha 1Nm", "Alpha 2Nm", "Alpha 3Nm", "Altus", "Mercure", "Sonesse 30 WF", "LSN40", "Battery", "240V (Hardwired) Remote"].includes(controlName)) {
+            if (["Alpha 1Nm", "Alpha 2Nm", "Alpha 3Nm", "Altus", "Mercure", "Sonesse 30 WF", "LSN40", "Battery Remote", "240V (Hardwired) Remote"].includes(controlName)) {
                 divShow.push("divremote");
             }
             if (["Alpha 1Nm", "Alpha 2Nm", "Alpha 3Nm", "Sonesse 30 WF"].includes(controlName)) {
