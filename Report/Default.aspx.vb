@@ -70,7 +70,7 @@ Partial Class Report_Default
                     New SqlParameter("@Status", ddlStatus.SelectedValue),
                     New SqlParameter("@StartDate", txtStartDate.Text),
                     New SqlParameter("@EndDate", txtEndDate.Text),
-                    New SqlParameter("@CompanyId", ddlCompany.SelectedValue)
+                    New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(ddlCompany.SelectedValue), CType(DBNull.Value, Object), ddlCompany.SelectedValue))
                 }
                 gvList.DataSource = reportClass.GetDataTableSP("sp_ReportPerDesign", paramsItem)
                 gvList.DataBind()
@@ -79,7 +79,7 @@ Partial Class Report_Default
                     New SqlParameter("@Status", ddlStatus.SelectedValue),
                     New SqlParameter("@StartDate", txtStartDate.Text),
                     New SqlParameter("@EndDate", txtEndDate.Text),
-                    New SqlParameter("@CompanyId", ddlCompany.SelectedValue)
+                    New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(ddlCompany.SelectedValue), CType(DBNull.Value, Object), ddlCompany.SelectedValue))
                 }
                 gvBlindsPivot.DataSource = reportClass.GetDataTableSP("sp_ReportPerCustomer", paramsPivot)
                 gvBlindsPivot.DataBind()
