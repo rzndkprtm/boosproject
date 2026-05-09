@@ -23,42 +23,61 @@ Partial Class Stocks
         End If
 
         If Not IsPostBack Then
-            BindRoller(txtSearchRoller.Text)
-            BindDesignShades()
-            BindCurtain(txtSearchCurtain.Text)
-            BindVertical(txtSearchVertical.Text)
-            BindVenetian()
-            BindAluminium()
-            BindCellularShades()
+            BindCompanyDetail()
+
+            BindRoller(txtSearchRoller.Text, ddlCompanyDetail.SelectedValue)
+            BindDesignShades(ddlCompanyDetail.SelectedValue)
+            BindCurtain(txtSearchCurtain.Text, ddlCompanyDetail.SelectedValue)
+            BindVertical(txtSearchVertical.Text, ddlCompanyDetail.SelectedValue)
+            BindVenetian(ddlCompanyDetail.SelectedValue)
+            BindAluminium(ddlCompanyDetail.SelectedValue)
+            BindCellularShades(ddlCompanyDetail.SelectedValue)
+
+            divCompanyDetail.Visible = PageAction("Visible Company Detail")
         End If
     End Sub
 
-    Protected Function PageAction(action As String) As Boolean
-        Try
-            Dim roleId As String = Session("RoleId").ToString()
-            Dim levelId As String = Session("LevelId").ToString()
-            Dim actionClass As New ActionClass
+    Protected Sub ddlCompanyDetail_SelectedIndexChanged(sender As Object, e As EventArgs)
+        BindRoller(txtSearchRoller.Text, ddlCompanyDetail.SelectedValue)
+        BindDesignShades(ddlCompanyDetail.SelectedValue)
+        BindCurtain(txtSearchCurtain.Text, ddlCompanyDetail.SelectedValue)
+        BindVertical(txtSearchVertical.Text, ddlCompanyDetail.SelectedValue)
+        BindVenetian(ddlCompanyDetail.SelectedValue)
+        BindAluminium(ddlCompanyDetail.SelectedValue)
+        BindCellularShades(ddlCompanyDetail.SelectedValue)
+    End Sub
 
-            Return actionClass.GetActionAccess(roleId, levelId, Page.Title, action)
+    Protected Sub BindCompanyDetail()
+        ddlCompanyDetail.Items.Clear()
+        Try
+            Dim baseString As String = "SELECT * FROM CompanyDetails ORDER BY Name ASC"
+            If Session("RoleName") = "Customer Service" Then
+                baseString = "SELECT * FROM CompanyDetails WHERE CompanyId='" & Session("CompanyId").ToString() & "' ORDER BY Name ASC"
+            End If
+            ddlCompanyDetail.DataSource = stockClass.GetDataTable(baseString)
+            ddlCompanyDetail.DataTextField = "Name"
+            ddlCompanyDetail.DataValueField = "Id"
+            ddlCompanyDetail.DataBind()
+
+            If ddlCompanyDetail.Items.Count > 0 Then
+                ddlCompanyDetail.Items.Insert(0, New ListItem("", ""))
+            End If
+
+            ddlCompanyDetail.SelectedValue = Session("CompanyDetailId").ToString()
         Catch ex As Exception
-            Response.Redirect("~/account/login", False)
-            HttpContext.Current.ApplicationInstance.CompleteRequest()
-            Return False
+            ddlCompanyDetail.Items.Clear()
+            ddlCompanyDetail.Items.Add(New ListItem("All", ""))
         End Try
-    End Function
+    End Sub
 
     ' ROLLER
 
-    Protected Sub BindRoller(searchText As String)
+    Protected Sub BindRoller(searchText As String, companyDetail As String)
         MessageError_Roller(False, String.Empty)
         Try
-            Dim companyDetailId As String = String.Empty
-            If Session("RoleName") = "Customer" OrElse Session("RoleName") = "Sales" OrElse Session("RoleName") = "Customer Service" Then
-                companyDetailId = Session("CompanyDetailId")
-            End If
             Dim paramsItem As New List(Of SqlParameter) From {
                     New SqlParameter("@DesignId", "12"),
-                    New SqlParameter("@CompanyId", companyDetailId),
+                    New SqlParameter("@CompanyId", companyDetail),
                     New SqlParameter("@Search", searchText)
                 }
             gvListRoller.DataSource = stockClass.GetDataTableSP("sp_GetStockFabric", paramsItem)
@@ -69,7 +88,7 @@ Partial Class Stocks
     End Sub
 
     Protected Sub btnSearchRoller_Click(sender As Object, e As EventArgs)
-        BindRoller(txtSearchRoller.Text)
+        BindRoller(txtSearchRoller.Text, ddlCompanyDetail.SelectedValue)
     End Sub
 
     Protected Sub gvListRoller_RowDataBound(sender As Object, e As GridViewRowEventArgs)
@@ -109,16 +128,12 @@ Partial Class Stocks
 
     ' DESIGN SHADES
 
-    Protected Sub BindDesignShades()
+    Protected Sub BindDesignShades(companyDetail As String)
         MessageError_Profile(False, String.Empty)
         Try
-            Dim companyDetailId As String = String.Empty
-            If Session("RoleName") = "Customer" OrElse Session("RoleName") = "Sales" OrElse Session("RoleName") = "Customer Service" Then
-                companyDetailId = Session("CompanyDetailId")
-            End If
             Dim paramsItem As New List(Of SqlParameter) From {
                     New SqlParameter("@DesignId", "4"),
-                    New SqlParameter("@CompanyId", companyDetailId),
+                    New SqlParameter("@CompanyId", companyDetail),
                     New SqlParameter("@Search", String.Empty)
                 }
             gvListProfile.DataSource = stockClass.GetDataTableSP("sp_GetStockFabric", paramsItem)
@@ -165,16 +180,12 @@ Partial Class Stocks
 
     'CURTAIN
 
-    Protected Sub BindCurtain(searchText As String)
+    Protected Sub BindCurtain(searchText As String, companyDetail As String)
         MessageError_Curtain(False, String.Empty)
         Try
-            Dim companyDetailId As String = String.Empty
-            If Session("RoleName") = "Customer" OrElse Session("RoleName") = "Sales" OrElse Session("RoleName") = "Customer Service" Then
-                companyDetailId = Session("CompanyDetailId")
-            End If
             Dim paramsItem As New List(Of SqlParameter) From {
                     New SqlParameter("@DesignId", "3"),
-                    New SqlParameter("@CompanyId", companyDetailId),
+                    New SqlParameter("@CompanyId", companyDetail),
                     New SqlParameter("@Search", searchText)
                 }
             gvListCurtain.DataSource = stockClass.GetDataTableSP("sp_GetStockFabric", paramsItem)
@@ -189,7 +200,7 @@ Partial Class Stocks
     End Sub
 
     Protected Sub btnSearchCurtain_Click(sender As Object, e As EventArgs)
-        BindCurtain(txtSearchCurtain.Text)
+        BindCurtain(txtSearchCurtain.Text, ddlCompanyDetail.SelectedValue)
     End Sub
 
     Protected Sub gvListCurtain_RowDataBound(sender As Object, e As GridViewRowEventArgs)
@@ -225,15 +236,11 @@ Partial Class Stocks
 
     'VERTICAL
 
-    Protected Sub BindVertical(searchText As String)
+    Protected Sub BindVertical(searchText As String, companyDetail As String)
         MessageError_Vertical(False, String.Empty)
         Try
-            Dim companyDetailId As String = String.Empty
-            If Session("RoleName") = "Customer" OrElse Session("RoleName") = "Sales" OrElse Session("RoleName") = "Customer Service" Then
-                companyDetailId = Session("CompanyDetailId")
-            End If
             Dim paramsItem As New List(Of SqlParameter) From {
-                    New SqlParameter("@CompanyId", companyDetailId),
+                    New SqlParameter("@CompanyId", companyDetail),
                     New SqlParameter("@Search", searchText)
                 }
             gvListVertical.DataSource = stockClass.GetDataTableSP("sp_GetStockFabricVertical", paramsItem)
@@ -248,7 +255,7 @@ Partial Class Stocks
     End Sub
 
     Protected Sub btnSearchVertical_Click(sender As Object, e As EventArgs)
-        BindVertical(txtSearchVertical.Text)
+        BindVertical(txtSearchVertical.Text, ddlCompanyDetail.SelectedValue)
     End Sub
 
     Protected Sub gvListVertical_RowDataBound(sender As Object, e As GridViewRowEventArgs)
@@ -284,16 +291,12 @@ Partial Class Stocks
 
     ' VENETIAN
 
-    Protected Sub BindVenetian()
+    Protected Sub BindVenetian(companyDetail As String)
         MessageError_Venetian(False, String.Empty)
         Try
-            Dim companyDetailId As String = String.Empty
-            If Session("RoleName") = "Customer" OrElse Session("RoleName") = "Sales" OrElse Session("RoleName") = "Customer Service" Then
-                companyDetailId = Session("CompanyDetailId")
-            End If
             Dim paramsItem As New List(Of SqlParameter) From {
                     New SqlParameter("@DesignId", "10"),
-                    New SqlParameter("@CompanyDetailId", companyDetailId)
+                    New SqlParameter("@CompanyDetailId", companyDetail)
                 }
             gvListVenetian.DataSource = stockClass.GetDataTableSP("sp_GetStockBlindColour", paramsItem)
             gvListVenetian.DataBind()
@@ -338,16 +341,12 @@ Partial Class Stocks
 
 
     ' ALUMINIUM
-    Protected Sub BindAluminium()
+    Protected Sub BindAluminium(companyDetail As String)
         MessageError_Aluminium(False, String.Empty)
         Try
-            Dim companyDetailId As String = String.Empty
-            If Session("RoleName") = "Customer" OrElse Session("RoleName") = "Sales" OrElse Session("RoleName") = "Customer Service" Then
-                companyDetailId = Session("CompanyDetailId")
-            End If
             Dim paramsItem As New List(Of SqlParameter) From {
                     New SqlParameter("@DesignId", "1"),
-                    New SqlParameter("@CompanyDetailId", companyDetailId)
+                    New SqlParameter("@CompanyDetailId", companyDetail)
                 }
             gvListAluminium.DataSource = stockClass.GetDataTableSP("sp_GetStockBlindColour", paramsItem)
             gvListAluminium.DataBind()
@@ -392,17 +391,12 @@ Partial Class Stocks
 
     ' CELLULAR SHADES
 
-    Protected Sub BindCellularShades()
+    Protected Sub BindCellularShades(companyDetail As String)
         MessageError_Cellular(False, String.Empty)
         Try
-            Dim companyDetailId As String = String.Empty
-            If Session("RoleName") = "Customer" OrElse Session("RoleName") = "Sales" OrElse Session("RoleName") = "Customer Service" Then
-                companyDetailId = Session("CompanyDetailId")
-            End If
             Dim paramsItem As New List(Of SqlParameter) From {
                     New SqlParameter("@DesignId", "2"),
-                    New SqlParameter("@CompanyId", companyDetailId),
-                    New SqlParameter("@Search", String.Empty)
+                    New SqlParameter("@CompanyId", companyDetail)
                 }
             gvListCellular.DataSource = stockClass.GetDataTableSP("sp_GetStockFabric", paramsItem)
             gvListCellular.DataBind()
@@ -444,4 +438,18 @@ Partial Class Stocks
             Next
         End If
     End Sub
+
+    Protected Function PageAction(action As String) As Boolean
+        Try
+            Dim roleId As String = Session("RoleId").ToString()
+            Dim levelId As String = Session("LevelId").ToString()
+            Dim actionClass As New ActionClass
+
+            Return actionClass.GetActionAccess(roleId, levelId, Page.Title, action)
+        Catch ex As Exception
+            Response.Redirect("~/account/login", False)
+            HttpContext.Current.ApplicationInstance.CompleteRequest()
+            Return False
+        End Try
+    End Function
 End Class

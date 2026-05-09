@@ -144,7 +144,7 @@ Public Partial Class SiteMaster
 
                     If checkDt.Rows.Count = 0 Then
                         Dim thisMsg As String = row("Message").ToString()
-                        thisMsg = thisMsg.Replace("@FullName", "<strong>" & Session("FullName").ToString() & "</strong>")
+                        thisMsg = thisMsg.Replace("[FullName]", "<strong>" & Session("FullName").ToString() & "</strong>")
 
                         Dim obj = New With {
                                 .title = row("Title").ToString(),

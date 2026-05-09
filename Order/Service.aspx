@@ -99,7 +99,15 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-12 col-sm-12 col-lg-3 mb-1">
-                                                <label>Price</label>
+                                                <label>Buy Price</label>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                <input type="text" id="buyprice" class="form-control" autocomplete="off" placeholder="Price" value="0.00" />
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12 col-sm-12 col-lg-3 mb-1">
+                                                <label>Sell Price</label>
                                             </div>
                                             <div class="col-12 col-sm-12 col-lg-3 form-group">
                                                 <input type="text" id="price" class="form-control" autocomplete="off" placeholder="Price" value="0.00" />
