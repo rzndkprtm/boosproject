@@ -37,17 +37,11 @@
                         <div class="card-body">
                             <div class="list-group list-group-horizontal-sm mb-1 text-center" id="dvTab" role="tablist">
                                 <a class="list-group-item list-group-item-action active" id="listRoller" data-bs-toggle="list" href="#list-roller" role="tab">Roller</a>
-
                                 <a class="list-group-item list-group-item-action" id="listVertical" data-bs-toggle="list" href="#list-vertical" role="tab">Vertical</a>
-
                                 <a class="list-group-item list-group-item-action" id="listCellular" data-bs-toggle="list" href="#list-cellular" role="tab">Cellular Shades</a>
-
                                 <a class="list-group-item list-group-item-action" id="listProfile" data-bs-toggle="list" href="#list-profile" role="tab">Design Shades</a>
-
                                 <a class="list-group-item list-group-item-action" id="listCurtain" data-bs-toggle="list" href="#list-curtain" role="tab">Curtain</a>
-                                
                                 <a class="list-group-item list-group-item-action" id="listVenetian" data-bs-toggle="list" href="#list-venetian" role="tab">Venetian Blind</a>
-
                                 <a class="list-group-item list-group-item-action" id="listAluminium" data-bs-toggle="list" href="#list-aluminium" role="tab">Aluminium Blind</a>
                             </div>
                             <div class="tab-content text-justify">
@@ -59,7 +53,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="row mt-5" runat="server">
                                         <div class="col-12 col-sm-12 col-lg-7">
                                             <asp:Panel runat="server" DefaultButton="btnSearchRoller" Width="100%">
@@ -71,7 +64,6 @@
                                             </asp:Panel>
                                         </div>
                                     </div>
-
                                     <div class="row mt-5">
                                         <div class="col-12">
                                             <div class="table-responsive">
@@ -88,7 +80,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="row mt-3">
                                         <div class="col-12">
                                             <div class="table-responsive grid-container">
@@ -110,7 +101,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="listProfile">
                                     <div class="row mt-5" runat="server" id="divErrorProfile">
                                         <div class="col-12">
@@ -119,7 +109,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="row mt-5">
                                         <div class="col-12">
                                             <div class="table-responsive">
@@ -136,7 +125,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="row mt-3">
                                         <div class="col-12">
                                             <div class="table-responsive grid-container">
@@ -158,7 +146,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="tab-pane fade" id="list-curtain" role="tabpanel" aria-labelledby="listCurtain">
                                     <div class="row mt-5" runat="server" id="divErrorCurtain">
                                         <div class="col-12">
@@ -167,7 +154,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="row mt-5">
                                         <div class="col-12 col-sm-12 col-lg-7">
                                             <asp:Panel runat="server" DefaultButton="btnSearchCurtain" Width="100%">
@@ -179,7 +165,6 @@
                                             </asp:Panel>
                                         </div>
                                     </div>
-
                                     <div class="row mt-5">
                                         <div class="col-12">
                                             <div class="table-responsive">
@@ -196,7 +181,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="row mt-3">
                                         <div class="col-12">
                                             <div class="table-responsive grid-container">
@@ -218,7 +202,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="tab-pane fade" id="list-vertical" role="tabpanel" aria-labelledby="listVertical">
                                     <div class="row mt-5" runat="server" id="divErrorVertical">
                                         <div class="col-12">
@@ -227,7 +210,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="row mt-5">
                                         <div class="col-12 col-sm-12 col-lg-7">
                                             <asp:Panel runat="server" DefaultButton="btnSearchVertical" Width="100%">
@@ -239,7 +221,6 @@
                                             </asp:Panel>
                                         </div>
                                     </div>
-
                                     <div class="row mt-5">
                                         <div class="col-12">
                                             <div class="table-responsive">
@@ -256,7 +237,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="row mt-3">
                                         <div class="col-12">
                                             <div class="table-responsive grid-container">
@@ -278,7 +258,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="tab-pane fade" id="list-venetian" role="tabpanel" aria-labelledby="listVenetian">
                                     <div class="row mt-5" runat="server" id="divErrorVenetian">
                                         <div class="col-12">
@@ -287,7 +266,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="row mt-5">
                                         <div class="col-12">
                                             <div class="table-responsive">
@@ -304,7 +282,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="row mt-3">
                                         <div class="col-12">
                                             <div class="table-responsive grid-container">
@@ -324,7 +301,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="tab-pane fade" id="list-aluminium" role="tabpanel" aria-labelledby="listAluminium">
                                     <div class="row mt-5" runat="server" id="divErrorAluminium">
                                         <div class="col-12">
@@ -333,7 +309,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="row mt-5">
                                         <div class="col-12">
                                             <div class="table-responsive">
@@ -350,7 +325,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="row mt-3">
                                         <div class="col-12">
                                             <div class="table-responsive grid-container">
@@ -370,7 +344,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="tab-pane fade" id="list-cellular" role="tabpanel" aria-labelledby="listCellular">
                                     <div class="row mt-5" runat="server" id="divErrorCellular">
                                         <div class="col-12">
@@ -379,7 +352,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="row mt-5">
                                         <div class="col-12">
                                             <div class="table-responsive">
@@ -396,7 +368,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="row mt-3">
                                         <div class="col-12">
                                             <div class="table-responsive grid-container">
@@ -417,6 +388,16 @@
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer" runat="server" id="divCompanyDetail">
+                        <div class="row">
+                            <div class="col-12 col-sm-12 col-lg-4 d-flex justify-content-end">
+                                <div class="input-group">
+                                    <span class="input-group-text">Company Detail</span>
+                                    <asp:DropDownList runat="server" ID="ddlCompanyDetail" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCompanyDetail_SelectedIndexChanged"></asp:DropDownList>
                                 </div>
                             </div>
                         </div>

@@ -1,7 +1,6 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 Imports System.Globalization
-Imports System.IdentityModel.Protocols.WSTrust
 Imports System.Threading.Tasks
 
 Partial Class Order_Detail
