@@ -106,7 +106,7 @@ Partial Class Report_Default
             ddlCompany.DataBind()
 
             If ddlCompany.Items.Count > 0 Then
-                ddlCompany.Items.Insert(0, New ListItem("All", ""))
+                ddlCompany.Items.Insert(0, New ListItem("ALL", ""))
             End If
 
             If Session("RoleName") = "Sales" OrElse Session("RoleName") = "Customer Service" Then
