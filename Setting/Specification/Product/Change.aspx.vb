@@ -73,9 +73,27 @@ Partial Class Setting_Specification_Product_Change
                         End Using
 
                         Dim changeDesc As String = String.Format("Change Status Product : {0}", ddlStatus.SelectedValue)
-
                         dataLog = {"Products", productId, Session("LoginId").ToString(), changeDesc}
                         settingClass.Logs(dataLog)
+
+                        Dim aliasData As DataRow = settingClass.GetDataRow("SELECT SecondId FROM ProductAlias WHERE FirstId='" & productId & "'")
+                        If aliasData IsNot Nothing Then
+                            Dim aliasId As String = aliasData(0).ToString()
+
+                            Using thisConn As New SqlConnection(myConn)
+                                Using myCmd As SqlCommand = New SqlCommand("UPDATE Products SET Status=@Status WHERE Id=@Id", thisConn)
+                                    myCmd.Parameters.AddWithValue("@Id", aliasId)
+                                    myCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
+
+                                    thisConn.Open()
+                                    myCmd.ExecuteNonQuery()
+                                End Using
+                            End Using
+
+                            changeDesc = String.Format("Change Status Product : {0}", ddlStatus.SelectedValue)
+                            dataLog = {"Products", aliasId, Session("LoginId").ToString(), changeDesc}
+                            settingClass.Logs(dataLog)
+                        End If
                     Next
 
                     Response.Redirect("~/setting/specification/product", False)
@@ -84,6 +102,9 @@ Partial Class Setting_Specification_Product_Change
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 
@@ -104,6 +125,9 @@ Partial Class Setting_Specification_Product_Change
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 
@@ -122,6 +146,9 @@ Partial Class Setting_Specification_Product_Change
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 
@@ -138,6 +165,9 @@ Partial Class Setting_Specification_Product_Change
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 
@@ -154,6 +184,9 @@ Partial Class Setting_Specification_Product_Change
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 
@@ -170,6 +203,9 @@ Partial Class Setting_Specification_Product_Change
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 
