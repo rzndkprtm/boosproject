@@ -181,9 +181,28 @@ Partial Class Setting_Specification_Product_Default
                 End Using
             End Using
 
-            Dim changeDesc As String = String.Format("Change Status Products : {0}", newStatus)
+            Dim changeDesc As String = String.Format("Change Status Product : {0}", newStatus)
             dataLog = {"Products", lblId.Text, Session("LoginId").ToString(), changeDesc}
             settingClass.Logs(dataLog)
+
+            Dim aliasData As DataRow = settingClass.GetDataRow("SELECT SecondId FROM ProductAlias WHERE FirstId='" & thisId & "'")
+            If aliasData IsNot Nothing Then
+                Dim aliasId As String = aliasData(0).ToString()
+
+                Using thisConn As New SqlConnection(myConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Products SET Status=@Status WHERE Id=@Id", thisConn)
+                        myCmd.Parameters.AddWithValue("@Id", aliasId)
+                        myCmd.Parameters.AddWithValue("@Status", newStatus)
+
+                        thisConn.Open()
+                        myCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                changeDesc = String.Format("Change Status Product : {0}", newStatus)
+                dataLog = {"Products", aliasId, Session("LoginId").ToString(), changeDesc}
+                settingClass.Logs(dataLog)
+            End If
 
             Session("DesignProduct") = ddlDesignSort.SelectedValue
             Session("BlindProduct") = ddlBlindSort.SelectedValue

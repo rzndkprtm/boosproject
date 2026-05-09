@@ -70,6 +70,25 @@ Partial Class Setting_Specification_Product_Detail
             dataLog = {"Products", lblId.Text, Session("LoginId").ToString(), changeDesc}
             settingClass.Logs(dataLog)
 
+            Dim aliasData As DataRow = settingClass.GetDataRow("SELECT SecondId FROM ProductAlias WHERE FirstId='" & lblId.Text & "'")
+            If aliasData IsNot Nothing Then
+                Dim aliasId As String = aliasData(0).ToString()
+
+                Using thisConn As New SqlConnection(myConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Products SET Status=@Status WHERE Id=@Id", thisConn)
+                        myCmd.Parameters.AddWithValue("@Id", aliasId)
+                        myCmd.Parameters.AddWithValue("@Status", newStatus)
+
+                        thisConn.Open()
+                        myCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                changeDesc = String.Format("Change Status Product : {0}", newStatus)
+                dataLog = {"Products", aliasId, Session("LoginId").ToString(), changeDesc}
+                settingClass.Logs(dataLog)
+            End If
+
             url = String.Format("~/setting/specification/product/detail?productid={0}", lblId.Text)
             Response.Redirect(url, False)
         Catch ex As Exception
