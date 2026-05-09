@@ -20,6 +20,7 @@ Partial Class Setting_Specification_Product_Alias
             MessageError(False, String.Empty)
             txtSearch.Text = Session("SearchProductAlias")
             BindData(txtSearch.Text)
+            BindProduct()
         End If
     End Sub
 
@@ -30,8 +31,6 @@ Partial Class Setting_Specification_Product_Alias
         Try
             lblAction.Text = "Add"
             titleProcess.InnerText = "Add Product Alias"
-
-            BindProduct()
 
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         Catch ex As Exception
@@ -76,8 +75,6 @@ Partial Class Setting_Specification_Product_Alias
 
                     Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM ProductAlias WHERE Id='" & lblId.Text & "'")
                     If myData Is Nothing Then Exit Sub
-
-                    BindProduct()
 
                     ddlFirstId.SelectedValue = myData("FirstID").ToString()
                     ddlSecondId.SelectedValue = myData("SecondID").ToString()
