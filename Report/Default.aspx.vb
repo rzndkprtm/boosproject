@@ -35,9 +35,7 @@ Partial Class Report_Default
                 If e.Row.Cells.Count > 0 Then
                     e.Row.Cells(e.Row.Cells.Count - 1).Visible = False
                 End If
-
             End If
-
         End If
     End Sub
 
@@ -108,7 +106,7 @@ Partial Class Report_Default
             ddlCompany.DataBind()
 
             If ddlCompany.Items.Count > 0 Then
-                ddlCompany.Items.Insert(0, New ListItem("", ""))
+                ddlCompany.Items.Insert(0, New ListItem("All", ""))
             End If
 
             If Session("RoleName") = "Sales" OrElse Session("RoleName") = "Customer Service" Then
