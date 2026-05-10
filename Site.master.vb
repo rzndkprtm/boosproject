@@ -345,28 +345,11 @@ Public Partial Class SiteMaster
                 liNotification.Visible = True
             End If
 
-            If Session("RoleName") = "Production" Then
-                liGuide.Visible = True
-            End If
-
-            If Session("RoleName") = "Sales" Then
-                liOldOrder.Visible = True
-                liGuide.Visible = True
-                liStocks.Visible = True
-
-                If Session("LevelName") = "Leader" Then
-                    liSales.Visible = True
-                    liReport.Visible = True
-                End If
-
-                liSetting.Visible = True
-                liCustomer.Visible = True
-            End If
-
             If Session("RoleName") = "Account" Then
                 liOldOrder.Visible = True
                 liSales.Visible = True
                 liGuide.Visible = True
+                liStocks.Visible = True
 
                 liSetting.Visible = True
 
@@ -401,12 +384,30 @@ Public Partial Class SiteMaster
                 liSpecificationMounting.Visible = True
             End If
 
+            If Session("RoleName") = "Sales" Then
+                liOldOrder.Visible = True
+                liGuide.Visible = True
+                liStocks.Visible = True
+
+                If Session("LevelName") = "Leader" Then
+                    liSales.Visible = True
+                    liReport.Visible = True
+                End If
+
+                liSetting.Visible = True
+                liCustomer.Visible = True
+            End If
+
             If Session("RoleName") = "Customer" Then
                 liOldOrder.Visible = True
                 liGuide.Visible = True
                 liStocks.Visible = True
 
                 liSettingQuote.Visible = True
+            End If
+
+            If Session("RoleName") = "Data Entry" Then
+                liOldOrder.Visible = True
             End If
 
             If Session("RoleName") = "Installer" Then
