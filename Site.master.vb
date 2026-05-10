@@ -349,6 +349,7 @@ Public Partial Class SiteMaster
                 liOldOrder.Visible = True
                 liSales.Visible = True
                 liGuide.Visible = True
+                liReport.Visible = True
                 liStocks.Visible = True
 
                 liSetting.Visible = True
@@ -372,6 +373,7 @@ Public Partial Class SiteMaster
                 liReport.Visible = True
                 liGuide.Visible = True
                 liStocks.Visible = True
+                liSales.Visible = True
 
                 liSetting.Visible = True
 
