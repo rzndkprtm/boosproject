@@ -31,13 +31,13 @@
                         <div class="container">
                             <div class="logo">
                                 <a runat="server" href="~/">
-                                    <asp:Image runat="server" ID="imgLogo" ImageUrl="~/Assets/images/logo/boos.jpg" AlternateText="BOOS" />
+                                    <asp:Image runat="server" ID="imgLogo" ImageUrl="~/Assets/images/logo/general.jpg" AlternateText="BOOS" />
                                 </a>
                             </div>
                             <div class="header-top-right">
                                 <div class="dropdown">
                                     <a href="#" class="user-dropdown d-flex dropend" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <div class="avatar avatar-md2" >
+                                        <div class="avatar avatar-md2">
                                             <img runat="server" src="~/Assets/images/avatars.png" alt="Avatar">
                                         </div>
                                         <div class="text">
@@ -283,7 +283,6 @@
                     </nav>
                 </header>
                 <div class="content-wrapper container">
-                    <asp:Label runat="server" ID="lblTest"></asp:Label>
                     <asp:ContentPlaceHolder ID="MainContent" runat="server"></asp:ContentPlaceHolder>
                 </div>
                 <footer class="mt-4 py-3 border-top">

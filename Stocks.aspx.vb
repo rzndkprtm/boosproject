@@ -8,7 +8,7 @@ Partial Class Stocks
 
     <WebMethod(EnableSession:=True)>
     Public Shared Sub UpdateSession(value As String)
-        HttpContext.Current.Session("selectedTabStock") = value
+        HttpContext.Current.Session("selectedTabStocks") = value
     End Sub
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -18,8 +18,8 @@ Partial Class Stocks
             Exit Sub
         End If
 
-        If Not Session("selectedTabStock") = "" Then
-            selected_tab.Value = Session("selectedTabStock").ToString()
+        If Not Session("selectedTabStocks") = "" Then
+            selected_tab.Value = Session("selectedTabStocks").ToString()
         End If
 
         If Not IsPostBack Then
@@ -259,7 +259,7 @@ Partial Class Stocks
     End Sub
 
 
-    'VERTICAL
+    ' VERTICAL
 
     Protected Sub BindVertical(searchText As String, companyDetail As String)
         MessageError_Vertical(False, String.Empty)

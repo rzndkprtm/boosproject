@@ -444,7 +444,7 @@
         function updateSessionValue(session) {
             $.ajax({
                 type: "POST",
-                url: "Detail.aspx/UpdateSession",
+                url: "Stocks.aspx/UpdateSession",
                 data: JSON.stringify({ value: session }),
                 contentType: "application/json; charset=utf-8",
                 dataType: "json"
