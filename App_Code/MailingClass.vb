@@ -214,7 +214,6 @@ Public Class MailingClass
             Dim actionData As DataRow = GetDataRow("SELECT CustomerLogins.*, LoginRoles.Name AS RoleName FROM CustomerLogins LEFT JOIN LoginRoles ON CustomerLogins.RoleId=LoginRoles.Id WHERE CustomerLogins.Id='" & loginId & "'")
             If actionData Is Nothing Then Exit Sub
             Dim actionName As String = actionData("FullName").ToString()
-            Dim actionRole As String = actionData("RoleName").ToString()
             Dim actionEmail As String = actionData("Email").ToString()
 
             Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='" & action & "' AND Active=1")
@@ -365,7 +364,7 @@ Public Class MailingClass
 
             mailBody &= "<span style='font-family: Cambria; font-size:16px;'>Kind Regards,</span>"
             mailBody &= "<br /><br />"
-            mailBody &= "<span style='font-family: Cambria; font-size:16px;font-weight: bold;'>" & actionName & "</span><span style='font-family: Cambria; font-size:16px;'> | " & actionRole & "</span>"
+            mailBody &= "<span style='font-family: Cambria; font-size:16px;font-weight: bold;'>" & actionName & "</span>"
             mailBody &= "<br /><br /><br />"
             mailBody &= "<span style='font-family: Cambria; font-size:16px; font-weight: bold;'>" & companyName.ToUpper() & "</span>"
 
@@ -863,9 +862,6 @@ Public Class MailingClass
 
             Dim actionName As String = GetItemData("SELECT FullName FROM CustomerLogins WHERE Id='" & actionBy & "'")
             Dim actionEmail As String = GetItemData("SELECT Email FROM CustomerLogins WHERE Id='" & actionBy & "'")
-            Dim actionRole As String = GetItemData("SELECT LoginRoles.Name FROM CustomerLogins LEFT JOIN LoginRoles ON CustomerLogins.RoleId=LoginRoles.Id WHERE CustomerLogins.Id='" & actionBy & "'")
-
-            Dim signatureUser As String = String.Format("{0} - {1}", actionName, actionRole)
 
             Dim mailBody As String = String.Empty
 
@@ -885,7 +881,7 @@ Public Class MailingClass
 
             mailBody &= "<span style='font-family: Cambria; font-size:16px;'>Kind Regards,</span>"
             mailBody &= "<br /><br />"
-            mailBody &= "<span style='font-family: Cambria; font-size:16px;font-weight: bold;'>" & actionName & "</span><span style='font-family: Cambria; font-size:16px;'> | " & actionRole & " </span>"
+            mailBody &= "<span style='font-family: Cambria; font-size:16px;font-weight: bold;'>" & actionName & "</span>"
             mailBody &= "<br /><br /><br />"
             mailBody &= "<span style='font-family: Cambria; font-size:16px; font-weight: bold;'>" & companyName.ToUpper() & "</span>"
 
@@ -986,9 +982,6 @@ Public Class MailingClass
 
             Dim actionName As String = GetItemData("SELECT FullName FROM CustomerLogins WHERE Id='" & actionBy & "'")
             Dim actionEmail As String = GetItemData("SELECT Email FROM CustomerLogins WHERE Id='" & actionBy & "'")
-            Dim actionRole As String = GetItemData("SELECT LoginRoles.Name FROM CustomerLogins LEFT JOIN LoginRoles ON CustomerLogins.RoleId=LoginRoles.Id WHERE CustomerLogins.Id='" & actionBy & "'")
-
-            Dim signatureUser As String = String.Format("{0} - {1}", actionName, actionRole)
 
             Dim mailBody As String = String.Empty
 
@@ -1026,7 +1019,7 @@ Public Class MailingClass
 
             mailBody &= "<span style='font-family: Cambria; font-size:16px;'>Kind Regards,</span>"
             mailBody &= "<br />"
-            mailBody &= "<span style='font-family: Cambria; font-size:16px;font-weight: bold;'>" & actionName & "</span><span style='font-family: Cambria; font-size:16px;'> | " & actionRole & " </span>"
+            mailBody &= "<span style='font-family: Cambria; font-size:16px;font-weight: bold;'>" & actionName & "</span>"
             mailBody &= "<br /><br /><br />"
             mailBody &= "<span style='font-family: Cambria; font-size:16px; font-weight: bold;'>" & companyName.ToUpper() & "</span>"
 
