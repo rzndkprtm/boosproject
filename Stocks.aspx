@@ -83,7 +83,7 @@
                                     <div class="row mt-3">
                                         <div class="col-12">
                                             <div class="table-responsive grid-container">
-                                                <asp:GridView runat="server" ID="gvListRoller" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowDataBound="gvListRoller_RowDataBound">
+                                                <asp:GridView runat="server" ID="gvListRoller" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" ShowFooter="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowDataBound="gvListRoller_RowDataBound">
                                                     <RowStyle />
                                                     <Columns>
                                                         <asp:BoundField DataField="FabricType" HeaderText="" />
@@ -128,7 +128,7 @@
                                     <div class="row mt-3">
                                         <div class="col-12">
                                             <div class="table-responsive grid-container">
-                                                <asp:GridView runat="server" ID="gvListProfile" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowDataBound="gvListProfile_RowDataBound">
+                                                <asp:GridView runat="server" ID="gvListProfile" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" ShowFooter="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowDataBound="gvListProfile_RowDataBound">
                                                     <RowStyle />
                                                     <Columns>
                                                         <asp:BoundField DataField="FabricType" HeaderText="" />
@@ -184,7 +184,7 @@
                                     <div class="row mt-3">
                                         <div class="col-12">
                                             <div class="table-responsive grid-container">
-                                                <asp:GridView runat="server" ID="gvListCurtain" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowDataBound="gvListCurtain_RowDataBound">
+                                                <asp:GridView runat="server" ID="gvListCurtain" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" ShowFooter="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowDataBound="gvListCurtain_RowDataBound">
                                                     <RowStyle />
                                                     <Columns>
                                                         <asp:BoundField DataField="FabricType" HeaderText="" />
@@ -240,7 +240,7 @@
                                     <div class="row mt-3">
                                         <div class="col-12">
                                             <div class="table-responsive grid-container">
-                                                <asp:GridView runat="server" ID="gvListVertical" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowDataBound="gvListVertical_RowDataBound">
+                                                <asp:GridView runat="server" ID="gvListVertical" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" ShowFooter="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowDataBound="gvListVertical_RowDataBound">
                                                     <RowStyle />
                                                     <Columns>
                                                         <asp:BoundField DataField="FabricType" HeaderText="" />
@@ -285,7 +285,7 @@
                                     <div class="row mt-3">
                                         <div class="col-12">
                                             <div class="table-responsive grid-container">
-                                                <asp:GridView runat="server" ID="gvListVenetian" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowDataBound="gvListVenetian_RowDataBound">
+                                                <asp:GridView runat="server" ID="gvListVenetian" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" ShowFooter="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowDataBound="gvListVenetian_RowDataBound">
                                                     <RowStyle />
                                                     <Columns>
                                                         <asp:BoundField DataField="BlindName" HeaderText="" />
@@ -328,7 +328,7 @@
                                     <div class="row mt-3">
                                         <div class="col-12">
                                             <div class="table-responsive grid-container">
-                                                <asp:GridView runat="server" ID="gvListAluminium" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowDataBound="gvListAluminium_RowDataBound">
+                                                <asp:GridView runat="server" ID="gvListAluminium" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" ShowFooter="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowDataBound="gvListAluminium_RowDataBound">
                                                     <RowStyle />
                                                     <Columns>
                                                         <asp:BoundField DataField="BlindName" HeaderText="" />
@@ -371,7 +371,7 @@
                                     <div class="row mt-3">
                                         <div class="col-12">
                                             <div class="table-responsive grid-container">
-                                                <asp:GridView runat="server" ID="gvListCellular" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowDataBound="gvListCellular_RowDataBound">
+                                                <asp:GridView runat="server" ID="gvListCellular" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" ShowFooter="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowDataBound="gvListCellular_RowDataBound">
                                                     <RowStyle />
                                                     <Columns>
                                                         <asp:BoundField DataField="FabricType" HeaderText="" />
