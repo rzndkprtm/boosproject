@@ -1,24 +1,22 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 
-Partial Class Setting_General_Notification_Edit
+Partial Class Setting_Notification_Edit
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-
     Dim dataLog As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
         If pageAccess = False Then
-            Response.Redirect("~/setting/general/notification", False)
+            Response.Redirect("~/setting/notification", False)
             Exit Sub
         End If
 
         If String.IsNullOrEmpty(Request.QueryString("notifid")) Then
-            Response.Redirect("~/setting/general/notification", False)
+            Response.Redirect("~/setting/notification", False)
             Exit Sub
         End If
 
@@ -26,7 +24,6 @@ Partial Class Setting_General_Notification_Edit
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-
             BindData(lblId.Text)
         End If
     End Sub
@@ -89,7 +86,7 @@ Partial Class Setting_General_Notification_Edit
                     End Using
                 End Using
 
-                Response.Redirect("~/setting/general/notification", False)
+                Response.Redirect("~/setting/notification", False)
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -100,7 +97,7 @@ Partial Class Setting_General_Notification_Edit
     End Sub
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
-        Response.Redirect("~/setting/general/notification", False)
+        Response.Redirect("~/setting/notification", False)
     End Sub
 
     Protected Sub BindData(notifId As String)

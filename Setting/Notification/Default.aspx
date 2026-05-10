@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Xero.aspx.vb" Inherits="Setting_General_Xero" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Xero" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Default.aspx.vb" Inherits="Setting_Notification_Default" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Notification" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-heading">
@@ -13,7 +13,6 @@
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a runat="server" href="~/">Home</a></li>
                             <li class="breadcrumb-item"><a runat="server" href="~/setting">Setting</a></li>
-                            <li class="breadcrumb-item"><a runat="server" href="~/setting/general">General</a></li>
                             <li class="breadcrumb-item active" aria-current="page"><%: Page.Title %></li>
                         </ol>
                     </nav>
@@ -22,6 +21,17 @@
         </div>
     </div>
     <div class="page-content">
+        <section class="row mb-3">
+            <div class="col-12">
+                <div class="row mb-2" runat="server" id="divError">
+                    <div class="col-12">
+                        <div class="alert alert-danger">
+                            <span runat="server" id="msgError"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
         <section class="row">
             <div class="col-12">
                 <div class="card">
@@ -35,7 +45,7 @@
                                     <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
                                         <div class="input-group">
                                             <span class="input-group-text">Search : </span>
-                                            <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" placeholoder="Name" autocomplete="off"></asp:TextBox>
+                                            <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" placeholoder="" autocomplete="off"></asp:TextBox>
                                             <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />
                                         </div>
                                     </asp:Panel>
@@ -43,13 +53,6 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <div class="row mb-2" runat="server" id="divError">
-                                <div class="col-12">
-                                    <div class="alert alert-danger">
-                                        <span runat="server" id="msgError"></span>
-                                    </div>
-                                </div>
-                            </div>
                             <div class="row mb-3">
                                 <div class="col-12">
                                     <div class="table-responsive">
@@ -62,24 +65,18 @@
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:BoundField DataField="Id" HeaderText="ID" />
-                                                <asp:BoundField DataField="Name" HeaderText="Name" />
-                                                <asp:BoundField DataField="ItemCode" HeaderText="Item Code" />
-                                                <asp:BoundField DataField="AccountCode" HeaderText="Account Code" />
-                                                <asp:BoundField DataField="Description" HeaderText="Description" />
+                                                <asp:BoundField DataField="Title" HeaderText="Title" />
+                                                <asp:BoundField DataField="StartDate" HeaderText="Start Date" DataFormatString="{0:dd MMM yyyy}" />
+                                                <asp:BoundField DataField="EndDate" HeaderText="End Date" DataFormatString="{0:dd MMM yyyy}" />
                                                 <asp:BoundField DataField="DataActive" HeaderText="Active" />
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
                                                     <ItemTemplate>
                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                         <ul class="dropdown-menu">
-                                                            <li runat="server" visible='<%# PageAction("Detail") %>'>
-                                                                <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail/ Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
-                                                            </li>
-                                                            <li runat="server" visible='<%# PageAction("Delete") %>'>
-                                                                <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('Xeros', '<%# Eval("Id") %>')">Log</a>
-                                                            </li>
+                                                            <li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalTest" data-title='<%# Eval("Title") %>' data-message='<%# Eval("Message") %>' onclick="showTest(this)">Test</a></li>
+                                                            <li><asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton></li>
+                                                            <li><a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a></li>
+                                                            <li><a href="javascript:void(0)" class="dropdown-item" onclick="showLog('Notifications', '<%# Eval("Id") %>')">Log</a></li>
                                                         </ul>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
@@ -98,55 +95,17 @@
         </section>
     </div>
 
-    <div class="modal fade text-left" id="modalProcess" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal fade text-left" id="modalTest" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h4 runat="server" class="modal-title" id="titleProcess"></h4>
+                <div class="modal-header bg-info">
+                    <h4 class="modal-title white" id="titleTest"></h4>
                 </div>
                 <div class="modal-body">
-                    <div class="row mb-2" runat="server" id="divErrorProcess">
-                        <div class="col-12">
-                            <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorProcess"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Name</label>
-                            <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-6 form-group">
-                            <label class="form-label">Item Code</label>
-                            <asp:TextBox runat="server" ID="txtItemCode" CssClass="form-control" placeholder="Item Code ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                        <div class="col-6 form-group">
-                            <label class="form-label">Account Code</label>
-                            <asp:TextBox runat="server" ID="txtAccountCode" CssClass="form-control" placeholder="Account Code ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Description</label>
-                            <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 col-sm-12 col-lg-3 form-group">
-                            <label class="form-label">Active</label>
-                            <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select">
-                                <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
-                                <asp:ListItem Value="0" Text="No"></asp:ListItem>
-                            </asp:DropDownList>
-                        </div>
-                    </div>
+                    <p id="messageTest"></p>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnProcess" CssClass="btn btn-primary" Text="Submit" OnClick="btnProcess_Click" />
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
                 </div>
             </div>
         </div>
@@ -155,9 +114,9 @@
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-danger">
-                    <h5 class="modal-title white">Delete Xero</h5>
+                    <h5 class="modal-title white">Delete Notification</h5>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body text-center py-4">
                     <asp:TextBox runat="server" ID="txtIdDelete" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
@@ -187,11 +146,6 @@
         </div>
     </div>
 
-    <div runat="server" visible="false">
-        <asp:Label runat="server" ID="lblId"></asp:Label>
-        <asp:Label runat="server" ID="lblAction"></asp:Label>
-    </div>
-
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', function () {
             const gv = document.getElementById('<%= gvList.ClientID %>');
@@ -216,8 +170,17 @@
             }
         });
 
-        function showProcess() {
-            $("#modalProcess").modal("show");
+        function showTest(el) {
+            var title = el.getAttribute("data-title");
+            var message = el.getAttribute("data-message");
+            var sessionFullName = '<%= Session("FullName") %>';
+
+            message = message.replace(/[FullName]/g, "<b>" + sessionFullName + "</b>");
+
+            message = message.replace(/\n/g, "<br>");
+
+            document.getElementById("titleTest").innerText = title;
+            document.getElementById("messageTest").innerHTML = message;
         }
 
         function showDelete(id) {
@@ -258,7 +221,7 @@
             });
         }
 
-        ["modalProcess", "modalDelete", "modalLog"].forEach(function (id) {
+        ["modalTest", "modalDelete", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
@@ -267,4 +230,9 @@
 
         window.history.replaceState(null, null, window.location.href);
     </script>
+
+    <div runat="server" visible="false">
+        <asp:Label runat="server" ID="lblId"></asp:Label>
+        <asp:Label runat="server" ID="lblAction"></asp:Label>
+    </div>
 </asp:Content>

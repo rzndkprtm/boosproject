@@ -1,7 +1,7 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 
-Partial Class Setting_General_Xero
+Partial Class Setting_Xero
     Inherits Page
 
     Dim settingClass As New SettingClass
@@ -12,7 +12,7 @@ Partial Class Setting_General_Xero
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
         If pageAccess = False Then
-            Response.Redirect("~/setting/general", False)
+            Response.Redirect("~/setting", False)
             Exit Sub
         End If
 
@@ -138,7 +138,7 @@ Partial Class Setting_General_Xero
                     settingClass.Logs(dataLog)
 
                     Session("SearchXero") = txtSearch.Text
-                    Response.Redirect("~/setting/general/xero", False)
+                    Response.Redirect("~/setting/xero", False)
                 End If
 
                 If lblAction.Text = "Edit" Then
@@ -160,7 +160,7 @@ Partial Class Setting_General_Xero
                     settingClass.Logs(dataLog)
 
                     Session("SearchXero") = txtSearch.Text
-                    Response.Redirect("~/setting/general/xero", False)
+                    Response.Redirect("~/setting/xero", False)
                 End If
             End If
         Catch ex As Exception
@@ -194,7 +194,7 @@ Partial Class Setting_General_Xero
             End Using
 
             Session("SearchXero") = txtSearch.Text
-            Response.Redirect("~/setting/general/xero", False)
+            Response.Redirect("~/setting/xero", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then

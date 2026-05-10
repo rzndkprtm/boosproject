@@ -182,11 +182,9 @@ Public Partial Class SiteMaster
             liGeneral.Visible = False
             liGeneralCompany.Visible = False
             liGeneralMailing.Visible = False
-            liGeneralXero.Visible = False
             liGeneralRoleAccess.Visible = False
             liGeneralLevelAccess.Visible = False
             liGeneralNewsletter.Visible = False
-            liGeneralNotification.Visible = False
             liGeneralTutorial.Visible = False
             liGeneralAccess.Visible = False
 
@@ -213,6 +211,9 @@ Public Partial Class SiteMaster
             liPriceSurcharge.Visible = False
             liPricePromo.Visible = False
 
+            liXero.Visible = False
+            liNotification.Visible = False
+
             liAdditional.Visible = False
 
             If Session("RoleName") = "Developer" Then
@@ -229,11 +230,9 @@ Public Partial Class SiteMaster
                 liGeneral.Visible = True
                 liGeneralCompany.Visible = True
                 liGeneralMailing.Visible = True
-                liGeneralXero.Visible = True
                 liGeneralRoleAccess.Visible = True
                 liGeneralLevelAccess.Visible = True
                 liGeneralNewsletter.Visible = True
-                liGeneralNotification.Visible = True
                 liGeneralTutorial.Visible = True
                 liGeneralAccess.Visible = True
 
@@ -259,6 +258,9 @@ Public Partial Class SiteMaster
                 liPriceSurcharge.Visible = True
                 liPricePromo.Visible = True
 
+                liXero.Visible = True
+                liNotification.Visible = True
+
                 liAdditional.Visible = True
             End If
 
@@ -277,9 +279,7 @@ Public Partial Class SiteMaster
                 liGeneralMailing.Visible = True
                 liGeneralRoleAccess.Visible = True
                 liGeneralLevelAccess.Visible = True
-                liGeneralXero.Visible = True
                 liGeneralNewsletter.Visible = True
-                liGeneralNotification.Visible = True
                 liGeneralTutorial.Visible = True
 
                 liCustomerDev.Visible = True
@@ -300,6 +300,9 @@ Public Partial Class SiteMaster
                 liPriceBase.Visible = True
                 liPriceSurcharge.Visible = True
                 liPricePromo.Visible = True
+
+                liXero.Visible = True
+                liNotification.Visible = True
             End If
 
             If Session("RoleName") = "Factory Office" Then
@@ -316,9 +319,7 @@ Public Partial Class SiteMaster
                 liGeneralMailing.Visible = True
                 liGeneralRoleAccess.Visible = True
                 liGeneralLevelAccess.Visible = True
-                liGeneralXero.Visible = True
                 liGeneralNewsletter.Visible = True
-                liGeneralNotification.Visible = True
                 liGeneralTutorial.Visible = True
 
                 liCustomer.Visible = True
@@ -339,6 +340,9 @@ Public Partial Class SiteMaster
                 liPriceBase.Visible = True
                 liPriceSurcharge.Visible = True
                 liPricePromo.Visible = True
+
+                liXero.Visible = True
+                liNotification.Visible = True
             End If
 
             If Session("RoleName") = "Production" Then
@@ -376,6 +380,8 @@ Public Partial Class SiteMaster
                 liPriceProductGroup.Visible = True
                 liPriceBase.Visible = True
                 liPricePromo.Visible = True
+
+                liXero.Visible = True
             End If
 
             If Session("RoleName") = "Customer Service" Then
