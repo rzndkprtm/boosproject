@@ -144,17 +144,11 @@
                                                         <li class="subsubmenu-item" runat="server" id="liGeneralMailing">
                                                             <a runat="server" href="~/setting/general/mailing" class="subsubmenu-link">Mailing</a>
                                                         </li>
-                                                        <li class="subsubmenu-item" runat="server" id="liGeneralXero">
-                                                            <a runat="server" href="~/setting/general/xero" class="subsubmenu-link">Xero</a>
-                                                        </li>
                                                         <li class="subsubmenu-item" runat="server" id="liGeneralRoleAccess">
                                                             <a runat="server" href="~/setting/general/roleaccess" class="subsubmenu-link">Role Access</a>
                                                         </li>
                                                         <li class="subsubmenu-item" runat="server" id="liGeneralLevelAccess">
                                                             <a runat="server" href="~/setting/general/levelaccess" class="subsubmenu-link">Level Access</a>
-                                                        </li>
-                                                        <li class="subsubmenu-item" runat="server" id="liGeneralNotification">
-                                                            <a runat="server" href="~/setting/general/notification" class="subsubmenu-link">Notification</a>
                                                         </li>
                                                         <li class="subsubmenu-item" runat="server" id="liGeneralNewsletter">
                                                             <a runat="server" href="~/setting/general/newsletter" class="subsubmenu-link">Newsletter</a>
@@ -262,6 +256,12 @@
                                                             <a runat="server" href="~/setting/price/promo" class="subsubmenu-link">Price Promo</a>
                                                         </li>
                                                     </ul>
+                                                </li>
+                                                <li runat="server" id="liXero" class="submenu-item">
+                                                    <a runat="server" href="~/setting/xero" class="subsubmenu-link">Xero</a>
+                                                </li>
+                                                <li runat="server" id="liNotification" class="submenu-item">
+                                                    <a runat="server" href="~/setting/notification" class="subsubmenu-link">Notification</a>
                                                 </li>
                                                 <li runat="server" id="liAdditional" class="submenu-item has-sub">
                                                     <a href="javascript:void(0);" class='submenu-link'>Additional</a>

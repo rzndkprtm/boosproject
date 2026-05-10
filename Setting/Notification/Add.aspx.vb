@@ -1,7 +1,7 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 
-Partial Class Setting_General_Notification_Add
+Partial Class Setting_Notification_Add
     Inherits Page
 
     Dim settingClass As New SettingClass
@@ -13,7 +13,7 @@ Partial Class Setting_General_Notification_Add
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
         If pageAccess = False Then
-            Response.Redirect("~/setting/general/notification", False)
+            Response.Redirect("~/setting/notification", False)
             Exit Sub
         End If
 
@@ -85,7 +85,7 @@ Partial Class Setting_General_Notification_Add
                     End Using
                 End Using
 
-                Response.Redirect("~/setting/general/notification", False)
+                Response.Redirect("~/setting/notification", False)
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -96,7 +96,7 @@ Partial Class Setting_General_Notification_Add
     End Sub
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
-        Response.Redirect("~/setting/general/notification", False)
+        Response.Redirect("~/setting/notification", False)
     End Sub
 
     Protected Sub BindLoginRole()

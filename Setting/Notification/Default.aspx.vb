@@ -1,7 +1,7 @@
 ﻿Imports System.Data.SqlClient
 Imports System.Web.Services
 
-Partial Class Setting_General_Notification_Default
+Partial Class Setting_Notification_Default
     Inherits Page
 
     Dim settingClass As New SettingClass
@@ -28,7 +28,7 @@ Partial Class Setting_General_Notification_Default
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
         If pageAccess = False Then
-            Response.Redirect("~/setting/general", False)
+            Response.Redirect("~/setting", False)
             Exit Sub
         End If
 
@@ -41,7 +41,7 @@ Partial Class Setting_General_Notification_Default
 
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
         Session("SearchNotification") = txtSearch.Text
-        Response.Redirect("~/setting/general/notification/add", False)
+        Response.Redirect("~/setting/notification/add", False)
     End Sub
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
@@ -70,7 +70,7 @@ Partial Class Setting_General_Notification_Default
             If e.CommandName = "Detail" Then
                 MessageError(False, String.Empty)
                 Try
-                    Dim url As String = String.Format("~/setting/general/notification/edit?notifid={0}", dataId)
+                    Dim url As String = String.Format("~/setting/notification/edit?notifid={0}", dataId)
                     Response.Redirect(url, False)
                 Catch ex As Exception
                 End Try
@@ -93,7 +93,7 @@ Partial Class Setting_General_Notification_Default
             End Using
 
             Session("SearchNotification") = txtSearch.Text
-            Response.Redirect("~/setting/general/notification", False)
+            Response.Redirect("~/setting/notification", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
         End Try
