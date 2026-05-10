@@ -418,9 +418,8 @@ Partial Class Setting_Customer_Login
 
         If Session("RoleName") = "IT" Then
             If roleName = "Developer" Then Return False
-            If Session("LevelName") = "Member" AndAlso (roleName = "Developer" OrElse roleName = "IT") Then
-                Return False
-            End If
+            If Session("LevelName") = "Leader" Then Return True
+            If Session("LevelName") = "Member" AndAlso roleName = "IT" Then Return False
             Return True
         End If
 
