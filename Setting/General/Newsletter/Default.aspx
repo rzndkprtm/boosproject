@@ -62,7 +62,7 @@
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:BoundField DataField="Id" HeaderText="ID" />
-                                                <asp:BoundField DataField="CompanyName" HeaderText="Company" />
+                                                <asp:BoundField DataField="CompanyAlias" HeaderText="Company" />
                                                 <asp:BoundField DataField="Name" HeaderText="Name" />
                                                 <asp:BoundField DataField="Link" HeaderText="Link" />
                                                 <asp:BoundField DataField="DataActive" HeaderText="Active" />
