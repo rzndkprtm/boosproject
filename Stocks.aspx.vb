@@ -99,7 +99,6 @@ Partial Class Stocks
 
                 If isActiveObj IsNot Nothing AndAlso Not IsDBNull(isActiveObj) Then
                     Dim thisStatus As String = isActiveObj.ToString()
-
                     If thisStatus = "In Stock" Then
                         e.Row.Cells(i).BackColor = Drawing.Color.DarkGreen
                         e.Row.Cells(i).ForeColor = Drawing.Color.White
@@ -116,6 +115,15 @@ Partial Class Stocks
                         e.Row.Cells(i).BackColor = Drawing.Color.Gray
                         e.Row.Cells(i).ForeColor = Drawing.Color.White
                     End If
+                End If
+            Next
+        End If
+
+        If e.Row.RowType = DataControlRowType.Footer Then
+            For i As Integer = 0 To gvListRoller.Columns.Count - 1
+                Dim bf As BoundField = TryCast(gvListRoller.Columns(i), BoundField)
+                If bf IsNot Nothing Then
+                    e.Row.Cells(i).Text = bf.HeaderText
                 End If
             Next
         End If
@@ -175,6 +183,15 @@ Partial Class Stocks
                 End If
             Next
         End If
+
+        If e.Row.RowType = DataControlRowType.Footer Then
+            For i As Integer = 0 To gvListProfile.Columns.Count - 1
+                Dim bf As BoundField = TryCast(gvListProfile.Columns(i), BoundField)
+                If bf IsNot Nothing Then
+                    e.Row.Cells(i).Text = bf.HeaderText
+                End If
+            Next
+        End If
     End Sub
 
 
@@ -228,6 +245,14 @@ Partial Class Stocks
                         e.Row.Cells(i).BackColor = Drawing.Color.Gray
                         e.Row.Cells(i).ForeColor = Drawing.Color.White
                     End If
+                End If
+            Next
+        End If
+        If e.Row.RowType = DataControlRowType.Footer Then
+            For i As Integer = 0 To gvListCurtain.Columns.Count - 1
+                Dim bf As BoundField = TryCast(gvListCurtain.Columns(i), BoundField)
+                If bf IsNot Nothing Then
+                    e.Row.Cells(i).Text = bf.HeaderText
                 End If
             Next
         End If
@@ -286,6 +311,14 @@ Partial Class Stocks
                 End If
             Next
         End If
+        If e.Row.RowType = DataControlRowType.Footer Then
+            For i As Integer = 0 To gvListVertical.Columns.Count - 1
+                Dim bf As BoundField = TryCast(gvListVertical.Columns(i), BoundField)
+                If bf IsNot Nothing Then
+                    e.Row.Cells(i).Text = bf.HeaderText
+                End If
+            Next
+        End If
     End Sub
 
 
@@ -334,6 +367,14 @@ Partial Class Stocks
                         e.Row.Cells(i).BackColor = Drawing.Color.Gray
                         e.Row.Cells(i).ForeColor = Drawing.Color.White
                     End If
+                End If
+            Next
+        End If
+        If e.Row.RowType = DataControlRowType.Footer Then
+            For i As Integer = 0 To gvListVenetian.Columns.Count - 1
+                Dim bf As BoundField = TryCast(gvListVenetian.Columns(i), BoundField)
+                If bf IsNot Nothing Then
+                    e.Row.Cells(i).Text = bf.HeaderText
                 End If
             Next
         End If
@@ -387,6 +428,14 @@ Partial Class Stocks
                 End If
             Next
         End If
+        If e.Row.RowType = DataControlRowType.Footer Then
+            For i As Integer = 0 To gvListAluminium.Columns.Count - 1
+                Dim bf As BoundField = TryCast(gvListAluminium.Columns(i), BoundField)
+                If bf IsNot Nothing Then
+                    e.Row.Cells(i).Text = bf.HeaderText
+                End If
+            Next
+        End If
     End Sub
 
     ' CELLULAR SHADES
@@ -434,6 +483,14 @@ Partial Class Stocks
                         e.Row.Cells(i).BackColor = Drawing.Color.Gray
                         e.Row.Cells(i).ForeColor = Drawing.Color.White
                     End If
+                End If
+            Next
+        End If
+        If e.Row.RowType = DataControlRowType.Footer Then
+            For i As Integer = 0 To gvListCellular.Columns.Count - 1
+                Dim bf As BoundField = TryCast(gvListCellular.Columns(i), BoundField)
+                If bf IsNot Nothing Then
+                    e.Row.Cells(i).Text = bf.HeaderText
                 End If
             Next
         End If
