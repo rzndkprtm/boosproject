@@ -196,7 +196,7 @@ Partial Class Setting_Customer_Login
                     Using thisConn As New SqlConnection(myConn)
                         Using myCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerLogins VALUES (@Id, @CustomerId, @RoleId, @LevelId, @UserName, @Password, @FullName, @Email, 0, NULL, 1, @Pricing, 1)", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", thisId)
-                            myCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
+                            myCmd.Parameters.AddWithValue("@CustomerId", If(String.IsNullOrEmpty(ddlCustomer.SelectedValue), CType(DBNull.Value, Object), ddlCustomer.SelectedValue))
                             myCmd.Parameters.AddWithValue("@RoleId", ddlRole.SelectedValue)
                             myCmd.Parameters.AddWithValue("@LevelId", ddlLevel.SelectedValue)
                             myCmd.Parameters.AddWithValue("@UserName", txtUserName.Text.Trim())
