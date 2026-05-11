@@ -30,7 +30,7 @@ Partial Class Setting_General_Mailing_Add
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Mailings VALUES (@Id, @CompanyId, @Name, @Server, @Host, @Port, @NetworkCredentials, @DefaultCredentials, @EnableSsl, @Account, @Password, @Alias, @Subject, @To, @Cc, @Bcc, @Description, @Active)", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
-                        myCmd.Parameters.AddWithValue("@CompanyId", ddlCompanyId.SelectedValue)
+                        myCmd.Parameters.AddWithValue("@CompanyId", If(String.IsNullOrEmpty(ddlCompanyId.SelectedValue), CType(DBNull.Value, Object), ddlCompanyId.SelectedValue))
                         myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                         myCmd.Parameters.AddWithValue("@Server", txtServer.Text.Trim())
                         myCmd.Parameters.AddWithValue("@Host", txtHost.Text.Trim())

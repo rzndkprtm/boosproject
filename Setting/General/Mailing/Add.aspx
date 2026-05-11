@@ -109,7 +109,7 @@
                                         </div>
                                         <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
                                             <label class="form-label">Mail CC</label>
-                                            <asp:TextBox runat="server" ID="txtCC" CssClass="form-control" placeholder="Mail CC ..." autocomplete="off"></asp:TextBox>
+                                            <asp:TextBox runat="server" ID="txtCC" CssClass="form-control" TextMode="MultiLine" Height="100px" placeholder="Mail CC ..." autocomplete="off" style="resize:none;"></asp:TextBox>
                                         </div>
                                     </div>
                                     <div class="row mb-2">
