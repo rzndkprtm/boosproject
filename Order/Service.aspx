@@ -110,7 +110,7 @@
                                                 <label>Sell Price</label>
                                             </div>
                                             <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                <input type="text" id="price" class="form-control" autocomplete="off" placeholder="Price" value="0.00" />
+                                                <input type="text" id="sellprice" class="form-control" autocomplete="off" placeholder="Price" value="0.00" />
                                             </div>
                                         </div>
                                     </div>
@@ -166,5 +166,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/Gabuts/Service.js?v=1.0.0"></script>
+    <script src="/Scripts/Gabuts/Service.js?v=1.0.1"></script>
 </asp:Content>

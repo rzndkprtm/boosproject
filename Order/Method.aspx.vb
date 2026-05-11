@@ -3220,9 +3220,9 @@ Partial Class Order_Method
 
             orderClass.ResetPriceDetail(data.headerid, itemId)
             orderClass.CalculatePrice(data.headerid, itemId)
-            If Not String.IsNullOrEmpty(data.price) Then
-                orderClass.UpdateServiceItem(data.headerid, itemId, data.price)
-            End If
+
+            orderClass.UpdateServiceItem(data.headerid, itemId, data.buyprice, data.sellprice)
+
             orderClass.FinalCostItem(data.headerid, itemId)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Added"}
@@ -3248,9 +3248,9 @@ Partial Class Order_Method
 
             orderClass.ResetPriceDetail(data.headerid, itemId)
             orderClass.CalculatePrice(data.headerid, itemId)
-            If Not String.IsNullOrEmpty(data.price) Then
-                orderClass.UpdateServiceItem(data.headerid, itemId, data.price)
-            End If
+
+            orderClass.UpdateServiceItem(data.headerid, itemId, data.buyprice, data.sellprice)
+
             orderClass.FinalCostItem(data.headerid, itemId)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
@@ -9639,15 +9639,7 @@ Partial Class Order_Method
             If String.IsNullOrEmpty(data.layoutcode) Then Return "LAYOUT CODE IS REQUIRED !"
         End If
 
-        If Not String.IsNullOrEmpty(data.midrailposition) Then
-            If String.IsNullOrEmpty(data.handlelength) Then Return "HANDLE HEIGHT IS REQUIRED !"
-
-            If Not Integer.TryParse(data.handlelength, handlelength) OrElse handlelength <= 0 Then Return "PLEASE CHECK YOUR HANDLE HEIGHT ORDER !"
-        End If
-
         If Not String.IsNullOrEmpty(data.handlelength) Then
-            If String.IsNullOrEmpty(data.midrailposition) Then Return "MIDRAIL IS REQUIRED !"
-
             If Not Integer.TryParse(data.handlelength, handlelength) OrElse handlelength <= 0 Then Return "PLEASE CHECK YOUR HANDLE HEIGHT ORDER !"
         End If
 
@@ -11128,11 +11120,18 @@ Partial Class Order_Method
             itemDetail(col.ColumnName) = detailData(col.ColumnName)
         Next
 
-        Dim priceService As DataRow = orderClass.GetDataRow("SELECT SellPrice FROM OrderCostings WHERE ItemId='" & itemId & "' AND Type='Base'")
-        If priceService IsNot Nothing AndAlso Not IsDBNull(priceService("SellPrice")) Then
-            itemDetail("SellPrice") = priceService("SellPrice")
+        Dim sellPrice As DataRow = orderClass.GetDataRow("SELECT SellPrice FROM OrderCostings WHERE ItemId='" & itemId & "' AND Type='Base'")
+        If sellPrice IsNot Nothing AndAlso Not IsDBNull(sellPrice("SellPrice")) Then
+            itemDetail("SellPrice") = sellPrice("SellPrice")
         Else
             itemDetail("SellPrice") = 0
+        End If
+
+        Dim buyPrice As DataRow = orderClass.GetDataRow("SELECT BuyPrice FROM OrderCostings WHERE ItemId='" & itemId & "' AND Type='Base'")
+        If buyPrice IsNot Nothing AndAlso Not IsDBNull(buyPrice("BuyPrice")) Then
+            itemDetail("BuyPrice") = buyPrice("BuyPrice")
+        Else
+            itemDetail("BuyPrice") = 0
         End If
 
         Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetailid = companyDetailId, .action = action}
@@ -11521,7 +11520,8 @@ Public Class ProccessData
     Public Property topplasticqty As String
     Public Property notes As String
     Public Property markup As String
-    Public Property price As Decimal
+    Public Property sellprice As Decimal
+    Public Property buyprice As Decimal
 End Class
 
 Public Class JSONList
