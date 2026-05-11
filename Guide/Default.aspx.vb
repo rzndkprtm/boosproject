@@ -65,7 +65,7 @@
                 bySearch = "AND Tutorials.Title LIKE '%" & searchText.Trim() & "%'"
             End If
 
-            Dim thisString = String.Format("SELECT Tutorials.*, Companys.Name AS CompanyName FROM Tutorials LEFT JOIN Companys ON Tutorials.CompanyId=Companys.Id WHERE Tutorials.Active=1 {0} {1} ORDER BY Tutorials.Title ASC", byCompany, bySearch)
+            Dim thisString = String.Format("SELECT Tutorials.*, Companys.Alias AS CompanyAlias FROM Tutorials LEFT JOIN Companys ON Tutorials.CompanyId=Companys.Id WHERE Tutorials.Active=1 {0} {1} ORDER BY Tutorials.Title ASC", byCompany, bySearch)
 
             gvList.DataSource = settingClass.GetDataTable(thisString)
             gvList.DataBind()

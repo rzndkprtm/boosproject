@@ -152,15 +152,13 @@ Partial Class Setting_Boos
     Protected Sub UnshipmentOrder()
         Try
             If Now.DayOfWeek >= DayOfWeek.Monday AndAlso Now.DayOfWeek <= DayOfWeek.Friday Then
-                Dim mailClass As New MailingClass
+                Dim mailingClass As New MailingClass
                 Dim unshipmentClass As New UnshipmentClass
 
-                Dim fileName As String = Trim("Unshipment - In Production Order " & Now.ToString("dd MMm yyyy") & ".pdf")
+                Dim toEmail As String = "order@jpmdirect.com.au;export@rimbabr.com;export@bigblinds.co.id"
+                Dim ccEmail As String = "yudi@rimbabr.com;saiful@rimbabr.com"
 
-                Dim pdfFilePath As String = Server.MapPath("~/File/Report/" & fileName)
-                unshipmentClass.BindContent(pdfFilePath)
-
-                mailClass.MailUnshipment(pdfFilePath)
+                mailingClass.SentUnshipment(toEmail, ccEmail, String.Empty, String.Empty)
             End If
         Catch ex As Exception
         End Try

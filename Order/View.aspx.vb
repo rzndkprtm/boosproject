@@ -7,11 +7,21 @@ Partial Class Order_View
         If Not IsPostBack Then
             Dim action As String = Request("action")
 
-            Dim headerId As String = Request("boosid")
-            If String.IsNullOrEmpty(headerId) OrElse String.IsNullOrEmpty(action) Then Exit Sub
-            If action = "jobsheet" Then JobSheet(headerId)
-            If action = "invoice" Then Invoice(headerId)
-            If action = "quote" Then QuoteCustomer(headerId)
+            If action = "jobsheet" OrElse action = "invoice" OrElse action = "quote" Then
+                Dim headerId As String = Request("boosid")
+                If String.IsNullOrEmpty(headerId) OrElse String.IsNullOrEmpty(action) Then Exit Sub
+
+                If action = "jobsheet" Then JobSheet(headerId)
+                If action = "invoice" Then Invoice(headerId)
+                If action = "quote" Then QuoteCustomer(headerId)
+            End If
+            If action = "unshipment" Then
+                Dim searchText As String = Request("search")
+                Dim companyId As String = Request("company")
+
+                Unshipment(searchText, companyId)
+            End If
+
         End If
     End Sub
 
@@ -77,6 +87,29 @@ Partial Class Order_View
             Response.BinaryWrite(pdfBytes)
             Response.Flush()
             Response.End()
+        Catch ex As Exception
+        End Try
+    End Sub
+
+    Protected Sub Unshipment(searchText As String, companyId As String)
+        Try
+            Dim unshipmentClass As New UnshipmentClass
+            Dim pdfBytes As Byte() = unshipmentClass.BindContent(searchText, companyId)
+
+            Dim safeSearch As String =
+            Regex.Replace(If(searchText, ""), "[^\w\s-]", "")
+
+            Dim safeCompany As String =
+            Regex.Replace(If(companyId, ""), "[^\w\s-]", "")
+
+            Response.Clear()
+            Response.ContentType = "application/pdf"
+            Response.AddHeader("Content-Disposition", "inline; filename=UNSHIPMENT ORDER.pdf")
+
+            Response.BinaryWrite(pdfBytes)
+            Response.Flush()
+
+            HttpContext.Current.ApplicationInstance.CompleteRequest()
         Catch ex As Exception
         End Try
     End Sub

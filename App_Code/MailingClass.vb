@@ -1,4 +1,5 @@
-﻿Imports System.Data
+﻿Imports System.ComponentModel.Design
+Imports System.Data
 Imports System.Data.SqlClient
 Imports System.IO
 Imports System.Net
@@ -1080,90 +1081,6 @@ Public Class MailingClass
         End Try
     End Sub
 
-    Public Sub MailUnshipment(fileDirectory As String)
-        Try
-            Dim mailData As DataRow = GetDataRow("SELECT TOP 1 * FROM Mailings WHERE Active = 1 AND Name = 'In Production - Unshipment'")
-            If mailData Is Nothing Then Exit Sub
-
-            Dim mailServer As String = mailData("Server").ToString()
-            Dim mailHost As String = mailData("Host").ToString()
-            Dim mailPort As String = mailData("Port").ToString()
-
-            Dim mailAccount As String = mailData("Account").ToString()
-            Dim mailPassword As String = mailData("Password").ToString()
-            Dim mailAlias As String = mailData("Alias").ToString()
-            Dim mailSubject As String = mailData("Subject").ToString()
-
-            Dim mailTo As String = mailData("To").ToString()
-            Dim mailCc As String = mailData("Cc").ToString()
-            Dim mailBcc As String = mailData("Bcc").ToString()
-
-            Dim mailNetworkCredentials As Boolean = mailData("NetworkCredentials")
-            Dim mailDefaultCredentials As Boolean = mailData("DefaultCredentials")
-            Dim mailEnableSSL As Boolean = mailData("EnableSSL")
-
-            Dim mailContent As String = "<span style='font-family: Cambria; font-size: 14px;'>Hi Galih & Indra,</span>"
-            mailContent += "<br /><br />"
-            mailContent += "Please see the attached file."
-            mailContent += "<br /><br /><br />"
-            mailContent += "<span style='font-family: Cambria; font-size:16px;'>Kind Regards,</span>"
-            mailContent += "<br />"
-            mailContent += "<span style='font-family: Cambria; font-size:16px; font-weight: bold;'>Reza Andika Pratama</span><span style='font-family: Cambria; font-size:16px;> | IT Support</span>"
-            mailContent += "<br />"
-            mailContent += "<span style='font-family: Cambria; font-size:16px;>reza@bigblinds.co.id</span>"
-            mailContent += "<br />"
-
-            Dim myMail As New MailMessage
-
-            If Not mailTo = "" Then
-                Dim toArray() As String = mailTo.Split(";")
-                Dim thisMail As String = String.Empty
-                For Each thisMail In toArray
-                    myMail.To.Add(thisMail)
-                Next
-            Else
-                myMail.To.Add("reza@bigblinds.co.id")
-            End If
-
-            If Not mailCc = "" Then
-                Dim ccArray() As String = mailCc.Split(";")
-                Dim thisMail As String = String.Empty
-                For Each thisMail In ccArray
-                    myMail.CC.Add(thisMail)
-                Next
-            End If
-
-            If Not mailBcc = "" Then
-                Dim thisArray() As String = mailBcc.Split(";")
-                Dim thisMail As String = String.Empty
-                For Each thisMail In thisArray
-                    myMail.Bcc.Add(thisMail)
-                Next
-            End If
-
-            myMail.Subject = mailSubject
-            myMail.From = New MailAddress(mailServer, mailAlias)
-            myMail.Body = mailContent
-            myMail.Attachments.Add(New Attachment(fileDirectory))
-            myMail.IsBodyHtml = True
-            Dim smtpClient As New SmtpClient()
-            smtpClient.Host = mailHost
-            smtpClient.EnableSsl = mailEnableSSL
-
-            Dim NetworkCredl As New NetworkCredential()
-            NetworkCredl.UserName = mailAccount
-            NetworkCredl.Password = mailPassword
-            smtpClient.UseDefaultCredentials = mailDefaultCredentials
-            smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network
-            If mailNetworkCredentials = True Then
-                smtpClient.Credentials = NetworkCredl
-            End If
-            smtpClient.Port = mailPort
-            smtpClient.Send(myMail)
-        Catch ex As Exception
-        End Try
-    End Sub
-
     Public Sub ReworkOrder(reworkId As String)
         Try
             If String.IsNullOrEmpty(reworkId) Then Exit Sub
@@ -1817,6 +1734,92 @@ Public Class MailingClass
 
             myMail.Body = mailBody
             myMail.IsBodyHtml = True
+            Dim smtpClient As New SmtpClient()
+            smtpClient.Host = mailHost
+            smtpClient.Port = mailPort
+            smtpClient.EnableSsl = mailEnableSSL
+            smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network
+            smtpClient.Timeout = 120000
+
+            If mailNetworkCredentials Then
+                smtpClient.UseDefaultCredentials = False
+                smtpClient.Credentials = New NetworkCredential(mailAccount, mailPassword)
+            Else
+                smtpClient.UseDefaultCredentials = mailDefaultCredentials
+            End If
+
+            smtpClient.Send(myMail)
+        Catch ex As Exception
+        End Try
+    End Sub
+
+    Public Sub SentUnshipment(toEmail As String, ccEmail As String, searchText As String, companyId As String)
+        Try
+            Dim unshipmentClass As New UnshipmentClass
+            Dim pdfOrder As Byte() = unshipmentClass.BindContent(searchText, companyId)
+
+            Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE Name='Unshipment Order' AND Active=1")
+            If mailData Is Nothing Then Exit Sub
+
+            Dim mailServer As String = mailData("Server").ToString()
+            Dim mailHost As String = mailData("Host").ToString()
+            Dim mailPort As Integer = mailData("Port")
+
+            Dim mailAccount As String = mailData("Account").ToString()
+            Dim mailPassword As String = mailData("Password").ToString()
+            Dim mailAlias As String = mailData("Alias").ToString()
+            Dim mailSubject As String = mailData("Subject").ToString()
+
+            Dim mailTo As String = mailData("To").ToString()
+            Dim mailCc As String = mailData("Cc").ToString()
+            Dim mailBcc As String = mailData("Bcc").ToString()
+
+            Dim mailNetworkCredentials As Boolean = mailData("NetworkCredentials")
+            Dim mailDefaultCredentials As Boolean = mailData("DefaultCredentials")
+            Dim mailEnableSSL As Boolean = mailData("EnableSSL")
+
+            Dim mailBody As String = String.Empty
+
+            mailBody = "<span style='font-family: Cambria; font-size: 16px;'>"
+            mailBody &= "<i>- THIS IS AN AUTOMATED EMAIL. KINDLY DO NOT REPLY WITHOUT COPYING OUR TEAM. -</i>"
+            mailBody &= "<br /><br /><br />"
+            mailBody &= "</span>"
+
+            mailBody &= "<br /><br /><br />"
+
+            mailBody &= "<span style='font-family: Cambria; font-size:16px;'>Kind Regards,</span>"
+            mailBody &= "<br /><br />"
+            mailBody &= "<span style='font-family: Cambria; font-size:16px;font-weight: bold;'>Reza Andika Pratama</span>"
+
+            Dim myMail As New MailMessage()
+
+            Dim subject As String = "UNSHIPMENT ORDER - NEED TO BE FOLLOW UP"
+            myMail.Subject = subject
+            myMail.From = New MailAddress(mailServer, mailAlias)
+
+            myMail.To.Add(toEmail)
+            If Not String.IsNullOrEmpty(toEmail) Then
+                For Each thisMail In toEmail.Split(";"c)
+                    If Not String.IsNullOrEmpty(thisMail.Trim()) Then myMail.To.Add(thisMail.Trim())
+                Next
+            End If
+
+            If Not String.IsNullOrEmpty(ccEmail) Then
+                For Each thisMail In ccEmail.Split(";"c)
+                    If Not String.IsNullOrEmpty(thisMail.Trim()) Then myMail.CC.Add(thisMail.Trim())
+                Next
+            End If
+
+            If Not String.IsNullOrEmpty(mailBcc) Then
+                For Each thisMail In mailBcc.Split(";"c)
+                    If Not String.IsNullOrEmpty(thisMail.Trim()) Then myMail.Bcc.Add(thisMail.Trim())
+                Next
+            End If
+
+            myMail.IsBodyHtml = True
+            myMail.Body = mailBody
+
+            myMail.Attachments.Add(New Attachment(New MemoryStream(pdfOrder), "UNSHIPMENT ORDER.pdf", "application/pdf"))
             Dim smtpClient As New SmtpClient()
             smtpClient.Host = mailHost
             smtpClient.Port = mailPort

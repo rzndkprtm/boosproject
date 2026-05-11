@@ -50,6 +50,10 @@ Partial Class Order_Default
         Response.Redirect("~/order/file", False)
     End Sub
 
+    Protected Sub btnUnshipment_Click(sender As Object, e As EventArgs)
+        Response.Redirect("~/order/unshipment", False)
+    End Sub
+
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlCompany.SelectedValue, ddlType.SelectedValue, ddlActive.SelectedValue)
@@ -777,6 +781,7 @@ Partial Class Order_Default
             btnAdd.Visible = PageAction("Add")
             btnRework.Visible = PageAction("Rework")
             btnFile.Visible = PageAction("File")
+            btnUnshipment.Visible = PageAction("Unshipment")
 
             divActive.Visible = PageAction("Active")
             divCompany.Visible = PageAction("Filter Company")

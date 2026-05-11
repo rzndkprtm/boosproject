@@ -60,7 +60,7 @@
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:BoundField DataField="Id" HeaderText="ID" />
-                                                <asp:BoundField DataField="CompanyName" HeaderText="Company" HeaderStyle-Width="200px" />
+                                                <asp:BoundField DataField="CompanyAlias" HeaderText="Company" HeaderStyle-Width="200px" />
                                                 <asp:BoundField DataField="Title" HeaderText="Title" HeaderStyle-Width="250px" />
                                                 <asp:TemplateField HeaderText="Description">
                                                     <ItemTemplate>
