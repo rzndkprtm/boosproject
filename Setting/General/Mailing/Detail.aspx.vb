@@ -36,7 +36,7 @@ Partial Class Setting_General_Mailing_Detail
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As SqlCommand = New SqlCommand("UPDATE Mailings SET CompanyId=@CompanyId, Name=@Name, Server=@Server, Host=@Host, Port=@Port, NetworkCredentials=@NetworkCredentials, DefaultCredentials=@DefaultCredentials, EnableSSL=@EnableSSL, Account=@Account, Password=@Password, Alias=@Alias, Subject=@Subject, [To]=@To, Cc=@Cc, Bcc=@Bcc, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                        myCmd.Parameters.AddWithValue("@CompanyId", ddlCompanyId.SelectedValue)
+                        myCmd.Parameters.AddWithValue("@CompanyId", If(String.IsNullOrEmpty(ddlCompanyId.SelectedValue), CType(DBNull.Value, Object), ddlCompanyId.SelectedValue))
                         myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                         myCmd.Parameters.AddWithValue("@Server", txtServer.Text.Trim())
                         myCmd.Parameters.AddWithValue("@Host", txtHost.Text.Trim())
