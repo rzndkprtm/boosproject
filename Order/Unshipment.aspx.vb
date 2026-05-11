@@ -57,7 +57,7 @@ Partial Class Order_Unshipment
             End If
 
             Dim toEmail As String = String.Empty
-            If Not String.IsNullOrEmpty(txtSendEmailCC.Text) Then
+            If Not String.IsNullOrEmpty(txtSendEmailTo.Text) Then
                 Dim raw As String = txtSendEmailTo.Text
                 Dim lines As String() = raw.Split(New String() {vbCrLf, vbLf}, StringSplitOptions.RemoveEmptyEntries)
                 Dim cleanedEmails As New List(Of String)

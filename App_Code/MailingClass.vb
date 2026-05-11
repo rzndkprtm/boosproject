@@ -1797,7 +1797,6 @@ Public Class MailingClass
             myMail.Subject = subject
             myMail.From = New MailAddress(mailServer, mailAlias)
 
-            myMail.To.Add(toEmail)
             If Not String.IsNullOrEmpty(toEmail) Then
                 For Each thisMail In toEmail.Split(";"c)
                     If Not String.IsNullOrEmpty(thisMail.Trim()) Then myMail.To.Add(thisMail.Trim())
