@@ -36,6 +36,7 @@
                 <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Create Order" OnClick="btnAdd_Click" />
                 <asp:Button runat="server" ID="btnRework" CssClass="btn btn-danger" Text="Rework Order" OnClick="btnRework_Click" />
                 <asp:Button runat="server" ID="btnFile" CssClass="btn btn-secondary" Text="File Order" OnClick="btnFile_Click" />
+                <asp:Button runat="server" ID="btnUnshipment" CssClass="btn btn-info" Text="Unshipment Order" OnClick="btnUnshipment_Click" />
             </div>
         </section>
         <section class="row">
