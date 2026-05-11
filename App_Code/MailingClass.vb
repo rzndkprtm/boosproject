@@ -1,5 +1,4 @@
-﻿Imports System.ComponentModel.Design
-Imports System.Data
+﻿Imports System.Data
 Imports System.Data.SqlClient
 Imports System.IO
 Imports System.Net
@@ -1783,6 +1782,9 @@ Public Class MailingClass
             mailBody = "<span style='font-family: Cambria; font-size: 16px;'>"
             mailBody &= "<i>- THIS IS AN AUTOMATED EMAIL. KINDLY DO NOT REPLY WITHOUT COPYING OUR TEAM. -</i>"
             mailBody &= "<br /><br /><br />"
+            mailBody &= "Hi Team,"
+            mailBody &= "<br /><br />"
+            mailBody &= "Please see the attached file."
             mailBody &= "</span>"
 
             mailBody &= "<br /><br /><br />"

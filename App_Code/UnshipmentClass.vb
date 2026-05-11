@@ -130,26 +130,39 @@ Public Class UnshipmentClass
             table.AddCell(CreateCell("CUSTOMER NAME", isBold:=True))
             table.AddCell(CreateCell("ORDER NUMBER", isBold:=True))
             table.AddCell(CreateCell("ORDER NAME", isBold:=True))
-            table.AddCell(CreateCell("SUBMITTED", isBold:=True))
-            table.AddCell(CreateCell("PRODUCTION", isBold:=True))
+            table.AddCell(CreateCell("PRODUCTION DATE", isBold:=True))
+            table.AddCell(CreateCell("FACTORY", isBold:=True))
 
             Dim thisData As DataTable = GetDataTableSP("sp_OrderUnshipment", params)
             If thisData.Rows.Count > 0 Then
                 For i As Integer = 0 To thisData.Rows.Count - 1
+                    Dim id As String = thisData.Rows(i)("Id").ToString()
                     Dim orderId As String = thisData.Rows(i)("OrderId").ToString()
                     Dim customerName As String = thisData.Rows(i)("CustomerName").ToString()
                     Dim orderNumber As String = thisData.Rows(i)("OrderNumber").ToString()
                     Dim orderName As String = thisData.Rows(i)("OrderName").ToString()
-                    Dim submitDate As String = If(IsDBNull(thisData.Rows(i)("SubmittedDate")), "", Convert.ToDateTime(thisData.Rows(i)("SubmittedDate")).ToString("dd MMM yyyy"))
                     Dim prodDate As String = If(IsDBNull(thisData.Rows(i)("ProductionDate")), "", Convert.ToDateTime(thisData.Rows(i)("ProductionDate")).ToString("dd MMM yyyy"))
 
+                    Dim factory As String = "BIG"
+                    Dim detailData As DataTable = GetDataTable("SELECT OrderDetails.*, Products.Name AS ProductName, Designs.Name AS DesignName, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.DesignId=Blinds.Id WHERE OrderDetails.HeaderId='" & id & "'")
+                    For iDetail As Integer = 0 To detailData.Rows.Count - 1
+                        Dim designName As String = detailData.Rows(iDetail)("DesignName").ToString()
+                        Dim blindName As String = detailData.Rows(iDetail)("BlindName").ToString()
+
+                        Dim isBig As Boolean = False
+                        Dim isSunlight As Boolean = False
+
+                        If designName = "Aluminium Blind" OrElse designName = "Design Shades" OrElse designName = "Linea Valance" Then
+                            isBig = True
+                        End If
+                    Next
 
                     table.AddCell(CreateCell(orderId))
                     table.AddCell(CreateCell(customerName))
                     table.AddCell(CreateCell(orderNumber))
                     table.AddCell(CreateCell(orderName))
-                    table.AddCell(CreateCell(submitDate))
                     table.AddCell(CreateCell(prodDate))
+                    table.AddCell(CreateCell(factory))
                 Next
             End If
 
