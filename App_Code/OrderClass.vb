@@ -1231,13 +1231,14 @@ Public Class OrderClass
         'End Try
     End Sub
 
-    Public Sub UpdateServiceItem(headerId As String, itemId As String, price As Decimal)
+    Public Sub UpdateServiceItem(headerId As String, itemId As String, buyPrice As Decimal, sellPrice As Decimal)
         Try
             Using thisConn As SqlConnection = New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderCostings SET BuyPrice=0.00, SellPrice=@Price WHERE HeaderId=@HeaderId AND ItemId=@ItemId AND Type='Base'", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderCostings SET BuyPrice=@BuyPrice, SellPrice=@SellPrice WHERE HeaderId=@HeaderId AND ItemId=@ItemId AND Type='Base'", thisConn)
                     myCmd.Parameters.AddWithValue("@HeaderId", headerId)
                     myCmd.Parameters.AddWithValue("@ItemId", itemId)
-                    myCmd.Parameters.AddWithValue("@Price", price)
+                    myCmd.Parameters.AddWithValue("@BuyPrice", buyPrice)
+                    myCmd.Parameters.AddWithValue("@SellPrice", sellPrice)
 
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()

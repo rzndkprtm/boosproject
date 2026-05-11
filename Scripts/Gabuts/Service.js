@@ -384,7 +384,7 @@ function controlForm(status, isEditItem, isCopyItem) {
 
     document.getElementById("submit").style.display = status ? "none" : "";
 
-    const inputs = ["blindtype", "colourtype", "notes", "price"];
+    const inputs = ["blindtype", "colourtype", "notes", "buyprice", "sellprice"];
 
     inputs.forEach(id => {
         const inputElement = document.getElementById(id);
@@ -413,7 +413,7 @@ function fillSelect(selector, list, selected = null) {
 }
 
 function setFormValues(itemData) {
-    const mapping = {blindtype: "BlindType", colourtype: "ProductId", notes: "Notes", price: "SellPrice"};
+    const mapping = { blindtype: "BlindType", colourtype: "ProductId", notes: "Notes", buyprice:"BuyPrice", sellprice: "SellPrice"};
 
     Object.keys(mapping).forEach(id => {
         const el = document.getElementById(id);
@@ -428,7 +428,7 @@ function setFormValues(itemData) {
 function process() {
     toggleButtonState(true, "Processing...");
 
-    const fields = ["blindtype", "colourtype", "notes", "price"];
+    const fields = ["blindtype", "colourtype", "notes", "buyprice", "sellprice"];
 
     const formData = {
         headerid: headerId,
