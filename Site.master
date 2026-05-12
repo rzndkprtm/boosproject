@@ -14,12 +14,14 @@
     <link rel="stylesheet" href="/Assets/vendors/sweetalert2/sweetalert2.min.css" />
     <link rel="stylesheet" href="/Assets/vendors/iconly/bold.css" />
     <link rel="stylesheet" href="/Assets/vendors/perfect-scrollbar/perfect-scrollbar.css" />
+    <link rel="stylesheet" href="/Assets/vendors/summernote/summernote-lite.min.css" />
     <link rel="stylesheet" href="/Assets/vendors/bootstrap-icons/bootstrap-icons.css" />
     <link rel="stylesheet" href="/Assets/css/app.css" />   
 
     <link rel="icon" type="image/x-icon" href="/Assets/images/logo/boos.ico" />
 
     <script src="/Scripts/jquery-3.7.1.min.js"></script>
+    
 </head>
 <body>
     <form runat="server">
@@ -361,7 +363,7 @@
             }
 
             function savePopupLog(popupId) {
-                fetch('/Setting/General/Notification/Default.aspx/SavePopupLog', {
+                fetch('/Setting/Notification/Default.aspx/SavePopupLog', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ popupId: popupId })
@@ -385,6 +387,7 @@
         <script src="/Assets/vendors/choices.js/choices.min.js"></script>
         <script src="/Assets/js/pages/form-element-select.js"></script>
         <script src="/Assets/js/pages/horizontal-layout.js"></script>
+        <script src="/Assets/vendors/summernote/summernote-lite.min.js"></script>
     </form>
 </body>
 </html>

@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Add.aspx.vb" Inherits="Setting_Notification_Add" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Add Notification" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" ValidateRequest="false" CodeFile="Add.aspx.vb" Inherits="Setting_Notification_Add" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Add Notification" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-heading">
@@ -30,63 +30,50 @@
                     </div>
                     <div class="card-content">
                         <div class="card-body">
-                            <div class="form form-horizontal">
+                            <div class="form form-vertical">
                                 <div class="form-body">
-                                    <div class="row">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Role</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-5 form-group">
+                                    <div class="row form-group">
+                                        <div class="col-6">
+                                            <label class="form-label">Role</label>
                                             <asp:DropDownList runat="server" ID="ddlLoginRole" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlLoginRole_SelectedIndexChanged"></asp:DropDownList>
                                         </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Login ID</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-8 form-group">
+                                        <div class="col-6">
+                                            <label class="form-label">Login Name</label>
                                             <asp:ListBox runat="server" ID="lbLoginId" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
                                         </div>
                                     </div>
-                                    <div class="row mt-3">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Title</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-7 form-group">
-                                            <asp:TextBox runat="server" ID="txtTitle" CssClass="form-control" placeholder="Title ..." autocomplete="off"></asp:TextBox>
-                                        </div>
-                                    </div>
-                                    <div class="row mb-3">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Message</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-9 form-group">
-                                            <asp:TextBox runat="server" TextMode="MultiLine" ID="txtMessage" Height="200px" CssClass="form-control" placeholder="Message ...." autocomplete="off" style="resize: none"></asp:TextBox>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Period</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                    <div class="row form-group">
+                                        <div class="col-6">
+                                            <label class="form-label">Start Date</label>
                                             <asp:TextBox runat="server" ID="txtStartDate" TextMode="Date" CssClass="form-control"></asp:TextBox>
                                         </div>
-                                        <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                        <div class="col-6">
+                                            <label class="form-label">End Date</label>
                                             <asp:TextBox runat="server" ID="txtEndDate" TextMode="Date" CssClass="form-control"></asp:TextBox>
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Active</label>
+                                    <div class="row form-group">
+                                        <div class="col-12">
+                                            <label class="form-label">Title</label>
+                                            <asp:TextBox runat="server" ID="txtTitle" CssClass="form-control" placeholder="Title ..." autocomplete="off"></asp:TextBox>
                                         </div>
-                                        <div class="col-12 col-sm-12 col-lg-2 form-group">
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col-12">
+                                            <label class="form-label">Message</label>
+                                            <div id="summernote"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row form-group">
+                                        <div class="col-3">
+                                            <label class="form-label">Active</label>
                                             <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select">
                                                 <asp:ListItem Value="0" Text="No"></asp:ListItem>
                                                 <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
                                             </asp:DropDownList>
                                         </div>
                                     </div>
-                                    <div class="row mb-2" runat="server" id="divError">
+                                    <div class="row mt-3" runat="server" id="divError">
                                         <div class="col-12">
                                             <div class="alert alert-danger">
                                                 <span runat="server" id="msgError"></span>
@@ -98,7 +85,7 @@
                         </div>
                     </div>
                     <div class="card-footer text-center">
-                        <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" OnClick="btnSubmit_Click" />
+                        <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" OnClientClick="return setSummernoteContent();" OnClick="btnSubmit_Click" />
                         <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Cancel" OnClick="btnCancel_Click" />
                     </div>
                 </div>
@@ -106,4 +93,33 @@
             <div class="col-lg-4 col-md-12 col-sm-12"></div>
         </section>
     </div>
+
+    <asp:HiddenField runat="server" ID="fieldMessage" />
+    <asp:HiddenField runat="server" ID="hfMessage" />
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#summernote').summernote({
+                tabsize: 2,
+                height: 200,
+
+                callbacks: {
+                    onChange: function (contents) {
+                        $('#<%= hfMessage.ClientID %>').val(contents);
+                    }
+                }
+            });
+
+            $('#summernote').summernote(
+                'code',
+                $('#<%= hfMessage.ClientID %>').val()
+            );
+        });
+
+        function setSummernoteContent() {
+            var content = $('#summernote').summernote('code');
+            $('#<%= fieldMessage.ClientID %>').val(content);
+            return true;
+        }
+    </script>
 </asp:Content>

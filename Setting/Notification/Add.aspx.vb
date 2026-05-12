@@ -38,16 +38,6 @@ Partial Class Setting_Notification_Add
                 Exit Sub
             End If
 
-            If txtTitle.Text = "" Then
-                MessageError(True, "TITLE IS REQUIRED !")
-                Exit Sub
-            End If
-
-            If txtMessage.Text = "" Then
-                MessageError(True, "MESSAGE IS REQUIRED !")
-                Exit Sub
-            End If
-
             If txtStartDate.Text = "" Then
                 MessageError(True, "START DATE IS REQUIRED !")
                 Exit Sub
@@ -55,6 +45,17 @@ Partial Class Setting_Notification_Add
 
             If txtEndDate.Text = "" Then
                 MessageError(True, "END DATE IS REQUIRED !")
+                Exit Sub
+            End If
+
+            If txtTitle.Text = "" Then
+                MessageError(True, "TITLE IS REQUIRED !")
+                Exit Sub
+            End If
+
+            Dim htmlContent As String = fieldMessage.Value
+            If htmlContent = "" Then
+                MessageError(True, "MESSAGE IS REQUIRED !")
                 Exit Sub
             End If
 
@@ -75,7 +76,7 @@ Partial Class Setting_Notification_Add
                         myCmd.Parameters.AddWithValue("@RoleId", ddlLoginRole.SelectedValue)
                         myCmd.Parameters.AddWithValue("@LoginId", loginId)
                         myCmd.Parameters.AddWithValue("@Title", txtTitle.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Message", txtMessage.Text.Trim())
+                        myCmd.Parameters.AddWithValue("@Message", htmlContent)
                         myCmd.Parameters.AddWithValue("@StartDate", txtStartDate.Text.Trim())
                         myCmd.Parameters.AddWithValue("@EndDate", txtEndDate.Text.Trim())
                         myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)

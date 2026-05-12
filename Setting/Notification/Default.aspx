@@ -175,12 +175,10 @@
             var message = el.getAttribute("data-message");
             var sessionFullName = '<%= Session("FullName") %>';
 
-            message = message.replace(/[FullName]/g, "<b>" + sessionFullName + "</b>");
-
-            message = message.replace(/\n/g, "<br>");
+            var finalMessage = "Hi <b>" + sessionFullName + "</b>,<br><br>" + message;
 
             document.getElementById("titleTest").innerText = title;
-            document.getElementById("messageTest").innerHTML = message;
+            document.getElementById("messageTest").innerHTML = finalMessage;
         }
 
         function showDelete(id) {
