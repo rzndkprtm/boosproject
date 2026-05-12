@@ -28,7 +28,7 @@ Partial Class Order_Unshipment
     Protected Sub btnDownload_Click(sender As Object, e As EventArgs)
         Try
             Dim unshipmentClass As New UnshipmentClass
-            Dim pdfBytes As Byte() = unshipmentClass.BindContent(txtSearch.Text, ddlCompany.SelectedValue)
+            Dim pdfBytes As Byte() = unshipmentClass.BindContent(txtSearch.Text, ddlCompany.SelectedValue, Session("RoleName").ToString(), Session("LevelName").ToString(), Session("LoginId"))
 
             Dim fileName As String = String.Format("ORDER {0} {1}.pdf", String.Empty, String.Empty)
 
@@ -82,7 +82,7 @@ Partial Class Order_Unshipment
 
             If msgErrorSendEmail.InnerText = "" Then
                 Dim mailingClass As New MailingClass
-                mailingClass.SentUnshipment(toEmail, ccEmail, txtSearch.Text.Trim(), ddlCompany.SelectedValue)
+                mailingClass.SentUnshipment(toEmail, ccEmail, txtSearch.Text.Trim(), ddlCompany.SelectedValue, Session("RoleName").ToString(), Session("LevelName").ToString(), Session("LoginId"))
             End If
         Catch ex As Exception
             MessageError_Email(True, ex.ToString())
@@ -143,8 +143,11 @@ Partial Class Order_Unshipment
     Protected Sub BindDataOrder(searchText As String, companyId As String)
         Try
             Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(companyId), CType(DBNull.Value, Object), companyId)),
                 New SqlParameter("@SearchText", searchText.Trim()),
-                New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(companyId), CType(DBNull.Value, Object), companyId))
+                New SqlParameter("@RoleName", Session("RoleName").ToString()),
+                New SqlParameter("@LevelName", Session("LevelName").ToString()),
+                New SqlParameter("@LoginId", Session("LoginId"))
             }
 
             Dim thisData As DataTable = unshipmentClass.GetDataTableSP("sp_OrderUnshipment", params)
@@ -154,6 +157,8 @@ Partial Class Order_Unshipment
             gvList.Columns(1).Visible = PageAction("Visible ID")
 
             aEmail.Visible = PageAction("Email")
+
+            divCompany.Visible = PageAction("Sort Company")
 
             Dim mailingString As String = "SELECT * FROM Mailings WHERE Name='Unshipment Order' AND Active=1"
             Dim dataToMailing As DataTable = unshipmentClass.GetDataTable(mailingString)
@@ -220,6 +225,7 @@ Partial Class Order_Unshipment
                 Dim isBig As Boolean = False
                 Dim isAustralia As Boolean = False
                 Dim isTaiwan As Boolean = False
+                Dim isChina As Boolean = False
 
                 If designName = "Aluminium Blind" OrElse designName = "Design Shades" OrElse designName = "Linea Valance" OrElse designName = "Panel Glide" OrElse designName = "Pelmet" OrElse designName = "Roman Blind" OrElse designName = "Privacy Venetian" OrElse designName = "Venetian Blind" OrElse designName = "Vertical" OrElse designName = "Roller Blind" OrElse designName = "Sample" OrElse designName = "Skyline Shutter Express" OrElse designName = "Outdoor" OrElse designName = "Saphora Drape" OrElse designName = "Roller Horizon" Then
                     isBig = True
@@ -240,8 +246,8 @@ Partial Class Order_Unshipment
                     Dim trackType As String = detailData.Rows(iDetail)("TrackType").ToString()
                     Dim trackTypeB As String = detailData.Rows(iDetail)("TrackTypeB").ToString()
 
-                    Dim fabricFactory As String = ""
-                    Dim fabricFactoryB As String = ""
+                    Dim fabricFactory As String = String.Empty
+                    Dim fabricFactoryB As String = String.Empty
 
                     If fabricColourId <> "" Then
                         fabricFactory = unshipmentClass.GetItemData("SELECT Factory FROM FabricColours WHERE Id='" & fabricColourId & "'")
@@ -277,7 +283,7 @@ Partial Class Order_Unshipment
                 End If
 
                 If designName = "Skyline Shutter Ocean" OrElse designName = "Evolve Shutter Ocean" Then
-                    isAustralia = True
+                    isChina = True
                 End If
 
                 If designName = "Door" OrElse designName = "Window" Then
@@ -296,7 +302,11 @@ Partial Class Order_Unshipment
                 End If
 
                 If isAustralia AndAlso Not factoryList.Contains("AUSTRALIA") Then
-                    factoryList.Add("AUSTRALIA")
+                    factoryList.Add("AUS")
+                End If
+
+                If isChina AndAlso Not factoryList.Contains("CHINA") Then
+                    factoryList.Add("CHINA")
                 End If
             Next
 

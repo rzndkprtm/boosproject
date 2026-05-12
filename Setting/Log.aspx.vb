@@ -1,16 +1,15 @@
 ﻿Imports System.Data.SqlClient
 
-Partial Class Setting_Additional_Log
+Partial Class Setting_Log
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
         If pageAccess = False Then
-            Response.Redirect("~/additional", False)
+            Response.Redirect("~/setting", False)
             Exit Sub
         End If
 
@@ -54,7 +53,7 @@ Partial Class Setting_Additional_Log
                 End Using
             End Using
 
-            Response.Redirect("~/setting/additional/log", False)
+            Response.Redirect("~/setting/log", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
         End Try

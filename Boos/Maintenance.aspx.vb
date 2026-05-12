@@ -1,5 +1,4 @@
-﻿
-Partial Class Boos_Maintenance
-    Inherits System.Web.UI.Page
+﻿Partial Class Boos_Maintenance
+    Inherits Page
 
 End Class

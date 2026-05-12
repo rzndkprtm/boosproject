@@ -1,16 +1,15 @@
 ﻿Imports System.Data.SqlClient
 
-Partial Class Setting_Additional_Query
+Partial Class Setting_Database_Query
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
         If pageAccess = False Then
-            Response.Redirect("~/setting/additional", False)
+            Response.Redirect("~/setting/database", False)
             Exit Sub
         End If
 
@@ -60,7 +59,7 @@ Partial Class Setting_Additional_Query
     End Sub
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
-        Response.Redirect("~/setting/additional", False)
+        Response.Redirect("~/setting/database", False)
     End Sub
 
     Protected Sub MessageError(visible As Boolean, message As String)
