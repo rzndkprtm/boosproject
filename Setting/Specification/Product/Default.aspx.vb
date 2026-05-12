@@ -182,7 +182,7 @@ Partial Class Setting_Specification_Product_Default
             End Using
 
             Dim changeDesc As String = String.Format("Change Status Product : {0}", newStatus)
-            dataLog = {"Products", lblId.Text, Session("LoginId").ToString(), changeDesc}
+            dataLog = {"Products", thisId, Session("LoginId").ToString(), changeDesc}
             settingClass.Logs(dataLog)
 
             Dim aliasData As DataRow = settingClass.GetDataRow("SELECT SecondId FROM ProductAlias WHERE FirstId='" & thisId & "'")

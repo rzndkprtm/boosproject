@@ -8,6 +8,7 @@ Partial Class Setting_Customer_Default
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
+    Dim dataLog As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
@@ -81,13 +82,77 @@ Partial Class Setting_Customer_Default
         End If
     End Sub
 
+    Protected Sub btnCashSale_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim thisId As String = txtIdCashSale.Text
+            Dim newData As String = ddlNewCashSale.SelectedValue
+            Dim oldData As String = txtOldCashSale.Text
+
+            Using thisConn As New SqlConnection(myConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE Customers SET CashSale=@CashSale WHERE Id=@Id", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", thisId)
+                    myCmd.Parameters.AddWithValue("@CashSale", newData)
+
+                    thisConn.Open()
+                    myCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Dim changeDesc As String = String.Format("Change Cash Sale : {0}", newData)
+            dataLog = {"Customers", thisId, Session("LoginId").ToString(), changeDesc}
+            settingClass.Logs(dataLog)
+
+            Session("SearchCustomer") = txtSearch.Text
+            Session("CompanyCustomer") = ddlCompany.SelectedValue
+            Response.Redirect("~/setting/customer", False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnOnStop_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim thisId As String = txtIdOnStop.Text
+            Dim newData As String = ddlNewOnStop.SelectedValue
+            Dim oldData As String = txtOldOnStop.Text
+
+            Using thisConn As New SqlConnection(myConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE Customers SET OnStop=@OnStop WHERE Id=@Id", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", thisId)
+                    myCmd.Parameters.AddWithValue("@OnStop", newData)
+
+                    thisConn.Open()
+                    myCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Dim changeDesc As String = String.Format("Change On Stop : {0}", newData)
+            dataLog = {"Customers", thisId, Session("LoginId").ToString(), changeDesc}
+            settingClass.Logs(dataLog)
+
+            Session("SearchCustomer") = txtSearch.Text
+            Session("CompanyCustomer") = ddlCompany.SelectedValue
+            Response.Redirect("~/setting/customer", False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
     Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
             Dim dataId As String = txtIdDelete.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE Customers SET Active=0 WHERE Id=@Id UPDATE CustomerLogins SET Active=0 WHERE CustomerId=@Id", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE Customers SET Active=0 WHERE Id=@Id UPDATE CustomerLogins SET Active=0 WHERE CustomerId=@Id;", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", dataId)
 
                     thisConn.Open()
