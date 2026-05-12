@@ -72,7 +72,7 @@ Partial Class Setting_Notification_Edit
                 End If
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Notifications SET RoleId=@RoleId, LoginId=@LoginId, Title=@Title, Message=@Message, StartDate=@StartDate, EndDate=@EndDate, Active=@Active WHERE Id=@Id", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Notifications SET RoleId=@RoleId, LoginId=@LoginId, Title=@Title, Message=@Message, StartDate=@StartDate, EndDate=@EndDate, Active=@Active WHERE Id=@Id; DELETE FROM NotificationLogs WHERE NotificationId=@Id;", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         myCmd.Parameters.AddWithValue("@RoleId", ddlLoginRole.SelectedValue)
                         myCmd.Parameters.AddWithValue("@LoginId", loginId)

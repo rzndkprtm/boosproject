@@ -105,7 +105,7 @@
                     <p id="messageTest"></p>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                    <a href="#" class="btn btn-info" data-bs-dismiss="modal">I have read the information.</a>
                 </div>
             </div>
         </div>
