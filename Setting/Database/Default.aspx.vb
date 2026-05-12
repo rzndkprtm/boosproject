@@ -1,5 +1,5 @@
 ﻿
-Partial Class Error_Maintenance
+Partial Class Setting_Database_Default
     Inherits System.Web.UI.Page
 
 End Class

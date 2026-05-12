@@ -1,12 +1,25 @@
-﻿Partial Class Setting_Additional_Default
+﻿
+Partial Class Setting_Database_View
     Inherits Page
+
+    Dim settingClass As New SettingClass
+    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
         If pageAccess = False Then
-            Response.Redirect("~/setting", False)
+            Response.Redirect("~/setting/database", False)
             Exit Sub
         End If
+
+        If Not IsPostBack Then
+            MessageError(False, String.Empty)
+            txtSearch.Text = Session("SearchView")
+        End If
+    End Sub
+
+    Protected Sub MessageError(visible As Boolean, message As String)
+        divError.Visible = visible : msgError.InnerText = message
     End Sub
 
     Protected Function PageAction(action As String) As Boolean

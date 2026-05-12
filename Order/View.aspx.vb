@@ -94,7 +94,7 @@ Partial Class Order_View
     Protected Sub Unshipment(searchText As String, companyId As String)
         Try
             Dim unshipmentClass As New UnshipmentClass
-            Dim pdfBytes As Byte() = unshipmentClass.BindContent(searchText, companyId)
+            Dim pdfBytes As Byte() = unshipmentClass.BindContent(searchText, companyId, Session("RoleName").ToString(), Session("LevelName").ToString(), Session("LoginId"))
 
             Dim safeSearch As String =
             Regex.Replace(If(searchText, ""), "[^\w\s-]", "")

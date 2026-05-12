@@ -76,23 +76,31 @@ Public Partial Class SiteMaster
                 Dim resetLogin As Boolean = myData("ResetLogin")
                 Dim personalEmail As String = myData("Email").ToString()
 
-                If Session("RoleName") = "Customer Service" OrElse Session("RoleName") = "Customer" OrElse Session("RoleName") = "Installer" OrElse Session("RoleName") = "Sales" OrElse Session("RoleName") = "Account" Then
-                    Dim customerActive As Boolean = myData("CustomerActive")
-                    Dim companyActive As Boolean = myData("CompanyActive")
+                Dim companyActive As Integer = If(IsDBNull(myData("CompanyActive")), -1, Convert.ToInt32(myData("CompanyActive")))
+                Dim customerActive As Integer = If(IsDBNull(myData("CustomerActive")), -1, Convert.ToInt32(myData("CustomerActive")))
 
-                    If customerActive = False Then
-                        Response.Redirect("~/error", False)
-                        Exit Sub
-                    End If
-
-                    If companyActive = False Then
-                        Response.Redirect("~/error/maintenance", False)
-                        Exit Sub
-                    End If
+                If loginActive = False AndAlso Not Request.Url.AbsolutePath.ToLower().EndsWith("/boos/nonactive") Then
+                    Response.Redirect("~/boos/nonactive", False)
+                    Exit Sub
                 End If
 
-                If roleActive = False Then
-                    Response.Redirect("~/error/maintenance", False)
+                If roleActive = False AndAlso Not Request.Url.AbsolutePath.ToLower().EndsWith("/boos/nonactive") Then
+                    Response.Redirect("~/boos/nonactive", False)
+                    Exit Sub
+                End If
+
+                If levelActive = False AndAlso Not Request.Url.AbsolutePath.ToLower().EndsWith("/boos/nonactive") Then
+                    Response.Redirect("~/boos/nonactive", False)
+                    Exit Sub
+                End If
+
+                If customerActive = 0 AndAlso Not Request.Url.AbsolutePath.ToLower().EndsWith("/boos/nonactive") Then
+                    Response.Redirect("~/boos/nonactive", False)
+                    Exit Sub
+                End If
+
+                If companyActive = 0 AndAlso Not Request.Url.AbsolutePath.ToLower().EndsWith("/boos/maintenance") Then
+                    Response.Redirect("~/boos/maintenance", False)
                     Exit Sub
                 End If
 
@@ -211,10 +219,12 @@ Public Partial Class SiteMaster
             liPriceSurcharge.Visible = False
             liPricePromo.Visible = False
 
+            liDatabase.Visible = False
+
             liXero.Visible = False
             liNotification.Visible = False
 
-            liAdditional.Visible = False
+            liLog.Visible = False
 
             If Session("RoleName") = "Developer" Then
                 liOldOrder.Visible = True
@@ -258,10 +268,12 @@ Public Partial Class SiteMaster
                 liPriceSurcharge.Visible = True
                 liPricePromo.Visible = True
 
+                liDatabase.Visible = True
+
                 liXero.Visible = True
                 liNotification.Visible = True
 
-                liAdditional.Visible = True
+                liLog.Visible = True
             End If
 
             If Session("RoleName") = "IT" Then

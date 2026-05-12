@@ -155,10 +155,10 @@ Partial Class Setting_Boos
                 Dim mailingClass As New MailingClass
                 Dim unshipmentClass As New UnshipmentClass
 
-                Dim toEmail As String = "order@jpmdirect.com.au;export@rimbabr.com;export@bigblinds.co.id"
+                Dim toEmail As String = "order@jpmdirect.com.au;export@rimbabr.com;export@bigblinds.co.id;logistic@jpmdirect.com.au"
                 Dim ccEmail As String = "yudi@rimbabr.com;saiful@rimbabr.com"
 
-                mailingClass.SentUnshipment(toEmail, ccEmail, String.Empty, String.Empty)
+                mailingClass.SentUnshipment(toEmail, ccEmail, String.Empty, String.Empty, Session("RoleName").ToString(), Session("LevelName").ToString(), Session("LoginId"))
             End If
         Catch ex As Exception
         End Try

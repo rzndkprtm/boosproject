@@ -109,11 +109,14 @@ Public Class UnshipmentClass
         Return result
     End Function
 
-    Public Function BindContent(searchText As String, companyId As String) As Byte()
+    Public Function BindContent(searchText As String, companyId As String, roleName As String, levelName As String, loginId As String) As Byte()
         Using ms As New MemoryStream()
             Dim params As New List(Of SqlParameter) From {
                 New SqlParameter("@SearchText", searchText.Trim()),
-                New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(companyId), CType(DBNull.Value, Object), companyId))
+                New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(companyId), CType(DBNull.Value, Object), companyId)),
+                 New SqlParameter("@RoleName", roleName),
+                 New SqlParameter("@LevelName", levelName),
+                 New SqlParameter("@LoginId", loginId)
             }
 
             Dim doc As New Document(PageSize.A4.Rotate, 20, 20, 80, 50)
@@ -153,6 +156,7 @@ Public Class UnshipmentClass
                         Dim isBig As Boolean = False
                         Dim isAustralia As Boolean = False
                         Dim isTaiwan As Boolean = False
+                        Dim isChina As Boolean = False
 
                         If designName = "Aluminium Blind" OrElse designName = "Design Shades" OrElse designName = "Linea Valance" OrElse designName = "Panel Glide" OrElse designName = "Pelmet" OrElse designName = "Roman Blind" OrElse designName = "Privacy Venetian" OrElse designName = "Venetian Blind" OrElse designName = "Vertical" OrElse designName = "Roller Blind" OrElse designName = "Sample" OrElse designName = "Skyline Shutter Express" OrElse designName = "Outdoor" OrElse designName = "Saphora Drape" OrElse designName = "Roller Horizon" Then
                             isBig = True
@@ -173,8 +177,8 @@ Public Class UnshipmentClass
                             Dim trackType As String = detailData.Rows(iDetail)("TrackType").ToString()
                             Dim trackTypeB As String = detailData.Rows(iDetail)("TrackTypeB").ToString()
 
-                            Dim fabricFactory As String = ""
-                            Dim fabricFactoryB As String = ""
+                            Dim fabricFactory As String = String.Empty
+                            Dim fabricFactoryB As String = String.Empty
 
                             If fabricColourId <> "" Then
                                 fabricFactory = GetItemData("SELECT Factory FROM FabricColours WHERE Id='" & fabricColourId & "'")
@@ -210,7 +214,7 @@ Public Class UnshipmentClass
                         End If
 
                         If designName = "Skyline Shutter Ocean" OrElse designName = "Evolve Shutter Ocean" Then
-                            isAustralia = True
+                            isChina = True
                         End If
 
                         If designName = "Door" OrElse designName = "Window" Then
@@ -229,7 +233,11 @@ Public Class UnshipmentClass
                         End If
 
                         If isAustralia AndAlso Not factoryList.Contains("AUSTRALIA") Then
-                            factoryList.Add("AUSTRALIA")
+                            factoryList.Add("AUS")
+                        End If
+
+                        If isChina AndAlso Not factoryList.Contains("CHINA") Then
+                            factoryList.Add("CHINA")
                         End If
                     Next
 

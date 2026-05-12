@@ -67,6 +67,29 @@
                                 <div class="mb-3">
                                     <img runat="server" src="~/Assets/images/avatars.png" class="rounded-circle" style="width:96px;height:96px;object-fit:cover;" />
                                 </div>
+                                <h6 class="mb-1">Asep S</h6>
+                                <p class="text-muted small mb-3">
+                                    IT Support
+                                </p>
+                                <div class="text-start small text-muted">
+                                    <p class="mb-2">
+                                        <strong>Email</strong><br />
+                                        asep.r@bigblinds.co.id
+                                    </p>
+                                    <p class="mb-2">
+                                        <strong>WhatsApp</strong><br />
+                                        -
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card h-100 shadow-sm border-0">
+                            <div class="card-body text-center">
+                                <div class="mb-3">
+                                    <img runat="server" src="~/Assets/images/avatars.png" class="rounded-circle" style="width:96px;height:96px;object-fit:cover;" />
+                                </div>
                                 <h6 class="mb-1">Tjan Yudianto</h6>
                                 <p class="text-muted small mb-3">
                                     Factory Office
@@ -88,7 +111,7 @@
             </div>
             
             <!-- SALES TEAM -->
-            <%--<div class="mb-5">
+            <div class="mb-5" runat="server" id="divSales">
                 <h4 class="fw-semibold mb-3">Sales</h4>
                 <div class="row g-4">
                     <div class="col-12 col-md-6 col-lg-3">
@@ -116,36 +139,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <div class="card h-100 shadow-sm border-0">
-                            <div class="card-body text-center">
-                                <div class="mb-3">
-                                    <img runat="server" src="~/Assets/images/avatars.png" class="rounded-circle" style="width:96px;height:96px;object-fit:cover;" />
-                                </div>
-                                
-                                <h6 class="mb-1">Matt McCamey</h6>
-                                <p class="text-muted small mb-3">
-                                    National Sales Manager
-                                </p>
-                                
-                                <div class="text-start small text-muted">
-                                    <p class="mb-2">
-                                        <strong>Email</strong><br />
-                                        matt@jpmdirect.com.au
-                                    </p>
-                                    <p class="mb-0">
-                                        <strong>Phone</strong><br />
-                                         0417 705 109
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
-            </div>--%>
+            </div>
 
-            <!-- SALES TEAM -->
-            <%--<div class="mb-5">
+            <!-- CS & ACCOUNT TEAM -->
+            <div class="mb-5" runat="server" id="divCSJPMD">
                 <h4 class="fw-semibold mb-3">Customer Service & Account</h4>
                 <div class="row g-4">
                     <div class="col-12 col-md-6 col-lg-3">
@@ -155,19 +153,19 @@
                                     <img runat="server" src="~/Assets/images/avatars.png" class="rounded-circle" style="width:96px;height:96px;object-fit:cover;" />
                                 </div>
                                 
-                                <h6 class="mb-1">Matt McCamey</h6>
+                                <h6 class="mb-1">Indra</h6>
                                 <p class="text-muted small mb-3">
-                                    National Sales Manager
+                                    Customer Service
                                 </p>
                                 
                                 <div class="text-start small text-muted">
                                     <p class="mb-2">
                                         <strong>Email</strong><br />
-                                        matt@jpmdirect.com.au
+                                        order@jpmdirect.com.au
                                     </p>
                                     <p class="mb-0">
                                         <strong>Phone</strong><br />
-                                         0417 705 109
+                                         -
                                     </p>
                                 </div>
                             </div>
@@ -180,26 +178,76 @@
                                     <img runat="server" src="~/Assets/images/avatars.png" class="rounded-circle" style="width:96px;height:96px;object-fit:cover;" />
                                 </div>
                                 
-                                <h6 class="mb-1">Matt McCamey</h6>
+                                <h6 class="mb-1">Bella</h6>
                                 <p class="text-muted small mb-3">
-                                    National Sales Manager
+                                    Account
                                 </p>
                                 
                                 <div class="text-start small text-muted">
                                     <p class="mb-2">
                                         <strong>Email</strong><br />
-                                        matt@jpmdirect.com.au
+                                        invoice@jpmdirect.com.au
                                     </p>
                                     <p class="mb-0">
                                         <strong>Phone</strong><br />
-                                         0417 705 109
+                                         -
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card h-100 shadow-sm border-0">
+                            <div class="card-body text-center">
+                                <div class="mb-3">
+                                    <img runat="server" src="~/Assets/images/avatars.png" class="rounded-circle" style="width:96px;height:96px;object-fit:cover;" />
+                                </div>
+                                
+                                <h6 class="mb-1">Rosye</h6>
+                                <p class="text-muted small mb-3">
+                                    Account
+                                </p>
+                                
+                                <div class="text-start small text-muted">
+                                    <p class="mb-2">
+                                        <strong>Email</strong><br />
+                                        accounts@jpmdirect.com.au
+                                    </p>
+                                    <p class="mb-0">
+                                        <strong>Phone</strong><br />
+                                         -
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card h-100 shadow-sm border-0">
+                            <div class="card-body text-center">
+                                <div class="mb-3">
+                                    <img runat="server" src="~/Assets/images/avatars.png" class="rounded-circle" style="width:96px;height:96px;object-fit:cover;" />
+                                </div>
+                                
+                                <h6 class="mb-1">Fariz</h6>
+                                <p class="text-muted small mb-3">
+                                    Account
+                                </p>
+                                
+                                <div class="text-start small text-muted">
+                                    <p class="mb-2">
+                                        <strong>Email</strong><br />
+                                        fariz@jpmdirect.com.au
+                                    </p>
+                                    <p class="mb-0">
+                                        <strong>Phone</strong><br />
+                                         -
                                     </p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>--%>
+            </div>
         </div>
     </div>
 </asp:Content>

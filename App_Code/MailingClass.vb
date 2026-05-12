@@ -1752,10 +1752,10 @@ Public Class MailingClass
         End Try
     End Sub
 
-    Public Sub SentUnshipment(toEmail As String, ccEmail As String, searchText As String, companyId As String)
+    Public Sub SentUnshipment(toEmail As String, ccEmail As String, searchText As String, companyId As String, roleName As String, levelName As String, loginId As String)
         Try
             Dim unshipmentClass As New UnshipmentClass
-            Dim pdfOrder As Byte() = unshipmentClass.BindContent(searchText, companyId)
+            Dim pdfOrder As Byte() = unshipmentClass.BindContent(searchText, companyId, roleName, levelName, loginId)
 
             Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE Name='Unshipment Order' AND Active=1")
             If mailData Is Nothing Then Exit Sub

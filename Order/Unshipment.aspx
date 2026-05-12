@@ -117,7 +117,7 @@
                         </div>
                     </div>
                     <div class="card-footer">
-                        <div class="d-flex" runat="server" id="divActive">
+                        <div class="d-flex" runat="server" id="divCompany">
                             <div class="ms-auto">
                                 <div class="ms-2 d-inline-block">
                                     <div class="input-group">

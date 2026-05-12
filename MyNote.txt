@@ -3682,3 +3682,69 @@ Protected Sub ReadFileData(filePath As String, customerId As String)
             End If
         End Using
     End Sub
+
+    ALTER PROCEDURE [dbo].[sp_OrderUnshipment]
+(
+    @CompanyId     NVARCHAR(50) = NULL,
+    @SearchText    NVARCHAR(100) = NULL,
+    @RoleName      NVARCHAR(50) = NULL,
+    @LevelName     NVARCHAR(50) = NULL,
+    @LoginId       INT = NULL
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        OrderHeaders.*,
+        Customers.Name AS CustomerName
+    FROM
+        OrderHeaders
+        LEFT JOIN Customers 
+            ON OrderHeaders.CustomerId = Customers.Id
+        LEFT JOIN Companys 
+            ON Customers.CompanyId = Companys.Id
+    WHERE
+        OrderHeaders.OrderType = 'Regular'
+        AND (OrderHeaders.Status = 'In Production' OR OrderHeaders.Status = 'On Hold')
+        AND OrderHeaders.ProductionDate >= '2026-02-01'
+        AND OrderHeaders.ProductionDate < DATEADD(DAY, -10, CAST(GETDATE() AS DATE))
+        AND OrderHeaders.Active = 1
+
+        -- CompanyId Kondisional
+        AND (
+            @CompanyId IS NULL
+            OR @CompanyId = ''
+            OR Customers.CompanyId = @CompanyId
+        )
+
+        -- SearchText Kondisional
+        AND (
+            @SearchText IS NULL
+            OR @SearchText = ''
+            OR OrderHeaders.Id LIKE '%' + @SearchText + '%'
+            OR OrderHeaders.OrderId LIKE '%' + @SearchText + '%'
+            OR OrderHeaders.OrderNumber LIKE '%' + @SearchText + '%'
+            OR OrderHeaders.OrderName LIKE '%' + @SearchText + '%'
+            OR Customers.Name LIKE '%' + @SearchText + '%'
+        )
+
+        -- Role & Level security filter
+        AND (
+            NOT (
+                @RoleName = 'Sales'
+                AND @LevelName = 'Member'
+            )
+            OR (
+                EXISTS (
+                    SELECT 1
+                    FROM STRING_SPLIT(Customers.Operator, ',') s
+                    WHERE TRY_CAST(s.value AS INT) = @LoginId
+                )
+                OR OrderHeaders.CreatedBy = @LoginId
+            )
+        )
+
+    ORDER BY
+        OrderHeaders.ProductionDate ASC;
+END

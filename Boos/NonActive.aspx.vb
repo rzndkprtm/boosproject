@@ -1,5 +1,5 @@
 ﻿
-Partial Class Error_500
+Partial Class Boos_NonActive
     Inherits System.Web.UI.Page
 
 End Class
