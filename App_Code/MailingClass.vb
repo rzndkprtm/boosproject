@@ -1780,7 +1780,7 @@ Public Class MailingClass
             Dim mailBody As String = String.Empty
 
             mailBody = "<span style='font-family: Cambria; font-size: 16px;'>"
-            mailBody &= "<i>- THIS IS AN AUTOMATED EMAIL. KINDLY DO NOT REPLY WITHOUT COPYING OUR TEAM. -</i>"
+            mailBody &= "<i>- THIS IS AN AUTOMATED EMAIL. -</i>"
             mailBody &= "<br /><br /><br />"
             mailBody &= "Hi Team,"
             mailBody &= "<br /><br />"
