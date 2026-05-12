@@ -332,7 +332,7 @@ Partial Class Order_Detail
         MessageError(False, String.Empty)
         Try
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='New Order' WHERE Id=@Id; INSERT INTO OrderShipments(Id) VALUES (@Id)", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='New Order' WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
 
                     thisConn.Open()
@@ -1365,6 +1365,7 @@ Partial Class Order_Detail
                         If lblOrderStatus.Text = "Unsubmitted" OrElse lblOrderStatus.Text = "Quoted" OrElse lblOrderStatus.Text = "Waiting Proforma" OrElse lblOrderStatus.Text = "Proforma Sent" Then
                             itemAction = "edit"
                         End If
+                        If designId = "16" Then itemAction = "edit"
                     End If
 
                     If Session("RoleName") = "Customer Service" Then
@@ -1401,7 +1402,7 @@ Partial Class Order_Detail
                     End If
 
                     If String.IsNullOrEmpty(itemAction) Then
-                        MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID")
+                        MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
                         Exit Sub
                     End If
 
@@ -3740,12 +3741,16 @@ Partial Class Order_Detail
                 If lblOrderStatus.Text = "Waiting Proforma" Then result = True
                 If lblOrderStatus.Text = "Proforma Sent" Then result = True
                 If lblOrderStatus.Text = "Payment Received" Then result = True
+
+                If designId = "16" Then Return True
             End If
 
             If Session("RoleName") = "Factory Office" Then
                 If lblOrderStatus.Text = "Unsubmitted" Then result = True
                 If lblOrderStatus.Text = "New Order" Then result = True
                 If lblOrderStatus.Text = "Waiting Proforma" Then result = True
+
+                If designId = "16" Then Return True
             End If
 
             If Session("RoleName") = "Sales" Then
@@ -3758,6 +3763,8 @@ Partial Class Order_Detail
                 If lblOrderStatus.Text = "Unsubmitted" Then result = True
                 If lblOrderStatus.Text = "Quoted" Then result = True
                 If lblOrderStatus.Text = "Waiting Proforma" Then result = True
+
+                If designId = "16" Then Return True
             End If
 
             If Session("RoleName") = "Customer Service" Then
