@@ -41,16 +41,6 @@ Partial Class Setting_Notification_Edit
                 Exit Sub
             End If
 
-            If txtTitle.Text = "" Then
-                MessageError(True, "TITLE IS REQUIRED !")
-                Exit Sub
-            End If
-
-            If txtMessage.Text = "" Then
-                MessageError(True, "MESSAGE IS REQUIRED !")
-                Exit Sub
-            End If
-
             If txtStartDate.Text = "" Then
                 MessageError(True, "START DATE IS REQUIRED !")
                 Exit Sub
@@ -58,6 +48,17 @@ Partial Class Setting_Notification_Edit
 
             If txtEndDate.Text = "" Then
                 MessageError(True, "END DATE IS REQUIRED !")
+                Exit Sub
+            End If
+
+            If txtTitle.Text = "" Then
+                MessageError(True, "TITLE IS REQUIRED !")
+                Exit Sub
+            End If
+
+            Dim htmlContent As String = fieldMessage.Value
+            If htmlContent = "" Then
+                MessageError(True, "MESSAGE IS REQUIRED !")
                 Exit Sub
             End If
 
@@ -76,7 +77,7 @@ Partial Class Setting_Notification_Edit
                         myCmd.Parameters.AddWithValue("@RoleId", ddlLoginRole.SelectedValue)
                         myCmd.Parameters.AddWithValue("@LoginId", loginId)
                         myCmd.Parameters.AddWithValue("@Title", txtTitle.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Message", txtMessage.Text.Trim())
+                        myCmd.Parameters.AddWithValue("@Message", htmlContent)
                         myCmd.Parameters.AddWithValue("@StartDate", txtStartDate.Text.Trim())
                         myCmd.Parameters.AddWithValue("@EndDate", txtEndDate.Text.Trim())
                         myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
@@ -112,7 +113,7 @@ Partial Class Setting_Notification_Edit
 
             ddlLoginRole.SelectedValue = thisData("RoleId").ToString()
             txtTitle.Text = thisData("Title").ToString()
-            txtMessage.Text = thisData("Message").ToString()
+            hfMessage.Value = thisData("Message").ToString()
             txtStartDate.Text = Convert.ToDateTime(thisData("StartDate")).ToString("yyyy-MM-dd")
             txtEndDate.Text = Convert.ToDateTime(thisData("EndDate")).ToString("yyyy-MM-dd")
             ddlActive.SelectedValue = Convert.ToInt32(thisData("Active"))
