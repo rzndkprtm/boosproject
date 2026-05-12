@@ -63,6 +63,14 @@
                             </div>
                         </div>
                         <div class="card-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="alert alert-light-warning color-warning">
+                                        <i class="bi bi-exclamation-circle"></i>
+                                        The displayed data is retrieved from orders that have entered production (based on the production date) and have not been shipped for more than 10 days.
+                                    </div>
+                                </div>
+                            </div>
                             <div class="row mb-3">
                                 <div class="col-12">
                                     <div class="table-responsive">
@@ -79,8 +87,12 @@
                                                 <asp:BoundField DataField="CustomerName" HeaderText="Customer Name" ItemStyle-Wrap="true" />
                                                 <asp:BoundField DataField="OrderNumber" HeaderText="Order Number" ItemStyle-Wrap="true" />
                                                 <asp:BoundField DataField="OrderName" HeaderText="Order Name" ItemStyle-Wrap="true" />
-                                                <asp:BoundField DataField="SubmittedDate" HeaderText="Submitted" DataFormatString="{0:dd MMM yyyy}" />
                                                 <asp:BoundField DataField="ProductionDate" HeaderText="Production" DataFormatString="{0:dd MMM yyyy}" />
+                                                <asp:TemplateField HeaderText="Factory">
+                                                    <ItemTemplate>
+                                                        <%# BindFactory(Eval("Id")) %>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
                                                 <asp:TemplateField ItemStyle-Width="150px" ItemStyle-HorizontalAlign="Center">
                                                     <ItemTemplate>
                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
