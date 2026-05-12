@@ -417,16 +417,19 @@ Public Partial Class SiteMaster
                 liCustomer.Visible = True
             End If
 
+            If Session("RoleName") = "Data Entry" Then
+                liOldOrder.Visible = True
+                liGuide.Visible = True
+                liStocks.Visible = True
+                liReport.Visible = True
+            End If
+
             If Session("RoleName") = "Customer" Then
                 liOldOrder.Visible = True
                 liGuide.Visible = True
                 liStocks.Visible = True
 
                 liSettingQuote.Visible = True
-            End If
-
-            If Session("RoleName") = "Data Entry" Then
-                liOldOrder.Visible = True
             End If
 
             If Session("RoleName") = "Installer" Then
