@@ -66,8 +66,9 @@
                             <div class="row">
                                 <div class="col-12">
                                     <div class="alert alert-light-warning color-warning">
-                                        <i class="bi bi-exclamation-circle"></i>
-                                        The displayed data is retrieved from orders that have entered production (based on the production date) and have not been shipped for more than 10 days.
+                                        - The displayed data is retrieved from orders that have entered production (based on the production date) and have not been shipped for more than 10 days.
+                                        <br />
+                                        - Please note: when you perform the Preview / Download PDF action or send via email, the data generated will correspond to the data currently displayed to you.
                                     </div>
                                 </div>
                             </div>
