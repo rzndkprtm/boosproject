@@ -104,9 +104,9 @@ Partial Class Setting_Notification_Default
         Try
             Dim search As String = String.Empty
             If Not searchText = "" Then
-                search = "WHERE Title LIKE '%" & searchText.Trim() & "%'"
+                search = "WHERE Notifications.Title LIKE '%" & searchText.Trim() & "%'"
             End If
-            Dim thisQuery As String = String.Format("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Notifications {0} ORDER BY Title ASC", search)
+            Dim thisQuery As String = String.Format("SELECT Notifications.*, LoginRoles.Name AS RoleName, CASE WHEN Notifications.Active=1 THEN 'Yes' WHEN Notifications.Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Notifications LEFT JOIN LoginRoles ON Notifications.RoleId=LoginRoles.Id {0} ORDER BY Notifications.Title ASC", search)
 
             gvList.DataSource = settingClass.GetDataTable(thisQuery)
             gvList.DataBind()
