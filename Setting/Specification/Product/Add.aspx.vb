@@ -6,6 +6,7 @@ Partial Class Setting_Specification_Product_Add
     Dim settingClass As New SettingClass
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim dataLog As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
@@ -91,7 +92,7 @@ Partial Class Setting_Specification_Product_Add
                     End Using
                 End Using
 
-                Dim dataLog As Object() = {"ProductTubes", thisId, Session("LoginId").ToString(), "Product Tube Created"}
+                dataLog = {"ProductTubes", thisId, Session("LoginId").ToString(), "Product Tube Created"}
                 settingClass.Logs(dataLog)
 
                 Response.Redirect("~/setting/specification/product/add", False)
@@ -119,7 +120,7 @@ Partial Class Setting_Specification_Product_Add
                     End Using
                 End Using
 
-                Dim dataLog As Object() = {"ProductControls", thisId, Session("LoginId").ToString(), "Product Control Created"}
+                dataLog = {"ProductControls", thisId, Session("LoginId").ToString(), "Product Control Created"}
                 settingClass.Logs(dataLog)
 
                 Response.Redirect("~/setting/specification/product/add", False)
@@ -147,7 +148,7 @@ Partial Class Setting_Specification_Product_Add
                     End Using
                 End Using
 
-                Dim dataLog As Object() = {"ProductColours", thisId, Session("LoginId").ToString(), "Product Colour Created"}
+                dataLog = {"ProductColours", thisId, Session("LoginId").ToString(), "Product Colour Created"}
                 settingClass.Logs(dataLog)
 
                 Response.Redirect("~/setting/specification/product/add", False)
@@ -227,7 +228,7 @@ Partial Class Setting_Specification_Product_Add
                     End Using
                 End Using
 
-                Dim dataLog As Object() = {"Products", thisId, Session("LoginId").ToString(), "Product Created"}
+                dataLog = {"Products", thisId, Session("LoginId").ToString(), "Product Created"}
                 settingClass.Logs(dataLog)
 
                 Dim url As String = String.Format("~/setting/specification/product/detail?productid={0}", thisId)
