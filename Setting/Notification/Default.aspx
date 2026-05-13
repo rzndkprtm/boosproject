@@ -74,10 +74,21 @@
                                                     <ItemTemplate>
                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                         <ul class="dropdown-menu">
-                                                            <li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalTest" data-title='<%# Eval("Title") %>' data-message='<%# Eval("Message") %>' onclick="showTest(this)">Test</a></li>
-                                                            <li><asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton></li>
-                                                            <li><a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a></li>
-                                                            <li><a href="javascript:void(0)" class="dropdown-item" onclick="showLog('Notifications', '<%# Eval("Id") %>')">Log</a></li>
+                                                            <li>
+                                                                <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalTest" data-title='<%# Eval("Title") %>' data-message='<%# Eval("Message") %>' onclick="showTest(this)">Preview</a>
+                                                            </li>
+                                                            <li>
+                                                                <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                            </li>
+                                                            <li>
+                                                                <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="javascript:void(0)" class="dropdown-item" onclick="showRead('<%# Eval("Id") %>')">View Readers</a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('Notifications', '<%# Eval("Id") %>')">Log</a>
+                                                            </li>
                                                         </ul>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
@@ -139,6 +150,24 @@
                     <div class="alert alert-danger d-none" id="logError"></div>
                     <div class="table-responsive">
                         <table class="table table-vcenter card-table" id="tblLogs">
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal modal-blur fade" id="modalRead" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Who has already read it?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger d-none" id="logRead"></div>
+                    <div class="table-responsive">
+                        <table class="table table-vcenter card-table" id="tblReads">
                             <tbody></tbody>
                         </table>
                     </div>
@@ -220,7 +249,41 @@
             });
         }
 
-        ["modalTest", "modalDelete", "modalLog"].forEach(function (id) {
+        function showRead(dataId) {
+            $("#logRead").addClass("d-none").html("");
+            $("#tblReads tbody").html("");
+            $("#modalRead").modal("show");
+
+            $.ajax({
+                type: "POST",
+                url: "/Setting/Method.aspx/GetReads",
+                data: JSON.stringify({ dataId: dataId }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (res) {
+                    const reads = res.d;
+
+                    if (!reads || reads.length === 0) {
+                        $("#tblReads tbody").html(
+                            `<tr><td class="text-center">DATA LOG NOT FOUND</td></tr>`
+                        );
+                        return;
+                    }
+
+                    let html = "";
+                    reads.forEach(r => {
+                        html += `<tr><td>${r.TextRead}</td></tr>`;
+                    });
+
+                    $("#tblReads tbody").html(html);
+                },
+                error: function (err) {
+                    $("#logRead").removeClass("d-none").html("FAILED TO LOAD LOG DATA");
+                }
+            });
+        }
+
+        ["modalTest", "modalDelete", "modalLog", "modalRead"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

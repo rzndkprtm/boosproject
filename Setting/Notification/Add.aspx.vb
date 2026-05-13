@@ -5,9 +5,7 @@ Partial Class Setting_Notification_Add
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-
     Dim dataLog As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -85,6 +83,9 @@ Partial Class Setting_Notification_Add
                         myCmd.ExecuteNonQuery()
                     End Using
                 End Using
+
+                dataLog = {"Notifications", thisId, Session("LoginId").ToString(), "Notification Created"}
+                settingClass.Logs(dataLog)
 
                 Response.Redirect("~/setting/notification", False)
             End If

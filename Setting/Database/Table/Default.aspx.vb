@@ -1,6 +1,4 @@
-﻿Imports System.Data.SqlClient
-
-Partial Class Setting_Database_Table
+﻿Partial Class Setting_Database_Table_Default
     Inherits Page
 
     Dim settingClass As New SettingClass
@@ -21,20 +19,7 @@ Partial Class Setting_Database_Table
     End Sub
 
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
-        MessageError_Process(False, String.Empty)
-        Session("SearchTable") = txtSearch.Text
-
-        Dim thisScript As String = "window.onload = function() { showProcess(); };"
-        Try
-            lblAction.Text = "Add"
-            titleProcess.InnerText = "Add Table"
-            txtName.Enabled = True
-
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-        Catch ex As Exception
-            MessageError_Process(True, ex.ToString())
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-        End Try
+        Response.Redirect("~/setting/database/table/add", False)
     End Sub
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
@@ -56,32 +41,6 @@ Partial Class Setting_Database_Table
 
     End Sub
 
-    Protected Sub btnProcess_Click(sender As Object, e As EventArgs)
-        MessageError_Process(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showProcess(); };"
-        Try
-            If msgErrorProcess.InnerText = "" Then
-                If lblAction.Text = "Add" Then
-                    Dim thisQuery As String = "CREATE TABLE [" & txtName.Text.Trim() & "] ( " & txtQuery.Text.Trim() & " )"
-
-                    Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As New SqlCommand(thisQuery, thisConn)
-                            thisConn.Open()
-                            myCmd.ExecuteNonQuery()
-                        End Using
-                    End Using
-
-                    Session("SearchTable") = txtSearch.Text
-                    Response.Redirect("~/setting/database/table", False)
-                    Exit Sub
-                End If
-            End If
-        Catch ex As Exception
-            MessageError_Process(True, ex.ToString())
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-        End Try
-    End Sub
-
     Protected Sub BindData(searchText As String)
         Session("SearchTable") = String.Empty
         Try
@@ -100,10 +59,6 @@ Partial Class Setting_Database_Table
 
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
-    End Sub
-
-    Protected Sub MessageError_Process(visible As Boolean, message As String)
-        divErrorProcess.Visible = visible : msgErrorProcess.InnerText = message
     End Sub
 
     Protected Function PageAction(action As String) As Boolean

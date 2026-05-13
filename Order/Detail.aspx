@@ -396,7 +396,7 @@
                             <div class="row">
                                 <div class="col-12">
                                     <div class="table-responsive">
-                                        <asp:GridView runat="server" ID="gvListItem" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom" OnPageIndexChanging="gvListItem_PageIndexChanging" OnRowCommand="gvListItem_RowCommand">
+                                        <asp:GridView runat="server" ID="gvListItem" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="100" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom" OnPageIndexChanging="gvListItem_PageIndexChanging" OnRowCommand="gvListItem_RowCommand">
                                             <RowStyle />
                                             <Columns>
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center">

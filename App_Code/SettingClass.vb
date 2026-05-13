@@ -211,7 +211,7 @@ Public Class SettingClass
         Dim result As String = String.Empty
         Try
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As New SqlCommand("SELECT '<b>' + CustomerLogins.FullName + '</b> on ' + FORMAT(Logs.ActionDate, 'dd MMM yyyy HH:mm') + '. Action : ' + Logs.Description AS FinalLog FROM Logs LEFT JOIN CustomerLogins ON Logs.ActionBy = CustomerLogins.Id  WHERE Logs.Id=@Id", thisConn)
+                Using myCmd As New SqlCommand("SELECT '<b>' + CustomerLogins.FullName + '</b> on ' + FORMAT(Logs.ActionDate, 'dd MMM yyyy HH:mm') + '. Action : ' + Logs.Description AS FinalLog FROM Logs LEFT JOIN CustomerLogins ON Logs.ActionBy=CustomerLogins.Id WHERE Logs.Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", logId)
 
                     thisConn.Open()

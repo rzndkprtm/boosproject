@@ -87,6 +87,9 @@ Partial Class Setting_Notification_Edit
                     End Using
                 End Using
 
+                dataLog = {"Notifications", lblId.Text, Session("LoginId").ToString(), "Notification Updated"}
+                settingClass.Logs(dataLog)
+
                 Response.Redirect("~/setting/notification", False)
             End If
         Catch ex As Exception
