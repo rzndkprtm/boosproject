@@ -53,7 +53,7 @@
                                         </div>
                                         <div class="col-12 col-sm-12 col-lg-4">
                                             <label class="form-label">Active</label>
-                                            <asp:DropDownList runat="server" ID="DropDownList1" CssClass="form-select">
+                                            <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select">
                                                 <asp:ListItem Value="0" Text="No"></asp:ListItem>
                                                 <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
                                             </asp:DropDownList>
@@ -69,15 +69,6 @@
                                         <div class="col-12">
                                             <label class="form-label">Message</label>
                                             <div id="summernote"></div>
-                                        </div>
-                                    </div>
-                                    <div class="row form-group">
-                                        <div class="col-3">
-                                            <label class="form-label">Active</label>
-                                            <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select">
-                                                <asp:ListItem Value="0" Text="No"></asp:ListItem>
-                                                <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
-                                            </asp:DropDownList>
                                         </div>
                                     </div>
                                     <div class="row mt-3" runat="server" id="divError">
