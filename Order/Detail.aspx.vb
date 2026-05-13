@@ -1362,22 +1362,15 @@ Partial Class Order_Detail
 
                     If Session("RoleName") = "Account" Then
                         itemAction = "view"
-                        If lblOrderStatus.Text = "Unsubmitted" OrElse lblOrderStatus.Text = "Quoted" OrElse lblOrderStatus.Text = "Waiting Proforma" OrElse lblOrderStatus.Text = "Proforma Sent" Then
+                        If lblOrderStatus.Text = "Unsubmitted" OrElse lblOrderStatus.Text = "Quoted" OrElse lblOrderStatus.Text = "Waiting Proforma" OrElse lblOrderStatus.Text = "Proforma Sent" OrElse lblOrderStatus.Text = "Payment Received" Then
                             itemAction = "edit"
                         End If
                         If designId = "16" Then itemAction = "edit"
                     End If
 
-                    If Session("RoleName") = "Customer Service" Then
-                        itemAction = "edit"
-                        If lblOrderStatus.Text = "Canceled" OrElse lblOrderStatus.Text = "Completed" OrElse lblOrderStatus.Text = "Shipped Out" Then
-                            itemAction = "view"
-                        End If
-                    End If
-
                     If Session("RoleName") = "Data Entry" Then
                         itemAction = "view"
-                        If lblOrderStatus.Text = "Unsubmitted" OrElse lblOrderStatus.Text = "Quoted" OrElse lblOrderStatus.Text = "Waiting Proforma" OrElse lblOrderStatus.Text = "Proforma Sent" Then
+                        If lblOrderStatus.Text = "Unsubmitted" OrElse lblOrderStatus.Text = "Quoted" OrElse lblOrderStatus.Text = "Waiting Proforma" OrElse lblOrderStatus.Text = "Proforma Sent" OrElse lblOrderStatus.Text = "Payment Received" Then
                             itemAction = "edit"
                         End If
                     End If
@@ -2442,74 +2435,6 @@ Partial Class Order_Detail
                     liDividerInvoice.Visible = True : liUpdateInvoiceData.Visible = True
 
                     btnAddService.Visible = True
-                End If
-            End If
-
-            If Session("RoleName") = "Customer Service" Then
-                divInternalNote.Visible = True
-
-                btnMoreAction.Visible = True
-                liMoreAddNote.Visible = True
-                liMoreHistoryNote.Visible = True
-
-                aFileOrder.Visible = True
-
-                If lblOrderType.Text = "Builder" Then aBuilder.Visible = True : secBuilder.Visible = True
-
-                If lblOrderStatus.Text = "Unsubmitted" Then
-                    If lblOrderType.Text = "Builder" Then aQuoteOrder.Visible = True
-                    If lblOrderType.Text = "Regular" Then aSubmitOrder.Visible = True
-
-                    btnEditOrder.Visible = True
-                    aAddItem.Visible = True
-                End If
-
-                If lblOrderStatus.Text = "Quoted" Then
-                    liMoreDownloadQuote.Visible = True
-                    liMoreEmailQuote.Visible = True
-                    liMoreDividerQuote.Visible = True
-
-                    btnEditOrder.Visible = True
-                    aCancelOrder.Visible = True
-                    aSubmitOrder.Visible = True
-
-                    aAddItem.Visible = True : btnAddService.Visible = True
-                End If
-
-                If lblOrderStatus.Text = "New Order" Then
-                    btnEditOrder.Visible = True
-
-                    aCancelOrder.Visible = True
-                    aHoldOrder.Visible = True : aProductionOrder.Visible = True
-
-                    aAddItem.Visible = True
-                End If
-
-                If lblOrderStatus.Text = "Waiting Proforma" Then
-                    btnEditOrder.Visible = True
-                    aAddItem.Visible = True : btnAddService.Visible = True
-                End If
-
-                If lblOrderStatus.Text = "Payment Received" Then
-                    btnEditOrder.Visible = True
-                    aAddItem.Visible = True : btnAddService.Visible = True
-                End If
-
-                If lblOrderStatus.Text = "In Production" Then
-                    btnEditOrder.Visible = True
-                    aAddItem.Visible = True : btnAddService.Visible = True
-
-                    aHoldOrder.Visible = True : aCancelOrder.Visible = True
-                End If
-
-                If lblOrderStatus.Text = "On Hold" Then
-                    btnEditOrder.Visible = True
-                    aUnHoldOrder.Visible = True
-                End If
-
-                If lblOrderStatus.Text = "Shipped Out" OrElse lblOrderStatus.Text = "Completed" Then
-                    aCompleteOrder.Visible = True
-                    aReworkOrder.Visible = True
                 End If
             End If
 
@@ -3700,13 +3625,6 @@ Partial Class Order_Detail
                     If lblOrderStatus.Text = "Waiting Proforma" Then result = True
                 End If
 
-                If Session("RoleName") = "Customer Service" Then
-                    If lblOrderStatus.Text = "Unsubmitted" Then result = True
-                    If lblOrderStatus.Text = "New Order" Then result = True
-                    If lblOrderStatus.Text = "Quoted" Then result = True
-                    If lblOrderStatus.Text = "Waiting Proforma" Then result = True
-                End If
-
                 If Session("RoleName") = "Data Entry" AndAlso lblCreatedRole.Text = Session("RoleId") Then
                     If lblOrderStatus.Text = "Unsubmitted" Then result = True
                     If lblOrderStatus.Text = "Quoted" Then result = True
@@ -3765,12 +3683,6 @@ Partial Class Order_Detail
                 If lblOrderStatus.Text = "Waiting Proforma" Then result = True
 
                 If designId = "16" Then Return True
-            End If
-
-            If Session("RoleName") = "Customer Service" Then
-                If lblOrderStatus.Text = "Unsubmitted" Then result = True
-                If lblOrderStatus.Text = "Quoted" Then result = True
-                If lblOrderStatus.Text = "Waiting Proforma" Then result = True
             End If
 
             If Session("RoleName") = "Data Entry" AndAlso lblCreatedRole.Text = Session("RoleId") Then
@@ -3839,7 +3751,7 @@ Partial Class Order_Detail
     Protected Function VisibleCosting() As Boolean
         Dim result As Boolean = False
 
-        If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Sales" OrElse Session("RoleName") = "Customer Service" OrElse Session("RoleName") = "Account" OrElse Session("RoleName") = "Customer" OrElse Session("RoleName") = "Export" Then result = True
+        If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Sales" OrElse Session("RoleName") = "Data Entry" OrElse Session("RoleName") = "Account" OrElse Session("RoleName") = "Customer" OrElse Session("RoleName") = "Export" Then result = True
 
         Return result
     End Function
@@ -3858,10 +3770,6 @@ Partial Class Order_Detail
             If lblOrderStatus.Text = "Quoted" Then result = True
             If lblOrderStatus.Text = "New Order" AndAlso lblOrderPaid.Text = "" Then result = True
             If lblOrderStatus.Text = "Waiting Proforma" Then result = True
-        End If
-
-        If Session("RoleName") = "Customer Service" Then
-            If lblOrderStatus.Text = "Quoted" Then result = True
         End If
 
         If Session("RoleName") = "Data Entry" AndAlso lblOrderType.Text = "Builder" Then

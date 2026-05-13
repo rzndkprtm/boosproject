@@ -7,6 +7,7 @@ Partial Class Order_Unshipment
     Dim unshipmentClass As New OrderClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
+    Dim dataLog As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
@@ -18,6 +19,7 @@ Partial Class Order_Unshipment
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             MessageError_Email(False, String.Empty)
+            MessageError_ShipmentOrder(False, String.Empty)
             BindCompany()
             BindDataOrder(txtSearch.Text, ddlCompany.SelectedValue)
 
@@ -90,6 +92,66 @@ Partial Class Order_Unshipment
                 MessageError_Email(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showSendEmail", thisScript, True)
+        End Try
+    End Sub
+
+    Protected Sub btnShipmentOrder_Click(sender As Object, e As EventArgs)
+        MessageError_ShipmentOrder(False, String.Empty)
+        Dim thisScript As String = "window.onload = function() { showShipmentOrder(); };"
+        Try
+            If txtShipmentNumber.Text = "" Then
+                MessageError_ShipmentOrder(True, "SHIPMENT NUMBER IS REQUIRED !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showShipmentOrder", thisScript, True)
+                Exit Sub
+            End If
+
+            If txtShipmentDate.Text = "" Then
+                MessageError_ShipmentOrder(True, "SHIPMENT DATE IS REQUIRED !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showShipmentOrder", thisScript, True)
+                Exit Sub
+            End If
+
+            If txtContainerNumber.Text = "" Then
+                MessageError_ShipmentOrder(True, "CONTAINER NUMBER IS REQUIRED !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showShipmentOrder", thisScript, True)
+                Exit Sub
+            End If
+
+            If txtCourier.Text = "" Then
+                MessageError_ShipmentOrder(True, "COURIER IS REQUIRED !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showShipmentOrder", thisScript, True)
+                Exit Sub
+            End If
+
+            If msgErrorShipmentOrder.InnerText = "" Then
+                Dim thisId As String = txtIdShipmentOrder.Text
+
+                Using thisConn As New SqlConnection(myConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Shipped Out' WHERE Id=@Id; UPDATE OrderShipments SET ShipmentNumber=@ShipmentNumber, ShipmentDate=@ShipmentDate, ContainerNumber=@ContainerNumber, ContainerETA=@ContainerETA, Courier=@Courier WHERE Id=@Id", thisConn)
+                        myCmd.Parameters.AddWithValue("@Id", thisId)
+                        myCmd.Parameters.AddWithValue("@ShipmentNumber", txtShipmentNumber.Text.Trim())
+                        myCmd.Parameters.AddWithValue("@ShipmentDate", txtShipmentDate.Text)
+                        myCmd.Parameters.AddWithValue("@ContainerNumber", txtContainerNumber.Text.Trim())
+                        myCmd.Parameters.AddWithValue("@ContainerETA", If(String.IsNullOrEmpty(txtContainerEta.Text), CType(DBNull.Value, Object), txtContainerEta.Text))
+                        myCmd.Parameters.AddWithValue("@Courier", txtCourier.Text.Trim())
+
+                        thisConn.Open()
+                        myCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                dataLog = {"OrderHeaders", thisId, Session("LoginId"), "Order Shipped"}
+                unshipmentClass.Logs(dataLog)
+
+                Response.Redirect("~/order", False)
+            End If
+
+        Catch ex As Exception
+            MessageError_ShipmentOrder(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_ShipmentOrder(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+            ClientScript.RegisterStartupScript(Me.GetType(), "showShipmentOrder", thisScript, True)
         End Try
     End Sub
 
@@ -324,6 +386,10 @@ Partial Class Order_Unshipment
 
     Protected Sub MessageError_Email(visible As Boolean, message As String)
         divErrorSendEmail.Visible = visible : msgErrorSendEmail.InnerText = message
+    End Sub
+
+    Protected Sub MessageError_ShipmentOrder(visible As Boolean, message As String)
+        divErrorShipmentOrder.Visible = visible : msgErrorShipmentOrder.InnerText = message
     End Sub
 
     Protected Function PageAction(action As String) As Boolean
