@@ -12,9 +12,10 @@
         divCustomer.Attributes("onclick") = "location.href='customer'"
         divSpecification.Attributes("onclick") = "location.href='specification'"
         divPrice.Attributes("onclick") = "location.href='price'"
+        divDatabase.Attributes("onclick") = "location.href='database'"
         divXero.Attributes("onclick") = "location.href='xero'"
         divNotification.Attributes("onclick") = "location.href='notification'"
-        divAdditional.Attributes("onclick") = "location.href='additional'"
+        divLog.Attributes("onclick") = "location.href='log'"
     End Sub
 
     Protected Function PageAction(action As String) As Boolean
