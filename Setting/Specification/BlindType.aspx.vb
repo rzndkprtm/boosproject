@@ -31,11 +31,10 @@ Partial Class Setting_Specification_BlindType
         Try
             lblAction.Text = "Add"
             titleProcess.InnerText = "Add Blind Type"
+            txtName.Enabled = True
 
             BindDesign()
             BindCompany()
-
-            txtName.Enabled = True
 
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         Catch ex As Exception
@@ -137,7 +136,10 @@ Partial Class Setting_Specification_BlindType
             End If
 
             If msgErrorProcess.InnerText = "" Then
-                Dim company As String = String.Join(",", lbCompany.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
+                Dim companyDetail As String = String.Empty
+                If Not lbCompany.SelectedValue = "" Then
+                    companyDetail = String.Join(",", lbCompany.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
+                End If
 
                 Dim aliasName As String = txtAlias.Text.Trim()
                 If String.IsNullOrEmpty(txtAlias.Text) Then
@@ -153,7 +155,7 @@ Partial Class Setting_Specification_BlindType
                         Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Blinds VALUES (@Id, @DesignId, @CompanyDetailId, @Name, @Alias, @Description, @Active)", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", thisId)
                             myCmd.Parameters.AddWithValue("@DesignId", ddlDesign.SelectedValue)
-                            myCmd.Parameters.AddWithValue("@CompanyDetailId", company)
+                            myCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetail)
                             myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Alias", aliasName)
                             myCmd.Parameters.AddWithValue("@Description", descText)
@@ -176,7 +178,7 @@ Partial Class Setting_Specification_BlindType
                         Using myCmd As SqlCommand = New SqlCommand("UPDATE Blinds SET DesignId=@DesignId, CompanyDetailId=@CompanyDetailId, Name=@Name, Alias=@Alias, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", lblId.Text)
                             myCmd.Parameters.AddWithValue("@DesignId", ddlDesign.SelectedValue)
-                            myCmd.Parameters.AddWithValue("@CompanyDetailId", company)
+                            myCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetail)
                             myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Alias", aliasName)
                             myCmd.Parameters.AddWithValue("@Description", descText)

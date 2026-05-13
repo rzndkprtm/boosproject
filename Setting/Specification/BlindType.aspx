@@ -65,7 +65,7 @@
                                                 <asp:BoundField DataField="DesignName" HeaderText="Design Name" />
                                                 <asp:BoundField DataField="Name" HeaderText="Blind Name" />
                                                 <asp:BoundField DataField="Alias" HeaderText="Alias" />
-                                                <asp:TemplateField HeaderText="Sub Company">
+                                                <asp:TemplateField HeaderText="Company Detail">
                                                     <ItemTemplate>
                                                         <%# BindCompanyDetail(Eval("Id").ToString()) %>
                                                     </ItemTemplate>
