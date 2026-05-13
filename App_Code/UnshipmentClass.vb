@@ -232,7 +232,7 @@ Public Class UnshipmentClass
                             factoryList.Add("TAIWAN")
                         End If
 
-                        If isAustralia AndAlso Not factoryList.Contains("AUSTRALIA") Then
+                        If isAustralia AndAlso Not factoryList.Contains("AUS") Then
                             factoryList.Add("AUS")
                         End If
 
