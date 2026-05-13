@@ -82,11 +82,11 @@
                                     <div class="row mb-2">
                                         <div class="col-6 form-group">
                                             <label>Buy Charge</label>
-                                            <asp:TextBox runat="server" TextMode="MultiLine" ID="txtBuyCharge" Height="300px" CssClass="form-control" placeholder="Buy Charge ..." autocomplete="off" style="resize:none;"></asp:TextBox>
+                                            <asp:TextBox runat="server" TextMode="MultiLine" ID="txtBuyCharge" Height="250px" CssClass="form-control" placeholder="Buy Charge ..." autocomplete="off" style="resize:none;"></asp:TextBox>
                                         </div>
                                         <div class="col-6 form-group">
                                             <label>Sell Charge</label>
-                                            <asp:TextBox runat="server" TextMode="MultiLine" ID="txtSellCharge" Height="300px" CssClass="form-control" placeholder="Sell Charge ..." autocomplete="off" style="resize:none;"></asp:TextBox>
+                                            <asp:TextBox runat="server" TextMode="MultiLine" ID="txtSellCharge" Height="250px" CssClass="form-control" placeholder="Sell Charge ..." autocomplete="off" style="resize:none;"></asp:TextBox>
                                         </div>
                                     </div>
                                     <div class="row mb-2">
