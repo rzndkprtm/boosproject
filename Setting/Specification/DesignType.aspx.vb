@@ -31,10 +31,9 @@ Partial Class Setting_Specification_Design
         Try
             lblAction.Text = "Add"
             titleProcess.InnerText = "Add Design Type"
+            txtName.Enabled = True
 
             BindCompany()
-
-            txtName.Enabled = True
 
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         Catch ex As Exception
