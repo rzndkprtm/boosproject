@@ -88,7 +88,7 @@
                                             <div class="col-12 col-sm-12 col-lg-3">
                                                 <label>Control Type</label>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                            <div class="col-12 col-sm-12 col-lg-5 form-group">
                                                 <select id="controltype" class="form-select"></select>
                                             </div>
                                         </div>
