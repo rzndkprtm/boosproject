@@ -137,6 +137,9 @@
                                     <div class="submenu">
                                         <div class="submenu-group-wrapper">
                                             <ul class="submenu-group">
+                                                <li class="submenu-item" runat="server" id="liDashboard">
+                                                    <a runat="server" href="~/setting" class='submenu-link'>Dashbord</a>
+                                                </li>
                                                 <li class="submenu-item has-sub" runat="server" id="liGeneral">
                                                     <a href="javascript:void(0);" class='submenu-link'>Master General</a>
                                                     <ul class="subsubmenu">

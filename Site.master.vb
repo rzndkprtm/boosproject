@@ -192,6 +192,8 @@ Public Partial Class SiteMaster
 
             liSetting.Visible = False
 
+            liDashboard.Visible = False
+
             liGeneral.Visible = False
             liGeneralCompany.Visible = False
             liGeneralMailing.Visible = False
@@ -241,6 +243,7 @@ Public Partial Class SiteMaster
                 liStocks.Visible = True
 
                 liSetting.Visible = True
+                liDashboard.Visible = True
 
                 liGeneral.Visible = True
                 liGeneralCompany.Visible = True
