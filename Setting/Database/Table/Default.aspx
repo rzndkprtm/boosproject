@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Table.aspx.vb" Inherits="Setting_Database_Table" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Table" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Default.aspx.vb" Inherits="Setting_Database_Table_Default" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Table" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-heading">
@@ -23,7 +23,7 @@
     </div>
     <div class="page-content">
         <section class="row">
-            <div class="col-8">
+            <div class="col-12 col-sm-12 col-lg-8">
                 <div class="card">
                     <div class="card-content">
                         <div class="card-header">
@@ -53,7 +53,7 @@
                             <div class="row mb-3">
                                 <div class="col-12">
                                     <div class="table-responsive">
-                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom">
+                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom" OnPageIndexChanging="gvList_PageIndexChanging" OnRowCommand="gvList_RowCommand">
                                             <RowStyle />
                                             <Columns>
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center">
@@ -83,62 +83,18 @@
                     </div>
                 </div>
             </div>
-            <div class="col-4"></div>
+            <div class="col-12 col-sm-12 col-lg-4">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="card-header"></div>
+                        <div class="card-body"></div>
+                    </div>
+                </div>
+            </div>
          </section>
     </div>
 
-    <div class="modal fade text-left" id="modalProcess" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 runat="server" class="modal-title" id="titleProcess"></h4>
-                </div>
-                <div class="modal-body">
-                    <div class="row mb-2" runat="server" id="divErrorProcess">
-                        <div class="col-12">
-                            <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorProcess"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Table Name</label>
-                            <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Query</label>
-                            <asp:TextBox runat="server" TextMode="MultiLine" ID="txtQuery" Height="550px" CssClass="form-control" placeholder="Query ..." autocomplete="off" style="resize:none;"></asp:TextBox>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnProcess" CssClass="btn btn-primary" Text="Submit" OnClick="btnProcess_Click" />
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div runat="server" visible="false">
-        <asp:Label runat="server" ID="lblId"></asp:Label>
-        <asp:Label runat="server" ID="lblAction"></asp:Label>
-    </div>
-
     <script type="text/javascript">
-        function showProcess() {
-            $("#modalProcess").modal("show");
-        }
-
-        ["modalProcess"].forEach(function (id) {
-            document.getElementById(id).addEventListener("hide.bs.modal", function () {
-                document.activeElement.blur();
-                document.body.focus();
-            });
-        });
-
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

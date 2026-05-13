@@ -23,7 +23,7 @@
     </div>
     <div class="page-content">
         <section class="row">
-            <div class="col-lg-8 col-md-12 col-sm-12">
+            <div class="col-12 col-sm-12 col-lg-8">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title">Add Form</h4>
@@ -32,45 +32,43 @@
                         <div class="card-body">
                             <div class="form form-vertical">
                                 <div class="form-body">
-                                    <div class="row form-group">
-                                        <div class="col-6">
+                                    <div class="row mb-3 form-group">
+                                        <div class="col-12 col-sm-12 col-lg-4 mb-2">
                                             <label class="form-label">Role</label>
                                             <asp:DropDownList runat="server" ID="ddlLoginRole" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlLoginRole_SelectedIndexChanged"></asp:DropDownList>
                                         </div>
-                                        <div class="col-6">
+                                        <div class="col-12 col-sm-12 col-lg-8">
                                             <label class="form-label">Login Name</label>
                                             <asp:ListBox runat="server" ID="lbLoginId" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
                                         </div>
                                     </div>
-                                    <div class="row form-group">
-                                        <div class="col-6">
+                                    <div class="row mb-3 form-group">
+                                        <div class="col-12 col-sm-12 col-lg-4 mb-2">
                                             <label class="form-label">Start Date</label>
                                             <asp:TextBox runat="server" ID="txtStartDate" TextMode="Date" CssClass="form-control"></asp:TextBox>
                                         </div>
-                                        <div class="col-6">
+                                        <div class="col-12 col-sm-12 col-lg-4 mb-2">
                                             <label class="form-label">End Date</label>
                                             <asp:TextBox runat="server" ID="txtEndDate" TextMode="Date" CssClass="form-control"></asp:TextBox>
                                         </div>
-                                    </div>
-                                    <div class="row form-group">
-                                        <div class="col-12">
-                                            <label class="form-label">Title</label>
-                                            <asp:TextBox runat="server" ID="txtTitle" CssClass="form-control" placeholder="Title ..." autocomplete="off"></asp:TextBox>
-                                        </div>
-                                    </div>
-                                    <div class="row form-group">
-                                        <div class="col-12">
-                                            <label class="form-label">Message</label>
-                                            <div id="summernote"></div>
-                                        </div>
-                                    </div>
-                                    <div class="row form-group">
-                                        <div class="col-3">
+                                        <div class="col-12 col-sm-12 col-lg-4">
                                             <label class="form-label">Active</label>
                                             <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select">
                                                 <asp:ListItem Value="0" Text="No"></asp:ListItem>
                                                 <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
                                             </asp:DropDownList>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3 form-group">
+                                        <div class="col-12">
+                                            <label class="form-label">Title</label>
+                                            <asp:TextBox runat="server" ID="txtTitle" CssClass="form-control" placeholder="Title ..." autocomplete="off"></asp:TextBox>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3 form-group">
+                                        <div class="col-12">
+                                            <label class="form-label">Message</label>
+                                            <div id="summernote"></div>
                                         </div>
                                     </div>
                                     <div class="row mt-3" runat="server" id="divError">
@@ -90,7 +88,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4 col-md-12 col-sm-12"></div>
+            <div class="col-12 col-sm-12 col-lg-8"></div>
         </section>
     </div>
 
@@ -101,7 +99,7 @@
         $(document).ready(function () {
             $('#summernote').summernote({
                 tabsize: 2,
-                height: 200,
+                height: 350,
 
                 callbacks: {
                     onChange: function (contents) {
@@ -110,10 +108,7 @@
                 }
             });
 
-            $('#summernote').summernote(
-                'code',
-                $('#<%= hfMessage.ClientID %>').val()
-            );
+            $('#summernote').summernote('code', $('#<%= hfMessage.ClientID %>').val());
         });
 
         function setSummernoteContent() {
