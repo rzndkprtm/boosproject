@@ -143,19 +143,12 @@ Partial Class Order_Default
                 End If
 
                 Using thisConn As New SqlConnection(myConn)
-                    thisConn.Open()
-
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Active=0, DownloadBOE=0 WHERE Id=@Id", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Active=0, DownloadBOE=0 WHERE Id=@Id; UPDATE OrderDetails SET Active=0 WHERE HeaderId=@Id;", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
+
+                        thisConn.Open()
                         myCmd.ExecuteNonQuery()
                     End Using
-
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET Active=0 WHERE HeaderId=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", thisId)
-                        myCmd.ExecuteNonQuery()
-                    End Using
-
-                    thisConn.Close()
                 End Using
 
                 Session("OrderStatus") = ddlStatus.SelectedValue
@@ -335,6 +328,32 @@ Partial Class Order_Default
                 Response.Redirect("~/order", False)
             End If
 
+            If thisStatus = "Un Hold Order" Then
+                'Dim companyId As String = orderClass.GetCompanyIdByOrder(thisId)
+                'Using thisConn As New SqlConnection(myConn)
+                '    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='In Production', ProductionDate=GETDATE(), OnHoldDate=NULL, DownloadBOE=1 WHERE Id=@Id; INSERT INTO OrderShipments(Id) VALUES (@Id)", thisConn)
+                '        myCmd.Parameters.AddWithValue("@Id", thisId)
+
+                '        thisConn.Open()
+                '        myCmd.ExecuteNonQuery()
+                '    End Using
+                'End Using
+
+                'dataLog = {"OrderHeaders", thisId, Session("LoginId"), "Order In Production"}
+                'orderClass.Logs(dataLog)
+
+                'Dim salesClass As New SalesClass
+                'salesClass.RefreshData(companyId)
+
+                'Session("OrderStatus") = ddlStatus.SelectedValue
+                'Session("OrderCompany") = ddlCompany.SelectedValue
+                'Session("OrderSearch") = txtSearch.Text
+                'Session("OrderActive") = ddlActive.SelectedValue
+                'Session("OrderType") = ddlType.SelectedValue
+
+                'Response.Redirect("~/order", False)
+            End If
+
             If thisStatus = "Hold Order" Then
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='On Hold', OnHoldDate=GETDATE(), DownloadBOE=0 WHERE Id=@Id; DELETE FROM OrderShipments WHERE Id=@Id;", thisConn)
@@ -506,7 +525,7 @@ Partial Class Order_Default
                 Exit Sub
             End If
 
-            If msgErrorCancelOrder.InnerText = "" Then
+            If msgErrorShipmentOrder.InnerText = "" Then
                 Dim thisId As String = txtIdShipmentOrder.Text
 
                 Using thisConn As New SqlConnection(myConn)
@@ -557,19 +576,12 @@ Partial Class Order_Default
             End If
 
             Using thisConn As New SqlConnection(myConn)
-                thisConn.Open()
-
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Active=1 WHERE Id=@Id", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Active=1 WHERE Id=@Id; UPDATE OrderDetails SET Active=1 WHERE HeaderId=@Id;", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", thisId)
+
+                    thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
-
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET Active=1 WHERE HeaderId=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                thisConn.Close()
             End Using
 
             Session("OrderStatus") = ddlStatus.SelectedValue
@@ -660,7 +672,7 @@ Partial Class Order_Default
                 ddlStatus.Items.Add(New ListItem("Canceled", "Canceled"))
             End If
 
-            If Session("RoleName") = "Sales" OrElse Session("RoleName") = "Account" OrElse Session("RoleName") = "Customer Service" Then
+            If Session("RoleName") = "Sales" OrElse Session("RoleName") = "Account" Then
                 ddlStatus.Items.Add(New ListItem("Unsubmitted", "Unsubmitted"))
                 ddlStatus.Items.Add(New ListItem("Quoted", "Quoted"))
                 ddlStatus.Items.Add(New ListItem("New Order", "New Order"))
@@ -672,6 +684,25 @@ Partial Class Order_Default
                 ddlStatus.Items.Add(New ListItem("Shipped Out", "Shipped Out"))
                 ddlStatus.Items.Add(New ListItem("Completed", "Completed"))
                 ddlStatus.Items.Add(New ListItem("Canceled", "Canceled"))
+            End If
+
+            If Session("RoleName") = "Data Entry" Then
+                ddlStatus.Items.Add(New ListItem("Unsubmitted", "Unsubmitted"))
+                ddlStatus.Items.Add(New ListItem("Quoted", "Quoted"))
+                ddlStatus.Items.Add(New ListItem("New Order", "New Order"))
+                ddlStatus.Items.Add(New ListItem("Payment Received", "Payment Received"))
+                ddlStatus.Items.Add(New ListItem("In Production", "In Production"))
+                ddlStatus.Items.Add(New ListItem("On Hold", "On Hold"))
+                ddlStatus.Items.Add(New ListItem("Shipped Out", "Shipped Out"))
+                ddlStatus.Items.Add(New ListItem("Completed", "Completed"))
+                ddlStatus.Items.Add(New ListItem("Canceled", "Canceled"))
+            End If
+
+            If Session("RoleName") = "Export" Then
+                ddlStatus.Items.Add(New ListItem("In Production", "In Production"))
+                ddlStatus.Items.Add(New ListItem("On Hold", "On Hold"))
+                ddlStatus.Items.Add(New ListItem("Shipped Out", "Shipped Out"))
+                ddlStatus.Items.Add(New ListItem("Completed", "Completed"))
             End If
 
             If Session("RoleName") = "Customer" Then
@@ -694,26 +725,6 @@ Partial Class Order_Default
                     ddlStatus.Items.Add(New ListItem("Completed", "Completed"))
                     ddlStatus.Items.Add(New ListItem("Canceled", "Canceled"))
                 End If
-            End If
-
-            If Session("RoleName") = "Data Entry" Then
-                ddlStatus.Items.Add(New ListItem("Unsubmitted", "Unsubmitted"))
-                ddlStatus.Items.Add(New ListItem("Quoted", "Quoted"))
-                ddlStatus.Items.Add(New ListItem("New Order", "New Order"))
-                ddlStatus.Items.Add(New ListItem("Waiting Proforma", "Waiting Proforma"))
-                ddlStatus.Items.Add(New ListItem("Proforma Sent", "Proforma Sent"))
-                ddlStatus.Items.Add(New ListItem("Payment Received", "Payment Received"))
-                ddlStatus.Items.Add(New ListItem("In Production", "In Production"))
-                ddlStatus.Items.Add(New ListItem("On Hold", "On Hold"))
-                ddlStatus.Items.Add(New ListItem("Shipped Out", "Shipped Out"))
-                ddlStatus.Items.Add(New ListItem("Completed", "Completed"))
-                ddlStatus.Items.Add(New ListItem("Canceled", "Canceled"))
-            End If
-
-            If Session("RoleName") = "Export" Then
-                ddlStatus.Items.Add(New ListItem("In Production", "In Production"))
-                ddlStatus.Items.Add(New ListItem("Shipped Out", "Shipped Out"))
-                ddlStatus.Items.Add(New ListItem("Completed", "Completed"))
             End If
 
             If Session("RoleName") = "Installer" Then
@@ -754,14 +765,13 @@ Partial Class Order_Default
             Dim params As New List(Of SqlParameter) From {
                 New SqlParameter("@Search", search.Trim()),
                 New SqlParameter("@Status", status),
-                New SqlParameter("@Company", company),
+                New SqlParameter("@CompanyId", company),
                 New SqlParameter("@Active", active),
                 New SqlParameter("@RoleName", Session("RoleName").ToString()),
                 New SqlParameter("@LevelName", Session("LevelName").ToString()),
                 New SqlParameter("@CustomerLevel", Session("CustomerLevel").ToString()),
                 New SqlParameter("@CustomerId", Session("CustomerId").ToString()),
                 New SqlParameter("@LoginId", Session("LoginId").ToString()),
-                New SqlParameter("@CompanyId", Session("CompanyId").ToString()),
                 New SqlParameter("@RoleId", Session("RoleId").ToString()),
                 New SqlParameter("@OrderType", orderType)
             }
@@ -814,6 +824,9 @@ Partial Class Order_Default
             ddlCompany.DataBind()
 
             ddlCompany.Items.Insert(0, New ListItem("All", ""))
+            If Session("RoleName") = "Sales" OrElse Session("RoleName") = "Account" Then
+                ddlCompany.SelectedValue = Session("CompanyId").ToString()
+            End If
         Catch ex As Exception
             ddlCompany.Items.Clear()
             ddlCompany.Items.Add(New ListItem("All", ""))
@@ -849,7 +862,7 @@ Partial Class Order_Default
                 If status = "Unsubmitted" Then Return True
             End If
 
-            If Session("RoleName") = "Sales" OrElse Session("RoleName") = "Customer Service" OrElse Session("RoleName") = "Data Entry" Then
+            If Session("RoleName") = "Sales" OrElse Session("RoleName") = "Data Entry" Then
                 If status = "Unsubmitted" Then
                     If createdBy = Session("LoginId").ToString() OrElse createdRole = Session("RoleId") Then
                         Return True
@@ -869,7 +882,6 @@ Partial Class Order_Default
             If Session("RoleName") = "Developer" Then Return True
             If Session("RoleName") = "IT" Then Return True
             If Session("RoleName") = "Factory Office" Then Return True
-            If Session("RoleName") = "Customer Service" Then Return True
             If Session("RoleName") = "Data Entry" Then Return True
             If Session("RoleName") = "Customer" Then Return True
         End If
@@ -877,8 +889,8 @@ Partial Class Order_Default
     End Function
 
     Protected Function VisibleRestore(active As Boolean) As Boolean
-        If Session("RoleName") = "Developer" AndAlso Session("LevelName") = "Leader" Then
-            If active = False Then Return True
+        If active = False Then
+            If Session("RoleName") = "Developer" Then Return True
         End If
         Return False
     End Function
@@ -887,16 +899,15 @@ Partial Class Order_Default
         If active = True Then
             If Session("RoleName") = "Developer" AndAlso (status = "New Order" OrElse status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "In Production" OrElse status = "On Hold") Then Return True
             If Session("RoleName") = "IT" AndAlso (status = "New Order" OrElse status = "Waiting Proforma" OrElse status = "Proforma Sent") Then Return True
-            If Session("RoleName") = "Factory Office" AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent") Then Return True
+            If Session("RoleName") = "Factory Office" AndAlso (status = "New Order" OrElse status = "Waiting Proforma" OrElse status = "Proforma Sent") Then Return True
             If Session("RoleName") = "Sales" AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent") Then Return True
             If Session("RoleName") = "Account" AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent") Then Return True
-            If Session("RoleName") = "Customer Service" AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent") Then Return True
         End If
         Return False
     End Function
 
     Protected Function VisibleNewOrder(status As String, active As String) As Boolean
-        If active = True AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent") AndAlso (Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Account") Then Return True
+        If active = True AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent") AndAlso (Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Account") Then Return True
         Return False
     End Function
 
@@ -915,20 +926,53 @@ Partial Class Order_Default
     End Function
 
     Protected Function VisibleHoldOrder(status As String, active As Boolean) As Boolean
-        If active = True AndAlso status = "In Production" AndAlso (Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office") Then Return True
+        If active = True Then
+            If status = "In Production" AndAlso (Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office") Then
+                Return True
+            End If
+        End If
+        Return False
+    End Function
+
+    Protected Function VisibleUnHoldOrder(status As String, active As Boolean) As Boolean
+        If active = True Then
+            If status = "On Hold" AndAlso (Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office") Then
+                Return True
+            End If
+        End If
         Return False
     End Function
 
     Protected Function VisibleCancelOrder(status As String, active As Boolean) As Boolean
         If active = True Then
-            If status = "New Order" AndAlso (Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Sales" OrElse Session("RoleName") = "Account" OrElse Session("RoleName") = "Customer Service") Then Return True
+            If status = "Waiting Proforma" Then
+                If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Account" OrElse Session("RoleName") = "Sales" OrElse Session("RoleName") = "Account" Then
+                    Return True
+                End If
+            End If
+            If status = "New Order" Then
+                If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Sales" OrElse Session("RoleName") = "Account" Then
+                    Return True
+                End If
+            End If
 
-            If status = "In Production" AndAlso (Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Customer Service") Then Return True
+            If status = "In Production" Then
+                If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" Then
+                    Return True
+                End If
+            End If
 
-            If status = "On Hold" AndAlso (Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Customer Service") Then Return True
+            If status = "On Hold" Then
+                If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" Then
+                    Return True
+                End If
+            End If
 
-            If status = "Waiting Proforma" AndAlso (Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Account" OrElse Session("RoleName") = "Sales" OrElse Session("RoleName") = "Account") Then Return True
-            If status = "Proforma Sent" AndAlso (Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Account" OrElse Session("RoleName") = "Sales" OrElse Session("RoleName") = "Account") Then Return True
+            If status = "Proforma Sent" Then
+                If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Account" OrElse Session("RoleName") = "Sales" OrElse Session("RoleName") = "Account" Then
+                    Return True
+                End If
+            End If
         End If
         Return False
     End Function

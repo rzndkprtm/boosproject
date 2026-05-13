@@ -102,6 +102,9 @@
                                                                 <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                             </li>
                                                             <li>
+                                                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalShipmentOrder" onclick='<%# String.Format("return idShipmentOrder(`{0}`);", Eval("Id").ToString()) %>'>Shipment Order</a>
+                                                            </li>
+                                                            <li>
                                                                 <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('OrderHeaders', '<%# Eval("Id") %>')">Log</a>
                                                             </li>
                                                         </ul>
@@ -134,6 +137,60 @@
         </section>
     </div>
 
+    <div class="modal fade text-left" id="modalShipmentOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Shipment Order</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <asp:TextBox runat="server" ID="txtIdShipmentOrder" style="display:none;"></asp:TextBox>
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Shipment Number</label>
+                            <asp:TextBox runat="server" ID="txtShipmentNumber" CssClass="form-control" placeholder="Shipment Number ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Shipment Date</label>
+                            <asp:TextBox runat="server" TextMode="Date" ID="txtShipmentDate" CssClass="form-control"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Container Number</label>
+                            <asp:TextBox runat="server" ID="txtContainerNumber" CssClass="form-control" placeholder="Container Number ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Container ETA</label>
+                            <asp:TextBox runat="server" TextMode="Date" ID="txtContainerEta" CssClass="form-control"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Courier</label>
+                            <asp:TextBox runat="server" ID="txtCourier" CssClass="form-control" placeholder="Courier ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row mb-2" runat="server" id="divErrorShipmentOrder">
+                        <div class="col-12">
+                            <div class="alert alert-danger">
+                                <span runat="server" id="msgErrorShipmentOrder"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnShipmentOrder" CssClass="btn btn-primary" Text="Submit" OnClick="btnShipmentOrder_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade text-left" id="modalSendEmail" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -224,6 +281,14 @@
                 });
             }
         });
+
+        function showShipmentOrder() {
+            $("#modalShipmentOrder").modal("show");
+        }
+
+        function idShipmentOrder(id) {
+            document.getElementById("<%=txtIdShipmentOrder.ClientID %>").value = id;
+        }
 
         function showSendEmail() {
             $("#modalSendEmail").modal("show");

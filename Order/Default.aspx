@@ -35,8 +35,19 @@
             <div class="col-12 d-flex justify-content-end flex-wrap gap-2">
                 <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Create Order" OnClick="btnAdd_Click" />
                 <asp:Button runat="server" ID="btnRework" CssClass="btn btn-danger" Text="Rework Order" OnClick="btnRework_Click" />
-                <asp:Button runat="server" ID="btnFile" CssClass="btn btn-secondary" Text="File Order" OnClick="btnFile_Click" />
+                <asp:Button runat="server" ID="btnFile" CssClass="btn btn-secondary" Text="File" OnClick="btnFile_Click" />
                 <asp:Button runat="server" ID="btnUnshipment" CssClass="btn btn-info" Text="Unshipment Order" OnClick="btnUnshipment_Click" />
+
+                <%--<button class="btn btn-primary dropdown-toggle me-1" type="button" data-bs-toggle="dropdown" aria-expanded="false">Another</button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <asp:Button runat="server" ID="btnFile" CssClass="dropdown-item" Text="File" OnClick="btnFile_Click" />
+                    </li>
+                    <li>
+                        <asp:Button runat="server" ID="btnUnshipment" CssClass="dropdown-item" Text="Unshipment" OnClick="btnUnshipment_Click" />
+                    </li>
+                    <li></li>
+                </ul>--%>
             </div>
         </section>
         <section class="row">
@@ -126,6 +137,9 @@
                                                              </li>
                                                              <li runat="server" visible='<%# VisibleHoldOrder(Eval("Status").ToString(), Eval("Active")) %>'>
                                                                  <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`);", Eval("Id").ToString(), "Hold Order") %>'>Hold Order</a>
+                                                             </li>
+                                                             <li runat="server" visible='<%# VisibleUnHoldOrder(Eval("Status").ToString(), Eval("Active")) %>'>
+                                                                 <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`);", Eval("Id").ToString(), "Un Hold Order") %>'>Production Order</a>
                                                              </li>
                                                              <li runat="server" visible='<%# VisibleCancelOrder(Eval("Status").ToString(), Eval("Active")) %>'>
                                                                  <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalCancelOrder" onclick='<%# String.Format("return idCancelOrder(`{0}`);", Eval("Id").ToString()) %>'>Cancel Order</a>
