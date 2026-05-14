@@ -29,11 +29,11 @@ Partial Class _Default
                     Exit Sub
                 End If
                 imgNewsletter.ImageUrl = thisData("Link").ToString()
+                If Session("CompanyId") = "127" Then
+                    imgNewsletter.Visible = False
+                End If
             End If
         Catch ex As Exception
-            If Session("RoleName") = "Developer" Then
-                'lblError.Text = ex.ToString()
-            End If
         End Try
     End Sub
 
