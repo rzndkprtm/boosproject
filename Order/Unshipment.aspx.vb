@@ -21,6 +21,10 @@ Partial Class Order_Unshipment
             MessageError_Email(False, String.Empty)
             MessageError_ShipmentOrder(False, String.Empty)
             BindCompany()
+
+            txtSearch.Text = Session("UnshipmentSearch")
+            ddlCompany.SelectedValue = Session("UnshipmentCompany")
+
             BindDataOrder(txtSearch.Text, ddlCompany.SelectedValue)
 
             btnPreview.OnClientClick = "window.open('view?action=unshipment&search=" & Server.UrlEncode(txtSearch.Text.Trim()) & "&company=" & Server.UrlEncode(ddlCompany.SelectedValue) & "','_blank'); return false;"
@@ -140,10 +144,13 @@ Partial Class Order_Unshipment
                     End Using
                 End Using
 
+                Session("UnshipmentSearch") = txtSearch.Text
+                Session("UnshipmentCompany") = ddlCompany.SelectedValue
+
                 dataLog = {"OrderHeaders", thisId, Session("LoginId"), "Order Shipped"}
                 unshipmentClass.Logs(dataLog)
 
-                Response.Redirect("~/order", False)
+                Response.Redirect("~/order/unshipment", False)
             End If
 
         Catch ex As Exception
