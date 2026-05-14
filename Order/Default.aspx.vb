@@ -757,10 +757,8 @@ Partial Class Order_Default
     End Sub
 
     Protected Sub BindDataOrder(search As String, status As String, company As String, orderType As String, active As String)
-        Session("OrderStatus") = String.Empty
-        Session("OrderCompany") = String.Empty
-        Session("OrderSearch") = String.Empty
-        Session("OrderActive") = String.Empty
+        Session("OrderStatus") = String.Empty : Session("OrderCompany") = String.Empty
+        Session("OrderSearch") = String.Empty : Session("OrderActive") = String.Empty
         Try
             Dim params As New List(Of SqlParameter) From {
                 New SqlParameter("@Search", search.Trim()),
@@ -790,6 +788,8 @@ Partial Class Order_Default
 
             btnAdd.Visible = PageAction("Add")
             btnRework.Visible = PageAction("Rework")
+
+            btnAnother.Visible = PageAction("Another")
             btnFile.Visible = PageAction("File")
             btnUnshipment.Visible = PageAction("Unshipment")
 
