@@ -35,10 +35,10 @@
             <div class="col-12 d-flex justify-content-end flex-wrap gap-2">
                 <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Create Order" OnClick="btnAdd_Click" />
                 <asp:Button runat="server" ID="btnRework" CssClass="btn btn-danger" Text="Rework Order" OnClick="btnRework_Click" />
-                <asp:Button runat="server" ID="btnFile" CssClass="btn btn-secondary" Text="File" OnClick="btnFile_Click" />
-                <asp:Button runat="server" ID="btnUnshipment" CssClass="btn btn-info" Text="Unshipment Order" OnClick="btnUnshipment_Click" />
+                <%--<asp:Button runat="server" ID="btnFile" CssClass="btn btn-secondary" Text="File" OnClick="btnFile_Click" />
+                <asp:Button runat="server" ID="btnUnshipment" CssClass="btn btn-info" Text="Unshipment Order" OnClick="btnUnshipment_Click" />--%>
 
-                <%--<button class="btn btn-primary dropdown-toggle me-1" type="button" data-bs-toggle="dropdown" aria-expanded="false">Another</button>
+                <button class="btn btn-info dropdown-toggle me-1" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnAnother">Another</button>
                 <ul class="dropdown-menu">
                     <li>
                         <asp:Button runat="server" ID="btnFile" CssClass="dropdown-item" Text="File" OnClick="btnFile_Click" />
@@ -46,8 +46,10 @@
                     <li>
                         <asp:Button runat="server" ID="btnUnshipment" CssClass="dropdown-item" Text="Unshipment" OnClick="btnUnshipment_Click" />
                     </li>
-                    <li></li>
-                </ul>--%>
+                    <li>
+
+                    </li>
+                </ul>
             </div>
         </section>
         <section class="row">
