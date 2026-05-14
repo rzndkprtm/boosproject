@@ -259,7 +259,7 @@
     </div>
 
     <script type="text/javascript">
-        document.addEventListener('DOMContentLoaded', function () {
+        <%--document.addEventListener('DOMContentLoaded', function () {
             const gv = document.getElementById('<%= gvList.ClientID %>');
             if (!gv) return;
 
@@ -280,7 +280,7 @@
                     if (btn) btn.click();
                 });
             }
-        });
+        });--%>
 
         function showShipmentOrder() {
             $("#modalShipmentOrder").modal("show");
