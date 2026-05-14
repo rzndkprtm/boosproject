@@ -29,7 +29,7 @@ Partial Class _Default
                     Exit Sub
                 End If
                 imgNewsletter.ImageUrl = thisData("Link").ToString()
-                If Session("CompanyId") = "127" Then
+                If Session("CustomerId") = "127" Then
                     imgNewsletter.Visible = False
                 End If
             End If
