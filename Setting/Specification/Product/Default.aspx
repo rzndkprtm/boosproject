@@ -39,44 +39,44 @@
                         <div class="card-body">
                             <div class="form form-vertical">
                                 <div class="form-body">
-                                    <div class="row">
-                                        <div class="col-4">
+                                    <div class="row mb-2">
+                                        <div class="col-12 col-sm-12 col-lg-4">
                                             <div class="form-group">
                                                 <label class="form-label">Design Type</label>
                                                 <asp:DropDownList runat="server" ID="ddlDesignSort" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlDesignSort_SelectedIndexChanged"></asp:DropDownList>
                                             </div>
                                         </div>
-                                        <div class="col-5">
+                                        <div class="col-12 col-sm-12 col-lg-5">
                                             <div class="form-group">
                                                 <label class="form-label">Blind Type</label>
                                                 <asp:DropDownList runat="server" ID="ddlBlindSort" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlBlindSort_SelectedIndexChanged"></asp:DropDownList>
                                             </div>
                                         </div>
-                                        <div class="col-3">
+                                        <div class="col-12 col-sm-12 col-lg-3">
                                             <label class="form-label">Company Detail</label>
                                             <asp:DropDownList runat="server" ID="ddlCompanyDetailSort" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCompanyDetailSort_SelectedIndexChanged"></asp:DropDownList>
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-3">
+                                        <div class="col-6 col-sm-6 col-lg-3">
                                             <div class="form-group">
                                                 <label class="form-label">Tube Type</label>
                                                 <asp:DropDownList runat="server" ID="ddlTubeSort" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlTubeSort_SelectedIndexChanged"></asp:DropDownList>
                                             </div>
                                         </div>
-                                        <div class="col-3">
+                                        <div class="col-6 col-sm-6 col-lg-3">
                                             <div class="form-group">
                                                 <label class="form-label">Control Type</label>
                                                 <asp:DropDownList runat="server" ID="ddlControlSort" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlControlSort_SelectedIndexChanged"></asp:DropDownList>
                                             </div>
                                         </div>
-                                        <div class="col-3">
+                                        <div class="col-6 col-sm-6 col-lg-3">
                                             <div class="form-group">
                                                 <label class="form-label">Colour Type</label>
                                                 <asp:DropDownList runat="server" ID="ddlColourSort" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlColourSort_SelectedIndexChanged"></asp:DropDownList>
                                             </div>
                                         </div>
-                                        <div class="col-3">
+                                        <div class="col-6 col-sm-6 col-lg-3">
                                             <div class="form-group">
                                                 <label class="form-label">Status</label>
                                                 <asp:DropDownList runat="server" ID="ddlStatusSort" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlStatusSort_SelectedIndexChanged">
