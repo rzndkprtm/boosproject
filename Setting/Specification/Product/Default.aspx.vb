@@ -260,6 +260,55 @@ Partial Class Setting_Specification_Product_Default
         End Try
     End Sub
 
+    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim thisId As String = txtIdDelete.Text
+            Dim newId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Products ORDER BY Id DESC")
+
+            Using thisConn As New SqlConnection(myConn)
+                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Products WHERE Id=@Id; DELETE FROM Logs WHERE Type='Products' AND DataId=@Id;", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", thisId)
+
+                    thisConn.Open()
+                    myCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Dim dataKit As DataTable = settingClass.GetDataTable("SELECT * FROM ProductKits WHERE ProductId='" & thisId & "'")
+            If Not dataKit.Rows.Count = 0 Then
+                For i As Integer = 0 To dataKit.Rows.Count - 1
+                    Dim kitId As String = dataKit.Rows(i)("Id").ToString()
+
+                    Using thisConn As New SqlConnection(myConn)
+                        Using myCmd As SqlCommand = New SqlCommand("DELETE FROM ProductKits WHERE Id=@Id; DELETE FROM Logs WHERE Type='ProductKits' AND DataId=@Id;", thisConn)
+                            myCmd.Parameters.AddWithValue("@Id", kitId)
+
+                            thisConn.Open()
+                            myCmd.ExecuteNonQuery()
+                        End Using
+                    End Using
+                Next
+            End If
+
+            Session("DesignProduct") = ddlDesignSort.SelectedValue
+            Session("BlindProduct") = ddlBlindSort.SelectedValue
+            Session("CompanyDetailProduct") = ddlCompanyDetailSort.SelectedValue
+            Session("TubeProduct") = ddlTubeSort.SelectedValue
+            Session("ControlProduct") = ddlControlSort.SelectedValue
+            Session("ColourProduct") = ddlColourSort.SelectedValue
+            Session("ActiveProduct") = ddlStatusSort.SelectedValue
+            Session("SearchProduct") = txtSearch.Text
+
+            Response.Redirect("~/setting/specification/product/", False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
     Private Sub BindData(designText As String, blindText As String, companyText As String, tubeText As String, controlText As String, colourText As String, status As String, searchText As String)
         Try
             Dim params As New List(Of SqlParameter) From {
