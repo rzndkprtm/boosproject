@@ -30,7 +30,7 @@ Partial Class _Default
                 End If
                 imgNewsletter.ImageUrl = thisData("Link").ToString()
                 If Session("CustomerId") = "127" Then
-                    imgNewsletter.Visible = False
+                    Response.Redirect("~/order", False)
                 End If
             End If
         Catch ex As Exception
