@@ -66,7 +66,7 @@
                                                 <asp:BoundField DataField="Id" HeaderText="ID" />
                                                 <asp:BoundField DataField="Type" HeaderText="Type" />
                                                 <asp:BoundField DataField="FirstName" HeaderText="Fabric Name" />
-                                                <asp:BoundField DataField="SecondName" HeaderText="Fabric Name" />
+                                                <asp:BoundField DataField="SecondName" HeaderText="Fabric Name (Alias)" />
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="200px">
                                                     <ItemTemplate>
                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
