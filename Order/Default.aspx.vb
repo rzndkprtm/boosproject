@@ -792,6 +792,7 @@ Partial Class Order_Default
             btnAnother.Visible = PageAction("Another")
             btnFile.Visible = PageAction("File")
             btnUnshipment.Visible = PageAction("Unshipment")
+            aExport.Visible = PageAction("Export")
 
             divActive.Visible = PageAction("Active")
             divCompany.Visible = PageAction("Filter Company")
