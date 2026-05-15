@@ -69,6 +69,8 @@ Partial Class Setting_Log
 
             gvList.DataSource = settingClass.GetDataTable(thisString)
             gvList.DataBind()
+
+            MessageError(True, thisString)
         Catch ex As Exception
             MessageError(True, ex.ToString())
         End Try

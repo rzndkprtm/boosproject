@@ -253,7 +253,7 @@ Partial Class Setting_Customer_Edit
                 ddlCompany.Items.Insert(0, New ListItem("", ""))
             End If
 
-            If Session("RoleName") = "Sales" OrElse Session("RoleName") = "Account" OrElse Session("RoleName") = "Customer Service" Then
+            If Session("RoleName") = "Sales" OrElse Session("RoleName") = "Account" Then
                 ddlCompany.SelectedValue = Session("CompanyId").ToString()
             End If
 

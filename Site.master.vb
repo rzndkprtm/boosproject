@@ -388,24 +388,6 @@ Public Partial Class SiteMaster
                 liXero.Visible = True
             End If
 
-            If Session("RoleName") = "Customer Service" Then
-                liOldOrder.Visible = True
-                liReport.Visible = True
-                liGuide.Visible = True
-                liStocks.Visible = True
-                liSales.Visible = True
-
-                liSetting.Visible = True
-
-                liSpecification.Visible = True
-                liSpecificationProduct.Visible = True
-                liSpecificationFabric.Visible = True
-                liSpecificationChain.Visible = True
-                liSpecificationRemote.Visible = True
-                liSpecificationBottom.Visible = True
-                liSpecificationMounting.Visible = True
-            End If
-
             If Session("RoleName") = "Sales" Then
                 liOldOrder.Visible = True
                 liGuide.Visible = True

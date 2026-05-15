@@ -2478,7 +2478,6 @@ Partial Class Order_Detail
             End If
 
             If Session("RoleName") = "Data Entry" Then
-                If lblOrderType.Text = "Regular" Then btnQuoteAction.Visible = True
                 If lblOrderType.Text = "Builder" Then aBuilder.Visible = True : secBuilder.Visible = True
 
                 divInternalNote.Visible = True
@@ -2507,6 +2506,27 @@ Partial Class Order_Detail
 
                     If lblOrderType.Text = "Builder" Then
                         aAddItem.Visible = True
+                    End If
+                End If
+
+                If lblOrderStatus.Text = "New Order" Then
+                    aCancelOrder.Visible = True
+                End If
+
+                If lblOrderStatus.Text = "In Production" Then
+                    aHoldOrder.Visible = True
+                    aShippedOrder.Visible = True
+                End If
+
+                If lblOrderStatus.Text = "On Hold" Then
+                    aUnHoldOrder.Visible = True : aCancelOrder.Visible = True
+                End If
+
+                If lblOrderStatus.Text = "Shipped Out" Then
+                    aCompleteOrder.Visible = True
+
+                    If isReworkOrder = False Then
+                        aReworkOrder.Visible = True
                     End If
                 End If
             End If

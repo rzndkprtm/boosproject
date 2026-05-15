@@ -176,7 +176,7 @@
 
                 info = "<b>Customer Account</b>";
                 info += "<br /><br />";
-                if (roleName === "Sales" || roleName === "Customer Service") {
+                if (roleName === "Sales") {
                     info += "Please use the <b>JPM Direct Pty Ltd</b> account for testing purposes or for orders placed by you as a representative."
                     info += "<br /><br />";
                     info += "If the order is for a customer, kindly search for and select your customer’s name when creating the order.";

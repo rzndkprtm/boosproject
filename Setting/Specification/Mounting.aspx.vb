@@ -211,9 +211,9 @@ Partial Class Setting_Specification_Mounting
     Protected Sub BindBlind(Optional isEdit As Boolean = False)
         lbBlind.Items.Clear()
         Try
-            Dim thisString As String = "SELECT Blinds.*, CONVERT(VARCHAR, Blinds.Name) + ' | ' + CONVERT(VARCHAR, Designs.Name) AS NameText FROM Blinds LEFT JOIN Designs ON Blinds.DesignId=Designs.Id WHERE Blinds.Active=1 ORDER BY Designs.Id, Blinds.Id ASC"
+            Dim thisString As String = "SELECT Blinds.*, CONVERT(VARCHAR, Designs.Name) + ' | ' + CONVERT(VARCHAR, Blinds.Name) AS NameText FROM Blinds LEFT JOIN Designs ON Blinds.DesignId=Designs.Id WHERE Blinds.Active=1 ORDER BY Designs.Id, Blinds.Id ASC"
             If isEdit = True Then
-                thisString = "SELECT Blinds.*, CONVERT(VARCHAR, Blinds.Name) + ' | ' + CONVERT(VARCHAR, Designs.Name) AS NameText FROM Blinds LEFT JOIN Designs ON Blinds.DesignId=Designs.Id ORDER BY Designs.Id, Blinds.Id ASC"
+                thisString = "SELECT Blinds.*, CONVERT(VARCHAR, Designs.Name) + ' | ' + CONVERT(VARCHAR, Blinds.Name) AS NameText FROM Blinds LEFT JOIN Designs ON Blinds.DesignId=Designs.Id ORDER BY Designs.Id, Blinds.Id ASC"
             End If
             lbBlind.DataSource = settingClass.GetDataTable(thisString)
             lbBlind.DataTextField = "NameText"
@@ -230,6 +230,25 @@ Partial Class Setting_Specification_Mounting
             End If
         End Try
     End Sub
+
+    Protected Function BindBlindName(mountingId As String) As String
+        Try
+            If Not String.IsNullOrEmpty(mountingId) Then
+                Dim myData As DataTable = settingClass.GetDataTable("SELECT Blinds.Name FROM Mountings CROSS APPLY STRING_SPLIT(Mountings.BlindId, ',') AS splitArray LEFT JOIN Blinds ON splitArray.VALUE=Blinds.Id WHERE Mountings.Id='" & mountingId & "' ORDER BY Blinds.Name ASC")
+                Dim hasil As String = String.Empty
+                If Not myData.Rows.Count = 0 Then
+                    For i As Integer = 0 To myData.Rows.Count - 1
+                        Dim blindName As String = myData.Rows(i)(0).ToString()
+                        hasil += blindName & ", "
+                    Next
+                End If
+                Return hasil.Remove(hasil.Length - 2).ToString()
+            End If
+            Return String.Empty
+        Catch ex As Exception
+            Return "ERROR"
+        End Try
+    End Function
 
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message

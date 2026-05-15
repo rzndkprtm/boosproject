@@ -927,7 +927,7 @@ Partial Class Order_Default
 
     Protected Function VisibleHoldOrder(status As String, active As Boolean) As Boolean
         If active = True Then
-            If status = "In Production" AndAlso (Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office") Then
+            If status = "In Production" AndAlso (Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Data Entry") Then
                 Return True
             End If
         End If
@@ -936,7 +936,7 @@ Partial Class Order_Default
 
     Protected Function VisibleUnHoldOrder(status As String, active As Boolean) As Boolean
         If active = True Then
-            If status = "On Hold" AndAlso (Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office") Then
+            If status = "On Hold" AndAlso (Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Data Entry") Then
                 Return True
             End If
         End If
@@ -951,19 +951,19 @@ Partial Class Order_Default
                 End If
             End If
             If status = "New Order" Then
-                If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Sales" OrElse Session("RoleName") = "Account" Then
+                If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Sales" OrElse Session("RoleName") = "Account" OrElse Session("RoleName") = "Data Entry" Then
                     Return True
                 End If
             End If
 
             If status = "In Production" Then
-                If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" Then
+                If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Data Entry" Then
                     Return True
                 End If
             End If
 
             If status = "On Hold" Then
-                If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" Then
+                If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Data Entry" Then
                     Return True
                 End If
             End If
@@ -979,7 +979,7 @@ Partial Class Order_Default
 
     Protected Function VisibleShipmentOrder(status As String, active As Boolean) As Boolean
         If active = True AndAlso status = "In Production" Then
-            If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Export" Then
+            If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Data Entry" OrElse Session("RoleName") = "Export" Then
                 Return True
             End If
         End If

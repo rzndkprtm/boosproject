@@ -1,5 +1,4 @@
-﻿
-Partial Class Setting_Price_Base_Import
+﻿Partial Class Setting_Price_Base_Import
     Inherits Page
 
     Dim settingClass As New SettingClass
@@ -19,7 +18,8 @@ Partial Class Setting_Price_Base_Import
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-
+            MessageError(True, "SORRY. UNDER CONSTRUCTION !")
+            Exit Sub
         Catch ex As Exception
             MessageError(True, ex.ToString())
         End Try

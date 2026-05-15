@@ -133,7 +133,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                        <div class="col-6 form-group">
                             <label class="form-label">Chain Type</label>
                             <asp:DropDownList runat="server" ID="ddlChainType" CssClass="form-select">
                                 <asp:ListItem Value="" Text=""></asp:ListItem>
@@ -141,7 +141,7 @@
                                 <asp:ListItem Value="Non Continuous" Text="Non Continuous"></asp:ListItem>
                             </asp:DropDownList>
                         </div>
-                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                        <div class="col-6 form-group">
                             <label class="form-label">Chain Length</label>
                             <asp:DropDownList runat="server" ID="ddlChainLength" CssClass="form-select">
                                 <asp:ListItem Value="" Text=""></asp:ListItem>
