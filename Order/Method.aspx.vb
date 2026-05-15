@@ -3496,8 +3496,31 @@ Partial Class Order_Method
         If blindName = "Econo 50mm (Cordless)" OrElse blindName = "Ultraslat 50mm (Cordless)" Then
             If width < 610 Then Return "MINIMUM WIDTH IS 610MM !"
         End If
+        If blindName = "Basswood 50mm" Then
+            If colourName = "Super White" OrElse colourName = "Pristine White" Then
+                If width > 2710 Then Return String.Format("MAXIMUM WIDTH FOR {0} IS 2710MM !", colourName.ToUpper())
+            End If
+            If colourName = "Maraschino Cherry" OrElse colourName = "Oregon" OrElse colourName = "Chestnut" Then
+                If width > 2410 Then Return String.Format("MAXIMUM WIDTH FOR {0} IS 2410MM !", colourName.ToUpper())
+            End If
+            If colourName = "Mocha" Then
+                If width > 2110 Then Return String.Format("MAXIMUM WIDTH FOR {0} IS 2110MM !", colourName.ToUpper())
+            End If
+        End If
+
+        If blindName = "Basswood 63mm" Then
+            If colourName = "Super White" OrElse colourName = "Pristine White" Then
+                If width > 2710 Then Return String.Format("MAXIMUM WIDTH FOR {0} IS 2710MM !", colourName.ToUpper())
+            End If
+            If colourName = "Maraschino Cherry" OrElse colourName = "Oregon" OrElse colourName = "Chestnut" OrElse colourName = "Mocha" Then
+                If width > 2410 Then Return String.Format("MAXIMUM WIDTH FOR {0} IS 2410MM !", colourName.ToUpper())
+            End If
+            If colourName = "Sequoia" Then
+                If width > 1610 Then Return String.Format("MAXIMUM WIDTH FOR {0} IS 1610MM !", colourName.ToUpper())
+            End If
+        End If
         If blindName = "Econo 50mm (Cordless)" OrElse blindName = "Ultraslat 50mm (Cordless)" Then
-            If width > 2410 Then Return "MINIMUM WIDTH IS 2410MM !"
+            If width > 2410 Then Return "MAXIMUM WIDTH IS 2410MM !"
         End If
         If width > 2710 Then Return "MAXIMUM WIDTH IS 2710MM !"
 
