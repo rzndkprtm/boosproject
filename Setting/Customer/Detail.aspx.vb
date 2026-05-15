@@ -52,7 +52,7 @@ Partial Class Setting_Customer_Detail
             BindDataQuote(lblId.Text)
 
             secDetail.Visible = True
-            If Session("CustomerId") = lblId.Text AndAlso (Session("RoleName") = "Sales" OrElse Session("RoleName") = "Customer Service" OrElse Session("RoleName") = "Account") Then
+            If Session("CustomerId") = lblId.Text AndAlso (Session("RoleName") = "Sales" OrElse Session("RoleName") = "Account") Then
                 secDetail.Visible = False
             End If
         End If

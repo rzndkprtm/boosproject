@@ -34,11 +34,11 @@
                             <div class="form form-vertical">
                                 <div class="form-body">
                                     <div class="row mb-2">
-                                        <div class="col-6 form-group">
+                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
                                             <label>Design Type</label>
                                             <asp:DropDownList runat="server" ID="ddlDesign" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlDesign_SelectedIndexChanged"></asp:DropDownList>
                                         </div>
-                                        <div class="col-6 form-group">
+                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
                                             <label>Blind Type</label>
                                             <asp:DropDownList runat="server" ID="ddlBlind" CssClass="choices form-select"></asp:DropDownList>
                                         </div>
@@ -50,7 +50,7 @@
                                         </div>
                                     </div>
                                     <div class="row mb-2">
-                                        <div class="col-3 form-group">
+                                        <div class="col-12 col-sm-12 col-lg-3 form-group">
                                             <label>Item Number</label>
                                             <asp:DropDownList runat="server" ID="ddlBlindNumber" CssClass="choices form-select">
                                                 <asp:ListItem Value="" Text=""></asp:ListItem>
@@ -64,11 +64,11 @@
                                                 <asp:ListItem Value="8" Text="8"></asp:ListItem>
                                             </asp:DropDownList>
                                         </div>
-                                        <div class="col-5 form-group">
+                                        <div class="col-12 col-sm-12 col-lg-5 form-group">
                                             <label>Field Name</label>
                                             <asp:DropDownList runat="server" ID="ddlFieldName" CssClass="choices form-select"></asp:DropDownList>
                                         </div>
-                                        <div class="col-4 form-group">
+                                        <div class="col-12 col-sm-12 col-lg-4 form-group">
                                             <label>Price Group</label>
                                             <asp:DropDownList runat="server" ID="ddlPriceGroup" CssClass="choices form-select"></asp:DropDownList>
                                         </div>
@@ -80,11 +80,11 @@
                                         </div>
                                     </div>
                                     <div class="row mb-2">
-                                        <div class="col-6 form-group">
+                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
                                             <label>Buy Charge</label>
                                             <asp:TextBox runat="server" TextMode="MultiLine" ID="txtBuyCharge" Height="200px" CssClass="form-control" placeholder="Buy Charge ..." autocomplete="off" style="resize:none;"></asp:TextBox>
                                         </div>
-                                        <div class="col-6 form-group">
+                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
                                             <label>Sell Charge</label>
                                             <asp:TextBox runat="server" TextMode="MultiLine" ID="txtSellCharge" Height="200px" CssClass="form-control" placeholder="Sell Charge ..." autocomplete="off" style="resize:none;"></asp:TextBox>
                                         </div>
@@ -96,7 +96,7 @@
                                         </div>
                                     </div>
                                     <div class="row mb-2">
-                                        <div class="col-3 form-group">
+                                        <div class="col-12 col-sm-12 col-lg-3 form-group">
                                             <label>Active</label>
                                             <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select">
                                                 <asp:ListItem Value="1" Text="Yes"></asp:ListItem>

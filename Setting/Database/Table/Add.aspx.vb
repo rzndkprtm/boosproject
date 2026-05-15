@@ -88,7 +88,7 @@ Partial Class Setting_Database_Table_Add
 
             BindGrid()
         Catch ex As Exception
-
+            MessageError(True, ex.Message)
         End Try
     End Sub
 
@@ -145,21 +145,17 @@ Partial Class Setting_Database_Table_Add
 
     Protected Sub BindGrid()
         Try
-            If ColumnTable Is Nothing Then Exit Sub
-
             gvList.DataSource = ColumnTable
             gvList.DataBind()
         Catch ex As Exception
+            MessageError(True, ex.Message)
         End Try
     End Sub
 
     Protected Sub SaveGrid()
         Try
-            Dim dt As New DataTable()
-            dt.Columns.Add("FieldName")
-            dt.Columns.Add("DataType")
-            dt.Columns.Add("IsKey")
-            dt.Columns.Add("IsNotNull")
+            Dim dt As DataTable = ColumnTable
+            dt.Rows.Clear()
 
             For Each row As GridViewRow In gvList.Rows
                 Dim col As TextBox = TryCast(row.FindControl("txtFieldName"), TextBox)
@@ -169,34 +165,17 @@ Partial Class Setting_Database_Table_Add
 
                 Dim dr As DataRow = dt.NewRow()
 
-                If col IsNot Nothing Then
-                    dr("FieldName") = col.Text.Trim()
-                Else
-                    dr("FieldName") = ""
-                End If
-
-                If type IsNot Nothing Then
-                    dr("DataType") = type.SelectedValue
-                Else
-                    dr("DataType") = ""
-                End If
-
-                If primaryKey IsNot Nothing Then
-                    dr("IsKey") = primaryKey.Checked
-                Else
-                    dr("IsKey") = False
-                End If
-
-                If notNull IsNot Nothing Then
-                    dr("IsNotNull") = notNull.Checked
-                Else
-                    dr("IsNotNull") = False
-                End If
+                dr("FieldName") = If(col IsNot Nothing, col.Text.Trim(), "")
+                dr("DataType") = If(type IsNot Nothing, type.SelectedValue, "")
+                dr("IsKey") = If(primaryKey IsNot Nothing, primaryKey.Checked, False)
+                dr("IsNotNull") = If(notNull IsNot Nothing, notNull.Checked, False)
 
                 dt.Rows.Add(dr)
             Next
+
             ColumnTable = dt
         Catch ex As Exception
+            MessageError(True, ex.Message)
         End Try
     End Sub
 

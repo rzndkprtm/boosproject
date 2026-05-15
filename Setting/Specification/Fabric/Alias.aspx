@@ -103,11 +103,11 @@
                 </div>
                 <div class="modal-body">
                     <div class="row mb-2">
-                        <div class="col-6 form-group">
+                        <div class="col-12 col-sm-12 col-lg-6 form-group">
                             <label class="form-label">First ID</label>
                             <asp:DropDownList runat="server" ID="ddlFirstId" CssClass="choices form-select"></asp:DropDownList>
                         </div>
-                        <div class="col-6 form-group">
+                        <div class="col-12 col-sm-12 col-lg-6 form-group">
                             <label class="form-label">Second ID</label>
                             <asp:DropDownList runat="server" ID="ddlSecondId" CssClass="choices form-select"></asp:DropDownList>
                         </div>

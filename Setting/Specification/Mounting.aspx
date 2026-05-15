@@ -62,8 +62,12 @@
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:BoundField DataField="Id" HeaderText="ID" />
-                                                <asp:BoundField DataField="Name" HeaderText="Name" />
-                                                <asp:BoundField DataField="Description" HeaderText="Description" />
+                                                <asp:BoundField DataField="Name" HeaderText="Name" ItemStyle-Width="200px" />
+                                                <asp:TemplateField HeaderText="Product">
+                                                    <ItemTemplate>
+                                                        <%# If(BindBlindName(Eval("Id").ToString()).Length > 150, BindBlindName(Eval("Id").ToString()).Substring(0, 150) & " .....", BindBlindName(Eval("Id").ToString())) %>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
                                                 <asp:BoundField DataField="DataActive" HeaderText="Active" />
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
                                                     <ItemTemplate>
@@ -110,7 +114,7 @@
                     <div class="row">
                         <div class="col-12 form-group">
                             <label class="form-label">Name</label>
-                            <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Mounting Name ..." autocomplete="off"></asp:TextBox>
+                            <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Mounting ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
                     <div class="row">

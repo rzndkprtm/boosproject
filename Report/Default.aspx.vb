@@ -109,7 +109,7 @@ Partial Class Report_Default
                 ddlCompany.Items.Insert(0, New ListItem("ALL", ""))
             End If
 
-            If Session("RoleName") = "Sales" OrElse Session("RoleName") = "Customer Service" Then
+            If Session("RoleName") = "Sales" Then
                 ddlCompany.SelectedValue = Session("CompanyId").ToString()
                 ddlCompany.Enabled = False
             End If

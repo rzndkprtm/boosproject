@@ -509,7 +509,7 @@ Partial Class Order_Rework_Detail
                     aApproveRework.Visible = True
                     aRejectRework.Visible = True
                 End If
-                If Session("RoleName") = "Customer Service" OrElse Session("RoleName") = "Data Entry" Then
+                If Session("RoleName") = "Data Entry" Then
                     aApproveRework.Visible = True
                     aRejectRework.Visible = True
                 End If

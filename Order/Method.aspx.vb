@@ -3454,9 +3454,13 @@ Partial Class Order_Method
 
         Dim designName As String = String.Empty
         Dim blindName As String = String.Empty
+        Dim colourId As String = String.Empty
+        Dim colourName As String = String.Empty
 
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
+        If Not String.IsNullOrEmpty(data.colourtype) Then colourId = orderClass.GetItemData("SELECT ColourType FROM Products WHERE Id='" & data.colourtype & "'")
+        If Not String.IsNullOrEmpty(colourId) Then colourName = orderClass.GetColourName(colourId)
 
         Dim customerPriceGroup As String = orderClass.GetPriceGroupByOrder(data.headerid)
 

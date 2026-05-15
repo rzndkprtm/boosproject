@@ -175,7 +175,7 @@
                     <div class="row mb-2" runat="server" id="divCategoryMethod">
                         <div class="col-6 form-group">
                             <label class="form-label">Category</label>
-                            <asp:DropDownList runat="server" ID="ddlCategoryProcess" CssClass="form-select">
+                            <asp:DropDownList runat="server" ID="ddlCategoryProcess" CssClass="choices form-select">
                                 <asp:ListItem Value="" Text=""></asp:ListItem>
                                 <asp:ListItem Value="Sell" Text="Sell Price"></asp:ListItem>
                                 <asp:ListItem Value="Buy" Text="Buy Price"></asp:ListItem>
@@ -183,7 +183,7 @@
                         </div>
                         <div class="col-6 form-group">
                             <label class="form-label">Method</label>
-                            <asp:DropDownList runat="server" ID="ddlMethodProcess" CssClass="form-select">
+                            <asp:DropDownList runat="server" ID="ddlMethodProcess" CssClass="choices form-select">
                                 <asp:ListItem Value="" Text=""></asp:ListItem>
                                 <asp:ListItem Value="Cost" Text="Cost"></asp:ListItem>
                                 <asp:ListItem Value="Square Metre" Text="Square Metre"></asp:ListItem>
@@ -194,13 +194,13 @@
                     <div class="row mb-2" runat="server" id="divProductGroup">
                         <div class="col-12 form-group">
                             <label class="form-label">Product Group</label>
-                            <asp:DropDownList runat="server" ID="ddlProductGroupProcess" CssClass="form-select"></asp:DropDownList>
+                            <asp:DropDownList runat="server" ID="ddlProductGroupProcess" CssClass="choices form-select"></asp:DropDownList>
                         </div>
                     </div>
                     <div class="row mb-2" runat="server" id="divPriceGroup">
                         <div class="col-12 form-group">
                             <label class="form-label">Price Group</label>
-                            <asp:DropDownList runat="server" ID="ddlPriceGroupProcess" CssClass="form-select"></asp:DropDownList>
+                            <asp:DropDownList runat="server" ID="ddlPriceGroupProcess" CssClass="choices form-select"></asp:DropDownList>
                         </div>
                     </div>
                     <div class="row mb-2">

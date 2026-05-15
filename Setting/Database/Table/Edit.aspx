@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Add.aspx.vb" Inherits="Setting_Database_Table_Add" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Add Table" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Edit.aspx.vb" Inherits="Setting_Database_Table_Edit" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Edit Table" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-heading">
@@ -27,7 +27,7 @@
             <div class="col-12 col-sm-12 col-lg-7">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Create Form</h4>
+                        <h4 class="card-title">Edit Form</h4>
                     </div>
                     <div class="card-content">
                         <div class="card-body">
@@ -82,7 +82,7 @@
                                     </div>
                                     <div class="row form-group">
                                         <div class="col-12">
-                                            <asp:Button ID="btnAddRow" runat="server" Text="Add Column" CssClass="btn btn-secondary btn-sm" OnClick="btnAddRow_Click" />
+                                            <asp:Button ID="btnAddRow" runat="server" Text="Add Column" CssClass="btn btn-secondary btn-sm" />
                                         </div>
                                     </div>
                                     <div class="row" runat="server" id="divError">
@@ -97,13 +97,17 @@
                         </div>
                     </div>
                     <div class="card-footer text-center">
-                        <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" OnClick="btnSubmit_Click" />
-                        <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Cancel" OnClick="btnCancel_Click" />
+                        <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" />
+                        <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Cancel" />
                     </div>
                 </div>
             </div>
             <div class="col-12 col-sm-12 col-lg-5"></div>
         </section>
+    </div>
+
+    <div runat="server" visible="false">
+        <asp:Label runat="server" ID="lblName"></asp:Label>
     </div>
 
     <script type="text/javascript">
