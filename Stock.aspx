@@ -50,12 +50,12 @@
                                             <img runat="server" src="~/Assets/images/avatars.png" alt="Avatar">
                                         </div>
                                         <div class="text">
-                                            <h6 class="user-dropdown-name">XXXX</h6>
-                                            <p class="user-dropdown-status text-sm text-muted">XXXX</p>
+                                            <h6 class="user-dropdown-name">Guest</h6>
+                                            <p class="user-dropdown-status text-sm text-muted">Guest</p>
                                         </div>
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-end shadow-lg">
-                                        <li><a class="dropdown-item" runat="server" href="~/account/login">Login</a></li>
+                                        <li><a class="dropdown-item" runat="server" href="~/">Login</a></li>
                                     </ul>
                                 </div>
                                 <a href="#" class="burger-btn d-block d-xl-none">
