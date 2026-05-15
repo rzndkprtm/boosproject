@@ -31,6 +31,7 @@
         <section class="row mb-3">
             <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
                 <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Add New" OnClick="btnAdd_Click" />
+                <a href="#" runat="server" id="aExport" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalExport">Export Data</a>
             </div>
         </section>
         <section class="row">
@@ -125,6 +126,35 @@
         </section>
     </div>
 
+    <div class="modal modal-blur fade" id="modalExport" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Export Data</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-6 form-group">
+                            <label class="form-label">Company</label>
+                            <asp:DropDownList runat="server" ID="ddlExportCompany" CssClass="choices form-select"></asp:DropDownList>
+                        </div>
+                        <div class="col-6 form-group">
+                            <label class="form-label">File Type</label>
+                            <asp:DropDownList runat="server" ID="ddlExportType" CssClass="choices form-select">
+                                <asp:ListItem Value=".pdf" Text=".pdf"></asp:ListItem>
+                                <asp:ListItem Value=".pdf" Text=".pdf"></asp:ListItem>
+                            </asp:DropDownList>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnAddItem" CssClass="btn btn-primary" Text="Submit" />
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade text-left" id="modalChangeCashSale" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -315,7 +345,7 @@
             });
         }
 
-        ["modalChangeCashSale", "modalChangeOnStop", "modalDelete", "modalLog"].forEach(function (id) {
+        ["modalExport", "modalChangeCashSale", "modalChangeOnStop", "modalDelete", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
