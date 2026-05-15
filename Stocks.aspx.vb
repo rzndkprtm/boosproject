@@ -398,7 +398,7 @@ Partial Class Stocks
                 ' TAMPILKAN
                 If colour <> "" Then
                     e.Row.Cells(i).Text =
-                    colour & If(desc <> "", "<br/>" & desc, "")
+                    colour & If(desc <> "", "<br/>(" & desc & ")", "")
                 End If
 
                 ' STATUS COLORING
