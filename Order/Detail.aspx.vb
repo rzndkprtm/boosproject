@@ -2117,6 +2117,17 @@ Partial Class Order_Detail
                     aAddItem.Visible = True : btnAddService.Visible = True
                 End If
 
+                If lblOrderStatus.Text = "Quoted" Then
+                    liMoreDownloadQuote.Visible = True
+                    liMoreEmailQuote.Visible = True
+                    liMoreDividerQuote.Visible = True
+
+                    aDeleteOrder.Visible = True
+                    aSubmitOrder.Visible = True
+
+                    aAddItem.Visible = True
+                End If
+
                 If lblOrderStatus.Text = "Waiting Proforma" Then
                     liMoreDividerQuote.Visible = True
                     liMoreAddNote.Visible = True
