@@ -11,6 +11,7 @@ Partial Class Setting_Specification_Fabric_Detail
     Dim dataLog As Object() = Nothing
     Dim url As String = String.Empty
 
+
     <WebMethod(EnableSession:=True)>
     Public Shared Sub UpdateSession(value As String)
         HttpContext.Current.Session("selectedTabFabric") = value
@@ -43,7 +44,7 @@ Partial Class Setting_Specification_Fabric_Detail
     End Sub
 
     Protected Sub btnEditFabric_Click(sender As Object, e As EventArgs)
-        url = String.Format("~/setting/specification/fabric/edit?fabricid={0}", lblId.Text)
+        url = String.Format("~/setting/specification/fabric/edit?fabricid={0}&returnpage=detail", lblId.Text)
         Response.Redirect(url, False)
     End Sub
 

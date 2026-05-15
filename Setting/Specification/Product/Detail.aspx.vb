@@ -41,7 +41,7 @@ Partial Class Setting_Specification_Product_Detail
     End Sub
 
     Protected Sub btnEditProduct_Click(sender As Object, e As EventArgs)
-        url = String.Format("~/setting/specification/product/edit?id={0}", lblId.Text)
+        url = String.Format("~/setting/specification/product/edit?id={0}&returnpage=detail", lblId.Text)
         Response.Redirect(url, False)
     End Sub
 

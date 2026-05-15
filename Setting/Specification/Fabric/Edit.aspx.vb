@@ -7,6 +7,7 @@ Partial Class Setting_Specification_Fabric_Edit
     Dim settingClass As New SettingClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
+    Dim returnPage As String = String.Empty
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
@@ -18,6 +19,10 @@ Partial Class Setting_Specification_Fabric_Edit
         If String.IsNullOrEmpty(Request.QueryString("fabricid")) Then
             Response.Redirect("~/setting/specification/fabric", False)
             Exit Sub
+        End If
+
+        If Not String.IsNullOrEmpty(Request.QueryString("returnpage")) Then
+            returnPage = Request.QueryString("returnpage").ToString()
         End If
 
         lblId.Text = Request.QueryString("fabricid").ToString()
@@ -87,7 +92,10 @@ Partial Class Setting_Specification_Fabric_Edit
                 Dim dataLog As Object() = {"Fabrics", lblId.Text, Session("LoginId").ToString(), "Fabric Type Updated"}
                 settingClass.Logs(dataLog)
 
-                url = String.Format("~/setting/specification/fabric/detail?fabricid={0}", lblId.Text)
+                url = "~/setting/specification/fabric/"
+                If returnPage = "detail" Then
+                    url = String.Format("~/setting/specification/fabric/detail?fabricid={0}", lblId.Text)
+                End If
                 Response.Redirect(url, False)
             End If
         Catch ex As Exception
@@ -99,7 +107,10 @@ Partial Class Setting_Specification_Fabric_Edit
     End Sub
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
-        url = String.Format("~/setting/specification/fabric/detail?fabricid={0}", lblId.Text)
+        url = "~/setting/specification/fabric/"
+        If returnPage = "detail" Then
+            url = String.Format("~/setting/specification/fabric/detail?fabricid={0}", lblId.Text)
+        End If
         Response.Redirect(url, False)
     End Sub
 
