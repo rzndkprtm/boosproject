@@ -132,7 +132,7 @@ Partial Class Order_Rework_Default
                 byText = "AND (OrderReworks.Id LIKE '%" & search.Trim() & "%' OR OrderHeaders.OrderId LIKE '%" & search.Trim() & "%' OR OrderHeaders.OrderNumber LIKE '%" & search.Trim() & "%' OR OrderHeaders.OrderName LIKE '%" & search.Trim() & "%' OR OrderHeaders.CustomerId LIKE '%" & search.Trim() & "%' OR Customers.Name LIKE '%" & search.Trim() & "%')"
             End If
 
-            If Session("RoleName") = "Developer" Then
+            If Session("RoleName") = "Developer" Or Session("RoleName") = "Factory Office" Then
                 byRole = String.Empty
                 byStatus = String.Empty
                 If Not status = "" Then
