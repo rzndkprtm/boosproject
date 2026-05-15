@@ -91,6 +91,18 @@ Partial Class Setting_Specification_Fabric_Default
                     End If
                 End Try
             End If
+            If e.CommandName = "Ubah" Then
+                MessageError(False, String.Empty)
+                Try
+                    url = String.Format("~/setting/specification/fabric/edit?fabricid={0}", dataId)
+                    Response.Redirect(url, False)
+                Catch ex As Exception
+                    MessageError(True, ex.ToString())
+                    If Not Session("RoleName") = "Developer" Then
+                        MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                    End If
+                End Try
+            End If
         End If
     End Sub
 

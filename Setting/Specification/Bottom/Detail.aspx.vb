@@ -29,7 +29,7 @@ Partial Class Setting_Specification_Bottom_Detail
     End Sub
 
     Protected Sub btnEdit_Click(sender As Object, e As EventArgs)
-        url = String.Format("~/setting/specification/bottom/edit?bottomid={0}", lblId.Text)
+        url = String.Format("~/setting/specification/bottom/edit?bottomid={0}&returnpage=detail", lblId.Text)
         Response.Redirect(url, False)
     End Sub
 

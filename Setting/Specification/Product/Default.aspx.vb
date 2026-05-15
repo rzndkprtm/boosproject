@@ -161,6 +161,27 @@ Partial Class Setting_Specification_Product_Default
                     End If
                 End Try
             End If
+            If e.CommandName = "Ubah" Then
+                MessageError(False, String.Empty)
+                Try
+                    Session("DesignProduct") = ddlDesignSort.SelectedValue
+                    Session("BlindProduct") = ddlBlindSort.SelectedValue
+                    Session("CompanyDetailProduct") = ddlCompanyDetailSort.SelectedValue
+                    Session("TubeProduct") = ddlTubeSort.SelectedValue
+                    Session("ControlProduct") = ddlControlSort.SelectedValue
+                    Session("ColourProduct") = ddlColourSort.SelectedValue
+                    Session("ActiveProduct") = ddlStatusSort.SelectedValue
+                    Session("SearchProduct") = txtSearch.Text
+
+                    url = String.Format("~/setting/specification/product/edit?id={0}", dataId)
+                    Response.Redirect(url, False)
+                Catch ex As Exception
+                    MessageError(True, ex.ToString())
+                    If Not Session("RoleName") = "Developer" Then
+                        MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                    End If
+                End Try
+            End If
         End If
     End Sub
 

@@ -9,6 +9,7 @@ Partial Class Setting_Specification_Product_Edit
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
     Dim dataLog As Object() = Nothing
+    Dim returnPage As String = String.Empty
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
@@ -20,6 +21,10 @@ Partial Class Setting_Specification_Product_Edit
         If String.IsNullOrEmpty(Request.QueryString("id")) Then
             Response.Redirect("~/setting/specification/product", False)
             Exit Sub
+        End If
+
+        If Not String.IsNullOrEmpty(Request.QueryString("returnpage")) Then
+            returnPage = Request.QueryString("returnpage").ToString()
         End If
 
         lblId.Text = Request.QueryString("id").ToString()
@@ -235,7 +240,10 @@ Partial Class Setting_Specification_Product_Edit
                 dataLog = {"Products", lblId.Text, Session("LoginId").ToString(), "Product Updated"}
                 settingClass.Logs(dataLog)
 
-                url = String.Format("~/setting/specification/product/detail?productid={0}", lblId.Text)
+                url = "~/setting/specification/product/"
+                If returnPage = "detail" Then
+                    url = String.Format("~/setting/specification/product/detail?productid={0}", lblId.Text)
+                End If
                 Response.Redirect(url, False)
             End If
         Catch ex As Exception
@@ -244,7 +252,10 @@ Partial Class Setting_Specification_Product_Edit
     End Sub
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
-        url = String.Format("~/setting/specification/product/detail?productid={0}", lblId.Text)
+        url = "~/setting/specification/product/"
+        If returnPage = "detail" Then
+            url = String.Format("~/setting/specification/product/detail?productid={0}", lblId.Text)
+        End If
         Response.Redirect(url, False)
     End Sub
 
