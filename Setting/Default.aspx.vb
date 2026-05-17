@@ -13,6 +13,7 @@
         divSpecification.Attributes("onclick") = "location.href='specification'"
         divPrice.Attributes("onclick") = "location.href='price'"
         divDatabase.Attributes("onclick") = "location.href='database'"
+        divOnline.Attributes("onclick") = "location.href='online'"
         divXero.Attributes("onclick") = "location.href='xero'"
         divNotification.Attributes("onclick") = "location.href='notification'"
         divLog.Attributes("onclick") = "location.href='log'"

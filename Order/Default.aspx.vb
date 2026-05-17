@@ -120,6 +120,28 @@ Partial Class Order_Default
                     End If
                 End Try
             End If
+            If e.CommandName = "Ubah" Then
+                MessageError(False, String.Empty)
+                Try
+                    Session("OrderSearch") = txtSearch.Text
+                    Session("OrderStatus") = ddlStatus.SelectedValue
+                    Session("OrderCompany") = ddlCompany.SelectedValue
+                    Session("OrderActive") = ddlActive.SelectedValue
+                    Session("OrderType") = ddlType.SelectedValue
+
+                    url = String.Format("~/order/edit?boosid={0}", dataId)
+
+                    Response.Redirect(url, False)
+                Catch ex As Exception
+                    MessageError(True, ex.ToString())
+                    If Not Session("RoleName") = "Developer" Then
+                        MessageError(True, "PLEASE CONTACT IT AT SUPPORT REZA@BIGBLINDS.CO.ID !")
+                        If Session("RoleName") = "Customer" Then
+                            MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
+                        End If
+                    End If
+                End Try
+            End If
         End If
     End Sub
 
@@ -185,7 +207,7 @@ Partial Class Order_Default
                         Using thisConn As New SqlConnection(myConn)
                             thisConn.Open()
 
-                            Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderHeaders SELECT @NewID, @OrderId, CustomerId, 'Copy ' + CAST(@NewID AS VARCHAR(20)) + ' - ' + OrderNumber, 'Copy ' + CAST(@NewID AS VARCHAR(20)) + ' - ' + OrderName, NULL, OrderType, 'Unsubmitted', NULL, CreatedBy, GETDATE(), NULL, NULL, NULL, NULL, NULL, NULL, 0, 1 FROM OrderHeaders WHERE Id=@OldId; INSERT INTO OrderQuotes VALUES(@NewID, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
+                            Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderHeaders SELECT @NewID, @OrderId, CustomerId, 'Copy ' + CAST(@NewID AS VARCHAR(20)) + ' - ' + OrderNumber, 'Copy ' + CAST(@NewID AS VARCHAR(20)) + ' - ' + OrderName, NULL, OrderType, 'Unsubmitted', NULL, @CreatedBy, GETDATE(), NULL, NULL, NULL, NULL, NULL, NULL, 0, 1 FROM OrderHeaders WHERE Id=@OldId; INSERT INTO OrderQuotes VALUES(@NewID, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
                                 myCmd.Parameters.AddWithValue("@OldId", thisId)
                                 myCmd.Parameters.AddWithValue("@NewID", newIdHeader)
                                 myCmd.Parameters.AddWithValue("@OrderId", orderId)
@@ -744,6 +766,7 @@ Partial Class Order_Default
     Protected Sub BindOrderType()
         ddlType.Items.Clear()
         Try
+            ddlType.Items.Add(New ListItem("All", ""))
             ddlType.Items.Add(New ListItem("Regular", "Regular"))
             ddlType.Items.Add(New ListItem("Builder", "Builder"))
 
@@ -846,6 +869,13 @@ Partial Class Order_Default
         divErrorShipmentOrder.Visible = visible : msgErrorShipmentOrder.InnerText = message
     End Sub
 
+    Protected Function VisibleEdit(status As String, active As Boolean) As Boolean
+        If active = True Then
+            If Session("RoleName") = "Developer" Then Return True
+        End If
+        Return False
+    End Function
+
     Protected Function VisibleDelete(data As Object) As Boolean
         Dim active As Boolean = Convert.ToBoolean(data(0))
         Dim status As String = Convert.ToString(data(1))
@@ -855,13 +885,8 @@ Partial Class Order_Default
         If active = True Then
             If Session("RoleName") = "Developer" Then Return True
 
-            If Session("RoleName") = "IT" Then
-                If status = "Unsubmitted" Then Return True
-            End If
-
-            If Session("RoleName") = "Factory Office" Then
-                If status = "Unsubmitted" Then Return True
-            End If
+            If Session("RoleName") = "IT" AndAlso status = "Unsubmitted" Then Return True
+            If Session("RoleName") = "Factory Office" AndAlso status = "Unsubmitted" Then Return True
 
             If Session("RoleName") = "Sales" OrElse Session("RoleName") = "Data Entry" Then
                 If status = "Unsubmitted" Then
@@ -871,9 +896,7 @@ Partial Class Order_Default
                 End If
             End If
 
-            If Session("RoleName") = "Customer" Then
-                If status = "Unsubmitted" Then Return True
-            End If
+            If Session("RoleName") = "Customer" AndAlso status = "Unsubmitted" Then Return True
         End If
         Return False
     End Function
@@ -993,25 +1016,27 @@ Partial Class Order_Default
     End Function
 
     Protected Function VisibleBOEOrder(status As String, active As Boolean) As Boolean
-        If active = True AndAlso status = "Unsubmitted" AndAlso Session("RoleName") = "Developer" Then Return True
+        If active = True Then
+            If Session("RoleName") = "Developer" Then Return True
+        End If
         Return False
     End Function
 
-    Protected Function VisiblePrintDO(company As String, status As String, active As Boolean) As Boolean
-        If active = True AndAlso (company = "3" OrElse company = "5") Then
+    Protected Function VisibleSuratJalan(company As String, status As String, active As Boolean) As Boolean
+        If active = True AndAlso company = "3" Then
             If Session("RoleName") = "Developer" Then Return True
-            If Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Export" Then
-                If status = "New Order" Then Return True
-                If status = "In Production" Then Return True
-                If status = "On Hold" Then Return True
-                If status = "Shipped Out" Then Return True
-            End If
+            'If Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Export" Then
+            '    If status = "New Order" Then Return True
+            '    If status = "In Production" Then Return True
+            '    If status = "On Hold" Then Return True
+            '    If status = "Shipped Out" Then Return True
+            'End If
         End If
         Return False
     End Function
 
     Protected Function VisibleLog() As Boolean
-        If Session("RoleName") = "Developer" Then Return True
+        If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" Then Return True
         Return False
     End Function
 

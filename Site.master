@@ -141,7 +141,7 @@
                                                     <a runat="server" href="~/setting" class='submenu-link'>Dashbord</a>
                                                 </li>
                                                 <li class="submenu-item has-sub" runat="server" id="liGeneral">
-                                                    <a href="javascript:void(0);" class='submenu-link'>Master General</a>
+                                                    <a href="javascript:void(0);" class='submenu-link'>General</a>
                                                     <ul class="subsubmenu">
                                                         <li class="subsubmenu-item" runat="server" id="liGeneralCompany">
                                                             <a runat="server" href="~/setting/general/company" class="subsubmenu-link">Company</a>
@@ -167,7 +167,7 @@
                                                     </ul>
                                                 </li>
                                                 <li class="submenu-item has-sub" runat="server" id="liCustomerDev">
-                                                    <a href="javascript:void(0);" class='submenu-link'>Master Customer</a>
+                                                    <a href="javascript:void(0);" class='submenu-link'>Customer</a>
                                                     <ul class="subsubmenu">
                                                         <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/customer" class="subsubmenu-link">Customer</a>
@@ -202,10 +202,10 @@
                                                     </ul>
                                                 </li>
                                                 <li class="submenu-item" runat="server" id="liCustomer">
-                                                    <a runat="server" href="~/setting/customer" class='submenu-link'>Master Customer</a>
+                                                    <a runat="server" href="~/setting/customer" class='submenu-link'>Customer</a>
                                                 </li>
                                                 <li class="submenu-item has-sub" runat="server" id="liSpecification">
-                                                    <a href="javascript:void(0);" class='submenu-link'>Master Specification</a>
+                                                    <a href="javascript:void(0);" class='submenu-link'>Specification</a>
                                                     <ul class="subsubmenu">
                                                         <li class="subsubmenu-item" runat="server" id="liSpecificationDesign">
                                                             <a runat="server" href="~/setting/specification/designtype" class="subsubmenu-link">Design Type</a>
@@ -243,7 +243,7 @@
                                                     </ul>
                                                 </li>
                                                 <li class="submenu-item has-sub" runat="server" id="liPrice">
-                                                    <a href="javascript:void(0);" class='submenu-link'>Master Price</a>
+                                                    <a href="javascript:void(0);" class='submenu-link'>Price</a>
                                                     <ul class="subsubmenu">
                                                         <li class="subsubmenu-item" runat="server" id="liPriceGroup">
                                                             <a runat="server" href="~/setting/price/group" class="subsubmenu-link">Price Group</a>
@@ -263,7 +263,7 @@
                                                     </ul>
                                                 </li>
                                                 <li class="submenu-item has-sub" runat="server" id="liDatabase">
-                                                    <a href="javascript:void(0);" class='submenu-link'>Master Database</a>
+                                                    <a href="javascript:void(0);" class='submenu-link'>Database</a>
                                                     <ul class="subsubmenu">
                                                         <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/database/table" class="subsubmenu-link">Table</a>
@@ -278,6 +278,9 @@
                                                             <a runat="server" href="~/setting/database/query" class="subsubmenu-link">Query</a>
                                                         </li>
                                                     </ul>
+                                                </li>
+                                                <li runat="server" id="liOnline" class="submenu-item">
+                                                    <a runat="server" href="~/setting/online" class="subsubmenu-link">Online User</a>
                                                 </li>
                                                 <li runat="server" id="liXero" class="submenu-item">
                                                     <a runat="server" href="~/setting/xero" class="subsubmenu-link">Xero</a>

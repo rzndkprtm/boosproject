@@ -8,6 +8,7 @@ Partial Class Order_Edit
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
+    Dim returnPage As String = String.Empty
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = PageAction("Load")
@@ -19,6 +20,10 @@ Partial Class Order_Edit
         If String.IsNullOrEmpty(Request.QueryString("boosid")) Then
             Response.Redirect("~/order/", False)
             Exit Sub
+        End If
+
+        If Not String.IsNullOrEmpty(Request.QueryString("returnpage")) Then
+            returnPage = Request.QueryString("returnpage").ToString()
         End If
 
         lblHeaderId.Text = Request.QueryString("boosid").ToString()
@@ -102,7 +107,10 @@ Partial Class Order_Edit
                 Dim dataLog As Object() = {"OrderHeaders", lblHeaderId.Text, Session("LoginId").ToString(), "Order Updated"}
                 orderClass.Logs(dataLog)
 
-                url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+                url = "~/order/"
+                If returnPage = "detail" Then
+                    url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+                End If
                 Response.Redirect(url, False)
             End If
         Catch ex As Exception
@@ -117,7 +125,10 @@ Partial Class Order_Edit
     End Sub
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
-        url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+        url = "~/order/"
+        If returnPage = "detail" Then
+            url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+        End If
         Response.Redirect(url, False)
     End Sub
 

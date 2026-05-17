@@ -228,6 +228,7 @@ Public Partial Class SiteMaster
 
             liDatabase.Visible = False
 
+            liOnline.Visible = False
             liXero.Visible = False
             liNotification.Visible = False
 
@@ -277,7 +278,7 @@ Public Partial Class SiteMaster
                 liPricePromo.Visible = True
 
                 liDatabase.Visible = True
-
+                liOnline.Visible = True
                 liXero.Visible = True
                 liNotification.Visible = True
 
