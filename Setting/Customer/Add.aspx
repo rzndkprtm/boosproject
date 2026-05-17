@@ -56,7 +56,7 @@
                                         </div>
                                         <div class="col-12 col-sm-12 col-lg-8 mb-2 form-group">
                                             <label class="form-label">Sponsor</label>
-                                            <asp:DropDownList runat="server" ID="ddlSponsor" CssClass="form-select"></asp:DropDownList>
+                                            <asp:DropDownList runat="server" ID="ddlSponsor" CssClass="choices form-select"></asp:DropDownList>
                                         </div>
                                     </div>
                                     <div class="row mb-2" runat="server" id="divCompany">

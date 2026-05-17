@@ -1049,13 +1049,13 @@
                         </div>
                     </div>
                     <div class="row mb-2">
-                        <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
+                        <div class="col-6 form-group">
                             <label class="form-label required">Role</label>
-                            <asp:DropDownList runat="server" ID="ddlLoginRole" CssClass="form-select"></asp:DropDownList>
+                            <asp:DropDownList runat="server" ID="ddlLoginRole" CssClass="choices form-select"></asp:DropDownList>
                         </div>
-                        <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
+                        <div class="col-6 mb-2 form-group">
                             <label class="form-label required">Level</label>
-                            <asp:DropDownList runat="server" ID="ddlLoginLevel" CssClass="form-select"></asp:DropDownList>
+                            <asp:DropDownList runat="server" ID="ddlLoginLevel" CssClass="choices form-select"></asp:DropDownList>
                         </div>
                     </div>
                     <div class="row">
