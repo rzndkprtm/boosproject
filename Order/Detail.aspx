@@ -40,18 +40,39 @@
                     <li><asp:Button runat="server" ID="btnDownload" CssClass="dropdown-item" Text="Download" OnClick="btnDownload_Click" /></li>
                 </ul>
                 <asp:Button runat="server" ID="btnEditOrder" CssClass="btn btn-secondary me-1" Text="Edit Order" OnClick="btnEditOrder_Click" />
-                <a href="#" runat="server" id="aDeleteOrder" class="btn btn-danger me-1" data-bs-toggle="modal" data-bs-target="#modalDeleteOrder">Delete Order</a>
-                <a href="#" runat="server" id="aQuoteOrder" class="btn btn-success me-1" data-bs-toggle="modal" data-bs-target="#modalQuoteOrder">Quote</a>
-                <a href="#" runat="server" id="aSubmitOrder" class="btn btn-success me-1" data-bs-toggle="modal" data-bs-target="#modalSubmitOrder">Submit Order</a>
-                <a href="#" runat="server" id="aNewOrder" class="btn btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modalNewOrder">New Order</a>
-                <a href="#" runat="server" id="aUnsubmitOrder" class="btn btn-dark me-1" data-bs-toggle="modal" data-bs-target="#modalUnsubmitOrder">Unsubmit Order</a>
-                <a href="#" runat="server" id="aCancelOrder" class="btn btn-danger me-1" data-bs-toggle="modal" data-bs-target="#modalCancelOrder">Cancel Order</a>
-                <a href="#" runat="server" id="aProductionOrder" class="btn btn-success me-1" data-bs-toggle="modal" data-bs-target="#modalProductionOrder">Production Order</a>
-                <a href="#" runat="server" id="aHoldOrder" class="btn btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modalHoldOrder">Hold Order</a>
-                <a href="#" runat="server" id="aUnHoldOrder" class="btn btn-success me-1" data-bs-toggle="modal" data-bs-target="#modalUnHoldOrder">Production Order</a>
-                <a href="#" runat="server" id="aShippedOrder" class="btn btn-success me-1" data-bs-toggle="modal" data-bs-target="#modalShippedOrder">Shipped Order</a>
-                <a href="#" runat="server" id="aCompleteOrder" class="btn btn-danger me-1" data-bs-toggle="modal" data-bs-target="#modalCompleteOrder">Complete Order</a>
-                <a href="#" runat="server" id="aReworkOrder" class="btn btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modalReworkOrder">Rework Order</a>
+                <a href="javascript:void(0);" runat="server" id="aDeleteOrder" class="btn btn-danger me-1" data-bs-toggle="modal" data-bs-target="#modalDeleteOrder">Delete Order</a>
+                <a href="javascript:void(0);" runat="server" id="aQuoteOrder" class="btn btn-success me-1" data-bs-toggle="modal" data-bs-target="#modalQuoteOrder">Quote</a>
+                <a href="javascript:void(0);" runat="server" id="aSubmitOrder" class="btn btn-success me-1" data-bs-toggle="modal" data-bs-target="#modalSubmitOrder">Submit Order</a>
+                <a href="javascript:void(0);" runat="server" id="aDuplicateOrder" class="btn btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modalDuplicateOrder">Duplicate Order</a>
+                <button class="btn btn-info dropdown-toggle me-1" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnUpdateStatus">Update Status</button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="javascript:void(0);" runat="server" id="aNewOrder" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalNewOrder">New Order</a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);" runat="server" id="aUnsubmitOrder" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalUnsubmitOrder">Unsubmit Order</a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);" runat="server" id="aCancelOrder" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalCancelOrder">Cancel Order</a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);" runat="server" id="aProductionOrder" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalProductionOrder">Production Order</a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);" runat="server" id="aHoldOrder" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalHoldOrder">Hold Order</a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);" runat="server" id="aUnHoldOrder" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalUnHoldOrder">Production Order</a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);" runat="server" id="aShippedOrder" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalShippedOrder">Shipped Order</a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);" runat="server" id="aCompleteOrder" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalCompleteOrder">Complete Order</a>
+                    </li>
+                </ul>
+                
+                <a href="javascript:void(0);" runat="server" id="aReworkOrder" class="btn btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modalReworkOrder">Rework Order</a>
                 <button class="btn btn-info dropdown-toggle me-1" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnQuoteAction">Quote</button>
                 <ul class="dropdown-menu">
                     <li><a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDetailQuote">Quote Details</a></li>
@@ -60,39 +81,39 @@
                 </ul>
                 <button class="btn btn-primary dropdown-toggle me-1" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnInvoice">invoice</button>
                 <ul class="dropdown-menu">
-                    <li><a href="#" runat="server" id="aSendInvoice" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalSendInvoice">Send Invoice</a></li>
-                    <li><a href="#" runat="server" id="aReceivePayment" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalReceivePayment">Receive Payment</a></li>
+                    <li><a href="javascript:void(0);" runat="server" id="aSendInvoice" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalSendInvoice">Send Invoice</a></li>
+                    <li><a href="javascript:void(0);" runat="server" id="aReceivePayment" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalReceivePayment">Receive Payment</a></li>
                     <li><asp:Button runat="server" ID="btnPreviewInvoice" CssClass="dropdown-item" Text="Preview Invoice" /></li>
-                    <li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDownloadInvoice">Download Invoice</a></li>
+                    <li><a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDownloadInvoice">Download Invoice</a></li>
                     <li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDownloadInvoiceCSV">Download Invoice (CSV)</a></li>
                     <li runat="server" id="liDividerInvoice"><hr class="dropdown-divider"></li>
                     <li runat="server" id="liUpdateInvoiceNumber">
-                        <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalInvoiceNumber">Update Invoice Number</a>
+                        <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalInvoiceNumber">Update Invoice Number</a>
                     </li>
                     <li runat="server" id="liUpdateInvoiceData">
-                        <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalInvoiceData">Update Invoice Data</a>
+                        <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalInvoiceData">Update Invoice Data</a>
                     </li>
                 </ul>
-                <a href="#" runat="server" id="aBuilder" class="btn btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modalBuilderDetail">Builder Details</a>
-                <a href="#" runat="server" id="aFileOrder" class="btn btn-secondary me-1" data-bs-toggle="modal" data-bs-target="#modalFileOrder">Files</a>
+                <a href="javascript:void(0);" runat="server" id="aBuilder" class="btn btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modalBuilderDetail">Builder Details</a>
+                <a href="javascript:void(0);" runat="server" id="aFileOrder" class="btn btn-secondary me-1" data-bs-toggle="modal" data-bs-target="#modalFileOrder">Files</a>
                 <button class="btn btn-dark dropdown-toggle me-1" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnMoreAction">More</button>
                 <ul class="dropdown-menu">
                     <li runat="server" id="liMoreDownloadQuote">
-                        <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalMoreDownloadQuote">Download Quote</a>
+                        <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalMoreDownloadQuote">Download Quote</a>
                     </li>
                     <li runat="server" id="liMoreEmailQuote">
-                        <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalMoreEmailQuote">Email Quote</a>
+                        <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalMoreEmailQuote">Email Quote</a>
                     </li>
                     <li runat="server" id="liMoreDividerQuote"><hr class="dropdown-divider"></li>
                     <li runat="server" id="liMoreAddNote">
-                        <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalAddNote">Add Internal Note</a>
+                        <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalAddNote">Add Internal Note</a>
                     </li>                    
                     <li runat="server" id="liMoreHistoryNote">
                         <a href="javascript:void(0)" class="dropdown-item" onclick="showHistoryNote('<%= lblHeaderId.Text %>')">History Note</a>
                     </li>
                     <li runat="server" id="liMoreDividerRePrice"><hr class="dropdown-divider"></li>
                     <li runat="server" id="liMoreRePrice">
-                        <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalRecalculate">Re Price Order</a>
+                        <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalRecalculate">Re Price Order</a>
                     </li>
                 </ul>
                 <a href="javascript:void(0);" runat="server" id="aLog" class="btn btn-secondary me-1" onclick="showLogFromElement(this)">Log</a>
@@ -573,7 +594,7 @@
                     <i>* Make sure you have reviewed this order before sending it to the factory.</i>
                     <br /><br />
 
-                    <asp:CheckBox runat="server" ID="chkSendEmail" CssClass="form-control" Checked="true" Text="&nbsp;&nbsp;&nbsp;AUTO SEND EMAIL" />
+                    <asp:CheckBox runat="server" ID="chkSendEmail" CssClass="form-control" Checked="true" Text="&nbsp;&nbsp;&nbsp;SEND EMAIL CONFIRM" />
                 </div>
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
@@ -1516,6 +1537,22 @@
             </div>
         </div>
     </div>
+    <div class="modal fade text-center" id="modalDuplicateOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title white">Duplicate Order</h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnDuplicateOrder" CssClass="btn btn-warning" Text="Confirm" OnClick="btnDuplicateOrder_Click" OnClientClick="return showWaiting();" />
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade text-center" id="modalWaiting" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -1573,7 +1610,7 @@
             "modalMoreDownloadQuote", "modalMoreEmailQuote",
             "modalAddNote", "modalHistoryNote", "modalRecalculate",
             "modalAddItem", "modalDeleteItem", "modalCosting", "modalCostingBuy",
-            "modalDateOrder"
+            "modalDateOrder", "modalDuplicateOrder"
         ].forEach(id => {
             document.getElementById(id).addEventListener("hide.bs.modal", () => {
                 document.activeElement.blur();

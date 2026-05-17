@@ -122,6 +122,9 @@
                                                              <li>
                                                                  <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                              </li>
+                                                             <li runat="server" visible='<%# VisibleEdit(Eval("Status").ToString(), Eval("Active")) %>'>
+                                                                 <asp:LinkButton runat="server" ID="linkEdit" CssClass="dropdown-item" Text="Edit" CommandName="Ubah" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                             </li>
                                                              <li runat="server" visible='<%# VisibleDelete(New Object() {Eval("Active"), Eval("Status"), Eval("CreatedBy"), Eval("CreatedRole")}) %>'>
                                                                  <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`);", Eval("Id").ToString(), "Delete Order") %>'>Delete</a>
                                                              </li>
@@ -161,8 +164,8 @@
                                                              <li runat="server" visible='<%# VisibleBOEOrder(Eval("Status").ToString(), Eval("Active")) %>'>
                                                                  <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`);", Eval("Id").ToString(), "BOE Download") %>'>Authorize BOE Download</a>
                                                              </li>
-                                                             <li runat="server" visible='<%# VisiblePrintDO(Eval("CompanyId").ToString(), Eval("Status").ToString(), Eval("Active")) %>'>
-                                                                 <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalPrintDO" onclick='<%# String.Format("return showPrintDO(`{0}`);", Eval("Id").ToString()) %>'>Print Delivery Order</a>
+                                                             <li runat="server" visible='<%# VisibleSuratJalan(Eval("CompanyId").ToString(), Eval("Status").ToString(), Eval("Active")) %>'>
+                                                                 <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalPrintDO" onclick='<%# String.Format("return showPrintDO(`{0}`);", Eval("Id").ToString()) %>'>Surat Jalan</a>
                                                              </li>
                                                              <li runat="server" visible='<%# VisibleLog() %>'>
                                                                  <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('OrderHeaders', '<%# Eval("Id") %>')">Log</a>

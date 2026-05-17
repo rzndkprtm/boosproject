@@ -79,7 +79,7 @@
 
         If type = "header" Then
             If action = "download" Then
-                Dim thisQuery As String = String.Format("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.DebtorCode AS DebtorCode, CustomerLogins.UserName AS UserName FROM OrderHeaders INNER JOIN Customers ON OrderHeaders.CustomerId=Customers.Id INNER JOIN CustomerLogins ON OrderHeaders.CreatedBy=CustomerLogins.Id WHERE OrderHeaders.Active=1 AND (OrderHeaders.Status='Unsubmitted' OR OrderHeaders.Status='Payment Received' OR OrderHeaders.Status='New Order') {0} {1} ORDER BY OrderHeaders.Id ASC", stringCompany, stringStatus)
+                Dim thisQuery As String = String.Format("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.DebtorCode AS DebtorCode, CustomerLogins.UserName AS UserName FROM OrderHeaders INNER JOIN Customers ON OrderHeaders.CustomerId=Customers.Id INNER JOIN CustomerLogins ON OrderHeaders.CreatedBy=CustomerLogins.Id WHERE OrderHeaders.Active=1 {0} {1} ORDER BY OrderHeaders.Id ASC", stringCompany, stringStatus)
 
                 Dim thisData As DataTable = GetDataTable(thisQuery)
                 If thisData.Rows.Count > 0 Then
