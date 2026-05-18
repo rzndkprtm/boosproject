@@ -67,10 +67,7 @@
                                                 <asp:BoundField DataField="LastActiveMinute" HeaderText="Active (Minute Ago)" />
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
                                                     <ItemTemplate>
-                                                        <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
-                                                        <ul class="dropdown-menu">
-                                                            <li></li>
-                                                        </ul>
+                                                        <a href="javascript:void(0);" runat="server" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalSendNotif" onclick='<%# String.Format("return idNotif(`{0}`);", Eval("Id").ToString()) %>'>Send Notification</a>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                             </Columns>
@@ -88,7 +85,82 @@
         </section>
     </div>
 
+    <div class="modal fade text-left" id="modalSendNotif" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Send Notification</h4>
+                </div>
+                <div class="modal-body">
+                    <asp:TextBox runat="server" ID="txtIdLogin" style="display:none;"></asp:TextBox>
+                    <div class="row mb-2" runat="server" id="divErrorSendNotif">
+                        <div class="col-12">
+                            <div class="alert alert-danger">
+                                <span runat="server" id="msgErrorSendNotif"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Title</label>
+                            <asp:TextBox runat="server" ID="txtTitle" CssClass="form-control" placeholder="Title ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Message</label>
+                            <div id="summernote"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnSendNotif" CssClass="btn btn-info" Text="Submit" OnClick="btnSendNotif_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <asp:HiddenField runat="server" ID="fieldMessage" />
+    <asp:HiddenField runat="server" ID="hfMessage" />
+
     <script type="text/javascript">
+        $(document).ready(function () {
+            $('#summernote').summernote({
+                tabsize: 2,
+                height: 350,
+
+                callbacks: {
+                    onChange: function (contents) {
+                        $('#<%= hfMessage.ClientID %>').val(contents);
+                    }
+                }
+            });
+
+            $('#summernote').summernote('code', $('#<%= hfMessage.ClientID %>').val());
+        });
+
+        function setSummernoteContent() {
+            var content = $('#summernote').summernote('code');
+            $('#<%= fieldMessage.ClientID %>').val(content);
+            return true;
+        }
+
+        function showSendNotif() {
+            $("#modalSendNotif").modal("show");
+        }
+
+        function idSendNotif(id) {
+            document.getElementById("<%=txtIdLogin.ClientID %>").value = id;
+        }
+
+        ["modalSendNotif"].forEach(function (id) {
+            document.getElementById(id).addEventListener("hide.bs.modal", function () {
+                document.activeElement.blur();
+                document.body.focus();
+            });
+        });
+
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>
