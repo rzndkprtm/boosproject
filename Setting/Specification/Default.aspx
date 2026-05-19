@@ -2,8 +2,18 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <style>
-        .card-clickable { cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; }        
-        .card-clickable:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,.15); }
+        .dashboard-wrapper { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; width: 100%; }
+        .dashboard-card { position: relative; display: block; background: #fff; border-radius: 16px; padding: 24px; border: 1px solid #e5e5e5; box-shadow: 0 2px 8px rgba(0,0,0,0.06); transition: 0.2s ease; cursor: pointer; text-decoration: none; overflow: hidden; }
+        .dashboard-card:hover { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(0,0,0,0.12); }
+        .dashboard-number { font-size: 38px; font-weight: 700; color: #222; line-height: 1; margin-bottom: 14px; }
+        .dashboard-title { font-size: 20px; font-weight: 600; color: #222; margin-bottom: 6px; }
+        .dashboard-desc { font-size: 13px; color: #777; line-height: 1.5; }
+        @media (max-width: 1200px) {
+            .dashboard-wrapper { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .dashboard-wrapper { grid-template-columns: 1fr; }
+        }
     </style>
     <div class="page-heading">
         <div class="page-title">
@@ -26,141 +36,79 @@
     </div>
     <div class="page-content">
         <section class="row">
-            <div class="col-12 col-sm-12 col-lg-3">
-                <div class="card card-clickable" runat="server" id="divDesignType">
-                    <div class="card-body px-3 py-4-5">
-                        <div class="row">
-                            <div class="col-4">
-                                <div class="stats-icon purple">
-                                    <i class="iconly-boldShow"></i>
-                                </div>
-                            </div>
-                            <div class="col-8">
-                                <h6 class="text-muted font-semibold">Design Type</h6>
-                                <h6 class="font-extrabold mb-0" runat="server"><%= GetSumData("Designs") %></h6>
-                            </div>
-                        </div>
+            <div class="dashboard-wrapper">
+                <a href="/setting/specification/designtype" class="dashboard-card">
+                    <div class="dashboard-number">
+                        <%= GetSumData("Designs") %>
                     </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-12 col-lg-3">
-                <div class="card card-clickable" runat="server" id="divBlindType">
-                    <div class="card-body px-3 py-4-5">
-                        <div class="row">
-                            <div class="col-4">
-                                <div class="stats-icon purple">
-                                    <i class="iconly-boldShow"></i>
-                                </div>
-                            </div>
-                            <div class="col-8">
-                                <h6 class="text-muted font-semibold">Blind Type</h6>
-                                <h6 class="font-extrabold mb-0" runat="server"><%= GetSumData("Blinds") %></h6>
-                            </div>
-                        </div>
+                    <div class="dashboard-title">Design Type</div>
+                    <div class="dashboard-desc">
+                        Description
                     </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-12 col-lg-3">
-                <div class="card card-clickable" runat="server" id="divProduct">
-                    <div class="card-body px-3 py-4-5">
-                        <div class="row">
-                            <div class="col-4">
-                                <div class="stats-icon purple">
-                                    <i class="iconly-boldShow"></i>
-                                </div>
-                            </div>
-                            <div class="col-8">
-                                <h6 class="text-muted font-semibold">Product</h6>
-                                <h6 class="font-extrabold mb-0" runat="server"><%= GetSumData("Products") %></h6>
-                            </div>
-                        </div>
+                </a>
+                <a href="/setting/specification/blindtype" class="dashboard-card">
+                    <div class="dashboard-number">
+                        <%= GetSumData("Blinds") %>
                     </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-12 col-lg-3">
-                <div class="card card-clickable" runat="server" id="divFabric">
-                    <div class="card-body px-3 py-4-5">
-                        <div class="row">
-                            <div class="col-4">
-                                <div class="stats-icon purple">
-                                    <i class="iconly-boldShow"></i>
-                                </div>
-                            </div>
-                            <div class="col-8">
-                                <h6 class="text-muted font-semibold">Fabric</h6>
-                                <h6 class="font-extrabold mb-0" runat="server"><%= GetSumData("Fabrics") %></h6>
-                            </div>
-                        </div>
+                    <div class="dashboard-title">Blind Type</div>
+                    <div class="dashboard-desc">
+                        Description
                     </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-12 col-lg-3">
-                <div class="card card-clickable" runat="server" id="divChain">
-                    <div class="card-body px-3 py-4-5">
-                        <div class="row">
-                            <div class="col-4">
-                                <div class="stats-icon purple">
-                                    <i class="iconly-boldShow"></i>
-                                </div>
-                            </div>
-                            <div class="col-8">
-                                <h6 class="text-muted font-semibold">Chain</h6>
-                                <h6 class="font-extrabold mb-0" runat="server"><%= GetSumData("Chains") %></h6>
-                            </div>
-                        </div>
+                </a>
+                <a href="/setting/specification/product" class="dashboard-card">
+                    <div class="dashboard-number">
+                        <%= GetSumData("Products") %>
                     </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-12 col-lg-3">
-                <div class="card card-clickable" runat="server" id="divRemote">
-                    <div class="card-body px-3 py-4-5">
-                        <div class="row">
-                            <div class="col-4">
-                                <div class="stats-icon purple">
-                                    <i class="iconly-boldShow"></i>
-                                </div>
-                            </div>
-                            <div class="col-8">
-                                <h6 class="text-muted font-semibold">Remote</h6>
-                                <h6 class="font-extrabold mb-0" runat="server"><%= GetSumData("Remotes") %></h6>
-                            </div>
-                        </div>
+                    <div class="dashboard-title">Product</div>
+                    <div class="dashboard-desc">
+                        Description
                     </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-12 col-lg-3">
-                <div class="card card-clickable" runat="server" id="divBottom">
-                    <div class="card-body px-3 py-4-5">
-                        <div class="row">
-                            <div class="col-4">
-                                <div class="stats-icon purple">
-                                    <i class="iconly-boldShow"></i>
-                                </div>
-                            </div>
-                            <div class="col-8">
-                                <h6 class="text-muted font-semibold">Bottom Rail</h6>
-                                <h6 class="font-extrabold mb-0" runat="server"><%= GetSumData("Bottoms") %></h6>
-                            </div>
-                        </div>
+                </a>
+                <a href="/setting/specification/fabric" class="dashboard-card">
+                    <div class="dashboard-number">
+                        <%= GetSumData("Fabrics") %>
                     </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-12 col-lg-3">
-                <div class="card card-clickable" runat="server" id="divMounting">
-                    <div class="card-body px-3 py-4-5">
-                        <div class="row">
-                            <div class="col-4">
-                                <div class="stats-icon purple">
-                                    <i class="iconly-boldShow"></i>
-                                </div>
-                            </div>
-                            <div class="col-8">
-                                <h6 class="text-muted font-semibold">Mounting</h6>
-                                <h6 class="font-extrabold mb-0" runat="server"><%= GetSumData("Mountings") %></h6>
-                            </div>
-                        </div>
+                    <div class="dashboard-title">Fabric Type</div>
+                    <div class="dashboard-desc">
+                        Description
                     </div>
-                </div>
+                </a>
+                <a href="/setting/specification/chain" class="dashboard-card">
+                    <div class="dashboard-number">
+                        <%= GetSumData("Chains") %>
+                    </div>
+                    <div class="dashboard-title">Chain</div>
+                    <div class="dashboard-desc">
+                        Description
+                    </div>
+                </a>
+                <a href="/setting/specification/remote" class="dashboard-card">
+                    <div class="dashboard-number">
+                        <%= GetSumData("Remotes") %>
+                    </div>
+                    <div class="dashboard-title">Remote</div>
+                    <div class="dashboard-desc">
+                        Description
+                    </div>
+                </a>
+                <a href="/setting/specification/bottom" class="dashboard-card">
+                    <div class="dashboard-number">
+                        <%= GetSumData("Bottoms") %>
+                    </div>
+                    <div class="dashboard-title">Bottom Type</div>
+                    <div class="dashboard-desc">
+                        Description
+                    </div>
+                </a>
+                <a href="/setting/specification/mounting" class="dashboard-card">
+                    <div class="dashboard-number">
+                        <%= GetSumData("Mountings") %>
+                    </div>
+                    <div class="dashboard-title">Mounting</div>
+                    <div class="dashboard-desc">
+                        Description
+                    </div>
+                </a>
             </div>
         </section>
     </div>

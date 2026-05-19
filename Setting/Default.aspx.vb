@@ -8,15 +8,15 @@
             Exit Sub
         End If
 
-        divGeneral.Attributes("onclick") = "location.href='general'"
-        divCustomer.Attributes("onclick") = "location.href='customer'"
-        divSpecification.Attributes("onclick") = "location.href='specification'"
-        divPrice.Attributes("onclick") = "location.href='price'"
-        divDatabase.Attributes("onclick") = "location.href='database'"
-        divOnline.Attributes("onclick") = "location.href='online'"
-        divXero.Attributes("onclick") = "location.href='xero'"
-        divNotification.Attributes("onclick") = "location.href='notification'"
-        divLog.Attributes("onclick") = "location.href='log'"
+        'divGeneral.Attributes("onclick") = "location.href='general'"
+        'divCustomer.Attributes("onclick") = "location.href='customer'"
+        'divSpecification.Attributes("onclick") = "location.href='specification'"
+        'divPrice.Attributes("onclick") = "location.href='price'"
+        'divDatabase.Attributes("onclick") = "location.href='database'"
+        'divOnline.Attributes("onclick") = "location.href='online'"
+        'divXero.Attributes("onclick") = "location.href='xero'"
+        'divNotification.Attributes("onclick") = "location.href='notification'"
+        'divLog.Attributes("onclick") = "location.href='log'"
     End Sub
 
     Protected Function PageAction(action As String) As Boolean

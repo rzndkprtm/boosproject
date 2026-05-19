@@ -34,7 +34,6 @@ Partial Class Order_Detail
 
             AllMessageError(False, String.Empty)
             BindDataOrder(lblHeaderId.Text)
-            BindBlindTypeService()
         End If
     End Sub
 
@@ -232,7 +231,7 @@ Partial Class Order_Detail
                 Exit Sub
             End If
 
-            If lblCompanyDetailId.Text = "3" Then
+            If lblCompanyDetailId.Text = "3" AndAlso lblOrderType.Text = "Builder" Then
                 Dim thisData As DataRow = orderClass.GetDataRow("SELECT * FROM OrderBuilders WHERE Id='" & lblHeaderId.Text & "'")
                 Dim estimator As String = thisData("Estimator").ToString()
                 Dim supervisor As String = thisData("Supervisor").ToString()
@@ -264,6 +263,30 @@ Partial Class Order_Detail
 
                 dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), "Quote Order"}
                 orderClass.Logs(dataLog)
+
+                Dim thisId As String = orderClass.GetNewOrderItemId()
+
+                Dim productId As String = orderClass.GetItemData("SELECT Id FROM Products WHERE Name='Fuel Surcharge' AND (Status='In Stock' OR Status='Limited Stock')")
+                Dim productGroupId As String = orderClass.GetItemData("SELECT Id FROM PriceProductGroups WHERE Name='Fuel Surcharge' AND Active=1")
+
+                Using thisConn As New SqlConnection(myConn)
+                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, 1, 0, 0, 1, 0, 1)", thisConn)
+                        myCmd.Parameters.AddWithValue("@Id", thisId)
+                        myCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
+                        myCmd.Parameters.AddWithValue("@ProductId", If(String.IsNullOrEmpty(productId), CType(DBNull.Value, Object), productId))
+                        myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(productGroupId), CType(DBNull.Value, Object), productGroupId))
+
+                        thisConn.Open()
+                        myCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                dataLog = {"OrderDetails", thisId, "2", "Order Item Added"}
+                orderClass.Logs(dataLog)
+
+                orderClass.ResetPriceDetail(lblHeaderId.Text, thisId)
+                orderClass.CalculatePrice(lblHeaderId.Text, thisId)
+                orderClass.FinalCostItem(lblHeaderId.Text, thisId)
 
                 url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
                 Response.Redirect(url, False)
@@ -338,7 +361,7 @@ Partial Class Order_Detail
                 End Using
             End Using
 
-            If lblCompanyId.Text = "2" Then
+            If lblCompanyId.Text = "2" AndAlso lblOrderType.Text = "Regular" Then
                 Dim thisId As String = orderClass.GetNewOrderItemId()
 
                 Dim productId As String = orderClass.GetItemData("SELECT Id FROM Products WHERE Name='Fuel Surcharge' AND (Status='In Stock' OR Status='Limited Stock')")
@@ -1620,65 +1643,6 @@ Partial Class Order_Detail
         End Try
     End Sub
 
-    Protected Sub btnService_Click(sender As Object, e As EventArgs)
-        MessageError_Service(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showService(); };"
-        Try
-            If ddlItemService.SelectedValue = "" Then
-                MessageError_Service(True, "TYPE IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showService", thisScript, True)
-                Exit Sub
-            End If
-
-            Dim checkData As Integer = orderClass.GetItemData_Integer("SELECT COUNT(*) FROM OrderDetails WHERE HeaderId='" & lblHeaderId.Text & "' AND ProductId='" & ddlItemService.SelectedValue & "' AND Active=1")
-            If checkData > 0 Then
-                MessageError_Service(True, "SERVICE ALREADY EXISTS !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showService", thisScript, True)
-                Exit Sub
-            End If
-
-            If msgErrorService.InnerText = "" Then
-                Dim newItemId As String = orderClass.GetNewOrderItemId()
-
-                Dim groupName As String = orderClass.GetItemData("SELECT Name FROM Products WHERE Id='" & ddlItemService.SelectedValue & "'")
-                Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, "16", lblCompanyDetailId.Text)
-
-                Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, 1, 0, 0, 1, 0, 1)", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", newItemId)
-                        myCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
-                        myCmd.Parameters.AddWithValue("@ProductId", ddlItemService.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
-
-                        thisConn.Open()
-                        myCmd.ExecuteNonQuery()
-                    End Using
-                End Using
-
-                orderClass.ResetPriceDetail(lblHeaderId.Text, newItemId)
-                orderClass.CalculatePrice(lblHeaderId.Text, newItemId)
-                orderClass.FinalCostItem(lblHeaderId.Text, newItemId)
-
-                If lblOrderStatus.Text = "In Production" OrElse lblOrderStatus.Text = "On Hold" Then
-                    Dim salesClass As New SalesClass
-                    salesClass.RefreshData(lblCompanyId.Text)
-                End If
-
-                dataLog = {"OrderDetails", newItemId, Session("LoginId"), "Add Service"}
-                orderClass.Logs(dataLog)
-
-                url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
-                Response.Redirect(url, False)
-            End If
-        Catch ex As Exception
-            MessageError_Service(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Service(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showService", thisScript, True)
-        End Try
-    End Sub
-
     Protected Sub btnDeleteItem_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
@@ -1957,23 +1921,23 @@ Partial Class Order_Detail
                     aDeleteOrder.Visible = True
                     aSubmitOrder.Visible = True : chkSendEmail.Visible = True
 
-                    aAddItem.Visible = True
+                    aAddItem.Visible = True : btnAddService.Visible = True
                 End If
 
                 If lblOrderStatus.Text = "Waiting Proforma" Then
                     btnUpdateStatus.Visible = True
-                    aUnsubmitOrder.Visible = True : aCancelOrder.Visible = True
+                    aUnsubmitOrder.Visible = True : aCancelOrder.Visible = True : aNewOrder.Visible = True
 
                     btnInvoice.Visible = True : aSendInvoice.Visible = True
                     liDividerInvoice.Visible = True : liUpdateInvoiceNumber.Visible = True
-                    aNewOrder.Visible = True
+
 
                     aAddItem.Visible = True : btnAddService.Visible = True
                 End If
 
                 If lblOrderStatus.Text = "Proforma Sent" Then
                     btnUpdateStatus.Visible = True
-                    aUnsubmitOrder.Visible = True : aCancelOrder.Visible = True
+                    aUnsubmitOrder.Visible = True : aCancelOrder.Visible = True : aNewOrder.Visible = True
 
                     btnInvoice.Visible = True
                     aSendInvoice.Visible = True : aReceivePayment.Visible = True
@@ -2099,7 +2063,7 @@ Partial Class Order_Detail
                     btnEditOrder.Visible = True
 
                     btnUpdateStatus.Visible = True
-                    aUnsubmitOrder.Visible = True : aCancelOrder.Visible = True
+                    aUnsubmitOrder.Visible = True : aCancelOrder.Visible = True : aNewOrder.Visible = True
 
                     aAddItem.Visible = True : btnAddService.Visible = True
                 End If
@@ -2251,7 +2215,7 @@ Partial Class Order_Detail
                     aDeleteOrder.Visible = True
                     aSubmitOrder.Visible = True
 
-                    aAddItem.Visible = True
+                    aAddItem.Visible = True : btnAddService.Visible = True
                 End If
 
                 If lblOrderStatus.Text = "Waiting Proforma" Then
@@ -2266,7 +2230,7 @@ Partial Class Order_Detail
                     btnEditOrder.Visible = True
 
                     btnUpdateStatus.Visible = True
-                    aUnsubmitOrder.Visible = True : aCancelOrder.Visible = True
+                    aUnsubmitOrder.Visible = True : aCancelOrder.Visible = True : aNewOrder.Visible = True
 
                     aAddItem.Visible = True : btnAddService.Visible = True
                 End If
@@ -2279,6 +2243,9 @@ Partial Class Order_Detail
                     liMoreRePrice.Visible = True
 
                     btnEditOrder.Visible = True
+
+                    btnUpdateStatus.Visible = True
+                    aUnsubmitOrder.Visible = True : aCancelOrder.Visible = True
 
                     btnInvoice.Visible = True : aSendInvoice.Visible = True : aReceivePayment.Visible = True
                 End If
@@ -2347,7 +2314,8 @@ Partial Class Order_Detail
                     If lblOrderPaid.Text = "" Then aSendInvoice.Visible = True
                     liDividerInvoice.Visible = True : liUpdateInvoiceData.Visible = True
 
-                    aCompleteOrder.Visible = True
+                    btnUpdateStatus.Visible = True : aCompleteOrder.Visible = True
+
                     If isReworkOrder = False Then
                         aReworkOrder.Visible = True
                     End If
@@ -2628,6 +2596,8 @@ Partial Class Order_Detail
                 divInternalNote.Visible = True
                 aFileOrder.Visible = True
 
+                aDuplicateOrder.Visible = True
+
                 liMoreDownloadQuote.Visible = True
                 liMoreEmailQuote.Visible = True
                 liMoreDividerQuote.Visible = True
@@ -2650,7 +2620,7 @@ Partial Class Order_Detail
                     liMoreHistoryNote.Visible = True
 
                     If lblOrderType.Text = "Builder" Then
-                        aAddItem.Visible = True
+                        aAddItem.Visible = True : btnAddService.Visible = True
                     End If
                 End If
 
@@ -2661,7 +2631,7 @@ Partial Class Order_Detail
 
                 If lblOrderStatus.Text = "In Production" Then
                     btnUpdateStatus.Visible = True
-                    aHoldOrder.Visible = True : aShippedOrder.Visible = True
+                    aHoldOrder.Visible = True : aShippedOrder.Visible = True : aCancelOrder.Visible = True
                 End If
 
                 If lblOrderStatus.Text = "On Hold" Then
@@ -2711,25 +2681,6 @@ Partial Class Order_Detail
             ddlDesign.Items.Clear()
             If Session("RoleName") = "Developer" Then
                 MessageError(True, ex.ToString())
-            End If
-        End Try
-    End Sub
-
-    Protected Sub BindBlindTypeService()
-        ddlItemService.Items.Clear()
-        Try
-            ddlItemService.DataSource = orderClass.GetDataTable("SELECT Products.* FROM Products LEFT JOIN Designs ON Products.DesignId=Designs.Id WHERE Designs.Type='Additional' AND (Products.Status='In Stock' OR Products.Status='Limited Stock') ORDER BY Products.Name ASC")
-            ddlItemService.DataTextField = "Name"
-            ddlItemService.DataValueField = "Id"
-            ddlItemService.DataBind()
-
-            If ddlItemService.Items.Count > 0 Then
-                ddlItemService.Items.Insert(0, New ListItem("", ""))
-            End If
-        Catch ex As Exception
-            ddlItemService.Items.Clear()
-            If Session("RoleName") = "Developer" Then
-                MessageError_Service(True, ex.ToString())
             End If
         End Try
     End Sub
@@ -3702,8 +3653,6 @@ Partial Class Order_Detail
         MessageError_ShippedOrder(visible, message)
         MessageError_ReworkOrder(visible, message)
         MessageError_MoreEmailQuote(visible, message)
-
-        MessageError_Service(visible, message)
     End Sub
 
     Protected Sub MessageError(visible As Boolean, message As String)
@@ -3757,10 +3706,6 @@ Partial Class Order_Detail
 
     Protected Sub MessageError_ReworkOrder(visible As Boolean, message As String)
         divErrorReworkOrder.Visible = visible : msgErrorReworkOrder.InnerText = message
-    End Sub
-
-    Protected Sub MessageError_Service(visible As Boolean, message As String)
-        divErrorService.Visible = visible : msgErrorService.InnerText = message
     End Sub
 
     Protected Function VisibleCopy(productId As String) As Boolean

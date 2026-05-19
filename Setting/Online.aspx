@@ -35,7 +35,7 @@
                                         <div class="input-group">
                                             <span class="input-group-text">Search : </span>
                                             <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" placeholoder="Name" autocomplete="off"></asp:TextBox>
-                                            <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" />
+                                            <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />
                                         </div>
                                     </asp:Panel>
                                 </div>
@@ -52,7 +52,7 @@
                             <div class="row mb-3">
                                 <div class="col-12">
                                     <div class="table-responsive">
-                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom">
+                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="100" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom" OnPageIndexChanging="gvList_PageIndexChanging">
                                             <RowStyle />
                                             <Columns>
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center">
@@ -63,11 +63,12 @@
                                                 <asp:BoundField DataField="Id" HeaderText="ID" />
                                                 <asp:BoundField DataField="UserName" HeaderText="UserName" />
                                                 <asp:BoundField DataField="FullName" HeaderText="Full Name" />
+                                                <asp:BoundField DataField="RoleName" HeaderText="Role Access" />
                                                 <asp:BoundField DataField="LastLogin" HeaderText="Last Login" DataFormatString="{0:dd MMM yyyy HH:mm:ss}" />
                                                 <asp:BoundField DataField="LastActiveMinute" HeaderText="Active (Minute Ago)" />
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
                                                     <ItemTemplate>
-                                                        <a href="javascript:void(0);" runat="server" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalSendNotif" onclick='<%# String.Format("return idNotif(`{0}`);", Eval("Id").ToString()) %>'>Send Notification</a>
+                                                        <a href="#" runat="server" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalSendNotif" onclick='<%# String.Format("return idSendNotif(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("RoleId").ToString()) %>'>Send Notification</a>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                             </Columns>
@@ -92,7 +93,9 @@
                     <h4 class="modal-title">Send Notification</h4>
                 </div>
                 <div class="modal-body">
-                    <asp:TextBox runat="server" ID="txtIdLogin" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtLoginId" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtRoleId" style="display:none;"></asp:TextBox>
+
                     <div class="row mb-2" runat="server" id="divErrorSendNotif">
                         <div class="col-12">
                             <div class="alert alert-danger">
@@ -115,7 +118,7 @@
                 </div>
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnSendNotif" CssClass="btn btn-info" Text="Submit" OnClick="btnSendNotif_Click" />
+                    <asp:Button runat="server" ID="btnSendNotif" CssClass="btn btn-info" Text="Submit" OnClick="btnSendNotif_Click" OnClientClick="return setSummernoteContent();" />
                 </div>
             </div>
         </div>
@@ -150,8 +153,9 @@
             $("#modalSendNotif").modal("show");
         }
 
-        function idSendNotif(id) {
-            document.getElementById("<%=txtIdLogin.ClientID %>").value = id;
+        function idSendNotif(loginId, roleId) {
+            document.getElementById("<%=txtLoginId.ClientID %>").value = loginId;
+            document.getElementById("<%=txtRoleId.ClientID %>").value = roleId;
         }
 
         ["modalSendNotif"].forEach(function (id) {

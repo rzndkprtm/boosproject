@@ -33,8 +33,6 @@ Partial Class Setting_Specification_ControlType
             lblAction.Text = "Add"
             titleProcess.InnerText = "Add Control Type"
 
-            divStatus.Visible = True
-
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         Catch ex As Exception
             MessageError_Process(True, ex.ToString())
@@ -84,8 +82,6 @@ Partial Class Setting_Specification_ControlType
                     txtAlias.Text = myData("Alias").ToString()
                     txtDescription.Text = myData("Description").ToString()
 
-                    divStatus.Visible = False
-
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Catch ex As Exception
                     MessageError_Process(True, ex.ToString())
@@ -118,13 +114,12 @@ Partial Class Setting_Specification_ControlType
                 If lblAction.Text = "Add" Then
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM ProductControls ORDER BY Id DESC")
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO ProductControls VALUES (@Id, @Type, @Name, @Alias, @Description, @Status)", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO ProductControls VALUES (@Id, @Type, @Name, @Alias, @Description)", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", thisId)
                             myCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
                             myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Alias", aliasName)
                             myCmd.Parameters.AddWithValue("@Description", descText)
-                            myCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
 
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()

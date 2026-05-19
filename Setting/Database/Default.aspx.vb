@@ -10,11 +10,6 @@ Partial Class Setting_Database_Default
             Response.Redirect("~/setting", False)
             Exit Sub
         End If
-
-        divTable.Attributes("onclick") = "location.href='table'"
-        divView.Attributes("onclick") = "location.href='view'"
-        divFunction.Attributes("onclick") = "location.href='function'"
-        divQuery.Attributes("onclick") = "location.href='query'"
     End Sub
 
     Protected Function GetSumData(params As String) As String

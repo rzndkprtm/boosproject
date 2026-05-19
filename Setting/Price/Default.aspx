@@ -2,8 +2,18 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <style>
-        .card-clickable { cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; }        
-        .card-clickable:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,.15); }
+        .dashboard-wrapper { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; width: 100%; }
+        .dashboard-card { position: relative; display: block; background: #fff; border-radius: 16px; padding: 24px; border: 1px solid #e5e5e5; box-shadow: 0 2px 8px rgba(0,0,0,0.06); transition: 0.2s ease; cursor: pointer; text-decoration: none; overflow: hidden; }
+        .dashboard-card:hover { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(0,0,0,0.12); }
+        .dashboard-number { font-size: 38px; font-weight: 700; color: #222; line-height: 1; margin-bottom: 14px; }
+        .dashboard-title { font-size: 20px; font-weight: 600; color: #222; margin-bottom: 6px; }
+        .dashboard-desc { font-size: 13px; color: #777; line-height: 1.5; }
+        @media (max-width: 1200px) {
+            .dashboard-wrapper { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .dashboard-wrapper { grid-template-columns: 1fr; }
+        }
     </style>
     <div class="page-heading">
         <div class="page-title">
@@ -26,90 +36,52 @@
     </div>
     <div class="page-content">
         <section class="row">
-            <div class="col-12 col-sm-12 col-lg-3">
-                <div class="card card-clickable" runat="server" id="divGroup">
-                    <div class="card-body px-3 py-4-5">
-                        <div class="row">
-                            <div class="col-4">
-                                <div class="stats-icon purple">
-                                    <i class="iconly-boldShow"></i>
-                                </div>
-                            </div>
-                            <div class="col-8">
-                                <h6 class="text-muted font-semibold">Price Group</h6>
-                                <h6 class="font-extrabold mb-0" runat="server"><%= GetSumData("PriceGroups") %></h6>
-                            </div>
-                        </div>
+            <div class="dashboard-wrapper">
+                <a href="/setting/price/group" class="dashboard-card">
+                    <div class="dashboard-number">
+                        <%= GetSumData("PriceGroups") %>
                     </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-12 col-lg-3">
-                <div class="card card-clickable" runat="server" id="divProductGroup">
-                    <div class="card-body px-3 py-4-5">
-                        <div class="row">
-                            <div class="col-4">
-                                <div class="stats-icon purple">
-                                    <i class="iconly-boldShow"></i>
-                                </div>
-                            </div>
-                            <div class="col-8">
-                                <h6 class="text-muted font-semibold">Price Product Group</h6>
-                                <h6 class="font-extrabold mb-0" runat="server"><%= GetSumData("PriceProductGroups") %></h6>
-                            </div>
-                        </div>
+                    <div class="dashboard-title">Price Group</div>
+                    <div class="dashboard-desc">
+                        Description
                     </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-12 col-lg-3">
-                <div class="card card-clickable" runat="server" id="divBase">
-                    <div class="card-body px-3 py-4-5">
-                        <div class="row">
-                            <div class="col-4">
-                                <div class="stats-icon purple">
-                                    <i class="iconly-boldShow"></i>
-                                </div>
-                            </div>
-                            <div class="col-8">
-                                <h6 class="text-muted font-semibold">Price Base</h6>
-                                <h6 class="font-extrabold mb-0" runat="server"><%= GetSumData("PriceBases") %></h6>
-                            </div>
-                        </div>
+                </a>
+                <a href="/setting/price/productgroup" class="dashboard-card">
+                    <div class="dashboard-number">
+                        <%= GetSumData("PriceProductGroups") %>
                     </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-12 col-lg-3">
-                <div class="card card-clickable" runat="server" id="divSurcharge">
-                    <div class="card-body px-3 py-4-5">
-                        <div class="row">
-                            <div class="col-4">
-                                <div class="stats-icon purple">
-                                    <i class="iconly-boldShow"></i>
-                                </div>
-                            </div>
-                            <div class="col-8">
-                                <h6 class="text-muted font-semibold">Price Surcharge</h6>
-                                <h6 class="font-extrabold mb-0" runat="server"><%= GetSumData("PriceSurcharges") %></h6>
-                            </div>
-                        </div>
+                    <div class="dashboard-title">Price Product Group</div>
+                    <div class="dashboard-desc">
+                        Description
                     </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-12 col-lg-3">
-                <div class="card card-clickable" runat="server" id="divPromo">
-                    <div class="card-body px-3 py-4-5">
-                        <div class="row">
-                            <div class="col-4">
-                                <div class="stats-icon purple">
-                                    <i class="iconly-boldShow"></i>
-                                </div>
-                            </div>
-                            <div class="col-8">
-                                <h6 class="text-muted font-semibold">Price Promo</h6>
-                                <h6 class="font-extrabold mb-0" runat="server"><%= GetSumData("Promos") %></h6>
-                            </div>
-                        </div>
+                </a>
+                <a href="/setting/price/base" class="dashboard-card">
+                    <div class="dashboard-number">
+                        <%= GetSumData("PriceBases") %>
                     </div>
-                </div>
+                    <div class="dashboard-title">Price Base</div>
+                    <div class="dashboard-desc">
+                        Description
+                    </div>
+                </a>
+                <a href="/setting/price/surcharge" class="dashboard-card">
+                    <div class="dashboard-number">
+                        <%= GetSumData("PriceSurcharges") %>
+                    </div>
+                    <div class="dashboard-title">Price Surcharge</div>
+                    <div class="dashboard-desc">
+                        Description
+                    </div>
+                </a>
+                <a href="/setting/price/promo" class="dashboard-card">
+                    <div class="dashboard-number">
+                        <%= GetSumData("Promos") %>
+                    </div>
+                    <div class="dashboard-title">Price Promo</div>
+                    <div class="dashboard-desc">
+                        Description
+                    </div>
+                </a>
             </div>
         </section>
     </div>
