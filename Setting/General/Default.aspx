@@ -38,67 +38,39 @@
         <section class="row">
             <div class="dashboard-wrapper">
                 <a href="/setting/general/company" class="dashboard-card">
-                    <div class="dashboard-number">
-                        <%= GetSumData("Companys") %>
-                    </div>
+                    <div class="dashboard-number"><%= GetSumData("Companys") %></div>
                     <div class="dashboard-title">Company</div>
-                    <div class="dashboard-desc">
-                        Description
-                    </div>
+                    <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/general/company" class="dashboard-card">
-                    <div class="dashboard-number">
-                        <%= GetSumData("Mailings") %>
-                    </div>
+                    <div class="dashboard-number"><%= GetSumData("Mailings") %></div>
                     <div class="dashboard-title">Mailing</div>
-                    <div class="dashboard-desc">
-                        Description
-                    </div>
+                    <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/general/roleaccess" class="dashboard-card">
-                    <div class="dashboard-number">
-                        <%= GetSumData("LoginRoles") %>
-                    </div>
+                    <div class="dashboard-number"><%= GetSumData("LoginRoles") %></div>
                     <div class="dashboard-title">Role Access</div>
-                    <div class="dashboard-desc">
-                        Description
-                    </div>
+                    <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/general/levelaccess" class="dashboard-card">
-                    <div class="dashboard-number">
-                        <%= GetSumData("LoginLevels") %>
-                    </div>
+                    <div class="dashboard-number"><%= GetSumData("LoginLevels") %></div>
                     <div class="dashboard-title">Level Access</div>
-                    <div class="dashboard-desc">
-                        Description
-                    </div>
+                    <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/general/newsletter" class="dashboard-card">
-                    <div class="dashboard-number">
-                        <%= GetSumData("Newsletters") %>
-                    </div>
+                    <div class="dashboard-number"><%= GetSumData("Newsletters") %></div>
                     <div class="dashboard-title">Newsletter</div>
-                    <div class="dashboard-desc">
-                        Description
-                    </div>
+                    <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/general/tutorial" class="dashboard-card">
-                    <div class="dashboard-number">
-                        <%= GetSumData("Tutorials") %>
-                    </div>
+                    <div class="dashboard-number"><%= GetSumData("Tutorials") %></div>
                     <div class="dashboard-title">Tutorial</div>
-                    <div class="dashboard-desc">
-                        Description
-                    </div>
+                    <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/general/actionaccess" class="dashboard-card">
-                    <div class="dashboard-number">
-                        <%= GetSumData("Actions") %>
-                    </div>
+                    <div class="dashboard-number"><%= GetSumData("Actions") %></div>
                     <div class="dashboard-title">Actions Access</div>
-                    <div class="dashboard-desc">
-                        Description
-                    </div>
+                    <div class="dashboard-desc">Description</div>
                 </a>
             </div>
         </section>
