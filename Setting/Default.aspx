@@ -2,8 +2,17 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <style>
-        .card-clickable { cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; }        
-        .card-clickable:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,.15); }
+        .dashboard-wrapper { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; width: 100%; }
+        .dashboard-card { display: block; background: #fff; border-radius: 14px; padding: 22px; border: 1px solid #e5e5e5; box-shadow: 0 2px 8px rgba(0,0,0,0.06); transition: 0.2s ease; cursor: pointer; text-decoration: none; }
+        .dashboard-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.12); }
+        .dashboard-title { font-size: 20px; font-weight: 600; color: #222; margin-bottom: 8px; }
+        .dashboard-desc { font-size: 13px; color: #777; line-height: 1.5; }
+        @media (max-width: 1200px) {
+            .dashboard-wrapper { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .dashboard-wrapper { grid-template-columns: 1fr; }
+        }
     </style>
 
     <div class="page-heading">
@@ -26,149 +35,62 @@
     </div>
     <div class="page-content">
         <section class="row">
-            <div class="col-12 col-sm-12 col-lg-3">
-                <div class="card card-clickable" runat="server" id="divGeneral">
-                    <div class="card-body px-3 py-4-5">
-                        <div class="row">
-                            <div class="col-4">
-                                <div class="stats-icon purple">
-                                    <i class="iconly-boldShow"></i>
-                                </div>
-                            </div>
-                            <div class="col-8">
-                                <h6 class="text-muted font-semibold">General</h6>
-                            </div>
-                        </div>
+            <div class="dashboard-wrapper">
+                <a href="/setting/general" class="dashboard-card">
+                    <div class="dashboard-title">General</div>
+                    <div class="dashboard-desc">
+                        Company, Mailing, Login Access, Newsletter, Tutorial, Action Access
                     </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-12 col-lg-3">
-                <div class="card card-clickable" runat="server" id="divCustomer">
-                    <div class="card-body px-3 py-4-5">
-                        <div class="row">
-                            <div class="col-4">
-                                <div class="stats-icon purple">
-                                    <i class="iconly-boldShow"></i>
-                                </div>
-                            </div>
-                            <div class="col-8">
-                                <h6 class="text-muted font-semibold">Customer</h6>
-                            </div>
-                        </div>
+                </a>
+                
+                <a href="/setting/customer" class="dashboard-card">
+                    <div class="dashboard-title">Customer</div>
+                    <div class="dashboard-desc">
+                        Customer List
                     </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-12 col-lg-3">
-                <div class="card card-clickable" runat="server" id="divSpecification">
-                    <div class="card-body px-3 py-4-5">
-                        <div class="row">
-                            <div class="col-4">
-                                <div class="stats-icon purple">
-                                    <i class="iconly-boldShow"></i>
-                                </div>
-                            </div>
-                            <div class="col-8">
-                                <h6 class="text-muted font-semibold">Specification</h6>
-                            </div>
-                        </div>
+                </a>
+                <a href="/setting/specification" class="dashboard-card">
+                    <div class="dashboard-title">Specification</div>
+                    <div class="dashboard-desc">
+                        Design Type, Blind Type, Product, Fabric, Chain, Remote, Bottom Rail, Mounting
                     </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-12 col-lg-3">
-                <div class="card card-clickable" runat="server" id="divPrice">
-                    <div class="card-body px-3 py-4-5">
-                        <div class="row">
-                            <div class="col-4">
-                                <div class="stats-icon purple">
-                                    <i class="iconly-boldShow"></i>
-                                </div>
-                            </div>
-                            <div class="col-8">
-                                <h6 class="text-muted font-semibold">Price</h6>
-                            </div>
-                        </div>
+                </a>
+                <a href="/setting/price" class="dashboard-card">
+                    <div class="dashboard-title">Price</div>
+                    <div class="dashboard-desc">
+                        Price Group, Price Product Group, Price Base, Price Surcharge, Price Promo
                     </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-12 col-lg-3">
-                <div class="card card-clickable" runat="server" id="divDatabase">
-                    <div class="card-body px-3 py-4-5">
-                        <div class="row">
-                            <div class="col-4">
-                                <div class="stats-icon purple">
-                                    <i class="iconly-boldShow"></i>
-                                </div>
-                            </div>
-                            <div class="col-8">
-                                <h6 class="text-muted font-semibold">Database</h6>
-                            </div>
-                        </div>
+                </a>
+                <a href="/setting/database" class="dashboard-card">
+                    <div class="dashboard-title">Database</div>
+                    <div class="dashboard-desc">
+                        Table, View, Function, Query
                     </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-12 col-lg-3">
-                <div class="card card-clickable" runat="server" id="divOnline">
-                    <div class="card-body px-3 py-4-5">
-                        <div class="row">
-                            <div class="col-4">
-                                <div class="stats-icon purple">
-                                    <i class="iconly-boldShow"></i>
-                                </div>
-                            </div>
-                            <div class="col-8">
-                                <h6 class="text-muted font-semibold">Online User</h6>
-                            </div>
-                        </div>
+                </a>
+                <a href="/setting/online" class="dashboard-card">
+                    <div class="dashboard-title">Online User</div>
+                    <div class="dashboard-desc">
+                        List User
                     </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-12 col-lg-3">
-                <div class="card card-clickable" runat="server" id="divXero">
-                    <div class="card-body px-3 py-4-5">
-                        <div class="row">
-                            <div class="col-4">
-                                <div class="stats-icon purple">
-                                    <i class="iconly-boldShow"></i>
-                                </div>
-                            </div>
-                            <div class="col-8">
-                                <h6 class="text-muted font-semibold">Xero</h6>
-                            </div>
-                        </div>
+                </a>
+                <a href="/setting/xero" class="dashboard-card">
+                    <div class="dashboard-title">Xero</div>
+                    <div class="dashboard-desc">
+                        List, Create, Update, Delete
                     </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-12 col-lg-3">
-                <div class="card card-clickable" runat="server" id="divNotification">
-                    <div class="card-body px-3 py-4-5">
-                        <div class="row">
-                            <div class="col-4">
-                                <div class="stats-icon purple">
-                                    <i class="iconly-boldShow"></i>
-                                </div>
-                            </div>
-                            <div class="col-8">
-                                <h6 class="text-muted font-semibold">Notification</h6>
-                            </div>
-                        </div>
+                </a>
+                <a href="/setting/notification" class="dashboard-card">
+                    <div class="dashboard-title">Notification</div>
+                    <div class="dashboard-desc">
+                        List, Create, Update, Delete
                     </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-12 col-lg-3">
-                <div class="card card-clickable" runat="server" id="divLog">
-                    <div class="card-body px-3 py-4-5">
-                        <div class="row">
-                            <div class="col-4">
-                                <div class="stats-icon purple">
-                                    <i class="iconly-boldShow"></i>
-                                </div>
-                            </div>
-                            <div class="col-8">
-                                <h6 class="text-muted font-semibold">Log</h6>
-                            </div>
-                        </div>
+                </a>
+                <a href="/setting/log" class="dashboard-card">
+                    <div class="dashboard-title">Log</div>
+                    <div class="dashboard-desc">
+                        History
                     </div>
-                </div>
+                </a>
             </div>
         </section>
     </div>

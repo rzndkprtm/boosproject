@@ -181,23 +181,35 @@
                     <h4 class="modal-title">Add Control Type</h4>
                 </div>
                 <div class="modal-body">
-                    <div class="row mb-2">
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label class="form-label">Name</label>
-                                <asp:TextBox runat="server" ID="txtControlName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
-                            </div>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Type</label>
+                            <asp:DropDownList runat="server" ID="ddlControlType" CssClass="form-select">
+                                <asp:ListItem Value="" Text=""></asp:ListItem>
+                                <asp:ListItem Value="Chain" Text="Chain"></asp:ListItem>
+                                <asp:ListItem Value="Motorised" Text="Motorised"></asp:ListItem>
+                            </asp:DropDownList>
                         </div>
                     </div>
-                    <div class="row mb-2">
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label class="form-label">Description</label>
-                                <asp:TextBox runat="server" TextMode="MultiLine" ID="txtControlDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
-                            </div>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Name</label>
+                            <asp:TextBox runat="server" ID="txtControlName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-                    <div class="row mb-2" runat="server" id="divErrorProcessControl">
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Alias</label>
+                            <asp:TextBox runat="server" ID="txtControlAlias" CssClass="form-control" placeholder="Alias ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Description</label>
+                            <asp:TextBox runat="server" TextMode="MultiLine" ID="txtControlDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row" runat="server" id="divErrorProcessControl">
                         <div class="col-12">
                             <div class="alert alert-danger">
                                 <span runat="server" id="msgErrorProcessControl"></span>

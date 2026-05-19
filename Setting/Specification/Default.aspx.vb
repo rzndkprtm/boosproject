@@ -9,15 +9,6 @@
             Response.Redirect("~/setting", False)
             Exit Sub
         End If
-
-        divDesignType.Attributes("onclick") = "location.href='designtype'"
-        divBlindType.Attributes("onclick") = "location.href='blindtype'"
-        divProduct.Attributes("onclick") = "location.href='product'"
-        divFabric.Attributes("onclick") = "location.href='fabric'"
-        divChain.Attributes("onclick") = "location.href='chain'"
-        divRemote.Attributes("onclick") = "location.href='remote'"
-        divBottom.Attributes("onclick") = "location.href='bottom'"
-        divMounting.Attributes("onclick") = "location.href='mounting'"
     End Sub
 
     Protected Function GetSumData(params As String) As String

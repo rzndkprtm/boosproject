@@ -110,9 +110,11 @@ Partial Class Setting_Specification_Product_Add
                 Dim descText As String = txtControlDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO ProductControls VALUES (@Id, @Name, @Description, NULL)", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO ProductControls VALUES (@Id, @Type, @Name, @Alias @Description)", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
+                        myCmd.Parameters.AddWithValue("@Type", ddlControlType.SelectedValue)
                         myCmd.Parameters.AddWithValue("@Name", txtControlName.Text.Trim())
+                        myCmd.Parameters.AddWithValue("@Alias", txtControlAlias.Text.Trim())
                         myCmd.Parameters.AddWithValue("@Description", descText)
 
                         thisConn.Open()

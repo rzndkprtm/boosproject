@@ -41,7 +41,7 @@
                 </ul>
                 <asp:Button runat="server" ID="btnEditOrder" CssClass="btn btn-secondary me-1" Text="Edit Order" OnClick="btnEditOrder_Click" />
                 <a href="javascript:void(0);" runat="server" id="aDeleteOrder" class="btn btn-danger me-1" data-bs-toggle="modal" data-bs-target="#modalDeleteOrder">Delete Order</a>
-                <a href="javascript:void(0);" runat="server" id="aQuoteOrder" class="btn btn-success me-1" data-bs-toggle="modal" data-bs-target="#modalQuoteOrder">Quote</a>
+                <a href="javascript:void(0);" runat="server" id="aQuoteOrder" class="btn btn-info me-1" data-bs-toggle="modal" data-bs-target="#modalQuoteOrder">Quote Order</a>
                 <a href="javascript:void(0);" runat="server" id="aSubmitOrder" class="btn btn-success me-1" data-bs-toggle="modal" data-bs-target="#modalSubmitOrder">Submit Order</a>
                 <a href="javascript:void(0);" runat="server" id="aDuplicateOrder" class="btn btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modalDuplicateOrder">Duplicate Order</a>
                 <button class="btn btn-info dropdown-toggle me-1" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnUpdateStatus">Update Status</button>
@@ -72,7 +72,7 @@
                     </li>
                 </ul>
                 
-                <a href="javascript:void(0);" runat="server" id="aReworkOrder" class="btn btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modalReworkOrder">Rework Order</a>
+                <a href="javascript:void(0);" runat="server" id="aReworkOrder" class="btn btn-danger me-1" data-bs-toggle="modal" data-bs-target="#modalReworkOrder">Rework Order</a>
                 <button class="btn btn-info dropdown-toggle me-1" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnQuoteAction">Quote</button>
                 <ul class="dropdown-menu">
                     <li><a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDetailQuote">Quote Details</a></li>
@@ -84,7 +84,7 @@
                     <li><a href="javascript:void(0);" runat="server" id="aSendInvoice" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalSendInvoice">Send Invoice</a></li>
                     <li><a href="javascript:void(0);" runat="server" id="aReceivePayment" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalReceivePayment">Receive Payment</a></li>
                     <li><asp:Button runat="server" ID="btnPreviewInvoice" CssClass="dropdown-item" Text="Preview Invoice" /></li>
-                    <li><a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDownloadInvoice">Download Invoice</a></li>
+                    <li><a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDownloadInvoice">Download Invoice (PDF)</a></li>
                     <li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDownloadInvoiceCSV">Download Invoice (CSV)</a></li>
                     <li runat="server" id="liDividerInvoice"><hr class="dropdown-divider"></li>
                     <li runat="server" id="liUpdateInvoiceNumber">
@@ -94,7 +94,7 @@
                         <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalInvoiceData">Update Invoice Data</a>
                     </li>
                 </ul>
-                <a href="javascript:void(0);" runat="server" id="aBuilder" class="btn btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modalBuilderDetail">Builder Details</a>
+                <a href="javascript:void(0);" runat="server" id="aBuilder" class="btn btn-success me-1" data-bs-toggle="modal" data-bs-target="#modalBuilderDetail">Builder Details</a>
                 <a href="javascript:void(0);" runat="server" id="aFileOrder" class="btn btn-secondary me-1" data-bs-toggle="modal" data-bs-target="#modalFileOrder">Files</a>
                 <button class="btn btn-dark dropdown-toggle me-1" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnMoreAction">More</button>
                 <ul class="dropdown-menu">
@@ -393,7 +393,6 @@
                                 <div class="col-12 col-sm-12 col-lg-7 d-flex justify-content-end">
                                     <a href="#" runat="server" id="aAddItem" class="btn btn-primary me-1" data-bs-toggle="modal" data-bs-target="#modalAddItem">New Item</a>
                                     <asp:Button runat="server" ID="btnAddService" CssClass="btn btn-info me-1" OnClick="btnAddService_Click" Text="New Service" />
-                                    <%--<a href="#" runat="server" id="aService" class="btn btn-info me-1" data-bs-toggle="modal" data-bs-target="#modalService">New Service</a>--%>
                                 </div>
                             </div>
                         </div>
@@ -568,7 +567,7 @@
     <div class="modal fade text-center" id="modalQuoteOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-success">
+                <div class="modal-header bg-info">
                     <h5 class="modal-title white">Quote Order</h5>
                 </div>
                 <div class="modal-body text-center py-4">
@@ -576,7 +575,7 @@
                 </div>
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnQuoteOrder" CssClass="btn btn-success" Text="Confirm" OnClick="btnQuoteOrder_Click" OnClientClick="return showWaiting();" />
+                    <asp:Button runat="server" ID="btnQuoteOrder" CssClass="btn btn-info" Text="Confirm" OnClick="btnQuoteOrder_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>
@@ -606,7 +605,7 @@
     <div class="modal fade text-center" id="modalNewOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-warning">
+                <div class="modal-header bg-info">
                     <h5 class="modal-title white">New Order</h5>
                 </div>
                 <div class="modal-body text-center py-4">
@@ -614,7 +613,7 @@
                 </div>
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnNewOrder" CssClass="btn btn-warning" Text="Confirm" OnClick="btnNewOrder_Click" OnClientClick="return showWaiting();" />
+                    <asp:Button runat="server" ID="btnNewOrder" CssClass="btn btn-info" Text="Confirm" OnClick="btnNewOrder_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>
@@ -622,7 +621,7 @@
     <div class="modal fade text-center" id="modalUnsubmitOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-dark">
+                <div class="modal-header bg-info">
                     <h5 class="modal-title white">Unsubmit Order</h5>
                 </div>
                 <div class="modal-body text-center py-4">
@@ -630,7 +629,7 @@
                 </div>
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnUnsubmitOrder" CssClass="btn btn-dark" Text="Confirm" OnClick="btnUnsubmitOrder_Click" OnClientClick="return showWaiting();" />
+                    <asp:Button runat="server" ID="btnUnsubmitOrder" CssClass="btn btn-info" Text="Confirm" OnClick="btnUnsubmitOrder_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>
@@ -638,7 +637,7 @@
     <div class="modal fade text-left" id="modalCancelOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-danger">
+                <div class="modal-header bg-info">
                     <h5 class="modal-title white">Cancel Order</h5>
                 </div>
                 <div class="modal-body">
@@ -658,7 +657,7 @@
                 </div>
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnCancelOrder" CssClass="btn btn-danger" Text="Submit" OnClick="btnCancelOrder_Click" OnClientClick="return showWaiting();" />
+                    <asp:Button runat="server" ID="btnCancelOrder" CssClass="btn btn-info" Text="Submit" OnClick="btnCancelOrder_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>
@@ -666,7 +665,7 @@
     <div class="modal fade text-center" id="modalProductionOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-success">
+                <div class="modal-header bg-info">
                     <h5 class="modal-title white">Production Order</h5>
                 </div>
                 <div class="modal-body text-center py-4">
@@ -674,7 +673,7 @@
                 </div>
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnProductionOrder" CssClass="btn btn-success" Text="Confirm" OnClick="btnProductionOrder_Click" OnClientClick="return showWaiting();" />
+                    <asp:Button runat="server" ID="btnProductionOrder" CssClass="btn btn-info" Text="Confirm" OnClick="btnProductionOrder_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>
@@ -682,7 +681,7 @@
     <div class="modal fade text-center" id="modalHoldOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-warning">
+                <div class="modal-header bg-info">
                     <h5 class="modal-title white">Hold Order</h5>
                 </div>
                 <div class="modal-body text-center py-4">
@@ -690,7 +689,7 @@
                 </div>
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnHoldOrder" CssClass="btn btn-warning" Text="Confirm" OnClick="btnHoldOrder_Click" OnClientClick="return showWaiting();" />
+                    <asp:Button runat="server" ID="btnHoldOrder" CssClass="btn btn-info" Text="Confirm" OnClick="btnHoldOrder_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>
@@ -698,7 +697,7 @@
     <div class="modal fade text-center" id="modalUnHoldOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-success">
+                <div class="modal-header bg-info">
                     <h5 class="modal-title white">Production Order</h5>
                 </div>
                 <div class="modal-body text-center py-4">
@@ -706,7 +705,7 @@
                 </div>
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnUnHoldOrder" CssClass="btn btn-success" Text="Confirm" OnClick="btnUnHoldOrder_Click" OnClientClick="return showWaiting();" />
+                    <asp:Button runat="server" ID="btnUnHoldOrder" CssClass="btn btn-info" Text="Confirm" OnClick="btnUnHoldOrder_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>
@@ -755,7 +754,7 @@
                 </div>
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnShippedOrder" CssClass="btn btn-primary" Text="Submit" OnClick="btnShippedOrder_Click" OnClientClick="return showWaiting();" />
+                    <asp:Button runat="server" ID="btnShippedOrder" CssClass="btn btn-info" Text="Submit" OnClick="btnShippedOrder_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>
@@ -763,7 +762,7 @@
     <div class="modal fade text-center" id="modalCompleteOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-danger">
+                <div class="modal-header bg-info">
                     <h5 class="modal-title white">Complete Order</h5>
                 </div>
                 <div class="modal-body text-center py-4">
@@ -771,7 +770,7 @@
                 </div>
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnCompleteOrder" CssClass="btn btn-danger" Text="Confirm" OnClick="btnCompleteOrder_Click" OnClientClick="return showWaiting();" />
+                    <asp:Button runat="server" ID="btnCompleteOrder" CssClass="btn btn-info" Text="Confirm" OnClick="btnCompleteOrder_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>
@@ -1229,7 +1228,7 @@
                 </div>
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnBuilderDetail" CssClass="btn btn-primary" Text="Submit" OnClick="btnBuilderDetail_Click" OnClientClick="return showWaiting();" />
+                    <asp:Button runat="server" ID="btnBuilderDetail" CssClass="btn btn-success" Text="Submit" OnClick="btnBuilderDetail_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>
@@ -1366,41 +1365,6 @@
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnAddItem" CssClass="btn btn-primary" Text="Submit" OnClick="btnAddItem_Click" />
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal modal-blur fade" id="modalService" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Add Service</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row mb-3">
-                        <div class="col-12">
-                            <label class="form-label required">ITEM SERVICE</label>
-                            <asp:DropDownList runat="server" ID="ddlItemService" CssClass="form-select"></asp:DropDownList>
-                        </div>
-                    </div>
-                    <%--<div class="row mb-3">
-                        <div class="col-12">
-                            <label class="form-label required">NOTE</label>
-                            <asp:TextBox runat="server" TextMode="MultiLine" ID="txtNoteService" CssClass="form-control" Height="130px" placeholder="Note ..." autocomplete="off" style="resize:none;"></asp:TextBox>
-                        </div>
-                    </div>--%>
-                    <div class="row" runat="server" id="divErrorService">
-                        <div class="col-12">
-                            <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorService"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnService" CssClass="btn btn-primary" Text="Submit" OnClick="btnService_Click" />
                 </div>
             </div>
         </div>
@@ -1816,10 +1780,6 @@
 
         function showReworkOrder() {
             $("#modalReworkOrder").modal("show");
-        }
-
-        function showService() {
-            $("#modalService").modal("show");
         }
 
         function showCostingBuy() {

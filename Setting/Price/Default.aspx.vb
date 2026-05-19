@@ -9,12 +9,6 @@
             Response.Redirect("~/setting", False)
             Exit Sub
         End If
-
-        divGroup.Attributes("onclick") = "location.href='group'"
-        divProductGroup.Attributes("onclick") = "location.href='productgroup'"
-        divBase.Attributes("onclick") = "location.href='base'"
-        divSurcharge.Attributes("onclick") = "location.href='surcharge'"
-        divPromo.Attributes("onclick") = "location.href='promo'"
     End Sub
 
     Protected Function GetSumData(params As String) As String

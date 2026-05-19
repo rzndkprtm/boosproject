@@ -140,18 +140,6 @@
                             <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
                         </div>
                     </div>
-                    <div class="row" runat="server" id="divStatus">
-                        <div class="col-12 col-sm-12 col-lg-5 form-group">
-                            <label class="form-label">Status</label>
-                            <asp:DropDownList runat="server" ID="ddlStatus" CssClass="form-select">
-                                <asp:ListItem Value="" Text=""></asp:ListItem>
-                                <asp:ListItem Value="In Stock" Text="In Stock"></asp:ListItem>
-                                <asp:ListItem Value="Limited Stock" Text="Limited Stock"></asp:ListItem>
-                                <asp:ListItem Value="Out of Stock" Text="Out of Stock"></asp:ListItem>
-                                <asp:ListItem Value="Discontinued" Text="Discontinued"></asp:ListItem>
-                            </asp:DropDownList>
-                        </div>
-                    </div>
                 </div>
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>

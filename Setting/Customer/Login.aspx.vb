@@ -221,7 +221,7 @@ Partial Class Setting_Customer_Login
                     Using thisConn As New SqlConnection(myConn)
                         Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLogins SET CustomerId=@CustomerId, RoleId=@RoleId, LevelId=@LevelId, UserName=@UserName, FullName=@FullName, Email=@Email WHERE Id=@Id", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                            myCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
+                            myCmd.Parameters.AddWithValue("@CustomerId", If(String.IsNullOrEmpty(ddlCustomer.SelectedValue), CType(DBNull.Value, Object), ddlCustomer.SelectedValue))
                             myCmd.Parameters.AddWithValue("@RoleId", ddlRole.SelectedValue)
                             myCmd.Parameters.AddWithValue("@LevelId", ddlLevel.SelectedValue)
                             myCmd.Parameters.AddWithValue("@UserName", txtUserName.Text.Trim())

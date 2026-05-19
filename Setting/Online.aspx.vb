@@ -1,6 +1,4 @@
-﻿
-Imports System.Data.SqlClient
-Imports System.Net.Http
+﻿Imports System.Data.SqlClient
 
 Partial Class Setting_Online
     Inherits Page
@@ -24,6 +22,22 @@ Partial Class Setting_Online
         End If
     End Sub
 
+    Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        MessageError_SendNotif(False, String.Empty)
+        BindData(txtSearch.Text)
+    End Sub
+
+    Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        MessageError(False, String.Empty)
+        Try
+            gvList.PageIndex = e.NewPageIndex
+            BindData(txtSearch.Text)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+        End Try
+    End Sub
+
     Protected Sub btnSendNotif_Click(sender As Object, e As EventArgs)
         MessageError_SendNotif(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showSendNotif(); };"
@@ -37,14 +51,13 @@ Partial Class Setting_Online
 
             If msgErrorSendNotif.InnerText = "" Then
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Notifications ORDER BY Id DESC")
-                Dim loginId As String = txtIdLogin.Text
-
-                Dim loginRole As String = settingClass.GetItemData("SELECT RoleId FROM CustomerLogins WHERE Id='" & loginId & "'")
+                Dim loginId As String = txtLoginId.Text
+                Dim roleId As String = txtRoleId.Text
 
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Notifications VALUES (@Id, @RoleId, @LoginId, @Title, @Message, GETDATE(), GETDATE(), 1)", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
-                        myCmd.Parameters.AddWithValue("@RoleId", loginRole)
+                        myCmd.Parameters.AddWithValue("@RoleId", roleId)
                         myCmd.Parameters.AddWithValue("@LoginId", loginId)
                         myCmd.Parameters.AddWithValue("@Title", txtTitle.Text.Trim())
                         myCmd.Parameters.AddWithValue("@Message", htmlContent)
@@ -69,10 +82,10 @@ Partial Class Setting_Online
         Try
             Dim search As String = String.Empty
             If Not searchText = "" Then
-                search = "AND UserName LIKE '%" & searchText.Trim() & "%'"
+                search = "AND CustomerLogins.UserName LIKE '%" & searchText.Trim() & "%'"
             End If
 
-            Dim thisString As String = String.Format("SELECT *, DATEDIFF(MINUTE, LastLogin, GETDATE()) AS LastActiveMinute FROM CustomerLogins WHERE Active=1 AND LastLogin IS NOT NULL AND LastLogin >= DATEADD(MINUTE, -5, GETDATE()) {0} ORDER BY UserName ASC", search)
+            Dim thisString As String = String.Format("SELECT CustomerLogins.*, LoginRoles.Name AS RoleName, DATEDIFF(MINUTE, CustomerLogins.LastLogin, GETDATE()) AS LastActiveMinute FROM CustomerLogins LEFT JOIN LoginRoles ON CustomerLogins.RoleId=LoginRoles.Id WHERE CustomerLogins.Active=1 AND CustomerLogins.LastLogin IS NOT NULL AND CustomerLogins.LastLogin >= DATEADD(MINUTE, -5, GETDATE()) {0} ORDER BY CustomerLogins.UserName ASC", search)
 
             gvList.DataSource = settingClass.GetDataTable(thisString)
             gvList.DataBind()

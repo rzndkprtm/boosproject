@@ -872,6 +872,12 @@ Partial Class Order_Default
     Protected Function VisibleEdit(status As String, active As Boolean) As Boolean
         If active = True Then
             If Session("RoleName") = "Developer" Then Return True
+            If Session("RoleName") = "IT" Then
+                If status = "Unsubmitted" OrElse status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Waiting Proforma" OrElse status = "New Order" Then Return True
+            End If
+            If Session("RoleName") = "Factory Office" Then
+                If status = "Unsubmitted" OrElse status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Waiting Proforma" OrElse status = "New Order" Then Return True
+            End If
         End If
         Return False
     End Function
@@ -954,6 +960,9 @@ Partial Class Order_Default
             If status = "In Production" AndAlso (Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Data Entry") Then
                 Return True
             End If
+            If status = "New Order" AndAlso (Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office") Then
+                Return True
+            End If
         End If
         Return False
     End Function
@@ -1011,7 +1020,7 @@ Partial Class Order_Default
     End Function
 
     Protected Function VisibleCompleteOrder(status As String, active As Boolean) As Boolean
-        If active = True AndAlso status = "Shipped Out" AndAlso Session("RoleName") = "Developer" Then Return True
+        If active = True AndAlso status = "Shipped Out" AndAlso (Session("RoleName") = "Developer" Or Session("RoleName") = "IT" Or Session("RoleName") = "Factory Office" Or Session("RoleName") = "Export") Then Return True
         Return False
     End Function
 

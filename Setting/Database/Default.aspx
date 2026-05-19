@@ -2,8 +2,18 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <style>
-        .card-clickable { cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; }        
-        .card-clickable:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,.15); }
+        .dashboard-wrapper { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; width: 100%; }
+        .dashboard-card { position: relative; display: block; background: #fff; border-radius: 16px; padding: 24px; border: 1px solid #e5e5e5; box-shadow: 0 2px 8px rgba(0,0,0,0.06); transition: 0.2s ease; cursor: pointer; text-decoration: none; overflow: hidden; }
+        .dashboard-card:hover { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(0,0,0,0.12); }
+        .dashboard-number { font-size: 38px; font-weight: 700; color: #222; line-height: 1; margin-bottom: 14px; }
+        .dashboard-title { font-size: 20px; font-weight: 600; color: #222; margin-bottom: 6px; }
+        .dashboard-desc { font-size: 13px; color: #777; line-height: 1.5; }
+        @media (max-width: 1200px) {
+            .dashboard-wrapper { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .dashboard-wrapper { grid-template-columns: 1fr; }
+        }
     </style>
     <div class="page-heading">
         <div class="page-title">
@@ -26,73 +36,43 @@
     </div>
     <div class="page-content">
         <section class="row">
-            <div class="col-12 col-sm-12 col-lg-3">
-                <div class="card card-clickable" runat="server" id="divTable">
-                    <div class="card-body px-3 py-4-5">
-                        <div class="row">
-                            <div class="col-4">
-                                <div class="stats-icon purple">
-                                    <i class="iconly-boldShow"></i>
-                                </div>
-                            </div>
-                            <div class="col-8">
-                                <h6 class="text-muted font-semibold">Table</h6>
-                                <h6 class="font-extrabold mb-0" runat="server"></h6>
-                            </div>
-                        </div>
+            <div class="dashboard-wrapper">
+                <a href="/setting/database/table" class="dashboard-card">
+                    <div class="dashboard-number">
+                        XXX Data <%--<%= GetSumData("Companys") %>--%>
                     </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-12 col-lg-3">
-                <div class="card card-clickable" runat="server" id="divView">
-                    <div class="card-body px-3 py-4-5">
-                        <div class="row">
-                            <div class="col-4">
-                                <div class="stats-icon purple">
-                                    <i class="iconly-boldShow"></i>
-                                </div>
-                            </div>
-                            <div class="col-8">
-                                <h6 class="text-muted font-semibold">View</h6>
-                                <h6 class="font-extrabold mb-0" runat="server"></h6>
-                            </div>
-                        </div>
+                    <div class="dashboard-title">Table</div>
+                    <div class="dashboard-desc">
+                        Description
                     </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-12 col-lg-3">
-                <div class="card card-clickable" runat="server" id="divFunction">
-                    <div class="card-body px-3 py-4-5">
-                        <div class="row">
-                            <div class="col-4">
-                                <div class="stats-icon purple">
-                                    <i class="iconly-boldShow"></i>
-                                </div>
-                            </div>
-                            <div class="col-8">
-                                <h6 class="text-muted font-semibold">Function</h6>
-                                <h6 class="font-extrabold mb-0" runat="server"></h6>
-                            </div>
-                        </div>
+                </a>
+                <a href="/setting/database/view" class="dashboard-card">
+                    <div class="dashboard-number">
+                        XXX Data <%--<%= GetSumData("Companys") %>--%>
                     </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-12 col-lg-3">
-                <div class="card card-clickable" runat="server" id="divQuery">
-                    <div class="card-body px-3 py-4-5">
-                        <div class="row">
-                            <div class="col-4">
-                                <div class="stats-icon purple">
-                                    <i class="iconly-boldShow"></i>
-                                </div>
-                            </div>
-                            <div class="col-8">
-                                <h6 class="text-muted font-semibold">Query</h6>
-                                <h6 class="font-extrabold mb-0" runat="server"></h6>
-                            </div>
-                        </div>
+                    <div class="dashboard-title">View</div>
+                    <div class="dashboard-desc">
+                        Description
                     </div>
-                </div>
+                </a>
+                <a href="/setting/database/function" class="dashboard-card">
+                    <div class="dashboard-number">
+                        XXX Data <%--<%= GetSumData("Companys") %>--%>
+                    </div>
+                    <div class="dashboard-title">Function</div>
+                    <div class="dashboard-desc">
+                        Description
+                    </div>
+                </a>
+                <a href="/setting/database/query" class="dashboard-card">
+                    <div class="dashboard-number">
+                        XXX Data <%--<%= GetSumData("Companys") %>--%>
+                    </div>
+                    <div class="dashboard-title">Query</div>
+                    <div class="dashboard-desc">
+                        Description
+                    </div>
+                </a>
             </div>
         </section>
     </div>

@@ -2,8 +2,18 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <style>
-        .card-clickable { cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; }        
-        .card-clickable:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,.15); }
+        .dashboard-wrapper { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; width: 100%; }
+        .dashboard-card { position: relative; display: block; background: #fff; border-radius: 16px; padding: 24px; border: 1px solid #e5e5e5; box-shadow: 0 2px 8px rgba(0,0,0,0.06); transition: 0.2s ease; cursor: pointer; text-decoration: none; overflow: hidden; }
+        .dashboard-card:hover { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(0,0,0,0.12); }
+        .dashboard-number { font-size: 38px; font-weight: 700; color: #222; line-height: 1; margin-bottom: 14px; }
+        .dashboard-title { font-size: 20px; font-weight: 600; color: #222; margin-bottom: 6px; }
+        .dashboard-desc { font-size: 13px; color: #777; line-height: 1.5; }
+        @media (max-width: 1200px) {
+            .dashboard-wrapper { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .dashboard-wrapper { grid-template-columns: 1fr; }
+        }
     </style>
     <div class="page-heading">
         <div class="page-title">
@@ -26,124 +36,70 @@
     </div>
     <div class="page-content">
         <section class="row">
-            <div class="col-12 col-sm-12 col-lg-3">
-                <div class="card card-clickable" runat="server" id="divCompany">
-                    <div class="card-body px-3 py-4-5">
-                        <div class="row">
-                            <div class="col-4">
-                                <div class="stats-icon purple">
-                                    <i class="iconly-boldShow"></i>
-                                </div>
-                            </div>
-                            <div class="col-8">
-                                <h6 class="text-muted font-semibold">Company</h6>
-                                <h6 class="font-extrabold mb-0" runat="server"><%= GetSumData("Companys") %></h6>
-                            </div>
-                        </div>
+            <div class="dashboard-wrapper">
+                <a href="/setting/general/company" class="dashboard-card">
+                    <div class="dashboard-number">
+                        <%= GetSumData("Companys") %>
                     </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-12 col-lg-3">
-                <div class="card card-clickable" runat="server" id="divMailing">
-                    <div class="card-body px-3 py-4-5">
-                        <div class="row">
-                            <div class="col-4">
-                                <div class="stats-icon purple">
-                                    <i class="iconly-boldShow"></i>
-                                </div>
-                            </div>
-                            <div class="col-8">
-                                <h6 class="text-muted font-semibold">Mailing</h6>
-                                <h6 class="font-extrabold mb-0"><%= GetSumData("Mailings") %></h6>
-                            </div>
-                        </div>
+                    <div class="dashboard-title">Company</div>
+                    <div class="dashboard-desc">
+                        Description
                     </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-12 col-lg-3">
-                <div class="card card-clickable" runat="server" id="divRoleAccess">
-                    <div class="card-body px-3 py-4-5">
-                        <div class="row">
-                            <div class="col-4">
-                                <div class="stats-icon purple">
-                                    <i class="iconly-boldShow"></i>
-                                </div>
-                            </div>
-                            <div class="col-8">
-                                <h6 class="text-muted font-semibold">Role Access</h6>
-                                <h6 class="font-extrabold mb-0"><%= GetSumData("LoginRoles") %></h6>
-                            </div>
-                        </div>
+                </a>
+                <a href="/setting/general/company" class="dashboard-card">
+                    <div class="dashboard-number">
+                        <%= GetSumData("Mailings") %>
                     </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-12 col-lg-3">
-                <div class="card card-clickable" runat="server" id="divLevelAccess">
-                    <div class="card-body px-3 py-4-5">
-                        <div class="row">
-                            <div class="col-4">
-                                <div class="stats-icon purple">
-                                    <i class="iconly-boldShow"></i>
-                                </div>
-                            </div>
-                            <div class="col-8">
-                                <h6 class="text-muted font-semibold">Level Access</h6>
-                                <h6 class="font-extrabold mb-0"><%= GetSumData("LoginLevels") %></h6>
-                            </div>
-                        </div>
+                    <div class="dashboard-title">Mailing</div>
+                    <div class="dashboard-desc">
+                        Description
                     </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-12 col-lg-3">
-                <div class="card card-clickable" runat="server" id="divNewsletter">
-                    <div class="card-body px-3 py-4-5">
-                        <div class="row">
-                            <div class="col-4">
-                                <div class="stats-icon purple">
-                                    <i class="iconly-boldShow"></i>
-                                </div>
-                            </div>
-                            <div class="col-8">
-                                <h6 class="text-muted font-semibold">Newsletter</h6>
-                                <h6 class="font-extrabold mb-0"><%= GetSumData("Newsletters") %></h6>
-                            </div>
-                        </div>
+                </a>
+                <a href="/setting/general/roleaccess" class="dashboard-card">
+                    <div class="dashboard-number">
+                        <%= GetSumData("LoginRoles") %>
                     </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-12 col-lg-3">
-                <div class="card card-clickable" runat="server" id="divTutorial">
-                    <div class="card-body px-3 py-4-5">
-                        <div class="row">
-                            <div class="col-4">
-                                <div class="stats-icon purple">
-                                    <i class="iconly-boldShow"></i>
-                                </div>
-                            </div>
-                            <div class="col-8">
-                                <h6 class="text-muted font-semibold">Tutorial</h6>
-                                <h6 class="font-extrabold mb-0"><%= GetSumData("Tutorials") %></h6>
-                            </div>
-                        </div>
+                    <div class="dashboard-title">Role Access</div>
+                    <div class="dashboard-desc">
+                        Description
                     </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-12 col-lg-3">
-                <div class="card card-clickable" runat="server" id="divActionAccess">
-                    <div class="card-body px-3 py-4-5">
-                        <div class="row">
-                            <div class="col-4">
-                                <div class="stats-icon purple">
-                                    <i class="iconly-boldShow"></i>
-                                </div>
-                            </div>
-                            <div class="col-8">
-                                <h6 class="text-muted font-semibold">Action Access</h6>
-                                <h6 class="font-extrabold mb-0"><%= GetSumData("Actions") %></h6>
-                            </div>
-                        </div>
+                </a>
+                <a href="/setting/general/levelaccess" class="dashboard-card">
+                    <div class="dashboard-number">
+                        <%= GetSumData("LoginLevels") %>
                     </div>
-                </div>
+                    <div class="dashboard-title">Level Access</div>
+                    <div class="dashboard-desc">
+                        Description
+                    </div>
+                </a>
+                <a href="/setting/general/newsletter" class="dashboard-card">
+                    <div class="dashboard-number">
+                        <%= GetSumData("Newsletters") %>
+                    </div>
+                    <div class="dashboard-title">Newsletter</div>
+                    <div class="dashboard-desc">
+                        Description
+                    </div>
+                </a>
+                <a href="/setting/general/tutorial" class="dashboard-card">
+                    <div class="dashboard-number">
+                        <%= GetSumData("Tutorials") %>
+                    </div>
+                    <div class="dashboard-title">Tutorial</div>
+                    <div class="dashboard-desc">
+                        Description
+                    </div>
+                </a>
+                <a href="/setting/general/actionaccess" class="dashboard-card">
+                    <div class="dashboard-number">
+                        <%= GetSumData("Actions") %>
+                    </div>
+                    <div class="dashboard-title">Actions Access</div>
+                    <div class="dashboard-desc">
+                        Description
+                    </div>
+                </a>
             </div>
         </section>
     </div>
