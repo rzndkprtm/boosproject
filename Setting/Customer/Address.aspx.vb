@@ -106,6 +106,12 @@ Partial Class Setting_Customer_Address
                 Exit Sub
             End If
 
+            If txtAddress.Text.Contains(",") OrElse txtAddress.Text.Contains(";") Then
+                MessageError_Process(True, "ADDRESS CANNOT CONTAIN COMMA (,) OR SEMICOLON (;) !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
+                Exit Sub
+            End If
+
             If txtSuburb.Text = "" Then
                 MessageError_Process(True, "SUBURB IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
