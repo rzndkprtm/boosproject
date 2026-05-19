@@ -23,7 +23,7 @@
     </div>
     <div class="page-content">
         <section class="row mb-3">
-            <div class="col-12 d-flex justify-content-end">
+            <div class="col-12 d-flex flex-wrap justify-content-end gap-1">
                 <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary me-1" Text="Add New" OnClick="btnAdd_Click" />
                 <asp:Button runat="server" ID="btnChange" CssClass="btn btn-secondary me-1" Text="Change Multiple Statuses" OnClick="btnChange_Click" />
                 <asp:Button runat="server" ID="btnAlias" CssClass="btn btn-info me-1" Text="Product Alias" OnClick="btnAlias_Click" />
