@@ -884,6 +884,7 @@
                         <div class="col-12 col-sm-12 col-lg-7 mb-2 form-group">
                             <label class="form-label">Address</label>
                             <asp:TextBox runat="server" ID="txtAddressName" CssClass="form-control" placeholder="Address ..." autocomplete="off"></asp:TextBox>
+                            <p><small class="text-muted">* Do not add the characters , and ;</small></p>
                         </div>
                     </div>
                     <div class="mb-2 row">

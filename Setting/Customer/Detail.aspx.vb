@@ -700,6 +700,12 @@ Partial Class Setting_Customer_Detail
                 Exit Sub
             End If
 
+            If txtAddressName.Text.Contains(",") OrElse txtAddressName.Text.Contains(";") Then
+                MessageError_ProcessAddress(True, "ADDRESS CANNOT CONTAIN ',' OR ';' !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showProcessAddress", thisScript, True)
+                Exit Sub
+            End If
+
             If txtAddressSuburb.Text = "" Then
                 MessageError_ProcessAddress(True, "SUBURB IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcessAddress", thisScript, True)
