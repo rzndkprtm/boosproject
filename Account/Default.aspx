@@ -103,7 +103,7 @@
                                                         <%# Container.DataItemIndex + 1 %>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-                                                <asp:BoundField DataField="ContactName" HeaderText="Name" />
+                                                <asp:BoundField DataField="Name" HeaderText="Name" />
                                                 <asp:BoundField DataField="Email" HeaderText="Email" />
                                                 <asp:BoundField DataField="Tags" HeaderText="Tags" />
                                             </Columns>
