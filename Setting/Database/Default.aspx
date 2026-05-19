@@ -39,7 +39,7 @@
             <div class="dashboard-wrapper">
                 <a href="/setting/database/table" class="dashboard-card">
                     <div class="dashboard-number">
-                        XXX Data <%--<%= GetSumData("Companys") %>--%>
+                        <%= GetSumData("sys.tables") %>
                     </div>
                     <div class="dashboard-title">Table</div>
                     <div class="dashboard-desc">
@@ -48,7 +48,7 @@
                 </a>
                 <a href="/setting/database/view" class="dashboard-card">
                     <div class="dashboard-number">
-                        XXX Data <%--<%= GetSumData("Companys") %>--%>
+                        <%= GetSumData("sys.views") %>
                     </div>
                     <div class="dashboard-title">View</div>
                     <div class="dashboard-desc">
@@ -57,7 +57,7 @@
                 </a>
                 <a href="/setting/database/function" class="dashboard-card">
                     <div class="dashboard-number">
-                        XXX Data <%--<%= GetSumData("Companys") %>--%>
+                        <%= GetSumData("sys.procedures") %>
                     </div>
                     <div class="dashboard-title">Function</div>
                     <div class="dashboard-desc">
@@ -66,7 +66,7 @@
                 </a>
                 <a href="/setting/database/query" class="dashboard-card">
                     <div class="dashboard-number">
-                        XXX Data <%--<%= GetSumData("Companys") %>--%>
+                        0 Data
                     </div>
                     <div class="dashboard-title">Query</div>
                     <div class="dashboard-desc">

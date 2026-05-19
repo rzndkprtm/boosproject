@@ -2060,7 +2060,7 @@ Partial Class Order_Add
                             End If
 
                             If width < 300 Then
-                                If controlPosition = "No Control" Then
+                                If controlPosition <> "No Control" Then
                                     Dim thisAlert As String = String.Format("YOUR WIDTH FOR ITEM {0} UNDER 250MM. PLEASE CHANGE PULL CORD POSITION TO NO CONTROL !", itemNumber)
                                     MessageError(True, thisAlert)
                                     Exit For

@@ -38,76 +38,44 @@
         <section class="row">
             <div class="dashboard-wrapper">
                 <a href="/setting/specification/designtype" class="dashboard-card">
-                    <div class="dashboard-number">
-                        <%= GetSumData("Designs") %>
-                    </div>
+                    <div class="dashboard-number"><%= GetSumData("Designs") %></div>
                     <div class="dashboard-title">Design Type</div>
-                    <div class="dashboard-desc">
-                        Description
-                    </div>
+                    <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/specification/blindtype" class="dashboard-card">
-                    <div class="dashboard-number">
-                        <%= GetSumData("Blinds") %>
-                    </div>
+                    <div class="dashboard-number"><%= GetSumData("Blinds") %></div>
                     <div class="dashboard-title">Blind Type</div>
-                    <div class="dashboard-desc">
-                        Description
-                    </div>
+                    <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/specification/product" class="dashboard-card">
-                    <div class="dashboard-number">
-                        <%= GetSumData("Products") %>
-                    </div>
+                    <div class="dashboard-number"><%= GetSumData("Products") %></div>
                     <div class="dashboard-title">Product</div>
-                    <div class="dashboard-desc">
-                        Description
-                    </div>
+                    <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/specification/fabric" class="dashboard-card">
-                    <div class="dashboard-number">
-                        <%= GetSumData("Fabrics") %>
-                    </div>
+                    <div class="dashboard-number"><%= GetSumData("Fabrics") %></div>
                     <div class="dashboard-title">Fabric Type</div>
-                    <div class="dashboard-desc">
-                        Description
-                    </div>
+                    <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/specification/chain" class="dashboard-card">
-                    <div class="dashboard-number">
-                        <%= GetSumData("Chains") %>
-                    </div>
+                    <div class="dashboard-number"><%= GetSumData("Chains") %></div>
                     <div class="dashboard-title">Chain</div>
-                    <div class="dashboard-desc">
-                        Description
-                    </div>
+                    <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/specification/remote" class="dashboard-card">
-                    <div class="dashboard-number">
-                        <%= GetSumData("Remotes") %>
-                    </div>
+                    <div class="dashboard-number"><%= GetSumData("Remotes") %></div>
                     <div class="dashboard-title">Remote</div>
-                    <div class="dashboard-desc">
-                        Description
-                    </div>
+                    <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/specification/bottom" class="dashboard-card">
-                    <div class="dashboard-number">
-                        <%= GetSumData("Bottoms") %>
-                    </div>
+                    <div class="dashboard-number"><%= GetSumData("Bottoms") %></div>
                     <div class="dashboard-title">Bottom Type</div>
-                    <div class="dashboard-desc">
-                        Description
-                    </div>
+                    <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/specification/mounting" class="dashboard-card">
-                    <div class="dashboard-number">
-                        <%= GetSumData("Mountings") %>
-                    </div>
+                    <div class="dashboard-number"><%= GetSumData("Mountings") %></div>
                     <div class="dashboard-title">Mounting</div>
-                    <div class="dashboard-desc">
-                        Description
-                    </div>
+                    <div class="dashboard-desc">Description</div>
                 </a>
             </div>
         </section>
