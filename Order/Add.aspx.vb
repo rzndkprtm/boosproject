@@ -2066,7 +2066,7 @@ Partial Class Order_Add
                                     Exit For
                                 End If
 
-                                If tilterPosition <> "Center" OrElse tilterPosition <> "Centre" Then
+                                If tilterPosition <> "Center" AndAlso tilterPosition <> "Centre" Then
                                     Dim thisAlert As String = String.Format("YOUR WIDTH FOR ITEM {0} UNDER 250MM. PLEASE CHANGE TILTER POSITION TO CENTRE !", itemNumber)
                                     MessageError(True, thisAlert)
                                     Exit For
