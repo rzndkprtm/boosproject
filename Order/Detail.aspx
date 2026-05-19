@@ -974,7 +974,7 @@
                     </div>
                 </div>
                 <div class="modal-footer justify-content-start">
-                    <asp:Button runat="server" ID="btnDetailQuote" CssClass="btn btn-primary" Text="Submit" OnClick="btnDetailQuote_Click" OnClientClick="return showWaiting();" />
+                    <asp:Button runat="server" ID="btnDetailQuote" CssClass="btn btn-info" Text="Submit" OnClick="btnDetailQuote_Click" OnClientClick="return showWaiting();" />
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                 </div>
             </div>
@@ -1244,7 +1244,7 @@
                 </div>
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnMoreDownloadQuote" CssClass="btn btn-info" Text="Confirm" OnClick="btnMoreDownloadQuote_Click"  OnClientClick="return showWaiting($(this).closest('.modal').attr('id'));" />
+                    <asp:Button runat="server" ID="btnMoreDownloadQuote" CssClass="btn btn-dark" Text="Confirm" OnClick="btnMoreDownloadQuote_Click"  OnClientClick="return showWaiting($(this).closest('.modal').attr('id'));" />
                 </div>
             </div>
         </div>
@@ -1285,7 +1285,7 @@
                 </div>
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnMoreEmailQuote" CssClass="btn btn-primary" Text="Submit" OnClick="btnMoreEmailQuote_Click" OnClientClick="return showWaiting();" />
+                    <asp:Button runat="server" ID="btnMoreEmailQuote" CssClass="btn btn-dark" Text="Submit" OnClick="btnMoreEmailQuote_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>
@@ -1314,7 +1314,7 @@
                 </div>
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnAddNote" CssClass="btn btn-primary" Text="Submit" OnClick="btnAddNote_Click" OnClientClick="return showWaiting();" />
+                    <asp:Button runat="server" ID="btnAddNote" CssClass="btn btn-dark" Text="Submit" OnClick="btnAddNote_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>
@@ -1441,7 +1441,7 @@
     <div class="modal modal-blur fade" id="modalRecalculate" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-warning">
+                <div class="modal-header bg-dark">
                     <h5 class="modal-title white">Recalculate Price</h5>
                 </div>
                 <div class="modal-body text-center py-4">
@@ -1450,7 +1450,7 @@
                 </div>
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnRecalculate" CssClass="btn btn-warning" Text="Confirm" OnClick="btnRecalculate_Click" OnClientClick="return showWaiting();" />
+                    <asp:Button runat="server" ID="btnRecalculate" CssClass="btn btn-dark" Text="Confirm" OnClick="btnRecalculate_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>
