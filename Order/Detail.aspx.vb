@@ -1120,18 +1120,29 @@ Partial Class Order_Detail
         MessageError(False, String.Empty)
         Try
             Dim invoiceClass As New InvoiceClass
+
             Dim data As String = invoiceClass.BindXero(lblHeaderId.Text)
 
             Dim fileName As String = String.Format("{0}.csv", lblInvoiceNumber.Text)
 
             Response.Clear()
             Response.Buffer = True
-            Response.AddHeader("content-disposition", "attachment;filename=" & fileName & "")
-            Response.ContentType = "text/csv"
 
-            Response.Write(data)
+            Response.ContentType = "text/csv"
+            Response.ContentEncoding = Encoding.UTF8
+
+            Response.AddHeader("content-disposition", "attachment;filename=" & fileName)
+
+            Dim bom As Byte() = Encoding.UTF8.GetPreamble()
+            Response.OutputStream.Write(bom, 0, bom.Length)
+
+            Dim bytes As Byte() = Encoding.UTF8.GetBytes(data)
+
+            Response.OutputStream.Write(bytes, 0, bytes.Length)
+
             Response.Flush()
             Response.End()
+
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -1139,6 +1150,31 @@ Partial Class Order_Detail
             End If
         End Try
     End Sub
+
+
+    'Protected Sub btnDownloadInvoiceCSV_Click(sender As Object, e As EventArgs)
+    '    MessageError(False, String.Empty)
+    '    Try
+    '        Dim invoiceClass As New InvoiceClass
+    '        Dim data As String = invoiceClass.BindXero(lblHeaderId.Text)
+
+    '        Dim fileName As String = String.Format("{0}.csv", lblInvoiceNumber.Text)
+
+    '        Response.Clear()
+    '        Response.Buffer = True
+    '        Response.AddHeader("content-disposition", "attachment;filename=" & fileName & "")
+    '        Response.ContentType = "text/csv"
+
+    '        Response.Write(data)
+    '        Response.Flush()
+    '        Response.End()
+    '    Catch ex As Exception
+    '        MessageError(True, ex.ToString())
+    '        If Not Session("RoleName") = "Developer" Then
+    '            MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+    '        End If
+    '    End Try
+    'End Sub
 
     Protected Sub btnInvoiceNumber_Click(sender As Object, e As EventArgs)
         MessageError_InvoiceNumber(False, String.Empty)

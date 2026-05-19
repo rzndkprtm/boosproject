@@ -276,44 +276,44 @@
                     <div class="card-content">
                         <div class="card-body">
                             <div class="row mb-2">
-                                <div class="col-2 col-sm-2 col-lg-2">
+                                <div class="col-6 col-sm-6 col-lg-2 mb-2">
                                     <label>Estimator</label>
                                     <br />
                                     <asp:Label runat="server" ID="lblEstimator" CssClass="font-bold"></asp:Label>
                                 </div>
-                                <div class="col-2 col-sm-2 col-lg-2">
+                                <div class="col-6 col-sm-6 col-lg-2">
                                     <label>Supervisor</label>
                                     <br />
                                     <asp:Label runat="server" ID="lblSupervisor" CssClass="font-bold"></asp:Label>
                                 </div>
-                                <div class="col-2 col-sm-2 col-lg-2">
+                                <div class="col-6 col-sm-6 col-lg-2 mb-2">
                                     <label>Address</label>
                                     <br />
                                     <asp:Label runat="server" ID="lblAddress" CssClass="font-bold"></asp:Label>
                                 </div>
-                                <div class="col-2 col-sm-2 col-lg-2">
+                                <div class="col-6 col-sm-6 col-lg-2">
                                     <label>Quoted Date</label>
                                     <br />
                                     <asp:Label runat="server" ID="lblQuotedDate" CssClass="font-bold"></asp:Label>
                                 </div>
-                                <div class="col-2 col-sm-2 col-lg-2">
+                                <div class="col-6 col-sm-6 col-lg-2 mb-2">
                                     <label>Call For Check Measure</label>
                                     <br />
                                     <asp:Label runat="server" ID="lblCallForCheckMeasure" CssClass="font-bold"></asp:Label>
                                 </div>
-                                <div class="col-2 col-sm-2 col-lg-2">
+                                <div class="col-6 col-sm-6 col-lg-2">
                                     <label>Check Measure Due</label>
                                     <br />
                                     <asp:Label runat="server" ID="lblCheckMeasureDue" CssClass="font-bold"></asp:Label>
                                 </div>
                             </div>
                             <div class="row mb-1">
-                                <div class="col-2 col-sm-2 col-lg-2">
+                                <div class="col-6 col-sm-6 col-lg-2">
                                     <label>To Be Installed</label>
                                     <br />
                                     <asp:Label runat="server" ID="lblToBeInstalled" CssClass="font-bold"></asp:Label>
                                 </div>
-                                <div class="col-2 col-sm-2 col-lg-2">
+                                <div class="col-6 col-sm-6 col-lg-2">
                                     <label>Installed</label>
                                     <br />
                                     <asp:Label runat="server" ID="lblInstalled" CssClass="font-bold"></asp:Label>
