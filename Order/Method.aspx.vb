@@ -4434,7 +4434,6 @@ Partial Class Order_Method
                 If controlType = "Motorised" AndAlso widthb < 700 Then Return "MINIMUM SECOND WIDTH FOR MOTORISED IS 700MM !"
             End If
             If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
-                If widthb > 1810 AndAlso tubeName = "Standard" AndAlso colourName = "White" Then Return "PLEASE CHECK THE SECOND WIDTH.<br />FOR NOW, WIDTHS GREATER THAN 1810 CANNOT BE USED WITH THE STANDARD TUBE TYPE AND WHITE BRACKET COLOUR !"
                 If widthb > 2910 Then Return "MAXIMUM SECOND WIDTH IS 2910MM !"
             End If
 
