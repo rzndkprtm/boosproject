@@ -54,6 +54,29 @@ Partial Class Order_Default
         Response.Redirect("~/order/unshipment", False)
     End Sub
 
+    Protected Sub btnExport_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            If txtExportStartDate.Text = "" Then
+                MessageError(True, "EXPORT START DATE IS REQUIRED !")
+                Exit Sub
+            End If
+            If txtExportEndDate.Text = "" Then
+                MessageError(True, "EXPORT END DATE IS REQUIRED !")
+                Exit Sub
+            End If
+
+            If ddlExportType.SelectedValue = "PDF" Then
+
+            End If
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlCompany.SelectedValue, ddlType.SelectedValue, ddlActive.SelectedValue)
@@ -841,6 +864,7 @@ Partial Class Order_Default
 
     Protected Sub BindCompany()
         ddlCompany.Items.Clear()
+        ddlExportCompany.Items.Clear()
         Try
             ddlCompany.DataSource = orderClass.GetDataTable("SELECT * FROM Companys WHERE Active=1 ORDER BY Name ASC")
             ddlCompany.DataTextField = "Alias"
@@ -851,9 +875,20 @@ Partial Class Order_Default
             If Session("RoleName") = "Sales" OrElse Session("RoleName") = "Account" Then
                 ddlCompany.SelectedValue = Session("CompanyId").ToString()
             End If
+
+            ddlExportCompany.DataSource = orderClass.GetDataTable("SELECT * FROM Companys WHERE Active=1 ORDER BY Name ASC")
+            ddlExportCompany.DataTextField = "Alias"
+            ddlExportCompany.DataValueField = "Id"
+            ddlExportCompany.DataBind()
+
+            ddlExportCompany.Items.Insert(0, New ListItem("All", "All"))
+
+            If Session("RoleName") = "Sales" OrElse Session("RoleName") = "Account" Then
+                ddlExportCompany.SelectedValue = Session("CompanyId").ToString()
+            End If
         Catch ex As Exception
             ddlCompany.Items.Clear()
-            ddlCompany.Items.Add(New ListItem("All", ""))
+            ddlExportCompany.Items.Clear()
         End Try
     End Sub
 

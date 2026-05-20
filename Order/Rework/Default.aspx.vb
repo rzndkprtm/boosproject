@@ -1,4 +1,5 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data
+Imports System.Data.SqlClient
 
 Partial Class Order_Rework_Default
     Inherits Page
@@ -118,41 +119,19 @@ Partial Class Order_Rework_Default
         Session("reworkId") = String.Empty
         Session("headerId") = String.Empty
         Try
-            Dim byActive As String = "WHERE OrderReworks.Active=1"
-            If active = "0" Then byActive = "WHERE OrderReworks.Active=0"
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@SearchText", search.Trim()),
+                New SqlParameter("@Status", status),
+                New SqlParameter("@CompanyId", If(Session("CompanyId"), DBNull.Value)),
+                New SqlParameter("@RoleName", If(Session("RoleName"), DBNull.Value)),
+                New SqlParameter("@LevelName", If(Session("LevelName"), DBNull.Value)),
+                New SqlParameter("@CustomerId", If(Session("CustomerId"), DBNull.Value)),
+                New SqlParameter("@LoginId", Session("LoginId").ToString()),
+                New SqlParameter("@Active", active)
+            }
 
-            Dim byRole As String = String.Empty
-
-            Dim byStatus As String = String.Empty
-
-            Dim byText As String = String.Empty
-            Dim byOrder As String = "ORDER BY OrderReworks.Id DESC"
-
-            If Not search = "" Then
-                byText = "AND (OrderReworks.Id LIKE '%" & search.Trim() & "%' OR OrderHeaders.OrderId LIKE '%" & search.Trim() & "%' OR OrderHeaders.OrderNumber LIKE '%" & search.Trim() & "%' OR OrderHeaders.OrderName LIKE '%" & search.Trim() & "%' OR OrderHeaders.CustomerId LIKE '%" & search.Trim() & "%' OR Customers.Name LIKE '%" & search.Trim() & "%')"
-            End If
-
-            If Session("RoleName") = "Developer" Or Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Data Entry" Then
-                byRole = String.Empty
-                byStatus = String.Empty
-                If Not status = "" Then
-                    byStatus = "AND OrderReworks.Status='" & status & "'"
-                End If
-                byOrder = "ORDER BY OrderReworks.Id, CASE WHEN OrderReworks.Status='Pending Approval' THEN 1 WHEN OrderReworks.Status='Approved' THEN 2 WHEN OrderReworks.Status='Rejected' THEN 3 WHEN OrderReworks.Status='Unsubmitted' THEN 4 END DESC"
-            End If
-
-            If Session("RoleName") = "Customer" Then
-                byRole = "AND OrderHeaders.CustomerId='" & Session("CustomerId").ToString() & "'"
-                byStatus = String.Empty
-                If Not status = "" Then
-                    byStatus = "AND OrderReworks.Status='" & status & "'"
-                End If
-                byOrder = "ORDER BY OrderReworks.Id, CASE WHEN OrderReworks.Status='Pending Approval' THEN 1 WHEN OrderReworks.Status='Approved' THEN 2 WHEN OrderReworks.Status='Rejected' THEN 3 WHEN OrderReworks.Status='Unsubmitted' THEN 4 END DESC"
-            End If
-
-            Dim thisQuery As String = String.Format("SELECT OrderReworks.*, OrderHeaders.OrderId AS OrderId, OrderHeaders.OrderNumber AS OrderNumber, OrderHeaders.OrderName AS OrderName, Customers.Name AS CustomerName FROM OrderReworks LEFT JOIN OrderHeaders ON OrderReworks.HeaderId=OrderHeaders.Id LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id {0} {1} {2} {3} {4}", byActive, byRole, byStatus, byText, byOrder)
-
-            gvList.DataSource = orderClass.GetDataTable(thisQuery)
+            Dim thisData As DataTable = orderClass.GetDataTableSP("sp_GetOrderListReworks", params)
+            gvList.DataSource = thisData
             gvList.DataBind()
             gvList.Columns(1).Visible = PageAction("Visible ID")
 
