@@ -5,6 +5,7 @@ Partial Class Order_Unshipment
     Inherits Page
 
     Dim unshipmentClass As New OrderClass
+
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
     Dim dataLog As Object() = Nothing
@@ -152,7 +153,6 @@ Partial Class Order_Unshipment
 
                 Response.Redirect("~/order/unshipment", False)
             End If
-
         Catch ex As Exception
             MessageError_ShipmentOrder(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -222,11 +222,9 @@ Partial Class Order_Unshipment
             Dim thisData As DataTable = unshipmentClass.GetDataTableSP("sp_OrderUnshipment", params)
             gvList.DataSource = thisData
             gvList.DataBind()
-
             gvList.Columns(1).Visible = PageAction("Visible ID")
 
             aEmail.Visible = PageAction("Email")
-
             divCompany.Visible = PageAction("Sort Company")
 
             Dim mailingString As String = "SELECT * FROM Mailings WHERE Name='Unshipment Order' AND Active=1"
@@ -259,9 +257,6 @@ Partial Class Order_Unshipment
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                If Session("RoleName") = "Customer" Then
-                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
-                End If
             End If
         End Try
     End Sub

@@ -23,7 +23,7 @@
     </div>
     <div class="page-content">
         <section class="row">
-            <div class="col-12 col-sm-12 col-lg-8">
+            <div class="col-12">
                 <div class="card">
                     <div class="card-content">
                         <div class="card-header">
@@ -62,6 +62,8 @@
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:BoundField DataField="TableName" HeaderText="Table Name" />
+                                                <asp:BoundField DataField="CreatedDate" HeaderText="Created Date" DataFormatString="{0:dd MMM yyyy hh:mm:ss}" />
+                                                <asp:BoundField DataField="ModifiedDate" HeaderText="Modify Date" DataFormatString="{0:dd MMM yyyy hh:mm:ss}" />
                                                 <asp:BoundField DataField="TotalRow" HeaderText="Rows" />
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
                                                     <ItemTemplate>
@@ -80,14 +82,6 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-12 col-lg-4">
-                <div class="card">
-                    <div class="card-content">
-                        <div class="card-header"></div>
-                        <div class="card-body"></div>
                     </div>
                 </div>
             </div>

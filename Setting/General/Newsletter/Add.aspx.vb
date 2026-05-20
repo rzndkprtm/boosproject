@@ -44,7 +44,7 @@ Partial Class Setting_General_Newsletter_Add
                 Exit Sub
             End If
 
-            If ddlType.SelectedValue = "Image" AndAlso Not fuFile.HasFile Then
+            If ddlType.SelectedValue = "Upload" AndAlso Not fuFile.HasFile Then
                 MessageError(True, "PLEASE UPLOAD YOUR IMAGE !")
                 Exit Sub
             End If
@@ -59,7 +59,7 @@ Partial Class Setting_General_Newsletter_Add
 
                 Dim link As String = String.Empty
                 If ddlType.SelectedValue = "Link" Then link = txtLink.Text.Trim()
-                If ddlType.SelectedValue = "Image" Then
+                If ddlType.SelectedValue = "Upload" Then
                     Dim ext As String = IO.Path.GetExtension(fuFile.FileName)
                     Dim newFileName As String = Now.ToString("yyyyMMddHHmmss") & ext
                     link = String.Format("~/Assets/newsletter/{0}", newFileName)
@@ -98,11 +98,11 @@ Partial Class Setting_General_Newsletter_Add
 
     Protected Sub BindComponentForm(Type As String)
         Try
-            divLink.Visible = False : divFile.Visible = False
+            txtLink.Visible = False : fuFile.Visible = False
 
             If Not String.IsNullOrEmpty(Type) Then
-                If Type = "Image" Then divFile.Visible = True
-                If Type = "Link" Then divLink.Visible = True
+                If Type = "Upload" Then fuFile.Visible = True
+                If Type = "Link" Then txtLink.Visible = True
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())

@@ -322,6 +322,7 @@ Public Partial Class SiteMaster
                 liPriceSurcharge.Visible = True
                 liPricePromo.Visible = True
 
+                liOnline.Visible = True
                 liXero.Visible = True
                 liNotification.Visible = True
             End If
@@ -362,6 +363,7 @@ Public Partial Class SiteMaster
                 liPriceSurcharge.Visible = True
                 liPricePromo.Visible = True
 
+                liOnline.Visible = True
                 liXero.Visible = True
                 liNotification.Visible = True
             End If

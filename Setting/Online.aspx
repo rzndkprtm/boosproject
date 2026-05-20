@@ -1,6 +1,7 @@
 ﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Online.aspx.vb" Inherits="Setting_Online" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Online User" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
+    <asp:Timer runat="server" ID="tmrRefresh" Interval="30000" OnTick="tmrRefresh_Tick" />
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
@@ -52,30 +53,37 @@
                             <div class="row mb-3">
                                 <div class="col-12">
                                     <div class="table-responsive">
-                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="100" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom" OnPageIndexChanging="gvList_PageIndexChanging">
-                                            <RowStyle />
-                                            <Columns>
-                                                <asp:TemplateField ItemStyle-HorizontalAlign="Center">
-                                                    <ItemTemplate>
-                                                        <%# Container.DataItemIndex + 1 %>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:BoundField DataField="Id" HeaderText="ID" />
-                                                <asp:BoundField DataField="UserName" HeaderText="UserName" />
-                                                <asp:BoundField DataField="FullName" HeaderText="Full Name" />
-                                                <asp:BoundField DataField="RoleName" HeaderText="Role Access" />
-                                                <asp:BoundField DataField="LastLogin" HeaderText="Last Login" DataFormatString="{0:dd MMM yyyy HH:mm:ss}" />
-                                                <asp:BoundField DataField="LastActiveMinute" HeaderText="Active (Minute Ago)" />
-                                                <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
-                                                    <ItemTemplate>
-                                                        <a href="#" runat="server" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalSendNotif" onclick='<%# String.Format("return idSendNotif(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("RoleId").ToString()) %>'>Send Notification</a>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                            </Columns>
-                                            <PagerStyle BackColor="DodgerBlue" ForeColor="White" HorizontalAlign="Center" />
-                                            <PagerSettings PreviousPageText="Prev" NextPageText="Next" Mode="NumericFirstLast" />
-                                            <AlternatingRowStyle BackColor="White" />
-                                        </asp:GridView>
+                                        <asp:UpdatePanel ID="upRefresh" runat="server">
+                                            <ContentTemplate>
+                                                <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="100" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom" OnPageIndexChanging="gvList_PageIndexChanging">
+                                                    <RowStyle />
+                                                    <Columns>
+                                                        <asp:TemplateField ItemStyle-HorizontalAlign="Center">
+                                                            <ItemTemplate>
+                                                                <%# Container.DataItemIndex + 1 %>
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                        <asp:BoundField DataField="Id" HeaderText="ID" />
+                                                        <asp:BoundField DataField="UserName" HeaderText="UserName" />
+                                                        <asp:BoundField DataField="FullName" HeaderText="Full Name" />
+                                                        <asp:BoundField DataField="RoleName" HeaderText="Role Access" />
+                                                        <asp:BoundField DataField="LastLogin" HeaderText="Last Login" DataFormatString="{0:dd MMM yyyy HH:mm:ss}" />
+                                                        <asp:BoundField DataField="LastActiveMinute" HeaderText="Active (Minute Ago)" />
+                                                        <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
+                                                            <ItemTemplate>
+                                                                <a href="#" runat="server" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalSendNotif" onclick='<%# String.Format("return idSendNotif(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("RoleId").ToString()) %>'>Send Notification</a>
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                    </Columns>
+                                                    <PagerStyle BackColor="DodgerBlue" ForeColor="White" HorizontalAlign="Center" />
+                                                    <PagerSettings PreviousPageText="Prev" NextPageText="Next" Mode="NumericFirstLast" />
+                                                    <AlternatingRowStyle BackColor="White" />
+                                                </asp:GridView>
+                                            </ContentTemplate>
+                                            <Triggers>
+                                                <asp:AsyncPostBackTrigger ControlID="tmrRefresh" EventName="Tick" />
+                                            </Triggers>
+                                        </asp:UpdatePanel>
                                     </div>
                                 </div>
                             </div>

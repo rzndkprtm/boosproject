@@ -16,12 +16,10 @@
     <link rel="stylesheet" href="/Assets/vendors/perfect-scrollbar/perfect-scrollbar.css" />
     <link rel="stylesheet" href="/Assets/vendors/summernote/summernote-lite.min.css" />
     <link rel="stylesheet" href="/Assets/vendors/bootstrap-icons/bootstrap-icons.css" />
-    <link rel="stylesheet" href="/Assets/css/app.css" />   
-
+    <link rel="stylesheet" href="/Assets/css/app.css" />
     <link rel="icon" type="image/x-icon" href="/Assets/images/logo/boos.ico" />
 
-    <script src="/Scripts/jquery-3.7.1.min.js"></script>
-    
+    <script src="/Scripts/jquery-3.7.1.min.js"></script>    
 </head>
 <body>
     <form runat="server">
@@ -382,7 +380,7 @@
             setInterval(refreshSession, 240000);
 
             Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
-                var newTitle = '<%= Page.Title %> - <%: Session("CompanyName") %>';
+                var newTitle = '<%= String.Format("{0}{1}", Page.Title, If(String.IsNullOrEmpty(TryCast(Session("CompanyName"), String)), "", " - " & Session("CompanyName"))) %>';
                 document.title = newTitle;
             });
         </script>

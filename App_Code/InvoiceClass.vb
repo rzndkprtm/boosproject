@@ -607,6 +607,8 @@ Public Class InvoiceClass
             Dim headerData As DataRow = GetDataRow("SELECT OrderHeaders.*, OrderInvoices.InvoiceNumber AS InvoiceNumber, OrderInvoices.InvoiceDate AS InvoiceDate, OrderInvoices.DueDate AS DueDate, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, Customers.CompanyDetailId AS CompanyDetailId FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId = Customers.Id LEFT JOIN OrderInvoices ON OrderHeaders.Id = OrderInvoices.Id WHERE OrderHeaders.Id='" & headerId & "'")
 
             Dim orderId As String = headerData("OrderId").ToString()
+            Dim orderNumber As String = headerData("OrderNumber").ToString()
+            Dim orderName As String = headerData("OrderName").ToString()
             Dim customerId As String = headerData("CustomerId").ToString()
             Dim customerName As String = headerData("CustomerName").ToString()
             Dim invoiceNumber As String = headerData("InvoiceNumber").ToString()
@@ -621,7 +623,7 @@ Public Class InvoiceClass
                 dueDate = Convert.ToDateTime(headerData("DueDate")).ToString("dd/MM/yyyy")
             End If
 
-            Dim customerEmail As String = GetItemData("SELECT Email FROM CustomerContacts WHERE CustomerId='" & customerId & "' AND Primary=[1]")
+            Dim customerEmail As String = GetItemData("SELECT Email FROM CustomerContacts WHERE CustomerId='" & customerId & "' AND [Primary]=1")
 
             Dim address As String = String.Empty
             Dim suburb As String = String.Empty
@@ -662,35 +664,68 @@ Public Class InvoiceClass
                 Dim trackType As String = detailData.Rows(i)("TrackType").ToString()
                 Dim trackColour As String = detailData.Rows(i)("TrackColour").ToString()
 
-                Dim linearMetre As Decimal = If(IsDBNull(detailData.Rows(i)("LM")), 0D, Math.Round(Convert.ToDecimal(detailData.Rows(i)("LM")), 2))
-                Dim squareMetre As Decimal = If(IsDBNull(detailData.Rows(i)("SQM")), 0D, Math.Round(Convert.ToDecimal(detailData.Rows(i)("SQM")), 2))
-
-                Dim linearMetreText As String = String.Format("{0}lm", linearMetre.ToString("0.##"))
-                Dim squareMetreText As String = String.Format("{0}sqm", squareMetre.ToString("0.##"))
-
                 Dim invoiceName As String = detailData.Rows(i)("InvoiceName").ToString()
-
                 Dim itemDescription As String = invoiceName
 
-                If designName = "Aluminium Blind" OrElse designName = "Privacy Venetian" OrElse designName = "Venetian Blind" OrElse designName = "Skyline Shutter Express" OrElse designName = "Skyline Shutter Ocean" Then
-                    itemDescription = String.Format("{0} {1} {2}", invoiceName, size, squareMetreText)
+                If designName = "Aluminium Blind" Then
+                    itemDescription = String.Format("{0} {1}", invoiceName, size)
                 End If
 
                 If designName = "Cellular Shades" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)
-                    itemDescription = invoiceName & vbCrLf & fabricColourName & " " & size & " " & squareMetreText
+                    itemDescription = String.Format("{0} {1} {2}", invoiceName, fabricColourName, size)
                 End If
 
                 If designName = "Curtain" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)
-
-                    itemDescription = invoiceName & " " & fabricColourName & " " & size & " " & squareMetreText & vbCrLf & trackType & " " & trackColour & " (" & width & ") " & linearMetreText
+                    itemDescription = String.Format("{0} {1} {2}", invoiceName, fabricColourName, size)
+                    itemDescription &= vbLf
+                    itemDescription &= String.Format("{0} {1} {2}mm", trackType, trackColour, width)
                     If blindName = "Curtain Only" Then
-                        itemDescription = invoiceName & " " & fabricColourName & " " & size & " " & squareMetreText
+                        itemDescription = String.Format("{0} {1} {2}", invoiceName, fabricColourName, size)
                     End If
                     If blindName = "Track Only" Then
-                        itemDescription = invoiceName & " (" & width & ") " & linearMetreText
+                        itemDescription = String.Format("{0} {1} {2}mm", trackType, trackColour, width)
                     End If
+                End If
+
+                If designName = "Design Shades" Then
+                    Dim fabricColourName As String = GetFabricColourName(fabricColourId)
+                    itemDescription = String.Format("{0} {1} {2}", invoiceName, fabricColourName, size)
+                End If
+
+                If designName = "Door" Then
+                    itemDescription = String.Format("{0} {1}", invoiceName, size)
+                End If
+
+                If designName = "Linea Valance" Then
+                    itemDescription = String.Format("{0} {1}mm", invoiceName, width)
+                End If
+
+                If designName = "Panel Glide" Then
+                    Dim fabricColourName As String = GetFabricColourName(fabricColourId)
+                    itemDescription = String.Format("{0} {1} {2}", invoiceName, fabricColourName, size)
+                    If blindName = "Track Only" Then
+                        itemDescription = String.Format("{0} {1}mm", invoiceName, size)
+                    End If
+                End If
+
+                If designName = "Pelmet" Then
+                    itemDescription = String.Format("{0} {1}mm", invoiceName, width)
+                End If
+
+                If designName = "Privacy Venetian" Then
+                    itemDescription = String.Format("{0} {1}", invoiceName, size)
+                End If
+
+                If designName = "Roller Blind" Then
+                    Dim fabricColourName As String = GetFabricColourName(fabricColourId)
+                    itemDescription = String.Format("{0} {1} {2}", invoiceName, fabricColourName, size)
+                End If
+
+                If designName = "Roller Horizon" Then
+                    Dim fabricColourName As String = GetFabricColourName(fabricColourId)
+                    itemDescription = String.Format("{0} {1} {2}", invoiceName, fabricColourName, size)
                 End If
 
                 If designName = "Service" Then
@@ -700,12 +735,38 @@ Public Class InvoiceClass
                     End If
                 End If
 
+                If designName = "Skyline Shutter Express" OrElse designName = "Skyline Shutter Ocean" Then
+                    itemDescription = String.Format("{0} {1}", invoiceName, size)
+                End If
+
+                If designName = "Venetian Blind" Then
+                    itemDescription = String.Format("{0} {1}", invoiceName, size)
+                End If
+
+                If designName = "Vertical" Then
+                    Dim fabricColourName As String = GetFabricColourName(fabricColourId)
+                    itemDescription = String.Format("{0} {1} {2}", invoiceName, fabricColourName, size)
+
+                    If blindName = "Slat Only" Then
+                        itemDescription = String.Format("{0} {1} {2}mm", invoiceName, fabricColourName, drop)
+                    End If
+
+                    If blindName = "Track Only" Then
+                        itemDescription = String.Format("{0} {1} {2}mm", invoiceName, fabricColourName, width)
+                    End If
+                End If
+
+                If designName = "Window" Then
+                    itemDescription = String.Format("{0} {1}", invoiceName, size)
+                End If
+
                 If designType = "Blinds" OrElse designType = "Shutters" Then
                     Dim pricingData As DataTable = GetDataTable("SELECT * FROM OrderCostings WHERE HeaderId='" & headerId & "' AND ItemId='" & itemId & "' AND Number='" & itemNumber & "' AND Type='Surcharge'")
                     For Each row As DataRow In pricingData.Rows
                         Dim pricingDesc As String = row("Description").ToString()
                         pricingDesc = pricingDesc.Replace("#" & itemNumber & " ", "")
-                        itemDescription &= Chr(10) & pricingDesc
+                        itemDescription &= vbLf
+                        itemDescription &= pricingDesc
                     Next
                 End If
 
@@ -714,7 +775,7 @@ Public Class InvoiceClass
                 Dim finalCostText As String = finalCost.ToString("N2")
 
                 Dim xeroName As String = designName
-                If designName = "Service" Then xeroName = blindName
+                If designName = "Service" Then xeroName = invoiceName
 
                 Dim xeroItem As String = GetItemData("SELECT ItemCode FROM Xeros WHERE Name='" & xeroName & "' AND Active=1")
                 Dim xeroAccount As String = GetItemData("SELECT AccountCode FROM Xeros WHERE Name='" & xeroName & "' AND Active=1")
@@ -732,15 +793,20 @@ Public Class InvoiceClass
                 sb.Append(postCode & ",")
                 sb.Append("Australia" & ",")
                 sb.Append(invoiceNumber & ",")
-                sb.Append(orderId & ",")
+                sb.Append(orderNumber & " " & orderName & ",")
                 sb.Append(invoicedDate & ",")
                 sb.Append(dueDate & ",")
                 sb.Append(xeroItem & ",")
 
-                sb.Append(itemDescription & ",")
+                If itemDescription.Contains(vbLf) OrElse itemDescription.Contains(vbCr) OrElse itemDescription.Contains(",") OrElse itemDescription.Contains("""") Then
+                    sb.Append("""" & safeDescription & """" & ",")
+                Else
+                    sb.Append(safeDescription & ",")
+                End If
 
                 sb.Append("1" & ",")
                 sb.Append(finalCostText & ",")
+                sb.Append("" & ",")
                 sb.Append(xeroAccount & ",")
                 sb.Append("GST on Income" & ",")
                 sb.Append("AUD")

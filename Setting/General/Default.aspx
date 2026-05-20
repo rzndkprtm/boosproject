@@ -42,7 +42,7 @@
                     <div class="dashboard-title">Company</div>
                     <div class="dashboard-desc">Description</div>
                 </a>
-                <a href="/setting/general/company" class="dashboard-card">
+                <a href="/setting/general/mailing" class="dashboard-card">
                     <div class="dashboard-number"><%= GetSumData("Mailings") %></div>
                     <div class="dashboard-title">Mailing</div>
                     <div class="dashboard-desc">Description</div>
