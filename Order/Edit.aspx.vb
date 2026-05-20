@@ -50,10 +50,8 @@ Partial Class Order_Edit
                 Exit Sub
             End If
 
-            If InStr(txtOrderNumber.Text, "\") > 0 Or InStr(txtOrderNumber.Text, "/") > 0 Or InStr(txtOrderNumber.Text, ",") > 0 Or InStr(txtOrderNumber.Text, "&") > 0 Or InStr(txtOrderNumber.Text, ",") > 0 Or InStr(txtOrderNumber.Text, "#") > 0 Or InStr(txtOrderNumber.Text, "'") > 0 Or InStr(txtOrderNumber.Text, ".") > 0 Then
-                MessageError(True, "PLEASE DON'T USE [ / ], [ \ ], [ & ], [ # ], [ ' ], [ . ] AND [ , ]")
-                txtOrderNumber.BackColor = Drawing.Color.Red
-                txtOrderNumber.Focus()
+            If InStr(txtOrderNumber.Text, ",") > 0 OrElse InStr(txtOrderNumber.Text, "'") > 0 OrElse InStr(txtOrderNumber.Text, ";") > 0 OrElse InStr(txtOrderNumber.Text, ".") > 0 Then
+                MessageError(True, "PLEASE DON'T USE [ , ], [ ' ], [ ; ], [ , ], AND [ . ]")
                 Exit Sub
             End If
 
@@ -71,10 +69,8 @@ Partial Class Order_Edit
                 Exit Sub
             End If
 
-            If InStr(txtOrderName.Text, "\") > 0 Or InStr(txtOrderName.Text, "/") > 0 Or InStr(txtOrderName.Text, ",") > 0 Or InStr(txtOrderName.Text, "&") > 0 Or InStr(txtOrderName.Text, ",") > 0 Or InStr(txtOrderName.Text, "#") > 0 Or InStr(txtOrderName.Text, "'") > 0 Or InStr(txtOrderName.Text, ".") > 0 Then
-                MessageError(True, "PLEASE DON'T USE [ / ], [ \ ], [ & ], [ # ], [ ' ], [ . ] AND [ , ]")
-                txtOrderName.BackColor = Drawing.Color.Red
-                txtOrderName.Focus()
+            If InStr(txtOrderName.Text, ",") > 0 OrElse InStr(txtOrderName.Text, "'") > 0 OrElse InStr(txtOrderName.Text, ";") > 0 OrElse InStr(txtOrderName.Text, ".") > 0 Then
+                MessageError(True, "PLEASE DON'T USE [ , ], [ ' ], [ ; ], [ , ], AND [ . ]")
                 Exit Sub
             End If
 

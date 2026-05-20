@@ -68,8 +68,8 @@ Partial Class Order_Add
                     Exit Sub
                 End If
 
-                If InStr(txtOrderNumber.Text, "\") > 0 OrElse InStr(txtOrderNumber.Text, "/") > 0 OrElse InStr(txtOrderNumber.Text, ",") > 0 OrElse InStr(txtOrderNumber.Text, "&") > 0 OrElse InStr(txtOrderNumber.Text, "#") > 0 OrElse InStr(txtOrderNumber.Text, "'") > 0 OrElse InStr(txtOrderNumber.Text, ".") > 0 Then
-                    MessageError(True, "PLEASE DON'T USE [ / ], [ \ ], [ & ], [ # ], [ ' ], [ . ] AND [ , ]")
+                If InStr(txtOrderNumber.Text, ",") > 0 OrElse InStr(txtOrderNumber.Text, "'") > 0 OrElse InStr(txtOrderNumber.Text, ";") > 0 OrElse InStr(txtOrderNumber.Text, ".") > 0 Then
+                    MessageError(True, "PLEASE DON'T USE [ , ], [ ' ], [ ; ], [ , ], AND [ . ]")
                     Exit Sub
                 End If
 
@@ -80,6 +80,11 @@ Partial Class Order_Add
 
                 If txtOrderName.Text = "" Then
                     MessageError(True, "ORDER NAME IS REQUIRED !")
+                    Exit Sub
+                End If
+
+                If InStr(txtOrderName.Text, ",") > 0 OrElse InStr(txtOrderName.Text, "'") > 0 OrElse InStr(txtOrderName.Text, ";") > 0 OrElse InStr(txtOrderName.Text, ".") > 0 Then
+                    MessageError(True, "PLEASE DON'T USE [ , ], [ ' ], [ ; ], [ , ], AND [ . ]")
                     Exit Sub
                 End If
 
