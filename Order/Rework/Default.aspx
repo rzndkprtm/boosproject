@@ -119,7 +119,7 @@
                         <div class="card-footer">
                             <div class="row" runat="server" id="divActive">
                                 <div class="col-lg-2 col-md-12 col-sm-12">
-                                    <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select" AutoPostBack="true">
+                                    <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlActive_SelectedIndexChanged">
                                         <asp:ListItem Value="1" Text="Active"></asp:ListItem>
                                         <asp:ListItem Value="0" Text="Non Active"></asp:ListItem>
                                     </asp:DropDownList>
