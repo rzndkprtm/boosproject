@@ -62,8 +62,8 @@
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:BoundField DataField="name" HeaderText="Stored Procedure Name" />
-                                                <asp:BoundField DataField="create_date" HeaderText="Created Date" DataFormatString="{0:dd MMM yyyy hh:mm:ss}" />
-                                                <asp:BoundField DataField="modify_date" HeaderText="Modify Date" DataFormatString="{0:dd MMM yyyy hh:mm:ss}" />
+                                                <asp:BoundField DataField="create_date" HeaderText="Created Date" DataFormatString="{0:dd MMM yyyy HH:mm:ss}" />
+                                                <asp:BoundField DataField="modify_date" HeaderText="Modify Date" DataFormatString="{0:dd MMM yyyy HH:mm:ss}" />
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
                                                     <ItemTemplate>
                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>

@@ -62,8 +62,8 @@
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:BoundField DataField="TableName" HeaderText="Table Name" />
-                                                <asp:BoundField DataField="CreatedDate" HeaderText="Created Date" DataFormatString="{0:dd MMM yyyy hh:mm:ss}" />
-                                                <asp:BoundField DataField="ModifiedDate" HeaderText="Modify Date" DataFormatString="{0:dd MMM yyyy hh:mm:ss}" />
+                                                <asp:BoundField DataField="CreatedDate" HeaderText="Created Date" DataFormatString="{0:dd MMM yyyy HH:mm:ss}" />
+                                                <asp:BoundField DataField="ModifiedDate" HeaderText="Modify Date" DataFormatString="{0:dd MMM yyyy HH:mm:ss}" />
                                                 <asp:BoundField DataField="TotalRow" HeaderText="Rows" />
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
                                                     <ItemTemplate>
