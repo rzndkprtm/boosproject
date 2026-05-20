@@ -101,7 +101,7 @@
                                                             <li runat="server" visible='<%# VisibleDelete(Eval("Status").ToString()) %>' onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>
                                                                 <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                             </li>
-                                                            <li>
+                                                            <li runat="server" visible='<%# VisibleLog() %>'>
                                                                 <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('OrderReworks', '<%# Eval("Id") %>')">Log</a>
                                                             </li>
                                                         </ul>
