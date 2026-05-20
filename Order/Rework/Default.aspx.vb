@@ -1,5 +1,6 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
+Imports Microsoft.Ajax.Utilities
 
 Partial Class Order_Rework_Default
     Inherits Page
@@ -165,8 +166,22 @@ Partial Class Order_Rework_Default
     End Function
 
     Protected Function VisibleDelete(status As String) As Boolean
-        If status = "Unsubmitted" Then Return True
-        Return False
+        Try
+            If Session("RoleName") = "Developer" Then Return True
+            If status = "Unsubmitted" Then Return True
+            Return False
+        Catch ex As Exception
+            Return False
+        End Try
+    End Function
+
+    Protected Function VisibleLog() As Boolean
+        Try
+            If Session("RoleName") = "Developer" Then Return True
+            Return False
+        Catch ex As Exception
+            Return False
+        End Try
     End Function
 
     Protected Function PageAction(action As String) As Boolean

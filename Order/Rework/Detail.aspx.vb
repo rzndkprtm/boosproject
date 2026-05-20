@@ -498,7 +498,7 @@ Partial Class Order_Rework_Detail
             aRejectRework.Visible = False
 
             If lblStatus.Text = "Unsubmitted" Then
-                If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Customer" Then
+                If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Customer" OrElse Session("RoleName") = "Sales" Then
                     aCancelRework.Visible = True
                     aSubmitRework.Visible = True
                 End If
