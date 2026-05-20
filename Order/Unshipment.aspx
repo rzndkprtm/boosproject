@@ -259,29 +259,6 @@
     </div>
 
     <script type="text/javascript">
-        <%--document.addEventListener('DOMContentLoaded', function () {
-            const gv = document.getElementById('<%= gvList.ClientID %>');
-            if (!gv) return;
-
-            for (let i = 1; i < gv.rows.length; i++) {
-                const row = gv.rows[i];
-                row.style.cursor = 'pointer';
-
-                row.addEventListener('click', function (e) {
-                    if (
-                        e.target.closest("a") ||
-                        e.target.closest("button") ||
-                        e.target.closest("[data-bs-toggle]")
-                    ) {
-                        return;
-                    }
-
-                    const btn = this.querySelector("a[id*='linkDetail']");
-                    if (btn) btn.click();
-                });
-            }
-        });--%>
-
         function showShipmentOrder() {
             $("#modalShipmentOrder").modal("show");
         }

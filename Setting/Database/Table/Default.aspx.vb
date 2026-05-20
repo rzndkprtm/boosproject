@@ -13,7 +13,6 @@
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-            txtSearch.Text = Session("SearchTable")
             BindData(txtSearch.Text)
         End If
     End Sub
@@ -42,13 +41,12 @@
     End Sub
 
     Protected Sub BindData(searchText As String)
-        Session("SearchTable") = String.Empty
         Try
             Dim search As String = String.Empty
             If Not searchText = "" Then
                 search = "AND t.TABLE_NAME LIKE '%" & searchText & "%'"
             End If
-            Dim thisString As String = String.Format("SELECT t.TABLE_NAME AS TableName, p.rows AS TotalRow FROM INFORMATION_SCHEMA.TABLES t INNER JOIN sys.tables s ON t.TABLE_NAME=s.name INNER JOIN sys.partitions p ON s.object_id=p.object_id WHERE t.TABLE_TYPE='BASE TABLE' AND p.index_id IN (0,1) {0} ORDER BY t.TABLE_NAME", search)
+            Dim thisString As String = String.Format("SELECT t.TABLE_NAME AS TableName, p.rows AS TotalRow, s.create_date AS CreatedDate, s.modify_date AS ModifiedDate FROM INFORMATION_SCHEMA.TABLES t INNER JOIN sys.tables s ON t.TABLE_NAME=s.name INNER JOIN sys.partitions p ON s.object_id=p.object_id WHERE t.TABLE_TYPE='BASE TABLE' AND p.index_id IN (0,1) {0} ORDER BY t.TABLE_NAME", search)
 
             gvList.DataSource = settingClass.GetDataTable(thisString)
             gvList.DataBind()

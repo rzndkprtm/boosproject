@@ -23,7 +23,7 @@
     </div>
     <div class="page-content">
         <section class="row">
-            <div class="col-7">
+            <div class="col-12">
                 <div class="card">
                     <div class="card-content">
                         <div class="card-header">
@@ -61,16 +61,18 @@
                                                         <%# Container.DataItemIndex + 1 %>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-                                                <asp:BoundField DataField="ProcedureName" HeaderText="Stored Procedure Name" />
+                                                <asp:BoundField DataField="name" HeaderText="Stored Procedure Name" />
+                                                <asp:BoundField DataField="create_date" HeaderText="Created Date" DataFormatString="{0:dd MMM yyyy hh:mm:ss}" />
+                                                <asp:BoundField DataField="modify_date" HeaderText="Modify Date" DataFormatString="{0:dd MMM yyyy hh:mm:ss}" />
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
                                                     <ItemTemplate>
                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                         <ul class="dropdown-menu">
                                                             <li>
-                                                                <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("ProcedureName").ToString() %>'></asp:LinkButton>
+                                                                <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("name").ToString() %>'></asp:LinkButton>
                                                             </li>
                                                             <li>
-                                                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("ProcedureName").ToString()) %>'>Delete</a>
+                                                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("name").ToString()) %>'>Delete</a>
                                                             </li>
                                                         </ul>
                                                     </ItemTemplate>
@@ -87,7 +89,6 @@
                     </div>
                 </div>
             </div>
-            <div class="col-5"></div>
         </section>
     </div>
 

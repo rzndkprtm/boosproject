@@ -23,7 +23,7 @@
     </div>
     <div class="page-content">
         <section class="row">
-            <div class="col-8">
+            <div class="col-12">
                 <div class="card">
                     <div class="card-content">
                         <div class="card-header">
@@ -63,8 +63,8 @@
                                                 </asp:TemplateField>
                                                 <asp:BoundField DataField="ViewName" HeaderText="View Name" />
                                                 <asp:BoundField DataField="SchemaName" HeaderText="Schema Name" />
-                                                <asp:BoundField DataField="create_date" HeaderText="Created Date" />
-                                                <asp:BoundField DataField="modify_date" HeaderText="Modify Date" />
+                                                <asp:BoundField DataField="create_date" HeaderText="Created Date" DataFormatString="{0:dd MMM yyyy hh:mm:ss}" />
+                                                <asp:BoundField DataField="modify_date" HeaderText="Modify Date" DataFormatString="{0:dd MMM yyyy hh:mm:ss}" />
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
                                                     <ItemTemplate>
                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
@@ -87,7 +87,6 @@
                     </div>
                 </div>
             </div>
-            <div class="col-4"></div>
          </section>
     </div>
 
