@@ -1,8 +1,6 @@
-﻿Imports System.ComponentModel.Design
-Imports System.Data
+﻿Imports System.Data
 Imports System.Data.SqlClient
 Imports System.IO
-Imports System.Runtime.InteropServices.ComTypes
 Imports iTextSharp.text
 Imports iTextSharp.text.pdf
 Imports OfficeOpenXml
@@ -212,10 +210,59 @@ Public Class ReportClass
         End Try
     End Function
 
+    Public Function CustomerExcel(companyId As String, roleName As String) As Byte()
+        Try
+            Using ms As New MemoryStream()
+                Dim params As New List(Of SqlParameter) From {
+                    New SqlParameter("@Active", 1),
+                    New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(companyId), CType(DBNull.Value, Object), companyId)),
+                    New SqlParameter("@RoleName", roleName)
+                }
+
+                Dim dt As DataTable = GetDataTableSP("sp_CustomerList", params)
+
+                Using package As New ExcelPackage()
+                    Dim ws = package.Workbook.Worksheets.Add("Data Customer")
+
+                    ws.Cells(1, 1).Value = "NAME"
+                    ws.Cells(1, 2).Value = "LEVEL"
+                    ws.Cells(1, 3).Value = "OPERATOR NAME"
+                    ws.Cells(1, 4).Value = "CASH SALE"
+                    ws.Cells(1, 5).Value = "ON STOP"
+                    ws.Cells(1, 6).Value = "MIN SURCHARGE"
+
+                    Using rng = ws.Cells(1, 1, 1, 6)
+                        rng.Style.Font.Bold = True
+                    End Using
+
+                    Dim row As Integer = 2
+
+                    For Each dr As DataRow In dt.Rows
+                        ws.Cells(row, 1).Value = dr("Name").ToString()
+                        ws.Cells(row, 2).Value = dr("Level").ToString()
+                        ws.Cells(row, 3).Value = dr("OperatorName").ToString()
+                        ws.Cells(row, 4).Value = dr("CustomerCashSale").ToString()
+                        ws.Cells(row, 5).Value = dr("CustomerOnStop").ToString()
+                        ws.Cells(row, 6).Value = dr("CustomerMinSurcharge").ToString()
+
+                        row += 1
+                    Next
+
+                    ws.Cells(ws.Dimension.Address).AutoFitColumns()
+
+                    package.SaveAs(ms)
+                End Using
+
+                Return ms.ToArray()
+            End Using
+        Catch ex As Exception
+            Return New Byte() {}
+        End Try
+    End Function
+
     Public Function DataOrderPDF(companyId As String, startDate As Date, endDate As Date) As Byte()
         Try
             Using ms As New MemoryStream()
-
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(companyId), CType(DBNull.Value, Object), companyId)),
                     New SqlParameter("@StartDate", startDate),
@@ -295,7 +342,6 @@ Public Class ReportClass
                 Using package As New ExcelPackage()
                     Dim ws = package.Workbook.Worksheets.Add("Data Order")
 
-                    ' HEADER
                     ws.Cells(1, 1).Value = "ORDER ID"
                     ws.Cells(1, 2).Value = "CUSTOMER NAME"
                     ws.Cells(1, 3).Value = "ORDER NUMBER"
@@ -303,7 +349,6 @@ Public Class ReportClass
                     ws.Cells(1, 5).Value = "SUBMITTED"
                     ws.Cells(1, 6).Value = "PRODUCTION"
 
-                    ' STYLE HEADER
                     Using rng = ws.Cells(1, 1, 1, 6)
                         rng.Style.Font.Bold = True
                     End Using
@@ -351,7 +396,6 @@ Public Class ReportClass
 
             Dim sb As New StringBuilder()
 
-            ' HEADER
             sb.AppendLine("ORDER ID,CUSTOMER NAME,ORDER NUMBER,ORDER NAME,SUBMITTED,PRODUCTION")
 
             For Each dr As DataRow In dt.Rows
@@ -381,7 +425,6 @@ Public Class ReportClass
             Using ms As New MemoryStream()
                 Dim visibleColumns As New List(Of DataColumn)
                 For Each col As DataColumn In dt.Columns
-
                     Dim colName As String = col.ColumnName.Trim()
                     If String.Equals(colName, "SortOrder", StringComparison.OrdinalIgnoreCase) Then Continue For
                     If String.Equals(colName, "Total Order", StringComparison.OrdinalIgnoreCase) Then Continue For
