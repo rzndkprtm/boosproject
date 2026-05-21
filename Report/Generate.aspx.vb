@@ -1,6 +1,5 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
-Imports Org.BouncyCastle.Asn1.Cmp
 
 Partial Class Report_Generate
     Inherits Page
@@ -65,7 +64,6 @@ Partial Class Report_Generate
 
                     HttpContext.Current.ApplicationInstance.CompleteRequest()
                 End If
-
                 If ddlFileType.SelectedValue = "EXCEL" Then
                     Dim company As String = ddlCompany.SelectedValue
                     If ddlCompany.SelectedValue = "ALL" Then company = String.Empty
@@ -79,12 +77,13 @@ Partial Class Report_Generate
 
                     Dim dt As DataTable = reportClass.GetDataTableSP("sp_ReportPerCustomer", paramsPivot)
                     Dim excelBytes As Byte() = reportClass.StatisticExcel(dt, "REPORT PER CUSTOMER")
+
                     Response.Clear()
                     Response.Buffer = True
                     Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                    Response.AddHeader("Content-Disposition", "attachment; filename=REPORT.xlsx")
+                    Response.AddHeader("Content-Disposition", "attachment; filename=REPORT_PER_CUSTOMER.xlsx")
                     Response.BinaryWrite(excelBytes)
-                    Response.End()
+                    Response.Flush()
                     HttpContext.Current.ApplicationInstance.CompleteRequest()
                 End If
             End If
@@ -133,6 +132,18 @@ Partial Class Report_Generate
                     Response.BinaryWrite(csvBytes)
                     Response.Flush()
                     Response.End()
+                End If
+            End If
+
+            If ddlDataType.SelectedValue = "Customers" Then
+                If ddlFileType.SelectedValue = "PDF" Then
+
+                End If
+                If ddlFileType.SelectedValue = "EXCEL" Then
+
+                End If
+                If ddlFileType.SelectedValue = "CSV" Then
+
                 End If
             End If
         Catch ex As Exception
