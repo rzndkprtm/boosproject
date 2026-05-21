@@ -142,6 +142,7 @@
                                             <div class="table-responsive">
                                                 <asp:GridView runat="server" ID="gvTube" CssClass="table table-bordered table-hover" AutoGenerateColumns="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center"></asp:GridView>
                                             </div>
+                                            <p><small class="text-muted">* This is currently used to display data for Roller Blind products only.</small></p>
                                         </div>
                                     </div>
                                 </div>
