@@ -264,29 +264,29 @@ Partial Class Order_Detail
                 dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), "Quote Order"}
                 orderClass.Logs(dataLog)
 
-                Dim thisId As String = orderClass.GetNewOrderItemId()
+                'Dim thisId As String = orderClass.GetNewOrderItemId()
 
-                Dim productId As String = orderClass.GetItemData("SELECT Id FROM Products WHERE Name='Fuel Surcharge' AND (Status='In Stock' OR Status='Limited Stock')")
-                Dim productGroupId As String = orderClass.GetItemData("SELECT Id FROM PriceProductGroups WHERE Name='Fuel Surcharge' AND Active=1")
+                'Dim productId As String = orderClass.GetItemData("SELECT Id FROM Products WHERE Name='Fuel Surcharge' AND (Status='In Stock' OR Status='Limited Stock')")
+                'Dim productGroupId As String = orderClass.GetItemData("SELECT Id FROM PriceProductGroups WHERE Name='Fuel Surcharge' AND Active=1")
 
-                Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, 1, 0, 0, 1, 0, 1)", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", thisId)
-                        myCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
-                        myCmd.Parameters.AddWithValue("@ProductId", If(String.IsNullOrEmpty(productId), CType(DBNull.Value, Object), productId))
-                        myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(productGroupId), CType(DBNull.Value, Object), productGroupId))
+                'Using thisConn As New SqlConnection(myConn)
+                '    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, 1, 0, 0, 1, 0, 1)", thisConn)
+                '        myCmd.Parameters.AddWithValue("@Id", thisId)
+                '        myCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
+                '        myCmd.Parameters.AddWithValue("@ProductId", If(String.IsNullOrEmpty(productId), CType(DBNull.Value, Object), productId))
+                '        myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(productGroupId), CType(DBNull.Value, Object), productGroupId))
 
-                        thisConn.Open()
-                        myCmd.ExecuteNonQuery()
-                    End Using
-                End Using
+                '        thisConn.Open()
+                '        myCmd.ExecuteNonQuery()
+                '    End Using
+                'End Using
 
-                dataLog = {"OrderDetails", thisId, "2", "Order Item Added"}
-                orderClass.Logs(dataLog)
+                'dataLog = {"OrderDetails", thisId, "2", "Order Item Added"}
+                'orderClass.Logs(dataLog)
 
-                orderClass.ResetPriceDetail(lblHeaderId.Text, thisId)
-                orderClass.CalculatePrice(lblHeaderId.Text, thisId)
-                orderClass.FinalCostItem(lblHeaderId.Text, thisId)
+                'orderClass.ResetPriceDetail(lblHeaderId.Text, thisId)
+                'orderClass.CalculatePrice(lblHeaderId.Text, thisId)
+                'orderClass.FinalCostItem(lblHeaderId.Text, thisId)
 
                 url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
                 Response.Redirect(url, False)
@@ -1150,31 +1150,6 @@ Partial Class Order_Detail
             End If
         End Try
     End Sub
-
-
-    'Protected Sub btnDownloadInvoiceCSV_Click(sender As Object, e As EventArgs)
-    '    MessageError(False, String.Empty)
-    '    Try
-    '        Dim invoiceClass As New InvoiceClass
-    '        Dim data As String = invoiceClass.BindXero(lblHeaderId.Text)
-
-    '        Dim fileName As String = String.Format("{0}.csv", lblInvoiceNumber.Text)
-
-    '        Response.Clear()
-    '        Response.Buffer = True
-    '        Response.AddHeader("content-disposition", "attachment;filename=" & fileName & "")
-    '        Response.ContentType = "text/csv"
-
-    '        Response.Write(data)
-    '        Response.Flush()
-    '        Response.End()
-    '    Catch ex As Exception
-    '        MessageError(True, ex.ToString())
-    '        If Not Session("RoleName") = "Developer" Then
-    '            MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-    '        End If
-    '    End Try
-    'End Sub
 
     Protected Sub btnInvoiceNumber_Click(sender As Object, e As EventArgs)
         MessageError_InvoiceNumber(False, String.Empty)
