@@ -19,6 +19,9 @@ Partial Class Report_Default
 
             gvList.DataSource = Nothing : gvList.DataBind()
             gvBlindsPivot.DataSource = Nothing : gvBlindsPivot.DataBind()
+            gvFabric.DataSource = Nothing : gvFabric.DataBind()
+            gvBottom.DataSource = Nothing : gvBottom.DataBind()
+            gvTube.DataSource = Nothing : gvTube.DataBind()
 
             btnGenerate.Visible = PageAction("Generate")
         End If
@@ -53,11 +56,12 @@ Partial Class Report_Default
 
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
-        gvList.DataSource = Nothing
-        gvList.DataBind()
 
-        gvBlindsPivot.DataSource = Nothing
-        gvBlindsPivot.DataBind()
+        gvList.DataSource = Nothing : gvList.DataBind()
+        gvBlindsPivot.DataSource = Nothing : gvBlindsPivot.DataBind()
+        gvFabric.DataSource = Nothing : gvFabric.DataBind()
+        gvBottom.DataSource = Nothing : gvBottom.DataBind()
+        gvTube.DataSource = Nothing : gvTube.DataBind()
         Try
             If txtStartDate.Text = "" Then
                 MessageError(True, "START DATE IS REQUIRED !")
@@ -86,6 +90,33 @@ Partial Class Report_Default
                 }
                 gvBlindsPivot.DataSource = reportClass.GetDataTableSP("sp_ReportPerCustomer", paramsPivot)
                 gvBlindsPivot.DataBind()
+
+                Dim paramsFabric As New List(Of SqlParameter) From {
+                    New SqlParameter("@Status", ddlStatus.SelectedValue),
+                    New SqlParameter("@StartDate", txtStartDate.Text),
+                    New SqlParameter("@EndDate", txtEndDate.Text),
+                    New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(ddlCompany.SelectedValue), CType(DBNull.Value, Object), ddlCompany.SelectedValue))
+                }
+                gvFabric.DataSource = reportClass.GetDataTableSP("sp_ReportPerFabricColour", paramsFabric)
+                gvFabric.DataBind()
+
+                Dim paramsBottom As New List(Of SqlParameter) From {
+                    New SqlParameter("@Status", ddlStatus.SelectedValue),
+                    New SqlParameter("@StartDate", txtStartDate.Text),
+                    New SqlParameter("@EndDate", txtEndDate.Text),
+                    New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(ddlCompany.SelectedValue), CType(DBNull.Value, Object), ddlCompany.SelectedValue))
+                }
+                gvBottom.DataSource = reportClass.GetDataTableSP("sp_ReportPerBottomColour", paramsBottom)
+                gvBottom.DataBind()
+
+                Dim paramsTube As New List(Of SqlParameter) From {
+                    New SqlParameter("@Status", ddlStatus.SelectedValue),
+                    New SqlParameter("@StartDate", txtStartDate.Text),
+                    New SqlParameter("@EndDate", txtEndDate.Text),
+                    New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(ddlCompany.SelectedValue), CType(DBNull.Value, Object), ddlCompany.SelectedValue))
+                }
+                gvTube.DataSource = reportClass.GetDataTableSP("sp_ReportPerTube", paramsTube)
+                gvTube.DataBind()
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -100,8 +131,7 @@ Partial Class Report_Default
     End Sub
 
     Protected Sub BindCompany()
-        ddlCompany.Items.Clear()
-        ddlCompany.Enabled = True
+        ddlCompany.Items.Clear() : ddlCompany.Enabled = True
         Try
             ddlCompany.DataSource = reportClass.GetDataTable("SELECT * FROM Companys WHERE Active=1 ORDER BY Name ASC")
             ddlCompany.DataTextField = "Alias"

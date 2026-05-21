@@ -67,10 +67,10 @@ Partial Class Order_Default
             End If
 
             If ddlExportType.SelectedValue = "PDF" Then
-                Dim exportClass As New ExportClass
-                Dim pdfBytes As Byte() = exportClass.BindContentPDF(ddlCompany.SelectedValue, txtExportStartDate.Text, txtExportEndDate.Text)
+                Dim reportClass As New ReportClass
+                Dim pdfBytes As Byte() = reportClass.DataOrderPDF(ddlCompany.SelectedValue, txtExportStartDate.Text, txtExportEndDate.Text)
 
-                Dim fileName As String = String.Format("EXPORT ORDER {0} {1}.pdf", String.Empty, String.Empty)
+                Dim fileName As String = String.Format("REPORT DATA ORDER {0} {1}.pdf", String.Empty, String.Empty)
 
                 Response.Clear()
                 Response.ContentType = "application/pdf"
