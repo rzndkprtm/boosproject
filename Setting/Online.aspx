@@ -91,7 +91,7 @@
                     </div>
                     <div class="card-footer">
                         <div class="row" runat="server" id="divMinute">
-                            <div class="col-12 col-sm-12 col-lg-4">
+                            <div class="col-12 col-sm-12 col-lg-2">
                                 <div class="input-group">
                                     <span class="input-group-text">Minute : </span>
                                     <asp:DropDownList runat="server" ID="ddlMinute" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlMinute_SelectedIndexChanged">
