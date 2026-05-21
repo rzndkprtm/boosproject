@@ -25,6 +25,10 @@ Partial Class Report_Default
         End If
     End Sub
 
+    Protected Sub btnGenerate_Click(sender As Object, e As EventArgs)
+        Response.Redirect("~/report/generate", False)
+    End Sub
+
     Protected Sub gvList_RowDataBound(sender As Object, e As GridViewRowEventArgs)
         If ddlStatus.SelectedValue = "In Production" Then
 
@@ -138,4 +142,6 @@ Partial Class Report_Default
             Return False
         End Try
     End Function
+
+
 End Class

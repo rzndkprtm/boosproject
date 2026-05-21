@@ -417,13 +417,7 @@
     </div>
 
     <script type="text/javascript">
-        [
-            "modalWaiting",
-            "modalUpdateItem", "modalUpload", "modalDeleteItem",
-            "modalCancelRework", "modalSubmitRework",
-            "modalApproveRework", "modalRejectRework"
-            
-        ].forEach(id => {
+        ["modalWaiting", "modalUpdateItem", "modalUpload", "modalDeleteItem", "modalCancelRework", "modalSubmitRework", "modalApproveRework", "modalRejectRework"].forEach(id => {
             document.getElementById(id).addEventListener("hide.bs.modal", () => {
                 document.activeElement.blur();
                 document.body.focus();

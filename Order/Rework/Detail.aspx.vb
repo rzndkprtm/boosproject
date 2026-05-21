@@ -7,7 +7,7 @@ Partial Class Order_Rework_Detail
     Inherits Page
 
     Dim orderClass As New OrderClass
-    
+
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataLog As Object() = Nothing
     Dim url As String = String.Empty
