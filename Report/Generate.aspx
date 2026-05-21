@@ -1,0 +1,1 @@
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Generate.aspx.vb" Inherits="Report_Generate" MasterPageFile="~/Site.master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Generate Report" %>

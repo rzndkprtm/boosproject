@@ -30,6 +30,11 @@
         </div>
     </div>
     <div class="page-content">
+        <section class="row mb-4">
+            <div class="col-12 d-flex justify-content-end flex-wrap gap-2">
+                <asp:Button runat="server" ID="btnGenerate" CssClass="btn btn-success" Text="Generate Report" OnClick="btnGenerate_Click" />
+            </div>
+        </section>
         <section class="row mb-3" runat="server" id="divError">
             <div class="col-12">
                 <div class="alert alert-danger">
@@ -38,27 +43,21 @@
             </div>
         </section>
         <section class="row">
-            <div class="col-12 col-sm-12 col-lg-5">
+            <div class="col-12 col-sm-12 col-lg-4">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title">Report Filters</h4>
                     </div>
                     <div class="card-content">
                         <div class="card-body">
-                            <div class="form form-horizontal">
-                                <div class="row" runat="server" id="divCompany">
-                                    <div class="col-12 col-sm-12 col-lg-3">
-                                        <label class="form-label">Company</label>
-                                    </div>
+                            <div class="form form-vertical">
+                                <div class="row">
                                     <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                        <label class="form-label">Company</label>
                                         <asp:DropDownList runat="server" ID="ddlCompany" CssClass="form-select"></asp:DropDownList>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-12 col-sm-12 col-lg-3">
+                                    <div class="col-12 col-sm-12 col-lg-6 form-group" runat="server" id="divCompany">
                                         <label class="form-label">Status</label>
-                                    </div>
-                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
                                         <asp:DropDownList runat="server" ID="ddlStatus" CssClass="form-select">
                                             <asp:ListItem Value="" Text=""></asp:ListItem>
                                             <asp:ListItem Value="Submitted" Text="Submitted"></asp:ListItem>
@@ -67,13 +66,12 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-12 col-sm-12 col-lg-3">
-                                        <label class="form-label">Date</label>
-                                    </div>
-                                    <div class="col-6 col-sm-6 col-lg-4 form-group">
+                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                        <label class="form-label">Start Date</label>
                                         <asp:TextBox runat="server" ID="txtStartDate" CssClass="form-control" TextMode="Date"></asp:TextBox>
                                     </div>
-                                    <div class="col-6 col-sm-6 col-lg-4 form-group">
+                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                        <label class="form-label">End Date</label>
                                         <asp:TextBox runat="server" ID="txtEndDate" CssClass="form-control" TextMode="Date"></asp:TextBox>
                                     </div>
                                 </div>
@@ -86,9 +84,7 @@
                     </div>
                 </div>
             </div>
-        </section>
-        <section class="row">
-            <div class="col-12">
+            <div class="col-12 col-sm-12 col-lg-8">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title">Report Output</h4>
@@ -96,8 +92,10 @@
                     <div class="card-content">
                         <div class="card-body">
                             <div class="list-group list-group-horizontal-sm mb-1 text-center" role="tablist">
-                                <a class="list-group-item list-group-item-action active" id="list-sunday-list" data-bs-toggle="list" href="#list-sunday" role="tab">Output</a>
-                                <a class="list-group-item list-group-item-action" id="list-monday-list" data-bs-toggle="list" href="#list-monday" role="tab">Output Include Customer</a>
+                                <a class="list-group-item list-group-item-action active" id="list-sunday-list" data-bs-toggle="list" href="#list-sunday" role="tab">Products</a>
+                                <a class="list-group-item list-group-item-action" id="listCustomer" data-bs-toggle="list" href="#list-customer" role="tab">Customers</a>
+                                <a class="list-group-item list-group-item-action" id="listFabric" data-bs-toggle="list" href="#list-fabric" role="tab">Fabrics</a>
+                                <a class="list-group-item list-group-item-action" id="listBottom" data-bs-toggle="list" href="#list-bottom" role="tab">Bottom Rails</a>
                             </div>
                             <div class="tab-content text-justify">
                                 <div class="tab-pane fade show active" id="list-sunday" role="tabpanel" aria-labelledby="list-sunday-list">
@@ -109,11 +107,29 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="tab-pane fade" id="list-monday" role="tabpanel" aria-labelledby="list-monday-list">
+                                <div class="tab-pane fade" id="list-customer" role="tabpanel" aria-labelledby="listCustomer">
                                     <div class="row mt-3">
                                         <div class="col-12">
                                             <div class="grid-container table-responsive">
                                                 <asp:GridView runat="server" ID="gvBlindsPivot" CssClass="table table-bordered table-hover" AutoGenerateColumns="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowDataBound="gvBlindsPivot_RowDataBound"></asp:GridView>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="list-fabric" role="tabpanel" aria-labelledby="listFabric">
+                                    <div class="row mt-3">
+                                        <div class="col-12">
+                                            <div class="table-responsive">
+                                                <asp:GridView runat="server" ID="gvFabric" CssClass="table table-bordered table-hover" AutoGenerateColumns="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center"></asp:GridView>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="list-bottom" role="tabpanel" aria-labelledby="listBottom">
+                                    <div class="row mt-3">
+                                        <div class="col-12">
+                                            <div class="table-responsive">
+                                                <asp:GridView runat="server" ID="gvBottom" CssClass="table table-bordered table-hover" AutoGenerateColumns="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center"></asp:GridView>
                                             </div>
                                         </div>
                                     </div>
