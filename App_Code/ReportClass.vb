@@ -1,10 +1,11 @@
-﻿Imports System.Data
+﻿Imports System.ComponentModel.Design
+Imports System.Data
 Imports System.Data.SqlClient
 Imports System.IO
+Imports System.Runtime.InteropServices.ComTypes
 Imports iTextSharp.text
 Imports iTextSharp.text.pdf
 Imports OfficeOpenXml
-Imports OfficeOpenXml.Style
 
 Public Class ReportClass
 
@@ -90,12 +91,15 @@ Public Class ReportClass
     End Function
 
     Private Function EscapeCsv(value As String) As String
-        If value.Contains(",") OrElse value.Contains("""") Then
-            value = value.Replace("""", """""")
-            Return """" & value & """"
-        End If
-
-        Return value
+        Try
+            If value.Contains(",") OrElse value.Contains("""") Then
+                value = value.Replace("""", """""")
+                Return """" & value & """"
+            End If
+            Return value
+        Catch ex As Exception
+            Return String.Empty
+        End Try
     End Function
 
     Private Function CellDataOrder(text As String, Optional isBold As Boolean = False, Optional alignH As Integer = Element.ALIGN_LEFT) As PdfPCell
@@ -155,6 +159,59 @@ Public Class ReportClass
         End Try
     End Function
 
+    Public Function CustomerPDF(companyId As String, roleName As String) As Byte()
+        Try
+            Using ms As New MemoryStream()
+                Dim params As New List(Of SqlParameter) From {
+                    New SqlParameter("@Active", 1),
+                    New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(companyId), CType(DBNull.Value, Object), companyId)),
+                    New SqlParameter("@RoleName", roleName)
+                }
+
+                Dim doc As New Document(PageSize.A4.Rotate, 20, 20, 80, 50)
+                Dim writer As PdfWriter = PdfWriter.GetInstance(doc, ms)
+
+                writer.PageEvent = New ReportDataOrderEvents("REPORT DATA CUSTOMERS")
+                doc.Open()
+
+                Dim table As New PdfPTable(6)
+
+                table.WidthPercentage = 100
+                table.SetWidths(New Single() {0.1F, 0.3F, 0.2F, 0.2F, 0.1F, 0.1F})
+
+                table.HeaderRows = 1
+                table.SplitLate = False
+                table.KeepTogether = False
+
+                table.AddCell(CellDataOrder("NAME", isBold:=True))
+                table.AddCell(CellDataOrder("LEVEL", isBold:=True))
+                table.AddCell(CellDataOrder("OPERATOR NAME", isBold:=True))
+                table.AddCell(CellDataOrder("CASH SALE", isBold:=True))
+                table.AddCell(CellDataOrder("ON STOP", isBold:=True))
+                table.AddCell(CellDataOrder("MIN SURCHARGE", isBold:=True))
+
+                Dim thisData As DataTable = GetDataTableSP("sp_CustomerList", params)
+                If thisData.Rows.Count > 0 Then
+                    For i As Integer = 0 To thisData.Rows.Count - 1
+                        table.AddCell(CellDataOrder(thisData.Rows(i)("Name").ToString()))
+                        table.AddCell(CellDataOrder(thisData.Rows(i)("Level").ToString()))
+                        table.AddCell(CellDataOrder(thisData.Rows(i)("OperatorName").ToString()))
+                        table.AddCell(CellDataOrder(thisData.Rows(i)("CustomerCashSale").ToString()))
+                        table.AddCell(CellDataOrder(thisData.Rows(i)("CustomerOnStop").ToString()))
+                        table.AddCell(CellDataOrder(thisData.Rows(i)("CustomerMinSurcharge").ToString()))
+                    Next
+                End If
+
+                doc.Add(table)
+                doc.Close()
+
+                Return ms.ToArray()
+            End Using
+        Catch ex As Exception
+            Return New Byte() {}
+        End Try
+    End Function
+
     Public Function DataOrderPDF(companyId As String, startDate As Date, endDate As Date) As Byte()
         Try
             Using ms As New MemoryStream()
@@ -190,7 +247,6 @@ Public Class ReportClass
                 Dim thisData As DataTable = GetDataTableSP("sp_GetOrderHeadersForExport", params)
                 If thisData.Rows.Count > 0 Then
                     For i As Integer = 0 To thisData.Rows.Count - 1
-
                         Dim orderId As String = thisData.Rows(i)("OrderId").ToString()
                         Dim customerName As String = thisData.Rows(i)("CustomerName").ToString()
                         Dim orderNumber As String = thisData.Rows(i)("OrderNumber").ToString()
@@ -383,53 +439,57 @@ Public Class ReportClass
     End Function
 
     Public Function StatisticExcel(dt As DataTable, title As String) As Byte()
-        Dim visibleColumns As New List(Of DataColumn)
+        Try
+            Dim visibleColumns As New List(Of DataColumn)
 
-        For Each col As DataColumn In dt.Columns
-            Dim colName As String = col.ColumnName.Trim()
+            For Each col As DataColumn In dt.Columns
+                Dim colName As String = col.ColumnName.Trim()
 
-            If String.Equals(colName, "SortOrder", StringComparison.OrdinalIgnoreCase) Then Continue For
-            If String.Equals(colName, "Total Order", StringComparison.OrdinalIgnoreCase) Then Continue For
-            If String.Equals(colName, "No", StringComparison.OrdinalIgnoreCase) Then Continue For
-            If String.IsNullOrWhiteSpace(colName) Then Continue For
+                If String.Equals(colName, "SortOrder", StringComparison.OrdinalIgnoreCase) Then Continue For
+                If String.Equals(colName, "Total Order", StringComparison.OrdinalIgnoreCase) Then Continue For
+                If String.Equals(colName, "No", StringComparison.OrdinalIgnoreCase) Then Continue For
+                If String.IsNullOrWhiteSpace(colName) Then Continue For
 
-            visibleColumns.Add(col)
-        Next
-
-        Using package As New OfficeOpenXml.ExcelPackage()
-            Dim ws = package.Workbook.Worksheets.Add("Report")
-
-            ws.Cells(1, 1).Value = title
-            ws.Cells(1, 1, 1, visibleColumns.Count).Merge = True
-            ws.Cells(1, 1).Style.Font.Bold = True
-
-            Dim rowStart As Integer = 3
-            Dim colIndex As Integer = 1
-
-            For Each col As DataColumn In visibleColumns
-                ws.Cells(rowStart, colIndex).Value = col.ColumnName.ToUpper()
-                ws.Cells(rowStart, colIndex).Style.Font.Bold = True
-                colIndex += 1
+                visibleColumns.Add(col)
             Next
 
-            Dim rowIndex As Integer = rowStart + 1
+            Using package As New OfficeOpenXml.ExcelPackage()
+                Dim ws = package.Workbook.Worksheets.Add("Report")
 
-            For Each dr As DataRow In dt.Rows
-                colIndex = 1
+                ws.Cells(1, 1).Value = title
+                ws.Cells(1, 1, 1, visibleColumns.Count).Merge = True
+                ws.Cells(1, 1).Style.Font.Bold = True
+
+                Dim rowStart As Integer = 3
+                Dim colIndex As Integer = 1
 
                 For Each col As DataColumn In visibleColumns
-                    ws.Cells(rowIndex, colIndex).Value =
-                    If(IsDBNull(dr(col.ColumnName)), "", dr(col.ColumnName))
+                    ws.Cells(rowStart, colIndex).Value = col.ColumnName.ToUpper()
+                    ws.Cells(rowStart, colIndex).Style.Font.Bold = True
                     colIndex += 1
                 Next
 
-                rowIndex += 1
-            Next
+                Dim rowIndex As Integer = rowStart + 1
 
-            ws.Cells(ws.Dimension.Address).AutoFitColumns()
+                For Each dr As DataRow In dt.Rows
+                    colIndex = 1
 
-            Return package.GetAsByteArray()
-        End Using
+                    For Each col As DataColumn In visibleColumns
+                        ws.Cells(rowIndex, colIndex).Value =
+                        If(IsDBNull(dr(col.ColumnName)), "", dr(col.ColumnName))
+                        colIndex += 1
+                    Next
+
+                    rowIndex += 1
+                Next
+
+                ws.Cells(ws.Dimension.Address).AutoFitColumns()
+
+                Return package.GetAsByteArray()
+            End Using
+        Catch ex As Exception
+            Return New Byte() {}
+        End Try
     End Function
 End Class
 
