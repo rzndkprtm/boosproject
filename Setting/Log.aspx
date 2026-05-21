@@ -62,7 +62,7 @@
                                                 </asp:TemplateField>
                                                 <asp:BoundField DataField="Type" HeaderText="Type" />
                                                 <asp:BoundField DataField="ActionName" HeaderText="Action By" />
-                                                <asp:BoundField DataField="ActionDate" HeaderText="Action Date" />
+                                                <asp:BoundField DataField="ActionDate" HeaderText="Action Date" DataFormatString="{0:dd MMM yyyy HH:mm:ss}" />
                                                 <asp:TemplateField HeaderText="Description">
                                                     <ItemTemplate>
                                                         <%# GetDataName(Eval("Type"), Eval("DataId"), Eval("Description")) %>
