@@ -17,11 +17,10 @@ Partial Class Report_Default
 
             BindCompany()
 
-            gvList.DataSource = Nothing
-            gvList.DataBind()
+            gvList.DataSource = Nothing : gvList.DataBind()
+            gvBlindsPivot.DataSource = Nothing : gvBlindsPivot.DataBind()
 
-            gvBlindsPivot.DataSource = Nothing
-            gvBlindsPivot.DataBind()
+            btnGenerate.Visible = PageAction("Generate")
         End If
     End Sub
 
