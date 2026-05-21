@@ -25,13 +25,15 @@ Partial Class Report_Generate
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            If txtStartDate.Text = "" Then
-                MessageError(True, "START DATE IS REQUIRED !")
-                Exit Sub
-            End If
-            If txtEndDate.Text = "" Then
-                MessageError(True, "END DATE IS REQUIRED !")
-                Exit Sub
+            If ddlDataType.SelectedValue = "Statistic" OrElse ddlDataType.SelectedValue = "Data Order" Then
+                If txtStartDate.Text = "" Then
+                    MessageError(True, "START DATE IS REQUIRED !")
+                    Exit Sub
+                End If
+                If txtEndDate.Text = "" Then
+                    MessageError(True, "END DATE IS REQUIRED !")
+                    Exit Sub
+                End If
             End If
 
             If ddlDataType.SelectedValue = "Statistic" Then
@@ -103,7 +105,6 @@ Partial Class Report_Generate
                     Response.Flush()
                     Response.End()
                 End If
-
                 If ddlFileType.SelectedValue = "EXCEL" Then
                     Dim company As String = ddlCompany.SelectedValue
                     If ddlCompany.SelectedValue = "ALL" Then company = String.Empty
@@ -137,7 +138,18 @@ Partial Class Report_Generate
 
             If ddlDataType.SelectedValue = "Customers" Then
                 If ddlFileType.SelectedValue = "PDF" Then
+                    Dim company As String = ddlCompany.SelectedValue
+                    If ddlCompany.SelectedValue = "ALL" Then company = String.Empty
 
+                    Dim reportClass As New ReportClass
+                    Dim pdfBytes As Byte() = reportClass.CustomerPDF(company, Session("RoleName").ToString())
+
+                    Response.Clear()
+                    Response.ContentType = "application/pdf"
+                    Response.AddHeader("Content-Disposition", "attachment; filename=REPORT_DATA_CUSTOMER.pdf")
+                    Response.BinaryWrite(pdfBytes)
+                    Response.Flush()
+                    Response.End()
                 End If
                 If ddlFileType.SelectedValue = "EXCEL" Then
 
