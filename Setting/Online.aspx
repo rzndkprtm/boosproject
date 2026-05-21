@@ -89,6 +89,29 @@
                             </div>
                         </div>
                     </div>
+                    <div class="card-footer">
+                        <div class="row" runat="server" id="divMinute">
+                            <div class="col-12 col-sm-12 col-lg-4">
+                                <div class="input-group">
+                                    <span class="input-group-text">Minute : </span>
+                                    <asp:DropDownList runat="server" ID="ddlMinute" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlMinute_SelectedIndexChanged">
+                                        <asp:ListItem Value="5" Text="5"></asp:ListItem>
+                                        <asp:ListItem Value="10" Text="10"></asp:ListItem>
+                                        <asp:ListItem Value="15" Text="15"></asp:ListItem>
+                                        <asp:ListItem Value="20" Text="20"></asp:ListItem>
+                                        <asp:ListItem Value="25" Text="25"></asp:ListItem>
+                                        <asp:ListItem Value="30" Text="30"></asp:ListItem>
+                                        <asp:ListItem Value="35" Text="35"></asp:ListItem>
+                                        <asp:ListItem Value="40" Text="40"></asp:ListItem>
+                                        <asp:ListItem Value="45" Text="45"></asp:ListItem>
+                                        <asp:ListItem Value="50" Text="50"></asp:ListItem>
+                                        <asp:ListItem Value="55" Text="55"></asp:ListItem>
+                                        <asp:ListItem Value="60" Text="60"></asp:ListItem>
+                                    </asp:DropDownList>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>

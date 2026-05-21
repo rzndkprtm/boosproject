@@ -18,26 +18,33 @@ Partial Class Setting_Online
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             MessageError_SendNotif(False, String.Empty)
-            BindData(txtSearch.Text)
+            BindData(txtSearch.Text, ddlMinute.SelectedValue)
         End If
     End Sub
 
     Protected Sub tmrRefresh_Tick(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
-        BindData(txtSearch.Text)
+        MessageError_SendNotif(False, String.Empty)
+        BindData(txtSearch.Text, ddlMinute.SelectedValue)
     End Sub
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         MessageError_SendNotif(False, String.Empty)
-        BindData(txtSearch.Text)
+        BindData(txtSearch.Text, ddlMinute.SelectedValue)
+    End Sub
+
+    Protected Sub ddlMinute_SelectedIndexChanged(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        MessageError_SendNotif(False, String.Empty)
+        BindData(txtSearch.Text, ddlMinute.SelectedValue)
     End Sub
 
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
         MessageError(False, String.Empty)
         Try
             gvList.PageIndex = e.NewPageIndex
-            BindData(txtSearch.Text)
+            BindData(txtSearch.Text, ddlMinute.SelectedValue)
         Catch ex As Exception
             MessageError(True, ex.ToString())
         End Try
@@ -83,17 +90,16 @@ Partial Class Setting_Online
         End Try
     End Sub
 
-    Protected Sub BindData(searchText As String)
+    Protected Sub BindData(searchText As String, minuteText As String)
         Try
-            Dim search As String = String.Empty
-            If Not searchText = "" Then
-                search = "AND CustomerLogins.UserName LIKE '%" & searchText.Trim() & "%'"
-            End If
-
-            Dim thisString As String = String.Format("SELECT CustomerLogins.*, LoginRoles.Name AS RoleName, DATEDIFF(MINUTE, CustomerLogins.LastLogin, GETDATE()) AS LastActiveMinute FROM CustomerLogins LEFT JOIN LoginRoles ON CustomerLogins.RoleId=LoginRoles.Id WHERE CustomerLogins.Active=1 AND CustomerLogins.LastLogin IS NOT NULL AND CustomerLogins.LastLogin >= DATEADD(MINUTE, -5, GETDATE()) {0} ORDER BY CustomerLogins.UserName ASC", search)
-
-            gvList.DataSource = settingClass.GetDataTable(thisString)
+            Dim paramsItem As New List(Of SqlParameter) From {
+                New SqlParameter("@SearchText", searchText),
+                New SqlParameter("@Minutes", minuteText)
+            }
+            gvList.DataSource = settingClass.GetDataTableSP("sp_GetActiveCustomerLogin", paramsItem)
             gvList.DataBind()
+
+            divMinute.Visible = PageAction("Sort Minute")
         Catch ex As Exception
             MessageError(True, ex.ToString())
         End Try
