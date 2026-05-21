@@ -92,26 +92,28 @@
                     <div class="card-content">
                         <div class="card-body">
                             <div class="list-group list-group-horizontal-sm mb-1 text-center" role="tablist">
-                                <a class="list-group-item list-group-item-action active" id="list-sunday-list" data-bs-toggle="list" href="#list-sunday" role="tab">Products</a>
-                                <a class="list-group-item list-group-item-action" id="listCustomer" data-bs-toggle="list" href="#list-customer" role="tab">Customers</a>
+                                <a class="list-group-item list-group-item-action active" id="listCustomer" data-bs-toggle="list" href="#list-customer" role="tab">Customers</a>
+                                <a class="list-group-item list-group-item-action" id="listProduct" data-bs-toggle="list" href="#list-product" role="tab">Products</a>
                                 <a class="list-group-item list-group-item-action" id="listFabric" data-bs-toggle="list" href="#list-fabric" role="tab">Fabrics</a>
                                 <a class="list-group-item list-group-item-action" id="listBottom" data-bs-toggle="list" href="#list-bottom" role="tab">Bottom Rails</a>
+
+                                <a class="list-group-item list-group-item-action" id="listTube" data-bs-toggle="list" href="#list-tube" role="tab">Tube Types</a>
                             </div>
                             <div class="tab-content text-justify">
-                                <div class="tab-pane fade show active" id="list-sunday" role="tabpanel" aria-labelledby="list-sunday-list">
-                                    <div class="row mt-3">
-                                        <div class="col-12">
-                                            <div class="table-responsive">
-                                                <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover" AutoGenerateColumns="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowDataBound="gvList_RowDataBound"></asp:GridView>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="tab-pane fade" id="list-customer" role="tabpanel" aria-labelledby="listCustomer">
+                                <div class="tab-pane fade show active" id="list-customer" role="tabpanel" aria-labelledby="listCustomer">
                                     <div class="row mt-3">
                                         <div class="col-12">
                                             <div class="grid-container table-responsive">
                                                 <asp:GridView runat="server" ID="gvBlindsPivot" CssClass="table table-bordered table-hover" AutoGenerateColumns="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowDataBound="gvBlindsPivot_RowDataBound"></asp:GridView>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="list-product" role="tabpanel" aria-labelledby="listProduct">
+                                    <div class="row mt-3">
+                                        <div class="col-12">
+                                            <div class="table-responsive">
+                                                <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover" AutoGenerateColumns="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowDataBound="gvList_RowDataBound"></asp:GridView>
                                             </div>
                                         </div>
                                     </div>
@@ -130,6 +132,15 @@
                                         <div class="col-12">
                                             <div class="table-responsive">
                                                 <asp:GridView runat="server" ID="gvBottom" CssClass="table table-bordered table-hover" AutoGenerateColumns="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center"></asp:GridView>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="list-tube" role="tabpanel" aria-labelledby="listTube">
+                                    <div class="row mt-3">
+                                        <div class="col-12">
+                                            <div class="table-responsive">
+                                                <asp:GridView runat="server" ID="gvTube" CssClass="table table-bordered table-hover" AutoGenerateColumns="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center"></asp:GridView>
                                             </div>
                                         </div>
                                     </div>

@@ -43,6 +43,8 @@
                                             <asp:DropDownList runat="server" ID="ddlDataType" CssClass="choices form-select">
                                                 <asp:ListItem Value="" Text=""></asp:ListItem>
                                                 <asp:ListItem Value="Customers" Text="Customers"></asp:ListItem>
+                                                <asp:ListItem Value="Data Order" Text="Data Order"></asp:ListItem>
+                                                <asp:ListItem Value="Statistic" Text="Statistic"></asp:ListItem>
                                             </asp:DropDownList>
                                         </div>
                                         <div class="col-6 form-group">
