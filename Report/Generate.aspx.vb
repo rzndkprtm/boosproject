@@ -152,7 +152,19 @@ Partial Class Report_Generate
                     Response.End()
                 End If
                 If ddlFileType.SelectedValue = "EXCEL" Then
+                    Dim company As String = ddlCompany.SelectedValue
+                    If ddlCompany.SelectedValue = "ALL" Then company = String.Empty
 
+                    Dim reportClass As New ReportClass
+                    Dim excelBytes As Byte() = reportClass.CustomerPDF(company, Session("RoleName").ToString())
+
+                    Response.Clear()
+                    Response.Buffer = True
+                    Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    Response.AddHeader("Content-Disposition", "attachment; filename=REPORT_DATA_CUSTOMER.xlsx")
+                    Response.BinaryWrite(excelBytes)
+                    Response.Flush()
+                    HttpContext.Current.ApplicationInstance.CompleteRequest()
                 End If
                 If ddlFileType.SelectedValue = "CSV" Then
 
