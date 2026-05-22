@@ -4,6 +4,7 @@ Imports System.IO
 Imports iTextSharp.text
 Imports iTextSharp.text.pdf
 Imports OfficeOpenXml
+Imports OfficeOpenXml.Style
 
 Public Class ReportClass
 
@@ -100,7 +101,7 @@ Public Class ReportClass
         End Try
     End Function
 
-    Private Function CellDataOrder(text As String, Optional isBold As Boolean = False, Optional alignH As Integer = Element.ALIGN_LEFT) As PdfPCell
+    Private Function CellData(text As String, Optional isBold As Boolean = False, Optional alignH As Integer = Element.ALIGN_LEFT) As PdfPCell
         Try
             If text Is Nothing Then text = String.Empty
 
@@ -157,110 +158,9 @@ Public Class ReportClass
         End Try
     End Function
 
-    Public Function CustomerPDF(companyId As String, roleName As String) As Byte()
-        Try
-            Using ms As New MemoryStream()
-                Dim params As New List(Of SqlParameter) From {
-                    New SqlParameter("@Active", 1),
-                    New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(companyId), CType(DBNull.Value, Object), companyId)),
-                    New SqlParameter("@RoleName", roleName)
-                }
 
-                Dim doc As New Document(PageSize.A4.Rotate, 20, 20, 80, 50)
-                Dim writer As PdfWriter = PdfWriter.GetInstance(doc, ms)
-
-                writer.PageEvent = New ReportDataOrderEvents("REPORT DATA CUSTOMERS")
-                doc.Open()
-
-                Dim table As New PdfPTable(6)
-
-                table.WidthPercentage = 100
-                table.SetWidths(New Single() {0.1F, 0.3F, 0.2F, 0.2F, 0.1F, 0.1F})
-
-                table.HeaderRows = 1
-                table.SplitLate = False
-                table.KeepTogether = False
-
-                table.AddCell(CellDataOrder("NAME", isBold:=True))
-                table.AddCell(CellDataOrder("LEVEL", isBold:=True))
-                table.AddCell(CellDataOrder("OPERATOR NAME", isBold:=True))
-                table.AddCell(CellDataOrder("CASH SALE", isBold:=True))
-                table.AddCell(CellDataOrder("ON STOP", isBold:=True))
-                table.AddCell(CellDataOrder("MIN SURCHARGE", isBold:=True))
-
-                Dim thisData As DataTable = GetDataTableSP("sp_CustomerList", params)
-                If thisData.Rows.Count > 0 Then
-                    For i As Integer = 0 To thisData.Rows.Count - 1
-                        table.AddCell(CellDataOrder(thisData.Rows(i)("Name").ToString()))
-                        table.AddCell(CellDataOrder(thisData.Rows(i)("Level").ToString()))
-                        table.AddCell(CellDataOrder(thisData.Rows(i)("OperatorName").ToString()))
-                        table.AddCell(CellDataOrder(thisData.Rows(i)("CustomerCashSale").ToString()))
-                        table.AddCell(CellDataOrder(thisData.Rows(i)("CustomerOnStop").ToString()))
-                        table.AddCell(CellDataOrder(thisData.Rows(i)("CustomerMinSurcharge").ToString()))
-                    Next
-                End If
-
-                doc.Add(table)
-                doc.Close()
-
-                Return ms.ToArray()
-            End Using
-        Catch ex As Exception
-            Return New Byte() {}
-        End Try
-    End Function
-
-    Public Function CustomerExcel(companyId As String, roleName As String) As Byte()
-        Try
-            Using ms As New MemoryStream()
-                Dim params As New List(Of SqlParameter) From {
-                    New SqlParameter("@Active", 1),
-                    New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(companyId), CType(DBNull.Value, Object), companyId)),
-                    New SqlParameter("@RoleName", roleName)
-                }
-
-                Dim dt As DataTable = GetDataTableSP("sp_CustomerList", params)
-
-                Using package As New ExcelPackage()
-                    Dim ws = package.Workbook.Worksheets.Add("Data Customer")
-
-                    ws.Cells(1, 1).Value = "NAME"
-                    ws.Cells(1, 2).Value = "LEVEL"
-                    ws.Cells(1, 3).Value = "OPERATOR NAME"
-                    ws.Cells(1, 4).Value = "CASH SALE"
-                    ws.Cells(1, 5).Value = "ON STOP"
-                    ws.Cells(1, 6).Value = "MIN SURCHARGE"
-
-                    Using rng = ws.Cells(1, 1, 1, 6)
-                        rng.Style.Font.Bold = True
-                    End Using
-
-                    Dim row As Integer = 2
-
-                    For Each dr As DataRow In dt.Rows
-                        ws.Cells(row, 1).Value = dr("Name").ToString()
-                        ws.Cells(row, 2).Value = dr("Level").ToString()
-                        ws.Cells(row, 3).Value = dr("OperatorName").ToString()
-                        ws.Cells(row, 4).Value = dr("CustomerCashSale").ToString()
-                        ws.Cells(row, 5).Value = dr("CustomerOnStop").ToString()
-                        ws.Cells(row, 6).Value = dr("CustomerMinSurcharge").ToString()
-
-                        row += 1
-                    Next
-
-                    ws.Cells(ws.Dimension.Address).AutoFitColumns()
-
-                    package.SaveAs(ms)
-                End Using
-
-                Return ms.ToArray()
-            End Using
-        Catch ex As Exception
-            Return New Byte() {}
-        End Try
-    End Function
-
-    Public Function DataOrderPDF(companyId As String, startDate As Date, endDate As Date) As Byte()
+    ' START JOB ORDER
+    Public Function JobOrderPDF(companyId As String, startDate As Date, endDate As Date) As Byte()
         Try
             Using ms As New MemoryStream()
                 Dim params As New List(Of SqlParameter) From {
@@ -272,7 +172,7 @@ Public Class ReportClass
                 Dim doc As New Document(PageSize.A4.Rotate, 20, 20, 80, 50)
                 Dim writer As PdfWriter = PdfWriter.GetInstance(doc, ms)
 
-                writer.PageEvent = New ReportDataOrderEvents("REPORT DATA ORDER")
+                writer.PageEvent = New ReportDataOrderEvents("REPORT JOB ORDER")
                 doc.Open()
 
                 Dim table As New PdfPTable(6)
@@ -284,12 +184,12 @@ Public Class ReportClass
                 table.SplitLate = False
                 table.KeepTogether = False
 
-                table.AddCell(CellDataOrder("ORDER ID", isBold:=True))
-                table.AddCell(CellDataOrder("CUSTOMER NAME", isBold:=True))
-                table.AddCell(CellDataOrder("ORDER NUMBER", isBold:=True))
-                table.AddCell(CellDataOrder("ORDER NAME", isBold:=True))
-                table.AddCell(CellDataOrder("SUBMITTED", isBold:=True))
-                table.AddCell(CellDataOrder("PRODUCTION", isBold:=True))
+                table.AddCell(CellData("ORDER ID", isBold:=True))
+                table.AddCell(CellData("CUSTOMER NAME", isBold:=True))
+                table.AddCell(CellData("ORDER NUMBER", isBold:=True))
+                table.AddCell(CellData("ORDER NAME", isBold:=True))
+                table.AddCell(CellData("SUBMITTED", isBold:=True))
+                table.AddCell(CellData("PRODUCTION", isBold:=True))
 
                 Dim thisData As DataTable = GetDataTableSP("sp_GetOrderHeadersForExport", params)
                 If thisData.Rows.Count > 0 Then
@@ -309,12 +209,12 @@ Public Class ReportClass
                             prodDate = Convert.ToDateTime(thisData.Rows(i)("ProductionDate")).ToString("dd MMM yyyy")
                         End If
 
-                        table.AddCell(CellDataOrder(orderId))
-                        table.AddCell(CellDataOrder(customerName))
-                        table.AddCell(CellDataOrder(orderNumber))
-                        table.AddCell(CellDataOrder(orderName))
-                        table.AddCell(CellDataOrder(submitDate))
-                        table.AddCell(CellDataOrder(prodDate))
+                        table.AddCell(CellData(orderId))
+                        table.AddCell(CellData(customerName))
+                        table.AddCell(CellData(orderNumber))
+                        table.AddCell(CellData(orderName))
+                        table.AddCell(CellData(submitDate))
+                        table.AddCell(CellData(prodDate))
                     Next
                 End If
 
@@ -328,63 +228,61 @@ Public Class ReportClass
         End Try
     End Function
 
-    Public Function DataOrderExcel(companyId As String, startDate As Date, endDate As Date) As Byte()
+    Public Function JobOrderExcel(companyId As String, startDate As Date, endDate As Date) As Byte()
         Try
-            Using ms As New MemoryStream()
-                Dim params As New List(Of SqlParameter) From {
-                    New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(companyId), CType(DBNull.Value, Object), companyId)),
-                    New SqlParameter("@StartDate", startDate),
-                    New SqlParameter("@EndDate", endDate)
-                }
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial
 
-                Dim dt As DataTable = GetDataTableSP("sp_GetOrderHeadersForExport", params)
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(companyId), CType(DBNull.Value, Object), companyId)),
+                New SqlParameter("@StartDate", startDate),
+                New SqlParameter("@EndDate", endDate)
+            }
 
-                Using package As New ExcelPackage()
-                    Dim ws = package.Workbook.Worksheets.Add("Data Order")
+            Dim dt As DataTable = GetDataTableSP("sp_GetOrderHeadersForExport", params)
 
-                    ws.Cells(1, 1).Value = "ORDER ID"
-                    ws.Cells(1, 2).Value = "CUSTOMER NAME"
-                    ws.Cells(1, 3).Value = "ORDER NUMBER"
-                    ws.Cells(1, 4).Value = "ORDER NAME"
-                    ws.Cells(1, 5).Value = "SUBMITTED"
-                    ws.Cells(1, 6).Value = "PRODUCTION"
+            Using package As New ExcelPackage()
+                Dim ws = package.Workbook.Worksheets.Add("JOB ORDER")
 
-                    Using rng = ws.Cells(1, 1, 1, 6)
-                        rng.Style.Font.Bold = True
-                    End Using
+                ws.Cells(1, 1).Value = "ORDER ID"
+                ws.Cells(1, 2).Value = "CUSTOMER NAME"
+                ws.Cells(1, 3).Value = "ORDER NUMBER"
+                ws.Cells(1, 4).Value = "ORDER NAME"
+                ws.Cells(1, 5).Value = "SUBMITTED"
+                ws.Cells(1, 6).Value = "PRODUCTION"
 
-                    Dim row As Integer = 2
-
-                    For Each dr As DataRow In dt.Rows
-                        ws.Cells(row, 1).Value = dr("OrderId").ToString()
-                        ws.Cells(row, 2).Value = dr("CustomerName").ToString()
-                        ws.Cells(row, 3).Value = dr("OrderNumber").ToString()
-                        ws.Cells(row, 4).Value = dr("OrderName").ToString()
-
-                        If Not IsDBNull(dr("SubmittedDate")) Then
-                            ws.Cells(row, 5).Value = Convert.ToDateTime(dr("SubmittedDate")).ToString("dd MMM yyyy")
-                        End If
-
-                        If Not IsDBNull(dr("ProductionDate")) Then
-                            ws.Cells(row, 6).Value = Convert.ToDateTime(dr("ProductionDate")).ToString("dd MMM yyyy")
-                        End If
-
-                        row += 1
-                    Next
-
-                    ws.Cells(ws.Dimension.Address).AutoFitColumns()
-
-                    package.SaveAs(ms)
+                Using rng = ws.Cells(1, 1, 1, 6)
+                    rng.Style.Font.Bold = True
                 End Using
 
-                Return ms.ToArray()
+                Dim row As Integer = 2
+                For Each dr As DataRow In dt.Rows
+                    ws.Cells(row, 1).Value = dr("OrderId").ToString()
+                    ws.Cells(row, 2).Value = dr("CustomerName").ToString()
+                    ws.Cells(row, 3).Value = dr("OrderNumber").ToString()
+                    ws.Cells(row, 4).Value = dr("OrderName").ToString()
+
+                    If Not IsDBNull(dr("SubmittedDate")) Then
+                        ws.Cells(row, 5).Value = Convert.ToDateTime(dr("SubmittedDate"))
+                        ws.Cells(row, 5).Style.Numberformat.Format = "dd MMM yyyy"
+                    End If
+
+                    If Not IsDBNull(dr("ProductionDate")) Then
+                        ws.Cells(row, 6).Value = Convert.ToDateTime(dr("ProductionDate"))
+                        ws.Cells(row, 6).Style.Numberformat.Format = "dd MMM yyyy"
+                    End If
+
+                    row += 1
+                Next
+                ws.Cells.AutoFitColumns()
+
+                Return package.GetAsByteArray()
             End Using
         Catch ex As Exception
             Return New Byte() {}
         End Try
     End Function
 
-    Public Function DataOrderCSV(companyId As String, startDate As Date, endDate As Date) As Byte()
+    Public Function JobOrderCSV(companyId As String, startDate As Date, endDate As Date) As Byte()
         Try
             Dim params As New List(Of SqlParameter) From {
                 New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(companyId), CType(DBNull.Value, Object), companyId)),
@@ -420,7 +318,147 @@ Public Class ReportClass
         End Try
     End Function
 
-    Public Function StatisticPDF(dt As DataTable, title As String) As Byte()
+    ' END JOB ORDER
+
+    ' START CUSTOMER (LIST)
+
+    Public Function CustomerListPDF(companyId As String, roleName As String) As Byte()
+        Try
+            Using ms As New MemoryStream()
+                Dim params As New List(Of SqlParameter) From {
+                    New SqlParameter("@Active", 1),
+                    New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(companyId), CType(DBNull.Value, Object), companyId)),
+                    New SqlParameter("@RoleName", roleName)
+                }
+
+                Dim doc As New Document(PageSize.A4.Rotate, 20, 20, 80, 50)
+                Dim writer As PdfWriter = PdfWriter.GetInstance(doc, ms)
+
+                writer.PageEvent = New ReportDataOrderEvents("REPORT CUSTOMER LIST")
+                doc.Open()
+
+                Dim table As New PdfPTable(8)
+
+                table.WidthPercentage = 100
+                table.SetWidths(New Single() {0.1F, 0.2F, 0.1F, 0.1F, 0.16F, 0.1F, 0.14F, 0.1F})
+
+                table.HeaderRows = 1
+                table.SplitLate = False
+                table.KeepTogether = False
+
+                table.AddCell(CellData("Debtor Code", isBold:=True))
+                table.AddCell(CellData("Account Name", isBold:=True))
+                table.AddCell(CellData("Company", isBold:=True))
+                table.AddCell(CellData("Area", isBold:=True))
+                table.AddCell(CellData("Sales Name", isBold:=True))
+                table.AddCell(CellData("Pricing", isBold:=True))
+                table.AddCell(CellData("Shutter Pricing", isBold:=True))
+                table.AddCell(CellData("Door Pricing", isBold:=True))
+
+                Dim thisData As DataTable = GetDataTableSP("sp_CustomerList", params)
+                If thisData.Rows.Count > 0 Then
+                    For i As Integer = 0 To thisData.Rows.Count - 1
+                        table.AddCell(CellData(thisData.Rows(i)("DebtorCode").ToString()))
+                        table.AddCell(CellData(thisData.Rows(i)("Name").ToString()))
+                        table.AddCell(CellData(thisData.Rows(i)("CompanyDetailName").ToString()))
+                        table.AddCell(CellData(thisData.Rows(i)("Area").ToString()))
+                        table.AddCell(CellData(thisData.Rows(i)("OperatorName").ToString()))
+                        table.AddCell(CellData(thisData.Rows(i)("PriceBlind").ToString()))
+                        table.AddCell(CellData(thisData.Rows(i)("PriceShutter").ToString()))
+                        table.AddCell(CellData(thisData.Rows(i)("PriceDoor").ToString()))
+                    Next
+                End If
+
+                doc.Add(table)
+                doc.Close()
+
+                Return ms.ToArray()
+            End Using
+        Catch ex As Exception
+            Return New Byte() {}
+        End Try
+    End Function
+
+    Public Function CustomerListExcel(companyId As String, roleName As String) As Byte()
+        Try
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial
+
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@Active", 1),
+                New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(companyId), CType(DBNull.Value, Object), companyId)),
+                New SqlParameter("@RoleName", roleName)
+            }
+
+            Dim dt As DataTable = GetDataTableSP("sp_CustomerList", params)
+
+            Using package As New ExcelPackage()
+                Dim ws = package.Workbook.Worksheets.Add("CUSTOMER LIST")
+
+                ws.Cells(1, 1).Value = "DEBTOR CODE"
+                ws.Cells(1, 2).Value = "ACCOUNT NAME"
+                ws.Cells(1, 3).Value = "COMPANY"
+                ws.Cells(1, 4).Value = "AREA"
+                ws.Cells(1, 5).Value = "SALES NAME"
+                ws.Cells(1, 6).Value = "PRICING"
+                ws.Cells(1, 7).Value = "SHUTTER PRICING"
+                ws.Cells(1, 8).Value = "DOOR PRICING"
+
+                Using rng = ws.Cells(1, 1, 1, 7)
+                    rng.Style.Font.Bold = True
+                End Using
+
+                Dim row As Integer = 2
+                For Each dr As DataRow In dt.Rows
+                    ws.Cells(row, 1).Value = dr("DebtorCode").ToString()
+                    ws.Cells(row, 2).Value = dr("Name").ToString()
+                    ws.Cells(row, 3).Value = dr("CompanyDetailName").ToString()
+                    ws.Cells(row, 4).Value = dr("Area").ToString()
+                    ws.Cells(row, 5).Value = dr("OperatorName").ToString()
+                    ws.Cells(row, 6).Value = dr("PriceBlind").ToString()
+                    ws.Cells(row, 7).Value = dr("PriceShutter").ToString()
+                    ws.Cells(row, 8).Value = dr("PriceDoor").ToString()
+
+                    row += 1
+                Next
+                ws.Cells.AutoFitColumns()
+
+                Return package.GetAsByteArray()
+            End Using
+        Catch ex As Exception
+            Return New Byte() {}
+        End Try
+    End Function
+
+    Public Function CustomerListCSV(companyId As String, roleName As String) As Byte()
+        Try
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@Active", 1),
+                New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(companyId), CType(DBNull.Value, Object), companyId)),
+                New SqlParameter("@RoleName", roleName)
+            }
+
+            Dim dt As DataTable = GetDataTableSP("sp_CustomerList", params)
+
+            Dim sb As New StringBuilder()
+
+            sb.AppendLine("DEBTOR CODE,ACCOUNT NAME,COMPANY,AREA,SALES NAME,PRICING,SHUTTER PRICING,DOOR PRICING")
+
+            For Each dr As DataRow In dt.Rows
+                Dim line As String = dr("DebtorCode").ToString() & "," & EscapeCsv(dr("Name").ToString()) & "," & EscapeCsv(dr("CompanyDetailName").ToString()) & "," & EscapeCsv(dr("Area").ToString()) & "," & EscapeCsv(dr("OperatorName").ToString()) & "," & EscapeCsv(dr("PriceBlind").ToString()) & "," & EscapeCsv(dr("PriceShutter").ToString()) & "," & EscapeCsv(dr("PriceDoor").ToString())
+
+                sb.AppendLine(line)
+            Next
+
+            Return Encoding.UTF8.GetBytes(sb.ToString())
+        Catch ex As Exception
+            Return New Byte() {}
+        End Try
+    End Function
+
+    ' END CUSTOMER (LIST)
+
+    ' START CUSTOMER (ORDER)
+    Public Function CustomerOrderPDF(dt As DataTable, title As String) As Byte()
         Try
             Using ms As New MemoryStream()
                 Dim visibleColumns As New List(Of DataColumn)
@@ -457,7 +495,7 @@ Public Class ReportClass
                 table.SetWidths(widths)
 
                 For Each col As DataColumn In visibleColumns
-                    table.AddCell(CellDataOrder(col.ColumnName.ToUpper(), isBold:=True))
+                    table.AddCell(CellData(col.ColumnName.ToUpper(), isBold:=True))
                 Next
 
                 For Each dr As DataRow In dt.Rows
@@ -467,7 +505,7 @@ Public Class ReportClass
                         If Not IsDBNull(dr(col.ColumnName)) Then
                             value = dr(col.ColumnName).ToString()
                         End If
-                        table.AddCell(CellDataOrder(value))
+                        table.AddCell(CellData(value))
                     Next
                 Next
 
@@ -481,11 +519,19 @@ Public Class ReportClass
         End Try
     End Function
 
-    Public Function StatisticExcel(dt As DataTable, title As String) As Byte()
+    Public Function CustomerOrderExcel(dt As DataTable, title As String) As Byte()
+
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial
+
         Try
+
+            '========================================
+            ' FILTER COLUMN
+            '========================================
             Dim visibleColumns As New List(Of DataColumn)
 
             For Each col As DataColumn In dt.Columns
+
                 Dim colName As String = col.ColumnName.Trim()
 
                 If String.Equals(colName, "SortOrder", StringComparison.OrdinalIgnoreCase) Then Continue For
@@ -494,46 +540,128 @@ Public Class ReportClass
                 If String.IsNullOrWhiteSpace(colName) Then Continue For
 
                 visibleColumns.Add(col)
+
             Next
 
-            Using package As New OfficeOpenXml.ExcelPackage()
-                Dim ws = package.Workbook.Worksheets.Add("Report")
+            Using package As New ExcelPackage()
 
+                '========================================
+                ' CREATE WORKSHEET
+                '========================================
+                Dim ws As ExcelWorksheet = package.Workbook.Worksheets.Add("Report")
+
+                '========================================
+                ' TITLE
+                '========================================
                 ws.Cells(1, 1).Value = title
-                ws.Cells(1, 1, 1, visibleColumns.Count).Merge = True
-                ws.Cells(1, 1).Style.Font.Bold = True
 
+                ws.Cells(1, 1).Style.Font.Bold = True
+                ws.Cells(1, 1).Style.Font.Size = 14
+                ws.Cells(1, 1).Style.HorizontalAlignment = ExcelHorizontalAlignment.Center
+
+                If visibleColumns.Count > 0 Then
+                    ws.Cells(1, 1, 1, visibleColumns.Count).Merge = True
+                End If
+
+                '========================================
+                ' HEADER
+                '========================================
                 Dim rowStart As Integer = 3
                 Dim colIndex As Integer = 1
 
                 For Each col As DataColumn In visibleColumns
+
                     ws.Cells(rowStart, colIndex).Value = col.ColumnName.ToUpper()
+
                     ws.Cells(rowStart, colIndex).Style.Font.Bold = True
+                    ws.Cells(rowStart, colIndex).Style.Fill.PatternType = ExcelFillStyle.Solid
+                    ws.Cells(rowStart, colIndex).Style.Border.BorderAround(ExcelBorderStyle.Thin)
+
                     colIndex += 1
+
                 Next
 
+                '========================================
+                ' DATA
+                '========================================
                 Dim rowIndex As Integer = rowStart + 1
 
                 For Each dr As DataRow In dt.Rows
+
                     colIndex = 1
 
                     For Each col As DataColumn In visibleColumns
-                        ws.Cells(rowIndex, colIndex).Value =
-                        If(IsDBNull(dr(col.ColumnName)), "", dr(col.ColumnName))
+
+                        Dim value As Object = dr(col.ColumnName)
+
+                        If IsDBNull(value) Then
+
+                            ws.Cells(rowIndex, colIndex).Value = ""
+
+                        Else
+
+                            Dim cleanText As String = CleanExcelText(value.ToString())
+
+                            ws.Cells(rowIndex, colIndex).Value = cleanText
+
+                        End If
+
+                        ws.Cells(rowIndex, colIndex).Style.Border.BorderAround(ExcelBorderStyle.Thin)
+
                         colIndex += 1
+
                     Next
 
                     rowIndex += 1
+
                 Next
 
-                ws.Cells(ws.Dimension.Address).AutoFitColumns()
+                '========================================
+                ' AUTOFIT
+                '========================================
+                If ws.Dimension IsNot Nothing Then
+                    ws.Cells(ws.Dimension.Address).AutoFitColumns()
+                End If
 
+                '========================================
+                ' RETURN FILE
+                '========================================
                 Return package.GetAsByteArray()
+
             End Using
+
         Catch ex As Exception
-            Return New Byte() {}
+
+            Throw New Exception("CustomerOrderExcel Error : " & ex.Message)
+
         End Try
+
     End Function
+
+    Private Function CleanExcelText(text As String) As String
+
+        Try
+
+            If String.IsNullOrEmpty(text) Then
+                Return ""
+            End If
+
+            ' Remove invalid XML / Excel characters
+            Return Regex.Replace(
+            text,
+            "[^\u0009\u000A\u000D\u0020-\uD7FF\uE000-\uFFFD]",
+            ""
+        )
+
+        Catch ex As Exception
+
+            Return ""
+
+        End Try
+
+    End Function
+
+    ' END CUSTOMER (ORDER)
 End Class
 
 Public Class ReportDataOrderEvents

@@ -2622,7 +2622,7 @@ Partial Class Order_Add
                             If chainType = "Continuous" Then
                                 controlLength = "Standard"
 
-                                Dim stdControlLength As Integer = Math.Ceiling(dropData * 2 / 3)
+                                Dim stdControlLength As Integer = Math.Ceiling(dropData * 0.9)
 
                                 controlLengthValue = stdControlLength
                                 If stdControlLength > 500 Then controlLengthValue = 750
