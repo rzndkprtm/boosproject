@@ -24,9 +24,19 @@ Partial Class Order_EditCosting
         End If
 
         lblId.Text = Request.QueryString("boos").ToString()
+        Dim queryRow As DataRow = orderClass.GetDataRow("SELECT QueryString FROM OrderActionContext WHERE Id='" & lblId.Text & "'")
+        If queryRow Is Nothing Then
+            Response.Redirect("~/order", False)
+            Exit Sub
+        End If
+
+        Dim httpUtility = Web.HttpUtility.ParseQueryString(queryRow(0).ToString())
+        lblHeaderId.Text = Convert.ToString(httpUtility("headerid"))
+        lblItemId.Text = Convert.ToString(httpUtility("itemid"))
+
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-            BindData(lblId.Text)
+            BindData(lblHeaderId.Text, lblItemId.Text)
         End If
     End Sub
 
@@ -108,19 +118,9 @@ Partial Class Order_EditCosting
         Response.Redirect(String.Format("~/order/detail?orderid={0}", lblHeaderId.Text), False)
     End Sub
 
-    Protected Sub BindData(id As String)
+    Protected Sub BindData(headerId As String, itemId As String)
         Try
-            Dim queryString As String = orderClass.GetItemData("SELECT QueryString FROM OrderActionContext WHERE Id='" & id & "'")
-            If String.IsNullOrEmpty(queryString) Then
-                Response.Redirect("~/order", False)
-                Exit Sub
-            End If
-
-            Dim httpUtility = Web.HttpUtility.ParseQueryString(queryString)
-            lblHeaderId.Text = Convert.ToString(httpUtility("headerid"))
-            lblItemId.Text = Convert.ToString(httpUtility("itemid"))
-
-            Dim headerData As DataRow = orderClass.GetDataRow("SELECT OrderHeaders.*, Customers.CompanyId FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id='" & lblHeaderId.Text & "'")
+            Dim headerData As DataRow = orderClass.GetDataRow("SELECT OrderHeaders.*, Customers.CompanyId FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id='" & headerId & "'")
             If headerData Is Nothing Then
                 Response.Redirect("~/order/", False)
                 Exit Sub
@@ -128,18 +128,18 @@ Partial Class Order_EditCosting
             lblOrderStatus.Text = headerData("Status").ToString()
             lblCompanyId.Text = headerData("CompanyId").ToString()
 
-            hTitle.InnerText = orderClass.GetItemData("SELECT ISNULL(CONVERT(VARCHAR(200), OrderDetails.Room), '') + ' - ' + ISNULL(CONVERT(VARCHAR(200), Products.Name), '') FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId = Products.Id WHERE OrderDetails.Id = '" & lblItemId.Text & "'")
+            hTitle.InnerText = orderClass.GetItemData("SELECT ISNULL(CONVERT(VARCHAR(200), OrderDetails.Room), '') + ' - ' + ISNULL(CONVERT(VARCHAR(200), Products.Name), '') FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId = Products.Id WHERE OrderDetails.Id = '" & itemId & "'")
 
-            Dim thisQuery As String = "SELECT *, FORMAT(BuyPrice, 'C', 'en-US') AS BuyPricing, FORMAT(SellPrice, 'C', 'en-US') AS SellPricing FROM OrderCostings WHERE ItemId='" & lblItemId.Text & "' AND Type<>'Final' AND Number<>0 ORDER BY Number, CASE WHEN Type='Base' THEN 1 WHEN Type='Surcharge' THEN 2 ELSE 3 END ASC"
+            Dim thisQuery As String = "SELECT *, FORMAT(BuyPrice, 'C', 'en-US') AS BuyPricing, FORMAT(SellPrice, 'C', 'en-US') AS SellPricing FROM OrderCostings WHERE ItemId='" & itemId & "' AND Type<>'Final' AND Number<>0 ORDER BY Number, CASE WHEN Type='Base' THEN 1 WHEN Type='Surcharge' THEN 2 ELSE 3 END ASC"
             If lblCompanyId.Text = "3" Then
-                thisQuery = "SELECT *, FORMAT(BuyPrice, 'C', 'id-ID') AS BuyPricing, FORMAT(SellPrice, 'C', 'en-US') AS SellPricing FROM OrderCostings WHERE ItemId='" & lblItemId.Text & "' AND Type<>'Final' AND Number<>0 ORDER BY Number, CASE WHEN Type='Base' THEN 1 WHEN Type='Surcharge' THEN 2 ELSE 3 END ASC"
+                thisQuery = "SELECT *, FORMAT(BuyPrice, 'C', 'id-ID') AS BuyPricing, FORMAT(SellPrice, 'C', 'en-US') AS SellPricing FROM OrderCostings WHERE ItemId='" & itemId & "' AND Type<>'Final' AND Number<>0 ORDER BY Number, CASE WHEN Type='Base' THEN 1 WHEN Type='Surcharge' THEN 2 ELSE 3 END ASC"
             End If
             gvList.DataSource = orderClass.GetDataTable(thisQuery)
             gvList.DataBind()
             gvList.Columns(1).Visible = False
 
             divNote.Visible = False
-            Dim itemNote As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Designs.Name AS DesignName, Designs.Type AS DesignType FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id WHERE OrderDetails.Id='" & lblItemId.Text & "' AND OrderDetails.HeaderId='" & lblHeaderId.Text & "'")
+            Dim itemNote As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Designs.Name AS DesignName, Designs.Type AS DesignType FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id WHERE OrderDetails.Id='" & itemId & "' AND OrderDetails.HeaderId='" & headerId & "'")
             If Not itemNote Is Nothing Then
                 Dim designName As String = itemNote("DesignName").ToString()
                 Dim designType As String = itemNote("DesignType").ToString()
