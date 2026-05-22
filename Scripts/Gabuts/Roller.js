@@ -3126,8 +3126,17 @@ function showInfo(type) {
 
             info = "<b>- Standard</b>";
             info += "<br /><br />";
+            info += "Standard, Acmeda & Sunboss Tube";
+            info += "<br />";
+            info += "The standard chain length is 2/3 of the blind drop.";
+            info += "<br /><br />";
+            info += "Gear Reduction Tube";
+            info += "<br />";
+            info += "The standard chain length is 90% of the blind drop.";
+            info += "<br /><br />";
             info += "<b>- Custom</b>";
             info += "<br />";
+            info += "Based on your requirements";
         }
         else if (type === "Second Size") {
             title = "Second Size Information";

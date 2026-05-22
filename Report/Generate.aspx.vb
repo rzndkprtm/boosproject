@@ -25,7 +25,7 @@ Partial Class Report_Generate
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            If ddlDataType.SelectedValue = "Statistic" OrElse ddlDataType.SelectedValue = "Data Order" Then
+            If ddlDataType.SelectedValue = "Job Order" OrElse ddlDataType.SelectedValue = "Customer (Order)" Then
                 If txtStartDate.Text = "" Then
                     MessageError(True, "START DATE IS REQUIRED !")
                     Exit Sub
@@ -36,7 +36,109 @@ Partial Class Report_Generate
                 End If
             End If
 
-            If ddlDataType.SelectedValue = "Statistic" Then
+            If ddlDataType.SelectedValue = "Job Order" Then
+                If ddlFileType.SelectedValue = "PDF" Then
+                    Dim company As String = ddlCompany.SelectedValue
+                    If ddlCompany.SelectedValue = "ALL" Then company = String.Empty
+
+                    Dim reportClass As New ReportClass
+                    Dim pdfBytes As Byte() = reportClass.JobOrderPDF(company, txtStartDate.Text, txtEndDate.Text)
+
+                    Response.Clear()
+                    Response.ContentType = "application/pdf"
+                    Response.AddHeader("Content-Disposition", "attachment; filename=REPORT_JOB_ORDER.pdf")
+                    Response.BinaryWrite(pdfBytes)
+                    Response.Flush()
+                    Response.End()
+                End If
+                If ddlFileType.SelectedValue = "EXCEL" Then
+                    Dim company As String = ddlCompany.SelectedValue
+                    If ddlCompany.SelectedValue = "ALL" Then company = String.Empty
+
+                    Dim reportClass As New ReportClass
+                    Dim excelBytes As Byte() = reportClass.JobOrderExcel(company, txtStartDate.Text, txtEndDate.Text)
+
+                    Response.Clear()
+                    Response.ClearContent()
+                    Response.ClearHeaders()
+
+                    Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    Response.AddHeader("content-disposition", "attachment; filename=REPORT_JOB_ORDER.xlsx")
+                    Response.BinaryWrite(excelBytes)
+
+                    Response.Flush()
+                    Response.SuppressContent = True
+
+                    HttpContext.Current.ApplicationInstance.CompleteRequest()
+                End If
+                If ddlFileType.SelectedValue = "CSV" Then
+                    Dim company As String = ddlCompany.SelectedValue
+                    If ddlCompany.SelectedValue = "ALL" Then company = String.Empty
+
+                    Dim reportClass As New ReportClass
+                    Dim csvBytes As Byte() = reportClass.JobOrderCSV(company, txtStartDate.Text, txtEndDate.Text)
+
+                    Response.Clear()
+                    Response.ContentType = "text/csv"
+                    Response.AddHeader("Content-Disposition", "attachment; filename=REPORT_JOB_ORDER.csv")
+                    Response.BinaryWrite(csvBytes)
+                    Response.Flush()
+                    Response.End()
+                End If
+            End If
+
+            If ddlDataType.SelectedValue = "Customer (List)" Then
+                If ddlFileType.SelectedValue = "PDF" Then
+                    Dim company As String = ddlCompany.SelectedValue
+                    If ddlCompany.SelectedValue = "ALL" Then company = String.Empty
+
+                    Dim reportClass As New ReportClass
+                    Dim pdfBytes As Byte() = reportClass.CustomerListPDF(company, Session("RoleName").ToString())
+
+                    Response.Clear()
+                    Response.ContentType = "application/pdf"
+                    Response.AddHeader("Content-Disposition", "attachment; filename=REPORT_CUSTOMER_LIST.pdf")
+                    Response.BinaryWrite(pdfBytes)
+                    Response.Flush()
+                    Response.End()
+                End If
+                If ddlFileType.SelectedValue = "EXCEL" Then
+                    Dim company As String = ddlCompany.SelectedValue
+                    If ddlCompany.SelectedValue = "ALL" Then company = String.Empty
+
+                    Dim reportClass As New ReportClass
+                    Dim excelBytes As Byte() = reportClass.CustomerListExcel(company, Session("RoleName").ToString())
+
+                    Response.Clear()
+                    Response.ClearContent()
+                    Response.ClearHeaders()
+
+                    Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    Response.AddHeader("content-disposition", "attachment; filename=REPORT_CUSTOMER_LIST.xlsx")
+                    Response.BinaryWrite(excelBytes)
+
+                    Response.Flush()
+                    Response.SuppressContent = True
+
+                    HttpContext.Current.ApplicationInstance.CompleteRequest()
+                End If
+                If ddlFileType.SelectedValue = "CSV" Then
+                    Dim company As String = ddlCompany.SelectedValue
+                    If ddlCompany.SelectedValue = "ALL" Then company = String.Empty
+
+                    Dim reportClass As New ReportClass
+                    Dim csvBytes As Byte() = reportClass.CustomerListCSV(company, Session("RoleName").ToString())
+
+                    Response.Clear()
+                    Response.ContentType = "text/csv"
+                    Response.AddHeader("Content-Disposition", "attachment; filename=REPORT_CUSTOMER_LIST.csv")
+                    Response.BinaryWrite(csvBytes)
+                    Response.Flush()
+                    Response.End()
+                End If
+            End If
+
+            If ddlDataType.SelectedValue = "Customer (Order)" Then
                 If ddlFileType.SelectedValue = "PDF" Then
                     Dim company As String = ddlCompany.SelectedValue
                     If ddlCompany.SelectedValue = "ALL" Then company = String.Empty
@@ -49,125 +151,42 @@ Partial Class Report_Generate
 
                     Dim dt As DataTable = reportClass.GetDataTableSP("sp_ReportPerCustomer", paramsPivot)
 
-                    Dim pdfBytes As Byte() = reportClass.StatisticPDF(dt, "REPORT PER CUSTOMER")
-
-                    Response.Clear()
-                    Response.ClearContent()
-                    Response.ClearHeaders()
-
-                    Response.Buffer = True
-                    Response.ContentType = "application/pdf"
-
-                    Response.AddHeader("Content-Disposition", "attachment; filename=REPORT_PER_CUSTOMER.pdf")
-
-                    Response.BinaryWrite(pdfBytes)
-
-                    Response.Flush()
-
-                    HttpContext.Current.ApplicationInstance.CompleteRequest()
-                End If
-                If ddlFileType.SelectedValue = "EXCEL" Then
-                    Dim company As String = ddlCompany.SelectedValue
-                    If ddlCompany.SelectedValue = "ALL" Then company = String.Empty
-
-                    Dim paramsPivot As New List(Of SqlParameter) From {
-                        New SqlParameter("@Status", "In Production"),
-                        New SqlParameter("@StartDate", txtStartDate.Text),
-                        New SqlParameter("@EndDate", txtEndDate.Text),
-                        New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(company), CType(DBNull.Value, Object), company))
-                    }
-
-                    Dim dt As DataTable = reportClass.GetDataTableSP("sp_ReportPerCustomer", paramsPivot)
-                    Dim excelBytes As Byte() = reportClass.StatisticExcel(dt, "REPORT PER CUSTOMER")
-
-                    Response.Clear()
-                    Response.Buffer = True
-                    Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                    Response.AddHeader("Content-Disposition", "attachment; filename=REPORT_PER_CUSTOMER.xlsx")
-                    Response.BinaryWrite(excelBytes)
-                    Response.Flush()
-                    HttpContext.Current.ApplicationInstance.CompleteRequest()
-                End If
-            End If
-
-            If ddlDataType.SelectedValue = "Data Order" Then
-                If ddlFileType.SelectedValue = "PDF" Then
-                    Dim company As String = ddlCompany.SelectedValue
-                    If ddlCompany.SelectedValue = "ALL" Then company = String.Empty
-
-                    Dim reportClass As New ReportClass
-                    Dim pdfBytes As Byte() = reportClass.DataOrderPDF(company, txtStartDate.Text, txtEndDate.Text)
+                    Dim pdfBytes As Byte() = reportClass.CustomerOrderPDF(dt, "REPORT CUSTOMER ORDER")
 
                     Response.Clear()
                     Response.ContentType = "application/pdf"
-                    Response.AddHeader("Content-Disposition", "attachment; filename=REPORT_DATA_ORDER.pdf")
+                    Response.AddHeader("Content-Disposition", "attachment; filename=REPORT_CUSTOMER_ORDER.pdf")
                     Response.BinaryWrite(pdfBytes)
                     Response.Flush()
                     Response.End()
                 End If
                 If ddlFileType.SelectedValue = "EXCEL" Then
-                    Dim company As String = ddlCompany.SelectedValue
-                    If ddlCompany.SelectedValue = "ALL" Then company = String.Empty
+                    MessageError(True, "UNDER MAINTENANCE !")
+                    Exit Sub
+                    'Dim company As String = ddlCompany.SelectedValue
+                    'If ddlCompany.SelectedValue = "ALL" Then company = String.Empty
 
-                    Dim reportClass As New ReportClass
-                    Dim excelBytes As Byte() = reportClass.DataOrderExcel(company, txtStartDate.Text, txtEndDate.Text)
+                    'Dim paramsPivot As New List(Of SqlParameter) From {
+                    '    New SqlParameter("@Status", "In Production"),
+                    '    New SqlParameter("@StartDate", txtStartDate.Text),
+                    '    New SqlParameter("@EndDate", txtEndDate.Text),
+                    '    New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(company), CType(DBNull.Value, Object), company))
+                    '}
 
-                    Response.Clear()
-                    Response.Buffer = True
-                    Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                    Response.AddHeader("Content-Disposition", "attachment; filename=REPORT_DATA_ORDER.xlsx")
-                    Response.BinaryWrite(excelBytes)
-                    Response.Flush()
-                    HttpContext.Current.ApplicationInstance.CompleteRequest()
+                    'Dim dt As DataTable = reportClass.GetDataTableSP("sp_ReportPerCustomer", paramsPivot)
+                    'Dim excelBytes As Byte() = reportClass.CustomerOrderExcel(dt, "REPORT PER CUSTOMER")
+
+                    'Response.Clear()
+                    'Response.Buffer = True
+                    'Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    'Response.AddHeader("Content-Disposition", "attachment; filename=REPORT_PER_CUSTOMER.xlsx")
+                    'Response.BinaryWrite(excelBytes)
+                    'Response.Flush()
+                    'HttpContext.Current.ApplicationInstance.CompleteRequest()
                 End If
                 If ddlFileType.SelectedValue = "CSV" Then
-                    Dim company As String = ddlCompany.SelectedValue
-                    If ddlCompany.SelectedValue = "ALL" Then company = String.Empty
-
-                    Dim reportClass As New ReportClass
-                    Dim csvBytes As Byte() = reportClass.DataOrderCSV(company, txtStartDate.Text, txtEndDate.Text)
-
-                    Response.Clear()
-                    Response.ContentType = "text/csv"
-                    Response.AddHeader("Content-Disposition", "attachment; filename=REPORT_DATA_ORDER.csv")
-                    Response.BinaryWrite(csvBytes)
-                    Response.Flush()
-                    Response.End()
-                End If
-            End If
-
-            If ddlDataType.SelectedValue = "Customers" Then
-                If ddlFileType.SelectedValue = "PDF" Then
-                    Dim company As String = ddlCompany.SelectedValue
-                    If ddlCompany.SelectedValue = "ALL" Then company = String.Empty
-
-                    Dim reportClass As New ReportClass
-                    Dim pdfBytes As Byte() = reportClass.CustomerPDF(company, Session("RoleName").ToString())
-
-                    Response.Clear()
-                    Response.ContentType = "application/pdf"
-                    Response.AddHeader("Content-Disposition", "attachment; filename=REPORT_DATA_CUSTOMER.pdf")
-                    Response.BinaryWrite(pdfBytes)
-                    Response.Flush()
-                    Response.End()
-                End If
-                If ddlFileType.SelectedValue = "EXCEL" Then
-                    Dim company As String = ddlCompany.SelectedValue
-                    If ddlCompany.SelectedValue = "ALL" Then company = String.Empty
-
-                    Dim reportClass As New ReportClass
-                    Dim excelBytes As Byte() = reportClass.CustomerPDF(company, Session("RoleName").ToString())
-
-                    Response.Clear()
-                    Response.Buffer = True
-                    Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                    Response.AddHeader("Content-Disposition", "attachment; filename=REPORT_DATA_CUSTOMER.xlsx")
-                    Response.BinaryWrite(excelBytes)
-                    Response.Flush()
-                    HttpContext.Current.ApplicationInstance.CompleteRequest()
-                End If
-                If ddlFileType.SelectedValue = "CSV" Then
-
+                    MessageError(True, "UNDER MAINTENANCE !")
+                    Exit Sub
                 End If
             End If
         Catch ex As Exception
