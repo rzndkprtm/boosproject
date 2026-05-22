@@ -207,7 +207,7 @@
 
             var finalMessage = "Hi <b>" + sessionFullName + "</b>,<br><br>" + message;
 
-            document.getElementById("titleTest").innerText = "[PREVIEW]" + title;
+            document.getElementById("titleTest").innerText = "[PREVIEW] " + title;
             document.getElementById("messageTest").innerHTML = finalMessage;
         }
 
