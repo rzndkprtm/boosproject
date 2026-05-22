@@ -17,9 +17,10 @@ Partial Class Report_Default
 
             BindCompany()
 
-            gvList.DataSource = Nothing : gvList.DataBind()
-            gvBlindsPivot.DataSource = Nothing : gvBlindsPivot.DataBind()
+            gvCustomer.DataSource = Nothing : gvCustomer.DataBind()
+            gvProduct.DataSource = Nothing : gvProduct.DataBind()
             gvFabric.DataSource = Nothing : gvFabric.DataBind()
+            gvFabricColour.DataSource = Nothing : gvFabricColour.DataBind()
             gvBottom.DataSource = Nothing : gvBottom.DataBind()
             gvTube.DataSource = Nothing : gvTube.DataBind()
 
@@ -31,7 +32,7 @@ Partial Class Report_Default
         Response.Redirect("~/report/generate", False)
     End Sub
 
-    Protected Sub gvList_RowDataBound(sender As Object, e As GridViewRowEventArgs)
+    Protected Sub gvProduct_RowDataBound(sender As Object, e As GridViewRowEventArgs)
         If ddlStatus.SelectedValue = "In Production" Then
 
             If e.Row.RowType = DataControlRowType.Header OrElse
@@ -45,7 +46,7 @@ Partial Class Report_Default
         End If
     End Sub
 
-    Protected Sub gvBlindsPivot_RowDataBound(sender As Object, e As GridViewRowEventArgs)
+    Protected Sub gvCustomer_RowDataBound(sender As Object, e As GridViewRowEventArgs)
         If e.Row.RowType = DataControlRowType.Header OrElse e.Row.RowType = DataControlRowType.DataRow Then
             If e.Row.Cells.Count > 0 Then
                 e.Row.Cells(0).Visible = False
@@ -57,9 +58,10 @@ Partial Class Report_Default
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
 
-        gvList.DataSource = Nothing : gvList.DataBind()
-        gvBlindsPivot.DataSource = Nothing : gvBlindsPivot.DataBind()
+        gvCustomer.DataSource = Nothing : gvCustomer.DataBind()
+        gvProduct.DataSource = Nothing : gvProduct.DataBind()
         gvFabric.DataSource = Nothing : gvFabric.DataBind()
+        gvFabricColour.DataSource = Nothing : gvFabricColour.DataBind()
         gvBottom.DataSource = Nothing : gvBottom.DataBind()
         gvTube.DataSource = Nothing : gvTube.DataBind()
         Try
@@ -73,49 +75,58 @@ Partial Class Report_Default
             End If
 
             If msgError.InnerText = "" Then
-                Dim paramsItem As New List(Of SqlParameter) From {
+                Dim customers As New List(Of SqlParameter) From {
                     New SqlParameter("@Status", ddlStatus.SelectedValue),
                     New SqlParameter("@StartDate", txtStartDate.Text),
                     New SqlParameter("@EndDate", txtEndDate.Text),
                     New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(ddlCompany.SelectedValue), CType(DBNull.Value, Object), ddlCompany.SelectedValue))
                 }
-                gvList.DataSource = reportClass.GetDataTableSP("sp_ReportPerDesign", paramsItem)
-                gvList.DataBind()
+                gvCustomer.DataSource = reportClass.GetDataTableSP("sp_ReportPerCustomer", customers)
+                gvCustomer.DataBind()
 
-                Dim paramsPivot As New List(Of SqlParameter) From {
+                Dim products As New List(Of SqlParameter) From {
                     New SqlParameter("@Status", ddlStatus.SelectedValue),
                     New SqlParameter("@StartDate", txtStartDate.Text),
                     New SqlParameter("@EndDate", txtEndDate.Text),
                     New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(ddlCompany.SelectedValue), CType(DBNull.Value, Object), ddlCompany.SelectedValue))
                 }
-                gvBlindsPivot.DataSource = reportClass.GetDataTableSP("sp_ReportPerCustomer", paramsPivot)
-                gvBlindsPivot.DataBind()
+                gvProduct.DataSource = reportClass.GetDataTableSP("sp_ReportPerDesign", products)
+                gvProduct.DataBind()
 
-                Dim paramsFabric As New List(Of SqlParameter) From {
+                Dim fabrics As New List(Of SqlParameter) From {
                     New SqlParameter("@Status", ddlStatus.SelectedValue),
                     New SqlParameter("@StartDate", txtStartDate.Text),
                     New SqlParameter("@EndDate", txtEndDate.Text),
                     New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(ddlCompany.SelectedValue), CType(DBNull.Value, Object), ddlCompany.SelectedValue))
                 }
-                gvFabric.DataSource = reportClass.GetDataTableSP("sp_ReportPerFabricColour", paramsFabric)
+                gvFabric.DataSource = reportClass.GetDataTableSP("sp_ReportPerFabric", fabrics)
                 gvFabric.DataBind()
 
-                Dim paramsBottom As New List(Of SqlParameter) From {
+                Dim fabricColours As New List(Of SqlParameter) From {
                     New SqlParameter("@Status", ddlStatus.SelectedValue),
                     New SqlParameter("@StartDate", txtStartDate.Text),
                     New SqlParameter("@EndDate", txtEndDate.Text),
                     New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(ddlCompany.SelectedValue), CType(DBNull.Value, Object), ddlCompany.SelectedValue))
                 }
-                gvBottom.DataSource = reportClass.GetDataTableSP("sp_ReportPerBottomColour", paramsBottom)
+                gvFabricColour.DataSource = reportClass.GetDataTableSP("sp_ReportPerFabricColour", fabricColours)
+                gvFabricColour.DataBind()
+
+                Dim bottomColours As New List(Of SqlParameter) From {
+                    New SqlParameter("@Status", ddlStatus.SelectedValue),
+                    New SqlParameter("@StartDate", txtStartDate.Text),
+                    New SqlParameter("@EndDate", txtEndDate.Text),
+                    New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(ddlCompany.SelectedValue), CType(DBNull.Value, Object), ddlCompany.SelectedValue))
+                }
+                gvBottom.DataSource = reportClass.GetDataTableSP("sp_ReportPerBottomColour", bottomColours)
                 gvBottom.DataBind()
 
-                Dim paramsTube As New List(Of SqlParameter) From {
+                Dim tubes As New List(Of SqlParameter) From {
                     New SqlParameter("@Status", ddlStatus.SelectedValue),
                     New SqlParameter("@StartDate", txtStartDate.Text),
                     New SqlParameter("@EndDate", txtEndDate.Text),
                     New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(ddlCompany.SelectedValue), CType(DBNull.Value, Object), ddlCompany.SelectedValue))
                 }
-                gvTube.DataSource = reportClass.GetDataTableSP("sp_ReportPerTube", paramsTube)
+                gvTube.DataSource = reportClass.GetDataTableSP("sp_ReportPerTube", tubes)
                 gvTube.DataBind()
             End If
         Catch ex As Exception

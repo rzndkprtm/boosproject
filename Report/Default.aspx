@@ -43,7 +43,7 @@
             </div>
         </section>
         <section class="row">
-            <div class="col-12 col-sm-12 col-lg-4">
+            <div class="col-12 col-sm-12 col-lg-3">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title">Report Filters</h4>
@@ -52,11 +52,13 @@
                         <div class="card-body">
                             <div class="form form-vertical">
                                 <div class="row">
-                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                    <div class="col-12 form-group">
                                         <label class="form-label">Company</label>
                                         <asp:DropDownList runat="server" ID="ddlCompany" CssClass="form-select"></asp:DropDownList>
                                     </div>
-                                    <div class="col-12 col-sm-12 col-lg-6 form-group" runat="server" id="divCompany">
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 form-group">
                                         <label class="form-label">Status</label>
                                         <asp:DropDownList runat="server" ID="ddlStatus" CssClass="form-select">
                                             <asp:ListItem Value="" Text=""></asp:ListItem>
@@ -66,11 +68,13 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                    <div class="col-12 form-group">
                                         <label class="form-label">Start Date</label>
                                         <asp:TextBox runat="server" ID="txtStartDate" CssClass="form-control" TextMode="Date"></asp:TextBox>
                                     </div>
-                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 form-group">
                                         <label class="form-label">End Date</label>
                                         <asp:TextBox runat="server" ID="txtEndDate" CssClass="form-control" TextMode="Date"></asp:TextBox>
                                     </div>
@@ -84,7 +88,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-sm-12 col-lg-8">
+            <div class="col-12 col-sm-12 col-lg-9">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title">Report Outputs</h4>
@@ -94,9 +98,9 @@
                             <div class="list-group list-group-horizontal-sm mb-1 text-center" role="tablist">
                                 <a class="list-group-item list-group-item-action active" id="listCustomer" data-bs-toggle="list" href="#list-customer" role="tab">Customers</a>
                                 <a class="list-group-item list-group-item-action" id="listProduct" data-bs-toggle="list" href="#list-product" role="tab">Products</a>
-                                <a class="list-group-item list-group-item-action" id="listFabric" data-bs-toggle="list" href="#list-fabric" role="tab">Fabrics</a>
+                                <a class="list-group-item list-group-item-action" id="listFabric" data-bs-toggle="list" href="#list-fabric" role="tab">Fabric Types</a>
+                                <a class="list-group-item list-group-item-action" id="listFabricColour" data-bs-toggle="list" href="#list-fabric-colour" role="tab">Fabric Colours</a>
                                 <a class="list-group-item list-group-item-action" id="listBottom" data-bs-toggle="list" href="#list-bottom" role="tab">Bottom Rails</a>
-
                                 <a class="list-group-item list-group-item-action" id="listTube" data-bs-toggle="list" href="#list-tube" role="tab">Tube Types</a>
                             </div>
                             <div class="tab-content text-justify">
@@ -104,7 +108,7 @@
                                     <div class="row mt-3">
                                         <div class="col-12">
                                             <div class="grid-container table-responsive">
-                                                <asp:GridView runat="server" ID="gvBlindsPivot" CssClass="table table-bordered table-hover" AutoGenerateColumns="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowDataBound="gvBlindsPivot_RowDataBound"></asp:GridView>
+                                                <asp:GridView runat="server" ID="gvCustomer" CssClass="table table-bordered table-hover" AutoGenerateColumns="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowDataBound="gvCustomer_RowDataBound"></asp:GridView>
                                             </div>
                                         </div>
                                     </div>
@@ -113,7 +117,7 @@
                                     <div class="row mt-3">
                                         <div class="col-12">
                                             <div class="table-responsive">
-                                                <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover" AutoGenerateColumns="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowDataBound="gvList_RowDataBound"></asp:GridView>
+                                                <asp:GridView runat="server" ID="gvProduct" CssClass="table table-bordered table-hover" AutoGenerateColumns="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowDataBound="gvProduct_RowDataBound"></asp:GridView>
                                             </div>
                                         </div>
                                     </div>
@@ -124,6 +128,17 @@
                                             <div class="table-responsive">
                                                 <asp:GridView runat="server" ID="gvFabric" CssClass="table table-bordered table-hover" AutoGenerateColumns="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center"></asp:GridView>
                                             </div>
+                                        </div>
+                                        <p><small class="text-muted">* This data does not include Vertical Track Only with Fabric Insert.</small></p>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="list-fabric-colour" role="tabpanel" aria-labelledby="listFabricColour">
+                                    <div class="row mt-3">
+                                        <div class="col-12">
+                                            <div class="table-responsive">
+                                                <asp:GridView runat="server" ID="gvFabricColour" CssClass="table table-bordered table-hover" AutoGenerateColumns="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center"></asp:GridView>
+                                            </div>
+                                            <p><small class="text-muted">* This data does not include Vertical Track Only with Fabric Insert.</small></p>
                                         </div>
                                     </div>
                                 </div>
