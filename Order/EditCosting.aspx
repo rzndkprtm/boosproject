@@ -30,7 +30,7 @@
             </div>
         </section>
         <section class="row">
-            <div class="col-12 col-sm-12 col-lg-8">
+            <div class="col-12 col-sm-12 col-lg-9">
                 <div class="card">
                     <div class="card-content">
                         <div class="card-header">
@@ -49,6 +49,7 @@
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:BoundField DataField="Id" HeaderText="ID" />
+                                                <asp:BoundField DataField="Type" HeaderText="Type" />
                                                 <asp:BoundField DataField="Description" HeaderText="Description" />
                                                 <asp:TemplateField HeaderText="New Price (Buy)" ItemStyle-Width="180px">
                                                     <ItemTemplate>
@@ -88,11 +89,6 @@
                             <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Cancel / Close" OnClick="btnCancel_Click" />
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-12 col-lg-4">
-                <div class="card">
-                    <div class="card-content"></div>
                 </div>
             </div>
         </section>
