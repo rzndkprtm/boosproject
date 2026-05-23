@@ -348,10 +348,7 @@
                 currentPopup = popupQueue.shift();
 
                 document.getElementById("titleNotification").innerText = currentPopup.title;
-                document.getElementById("messageNotification").innerHTML =
-                    currentPopup.message
-                        .replace(/\r\n/g, "<br>")
-                        .replace(/\n/g, "<br>");
+                document.getElementById("messageNotification").innerHTML = currentPopup.message.replace(/\r\n/g, "<br>").replace(/\n/g, "<br>");
 
                 var modalEl = document.getElementById('modalNotification');
 
@@ -362,7 +359,6 @@
                         keyboard: false
                     });
                 }
-
                 modal.show();
             }
 
@@ -377,6 +373,7 @@
             function refreshSession() {
                 $.ajax({url: '/Setting/UpdateSession.aspx', type: 'GET'});
             }
+
             setInterval(refreshSession, 240000);
 
             Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
