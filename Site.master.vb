@@ -295,6 +295,8 @@ Public Partial Class SiteMaster
 
                 liSetting.Visible = True
 
+                liDashboard.Visible = True
+
                 liGeneral.Visible = True
                 liGeneralCompany.Visible = True
                 liGeneralMailing.Visible = True

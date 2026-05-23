@@ -50,7 +50,10 @@ Partial Class Setting_General_Mailing_Default
 
             Dim dataId As String = e.CommandArgument.ToString()
             If e.CommandName = "Detail" Then
-                Dim url As String = String.Format("~/setting/general/mailing/detail?mailingid={0}", dataId)
+
+            End If
+            If e.CommandName = "Ubah" Then
+                Dim url As String = String.Format("~/setting/general/mailing/edit?mailingid={0}", dataId)
                 Response.Redirect(url, False)
             End If
         End If
@@ -91,19 +94,12 @@ Partial Class Setting_General_Mailing_Default
             Dim thisId As String = txtIdDelete.Text
 
             Using thisConn As New SqlConnection(myConn)
-                thisConn.Open()
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Mailings WHERE Id=@Id", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Mailings WHERE Id=@Id; DELETE FROM Logs WHERE Type='Mailings' AND DataId=@Id;", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", thisId)
+
+                    thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Logs WHERE Type='Mailings' AND DataId=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                thisConn.Close()
             End Using
 
             Session("SearchMailing") = txtSearch.Text

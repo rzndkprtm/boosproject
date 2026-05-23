@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Detail.aspx.vb" Inherits="Setting_General_Mailing_Detail" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Mailing Detail" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Edit.aspx.vb" Inherits="Setting_General_Mailing_Edit" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Edit Mailing" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-heading">
@@ -27,7 +27,7 @@
             <div class="col-12 col-sm-12 col-lg-8">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Add Form</h4>
+                        <h4 class="card-title">Edit Form</h4>
                     </div>
                     <div class="card-content">
                         <div class="card-body">

@@ -1,7 +1,7 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 
-Partial Class Setting_General_Mailing_Detail
+Partial Class Setting_General_Mailing_Edit
     Inherits Page
 
     Dim settingClass As New SettingClass
@@ -80,7 +80,7 @@ Partial Class Setting_General_Mailing_Detail
         Try
             Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Mailings WHERE Id='" & mailingId & "'")
             If myData Is Nothing Then
-                Response.Redirect("~/setting/customer", False)
+                Response.Redirect("~/setting/general/mailing", False)
                 Exit Sub
             End If
 
