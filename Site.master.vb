@@ -324,6 +324,7 @@ Public Partial Class SiteMaster
                 liPriceSurcharge.Visible = True
                 liPricePromo.Visible = True
 
+                liDatabase.Visible = True
                 liOnline.Visible = True
                 liXero.Visible = True
                 liNotification.Visible = True
