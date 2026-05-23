@@ -1,6 +1,8 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 Imports System.Globalization
+Imports iTextSharp.text.pdf.AcroFields
+Imports MimeKit
 
 Partial Class Order_EditCosting
     Inherits Page
@@ -118,6 +120,52 @@ Partial Class Order_EditCosting
         Response.Redirect(String.Format("~/order/detail?orderid={0}", lblHeaderId.Text), False)
     End Sub
 
+    Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim costingArray As Object() = {lblHeaderId.Text, lblItemId.Text, ddlAddItem.SelectedValue, "Surcharge", txtAddDescription.Text, txtAddBuyPrice.Text, txtAddSellPrice.Text}
+            orderClass.OrderCostings(costingArray)
+            orderClass.FinalCostItem(lblHeaderId.Text, lblItemId.Text)
+
+            dataLog = {"OrderDetails", lblItemId.Text, Session("LoginId"), "Update Price"}
+            orderClass.Logs(dataLog)
+
+            Response.Redirect(String.Format("~/order/editcosting?boos={0}", lblId.Text), False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim thisId As String = txtDeleteId.Text
+
+            Using thisConn As SqlConnection = New SqlConnection(myConn)
+                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM OrderCostings WHERE Id=@Id", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", thisId)
+
+                    thisConn.Open()
+                    myCmd.ExecuteNonQuery()
+                End Using
+            End Using
+            orderClass.FinalCostItem(lblHeaderId.Text, lblItemId.Text)
+
+            dataLog = {"OrderDetails", lblItemId.Text, Session("LoginId"), "Update Price"}
+            orderClass.Logs(dataLog)
+
+            Response.Redirect(String.Format("~/order/editcosting?boos={0}", lblId.Text), False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
     Protected Sub BindData(headerId As String, itemId As String)
         Try
             Dim headerData As DataRow = orderClass.GetDataRow("SELECT OrderHeaders.*, Customers.CompanyId FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id='" & headerId & "'")
@@ -130,25 +178,14 @@ Partial Class Order_EditCosting
 
             hTitle.InnerText = orderClass.GetItemData("SELECT ISNULL(CONVERT(VARCHAR(200), OrderDetails.Room), '') + ' - ' + ISNULL(CONVERT(VARCHAR(200), Products.Name), '') FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId = Products.Id WHERE OrderDetails.Id = '" & itemId & "'")
 
-            Dim thisQuery As String = "SELECT *, FORMAT(BuyPrice, 'C', 'en-US') AS BuyPricing, FORMAT(SellPrice, 'C', 'en-US') AS SellPricing FROM OrderCostings WHERE ItemId='" & itemId & "' AND Type<>'Final' AND Number<>0 ORDER BY Number, CASE WHEN Type='Base' THEN 1 WHEN Type='Surcharge' THEN 2 ELSE 3 END ASC"
-            If lblCompanyId.Text = "3" Then
-                thisQuery = "SELECT *, FORMAT(BuyPrice, 'C', 'id-ID') AS BuyPricing, FORMAT(SellPrice, 'C', 'en-US') AS SellPricing FROM OrderCostings WHERE ItemId='" & itemId & "' AND Type<>'Final' AND Number<>0 ORDER BY Number, CASE WHEN Type='Base' THEN 1 WHEN Type='Surcharge' THEN 2 ELSE 3 END ASC"
-            End If
-            gvList.DataSource = orderClass.GetDataTable(thisQuery)
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@ItemId", lblItemId.Text),
+                New SqlParameter("@CompanyId", lblCompanyId.Text)
+            }
+
+            gvList.DataSource = orderClass.GetDataTableSP("sp_GetOrderCostingByItem", params)
             gvList.DataBind()
             gvList.Columns(1).Visible = False
-
-            divNote.Visible = False
-            Dim itemNote As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Designs.Name AS DesignName, Designs.Type AS DesignType FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id WHERE OrderDetails.Id='" & itemId & "' AND OrderDetails.HeaderId='" & headerId & "'")
-            If Not itemNote Is Nothing Then
-                Dim designName As String = itemNote("DesignName").ToString()
-                Dim designType As String = itemNote("DesignType").ToString()
-                Dim note As String = itemNote("Notes").ToString()
-                If designType = "Services" Then
-                    divNote.Visible = True
-                    lblNote.Text = String.Format("* {0}", note)
-                End If
-            End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -160,6 +197,26 @@ Partial Class Order_EditCosting
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
     End Sub
+
+    Protected Function BindCurrency() As String
+        Try
+            If lblCompanyId.Text = "3" Then Return "Rp"
+            Return "$"
+        Catch ex As Exception
+            Return "ERROR"
+        End Try
+    End Function
+
+    Protected Function BindDescription(designName As String, description As String, orderNote As String) As String
+        Try
+            If designName = "Service" AndAlso Not String.IsNullOrEmpty(orderNote) Then
+                Return description & "<br />" & orderNote
+            End If
+            Return description
+        Catch ex As Exception
+            Return "ERROR"
+        End Try
+    End Function
 
     Protected Function PageAction(action As String) As Boolean
         Try

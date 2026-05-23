@@ -1217,8 +1217,8 @@ Public Class OrderClass
     End Function
 
     Public Sub ResetPriceDetail(headerId As String, itemId As String)
-        'Try
-        Using thisConn As SqlConnection = New SqlConnection(myConn)
+        Try
+            Using thisConn As SqlConnection = New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("DELETE FROM OrderCostings WHERE HeaderId=@HeaderId AND ItemId=@ItemId", thisConn)
                     myCmd.Parameters.AddWithValue("@HeaderId", headerId)
                     myCmd.Parameters.AddWithValue("@ItemId", itemId)
@@ -1227,8 +1227,8 @@ Public Class OrderClass
                     myCmd.ExecuteNonQuery()
                 End Using
             End Using
-        'Catch ex As Exception
-        'End Try
+        Catch ex As Exception
+        End Try
     End Sub
 
     Public Sub UpdateServiceItem(headerId As String, itemId As String, buyPrice As Decimal, sellPrice As Decimal)
@@ -1249,8 +1249,8 @@ Public Class OrderClass
     End Sub
 
     Public Sub FinalCostItem(headerId As String, itemId As String)
-        'Try
-        Using thisConn As New SqlConnection(myConn)
+        Try
+            Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("DELETE FROM OrderCostings WHERE ItemId=@ItemId AND Type='Final'", thisConn)
                     myCmd.Parameters.AddWithValue("@ItemId", itemId)
 
@@ -1264,8 +1264,8 @@ Public Class OrderClass
 
             Dim dataCosting As Object() = {headerId, itemId, 0, "Final", "Final Cost This Item", buyPrice, sellPrice}
             OrderCostings(dataCosting)
-        'Catch ex As Exception
-        'End Try
+        Catch ex As Exception
+        End Try
     End Sub
 
     Public Sub CalculatePriceByOrder(headerId As String)
@@ -1285,8 +1285,8 @@ Public Class OrderClass
     End Sub
 
     Public Sub CalculatePrice(headerId As String, itemId As String)
-        'Try
-        Dim thisData As DataRow = GetDataRow("SELECT * FROM OrderDetails WHERE Id='" & itemId & "' AND Active=1")
+        Try
+            Dim thisData As DataRow = GetDataRow("SELECT * FROM OrderDetails WHERE Id='" & itemId & "' AND Active=1")
             If thisData IsNot Nothing Then
                 Dim customerId As String = GetCustomerIdByOrder(headerId)
 
@@ -2514,8 +2514,8 @@ Public Class OrderClass
                     CalculateCharge(objectArray)
                 End If
             End If
-        'Catch ex As Exception
-        'End Try
+        Catch ex As Exception
+        End Try
     End Sub
 
     Public Sub CalculateCharge(data As Object())

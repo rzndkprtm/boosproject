@@ -21,6 +21,8 @@ Partial Class Report_Default
             gvProduct.DataSource = Nothing : gvProduct.DataBind()
             gvFabric.DataSource = Nothing : gvFabric.DataBind()
             gvFabricColour.DataSource = Nothing : gvFabricColour.DataBind()
+            gvChain.DataSource = Nothing : gvChain.DataBind()
+            gvMotor.DataSource = Nothing : gvMotor.DataBind()
             gvBottom.DataSource = Nothing : gvBottom.DataBind()
             gvTube.DataSource = Nothing : gvTube.DataBind()
 
@@ -62,6 +64,8 @@ Partial Class Report_Default
         gvProduct.DataSource = Nothing : gvProduct.DataBind()
         gvFabric.DataSource = Nothing : gvFabric.DataBind()
         gvFabricColour.DataSource = Nothing : gvFabricColour.DataBind()
+        gvChain.DataSource = Nothing : gvChain.DataBind()
+        gvMotor.DataSource = Nothing : gvMotor.DataBind()
         gvBottom.DataSource = Nothing : gvBottom.DataBind()
         gvTube.DataSource = Nothing : gvTube.DataBind()
         Try
@@ -110,6 +114,24 @@ Partial Class Report_Default
                 }
                 gvFabricColour.DataSource = reportClass.GetDataTableSP("sp_ReportPerFabricColour", fabricColours)
                 gvFabricColour.DataBind()
+
+                Dim chains As New List(Of SqlParameter) From {
+                    New SqlParameter("@Status", ddlStatus.SelectedValue),
+                    New SqlParameter("@StartDate", txtStartDate.Text),
+                    New SqlParameter("@EndDate", txtEndDate.Text),
+                    New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(ddlCompany.SelectedValue), CType(DBNull.Value, Object), ddlCompany.SelectedValue))
+                }
+                gvChain.DataSource = reportClass.GetDataTableSP("sp_ReportPerChain", chains)
+                gvChain.DataBind()
+
+                Dim motors As New List(Of SqlParameter) From {
+                    New SqlParameter("@Status", ddlStatus.SelectedValue),
+                    New SqlParameter("@StartDate", txtStartDate.Text),
+                    New SqlParameter("@EndDate", txtEndDate.Text),
+                    New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(ddlCompany.SelectedValue), CType(DBNull.Value, Object), ddlCompany.SelectedValue))
+                }
+                gvMotor.DataSource = reportClass.GetDataTableSP("sp_ReportPerMotor", motors)
+                gvMotor.DataBind()
 
                 Dim bottomColours As New List(Of SqlParameter) From {
                     New SqlParameter("@Status", ddlStatus.SelectedValue),
