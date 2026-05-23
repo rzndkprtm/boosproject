@@ -74,7 +74,7 @@
                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                         <ul class="dropdown-menu">
                                                             <li runat="server" visible='<%# PageAction("Detail") %>'>
-                                                                <a runat="server" id="aDetail" class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalDetail" onclick='<%# String.Format("return showDetail();") %>'>Detail</a>
+                                                                <a runat="server" id="aDetail" class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalDetail" onclick='<%# String.Format("return showDetail(`{0}`, `{1}`, `{2}`, `{3}`, `{4}`, `{5}`, `{6}`,);", Eval("CompanyAlias").ToString(), Eval("Name").ToString(), Eval("Alias").ToString(), Eval("Subject").ToString(), Eval("To").ToString(), Eval("Cc").ToString(), Eval("Bcc").ToString()) %>'>Detail</a>
                                                             </li>
                                                             <li runat="server" visible='<%# PageAction("Edit") %>'>
                                                                 <asp:LinkButton runat="server" ID="linkEdit" CssClass="dropdown-item" Text="Edit" CommandName="Ubah" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
@@ -107,13 +107,42 @@
     </div>
 
     <div class="modal fade text-center" id="modalDetail" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Detail Mailing</h5>
                 </div>
                 <div class="modal-body">
-
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <tr>
+                                <th>Company</th>
+                                <th>Name</th>
+                                <th>Alias</th>
+                                <th>Subject</th>
+                            </tr>
+                            <tr>
+                                <td><span id="spanCompany"></span></td>
+                                <td><span id="spanName"></span></td>
+                                <td><span id="spanAlias"></span></td>
+                                <td><span id="spanSubject"></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <tr>
+                                <th>TO</th>
+                                <th>CC</th>
+                                <th>BCC</th>
+                            </tr>
+                            <tr>
+                                <td><span id="spanTo"></span></td>
+                                <td><span id="spanCc"></span></td>
+                                <td><span id="spanBcc"></span></td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
@@ -202,8 +231,14 @@
             }
         });
 
-        function showDetail() {
-
+        function showDetail(company, name, alias, subject, to, cc, bcc) {
+            document.getElementById("spanCompany").innerText = company;
+            document.getElementById("spanName").innerText = name;
+            document.getElementById("spanAlias").innerText = alias;
+            document.getElementById("spanSubject").innerText = subject;
+            document.getElementById("spanTo").innerText = to;
+            document.getElementById("spanCc").innerText = cc;
+            document.getElementById("spanBcc").innerText = bcc;
         }
 
         function showCopy(id) {
