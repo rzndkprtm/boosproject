@@ -14,7 +14,7 @@
                             <li class="breadcrumb-item"><a runat="server" href="~/">Home</a></li>
                             <li class="breadcrumb-item"><a runat="server" href="~/setting">Setting</a></li>
                             <li class="breadcrumb-item"><a runat="server" href="~/setting/general">General</a></li>
-                            <li class="breadcrumb-item"><a runat="server" href="~/setting/mailing">Mailing</a></li>
+                            <li class="breadcrumb-item"><a runat="server" href="~/setting/general/mailing">Mailing</a></li>
                             <li class="breadcrumb-item active" aria-current="page"><%: Page.Title %></li>
                         </ol>
                     </nav>
