@@ -49,9 +49,6 @@ Partial Class Setting_General_Mailing_Default
             Session("SearchMailing") = txtSearch.Text
 
             Dim dataId As String = e.CommandArgument.ToString()
-            If e.CommandName = "Detail" Then
-
-            End If
             If e.CommandName = "Ubah" Then
                 Dim url As String = String.Format("~/setting/general/mailing/edit?mailingid={0}", dataId)
                 Response.Redirect(url, False)
