@@ -50,11 +50,15 @@
                                                 </asp:TemplateField>
                                                 <asp:BoundField DataField="Id" HeaderText="ID" />
                                                 <asp:BoundField DataField="Type" HeaderText="Type" />
-                                                <asp:BoundField DataField="Description" HeaderText="Description" />
+                                                <asp:TemplateField HeaderText="Description">
+                                                    <ItemTemplate>
+                                                        <%# BindDescription(Eval("DesignName").ToString(), Eval("Description").ToString(), Eval("OrderNote").ToString()) %>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
                                                 <asp:TemplateField HeaderText="New Price (Buy)" ItemStyle-Width="180px">
                                                     <ItemTemplate>
                                                         <div class="input-group">
-                                                            <span runat="server" id="spanEditBuyPrice" class="input-group-text">$</span>
+                                                            <span runat="server" class="input-group-text"><%# BindCurrency() %></span>
                                                             <asp:TextBox runat="server" ID="txtNewBuyPrice" CssClass="form-control" Text='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:0.##}", Eval("BuyPrice")) %>'></asp:TextBox>
                                                         </div>
                                                     </ItemTemplate>
@@ -62,9 +66,14 @@
                                                 <asp:TemplateField HeaderText="New Price (Sell)" ItemStyle-Width="180px">
                                                     <ItemTemplate>
                                                         <div class="input-group">
-                                                            <span runat="server" id="spanEditSellPrice" class="input-group-text">$</span>
+                                                            <span runat="server" class="input-group-text"><%# BindCurrency() %></span>
                                                             <asp:TextBox runat="server" ID="txtNewSellPrice" CssClass="form-control" Text='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:0.##}", Eval("SellPrice")) %>'></asp:TextBox>
                                                         </div>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:TemplateField ItemStyle-Width="100px">
+                                                    <ItemTemplate>
+                                                        <a class="btn btn-danger" href="#" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                             </Columns>
@@ -73,25 +82,87 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row" runat="server" id="divNote">
-                                <div class="col-12">
-                                    <div class="divider divider-left-center">
-                                        <div class="divider-text">Additional Note</div>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <asp:Label runat="server" ID="lblNote"></asp:Label>
-                                </div>
-                            </div>
                         </div>
-                        <div class="card-footer">
-                            <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" OnClick="btnSubmit_Click" />
-                            <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Cancel / Close" OnClick="btnCancel_Click" />
+                        <div class="card-footer d-flex justify-content-between align-items-center">
+                            <div>
+                                <a class="btn btn-secondary" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalAdd">Add Surcharge</a>
+                            </div>
+                            <div>
+                                <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" OnClick="btnSubmit_Click" />
+                                <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Cancel / Close" OnClick="btnCancel_Click" />
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
+    </div>
+
+    <div class="modal fade text-left" id="modalAdd" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Add Surcharge</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Item</label>
+                            <asp:DropDownList runat="server" ID="ddlAddItem" CssClass="form-select">
+                                <asp:ListItem Value="1" Text="1"></asp:ListItem>
+                                <asp:ListItem Value="2" Text="2"></asp:ListItem>
+                                <asp:ListItem Value="3" Text="3"></asp:ListItem>
+                                <asp:ListItem Value="4" Text="4"></asp:ListItem>
+                                <asp:ListItem Value="5" Text="5"></asp:ListItem>
+                                <asp:ListItem Value="6" Text="6"></asp:ListItem>
+                                <asp:ListItem Value="7" Text="7"></asp:ListItem>
+                                <asp:ListItem Value="8" Text="8"></asp:ListItem>
+                            </asp:DropDownList>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Description</label>
+                            <asp:TextBox runat="server" ID="txtAddDescription" CssClass="form-control" placeholder="Description ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Buy Price</label>
+                            <asp:TextBox runat="server" ID="txtAddBuyPrice" CssClass="form-control" placeholder="Buy Price ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Sell Price</label>
+                            <asp:TextBox runat="server" ID="txtAddSellPrice" CssClass="form-control" placeholder="Sell Price ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-secondary" Text="Submit" OnClick="btnAdd_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade text-center" id="modalDelete" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-danger">
+                    <h5 class="modal-title white">Delete Item</h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <asp:TextBox runat="server" ID="txtDeleteId" style="display:none;"></asp:TextBox>
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnDelete" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDelete_Click" />
+                </div>
+            </div>
+        </div>
     </div>
 
     <div runat="server" visible="false">
@@ -103,6 +174,17 @@
     </div>
 
     <script type="text/javascript">
+        ["modalAdd", "modalDelete"].forEach(function (id) {
+            document.getElementById(id).addEventListener("hide.bs.modal", function () {
+                document.activeElement.blur();
+                document.body.focus();
+            });
+        });
+
+        function showDelete(id) {
+            document.getElementById("<%=txtDeleteId.ClientID %>").value = id;
+        }
+
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

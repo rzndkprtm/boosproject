@@ -100,6 +100,8 @@
                                 <a class="list-group-item list-group-item-action" id="listProduct" data-bs-toggle="list" href="#list-product" role="tab">Products</a>
                                 <a class="list-group-item list-group-item-action" id="listFabric" data-bs-toggle="list" href="#list-fabric" role="tab">Fabric Types</a>
                                 <a class="list-group-item list-group-item-action" id="listFabricColour" data-bs-toggle="list" href="#list-fabric-colour" role="tab">Fabric Colours</a>
+                                <a class="list-group-item list-group-item-action" id="listChain" data-bs-toggle="list" href="#list-chain" role="tab">Chain Types</a>
+                                <a class="list-group-item list-group-item-action" id="listMotor" data-bs-toggle="list" href="#list-motor" role="tab">Motor Types</a>
                                 <a class="list-group-item list-group-item-action" id="listBottom" data-bs-toggle="list" href="#list-bottom" role="tab">Bottom Rails</a>
                                 <a class="list-group-item list-group-item-action" id="listTube" data-bs-toggle="list" href="#list-tube" role="tab">Tube Types</a>
                             </div>
@@ -139,6 +141,24 @@
                                                 <asp:GridView runat="server" ID="gvFabricColour" CssClass="table table-bordered table-hover" AutoGenerateColumns="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center"></asp:GridView>
                                             </div>
                                             <p><small class="text-muted">* This data does not include Vertical Track Only with Fabric Insert.</small></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="list-chain" role="tabpanel" aria-labelledby="listChain">
+                                    <div class="row mt-3">
+                                        <div class="col-12">
+                                            <div class="table-responsive">
+                                                <asp:GridView runat="server" ID="gvChain" CssClass="table table-bordered table-hover" AutoGenerateColumns="true" ShowHeaderWhenEmpty="true" EmptyDataText="UNDER CONSTRUCTION :)" EmptyDataRowStyle-HorizontalAlign="Center"></asp:GridView>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="list-motor" role="tabpanel" aria-labelledby="listMotor">
+                                    <div class="row mt-3">
+                                        <div class="col-12">
+                                            <div class="table-responsive">
+                                                <asp:GridView runat="server" ID="gvMotor" CssClass="table table-bordered table-hover" AutoGenerateColumns="true" ShowHeaderWhenEmpty="true" EmptyDataText="UNDER CONSTRUCTION :)" EmptyDataRowStyle-HorizontalAlign="Center"></asp:GridView>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
