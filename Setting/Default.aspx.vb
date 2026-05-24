@@ -2,30 +2,20 @@
     Inherits Page
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        Dim pageAccess As Boolean = PageAction("Load")
+        Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
             Response.Redirect("~/", False)
             Exit Sub
         End If
-
-        'divGeneral.Attributes("onclick") = "location.href='general'"
-        'divCustomer.Attributes("onclick") = "location.href='customer'"
-        'divSpecification.Attributes("onclick") = "location.href='specification'"
-        'divPrice.Attributes("onclick") = "location.href='price'"
-        'divDatabase.Attributes("onclick") = "location.href='database'"
-        'divOnline.Attributes("onclick") = "location.href='online'"
-        'divXero.Attributes("onclick") = "location.href='xero'"
-        'divNotification.Attributes("onclick") = "location.href='notification'"
-        'divLog.Attributes("onclick") = "location.href='log'"
     End Sub
 
-    Protected Function PageAction(action As String) As Boolean
+    Protected Function LoginAccess(action As String) As Boolean
         Try
             Dim roleId As String = Session("RoleId").ToString()
             Dim levelId As String = Session("LevelId").ToString()
-            Dim actionClass As New ActionClass
+            Dim accessClass As New AccessClass
 
-            Return actionClass.GetActionAccess(roleId, levelId, Page.Title, action)
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
         Catch ex As Exception
             Response.Redirect("~/account/login", False)
             HttpContext.Current.ApplicationInstance.CompleteRequest()

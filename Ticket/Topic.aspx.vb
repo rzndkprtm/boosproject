@@ -10,7 +10,7 @@ Partial Class Ticket_Topic
     Dim dataLog As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        Dim pageAccess As Boolean = PageAction("Load")
+        Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
             Response.Redirect("~/ticket", False)
             Exit Sub
@@ -155,9 +155,9 @@ Partial Class Ticket_Topic
             Dim stringQuery As String = String.Format("SELECT TicketTopics.*, LoginRoles.Name AS RoleName, CASE WHEN TicketTopics.Active=1 THEN 'Yes' WHEN TicketTopics.Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM TicketTopics LEFT JOIN LoginRoles ON TicketTopics.RoleId=LoginRoles.Id {0} ORDER BY TicketTopics.Name ASC", stringSearch)
             gvList.DataSource = ticketClass.GetDataTable(stringQuery)
             gvList.DataBind()
-            gvList.Columns(1).Visible = PageAction("Visible ID")
+            gvList.Columns(1).Visible = LoginAccess("Visible ID")
 
-            btnAdd.Visible = PageAction("Add")
+            btnAdd.Visible = LoginAccess("Add")
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -193,13 +193,13 @@ Partial Class Ticket_Topic
         divErrorProcess.Visible = visible : msgErrorProcess.InnerText = message
     End Sub
 
-    Protected Function PageAction(action As String) As Boolean
+    Protected Function LoginAccess(action As String) As Boolean
         Try
             Dim roleId As String = Session("RoleId").ToString()
             Dim levelId As String = Session("LevelId").ToString()
-            Dim actionClass As New ActionClass
+            Dim accessClass As New AccessClass
 
-            Return actionClass.GetActionAccess(roleId, levelId, Page.Title, action)
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
         Catch ex As Exception
             Response.Redirect("~/account/login", False)
             HttpContext.Current.ApplicationInstance.CompleteRequest()

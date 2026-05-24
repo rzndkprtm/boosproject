@@ -37,7 +37,7 @@ Partial Class Account_Default
         Try
             If msgErrorName.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLogins SET FullName=@FullName WHERE Id=@Id", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Logins SET FullName=@FullName WHERE Id=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", lblLoginId.Text)
                         myCmd.Parameters.AddWithValue("@FullName", txtFullName.Text.Trim())
 
@@ -64,7 +64,7 @@ Partial Class Account_Default
         Try
             If msgErrorEmail.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLogins SET Email=@Email WHERE Id=@Id", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Email=@Email WHERE Id=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", lblLoginId.Text)
                         myCmd.Parameters.AddWithValue("@Email", txtUserEmail.Text.Trim())
 
@@ -87,7 +87,7 @@ Partial Class Account_Default
 
     Protected Sub BindData(loginId As String)
         Try
-            Dim loginData As DataRow = settingClass.GetDataRow("SELECT CustomerLogins.*, Customers.Name AS CustomerName FROM CustomerLogins LEFT JOIN Customers ON CustomerLogins.CustomerId=Customers.Id WHERE CustomerLogins.Id='" & loginId & "'")
+            Dim loginData As DataRow = settingClass.GetDataRow("SELECT Logins.*, Customers.Name AS CustomerName FROM Logins LEFT JOIN Customers ON Logins.CustomerId=Customers.Id WHERE Logins.Id='" & loginId & "'")
 
             lblUserName.Text = loginData("UserName").ToString()
             lblFullName.Text = loginData("FullName").ToString()
@@ -120,18 +120,4 @@ Partial Class Account_Default
     Protected Sub MessageError_Email(visible As Boolean, message As String)
         divErrorEmail.Visible = visible : msgErrorEmail.InnerText = message
     End Sub
-
-    Protected Function PageAction(action As String) As Boolean
-        Try
-            Dim roleId As String = Session("RoleId").ToString()
-            Dim levelId As String = Session("LevelId").ToString()
-            Dim actionClass As New ActionClass
-
-            Return actionClass.GetActionAccess(roleId, levelId, Page.Title, action)
-        Catch ex As Exception
-            Response.Redirect("~/account/login", False)
-            HttpContext.Current.ApplicationInstance.CompleteRequest()
-            Return False
-        End Try
-    End Function
 End Class

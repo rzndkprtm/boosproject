@@ -10,7 +10,7 @@ Partial Class Setting_Customer_Login
     Dim dataLog As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        Dim pageAccess As Boolean = PageAction("Load")
+        Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
             Response.Redirect("~/setting/customer", False)
             Exit Sub
@@ -71,7 +71,7 @@ Partial Class Setting_Customer_Login
                     lblAction.Text = "Edit"
                     titleProcess.InnerText = "Edit Login"
 
-                    Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerLogins WHERE Id='" & lblId.Text & "'")
+                    Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Logins WHERE Id='" & lblId.Text & "'")
                     If myData Is Nothing Then Exit Sub
 
                     BindDataCustomer()
@@ -101,7 +101,7 @@ Partial Class Setting_Customer_Login
         MessageError_Process(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showProcess(); };"
         Try
-            If ddlCustomer.SelectedValue = "" AndAlso (ddlRole.SelectedValue = "4" OrElse ddlRole.SelectedValue = "5" OrElse ddlRole.SelectedValue = "6" OrElse ddlRole.SelectedValue = "8" OrElse ddlRole.SelectedValue = "10") Then
+            If ddlCustomer.SelectedValue = "" Then
                 MessageError_Process(True, "CUSTOMER ACCOUNT IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
@@ -113,42 +113,10 @@ Partial Class Setting_Customer_Login
                 Exit Sub
             End If
 
-            If Session("RoleName") = "IT" AndAlso ddlRole.SelectedValue = "1" Then
-                Dim alert As String = "YOU DO NOT HAVE PERMISSION TO CREATE A LOGIN WITH THIS ROLE !"
-                If lblAction.Text = "Edit" Then
-                    alert = "YOU DO NOT HAVE PERMISSION TO UPDATE A LOGIN WITH THIS ROLE !"
-                End If
-                MessageError_Process(True, alert)
-                ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-                Exit Sub
-            End If
-
             If ddlLevel.SelectedValue = "" Then
                 MessageError_Process(True, "LEVEL MEMBER IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
-            End If
-
-            If Session("RoleName") = "IT" Then
-                If ddlRole.SelectedValue = "1" Then
-                    Dim alert As String = "YOU DO NOT HAVE PERMISSION TO CREATE A LOGIN WITH THIS ROLE !"
-                    If lblAction.Text = "Edit" Then
-                        alert = "YOU DO NOT HAVE PERMISSION TO UPDATE A LOGIN WITH THIS ROLE !"
-                    End If
-                    MessageError_Process(True, alert)
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-                    Exit Sub
-                End If
-
-                If ddlRole.SelectedValue = "2" AndAlso ddlLevel.SelectedValue = "1" Then
-                    Dim alert As String = "YOU DO NOT HAVE PERMISSION TO CREATE A LOGIN WITH THIS LEVEL !"
-                    If lblAction.Text = "Edit" Then
-                        alert = "YOU DO NOT HAVE PERMISSION TO UPDATE A LOGIN WITH THIS LEVEL !"
-                    End If
-                    MessageError_Process(True, alert)
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-                    Exit Sub
-                End If
             End If
 
             If txtFullName.Text = "" Then
@@ -169,7 +137,7 @@ Partial Class Setting_Customer_Login
                 Exit Sub
             End If
 
-            Dim checkUsername As String = settingClass.GetItemData("SELECT UserName FROM CustomerLogins WHERE UserName='" + txtUserName.Text + "'")
+            Dim checkUsername As String = settingClass.GetItemData("SELECT UserName FROM Logins WHERE UserName='" + txtUserName.Text + "'")
 
             If lblAction.Text = "Add" Then
                 If txtUserName.Text = checkUsername Then
@@ -192,9 +160,9 @@ Partial Class Setting_Customer_Login
                 Dim password As String = settingClass.Encrypt(txtPassword.Text)
 
                 If lblAction.Text = "Add" Then
-                    Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerLogins ORDER BY Id DESC")
+                    Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Logins ORDER BY Id DESC")
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerLogins VALUES (@Id, @CustomerId, @RoleId, @LevelId, @UserName, @Password, @FullName, @Email, 0, NULL, 1, @Pricing, 1)", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Logins VALUES (@Id, @CustomerId, @RoleId, @LevelId, @UserName, @Password, @FullName, @Email, 0, NULL, 1, @Pricing, 1)", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", thisId)
                             myCmd.Parameters.AddWithValue("@CustomerId", If(String.IsNullOrEmpty(ddlCustomer.SelectedValue), CType(DBNull.Value, Object), ddlCustomer.SelectedValue))
                             myCmd.Parameters.AddWithValue("@RoleId", ddlRole.SelectedValue)
@@ -210,7 +178,7 @@ Partial Class Setting_Customer_Login
                         End Using
                     End Using
 
-                    dataLog = {"CustomerLogins", thisId, Session("LoginId").ToString(), "Customer Login Created"}
+                    dataLog = {"Logins", thisId, Session("LoginId").ToString(), "Customer Login Created"}
                     settingClass.Logs(dataLog)
 
                     Session("SearchCustomerLogin") = txtSearch.Text
@@ -219,7 +187,7 @@ Partial Class Setting_Customer_Login
 
                 If lblAction.Text = "Edit" Then
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLogins SET CustomerId=@CustomerId, RoleId=@RoleId, LevelId=@LevelId, UserName=@UserName, FullName=@FullName, Email=@Email WHERE Id=@Id", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("UPDATE Logins SET CustomerId=@CustomerId, RoleId=@RoleId, LevelId=@LevelId, UserName=@UserName, FullName=@FullName, Email=@Email WHERE Id=@Id", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", lblId.Text)
                             myCmd.Parameters.AddWithValue("@CustomerId", If(String.IsNullOrEmpty(ddlCustomer.SelectedValue), CType(DBNull.Value, Object), ddlCustomer.SelectedValue))
                             myCmd.Parameters.AddWithValue("@RoleId", ddlRole.SelectedValue)
@@ -234,7 +202,7 @@ Partial Class Setting_Customer_Login
                         End Using
                     End Using
 
-                    dataLog = {"CustomerLogins", lblId.Text, Session("LoginId").ToString(), "Customer Login Updated"}
+                    dataLog = {"Logins", lblId.Text, Session("LoginId").ToString(), "Customer Login Updated"}
                     settingClass.Logs(dataLog)
 
                     Session("SearchCustomerLogin") = txtSearch.Text
@@ -256,21 +224,19 @@ Partial Class Setting_Customer_Login
             If txtActive.Text = "1" Then : active = 0 : End If
 
             Using thisConn As New SqlConnection(myConn)
-                thisConn.Open()
-
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLogins SET Active=@Active WHERE Id=@Id", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Active=@Active WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", thisId)
                     myCmd.Parameters.AddWithValue("@Active", active)
+
+                    thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
-
-                thisConn.Close()
             End Using
 
             Dim activeDesc As String = "Customer Login Has Been Activated"
             If active = 0 Then activeDesc = "Customer Login Has Been Deactivated"
 
-            dataLog = {"CustomerLogins", thisId, Session("LoginId").ToString(), activeDesc}
+            dataLog = {"Logins", thisId, Session("LoginId").ToString(), activeDesc}
             settingClass.Logs(dataLog)
 
             Session("SearchCustomerLogin") = txtSearch.Text
@@ -288,7 +254,7 @@ Partial Class Setting_Customer_Login
                 Dim newPassword As String = settingClass.Encrypt(txtChangePassword.Text)
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLogins SET Password=@Password WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Password=@Password WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
                         myCmd.Parameters.AddWithValue("@Password", newPassword)
 
@@ -297,7 +263,7 @@ Partial Class Setting_Customer_Login
                     End Using
                 End Using
 
-                dataLog = {"CustomerLogins", thisId, Session("LoginId").ToString(), "Change Password Login"}
+                dataLog = {"Logins", thisId, Session("LoginId").ToString(), "Change Password Login"}
                 settingClass.Logs(dataLog)
 
                 Session("SearchCustomerLogin") = txtSearch.Text
@@ -315,18 +281,16 @@ Partial Class Setting_Customer_Login
             Dim newPassword As String = settingClass.Encrypt(txtNewResetPass.Text)
 
             Using thisConn As New SqlConnection(myConn)
-                thisConn.Open()
-
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLogins SET Password=@Password, ResetLogin=1 WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Password=@Password, ResetLogin=1 WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", thisId)
                     myCmd.Parameters.AddWithValue("@Password", newPassword)
+
+                    thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
-
-                thisConn.Close()
             End Using
 
-            dataLog = {"CustomerLogins", thisId, Session("LoginId").ToString(), "Customer Login Reset Password"}
+            dataLog = {"Logins", thisId, Session("LoginId").ToString(), "Customer Login Reset Password"}
             settingClass.Logs(dataLog)
 
             Session("SearchCustomerLogin") = txtSearch.Text
@@ -339,16 +303,12 @@ Partial Class Setting_Customer_Login
     Protected Sub BindData(searchText As String)
         Session("SearchCustomerLogin") = String.Empty
         Try
-            Dim search As String = String.Empty
-            If Not String.IsNullOrEmpty(searchText) Then
-                search = "WHERE Customers.Name LIKE '%" & searchText.Trim() & "%' OR Customers.DebtorCode LIKE '%" & searchText.Trim() & "%' OR CustomerLogins.Id LIKE '%" & searchText.Trim() & "%' OR CustomerLogins.UserName LIKE '%" & searchText.Trim() & "%' OR CustomerLogins.FullName LIKE '%" & searchText.Trim() & "%'"
-            End If
-
-            Dim thisQuery As String = String.Format("SELECT CustomerLogins.*, Customers.Name AS CustomerName, LoginRoles.Name AS RoleName, LoginLevels.Name AS LevelName, CASE WHEN CustomerLogins.Active=1 THEN 'Yes' WHEN CustomerLogins.Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM CustomerLogins LEFT JOIN Customers ON CustomerLogins.CustomerId=Customers.Id LEFT JOIN LoginRoles ON CustomerLogins.RoleId=LoginRoles.Id LEFT JOIN LoginLevels ON CustomerLogins.LevelId=LoginLevels.Id {0} ORDER BY Customers.Name, CustomerLogins.Id ASC", search)
-
-            gvList.DataSource = settingClass.GetDataTable(thisQuery)
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@SearchText", If(String.IsNullOrEmpty(searchText), "", searchText.Trim()))
+            }
+            gvList.DataSource = settingClass.GetDataTableSP("sp_CustomerLoginList", params)
             gvList.DataBind()
-            gvList.Columns(1).Visible = PageAction("Visible ID") ' ID
+            gvList.Columns(1).Visible = LoginAccess("Visible ID") ' ID
         Catch ex As Exception
             MessageError(True, ex.ToString())
         End Try
@@ -373,7 +333,7 @@ Partial Class Setting_Customer_Login
     Protected Sub BindRole()
         ddlRole.Items.Clear()
         Try
-            ddlRole.DataSource = settingClass.GetDataTable("SELECT * FROM LoginRoles ORDER BY Name ASC")
+            ddlRole.DataSource = settingClass.GetDataTable("SELECT * FROM LoginRoles WHERE Id='8' ORDER BY Name ASC")
             ddlRole.DataTextField = "Name"
             ddlRole.DataValueField = "Id"
             ddlRole.DataBind()
@@ -432,13 +392,13 @@ Partial Class Setting_Customer_Login
         Return result
     End Function
 
-    Protected Function PageAction(action As String) As Boolean
+    Protected Function LoginAccess(action As String) As Boolean
         Try
             Dim roleId As String = Session("RoleId").ToString()
             Dim levelId As String = Session("LevelId").ToString()
-            Dim actionClass As New ActionClass
+            Dim accessClass As New AccessClass
 
-            Return actionClass.GetActionAccess(roleId, levelId, Page.Title, action)
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
         Catch ex As Exception
             Response.Redirect("~/account/login", False)
             HttpContext.Current.ApplicationInstance.CompleteRequest()

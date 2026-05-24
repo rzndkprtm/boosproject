@@ -12,7 +12,7 @@ Partial Class Order_Add
     Dim url As String = String.Empty
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        Dim pageAccess As Boolean = PageAction("Load")
+        Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
             Response.Redirect("~/order/", False)
             Exit Sub
@@ -3457,9 +3457,9 @@ Partial Class Order_Add
         ddlCreatedBy.Items.Clear()
         Try
             If Not String.IsNullOrEmpty(customerId) Then
-                Dim thisQuery As String = "SELECT * FROM CustomerLogins WHERE CustomerId='" & customerId & "' OR Id='" & Session("LoginId") & "' ORDER BY UserName ASC"
+                Dim thisQuery As String = "SELECT * FROM Logins WHERE CustomerId='" & customerId & "' OR Id='" & Session("LoginId") & "' ORDER BY UserName ASC"
                 If Session("RoleName") = "Customer" Then
-                    thisQuery = "SELECT * FROM CustomerLogins WHERE CustomerId='" & customerId & "' OR Id='" & Session("LoginId") & "' ORDER BY UserName ASC"
+                    thisQuery = "SELECT * FROM Logins WHERE CustomerId='" & customerId & "' OR Id='" & Session("LoginId") & "' ORDER BY UserName ASC"
                 End If
                 ddlCreatedBy.DataSource = orderClass.GetDataTable(thisQuery)
                 ddlCreatedBy.DataTextField = "UserName"
@@ -3484,13 +3484,13 @@ Partial Class Order_Add
         divError.Visible = visible : msgError.InnerText = message
     End Sub
 
-    Protected Function PageAction(action As String) As Boolean
+    Protected Function LoginAccess(action As String) As Boolean
         Try
             Dim roleId As String = Session("RoleId").ToString()
             Dim levelId As String = Session("LevelId").ToString()
-            Dim actionClass As New ActionClass
+            Dim accessClass As New AccessClass
 
-            Return actionClass.GetActionAccess(roleId, levelId, Page.Title, action)
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
         Catch ex As Exception
             Response.Redirect("~/account/login", False)
             HttpContext.Current.ApplicationInstance.CompleteRequest()

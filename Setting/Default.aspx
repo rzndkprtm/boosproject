@@ -39,14 +39,19 @@
                 <a href="/setting/general" class="dashboard-card">
                     <div class="dashboard-title">General</div>
                     <div class="dashboard-desc">
-                        Company, Mailing, Login Access, Newsletter, Tutorial, Action Access
+                        Company, Mailing, Newsletter, Tutorial, Notification
                     </div>
                 </a>
-                
+                <a href="/setting/login" class="dashboard-card">
+                    <div class="dashboard-title">Login</div>
+                    <div class="dashboard-desc">
+                        User, Role, Level, Access, Online
+                    </div>
+                </a>                
                 <a href="/setting/customer" class="dashboard-card">
                     <div class="dashboard-title">Customer</div>
                     <div class="dashboard-desc">
-                        Customer List
+                        List, Contact, Address, Login, Discount, Promo, Product Access, Quote
                     </div>
                 </a>
                 <a href="/setting/specification" class="dashboard-card">
@@ -67,20 +72,8 @@
                         Table, View, Function, Query
                     </div>
                 </a>
-                <a href="/setting/online" class="dashboard-card">
-                    <div class="dashboard-title">Online User</div>
-                    <div class="dashboard-desc">
-                        List User
-                    </div>
-                </a>
                 <a href="/setting/xero" class="dashboard-card">
                     <div class="dashboard-title">Xero</div>
-                    <div class="dashboard-desc">
-                        List, Create, Update, Delete
-                    </div>
-                </a>
-                <a href="/setting/notification" class="dashboard-card">
-                    <div class="dashboard-title">Notification</div>
                     <div class="dashboard-desc">
                         List, Create, Update, Delete
                     </div>

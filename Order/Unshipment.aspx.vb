@@ -11,7 +11,7 @@ Partial Class Order_Unshipment
     Dim dataLog As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        Dim pageAccess As Boolean = PageAction("Load")
+        Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
             Response.Redirect("~/order", False)
             Exit Sub
@@ -222,10 +222,10 @@ Partial Class Order_Unshipment
             Dim thisData As DataTable = unshipmentClass.GetDataTableSP("sp_OrderUnshipment", params)
             gvList.DataSource = thisData
             gvList.DataBind()
-            gvList.Columns(1).Visible = PageAction("Visible ID")
+            gvList.Columns(1).Visible = LoginAccess("Visible ID")
 
-            aEmail.Visible = PageAction("Email")
-            divCompany.Visible = PageAction("Sort Company")
+            aEmail.Visible = LoginAccess("Email")
+            divCompany.Visible = LoginAccess("Sort Company")
 
             Dim mailingString As String = "SELECT * FROM Mailings WHERE Name='Unshipment Order' AND Active=1"
             Dim dataToMailing As DataTable = unshipmentClass.GetDataTable(mailingString)
@@ -394,13 +394,13 @@ Partial Class Order_Unshipment
         divErrorShipmentOrder.Visible = visible : msgErrorShipmentOrder.InnerText = message
     End Sub
 
-    Protected Function PageAction(action As String) As Boolean
+    Protected Function LoginAccess(action As String) As Boolean
         Try
             Dim roleId As String = Session("RoleId").ToString()
             Dim levelId As String = Session("LevelId").ToString()
-            Dim actionClass As New ActionClass
+            Dim accessClass As New AccessClass
 
-            Return actionClass.GetActionAccess(roleId, levelId, Page.Title, action)
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
         Catch ex As Exception
             Response.Redirect("~/account/login", False)
             HttpContext.Current.ApplicationInstance.CompleteRequest()

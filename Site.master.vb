@@ -187,51 +187,17 @@ Public Partial Class SiteMaster
             liReport.Visible = False
             liSales.Visible = False
             liStocks.Visible = False
-
             liSettingQuote.Visible = False
 
             liSetting.Visible = False
-
             liDashboard.Visible = False
-
             liGeneral.Visible = False
-            liGeneralCompany.Visible = False
-            liGeneralMailing.Visible = False
-            liGeneralRoleAccess.Visible = False
-            liGeneralLevelAccess.Visible = False
-            liGeneralNewsletter.Visible = False
-            liGeneralTutorial.Visible = False
-            liGeneralAccess.Visible = False
-
-            liCustomerDev.Visible = False
+            liLogin.Visible = False
             liCustomer.Visible = False
-
             liSpecification.Visible = False
-            liSpecificationDesign.Visible = False
-            liSpecificationBlind.Visible = False
-            liSpecificationProduct.Visible = False
-            liSpecificationTube.Visible = False
-            liSpecificationControl.Visible = False
-            liSpecificationColour.Visible = False
-            liSpecificationFabric.Visible = False
-            liSpecificationChain.Visible = False
-            liSpecificationRemote.Visible = False
-            liSpecificationBottom.Visible = False
-            liSpecificationMounting.Visible = False
-
             liPrice.Visible = False
-            liPriceGroup.Visible = False
-            liPriceProductGroup.Visible = False
-            liPriceBase.Visible = False
-            liPriceSurcharge.Visible = False
-            liPricePromo.Visible = False
-
             liDatabase.Visible = False
-
-            liOnline.Visible = False
             liXero.Visible = False
-            liNotification.Visible = False
-
             liLog.Visible = False
 
             If Session("RoleName") = "Developer" Then
@@ -245,43 +211,13 @@ Public Partial Class SiteMaster
 
                 liSetting.Visible = True
                 liDashboard.Visible = True
-
                 liGeneral.Visible = True
-                liGeneralCompany.Visible = True
-                liGeneralMailing.Visible = True
-                liGeneralRoleAccess.Visible = True
-                liGeneralLevelAccess.Visible = True
-                liGeneralNewsletter.Visible = True
-                liGeneralTutorial.Visible = True
-                liGeneralAccess.Visible = True
-
-                liCustomerDev.Visible = True
-
+                liLogin.Visible = True
+                liCustomer.Visible = True
                 liSpecification.Visible = True
-                liSpecificationDesign.Visible = True
-                liSpecificationBlind.Visible = True
-                liSpecificationProduct.Visible = True
-                liSpecificationTube.Visible = True
-                liSpecificationControl.Visible = True
-                liSpecificationColour.Visible = True
-                liSpecificationFabric.Visible = True
-                liSpecificationChain.Visible = True
-                liSpecificationRemote.Visible = True
-                liSpecificationBottom.Visible = True
-                liSpecificationMounting.Visible = True
-
                 liPrice.Visible = True
-                liPriceGroup.Visible = True
-                liPriceProductGroup.Visible = True
-                liPriceBase.Visible = True
-                liPriceSurcharge.Visible = True
-                liPricePromo.Visible = True
-
                 liDatabase.Visible = True
-                liOnline.Visible = True
                 liXero.Visible = True
-                liNotification.Visible = True
-
                 liLog.Visible = True
             End If
 
@@ -294,40 +230,15 @@ Public Partial Class SiteMaster
                 liStocks.Visible = True
 
                 liSetting.Visible = True
-
                 liDashboard.Visible = True
-
                 liGeneral.Visible = True
-                liGeneralCompany.Visible = True
-                liGeneralMailing.Visible = True
-                liGeneralRoleAccess.Visible = True
-                liGeneralLevelAccess.Visible = True
-                liGeneralNewsletter.Visible = True
-                liGeneralTutorial.Visible = True
-
-                liCustomerDev.Visible = True
-
+                liLogin.Visible = True
+                liCustomer.Visible = True
                 liSpecification.Visible = True
-                liSpecificationDesign.Visible = True
-                liSpecificationBlind.Visible = True
-                liSpecificationProduct.Visible = True
-                liSpecificationFabric.Visible = True
-                liSpecificationChain.Visible = True
-                liSpecificationRemote.Visible = True
-                liSpecificationBottom.Visible = True
-                liSpecificationMounting.Visible = True
-
                 liPrice.Visible = True
-                liPriceGroup.Visible = True
-                liPriceProductGroup.Visible = True
-                liPriceBase.Visible = True
-                liPriceSurcharge.Visible = True
-                liPricePromo.Visible = True
-
                 liDatabase.Visible = True
-                liOnline.Visible = True
                 liXero.Visible = True
-                liNotification.Visible = True
+                liLog.Visible = True
             End If
 
             If Session("RoleName") = "Factory Office" Then
@@ -338,37 +249,15 @@ Public Partial Class SiteMaster
                 liStocks.Visible = True
 
                 liSetting.Visible = True
-
+                liDashboard.Visible = True
                 liGeneral.Visible = True
-                liGeneralCompany.Visible = True
-                liGeneralMailing.Visible = True
-                liGeneralRoleAccess.Visible = True
-                liGeneralLevelAccess.Visible = True
-                liGeneralNewsletter.Visible = True
-                liGeneralTutorial.Visible = True
-
+                liLogin.Visible = True
                 liCustomer.Visible = True
-
                 liSpecification.Visible = True
-                liSpecificationDesign.Visible = True
-                liSpecificationBlind.Visible = True
-                liSpecificationProduct.Visible = True
-                liSpecificationFabric.Visible = True
-                liSpecificationChain.Visible = True
-                liSpecificationRemote.Visible = True
-                liSpecificationBottom.Visible = True
-                liSpecificationMounting.Visible = True
-
                 liPrice.Visible = True
-                liPriceGroup.Visible = True
-                liPriceProductGroup.Visible = True
-                liPriceBase.Visible = True
-                liPriceSurcharge.Visible = True
-                liPricePromo.Visible = True
-
-                liOnline.Visible = True
+                liDatabase.Visible = True
                 liXero.Visible = True
-                liNotification.Visible = True
+                liLog.Visible = True
             End If
 
             If Session("RoleName") = "Account" Then
@@ -379,18 +268,8 @@ Public Partial Class SiteMaster
                 liStocks.Visible = True
 
                 liSetting.Visible = True
-
                 liCustomer.Visible = True
-
-                liSpecification.Visible = True
-                liSpecificationFabric.Visible = True
-
                 liPrice.Visible = True
-                liPriceGroup.Visible = True
-                liPriceProductGroup.Visible = True
-                liPriceBase.Visible = True
-                liPricePromo.Visible = True
-
                 liXero.Visible = True
             End If
 
@@ -453,7 +332,7 @@ Public Partial Class SiteMaster
                     sessionId = Request.Cookies("deviceId").Value
                     Dim loginId As String = settingClass.GetItemData("SELECT LoginId FROM Sessions WHERE Id='" & UCase(sessionId).ToString() & "'")
                     If Not loginId = "" Then
-                        Dim userName As String = settingClass.GetItemData("SELECT UserName FROM CustomerLogins WHERE Id='" & loginId & "'")
+                        Dim userName As String = settingClass.GetItemData("SELECT UserName FROM Logins WHERE Id='" & loginId & "'")
 
                         Session.Add("IsLoggedIn", True)
                         Session.Add("LoginId", loginId)

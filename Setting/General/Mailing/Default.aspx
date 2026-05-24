@@ -73,16 +73,16 @@
                                                     <ItemTemplate>
                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                         <ul class="dropdown-menu">
-                                                            <li runat="server" visible='<%# PageAction("Detail") %>'>
+                                                            <li runat="server" visible='<%# LoginAccess("Detail") %>'>
                                                                 <a runat="server" id="aDetail" class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalDetail" onclick='<%# String.Format("return showDetail(`{0}`, `{1}`, `{2}`, `{3}`, `{4}`, `{5}`, `{6}`,);", Eval("CompanyAlias").ToString(), Eval("Name").ToString(), Eval("Alias").ToString(), Eval("Subject").ToString(), Eval("To").ToString(), Eval("Cc").ToString(), Eval("Bcc").ToString()) %>'>Detail</a>
                                                             </li>
-                                                            <li runat="server" visible='<%# PageAction("Edit") %>'>
+                                                            <li runat="server" visible='<%# LoginAccess("Edit") %>'>
                                                                 <asp:LinkButton runat="server" ID="linkEdit" CssClass="dropdown-item" Text="Edit" CommandName="Ubah" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                             </li>
-                                                            <li runat="server" visible='<%# PageAction("Copy") %>'>
+                                                            <li runat="server" visible='<%# LoginAccess("Copy") %>'>
                                                                 <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalCopy" onclick='<%# String.Format("return showCopy(`{0}`);", Eval("Id").ToString()) %>'>Copy</a>
                                                             </li>
-                                                            <li runat="server" visible='<%# PageAction("Delete") %>'>
+                                                            <li runat="server" visible='<%# LoginAccess("Delete") %>'>
                                                                 <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                             </li>
                                                             <li>

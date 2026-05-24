@@ -41,7 +41,7 @@ Partial Class Account_Password
                 Dim loginId As String = Session("LoginId").ToString()
                 Dim newPassword As String = settingClass.Encrypt(txtPassword.Text)
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLogins SET Password=@Password, ResetLogin=0 WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Password=@Password, ResetLogin=0 WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", loginId)
                         myCmd.Parameters.AddWithValue("@Password", newPassword)
 
@@ -50,7 +50,7 @@ Partial Class Account_Password
                     End Using
                 End Using
 
-                Dim dataLog As Object() = {"CustomerLogins", loginId, Session("LoginId").ToString(), "Customer Change Password"}
+                Dim dataLog As Object() = {"Logins", loginId, Session("LoginId").ToString(), "Customer Change Password"}
                 settingClass.Logs(dataLog)
 
                 Dim thisScript As String = "window.onload = function() { showSuccess(); };"

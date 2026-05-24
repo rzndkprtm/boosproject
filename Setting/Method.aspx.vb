@@ -23,7 +23,7 @@ Partial Class Setting_Method
     <WebMethod()>
     Public Shared Function GetReads(dataId As String) As List(Of ReadDto)
         Dim settingClass As New SettingClass
-        Dim dt As DataTable = settingClass.GetDataTable("SELECT CustomerLogins.FullName, CustomerLogins.UserName, NotificationLogs.ShowDate FROM NotificationLogs LEFT JOIN CustomerLogins ON NotificationLogs.LoginId=CustomerLogins.Id WHERE NotificationLogs.NotificationId = '" & dataId & "' ORDER BY NotificationLogs.ShowDate DESC")
+        Dim dt As DataTable = settingClass.GetDataTable("SELECT Logins.FullName, Logins.UserName, NotificationLogs.ShowDate FROM NotificationLogs LEFT JOIN Logins ON NotificationLogs.LoginId=Logins.Id WHERE NotificationLogs.NotificationId = '" & dataId & "' ORDER BY NotificationLogs.ShowDate DESC")
 
         Dim result As New List(Of ReadDto)
 

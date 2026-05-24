@@ -1,7 +1,7 @@
 ﻿Imports System.Data.SqlClient
 Imports System.Web.Services
 
-Partial Class Setting_Notification_Default
+Partial Class Setting_General_Notification_Default
     Inherits Page
 
     Dim settingClass As New SettingClass
@@ -26,9 +26,9 @@ Partial Class Setting_Notification_Default
     End Sub
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        Dim pageAccess As Boolean = PageAction("Load")
+        Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
-            Response.Redirect("~/setting", False)
+            Response.Redirect("~/setting/general", False)
             Exit Sub
         End If
 
@@ -41,7 +41,7 @@ Partial Class Setting_Notification_Default
 
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
         Session("SearchNotification") = txtSearch.Text
-        Response.Redirect("~/setting/notification/add", False)
+        Response.Redirect("~/setting/general/notification/add", False)
     End Sub
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
@@ -70,7 +70,7 @@ Partial Class Setting_Notification_Default
             If e.CommandName = "Detail" Then
                 MessageError(False, String.Empty)
                 Try
-                    Dim url As String = String.Format("~/setting/notification/edit?notifid={0}", dataId)
+                    Dim url As String = String.Format("~/setting/general/notification/edit?notifid={0}", dataId)
                     Response.Redirect(url, False)
                 Catch ex As Exception
                 End Try
@@ -93,7 +93,7 @@ Partial Class Setting_Notification_Default
             End Using
 
             Session("SearchNotification") = txtSearch.Text
-            Response.Redirect("~/setting/notification", False)
+            Response.Redirect("~/setting/general/notification", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
         End Try
@@ -110,9 +110,9 @@ Partial Class Setting_Notification_Default
 
             gvList.DataSource = settingClass.GetDataTable(thisQuery)
             gvList.DataBind()
-            gvList.Columns(1).Visible = PageAction("Visible ID")
+            gvList.Columns(1).Visible = LoginAccess("Visible ID")
 
-            btnAdd.Visible = PageAction("Add")
+            btnAdd.Visible = LoginAccess("Add")
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -125,13 +125,13 @@ Partial Class Setting_Notification_Default
         divError.Visible = visible : msgError.InnerText = message
     End Sub
 
-    Protected Function PageAction(action As String) As Boolean
+    Protected Function LoginAccess(action As String) As Boolean
         Try
             Dim roleId As String = Session("RoleId").ToString()
             Dim levelId As String = Session("LevelId").ToString()
-            Dim actionClass As New ActionClass
+            Dim accessClass As New AccessClass
 
-            Return actionClass.GetActionAccess(roleId, levelId, Page.Title, action)
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
         Catch ex As Exception
             Response.Redirect("~/account/login", False)
             HttpContext.Current.ApplicationInstance.CompleteRequest()

@@ -88,7 +88,7 @@ Public Class MailingClass
         Try
             If String.IsNullOrEmpty(userId) Then Exit Sub
 
-            Dim thisData As DataRow = GetDataRow("SELECT CustomerLogins.*, Customers.CompanyId AS CompanyId FROM CustomerLogins LEFT JOIN Customers ON CustomerLogins.CustomerId=Customers.Id WHERE CustomerLogins.Id='" & userId & "'")
+            Dim thisData As DataRow = GetDataRow("SELECT Logins.*, Customers.CompanyId AS CompanyId FROM Logins LEFT JOIN Customers ON Logins.CustomerId=Customers.Id WHERE Logins.Id='" & userId & "'")
             If thisData Is Nothing Then Exit Sub
 
             Dim userName As String = thisData("UserName").ToString()
@@ -194,7 +194,7 @@ Public Class MailingClass
 
             If String.IsNullOrEmpty(customerId) OrElse String.IsNullOrEmpty(loginId) Then Exit Sub
 
-            Dim customerData As DataRow = GetDataRow("SELECT Customers.*, Companys.Name AS CompanyName, Customers.Operator AS CustomerOperator FROM Customers LEFT JOIN Companys ON Customers.CompanyId=Companys.Id LEFT JOIN CustomerLogins ON Customers.Operator=CustomerLogins.Id WHERE Customers.Id='" & customerId & "'")
+            Dim customerData As DataRow = GetDataRow("SELECT Customers.*, Companys.Name AS CompanyName, Customers.Operator AS CustomerOperator FROM Customers LEFT JOIN Companys ON Customers.CompanyId=Companys.Id LEFT JOIN Logins ON Customers.Operator=Logins.Id WHERE Customers.Id='" & customerId & "'")
             If customerData Is Nothing Then Exit Sub
             Dim companyId As String = customerData("CompanyId").ToString()
             Dim customerName As String = customerData("nAME").ToString()
@@ -208,10 +208,10 @@ Public Class MailingClass
             Dim contactName As String = contactData("Name").ToString()
             Dim contactEmail As String = contactData("Email").ToString()
 
-            Dim loginData As DataTable = GetDataTable("SELECT * FROM CustomerLogins WHERE CustomerId='" & customerId & "' AND Active=1 ORDER BY UserName ASC")
+            Dim loginData As DataTable = GetDataTable("SELECT * FROM Logins WHERE CustomerId='" & customerId & "' AND Active=1 ORDER BY UserName ASC")
             If loginData.Rows.Count = 0 Then Exit Sub
 
-            Dim actionData As DataRow = GetDataRow("SELECT CustomerLogins.*, LoginRoles.Name AS RoleName FROM CustomerLogins LEFT JOIN LoginRoles ON CustomerLogins.RoleId=LoginRoles.Id WHERE CustomerLogins.Id='" & loginId & "'")
+            Dim actionData As DataRow = GetDataRow("SELECT Logins.*, LoginRoles.Name AS RoleName FROM Logins LEFT JOIN LoginRoles ON Logins.RoleId=LoginRoles.Id WHERE Logins.Id='" & loginId & "'")
             If actionData Is Nothing Then Exit Sub
             Dim actionName As String = actionData("FullName").ToString()
             Dim actionEmail As String = actionData("Email").ToString()
@@ -315,7 +315,7 @@ Public Class MailingClass
                 mailBody &= "<b>Sales / Orders:</b>"
                 mailBody &= "<ul>"
                 mailBody &= "<li>Matt McCamey - matt@jpmdirect.com.au</li>"
-                Dim operatorData As DataTable = GetDataTable("SELECT * FROM CustomerLogins WHERE Id IN (SELECT CAST(value AS INT) FROM STRING_SPLIT('" & customerOperator & "', ','))")
+                Dim operatorData As DataTable = GetDataTable("SELECT * FROM Logins WHERE Id IN (SELECT CAST(value AS INT) FROM STRING_SPLIT('" & customerOperator & "', ','))")
                 If operatorData.Rows.Count > 0 Then
                     For i As Integer = 0 To operatorData.Rows.Count - 1
                         Dim operatorName As String = operatorData.Rows(i)("FullName").ToString()
@@ -377,7 +377,7 @@ Public Class MailingClass
                 If Not String.IsNullOrEmpty(thisMail.Trim()) Then myMail.CC.Add(thisMail.Trim())
             Next
             If companyId = "2" Then
-                Dim operatorEmail As String = GetItemData("SELECT ISNULL(STRING_AGG(CustomerLogins.Email, ';'), '') FROM Customers OUTER APPLY STRING_SPLIT(Customers.Operator, ',') operatorArray LEFT JOIN CustomerLogins ON CustomerLogins.Id = TRY_CAST(operatorArray.value AS INT) WHERE Customers.Id='" & customerId & "';")
+                Dim operatorEmail As String = GetItemData("SELECT ISNULL(STRING_AGG(Logins.Email, ';'), '') FROM Customers OUTER APPLY STRING_SPLIT(Customers.Operator, ',') operatorArray LEFT JOIN Logins ON Logins.Id = TRY_CAST(operatorArray.value AS INT) WHERE Customers.Id='" & customerId & "';")
 
                 If Not String.IsNullOrEmpty(operatorEmail) Then
                     Dim emailList() As String = operatorEmail.Split(";"c)
@@ -860,8 +860,8 @@ Public Class MailingClass
             Dim mailDefaultCredentials As Boolean = mailData("DefaultCredentials")
             Dim mailEnableSSL As Boolean = mailData("EnableSSL")
 
-            Dim actionName As String = GetItemData("SELECT FullName FROM CustomerLogins WHERE Id='" & actionBy & "'")
-            Dim actionEmail As String = GetItemData("SELECT Email FROM CustomerLogins WHERE Id='" & actionBy & "'")
+            Dim actionName As String = GetItemData("SELECT FullName FROM Logins WHERE Id='" & actionBy & "'")
+            Dim actionEmail As String = GetItemData("SELECT Email FROM Logins WHERE Id='" & actionBy & "'")
 
             Dim mailBody As String = String.Empty
 
@@ -980,8 +980,8 @@ Public Class MailingClass
             Dim mailDefaultCredentials As Boolean = mailData("DefaultCredentials")
             Dim mailEnableSSL As Boolean = mailData("EnableSSL")
 
-            Dim actionName As String = GetItemData("SELECT FullName FROM CustomerLogins WHERE Id='" & actionBy & "'")
-            Dim actionEmail As String = GetItemData("SELECT Email FROM CustomerLogins WHERE Id='" & actionBy & "'")
+            Dim actionName As String = GetItemData("SELECT FullName FROM Logins WHERE Id='" & actionBy & "'")
+            Dim actionEmail As String = GetItemData("SELECT Email FROM Logins WHERE Id='" & actionBy & "'")
 
             Dim mailBody As String = String.Empty
 
@@ -1084,7 +1084,7 @@ Public Class MailingClass
         Try
             If String.IsNullOrEmpty(reworkId) Then Exit Sub
 
-            Dim reworkData As DataRow = GetDataRow("SELECT OrderReworks.*, CustomerLogins.FullName AS CreatedFullName, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, OrderHeaders.OrderId AS OrderId, OrderHeaders.OrderNumber AS OrderNumber, OrderHeaders.OrderName AS OrderName, OrderHeaders.CustomerId AS CustomerId, OrderHeaders.OrderId FROM OrderReworks LEFT JOIN OrderHeaders ON OrderReworks.HeaderId=OrderHeaders.Id LEFT JOIN CustomerLogins ON OrderReworks.CreatedBy=CustomerLogins.Id LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderReworks.Id='" & reworkId & "'")
+            Dim reworkData As DataRow = GetDataRow("SELECT OrderReworks.*, Logins.FullName AS CreatedFullName, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, OrderHeaders.OrderId AS OrderId, OrderHeaders.OrderNumber AS OrderNumber, OrderHeaders.OrderName AS OrderName, OrderHeaders.CustomerId AS CustomerId, OrderHeaders.OrderId FROM OrderReworks LEFT JOIN OrderHeaders ON OrderReworks.HeaderId=OrderHeaders.Id LEFT JOIN Logins ON OrderReworks.CreatedBy=Logins.Id LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderReworks.Id='" & reworkId & "'")
             If reworkData Is Nothing Then Exit Sub
 
             Dim customerId As String = reworkData("CustomerId").ToString()
@@ -1200,7 +1200,7 @@ Public Class MailingClass
         Try
             If String.IsNullOrEmpty(reworkId) Then Exit Sub
 
-            Dim orderData As DataRow = GetDataRow("SELECT OrderReworks.*, CustomerLogins.FullName AS CreatedFullName, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, OrderHeaders.OrderId AS OrderId, OrderHeaders.OrderNumber AS OrderNumber, OrderHeaders.OrderName AS OrderName, OrderHeaders.CustomerId AS CustomerId, OrderHeaders.OrderId FROM OrderReworks LEFT JOIN OrderHeaders ON OrderReworks.HeaderId=OrderHeaders.Id LEFT JOIN CustomerLogins ON OrderReworks.CreatedBy=CustomerLogins.Id LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderReworks.Id='" & reworkId & "'")
+            Dim orderData As DataRow = GetDataRow("SELECT OrderReworks.*, Logins.FullName AS CreatedFullName, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, OrderHeaders.OrderId AS OrderId, OrderHeaders.OrderNumber AS OrderNumber, OrderHeaders.OrderName AS OrderName, OrderHeaders.CustomerId AS CustomerId, OrderHeaders.OrderId FROM OrderReworks LEFT JOIN OrderHeaders ON OrderReworks.HeaderId=OrderHeaders.Id LEFT JOIN Logins ON OrderReworks.CreatedBy=Logins.Id LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderReworks.Id='" & reworkId & "'")
             If orderData Is Nothing Then Exit Sub
 
             Dim customerId As String = orderData("CustomerId").ToString()
@@ -1347,7 +1347,7 @@ Public Class MailingClass
 
                     Dim ticketId As String = ticketData.Rows(i)("Id").ToString()
 
-                    Dim ticketDetails As DataRow = GetDataRow("SELECT TOP 1 TicketDetails.*, CustomerLogins.RoleId AS RoleId FROM TicketDetails LEFT JOIN CustomerLogins ON TicketDetails.ReplyBy=CustomerLogins.Id WHERE TicketDetails.TicketId='" & ticketId & "' AND TicketDetails.CreatedDate < DATEADD(hour, -1, GETDATE()) AND CustomerLogins.RoleId='8' ORDER BY TicketDetails.CreatedDate DESC")
+                    Dim ticketDetails As DataRow = GetDataRow("SELECT TOP 1 TicketDetails.*, Logins.RoleId AS RoleId FROM TicketDetails LEFT JOIN Logins ON TicketDetails.ReplyBy=Logins.Id WHERE TicketDetails.TicketId='" & ticketId & "' AND TicketDetails.CreatedDate < DATEADD(hour, -1, GETDATE()) AND Logins.RoleId='8' ORDER BY TicketDetails.CreatedDate DESC")
 
                     If ticketDetails IsNot Nothing AndAlso ticketDetails("RoleId").ToString() = "8" Then
                         dataTicketId.Add(ticketId)
@@ -1374,9 +1374,9 @@ Public Class MailingClass
             Dim safeMessage As String = ticketMessage.Replace(vbCrLf, "<br>").Replace(vbLf, "<br>")
 
             Dim ticketBy As String = ticketData("CreatedBy").ToString()
-            Dim createdName As String = GetItemData("SELECT FullName FROM CustomerLogins WHERE Id='" & ticketBy & "'")
-            Dim customerName As String = GetItemData("SELECT Customers.Name AS CustomerName FROM CustomerLogins LEFT JOIN Customers ON CustomerLogins.CustomerId=Customers.Id WHERE CustomerLogins.Id='" & ticketBy & "'")
-            Dim companyId As String = GetItemData("SELECT Customers.CompanyId FROM CustomerLogins LEFT JOIN Customers ON CustomerLogins.CustomerId=Customers.Id WHERE CustomerLogins.Id='" & ticketBy & "'")
+            Dim createdName As String = GetItemData("SELECT FullName FROM Logins WHERE Id='" & ticketBy & "'")
+            Dim customerName As String = GetItemData("SELECT Customers.Name AS CustomerName FROM Logins LEFT JOIN Customers ON Logins.CustomerId=Customers.Id WHERE Logins.Id='" & ticketBy & "'")
+            Dim companyId As String = GetItemData("SELECT Customers.CompanyId FROM Logins LEFT JOIN Customers ON Logins.CustomerId=Customers.Id WHERE Logins.Id='" & ticketBy & "'")
             Dim companyName As String = GetItemData("SELECT Name FROM Companys WHERE Id='" & companyId & "'")
 
             Dim mailName As String = String.Empty
@@ -1573,7 +1573,7 @@ Public Class MailingClass
             End If
 
             If companyId = "2" Then
-                Dim operatorEmail As String = GetItemData("SELECT ISNULL(STRING_AGG(CustomerLogins.Email, ';'), '') FROM Customers OUTER APPLY STRING_SPLIT(Customers.Operator, ',') operatorArray LEFT JOIN CustomerLogins ON CustomerLogins.Id = TRY_CAST(operatorArray.value AS INT) WHERE Customers.Id='" & customerId & "';")
+                Dim operatorEmail As String = GetItemData("SELECT ISNULL(STRING_AGG(Logins.Email, ';'), '') FROM Customers OUTER APPLY STRING_SPLIT(Customers.Operator, ',') operatorArray LEFT JOIN Logins ON Logins.Id = TRY_CAST(operatorArray.value AS INT) WHERE Customers.Id='" & customerId & "';")
 
                 If Not String.IsNullOrEmpty(operatorEmail) Then
                     Dim emailList() As String = operatorEmail.Split(";"c)
@@ -1622,7 +1622,7 @@ Public Class MailingClass
         Try
             If String.IsNullOrEmpty(customerId) OrElse String.IsNullOrEmpty(loginId) Then Exit Sub
 
-            Dim customerData As DataRow = GetDataRow("SELECT Customers.*, CASE WHEN Customers.CashSale=1 THEN 'Yes' WHEN Customers.CashSale=0 THEN 'No' ELSE 'Error' END AS CustomerCashSale FROM Customers LEFT JOIN CustomerLogins ON Customers.Operator=CustomerLogins.Id WHERE Customers.Id='" & customerId & "'")
+            Dim customerData As DataRow = GetDataRow("SELECT Customers.*, CASE WHEN Customers.CashSale=1 THEN 'Yes' WHEN Customers.CashSale=0 THEN 'No' ELSE 'Error' END AS CustomerCashSale FROM Customers LEFT JOIN Logins ON Customers.Operator=Logins.Id WHERE Customers.Id='" & customerId & "'")
             If customerData Is Nothing Then Exit Sub
 
             Dim debtorCode As String = customerData("DebtorCode").ToString()
@@ -1641,7 +1641,7 @@ Public Class MailingClass
             Dim doorPriceGroupName As String = GetItemData("SELECT Name FROM PriceGroups WHERE Id='" & doorPriceGroupId & "'")
 
             Dim companyName As String = GetItemData("SELECT Name FROM Companys WHERE Id='" & companyId & "'")
-            Dim emailOperator As String = GetItemData("SELECT Email FROM CustomerLogins WHERE Id='" & customerOperator & "'")
+            Dim emailOperator As String = GetItemData("SELECT Email FROM Logins WHERE Id='" & customerOperator & "'")
 
             Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='New Customer' AND Active=1")
             If mailData Is Nothing Then Exit Sub
@@ -1663,7 +1663,7 @@ Public Class MailingClass
             Dim mailDefaultCredentials As Boolean = mailData("DefaultCredentials")
             Dim mailEnableSSL As Boolean = mailData("EnableSSL")
 
-            Dim fullName As String = GetItemData("SELECT FullName FROM CustomerLogins WHERE Id='" & loginId & "'")
+            Dim fullName As String = GetItemData("SELECT FullName FROM Logins WHERE Id='" & loginId & "'")
 
             Dim mailBody As String = String.Empty
 
@@ -1720,7 +1720,7 @@ Public Class MailingClass
             End If
 
             If companyId = "2" Then
-                Dim operatorEmail As String = GetItemData("SELECT ISNULL(STRING_AGG(CustomerLogins.Email, ';'), '') AS OperatorEmails FROM Customers OUTER APPLY STRING_SPLIT(Customers.Operator, ',') operatorArray LEFT JOIN CustomerLogins ON CustomerLogins.Id = TRY_CAST(operatorArray.value AS INT) WHERE Customers.Id='" & customerId & "';")
+                Dim operatorEmail As String = GetItemData("SELECT ISNULL(STRING_AGG(Logins.Email, ';'), '') AS OperatorEmails FROM Customers OUTER APPLY STRING_SPLIT(Customers.Operator, ',') operatorArray LEFT JOIN Logins ON Logins.Id = TRY_CAST(operatorArray.value AS INT) WHERE Customers.Id='" & customerId & "';")
 
                 If Not String.IsNullOrEmpty(operatorEmail) Then myMail.CC.Add(operatorEmail)
             End If

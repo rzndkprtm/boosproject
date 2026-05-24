@@ -93,7 +93,7 @@
                                                             </li>
                                                             <li runat="server" visible='<%# VisibleAction(Eval("RoleName").ToString(), Eval("LevelName").ToString()) %>'><hr class="dropdown-divider"></li>
                                                             <li>
-                                                                <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('CustomerLogins', '<%# Eval("Id") %>')">Log</a>
+                                                                <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('Logins', '<%# Eval("Id") %>')">Log</a>
                                                             </li>
                                                         </ul>
                                                     </ItemTemplate>

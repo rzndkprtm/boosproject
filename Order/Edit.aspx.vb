@@ -11,7 +11,7 @@ Partial Class Order_Edit
     Dim returnPage As String = String.Empty
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        Dim pageAccess As Boolean = PageAction("Load")
+        Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
             Response.Redirect("~/order", False)
             Exit Sub
@@ -230,7 +230,7 @@ Partial Class Order_Edit
     Protected Sub BindDataUser()
         ddlCreatedBy.Items.Clear()
         Try
-            ddlCreatedBy.DataSource = orderClass.GetDataTable("SELECT * FROM CustomerLogins ORDER BY UserName ASC")
+            ddlCreatedBy.DataSource = orderClass.GetDataTable("SELECT * FROM Logins ORDER BY UserName ASC")
             ddlCreatedBy.DataTextField = "UserName"
             ddlCreatedBy.DataValueField = "Id"
             ddlCreatedBy.DataBind()
@@ -262,13 +262,13 @@ Partial Class Order_Edit
         divError.Visible = visible : msgError.InnerText = message
     End Sub
 
-    Protected Function PageAction(action As String) As Boolean
+    Protected Function LoginAccess(action As String) As Boolean
         Try
             Dim roleId As String = Session("RoleId").ToString()
             Dim levelId As String = Session("LevelId").ToString()
-            Dim actionClass As New ActionClass
+            Dim accessClass As New AccessClass
 
-            Return actionClass.GetActionAccess(roleId, levelId, Page.Title, action)
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
         Catch ex As Exception
             Response.Redirect("~/account/login", False)
             HttpContext.Current.ApplicationInstance.CompleteRequest()

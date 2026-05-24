@@ -211,7 +211,7 @@ Public Class SettingClass
         Dim result As String = String.Empty
         Try
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As New SqlCommand("SELECT '<b>' + CustomerLogins.FullName + '</b> on ' + FORMAT(Logs.ActionDate, 'dd MMM yyyy HH:mm') + '. Action : ' + Logs.Description AS FinalLog FROM Logs LEFT JOIN CustomerLogins ON Logs.ActionBy=CustomerLogins.Id WHERE Logs.Id=@Id", thisConn)
+                Using myCmd As New SqlCommand("SELECT '<b>' + Logins.FullName + '</b> on ' + FORMAT(Logs.ActionDate, 'dd MMM yyyy HH:mm') + '. Action : ' + Logs.Description AS FinalLog FROM Logs LEFT JOIN Logins ON Logs.ActionBy=Logins.Id WHERE Logs.Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", logId)
 
                     thisConn.Open()
@@ -263,7 +263,7 @@ Public Class SettingClass
     Public Sub UpdateFailedCount(loginId As String)
         Try
             Using thisConn As SqlConnection = New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLogins SET FailedCount=0 WHERE Id=@Id", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE Logins SET FailedCount=0 WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", loginId)
 
                     thisConn.Open()
@@ -479,7 +479,7 @@ Public Class SettingClass
     Private Function IsUsernameExists(username As String) As Boolean
         Using thisConn As New SqlConnection(myConn)
             thisConn.Open()
-            Using myCmd As New SqlCommand("SELECT COUNT(1) FROM CustomerLogins WHERE LOWER(UserName) = @UserName", thisConn)
+            Using myCmd As New SqlCommand("SELECT COUNT(1) FROM Logins WHERE LOWER(UserName) = @UserName", thisConn)
                 myCmd.Parameters.AddWithValue("@UserName", username.ToLower())
 
                 Dim count As Integer = Convert.ToInt32(myCmd.ExecuteScalar())

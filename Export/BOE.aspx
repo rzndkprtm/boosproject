@@ -79,7 +79,7 @@
 
         If type = "header" Then
             If action = "download" Then
-                Dim thisQuery As String = String.Format("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.DebtorCode AS DebtorCode, CustomerLogins.UserName AS UserName FROM OrderHeaders INNER JOIN Customers ON OrderHeaders.CustomerId=Customers.Id INNER JOIN CustomerLogins ON OrderHeaders.CreatedBy=CustomerLogins.Id WHERE OrderHeaders.Active=1 {0} {1} ORDER BY OrderHeaders.Id ASC", stringCompany, stringStatus)
+                Dim thisQuery As String = String.Format("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.DebtorCode AS DebtorCode, Logins.UserName AS UserName FROM OrderHeaders INNER JOIN Customers ON OrderHeaders.CustomerId=Customers.Id INNER JOIN Logins ON OrderHeaders.CreatedBy=Logins.Id WHERE OrderHeaders.Active=1 {0} {1} ORDER BY OrderHeaders.Id ASC", stringCompany, stringStatus)
 
                 Dim thisData As DataTable = GetDataTable(thisQuery)
                 If thisData.Rows.Count > 0 Then
@@ -110,10 +110,10 @@
                 End If
             End If
 
-            Dim headerQuery As String = String.Format("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.DebtorCode AS DebtorCode, CustomerLogins.UserName AS UserName FROM OrderHeaders INNER JOIN Customers ON OrderHeaders.CustomerId=Customers.Id INNER JOIN CustomerLogins ON OrderHeaders.CreatedBy=CustomerLogins.Id WHERE OrderHeaders.Active=1 {0} AND (OrderHeaders.Status='In Production' OR OrderHeaders.Status='On Hold') AND OrderHeaders.DownloadBOE=1 ORDER BY OrderHeaders.Id DESC", stringCompany)
+            Dim headerQuery As String = String.Format("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.DebtorCode AS DebtorCode, Logins.UserName AS UserName FROM OrderHeaders INNER JOIN Customers ON OrderHeaders.CustomerId=Customers.Id INNER JOIN Logins ON OrderHeaders.CreatedBy=Logins.Id WHERE OrderHeaders.Active=1 {0} AND (OrderHeaders.Status='In Production' OR OrderHeaders.Status='On Hold') AND OrderHeaders.DownloadBOE=1 ORDER BY OrderHeaders.Id DESC", stringCompany)
 
             If action = "download" Then
-                headerQuery = String.Format("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.DebtorCode AS DebtorCode, CustomerLogins.UserName AS UserName FROM OrderHeaders INNER JOIN Customers ON OrderHeaders.CustomerId=Customers.Id INNER JOIN CustomerLogins ON OrderHeaders.CreatedBy=CustomerLogins.Id WHERE OrderHeaders.Active=1 {0} AND OrderHeaders.DownloadBOE=1 AND CAST(OrderHeaders.ProductionDate AS DATE) = CAST(GETDATE() AS DATE) ORDER BY OrderHeaders.Id ASC", stringCompany)
+                headerQuery = String.Format("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.DebtorCode AS DebtorCode, Logins.UserName AS UserName FROM OrderHeaders INNER JOIN Customers ON OrderHeaders.CustomerId=Customers.Id INNER JOIN Logins ON OrderHeaders.CreatedBy=Logins.Id WHERE OrderHeaders.Active=1 {0} AND OrderHeaders.DownloadBOE=1 AND CAST(OrderHeaders.ProductionDate AS DATE) = CAST(GETDATE() AS DATE) ORDER BY OrderHeaders.Id ASC", stringCompany)
             End If
 
             Dim headerData As DataTable = GetDataTable(headerQuery)

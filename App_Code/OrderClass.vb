@@ -223,7 +223,7 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(loginId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT LoginRoles.Name FROM CustomerLogins INNER JOIN LoginRoles ON CustomerLogins.RoleId=LoginRoles.Id WHERE CustomerLogins.Id=@LoginId", thisConn)
+                    Using myCmd As New SqlCommand("SELECT LoginRoles.Name FROM Logins INNER JOIN LoginRoles ON Logins.RoleId=LoginRoles.Id WHERE Logins.Id=@LoginId", thisConn)
                         myCmd.Parameters.AddWithValue("@LoginId", loginId)
 
                         thisConn.Open()
@@ -245,7 +245,7 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(loginId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT CASE WHEN Pricing=1 THEN 'Yes' ELSE '' END AS PriceAccess FROM CustomerLogins WHERE Id=@Id", thisConn)
+                    Using myCmd As New SqlCommand("SELECT CASE WHEN Pricing=1 THEN 'Yes' ELSE '' END AS PriceAccess FROM Logins WHERE Id=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", loginId)
 
                         thisConn.Open()
@@ -1163,7 +1163,7 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(logId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT '<b>' + CustomerLogins.FullName + '</b> on ' + FORMAT(Logs.ActionDate, 'dd MMMM yyyy HH:mm') + '. Action : ' + Logs.Description AS FinalLog FROM Logs LEFT JOIN CustomerLogins ON Logs.ActionBy = CustomerLogins.Id WHERE Logs.Id=@Id", thisConn)
+                    Using myCmd As New SqlCommand("SELECT '<b>' + Logins.FullName + '</b> on ' + FORMAT(Logs.ActionDate, 'dd MMMM yyyy HH:mm') + '. Action : ' + Logs.Description AS FinalLog FROM Logs LEFT JOIN Logins ON Logs.ActionBy = Logins.Id WHERE Logs.Id=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", logId)
                         thisConn.Open()
                         Dim obj = myCmd.ExecuteScalar()

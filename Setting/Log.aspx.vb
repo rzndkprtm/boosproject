@@ -7,7 +7,7 @@ Partial Class Setting_Log
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        Dim pageAccess As Boolean = PageAction("Load")
+        Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
             Response.Redirect("~/setting", False)
             Exit Sub
@@ -17,11 +17,6 @@ Partial Class Setting_Log
             MessageError(False, String.Empty)
             BindData(txtSearch.Text)
         End If
-    End Sub
-
-    Protected Sub btnRefresh_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        BindData(txtSearch.Text)
     End Sub
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
@@ -36,41 +31,24 @@ Partial Class Setting_Log
             BindData(txtSearch.Text)
         Catch ex As Exception
             MessageError(True, ex.ToString())
-        End Try
-    End Sub
-
-    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        Try
-            Dim thisId As String = txtIdDelete.Text
-
-            Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Logs WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-
-                    thisConn.Open()
-                    myCmd.ExecuteNonQuery()
-                End Using
-            End Using
-
-            Response.Redirect("~/setting/log", False)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 
     Protected Sub BindData(searchText As String)
         Try
-            Dim searchString As String = String.Empty
-            If Not String.IsNullOrEmpty(searchText) Then
-                searchString = "WHERE Logs.Type LIKE '%" & searchText.Trim() & "%' OR CustomerLogins.UserName LIKE '%" & searchText.Trim() & "%'"
-            End If
-            Dim thisString As String = String.Format("SELECT Logs.*, CustomerLogins.UserName AS ActionName FROM Logs LEFT JOIN CustomerLogins ON Logs.ActionBy=CustomerLogins.Id {0} ORDER BY Logs.ActionDate DESC", searchString)
-
-            gvList.DataSource = settingClass.GetDataTable(thisString)
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@SearchText", If(String.IsNullOrEmpty(searchText), CType(DBNull.Value, Object), searchText.Trim()))
+            }
+            gvList.DataSource = settingClass.GetDataTableSP("sp_GetLogs", params)
             gvList.DataBind()
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 
@@ -78,7 +56,7 @@ Partial Class Setting_Log
         Try
             If Not String.IsNullOrEmpty(type) AndAlso Not String.IsNullOrEmpty(dataId) Then
                 Dim thisQuery As String = String.Format("SELECT Name FROM {0} WHERE Id={1}", type, dataId)
-                If type = "CustomerLogins" Then
+                If type = "Logins" Then
                     thisQuery = String.Format("SELECT UserName FROM {0} WHERE Id={1}", type, dataId)
                 End If
                 If type = "OrderHeaders" Then
@@ -105,13 +83,13 @@ Partial Class Setting_Log
         divError.Visible = visible : msgError.InnerText = message
     End Sub
 
-    Protected Function PageAction(action As String) As Boolean
+    Protected Function LoginAccess(action As String) As Boolean
         Try
             Dim roleId As String = Session("RoleId").ToString()
             Dim levelId As String = Session("LevelId").ToString()
-            Dim actionClass As New ActionClass
+            Dim accessClass As New AccessClass
 
-            Return actionClass.GetActionAccess(roleId, levelId, Page.Title, action)
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
         Catch ex As Exception
             Response.Redirect("~/account/login", False)
             HttpContext.Current.ApplicationInstance.CompleteRequest()

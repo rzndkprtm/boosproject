@@ -9,20 +9,20 @@ Partial Class Setting_Customer_Edit
     Dim url As String = String.Empty
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        Dim pageAccess As Boolean = PageAction("Load")
+        Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
-            Response.Redirect("~/setting/customer", False)
+            Response.Redirect("~/setting/customer/list", False)
             Exit Sub
         End If
 
         If String.IsNullOrEmpty(Request.QueryString("customeredit")) Then
-            Response.Redirect("~/setting/customer", False)
+            Response.Redirect("~/setting/customer/list", False)
             Exit Sub
         End If
 
         lblId.Text = Request.QueryString("customeredit").ToString()
         If Not Session("RoleName") = "Developer" AndAlso lblId.Text = "1" Then
-            Response.Redirect("~/setting/customer", False)
+            Response.Redirect("~/setting/customer/list", False)
             Exit Sub
         End If
         If Not IsPostBack Then
@@ -172,7 +172,7 @@ Partial Class Setting_Customer_Edit
             Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Customers WHERE Id='" & customerId & "'")
 
             If myData Is Nothing Then
-                Response.Redirect("~/setting/customer", False)
+                Response.Redirect("~/setting/customer/list", False)
                 Exit Sub
             End If
 
@@ -294,7 +294,7 @@ Partial Class Setting_Customer_Edit
         lbOperator.Items.Clear()
         Try
             If Not String.IsNullOrEmpty(companyId) Then
-                lbOperator.DataSource = settingClass.GetDataTable("SELECT CustomerLogins.* FROM CustomerLogins LEFT JOIN Customers ON CustomerLogins.CustomerId=Customers.Id WHERE Customers.CompanyId='" & companyId & "' AND CustomerLogins.RoleId='4' AND CustomerLogins.LevelId='2' ORDER BY CustomerLogins.UserName ASC")
+                lbOperator.DataSource = settingClass.GetDataTable("SELECT Logins.* FROM Logins LEFT JOIN Customers ON Logins.CustomerId=Customers.Id WHERE Customers.CompanyId='" & companyId & "' AND Logins.RoleId='4' AND Logins.LevelId='2' ORDER BY Logins.UserName ASC")
                 lbOperator.DataTextField = "FullName"
                 lbOperator.DataValueField = "Id"
                 lbOperator.DataBind()
@@ -381,10 +381,10 @@ Partial Class Setting_Customer_Edit
     End Sub
 
     Private Sub BindComponentForm()
-        divDebtorCode.Visible = PageAction("Visible Debtor Code")
-        divLevelSponsor.Visible = PageAction("Visible Level Sponsor")
-        divCompany.Visible = PageAction("Visible Company")
-        divAreaOperator.Visible = PageAction("Visible Area Operator")
+        divDebtorCode.Visible = LoginAccess("Visible Debtor Code")
+        divLevelSponsor.Visible = LoginAccess("Visible Level Sponsor")
+        divCompany.Visible = LoginAccess("Visible Company")
+        divAreaOperator.Visible = LoginAccess("Visible Area Operator")
     End Sub
 
     Private Sub BackColor()
@@ -412,13 +412,13 @@ Partial Class Setting_Customer_Edit
         divError.Visible = visible : msgError.InnerText = message
     End Sub
 
-    Protected Function PageAction(action As String) As Boolean
+    Protected Function LoginAccess(action As String) As Boolean
         Try
             Dim roleId As String = Session("RoleId").ToString()
             Dim levelId As String = Session("LevelId").ToString()
-            Dim actionClass As New ActionClass
+            Dim accessClass As New AccessClass
 
-            Return actionClass.GetActionAccess(roleId, levelId, Page.Title, action)
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
         Catch ex As Exception
             Response.Redirect("~/account/login", False)
             HttpContext.Current.ApplicationInstance.CompleteRequest()

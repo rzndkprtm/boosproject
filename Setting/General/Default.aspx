@@ -47,16 +47,6 @@
                     <div class="dashboard-title">Mailing</div>
                     <div class="dashboard-desc">Description</div>
                 </a>
-                <a href="/setting/general/roleaccess" class="dashboard-card">
-                    <div class="dashboard-number"><%= GetSumData("LoginRoles") %></div>
-                    <div class="dashboard-title">Role Access</div>
-                    <div class="dashboard-desc">Description</div>
-                </a>
-                <a href="/setting/general/levelaccess" class="dashboard-card">
-                    <div class="dashboard-number"><%= GetSumData("LoginLevels") %></div>
-                    <div class="dashboard-title">Level Access</div>
-                    <div class="dashboard-desc">Description</div>
-                </a>
                 <a href="/setting/general/newsletter" class="dashboard-card">
                     <div class="dashboard-number"><%= GetSumData("Newsletters") %></div>
                     <div class="dashboard-title">Newsletter</div>
@@ -67,9 +57,9 @@
                     <div class="dashboard-title">Tutorial</div>
                     <div class="dashboard-desc">Description</div>
                 </a>
-                <a href="/setting/general/actionaccess" class="dashboard-card">
-                    <div class="dashboard-number"><%= GetSumData("Actions") %></div>
-                    <div class="dashboard-title">Actions Access</div>
+                <a href="/setting/general/notification" class="dashboard-card">
+                    <div class="dashboard-number"><%= GetSumData("Notifications") %></div>
+                    <div class="dashboard-title">Notification</div>
                     <div class="dashboard-desc">Description</div>
                 </a>
             </div>

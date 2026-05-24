@@ -21,9 +21,9 @@ Partial Class Setting_Customer_Detail
     End Sub
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        Dim pageAccess As Boolean = PageAction("Load")
+        Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
-            Response.Redirect("~/setting/customer", False)
+            Response.Redirect("~/setting/customer/list", False)
             Exit Sub
         End If
 
@@ -312,18 +312,19 @@ Partial Class Setting_Customer_Detail
             lblMinSurcharge.Text = thisData("CustMinSurcharge").ToString()
             lblActive.Text = thisData("CustActive").ToString()
 
-            btnEditCustomer.Visible = PageAction("Edit")
+            btnEditCustomer.Visible = LoginAccess("Edit")
             If Session("RoleName") = "Sales" AndAlso Session("CustomerId") = customerId Then
                 btnEditCustomer.Visible = False
             End If
-            aDelete.Visible = PageAction("Delete")
-            aCreateOrder.Visible = PageAction("Create Order")
-            aRecalculate.Visible = PageAction("Recalculate Order")
-            aWelcome.Visible = PageAction("Welcome Customer")
+            aDelete.Visible = LoginAccess("Delete")
+            aCreateOrder.Visible = LoginAccess("Create Order")
+            aRecalculate.Visible = LoginAccess("Recalculate Order")
+            aWelcome.Visible = LoginAccess("Welcome Customer")
+
             If customerId = "3" Then aWelcome.Visible = False
             If lblOnStop.Text = "Yes" Then aCreateOrder.Visible = False
 
-            divLevelSponsor.Visible = PageAction("Visible Level Sponsor")
+            divLevelSponsor.Visible = LoginAccess("Visible Level Sponsor")
             divOrderType.Visible = False
             If lblCompanyDetailName.Text = "JPMD BP" Then divOrderType.Visible = True
         Catch ex As Exception
@@ -342,13 +343,13 @@ Partial Class Setting_Customer_Detail
         divErrorCreateOrder.Visible = visible : msgErrorCreateOrder.InnerText = message
     End Sub
 
-    Protected Function PageAction(action As String) As Boolean
+    Protected Function LoginAccess(action As String) As Boolean
         Try
             Dim roleId As String = Session("RoleId").ToString()
             Dim levelId As String = Session("LevelId").ToString()
-            Dim actionClass As New ActionClass
+            Dim accessClass As New AccessClass
 
-            Return actionClass.GetActionAccess(roleId, levelId, Page.Title, action)
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
         Catch ex As Exception
             Response.Redirect("~/account/login", False)
             HttpContext.Current.ApplicationInstance.CompleteRequest()
@@ -586,9 +587,9 @@ Partial Class Setting_Customer_Detail
         Try
             gvListContact.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerContacts WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
             gvListContact.DataBind()
-            gvListContact.Columns(1).Visible = PageAction("Visible ID Contact")
+            gvListContact.Columns(1).Visible = LoginAccess("Visible ID Contact")
 
-            btnAddContact.Visible = PageAction("Add Contact")
+            btnAddContact.Visible = LoginAccess("Add Contact")
 
             Dim primaryContact As String = settingClass.GetItemData("SELECT Email FROM CustomerContacts WHERE CustomerId='" & customerId & "' AND [Primary]=1")
             loginContactPrimary.InnerText = primaryContact
@@ -869,9 +870,9 @@ Partial Class Setting_Customer_Detail
         Try
             gvListAddress.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerAddress WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
             gvListAddress.DataBind()
-            gvListAddress.Columns(1).Visible = PageAction("Visible ID Address")
+            gvListAddress.Columns(1).Visible = LoginAccess("Visible ID Address")
 
-            btnAddAddress.Visible = PageAction("Add Address")
+            btnAddAddress.Visible = LoginAccess("Add Address")
         Catch ex As Exception
             MessageError_Address(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -1138,9 +1139,9 @@ Partial Class Setting_Customer_Detail
         Try
             gvListBusiness.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerBusiness WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
             gvListBusiness.DataBind()
-            gvListBusiness.Columns(1).Visible = PageAction("Visible ID Business")
+            gvListBusiness.Columns(1).Visible = LoginAccess("Visible ID Business")
 
-            btnAddBusiness.Visible = PageAction("Add Business")
+            btnAddBusiness.Visible = LoginAccess("Add Business")
         Catch ex As Exception
             MessageError_Business(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -1193,7 +1194,7 @@ Partial Class Setting_Customer_Detail
                         divLoginEmail.Visible = True
                     End If
 
-                    Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerLogins WHERE Id='" & lblIdLogin.Text & "'")
+                    Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Logins WHERE Id='" & lblIdLogin.Text & "'")
                     If myData Is Nothing Then Exit Sub
 
                     BindDataLoginRole()
@@ -1291,7 +1292,7 @@ Partial Class Setting_Customer_Detail
             End If
 
             If ddlLoginLevel.SelectedValue = "1" Then
-                Dim checkLevel As Integer = settingClass.GetItemData_Integer("SELECT COUNT(*) FROM CustomerLogins WHERE CustomerId='" & lblId.Text & "' AND RoleId='" & ddlLoginRole.SelectedValue & "' AND LevelId='" & ddlLoginLevel.SelectedValue & "'")
+                Dim checkLevel As Integer = settingClass.GetItemData_Integer("SELECT COUNT(*) FROM Logins WHERE CustomerId='" & lblId.Text & "' AND RoleId='" & ddlLoginRole.SelectedValue & "' AND LevelId='" & ddlLoginLevel.SelectedValue & "'")
 
                 If checkLevel > 1 Then
                     MessageError_ProcesLogin(True, "PLEASE CHANGE THE LEVEL USER TO MEMBER !")
@@ -1312,7 +1313,7 @@ Partial Class Setting_Customer_Detail
                 Exit Sub
             End If
 
-            Dim checkUsername As String = settingClass.GetItemData("SELECT UserName FROM CustomerLogins WHERE UserName='" + txtLoginUserName.Text + "'")
+            Dim checkUsername As String = settingClass.GetItemData("SELECT UserName FROM Logins WHERE UserName='" + txtLoginUserName.Text + "'")
             If lblActionLogin.Text = "Add" Then
                 If txtLoginUserName.Text = checkUsername Then
                     MessageError_ProcesLogin(True, "USERNAME ALREADY EXIST !")
@@ -1335,9 +1336,9 @@ Partial Class Setting_Customer_Detail
                 Dim password As String = settingClass.Encrypt(txtLoginPassword.Text)
 
                 If lblActionLogin.Text = "Add" Then
-                    Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerLogins ORDER BY Id DESC")
+                    Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Logins ORDER BY Id DESC")
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerLogins VALUES (@Id, @CustomerId, @RoleId, @LevelId, @UserName, @Password, @FullName, @Email, 0, NULL, 1, @Pricing, 1)", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Logins VALUES (@Id, @CustomerId, @RoleId, @LevelId, @UserName, @Password, @FullName, @Email, 0, NULL, 1, @Pricing, 1)", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", thisId)
                             myCmd.Parameters.AddWithValue("@CustomerId", lblId.Text)
                             myCmd.Parameters.AddWithValue("@RoleId", ddlLoginRole.SelectedValue)
@@ -1353,7 +1354,7 @@ Partial Class Setting_Customer_Detail
                         End Using
                     End Using
 
-                    dataLog = {"CustomerLogins", thisId, Session("LoginId").ToString(), "Customer Login Created"}
+                    dataLog = {"Logins", thisId, Session("LoginId").ToString(), "Customer Login Created"}
                     settingClass.Logs(dataLog)
 
                     url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
@@ -1362,7 +1363,7 @@ Partial Class Setting_Customer_Detail
 
                 If lblActionLogin.Text = "Edit" Then
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLogins SET CustomerId=@CustomerId, RoleId=@RoleId, LevelId=@LevelId, UserName=@UserName, FullName=@FullName, Email=@Email, Pricing=@Pricing WHERE Id=@Id", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("UPDATE Logins SET CustomerId=@CustomerId, RoleId=@RoleId, LevelId=@LevelId, UserName=@UserName, FullName=@FullName, Email=@Email, Pricing=@Pricing WHERE Id=@Id", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", lblIdLogin.Text)
                             myCmd.Parameters.AddWithValue("@CustomerId", lblId.Text)
                             myCmd.Parameters.AddWithValue("@RoleId", ddlLoginRole.SelectedValue)
@@ -1377,7 +1378,7 @@ Partial Class Setting_Customer_Detail
                         End Using
                     End Using
 
-                    dataLog = {"CustomerLogins", lblIdLogin.Text, Session("LoginId").ToString(), "Customer Login Updated"}
+                    dataLog = {"Logins", lblIdLogin.Text, Session("LoginId").ToString(), "Customer Login Updated"}
                     settingClass.Logs(dataLog)
 
                     url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
@@ -1443,7 +1444,7 @@ Partial Class Setting_Customer_Detail
             If txtActiveLogin.Text = "1" Then : active = 0 : End If
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLogins SET Active=@Active, FailedCount=0 WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Active=@Active, FailedCount=0 WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", thisId)
                     myCmd.Parameters.AddWithValue("@Active", active)
 
@@ -1455,7 +1456,7 @@ Partial Class Setting_Customer_Detail
             Dim activeDesc As String = "Customer Login Has Been Activated"
             If active = 0 Then activeDesc = "Customer Login Has Been Deactivated"
 
-            dataLog = {"CustomerLogins", thisId, Session("LoginId").ToString(), activeDesc}
+            dataLog = {"Logins", thisId, Session("LoginId").ToString(), activeDesc}
             settingClass.Logs(dataLog)
 
             url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
@@ -1477,7 +1478,7 @@ Partial Class Setting_Customer_Detail
                 Dim newPassword As String = settingClass.Encrypt(txtChangePassword.Text)
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLogins SET Password=@Password WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Password=@Password WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
                         myCmd.Parameters.AddWithValue("@Password", newPassword)
 
@@ -1486,7 +1487,7 @@ Partial Class Setting_Customer_Detail
                     End Using
                 End Using
 
-                dataLog = {"CustomerLogins", thisId, Session("LoginId").ToString(), "Change Password Login"}
+                dataLog = {"Logins", thisId, Session("LoginId").ToString(), "Change Password Login"}
                 settingClass.Logs(dataLog)
 
                 url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
@@ -1508,7 +1509,7 @@ Partial Class Setting_Customer_Detail
             Dim newPassword As String = settingClass.Encrypt(txtNewResetPass.Text)
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLogins SET Password=@Password, FailedCount=0, ResetLogin=1, Active=1 WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Password=@Password, FailedCount=0, ResetLogin=1, Active=1 WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", thisId)
                     myCmd.Parameters.AddWithValue("@Password", newPassword)
 
@@ -1517,7 +1518,7 @@ Partial Class Setting_Customer_Detail
                 End Using
             End Using
 
-            dataLog = {"CustomerLogins", thisId, Session("LoginId").ToString(), "Customer Login Reset Password"}
+            dataLog = {"Logins", thisId, Session("LoginId").ToString(), "Customer Login Reset Password"}
             settingClass.Logs(dataLog)
 
             url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
@@ -1559,15 +1560,15 @@ Partial Class Setting_Customer_Detail
     Protected Sub BindDataLogin(customerId As String)
         MessageError_Login(False, String.Empty)
         Try
-            Dim thisQuery As String = "SELECT CustomerLogins.*, LoginRoles.Name AS RoleName, LoginLevels.Name AS LevelName, CASE WHEN CustomerLogins.Active=1 THEN 'Yes' WHEN CustomerLogins.Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM CustomerLogins LEFT JOIN LoginRoles ON CustomerLogins.RoleId=LoginRoles.Id LEFT JOIN LoginLevels ON CustomerLogins.LevelId=LoginLevels.Id WHERE CustomerLogins.CustomerId='" & customerId & "' ORDER BY CustomerLogins.RoleId, CustomerLogins.Id ASC"
+            Dim thisQuery As String = "SELECT Logins.*, LoginRoles.Name AS RoleName, LoginLevels.Name AS LevelName, CASE WHEN Logins.Active=1 THEN 'Yes' WHEN Logins.Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Logins LEFT JOIN LoginRoles ON Logins.RoleId=LoginRoles.Id LEFT JOIN LoginLevels ON Logins.LevelId=LoginLevels.Id WHERE Logins.CustomerId='" & customerId & "' ORDER BY Logins.RoleId, Logins.Id ASC"
 
             gvListLogin.DataSource = settingClass.GetDataTable(thisQuery)
             gvListLogin.DataBind()
-            gvListLogin.Columns(1).Visible = PageAction("Visible ID Login")
-            gvListLogin.Columns(5).Visible = PageAction("Visible Email Login")
+            gvListLogin.Columns(1).Visible = LoginAccess("Visible ID Login")
+            gvListLogin.Columns(5).Visible = LoginAccess("Visible Email Login")
 
-            btnAddLogin.Visible = PageAction("Add Login")
-            aCredentialsLogin.Visible = PageAction("Login Credentials")
+            btnAddLogin.Visible = LoginAccess("Add Login")
+            aCredentialsLogin.Visible = LoginAccess("Login Credentials")
         Catch ex As Exception
             MessageError_Login(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -1890,12 +1891,12 @@ Partial Class Setting_Customer_Detail
         Try
             gvListDiscount.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END, DataId ASC")
             gvListDiscount.DataBind()
-            gvListDiscount.Columns(1).Visible = PageAction("Visible ID Discount")
-            gvListDiscount.Columns(2).Visible = PageAction("Visible Type Discount")
+            gvListDiscount.Columns(1).Visible = LoginAccess("Visible ID Discount")
+            gvListDiscount.Columns(2).Visible = LoginAccess("Visible Type Discount")
 
-            btnAddDiscount.Visible = PageAction("Add Discount")
-            btnAddDiscountCustom.Visible = PageAction("Add Discount Custom")
-            aResetDiscount.Visible = PageAction("Reset Discount")
+            btnAddDiscount.Visible = LoginAccess("Add Discount")
+            btnAddDiscountCustom.Visible = LoginAccess("Add Discount Custom")
+            aResetDiscount.Visible = LoginAccess("Reset Discount")
         Catch ex As Exception
             MessageError_Discount(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -2156,10 +2157,10 @@ Partial Class Setting_Customer_Detail
         Try
             gvListPromo.DataSource = settingClass.GetDataTable("SELECT CustomerPromos.*, Promos.Name AS PromoName, Promos.StartDate AS StartDate, Promos.EndDate AS EndDate FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "'")
             gvListPromo.DataBind()
-            gvListPromo.Columns(1).Visible = PageAction("Visible ID Promo")
+            gvListPromo.Columns(1).Visible = LoginAccess("Visible ID Promo")
 
-            btnAddPromo.Visible = PageAction("Add Promo")
-            aResetPromo.Visible = PageAction("Reset Promo")
+            btnAddPromo.Visible = LoginAccess("Add Promo")
+            aResetPromo.Visible = LoginAccess("Reset Promo")
 
             BindListPromo()
         Catch ex As Exception

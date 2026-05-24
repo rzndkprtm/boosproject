@@ -35,7 +35,7 @@
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-12 col-sm-12 col-lg-6 mb-2">
-                                    <asp:Button runat="server" ID="btnRefresh" CssClass="btn btn-primary" Text="Refresh" OnClick="btnRefresh_Click" />
+                                    <h4 class="card-title">List History</h4>
                                 </div>
                                 <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
                                     <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
@@ -68,11 +68,6 @@
                                                         <%# GetDataName(Eval("Type"), Eval("DataId"), Eval("Description")) %>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-                                                <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
-                                                    <ItemTemplate>
-                                                        <a href="#" runat="server" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
                                             </Columns>
                                             <PagerStyle BackColor="DodgerBlue" ForeColor="White" HorizontalAlign="Center" />
                                             <PagerSettings PreviousPageText="Prev" NextPageText="Next" Mode="NumericFirstLast" />
@@ -88,36 +83,7 @@
         </section>
     </div>
 
-    <div class="modal fade text-center" id="modalDelete" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-danger">
-                    <h5 class="modal-title white">Delete Log</h5>
-                </div>
-                <div class="modal-body">
-                    <asp:TextBox runat="server" ID="txtIdDelete" style="display:none;"></asp:TextBox>
-                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
-                </div>
-                <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnDelete" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDelete_Click" />
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script type="text/javascript">
-        function showDelete(id) {
-            document.getElementById("<%=txtIdDelete.ClientID %>").value = id;
-        }
-
-        ["modalDelete"].forEach(function (id) {
-            document.getElementById(id).addEventListener("hide.bs.modal", function () {
-                document.activeElement.blur();
-                document.body.focus();
-            });
-        });
-
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

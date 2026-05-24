@@ -15,7 +15,7 @@ Partial Class Order_Detail
     Dim idIDR As New CultureInfo("id-ID")
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        Dim pageAccess As Boolean = PageAction("Load")
+        Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
             Response.Redirect("~/order", False)
             Exit Sub
@@ -1779,7 +1779,7 @@ Partial Class Order_Detail
             lblOrderStatus.Text = headerData("Status").ToString()
             lblOrderStatusDescription.Text = headerData("StatusDescription").ToString()
             lblOrderType.Text = headerData("OrderType").ToString()
-            lblInternalNote.Text = orderClass.GetItemData("SELECT TOP 1 'Noted By ' + ISNULL(CustomerLogins.FullName, '') + ' | ' + ISNULL(OrderInternalNotes.Note, '') AS NoteDetail FROM OrderInternalNotes LEFT JOIN CustomerLogins ON OrderInternalNotes.CreatedBy=CustomerLogins.Id WHERE OrderInternalNotes.HeaderId='" & headerId & "' ORDER BY OrderInternalNotes.CreatedDate DESC;")
+            lblInternalNote.Text = orderClass.GetItemData("SELECT TOP 1 'Noted By ' + ISNULL(Logins.FullName, '') + ' | ' + ISNULL(OrderInternalNotes.Note, '') AS NoteDetail FROM OrderInternalNotes LEFT JOIN Logins ON OrderInternalNotes.CreatedBy=Logins.Id WHERE OrderInternalNotes.HeaderId='" & headerId & "' ORDER BY OrderInternalNotes.CreatedDate DESC;")
             If lblInternalNote.Text = "" Then lblInternalNote.Text = "-"
             lblCreatedBy.Text = headerData("CreatedBy").ToString()
             lblCreatedName.Text = headerData("CreatedFullName").ToString()
@@ -2699,9 +2699,9 @@ Partial Class Order_Detail
     Protected Sub BindCollector()
         ddlCollector.Items.Clear()
         Try
-            Dim thisQuery As String = "SELECT * FROM CustomerLogins"
+            Dim thisQuery As String = "SELECT * FROM Logins"
             If Session("RoleName") = "Account" OrElse Session("RoleName") = "Sales" Then
-                thisQuery = "SELECT * FROM CustomerLogins WHERE RoleId='4' OR RoleId='5'"
+                thisQuery = "SELECT * FROM Logins WHERE RoleId='4' OR RoleId='5'"
             End If
 
             ddlCollector.DataSource = orderClass.GetDataTable(thisQuery)
@@ -2728,12 +2728,12 @@ Partial Class Order_Detail
             gvListItem.DataSource = orderClass.GetDataTableSP("sp_GetOrderItemsByHeader", param)
             gvListItem.DataBind()
 
-            gvListItem.Columns(1).Visible = PageAction("Visible ID")
-            gvListItem.Columns(2).Visible = PageAction("Visible Product ID")
+            gvListItem.Columns(1).Visible = LoginAccess("Visible ID")
+            gvListItem.Columns(2).Visible = LoginAccess("Visible Product ID")
 
-            gvListItem.Columns(4).Visible = PageAction("Visible Buy Price")
-            gvListItem.Columns(5).Visible = PageAction("Visible Sell Price")
-            gvListItem.Columns(6).Visible = PageAction("Visible Price")
+            gvListItem.Columns(4).Visible = LoginAccess("Visible Buy Price")
+            gvListItem.Columns(5).Visible = LoginAccess("Visible Sell Price")
+            gvListItem.Columns(6).Visible = LoginAccess("Visible Price")
 
             gvListItem.Columns(7).Visible = False
             If Session("PriceAccess") = "Yes" Then gvListItem.Columns(7).Visible = True
@@ -3078,7 +3078,7 @@ Partial Class Order_Detail
                 txtEmailQuoteCCStaff.Text = String.Join(vbCrLf, listEmail)
             End If
 
-            Dim operatorEmail As String = orderClass.GetItemData("SELECT ISNULL(STRING_AGG(CustomerLogins.Email, ';'), '') FROM Customers OUTER APPLY STRING_SPLIT(Customers.Operator, ',') operatorArray LEFT JOIN CustomerLogins ON CustomerLogins.Id = TRY_CAST(operatorArray.value AS INT) WHERE Customers.Id='" & lblCustomerId.Text & "';")
+            Dim operatorEmail As String = orderClass.GetItemData("SELECT ISNULL(STRING_AGG(Logins.Email, ';'), '') FROM Customers OUTER APPLY STRING_SPLIT(Customers.Operator, ',') operatorArray LEFT JOIN Logins ON Logins.Id = TRY_CAST(operatorArray.value AS INT) WHERE Customers.Id='" & lblCustomerId.Text & "';")
             If Not String.IsNullOrEmpty(operatorEmail) Then
                 Dim listEmail As New List(Of String)
                 If Not String.IsNullOrWhiteSpace(txtEmailQuoteCCStaff.Text) Then
@@ -3130,7 +3130,7 @@ Partial Class Order_Detail
                 txtSendInvoiceCCStaff.Text = String.Join(vbCrLf, listEmail)
             End If
 
-            Dim operatorEmail As String = orderClass.GetItemData("SELECT ISNULL(STRING_AGG(CustomerLogins.Email, ';'), '') FROM Customers OUTER APPLY STRING_SPLIT(Customers.Operator, ',') operatorArray LEFT JOIN CustomerLogins ON CustomerLogins.Id = TRY_CAST(operatorArray.value AS INT) WHERE Customers.Id='" & lblCustomerId.Text & "';")
+            Dim operatorEmail As String = orderClass.GetItemData("SELECT ISNULL(STRING_AGG(Logins.Email, ';'), '') FROM Customers OUTER APPLY STRING_SPLIT(Customers.Operator, ',') operatorArray LEFT JOIN Logins ON Logins.Id = TRY_CAST(operatorArray.value AS INT) WHERE Customers.Id='" & lblCustomerId.Text & "';")
             If Not String.IsNullOrEmpty(operatorEmail) Then
                 Dim listEmail As New List(Of String)
                 If Not String.IsNullOrWhiteSpace(txtSendInvoiceCCStaff.Text) Then
@@ -3910,13 +3910,13 @@ Partial Class Order_Detail
         Return False
     End Function
 
-    Protected Function PageAction(action As String) As Boolean
+    Protected Function LoginAccess(action As String) As Boolean
         Try
             Dim roleId As String = Session("RoleId").ToString()
             Dim levelId As String = Session("LevelId").ToString()
-            Dim actionClass As New ActionClass
+            Dim accessClass As New AccessClass
 
-            Return actionClass.GetActionAccess(roleId, levelId, Page.Title, action)
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
         Catch ex As Exception
             Response.Redirect("~/account/login", False)
             HttpContext.Current.ApplicationInstance.CompleteRequest()

@@ -12,7 +12,7 @@ Partial Class Ticket_Default
     Dim url As String = String.Empty
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        Dim pageAccess As Boolean = PageAction("Load")
+        Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
             Response.Redirect("~/", False)
             Exit Sub
@@ -149,11 +149,11 @@ Partial Class Ticket_Default
             If Not String.IsNullOrEmpty(searchText) Then
                 stringSearch = "WHERE Tickets.Subject LIKE '%" & searchText & "%'"
             End If
-            Dim thisString As String = String.Format("SELECT Tickets.*, CASE WHEN Tickets.Status=1 THEN 'Open' WHEN Tickets.Status=0 THEN 'Close' ELSE 'Error' END AS DataStatus, TicketTopics.Name AS TopicName, CustomerLogins.FullName AS LoginName, CASE WHEN LEN(LastMsg.MessageText) > 50  THEN LEFT(LastMsg.MessageText, 50) + ' .....' ELSE LastMsg.MessageText END AS LastMessage, LastMsg.CreatedDate AS LastMessageDate FROM Tickets LEFT JOIN TicketTopics ON Tickets.TopicId = TicketTopics.Id LEFT JOIN CustomerLogins ON Tickets.LoginId = CustomerLogins.Id OUTER APPLY (SELECT TOP 1 MessageText, CreatedDate FROM TicketDetails WHERE TicketDetails.TicketId=Tickets.Id ORDER BY CreatedDate DESC) LastMsg {0}", stringSearch)
+            Dim thisString As String = String.Format("SELECT Tickets.*, CASE WHEN Tickets.Status=1 THEN 'Open' WHEN Tickets.Status=0 THEN 'Close' ELSE 'Error' END AS DataStatus, TicketTopics.Name AS TopicName, Logins.FullName AS LoginName, CASE WHEN LEN(LastMsg.MessageText) > 50  THEN LEFT(LastMsg.MessageText, 50) + ' .....' ELSE LastMsg.MessageText END AS LastMessage, LastMsg.CreatedDate AS LastMessageDate FROM Tickets LEFT JOIN TicketTopics ON Tickets.TopicId = TicketTopics.Id LEFT JOIN Logins ON Tickets.LoginId = Logins.Id OUTER APPLY (SELECT TOP 1 MessageText, CreatedDate FROM TicketDetails WHERE TicketDetails.TicketId=Tickets.Id ORDER BY CreatedDate DESC) LastMsg {0}", stringSearch)
             rptChatList.DataSource = ticketClass.GetDataTable(thisString)
             rptChatList.DataBind()
 
-            btnTopic.Visible = PageAction("Setting Topic")
+            btnTopic.Visible = LoginAccess("Setting Topic")
         Catch ex As Exception
             MessageError(True, ex.ToString())
         End Try
@@ -170,7 +170,7 @@ Partial Class Ticket_Default
                 End If
                 hSubject.InnerText = "Subject : " & ticketData("Subject").ToString()
 
-                rptTicketDetail.DataSource = ticketClass.GetDataTable("SELECT TicketDetails.*, CustomerLogins.FullName AS LoginName FROM TicketDetails LEFT JOIN CustomerLogins ON TicketDetails.SenderId=CustomerLogins.Id WHERE TicketDetails.TicketId='" & ticketId.ToUpper() & "' ORDER BY TicketDetails.CreatedDate ASC")
+                rptTicketDetail.DataSource = ticketClass.GetDataTable("SELECT TicketDetails.*, Logins.FullName AS LoginName FROM TicketDetails LEFT JOIN Logins ON TicketDetails.SenderId=Logins.Id WHERE TicketDetails.TicketId='" & ticketId.ToUpper() & "' ORDER BY TicketDetails.CreatedDate ASC")
                 rptTicketDetail.DataBind()
             End If
         Catch ex As Exception
@@ -205,13 +205,13 @@ Partial Class Ticket_Default
         divErrorProcess.Visible = visible : msgErrorProcess.InnerText = message
     End Sub
 
-    Protected Function PageAction(action As String) As Boolean
+    Protected Function LoginAccess(action As String) As Boolean
         Try
             Dim roleId As String = Session("RoleId").ToString()
             Dim levelId As String = Session("LevelId").ToString()
-            Dim actionClass As New ActionClass
+            Dim accessClass As New AccessClass
 
-            Return actionClass.GetActionAccess(roleId, levelId, Page.Title, action)
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
         Catch ex As Exception
             Response.Redirect("~/account/login", False)
             HttpContext.Current.ApplicationInstance.CompleteRequest()

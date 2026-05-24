@@ -36,18 +36,4 @@ Partial Class _Default
         Catch ex As Exception
         End Try
     End Sub
-
-    Protected Function PageAction(action As String) As Boolean
-        Try
-            Dim roleId As String = Session("RoleId").ToString()
-            Dim levelId As String = Session("LevelId").ToString()
-            Dim actionClass As New ActionClass
-
-            Return actionClass.GetActionAccess(roleId, levelId, Page.Title, action)
-        Catch ex As Exception
-            Response.Redirect("~/account/login", False)
-            HttpContext.Current.ApplicationInstance.CompleteRequest()
-            Return False
-        End Try
-    End Function
 End Class

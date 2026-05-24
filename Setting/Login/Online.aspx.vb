@@ -1,6 +1,6 @@
 ﻿Imports System.Data.SqlClient
 
-Partial Class Setting_Online
+Partial Class Setting_Login_Online
     Inherits Page
 
     Dim settingClass As New SettingClass
@@ -9,9 +9,9 @@ Partial Class Setting_Online
     Dim dataLog As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        Dim pageAccess As Boolean = PageAction("Load")
+        Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
-            Response.Redirect("~/setting", False)
+            Response.Redirect("~/setting/login", False)
             Exit Sub
         End If
 
@@ -82,7 +82,7 @@ Partial Class Setting_Online
                 dataLog = {"Notifications", thisId, Session("LoginId").ToString(), "Notification Created"}
                 settingClass.Logs(dataLog)
 
-                Response.Redirect("~/setting/online", False)
+                Response.Redirect("~/setting/login/online", False)
             End If
         Catch ex As Exception
             MessageError_SendNotif(True, ex.ToString())
@@ -99,7 +99,7 @@ Partial Class Setting_Online
             gvList.DataSource = settingClass.GetDataTableSP("sp_GetActiveCustomerLogin", paramsItem)
             gvList.DataBind()
 
-            divMinute.Visible = PageAction("Sort Minute")
+            divMinute.Visible = LoginAccess("Sort Minute")
         Catch ex As Exception
             MessageError(True, ex.ToString())
         End Try
@@ -113,13 +113,13 @@ Partial Class Setting_Online
         divErrorSendNotif.Visible = visible : msgErrorSendNotif.InnerText = message
     End Sub
 
-    Protected Function PageAction(action As String) As Boolean
+    Protected Function LoginAccess(action As String) As Boolean
         Try
             Dim roleId As String = Session("RoleId").ToString()
             Dim levelId As String = Session("LevelId").ToString()
-            Dim actionClass As New ActionClass
+            Dim accessClass As New AccessClass
 
-            Return actionClass.GetActionAccess(roleId, levelId, Page.Title, action)
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
         Catch ex As Exception
             Response.Redirect("~/account/login", False)
             HttpContext.Current.ApplicationInstance.CompleteRequest()

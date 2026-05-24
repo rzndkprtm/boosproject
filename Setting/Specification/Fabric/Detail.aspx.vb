@@ -18,7 +18,7 @@ Partial Class Setting_Specification_Fabric_Detail
     End Sub
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        Dim pageAccess As Boolean = PageAction("Load")
+        Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
             Response.Redirect("~/setting/specification/fabric", False)
             Exit Sub
@@ -386,9 +386,9 @@ Partial Class Setting_Specification_Fabric_Detail
                 lblCompanyDetailName.Text = companyDetailName.Remove(companyDetailName.Length - 2).ToString()
             End If
 
-            btnEditFabric.Visible = PageAction("Edit")
-            aChangeStatus.Visible = PageAction("Change Status")
-            btnAddColour.Visible = PageAction("Add Colour")
+            btnEditFabric.Visible = LoginAccess("Edit")
+            aChangeStatus.Visible = LoginAccess("Change Status")
+            btnAddColour.Visible = LoginAccess("Add Colour")
         Catch ex As Exception
             MessageError(True, ex.ToString)
             If Not Session("RoleName") = "Developer" Then
@@ -408,8 +408,8 @@ Partial Class Setting_Specification_Fabric_Detail
 
             gvListColour.DataSource = settingClass.GetDataTable(thisString)
             gvListColour.DataBind()
-            gvListColour.Columns(1).Visible = PageAction("Visible ID Detail")
-            gvListColour.Columns(4).Visible = PageAction("Visible Name Detail")
+            gvListColour.Columns(1).Visible = LoginAccess("Visible ID Detail")
+            gvListColour.Columns(4).Visible = LoginAccess("Visible Name Detail")
         Catch ex As Exception
             MessageError_Colour(True, ex.ToString)
             If Not Session("RoleName") = "Developer" Then
@@ -430,13 +430,13 @@ Partial Class Setting_Specification_Fabric_Detail
         divErrorProcess.Visible = visible : msgErrorProcess.InnerText = message
     End Sub
 
-    Protected Function PageAction(action As String) As Boolean
+    Protected Function LoginAccess(action As String) As Boolean
         Try
             Dim roleId As String = Session("RoleId").ToString()
             Dim levelId As String = Session("LevelId").ToString()
-            Dim actionClass As New ActionClass
+            Dim accessClass As New AccessClass
 
-            Return actionClass.GetActionAccess(roleId, levelId, Page.Title, action)
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
         Catch ex As Exception
             Response.Redirect("~/account/login", False)
             HttpContext.Current.ApplicationInstance.CompleteRequest()

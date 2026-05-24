@@ -9,7 +9,7 @@ Partial Class Setting_Specification_Product_Add
     Dim dataLog As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        Dim pageAccess As Boolean = PageAction("Load")
+        Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
             Response.Redirect("~/setting/specification/product", False)
             Exit Sub
@@ -24,9 +24,9 @@ Partial Class Setting_Specification_Product_Add
             BindTube()
             BindColour()
 
-            btnAddTube.Visible = PageAction("Add Tube")
-            btnAddControl.Visible = PageAction("Add Control")
-            btnAddColour.Visible = PageAction("Add Colour")
+            btnAddTube.Visible = LoginAccess("Add Tube")
+            btnAddControl.Visible = LoginAccess("Add Control")
+            btnAddColour.Visible = LoginAccess("Add Colour")
         End If
     End Sub
 
@@ -374,13 +374,13 @@ Partial Class Setting_Specification_Product_Add
         divErrorProcessColour.Visible = visible : msgErrorProcessColour.InnerText = message
     End Sub
 
-    Protected Function PageAction(action As String) As Boolean
+    Protected Function LoginAccess(action As String) As Boolean
         Try
             Dim roleId As String = Session("RoleId").ToString()
             Dim levelId As String = Session("LevelId").ToString()
-            Dim actionClass As New ActionClass
+            Dim accessClass As New AccessClass
 
-            Return actionClass.GetActionAccess(roleId, levelId, Page.Title, action)
+            Return AccessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
         Catch ex As Exception
             Response.Redirect("~/account/login", False)
             HttpContext.Current.ApplicationInstance.CompleteRequest()
