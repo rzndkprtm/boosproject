@@ -251,6 +251,14 @@
                                                         </li>
                                                     </ul>
                                                 </li>
+                                                <li class="submenu-item has-sub" runat="server" id="liJob">
+                                                    <a href="javascript:void(0);" class='submenu-link'>Job</a>
+                                                    <ul class="subsubmenu">
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/job/" class="subsubmenu-link">XXXX</a>
+                                                        </li>
+                                                    </ul>
+                                                </li>
                                                 <li class="submenu-item has-sub" runat="server" id="liPrice">
                                                     <a href="javascript:void(0);" class='submenu-link'>Price</a>
                                                     <ul class="subsubmenu">

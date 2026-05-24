@@ -195,6 +195,7 @@ Public Partial Class SiteMaster
             liLogin.Visible = False
             liCustomer.Visible = False
             liSpecification.Visible = False
+            liJob.Visible = False
             liPrice.Visible = False
             liDatabase.Visible = False
             liXero.Visible = False
@@ -215,6 +216,7 @@ Public Partial Class SiteMaster
                 liLogin.Visible = True
                 liCustomer.Visible = True
                 liSpecification.Visible = True
+                liJob.Visible = True
                 liPrice.Visible = True
                 liDatabase.Visible = True
                 liXero.Visible = True
