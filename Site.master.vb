@@ -187,7 +187,7 @@ Public Partial Class SiteMaster
             liReport.Visible = False
             liSales.Visible = False
             liStocks.Visible = False
-            liSettingQuote.Visible = False
+            liQuotation.Visible = False
 
             liSetting.Visible = False
             liDashboard.Visible = False
@@ -285,6 +285,8 @@ Public Partial Class SiteMaster
 
                 liSetting.Visible = True
                 liCustomer.Visible = True
+                liPrice.Visible = True
+                liXero.Visible = True
             End If
 
             If Session("RoleName") = "Data Entry" Then
@@ -298,8 +300,7 @@ Public Partial Class SiteMaster
                 liOldOrder.Visible = True
                 liGuide.Visible = True
                 liStocks.Visible = True
-
-                liSettingQuote.Visible = True
+                liQuotation.Visible = True
             End If
 
             If Session("RoleName") = "Installer" Then

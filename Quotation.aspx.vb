@@ -3,7 +3,7 @@ Imports System.Data.SqlClient
 Imports System.Drawing
 Imports System.Drawing.Drawing2D
 
-Partial Class Setting_Quote
+Partial Class Quotation
     Inherits Page
 
     Dim settingClass As New SettingClass
@@ -14,18 +14,18 @@ Partial Class Setting_Quote
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
-            Response.Redirect("~/setting", False)
+            Response.Redirect("~/", False)
             Exit Sub
         End If
 
         If String.IsNullOrEmpty(Request.QueryString("accountid")) Then
-            Response.Redirect("~/setting", False)
+            Response.Redirect("~/", False)
             Exit Sub
         End If
 
         lblCustomerId.Text = Request.QueryString("accountid").ToString()
         If Session("RoleName") = "Customer" AndAlso lblCustomerId.Text <> Session("CustomerId") Then
-            Response.Redirect("~/setting", False)
+            Response.Redirect("~/", False)
             Exit Sub
         End If
 
@@ -103,7 +103,7 @@ Partial Class Setting_Quote
                 End Using
             End Using
 
-            url = String.Format("~/setting/quote?accountid={0}", lblCustomerId.Text)
+            url = String.Format("~/quotation?accountid={0}", lblCustomerId.Text)
             Response.Redirect(url, False)
         Catch ex As Exception
             MessageError_Logo(True, ex.ToString())
@@ -132,7 +132,7 @@ Partial Class Setting_Quote
                     End Using
                 End Using
 
-                url = String.Format("~/setting/quote?accountid={0}", lblCustomerId.Text)
+                url = String.Format("~/quotation?accountid={0}", lblCustomerId.Text)
                 Response.Redirect(url, False)
             End If
         Catch ex As Exception
@@ -160,7 +160,7 @@ Partial Class Setting_Quote
                     End Using
                 End Using
 
-                url = String.Format("~/setting/quote?accountid={0}", lblCustomerId.Text)
+                url = String.Format("~/quotation?accountid={0}", lblCustomerId.Text)
                 Response.Redirect(url, False)
             End If
         Catch ex As Exception
@@ -189,7 +189,7 @@ Partial Class Setting_Quote
                     End Using
                 End Using
 
-                url = String.Format("~/setting/quote?accountid={0}", lblCustomerId.Text)
+                url = String.Format("~/quotation?accountid={0}", lblCustomerId.Text)
                 Response.Redirect(url, False)
             End If
         Catch ex As Exception

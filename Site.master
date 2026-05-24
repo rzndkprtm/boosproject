@@ -121,8 +121,8 @@
                                         <span>Sales</span>
                                     </a>
                                 </li>
-                                <li class="menu-item" runat="server" id="liSettingQuote">
-                                    <a href='<%= ResolveUrl("~/setting/quote?accountid=" & Session("CustomerId")) %>' class="menu-link">
+                                <li class="menu-item" runat="server" id="liQuotation">
+                                    <a href='<%= ResolveUrl("~/quotation?accountid=" & Session("CustomerId")) %>' class="menu-link">
                                         <i class="bi bi-gear-fill"></i>
                                         <span>Quote Setting</span>
                                     </a>
