@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Quote.aspx.vb" Inherits="Setting_Quote" MasterPageFile="~/Site.master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Quote Setting" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Quotation.aspx.vb" Inherits="Quotation" MasterPageFile="~/Site.master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Quotation" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-heading">
