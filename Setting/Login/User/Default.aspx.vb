@@ -39,6 +39,9 @@ Partial Class Setting_Login_User_Default
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         Catch ex As Exception
             MessageError_Process(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         End Try
     End Sub
@@ -55,6 +58,9 @@ Partial Class Setting_Login_User_Default
             BindData(txtSearch.Text)
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 
@@ -91,6 +97,9 @@ Partial Class Setting_Login_User_Default
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Catch ex As Exception
                     MessageError_Process(True, ex.ToString())
+                    If Not Session("RoleName") = "Developer" Then
+                        MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                    End If
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 End Try
             End If
@@ -277,6 +286,9 @@ Partial Class Setting_Login_User_Default
             Response.Redirect("~/setting/login/user", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 
@@ -305,6 +317,9 @@ Partial Class Setting_Login_User_Default
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 
@@ -333,6 +348,9 @@ Partial Class Setting_Login_User_Default
             Response.Redirect("~/setting/login/user", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 
@@ -341,13 +359,18 @@ Partial Class Setting_Login_User_Default
         Try
             Dim params As New List(Of SqlParameter) From {
                 New SqlParameter("@SearchText", If(String.IsNullOrEmpty(searchText), "", searchText.Trim())),
-                New SqlParameter("@RoleName", Session("RoleName").ToString())
+                New SqlParameter("@RoleName", Session("RoleName").ToString()),
+                New SqlParameter("@LevelName", Session("LevelName").ToString()),
+                New SqlParameter("@LoginId", Session("LoginId").ToString())
             }
             gvList.DataSource = settingClass.GetDataTableSP("sp_LoginList", params)
             gvList.DataBind()
             gvList.Columns(1).Visible = LoginAccess("Visible ID") ' ID
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 
