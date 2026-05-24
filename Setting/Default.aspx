@@ -60,6 +60,12 @@
                         Design Type, Blind Type, Product, Fabric, Chain, Remote, Bottom Rail, Mounting
                     </div>
                 </a>
+                <a href="/setting/job" class="dashboard-card">
+                    <div class="dashboard-title">Job</div>
+                    <div class="dashboard-desc">
+                        Under Construction
+                    </div>
+                </a>
                 <a href="/setting/price" class="dashboard-card">
                     <div class="dashboard-title">Price</div>
                     <div class="dashboard-desc">
