@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Add.aspx.vb" Inherits="Setting_Login_User_Add" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Add Login User" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Edit.aspx.vb" Inherits="Setting_Login_User_Edit" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Edit Login User" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-heading">
@@ -52,11 +52,11 @@
                                     <div class="row mb-2">
                                         <div class="col-12 col-sm-12 col-lg-6 form-group">
                                             <label class="form-label">UserName</label>
-                                            <asp:TextBox runat="server" ID="txtAddUserName" CssClass="form-control" placeholder="UserName ..." autocomplete="off"></asp:TextBox>
+                                            <asp:TextBox runat="server" ID="txtEditUserName" CssClass="form-control" placeholder="UserName ..." autocomplete="off"></asp:TextBox>
                                         </div>
                                         <div class="col-12 col-sm-12 col-lg-6 form-group">
                                             <label class="form-label">Password</label>
-                                            <asp:TextBox runat="server" ID="txtAddPassword" TextMode="Password" CssClass="form-control" placeholder="Password ..." autocomplete="new-password"></asp:TextBox>
+                                            <asp:TextBox runat="server" ID="txtEditPassword" TextMode="Password" CssClass="form-control" placeholder="Password ..." autocomplete="new-password"></asp:TextBox>
                                         </div>
                                     </div>
                                     <div class="row mb-2">
@@ -90,12 +90,17 @@
                         </div>
                     </div>
                     <div class="card-footer text-center">
-                        <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" OnClick="btnSubmit_Click" />
-                        <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Cancel" OnClick="btnCancel_Click" />
+                        <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" />
+                        <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Cancel" />
                     </div>
                 </div>
             </div>
             <div class="col-12 col-sm-12 col-lg-5"></div>
         </section>
+    </div>
+
+    <div runat="server" visible="false">
+        <asp:Label runat="server" ID="lblId"></asp:Label>
+        <asp:Label runat="server" ID="lblUserName"></asp:Label>
     </div>
 </asp:Content>
