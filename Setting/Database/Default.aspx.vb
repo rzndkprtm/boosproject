@@ -1,11 +1,10 @@
-﻿
-Partial Class Setting_Database_Default
+﻿Partial Class Setting_Database_Default
     Inherits Page
 
     Dim settingClass As New SettingClass
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        Dim pageAccess As Boolean = PageAction("Load")
+        Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
             Response.Redirect("~/setting", False)
             Exit Sub
@@ -25,13 +24,13 @@ Partial Class Setting_Database_Default
         End Try
     End Function
 
-    Protected Function PageAction(action As String) As Boolean
+    Protected Function LoginAccess(action As String) As Boolean
         Try
             Dim roleId As String = Session("RoleId").ToString()
             Dim levelId As String = Session("LevelId").ToString()
-            Dim actionClass As New ActionClass
+            Dim accessClass As New AccessClass
 
-            Return actionClass.GetActionAccess(roleId, levelId, Page.Title, action)
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
         Catch ex As Exception
             Response.Redirect("~/account/login", False)
             HttpContext.Current.ApplicationInstance.CompleteRequest()

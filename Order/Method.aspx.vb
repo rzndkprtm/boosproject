@@ -11158,7 +11158,7 @@ Partial Class Order_Method
     <WebMethod()>
     Public Shared Function GetCostings(itemId As String, companyId As String) As Object
         Dim orderClass As New OrderClass
-        Dim actionClass As New ActionClass
+        Dim AccessClass As New AccessClass
 
         Dim thisQuery As String = "SELECT *, FORMAT(BuyPrice, 'C', 'en-US') AS BuyPricing, FORMAT(SellPrice, 'C', 'en-US') AS SellPricing FROM OrderCostings WHERE ItemId='" & itemId & "' AND Type<>'Final' AND Number<>0 ORDER BY Number, CASE WHEN Type='Base' THEN 1 WHEN Type='Surcharge' THEN 2 ELSE 3 END ASC"
         If companyId = "3" OrElse companyId = "5" Then
@@ -11184,10 +11184,10 @@ Partial Class Order_Method
 
         Return New With {
             .data = list,
-            .showType = actionClass.GetActionAccess(roleId, levelId, "Order Detail", "Price Details | Visible Type"),
-            .showBuy = actionClass.GetActionAccess(roleId, levelId, "Order Detail", "Price Details | Visible Buy Price"),
-            .showSell = actionClass.GetActionAccess(roleId, levelId, "Order Detail", "Price Details | Visible Sell Price"),
-            .showPrice = actionClass.GetActionAccess(roleId, levelId, "Order Detail", "Price Details | Visible Price")
+            .showType = AccessClass.GetLoginAccess(roleId, levelId, "Order Detail", "Price Details | Visible Type"),
+            .showBuy = AccessClass.GetLoginAccess(roleId, levelId, "Order Detail", "Price Details | Visible Buy Price"),
+            .showSell = AccessClass.GetLoginAccess(roleId, levelId, "Order Detail", "Price Details | Visible Sell Price"),
+            .showPrice = AccessClass.GetLoginAccess(roleId, levelId, "Order Detail", "Price Details | Visible Price")
         }
     End Function
 
@@ -11195,7 +11195,7 @@ Partial Class Order_Method
     Public Shared Function GetHistoryNote(headerId As String) As List(Of HistoryNoteDto)
         Dim orderClass As New OrderClass
 
-        Dim dt = orderClass.GetDataTable("SELECT OrderInternalNotes.Note, CustomerLogins.FullName, FORMAT(OrderInternalNotes.CreatedDate, 'dd MMM yyyy') AS CreatedDate FROM OrderInternalNotes INNER JOIN CustomerLogins ON OrderInternalNotes.CreatedBy = CustomerLogins.Id WHERE OrderInternalNotes.HeaderId='" & headerId & "' ORDER BY OrderInternalNotes.CreatedDate DESC")
+        Dim dt = orderClass.GetDataTable("SELECT OrderInternalNotes.Note, Logins.FullName, FORMAT(OrderInternalNotes.CreatedDate, 'dd MMM yyyy') AS CreatedDate FROM OrderInternalNotes INNER JOIN Logins ON OrderInternalNotes.CreatedBy = Logins.Id WHERE OrderInternalNotes.HeaderId='" & headerId & "' ORDER BY OrderInternalNotes.CreatedDate DESC")
 
         Dim list As New List(Of HistoryNoteDto)
 

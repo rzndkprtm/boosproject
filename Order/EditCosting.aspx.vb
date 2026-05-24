@@ -1,8 +1,6 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 Imports System.Globalization
-Imports iTextSharp.text.pdf.AcroFields
-Imports MimeKit
 
 Partial Class Order_EditCosting
     Inherits Page
@@ -14,7 +12,7 @@ Partial Class Order_EditCosting
     Dim dataLog As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        Dim pageAccess As Boolean = PageAction("Load")
+        Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
             Response.Redirect("~/order/detail", False)
             Exit Sub
@@ -218,13 +216,13 @@ Partial Class Order_EditCosting
         End Try
     End Function
 
-    Protected Function PageAction(action As String) As Boolean
+    Protected Function LoginAccess(action As String) As Boolean
         Try
             Dim roleId As String = Session("RoleId").ToString()
             Dim levelId As String = Session("LevelId").ToString()
-            Dim actionClass As New ActionClass
+            Dim accessClass As New AccessClass
 
-            Return actionClass.GetActionAccess(roleId, levelId, Page.Title, action)
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
         Catch ex As Exception
             Response.Redirect("~/account/login", False)
             HttpContext.Current.ApplicationInstance.CompleteRequest()

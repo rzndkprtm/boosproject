@@ -144,10 +144,10 @@
                                                             <ItemTemplate>
                                                                 <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                                 <ul class="dropdown-menu">
-                                                                    <li runat="server" visible='<%# PageAction("Detail Kit") %>'>
+                                                                    <li runat="server" visible='<%# LoginAccess("Detail Kit") %>'>
                                                                         <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                                     </li>
-                                                                    <li runat="server" visible='<%# PageAction("Delete Kit") %>'>
+                                                                    <li runat="server" visible='<%# LoginAccess("Delete Kit") %>'>
                                                                         <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteKit" onclick='<%# String.Format("return showDeleteKit(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                                     </li>
                                                                     <li>

@@ -13,7 +13,7 @@ Partial Class Order_Default
     Dim dataLog As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        Dim pageAccess As Boolean = PageAction("Load")
+        Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
             Response.Redirect("~/", False)
             Exit Sub
@@ -802,23 +802,23 @@ Partial Class Order_Default
             gvList.DataSource = thisData
             gvList.DataBind()
 
-            gvList.Columns(1).Visible = PageAction("Visible ID")
-            gvList.Columns(3).Visible = PageAction("Visible Customer Name")
+            gvList.Columns(1).Visible = LoginAccess("Visible ID")
+            gvList.Columns(3).Visible = LoginAccess("Visible Customer Name")
             If Session("CustomerLevel") = "Sponsor" AndAlso Session("LevelName") = "Leader" Then
                 gvList.Columns(3).Visible = True
             End If
-            gvList.Columns(7).Visible = PageAction("Visible Created Date")
+            gvList.Columns(7).Visible = LoginAccess("Visible Created Date")
 
-            btnAdd.Visible = PageAction("Add")
-            btnRework.Visible = PageAction("Rework")
+            btnAdd.Visible = LoginAccess("Add")
+            btnRework.Visible = LoginAccess("Rework")
 
-            btnAnother.Visible = PageAction("Another")
-            btnFile.Visible = PageAction("File")
-            btnUnshipment.Visible = PageAction("Unshipment")
+            btnAnother.Visible = LoginAccess("Another")
+            btnFile.Visible = LoginAccess("File")
+            btnUnshipment.Visible = LoginAccess("Unshipment")
 
-            divActive.Visible = PageAction("Active")
-            divCompany.Visible = PageAction("Filter Company")
-            divType.Visible = PageAction("Filter Type")
+            divActive.Visible = LoginAccess("Active")
+            divCompany.Visible = LoginAccess("Filter Company")
+            divType.Visible = LoginAccess("Filter Type")
             If Session("RoleName") = "Sales" AndAlso Session("LevelName") = "Member" AndAlso Session("UserName") = "felicity" Then
                 divType.Visible = True
             End If
@@ -1047,13 +1047,13 @@ Partial Class Order_Default
         Return False
     End Function
 
-    Protected Function PageAction(action As String) As Boolean
+    Protected Function LoginAccess(action As String) As Boolean
         Try
             Dim roleId As String = Session("RoleId").ToString()
             Dim levelId As String = Session("LevelId").ToString()
-            Dim actionClass As New ActionClass
+            Dim accessClass As New AccessClass
 
-            Return actionClass.GetActionAccess(roleId, levelId, Page.Title, action)
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
         Catch ex As Exception
             Response.Redirect("~/account/login", False)
             HttpContext.Current.ApplicationInstance.CompleteRequest()

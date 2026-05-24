@@ -73,10 +73,10 @@
                                                             <li>
                                                                 <asp:LinkButton runat="server" ID="linkPreview" CssClass="dropdown-item" Text="Preview" CommandName="Preview" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                             </li>
-                                                            <li runat="server" visible='<%# PageAction("Active") %>'>
+                                                            <li runat="server" visible='<%# LoginAccess("Active") %>'>
                                                                 <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalActive" onclick='<%# String.Format("return showActive(`{0}`, `{1}`);", Eval("Id").ToString(), Convert.ToInt32(Eval("Active"))) %>'><%# TextActive(Eval("Active")) %></a>
                                                             </li>
-                                                            <li runat="server" visible='<%# PageAction("Delete") %>'>
+                                                            <li runat="server" visible='<%# LoginAccess("Delete") %>'>
                                                                 <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("Type").ToString(), Eval("Link").ToString()) %>'>Delete</a>
                                                             </li>
                                                             <li>

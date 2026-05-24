@@ -141,34 +141,48 @@
                                                 <li class="submenu-item has-sub" runat="server" id="liGeneral">
                                                     <a href="javascript:void(0);" class='submenu-link'>General</a>
                                                     <ul class="subsubmenu">
-                                                        <li class="subsubmenu-item" runat="server" id="liGeneralCompany">
+                                                        <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/general/company" class="subsubmenu-link">Company</a>
                                                         </li>
-                                                        <li class="subsubmenu-item" runat="server" id="liGeneralMailing">
+                                                        <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/general/mailing" class="subsubmenu-link">Mailing</a>
                                                         </li>
-                                                        <li class="subsubmenu-item" runat="server" id="liGeneralRoleAccess">
-                                                            <a runat="server" href="~/setting/general/roleaccess" class="subsubmenu-link">Role Access</a>
-                                                        </li>
-                                                        <li class="subsubmenu-item" runat="server" id="liGeneralLevelAccess">
-                                                            <a runat="server" href="~/setting/general/levelaccess" class="subsubmenu-link">Level Access</a>
-                                                        </li>
-                                                        <li class="subsubmenu-item" runat="server" id="liGeneralNewsletter">
+                                                        <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/general/newsletter" class="subsubmenu-link">Newsletter</a>
                                                         </li>
-                                                        <li class="subsubmenu-item" runat="server" id="liGeneralTutorial">
+                                                        <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/general/tutorial" class="subsubmenu-link">Tutorial</a>
                                                         </li>
-                                                        <li class="subsubmenu-item" runat="server" id="liGeneralAccess">
-                                                            <a runat="server" href="~/setting/general/actionaccess" class="subsubmenu-link">Action Access</a>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/general/notification" class="subsubmenu-link">Notification</a>
                                                         </li>
                                                     </ul>
                                                 </li>
-                                                <li class="submenu-item has-sub" runat="server" id="liCustomerDev">
+                                                <li class="submenu-item has-sub" runat="server" id="liLogin">
+                                                    <a href="javascript:void(0);" class='submenu-link'>Login</a>
+                                                    <ul class="subsubmenu">
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/login/user" class="subsubmenu-link">User</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/login/role" class="subsubmenu-link">Role</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/login/level" class="subsubmenu-link">Level</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/login/access" class="subsubmenu-link">Access</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/login/online" class="subsubmenu-link">Online</a>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                                <li class="submenu-item has-sub" runat="server" id="liCustomer">
                                                     <a href="javascript:void(0);" class='submenu-link'>Customer</a>
                                                     <ul class="subsubmenu">
                                                         <li class="subsubmenu-item">
-                                                            <a runat="server" href="~/setting/customer" class="subsubmenu-link">Customer</a>
+                                                            <a runat="server" href="~/setting/customer/list" class="subsubmenu-link">List</a>
                                                         </li>
                                                         <li class="subsubmenu-item">
                                                             <hr class="dropdown-divider">
@@ -199,43 +213,40 @@
                                                         </li>
                                                     </ul>
                                                 </li>
-                                                <li class="submenu-item" runat="server" id="liCustomer">
-                                                    <a runat="server" href="~/setting/customer" class='submenu-link'>Customer</a>
-                                                </li>
                                                 <li class="submenu-item has-sub" runat="server" id="liSpecification">
                                                     <a href="javascript:void(0);" class='submenu-link'>Specification</a>
                                                     <ul class="subsubmenu">
-                                                        <li class="subsubmenu-item" runat="server" id="liSpecificationDesign">
+                                                        <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/specification/designtype" class="subsubmenu-link">Design Type</a>
                                                         </li>
-                                                        <li class="subsubmenu-item" runat="server" id="liSpecificationBlind">
+                                                        <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/specification/blindtype" class="subsubmenu-link">Blind Type</a>
                                                         </li>
-                                                        <li class="subsubmenu-item" runat="server" id="liSpecificationProduct">
+                                                        <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/specification/product" class="subsubmenu-link">Product</a>
                                                         </li>
-                                                        <li class="subsubmenu-item" runat="server" id="liSpecificationTube">
+                                                        <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/specification/tubetype" class="subsubmenu-link">Tube Type</a>
                                                         </li>
-                                                        <li class="subsubmenu-item" runat="server" id="liSpecificationControl">
+                                                        <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/specification/controltype" class="subsubmenu-link">Control Type</a>
                                                         </li>
-                                                        <li class="subsubmenu-item" runat="server" id="liSpecificationColour">
+                                                        <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/specification/colourtype" class="subsubmenu-link">Colour Type</a>
                                                         </li>
-                                                        <li class="subsubmenu-item" runat="server" id="liSpecificationFabric">
+                                                        <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/specification/fabric" class="subsubmenu-link">Fabric</a>
                                                         </li>
-                                                        <li class="subsubmenu-item" runat="server" id="liSpecificationChain">
+                                                        <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/specification/chain" class="subsubmenu-link">Chain</a>
                                                         </li>
-                                                        <li class="subsubmenu-item" runat="server" id="liSpecificationRemote">
+                                                        <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/specification/remote" class="subsubmenu-link">Remote</a>
                                                         </li>
-                                                        <li class="subsubmenu-item" runat="server" id="liSpecificationBottom">
+                                                        <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/specification/bottom" class="subsubmenu-link">Bottom Rail</a>
                                                         </li>
-                                                        <li class="subsubmenu-item" runat="server" id="liSpecificationMounting">
+                                                        <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/specification/mounting" class="subsubmenu-link">Mounting</a>
                                                         </li>
                                                     </ul>
@@ -243,19 +254,19 @@
                                                 <li class="submenu-item has-sub" runat="server" id="liPrice">
                                                     <a href="javascript:void(0);" class='submenu-link'>Price</a>
                                                     <ul class="subsubmenu">
-                                                        <li class="subsubmenu-item" runat="server" id="liPriceGroup">
+                                                        <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/price/group" class="subsubmenu-link">Price Group</a>
                                                         </li>
-                                                        <li class="subsubmenu-item" runat="server" id="liPriceProductGroup">
+                                                        <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/price/productgroup" class="subsubmenu-link">Price Product Group</a>
                                                         </li>
-                                                        <li class="subsubmenu-item" runat="server" id="liPriceBase">
+                                                        <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/price/base" class="subsubmenu-link">Price Base</a>
                                                         </li>
-                                                        <li class="subsubmenu-item" runat="server" id="liPriceSurcharge">
+                                                        <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/price/surcharge" class="subsubmenu-link">Price Surcharge</a>
                                                         </li>
-                                                        <li class="subsubmenu-item" runat="server" id="liPricePromo">
+                                                        <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/price/promo" class="subsubmenu-link">Price Promo</a>
                                                         </li>
                                                     </ul>
@@ -277,14 +288,8 @@
                                                         </li>
                                                     </ul>
                                                 </li>
-                                                <li runat="server" id="liOnline" class="submenu-item">
-                                                    <a runat="server" href="~/setting/online" class="subsubmenu-link">Online User</a>
-                                                </li>
                                                 <li runat="server" id="liXero" class="submenu-item">
                                                     <a runat="server" href="~/setting/xero" class="subsubmenu-link">Xero</a>
-                                                </li>
-                                                <li runat="server" id="liNotification" class="submenu-item">
-                                                    <a runat="server" href="~/setting/notification" class="subsubmenu-link">Notification</a>
                                                 </li>
                                                 <li runat="server" id="liLog" class="submenu-item">
                                                     <a runat="server" href="~/setting/log" class="subsubmenu-link">Log</a>
@@ -363,7 +368,7 @@
             }
 
             function savePopupLog(popupId) {
-                fetch('/Setting/Notification/Default.aspx/SavePopupLog', {
+                fetch('/Setting/General/Notification/Default.aspx/SavePopupLog', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ popupId: popupId })

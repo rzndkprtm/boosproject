@@ -8,9 +8,9 @@ Partial Class Setting_Customer_Add
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        Dim pageAccess As Boolean = PageAction("Load")
+        Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
-            Response.Redirect("~/setting/customer", False)
+            Response.Redirect("~/setting/customer/list", False)
             Exit Sub
         End If
 
@@ -194,7 +194,7 @@ Partial Class Setting_Customer_Add
     End Sub
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
-        Response.Redirect("~/setting/customer/", False)
+        Response.Redirect("~/setting/customer/list", False)
     End Sub
 
     Protected Sub BindSponsor()
@@ -275,7 +275,7 @@ Partial Class Setting_Customer_Add
         lbOperator.Items.Clear()
         Try
             If Not String.IsNullOrEmpty(companyId) Then
-                lbOperator.DataSource = settingClass.GetDataTable("SELECT CustomerLogins.* FROM CustomerLogins LEFT JOIN Customers ON CustomerLogins.CustomerId=Customers.Id WHERE Customers.CompanyId='" & companyId & "' AND CustomerLogins.RoleId='4' AND CustomerLogins.LevelId='2' ORDER BY CustomerLogins.UserName ASC")
+                lbOperator.DataSource = settingClass.GetDataTable("SELECT Logins.* FROM Logins LEFT JOIN Customers ON Logins.CustomerId=Customers.Id WHERE Customers.CompanyId='" & companyId & "' AND Logins.RoleId='4' AND Logins.LevelId='2' ORDER BY Logins.UserName ASC")
                 lbOperator.DataTextField = "FullName"
                 lbOperator.DataValueField = "Id"
                 lbOperator.DataBind()
@@ -362,10 +362,10 @@ Partial Class Setting_Customer_Add
     End Sub
 
     Protected Sub BindComponentForm()
-        divDebtorCode.Visible = PageAction("Visible Debtor Code")
-        divLevelSponsor.Visible = PageAction("Visible Level Sponsor")
-        divCompany.Visible = PageAction("Visible Company")
-        divAreaOperator.Visible = PageAction("Visible Area Operator")
+        divDebtorCode.Visible = LoginAccess("Visible Debtor Code")
+        divLevelSponsor.Visible = LoginAccess("Visible Level Sponsor")
+        divCompany.Visible = LoginAccess("Visible Company")
+        divAreaOperator.Visible = LoginAccess("Visible Area Operator")
     End Sub
 
     Protected Sub BackColor()
@@ -393,13 +393,13 @@ Partial Class Setting_Customer_Add
         divError.Visible = visible : msgError.InnerText = message
     End Sub
 
-    Protected Function PageAction(action As String) As Boolean
+    Protected Function LoginAccess(action As String) As Boolean
         Try
             Dim roleId As String = Session("RoleId").ToString()
             Dim levelId As String = Session("LevelId").ToString()
-            Dim actionClass As New ActionClass
+            Dim accessClass As New AccessClass
 
-            Return actionClass.GetActionAccess(roleId, levelId, Page.Title, action)
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
         Catch ex As Exception
             Response.Redirect("~/account/login", False)
             HttpContext.Current.ApplicationInstance.CompleteRequest()

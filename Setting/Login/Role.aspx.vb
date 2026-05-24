@@ -1,7 +1,7 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 
-Partial Class Setting_General_LevelAccess
+Partial Class Setting_Login_Role
     Inherits Page
 
     Dim settingClass As New SettingClass
@@ -10,15 +10,15 @@ Partial Class Setting_General_LevelAccess
     Dim dataLog As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        Dim pageAccess As Boolean = PageAction("Load")
+        Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
-            Response.Redirect("~/setting/general", False)
+            Response.Redirect("~/setting/login", False)
             Exit Sub
         End If
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-            txtSearch.Text = Session("SearchLevel")
+            txtSearch.Text = Session("SearchRole")
             BindData(txtSearch.Text)
         End If
     End Sub
@@ -28,7 +28,7 @@ Partial Class Setting_General_LevelAccess
         Dim thisScript As String = "window.onload = function() { showProcess(); };"
         Try
             lblAction.Text = "Add"
-            titleProcess.InnerText = "Add Level Access"
+            titleProcess.InnerText = "Add Login Role"
 
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         Catch ex As Exception
@@ -64,13 +64,13 @@ Partial Class Setting_General_LevelAccess
             If e.CommandName = "Detail" Then
                 MessageError_Process(False, String.Empty)
                 Dim thisScript As String = "window.onload = function() { showProcess(); };"
-                Session("SearchLevel") = txtSearch.Text
+                Session("SearchRole") = txtSearch.Text
                 Try
                     lblId.Text = dataId
                     lblAction.Text = "Edit"
-                    titleProcess.InnerText = "Edit Level Access"
+                    titleProcess.InnerText = "Edit Login Role"
 
-                    Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM LoginLevels WHERE Id='" & lblId.Text & "'")
+                    Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM LoginRoles WHERE Id='" & lblId.Text & "'")
                     If myData Is Nothing Then Exit Sub
 
                     txtName.Text = myData("Name").ToString()
@@ -103,10 +103,10 @@ Partial Class Setting_General_LevelAccess
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 
                 If lblAction.Text = "Add" Then
-                    Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM LoginLevels ORDER BY Id DESC")
+                    Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM LoginRoles ORDER BY Id DESC")
 
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO LoginLevels VALUES (@Id, @Name, @Description, @Active)", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO LoginRoles VALUES (@Id, @Name, @Description, @Active)", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", thisId)
                             myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Description", descText)
@@ -117,16 +117,15 @@ Partial Class Setting_General_LevelAccess
                         End Using
                     End Using
 
-                    dataLog = {"LoginLevels", thisId, Session("LoginId").ToString(), "Level Access Created"}
+                    dataLog = {"LoginRoles", thisId, Session("LoginId").ToString(), "Role Access Created"}
                     settingClass.Logs(dataLog)
 
-                    Session("SearchLevel") = txtSearch.Text
-                    Response.Redirect("~/setting/general/levelaccess", False)
+                    Response.Redirect("~/setting/login/role", False)
                 End If
 
                 If lblAction.Text = "Edit" Then
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE LoginLevels SET Name=@Name, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("UPDATE LoginRoles SET Name=@Name, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", lblId.Text)
                             myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Description", descText)
@@ -137,11 +136,10 @@ Partial Class Setting_General_LevelAccess
                         End Using
                     End Using
 
-                    dataLog = {"LoginLevels", lblId.Text, Session("LoginId").ToString(), "Level Access Updated"}
+                    dataLog = {"LoginRoles", lblId.Text, Session("LoginId").ToString(), "Role Access Updated"}
                     settingClass.Logs(dataLog)
 
-                    Session("SearchLevel") = txtSearch.Text
-                    Response.Redirect("~/setting/general/levelaccess", False)
+                    Response.Redirect("~/setting/login/role", False)
                 End If
             End If
         Catch ex As Exception
@@ -154,18 +152,18 @@ Partial Class Setting_General_LevelAccess
     End Sub
 
     Protected Sub BindData(searchText As String)
-        Session("SearchLevel") = String.Empty
+        Session("SearchRole") = String.Empty
         Try
             Dim stringSearch As String = String.Empty
             If Not String.IsNullOrEmpty(searchText) Then
                 stringSearch = "WHERE Id LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%'"
             End If
-            Dim stringQuery As String = String.Format("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM LoginLevels {0} ORDER BY Name ASC", stringSearch)
+            Dim stringQuery As String = String.Format("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM LoginRoles {0} ORDER BY Name ASC", stringSearch)
             gvList.DataSource = settingClass.GetDataTable(stringQuery)
             gvList.DataBind()
-            gvList.Columns(1).Visible = PageAction("Visible ID")
+            gvList.Columns(1).Visible = LoginAccess("Visible ID")
 
-            btnAdd.Visible = PageAction("Add")
+            btnAdd.Visible = LoginAccess("Add")
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -182,13 +180,13 @@ Partial Class Setting_General_LevelAccess
         divErrorProcess.Visible = visible : msgErrorProcess.InnerText = message
     End Sub
 
-    Protected Function PageAction(action As String) As Boolean
+    Protected Function LoginAccess(action As String) As Boolean
         Try
             Dim roleId As String = Session("RoleId").ToString()
             Dim levelId As String = Session("LevelId").ToString()
-            Dim actionClass As New ActionClass
+            Dim accessClass As New AccessClass
 
-            Return actionClass.GetActionAccess(roleId, levelId, Page.Title, action)
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
         Catch ex As Exception
             Response.Redirect("~/account/login", False)
             HttpContext.Current.ApplicationInstance.CompleteRequest()

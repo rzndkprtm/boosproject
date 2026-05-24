@@ -32,7 +32,7 @@ Partial Class Account_Login
                 Exit Sub
             End If
 
-            Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerLogins WHERE UserName='" & txtUserLogin.Text & "'")
+            Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Logins WHERE UserName='" & txtUserLogin.Text & "'")
 
             If myData Is Nothing Then
                 MessageError(True, "USERNAME NOT FOUND !")
@@ -77,7 +77,7 @@ Partial Class Account_Login
 
     Protected Sub UpdateFailedLogin(loginId As String)
         Using thisConn As New SqlConnection(myConn)
-            Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLogins SET FailedCount=FailedCount+1 WHERE Id=@Id", thisConn)
+            Using myCmd As SqlCommand = New SqlCommand("UPDATE Logins SET FailedCount=FailedCount+1 WHERE Id=@Id", thisConn)
                 myCmd.Parameters.AddWithValue("@Id", loginId)
 
                 thisConn.Open()
@@ -85,10 +85,10 @@ Partial Class Account_Login
             End Using
         End Using
 
-        Dim failedCount As String = settingClass.GetItemData("SELECT FailedCount FROM CustomerLogins WHERE Id='" & loginId & "'")
+        Dim failedCount As String = settingClass.GetItemData("SELECT FailedCount FROM Logins WHERE Id='" & loginId & "'")
         If failedCount = "5" Then
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLogins SET Active=0 WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Active=0 WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", loginId)
 
                     thisConn.Open()
@@ -105,7 +105,7 @@ Partial Class Account_Login
             If checkSession = 1 Then
                 Dim loginId As String = settingClass.GetItemData("SELECT LoginId FROM Sessions WHERE Id='" & UCase(lblDeviceId.Text) & "'")
                 If Not loginId = "" Then
-                    Dim userName As String = settingClass.GetItemData("SELECT UserName FROM CustomerLogins WHERE Id='" & loginId & "'")
+                    Dim userName As String = settingClass.GetItemData("SELECT UserName FROM Logins WHERE Id='" & loginId & "'")
 
                     Session("IsLoggedIn") = True
                     Session("LoginId") = loginId

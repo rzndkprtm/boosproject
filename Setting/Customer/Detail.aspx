@@ -14,6 +14,7 @@
                             <li class="breadcrumb-item"><a runat="server" href="~/">Home</a></li>
                             <li class="breadcrumb-item"><a runat="server" href="~/setting">Setting</a></li>
                             <li class="breadcrumb-item"><a runat="server" href="~/setting/customer">Customer</a></li>
+                            <li class="breadcrumb-item"><a runat="server" href="~/setting/customer/list">List</a></li>
                             <li class="breadcrumb-item active" aria-current="page"><%: Page.Title %></li>
                         </ol>
                     </nav>
@@ -198,10 +199,10 @@
                                                             <ItemTemplate>
                                                                 <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                                 <ul class="dropdown-menu">
-                                                                    <li runat="server" visible='<%# PageAction("Detail Contact") %>'>
+                                                                    <li runat="server" visible='<%# LoginAccess("Detail Contact") %>'>
                                                                         <asp:LinkButton runat="server" ID="linkDetailContact" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                                     </li>
-                                                                    <li runat="server" visible='<%# PageAction("Delete Contact") %>'>
+                                                                    <li runat="server" visible='<%# LoginAccess("Delete Contact") %>'>
                                                                         <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteContact" onclick='<%# String.Format("return showDeleteContact(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                                     </li>
                                                                     <li runat="server" visible='<%# VisiblePrimaryContact(Eval("Primary")) %>'>
@@ -263,10 +264,10 @@
                                                             <ItemTemplate>
                                                                 <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                                 <ul class="dropdown-menu">
-                                                                    <li runat="server" visible='<%# PageAction("Detail Address") %>'>
+                                                                    <li runat="server" visible='<%# LoginAccess("Detail Address") %>'>
                                                                         <asp:LinkButton runat="server" ID="linkDetailAddress" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                                     </li>
-                                                                    <li runat="server" visible='<%# PageAction("Delete Address") %>'>
+                                                                    <li runat="server" visible='<%# LoginAccess("Delete Address") %>'>
                                                                         <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteAddress" onclick='<%# String.Format("return showDeleteAddress(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                                     </li>
                                                                     <li runat="server" visible='<%# VisiblePrimaryAddress(Eval("Primary")) %>'>
@@ -322,10 +323,10 @@
                                                                 <ItemTemplate>
                                                                     <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                                     <ul class="dropdown-menu">
-                                                                        <li runat="server" visible='<%# PageAction("Detail Business") %>'>
+                                                                        <li runat="server" visible='<%# LoginAccess("Detail Business") %>'>
                                                                             <asp:LinkButton runat="server" ID="linkDetailBusiness" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                                         </li>
-                                                                        <li runat="server" visible='<%# PageAction("Delete Business") %>'>
+                                                                        <li runat="server" visible='<%# LoginAccess("Delete Business") %>'>
                                                                             <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteBusiness" onclick='<%# String.Format("return showDeleteBusiness(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                                         </li>
                                                                         <li runat="server" visible='<%# VisiblePrimaryBusiness(Eval("Primary")) %>'>
@@ -385,26 +386,26 @@
                                                             <ItemTemplate>
                                                                 <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                                 <ul class="dropdown-menu">
-                                                                    <li runat="server" visible='<%# PageAction("Detail Login") %>'>
+                                                                    <li runat="server" visible='<%# LoginAccess("Detail Login") %>'>
                                                                         <asp:LinkButton runat="server" CssClass="dropdown-item" ID="linkDetailLogin" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                                     </li>
                                                                     <li runat="server" visible='<%# VisibleInstallerAccess(Eval("RoleId").ToString()) %>'>
                                                                         <asp:LinkButton runat="server" CssClass="dropdown-item" ID="linkInstallerAccess" Text="Installer Access" CommandName="InstallerAccess" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                                     </li>
-                                                                    <li runat="server" visible='<%# PageAction("Active Login") %>'>
+                                                                    <li runat="server" visible='<%# LoginAccess("Active Login") %>'>
                                                                         <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalActiveLogin" onclick='<%# String.Format("return showActiveLogin(`{0}`, `{1}`);", Eval("Id").ToString(), Convert.ToInt32(Eval("Active"))) %>'><%# TextActive_Login(Eval("Active")) %></a>
                                                                     </li>
-                                                                    <li runat="server" visible='<%# PageAction("Change Password Login") %>'>
+                                                                    <li runat="server" visible='<%# LoginAccess("Change Password Login") %>'>
                                                                         <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangePasswordLogin" onclick='<%# String.Format("return showChangePassword(`{0}`);", Eval("Id").ToString()) %>'>Change Password</a>
                                                                     </li>
-                                                                    <li runat="server" visible='<%# PageAction("Reset Login") %>'>
+                                                                    <li runat="server" visible='<%# LoginAccess("Reset Login") %>'>
                                                                         <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalResetPass" onclick='<%# String.Format("return showResetPass(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("UserName").ToString()) %>'>Reset Password</a>
                                                                     </li>
-                                                                    <li runat="server" visible='<%# PageAction("Dencrypt Login") %>'>
+                                                                    <li runat="server" visible='<%# LoginAccess("Dencrypt Login") %>'>
                                                                         <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDencryptPass" onclick='<%# String.Format("return showDencryptPass(`{0}`, `{1}`);", Eval("UserName").ToString(), DencryptPassword(Eval("Password").ToString())) %>'>Show Password</a>
                                                                     </li>
                                                                     <li>
-                                                                        <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('CustomerLogins', '<%# Eval("Id") %>')">Log</a>
+                                                                        <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('Logins', '<%# Eval("Id") %>')">Log</a>
                                                                     </li>
                                                                 </ul>
                                                             </ItemTemplate>
@@ -459,10 +460,10 @@
                                                             <ItemTemplate>
                                                                 <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                                 <ul class="dropdown-menu">
-                                                                    <li runat="server" visible='<%# PageAction("Detail Discount") %>'>
+                                                                    <li runat="server" visible='<%# LoginAccess("Detail Discount") %>'>
                                                                         <asp:LinkButton runat="server" ID="linkDetailDiscount" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                                     </li>
-                                                                    <li runat="server" visible='<%# PageAction("Delete Discount") %>'>
+                                                                    <li runat="server" visible='<%# LoginAccess("Delete Discount") %>'>
                                                                         <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteDiscount" onclick='<%# String.Format("return showDeleteDiscount(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                                     </li>
                                                                     <li>
@@ -515,10 +516,10 @@
                                                             <ItemTemplate>
                                                                 <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                                 <ul class="dropdown-menu">
-                                                                    <li runat="server" visible='<%# PageAction("Detail Promo") %>'>
+                                                                    <li runat="server" visible='<%# LoginAccess("Detail Promo") %>'>
                                                                         <asp:LinkButton runat="server" ID="linkDetailPromo" CssClass="dropdown-item" Text="Detail" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                                     </li>
-                                                                    <li runat="server" visible='<%# PageAction("Delete Promo") %>'>
+                                                                    <li runat="server" visible='<%# LoginAccess("Delete Promo") %>'>
                                                                         <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeletePromo" onclick='<%# String.Format("return showDeletePromo(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                                     </li>
                                                                     <li>
@@ -570,10 +571,10 @@
                                                             <ItemTemplate>
                                                                 <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                                 <ul class="dropdown-menu">
-                                                                    <li runat="server" visible='<%# PageAction("Detail Product Access") %>'>
+                                                                    <li runat="server" visible='<%# LoginAccess("Detail Product Access") %>'>
                                                                         <asp:LinkButton runat="server" ID="linkDetailProduct" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                                     </li>
-                                                                    <li runat="server" visible='<%# PageAction("Reset Product Access") %>'>
+                                                                    <li runat="server" visible='<%# LoginAccess("Reset Product Access") %>'>
                                                                         <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalResetProduct">Reset</a>
                                                                     </li>
                                                                     <li>

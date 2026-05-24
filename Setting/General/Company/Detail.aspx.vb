@@ -11,7 +11,7 @@ Partial Class Setting_General_Company_Detail
     Dim dataLog As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        Dim pageAccess As Boolean = PageAction("Load")
+        Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
             Response.Redirect("~/setting/general/company", False)
             Exit Sub
@@ -210,14 +210,14 @@ Partial Class Setting_General_Company_Detail
             txtDescription.Text = thisData("Description").ToString()
             ddlActive.SelectedValue = Convert.ToInt32(thisData("Active"))
 
-            divEdit.Visible = PageAction("Edit")
+            divEdit.Visible = LoginAccess("Edit")
 
             txtName.ReadOnly = True
             txtAlias.ReadOnly = True
             txtDescription.ReadOnly = True
             ddlActive.Enabled = False
 
-            Dim editAccess As Boolean = PageAction("Edit")
+            Dim editAccess As Boolean = LoginAccess("Edit")
             If editAccess = True Then
                 txtName.ReadOnly = False
                 txtAlias.ReadOnly = False
@@ -227,9 +227,9 @@ Partial Class Setting_General_Company_Detail
 
             gvList.DataSource = settingClass.GetDataTable("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM CompanyDetails WHERE CompanyId='" & companyId & "'")
             gvList.DataBind()
-            gvList.Columns(1).Visible = PageAction("Visible ID Detail")
+            gvList.Columns(1).Visible = LoginAccess("Visible ID Detail")
 
-            btnAddDetail.Visible = PageAction("Add Detail")
+            btnAddDetail.Visible = LoginAccess("Add Detail")
 
         Catch ex As Exception
             MessageError(True, ex.ToString)
@@ -247,13 +247,13 @@ Partial Class Setting_General_Company_Detail
         divErrorProcessDetail.Visible = visible : msgErrorProcessDetail.InnerText = message
     End Sub
 
-    Protected Function PageAction(action As String) As Boolean
+    Protected Function LoginAccess(action As String) As Boolean
         Try
             Dim roleId As String = Session("RoleId").ToString()
             Dim levelId As String = Session("LevelId").ToString()
-            Dim actionClass As New ActionClass
+            Dim accessClass As New AccessClass
 
-            Return actionClass.GetActionAccess(roleId, levelId, Page.Title, action)
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
         Catch ex As Exception
             Response.Redirect("~/account/login", False)
             HttpContext.Current.ApplicationInstance.CompleteRequest()

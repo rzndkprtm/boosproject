@@ -34,7 +34,7 @@ Partial Class Account_Forgot
                 Exit Sub
             End If
 
-            Dim checkData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerLogins WHERE UserName='" & txtUserLogin.Text.Trim() & "' AND Email='" & txtEmail.Text.Trim() & "'")
+            Dim checkData As DataRow = settingClass.GetDataRow("SELECT * FROM Logins WHERE UserName='" & txtUserLogin.Text.Trim() & "' AND Email='" & txtEmail.Text.Trim() & "'")
             If checkData Is Nothing Then
                 MessageError(True, "SYSTEM ERROR: NO DATA RETURNED.")
                 Exit Sub
@@ -46,7 +46,7 @@ Partial Class Account_Forgot
             Dim encryptPassword As String = settingClass.Encrypt(newPassword)
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerLogins SET Password=@Password, ResetLogin=1, FailedCount=0, Active=1 WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Password=@Password, ResetLogin=1, FailedCount=0, Active=1 WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", loginId)
                     myCmd.Parameters.AddWithValue("@Password", encryptPassword)
 
@@ -55,7 +55,7 @@ Partial Class Account_Forgot
                 End Using
             End Using
 
-            Dim dataLog As Object() = {"CustomerLogins", loginId, loginId, "Customer Forgot Password"}
+            Dim dataLog As Object() = {"Logins", loginId, loginId, "Customer Forgot Password"}
             settingClass.Logs(dataLog)
 
             mailingClass.ResetPassword(loginId, newPassword)

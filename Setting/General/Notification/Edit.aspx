@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" ValidateRequest="false" CodeFile="Add.aspx.vb" Inherits="Setting_Notification_Add" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Add Notification" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Edit.aspx.vb" Inherits="Setting_General_Notification_Edit" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Edit Notification" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-heading">
@@ -13,6 +13,7 @@
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a runat="server" href="~/">Home</a></li>
                             <li class="breadcrumb-item"><a runat="server" href="~/setting">Setting</a></li>
+                            <li class="breadcrumb-item"><a runat="server" href="~/setting/general">General</a></li>
                             <li class="breadcrumb-item"><a runat="server" href="~/setting/general/notification">Notification</a></li>
                             <li class="breadcrumb-item active" aria-current="page"><%: Page.Title %></li>
                         </ol>
@@ -26,7 +27,7 @@
             <div class="col-12 col-sm-12 col-lg-8">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Add Form</h4>
+                        <h4 class="card-title">Edit Form</h4>
                     </div>
                     <div class="card-content">
                         <div class="card-body">
@@ -88,12 +89,16 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-sm-12 col-lg-8"></div>
+            <div class="col-12 col-sm-12 col-lg-4"></div>
         </section>
     </div>
 
     <asp:HiddenField runat="server" ID="fieldMessage" />
     <asp:HiddenField runat="server" ID="hfMessage" />
+
+    <div runat="server" visible="false">
+        <asp:Label runat="server" ID="lblId"></asp:Label>
+    </div>
 
     <script type="text/javascript">
         $(document).ready(function () {

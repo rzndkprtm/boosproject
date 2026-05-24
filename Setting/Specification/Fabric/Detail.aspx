@@ -143,10 +143,10 @@
                                                             <ItemTemplate>
                                                                 <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                                 <ul class="dropdown-menu">
-                                                                    <li runat="server" visible='<%# PageAction("Detail Colour") %>'>
+                                                                    <li runat="server" visible='<%# LoginAccess("Detail Colour") %>'>
                                                                         <asp:LinkButton runat="server" ID="linkDetailColour" CssClass="dropdown-item" Text="Detail" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                                     </li>
-                                                                    <li runat="server" visible='<%# PageAction("Change Status Colour") %>'>
+                                                                    <li runat="server" visible='<%# LoginAccess("Change Status Colour") %>'>
                                                                         <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeStatusColour" onclick='<%# String.Format("return showChangeStatusColour(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("Name").ToString(), Eval("Status").ToString()) %>'>Change Status</a>
                                                                     </li>
                                                                     <li>

@@ -4,7 +4,7 @@
     Dim settingClass As New SettingClass
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        Dim pageAccess As Boolean = PageAction("Load")
+        Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
             Response.Redirect("~/", False)
             Exit Sub
@@ -69,8 +69,8 @@
 
             gvList.DataSource = settingClass.GetDataTable(thisString)
             gvList.DataBind()
-            gvList.Columns(1).Visible = PageAction("Visible ID") ' ID
-            gvList.Columns(2).Visible = PageAction("Visible Company") ' COMPANY
+            gvList.Columns(1).Visible = LoginAccess("Visible ID") ' ID
+            gvList.Columns(2).Visible = LoginAccess("Visible Company") ' COMPANY
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -86,13 +86,13 @@
         divError.Visible = visible : msgError.InnerText = message
     End Sub
 
-    Protected Function PageAction(action As String) As Boolean
+    Protected Function LoginAccess(action As String) As Boolean
         Try
             Dim roleId As String = Session("RoleId").ToString()
             Dim levelId As String = Session("LevelId").ToString()
-            Dim actionClass As New ActionClass
+            Dim accessClass As New AccessClass
 
-            Return actionClass.GetActionAccess(roleId, levelId, Page.Title, action)
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
         Catch ex As Exception
             Response.Redirect("~/account/login", False)
             HttpContext.Current.ApplicationInstance.CompleteRequest()

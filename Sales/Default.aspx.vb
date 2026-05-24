@@ -10,7 +10,7 @@ Partial Class Sales_Default
     Dim idIDR As New CultureInfo("id-ID")
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        Dim pageAccess As Boolean = PageAction("Load")
+        Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
             Response.Redirect("~/", False)
             Exit Sub
@@ -67,8 +67,8 @@ Partial Class Sales_Default
             If Not String.IsNullOrEmpty(companyId) Then
                 gvList.DataSource = salesClass.GetDataTable("SELECT * FROM Sales WHERE CompanyId='" & companyId & "' ORDER BY SummaryDate DESC")
                 gvList.DataBind()
-                gvList.Columns(1).Visible = PageAction("Visible ID")
-                gvList.Columns(8).Visible = PageAction("Visible Refresh")
+                gvList.Columns(1).Visible = LoginAccess("Visible ID")
+                gvList.Columns(8).Visible = LoginAccess("Visible Refresh")
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -114,13 +114,13 @@ Partial Class Sales_Default
         divError.Visible = visible : msgError.InnerText = message
     End Sub
 
-    Protected Function PageAction(action As String) As Boolean
+    Protected Function LoginAccess(action As String) As Boolean
         Try
             Dim roleId As String = Session("RoleId").ToString()
             Dim levelId As String = Session("LevelId").ToString()
-            Dim actionClass As New ActionClass
+            Dim accessClass As New AccessClass
 
-            Return actionClass.GetActionAccess(roleId, levelId, Page.Title, action)
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
         Catch ex As Exception
             Response.Redirect("~/account/login", False)
             HttpContext.Current.ApplicationInstance.CompleteRequest()

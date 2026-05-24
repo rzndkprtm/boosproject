@@ -11,7 +11,7 @@ Partial Class Setting_Specification_Product_Default
     Dim dataLog As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        Dim pageAccess As Boolean = PageAction("Load")
+        Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
             Response.Redirect("~/setting/specification", False)
             Exit Sub
@@ -347,11 +347,11 @@ Partial Class Setting_Specification_Product_Default
 
             gvList.DataSource = thisData
             gvList.DataBind()
-            gvList.Columns(1).Visible = PageAction("Visible ID")
+            gvList.Columns(1).Visible = LoginAccess("Visible ID")
 
-            btnAdd.Visible = PageAction("Add")
-            btnChange.Visible = PageAction("Change")
-            btnAlias.Visible = PageAction("Alias")
+            btnAdd.Visible = LoginAccess("Add")
+            btnChange.Visible = LoginAccess("Change")
+            btnAlias.Visible = LoginAccess("Alias")
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -492,13 +492,13 @@ Partial Class Setting_Specification_Product_Default
         divError.Visible = visible : msgError.InnerText = message
     End Sub
 
-    Protected Function PageAction(action As String) As Boolean
+    Protected Function LoginAccess(action As String) As Boolean
         Try
             Dim roleId As String = Session("RoleId").ToString()
             Dim levelId As String = Session("LevelId").ToString()
-            Dim actionClass As New ActionClass
+            Dim accessClass As New AccessClass
 
-            Return actionClass.GetActionAccess(roleId, levelId, Page.Title, action)
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
         Catch ex As Exception
             Response.Redirect("~/account/login", False)
             HttpContext.Current.ApplicationInstance.CompleteRequest()

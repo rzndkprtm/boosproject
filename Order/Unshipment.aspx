@@ -101,7 +101,7 @@
                                                             <li>
                                                                 <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                             </li>
-                                                            <li runat="server" visible='<%# PageAction("Shipment") %>'>
+                                                            <li runat="server" visible='<%# LoginAccess("Shipment") %>'>
                                                                 <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalShipmentOrder" onclick='<%# String.Format("return idShipmentOrder(`{0}`);", Eval("Id").ToString()) %>'>Shipment Order</a>
                                                             </li>
                                                             <li>

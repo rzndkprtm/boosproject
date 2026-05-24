@@ -1,7 +1,7 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 
-Partial Class Setting_Notification_Edit
+Partial Class Setting_General_Notification_Edit
     Inherits Page
 
     Dim settingClass As New SettingClass
@@ -9,14 +9,14 @@ Partial Class Setting_Notification_Edit
     Dim dataLog As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        Dim pageAccess As Boolean = PageAction("Load")
+        Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
-            Response.Redirect("~/setting/notification", False)
+            Response.Redirect("~/setting/general/notification", False)
             Exit Sub
         End If
 
         If String.IsNullOrEmpty(Request.QueryString("notifid")) Then
-            Response.Redirect("~/setting/notification", False)
+            Response.Redirect("~/setting/general/notification", False)
             Exit Sub
         End If
 
@@ -68,7 +68,7 @@ Partial Class Setting_Notification_Edit
                     loginId = String.Join(",", lbLoginId.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
                 End If
                 If String.IsNullOrEmpty(lbLoginId.SelectedValue) Then
-                    loginId = settingClass.GetItemData("SELECT STRING_AGG(CAST(Id AS VARCHAR), ',') AS Ids FROM CustomerLogins WHERE RoleId='" & ddlLoginRole.SelectedValue & "'")
+                    loginId = settingClass.GetItemData("SELECT STRING_AGG(CAST(Id AS VARCHAR), ',') AS Ids FROM Logins WHERE RoleId='" & ddlLoginRole.SelectedValue & "'")
                 End If
 
                 Using thisConn As New SqlConnection(myConn)
@@ -90,7 +90,7 @@ Partial Class Setting_Notification_Edit
                 dataLog = {"Notifications", lblId.Text, Session("LoginId").ToString(), "Notification Updated"}
                 settingClass.Logs(dataLog)
 
-                Response.Redirect("~/setting/notification", False)
+                Response.Redirect("~/setting/general/notification", False)
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -101,7 +101,7 @@ Partial Class Setting_Notification_Edit
     End Sub
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
-        Response.Redirect("~/setting/notification", False)
+        Response.Redirect("~/setting/general/notification", False)
     End Sub
 
     Protected Sub BindData(notifId As String)
@@ -160,7 +160,7 @@ Partial Class Setting_Notification_Edit
         lbLoginId.Items.Clear()
         Try
             If Not String.IsNullOrEmpty(roleId) Then
-                lbLoginId.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerLogins WHERE RoleId='" & roleId & "' ORDER BY FullName ASC")
+                lbLoginId.DataSource = settingClass.GetDataTable("SELECT * FROM Logins WHERE RoleId='" & roleId & "' ORDER BY FullName ASC")
                 lbLoginId.DataTextField = "FullName"
                 lbLoginId.DataValueField = "Id"
                 lbLoginId.DataBind()
@@ -181,13 +181,13 @@ Partial Class Setting_Notification_Edit
         divError.Visible = visible : msgError.InnerText = message
     End Sub
 
-    Protected Function PageAction(action As String) As Boolean
+    Protected Function LoginAccess(action As String) As Boolean
         Try
             Dim roleId As String = Session("RoleId").ToString()
             Dim levelId As String = Session("LevelId").ToString()
-            Dim actionClass As New ActionClass
+            Dim accessClass As New AccessClass
 
-            Return actionClass.GetActionAccess(roleId, levelId, Page.Title, action)
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
         Catch ex As Exception
             Response.Redirect("~/account/login", False)
             HttpContext.Current.ApplicationInstance.CompleteRequest()
