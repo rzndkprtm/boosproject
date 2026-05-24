@@ -198,12 +198,23 @@ Partial Class Setting_Price_ProductGroup
     Protected Sub BindData(searchText As String)
         Session("SearchProductGroup") = String.Empty
         Try
-            Dim search As String = String.Empty
-            If Not searchText = "" Then
-                search = "WHERE PriceProductGroups.Id LIKE '%" & searchText & "%' OR PriceProductGroups.Name LIKE '%" & searchText & "%' OR PriceProductGroups.Description LIKE '%" & searchText & "%' OR Designs.Name LIKE '%" & searchText & "%'"
+            Dim conditions As New List(Of String)
+            If Not String.IsNullOrEmpty(searchText) Then
+                conditions.Add("(PriceProductGroups.Id LIKE '%" & searchText & "%' OR PriceProductGroups.Name LIKE '%" & searchText & "%' OR PriceProductGroups.Description LIKE '%" & searchText & "%' OR Designs.Name LIKE '%" & searchText & "%')")
             End If
 
-            Dim thisString As String = String.Format("SELECT PriceProductGroups.*, Designs.Name AS DesignName, CASE WHEN PriceProductGroups.Active=1 THEN 'Yes' WHEN PriceProductGroups.Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM PriceProductGroups LEFT JOIN Designs ON PriceProductGroups.DesignId = Designs.Id {0} ORDER BY Designs.Name, PriceProductGroups.Name ASC", search)
+            Dim stringSplit As String = String.Empty
+            If Session("RoleName") = "Account" OrElse Session("RoleName") = "Sales" Then
+                stringSplit = "CROSS APPLY STRING_SPLIT(PriceProductGroups.CompanyDetailId, ',') AS companyArray"
+                conditions.Add("companyArray.VALUE='" & Session("CompanyDetailId").ToString() & "'")
+            End If
+
+            Dim whereClause As String = String.Empty
+            If conditions.Count > 0 Then
+                whereClause = "WHERE " & String.Join(" AND ", conditions)
+            End If
+
+            Dim thisString As String = String.Format("SELECT PriceProductGroups.*, Designs.Name AS DesignName, CASE WHEN PriceProductGroups.Active=1 THEN 'Yes' WHEN PriceProductGroups.Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM PriceProductGroups {0} LEFT JOIN Designs ON PriceProductGroups.DesignId=Designs.Id {1} ORDER BY Designs.Name, PriceProductGroups.Name ASC", stringSplit, whereClause)
 
             gvList.DataSource = settingClass.GetDataTable(thisString)
             gvList.DataBind()
