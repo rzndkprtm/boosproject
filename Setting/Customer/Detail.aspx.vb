@@ -1569,6 +1569,10 @@ Partial Class Setting_Customer_Detail
     Protected Sub BindDataLoginRole()
         ddlLoginRole.Items.Clear()
         Try
+            Dim thisString As String = "SELECT * FROM LoginRoles WHERE Id='8' ORDER BY Name ASC"
+            If Session("RoleName") = "Developer" Then
+                thisString = "SELECT * FROM LoginRoles ORDER BY Name ASC"
+            End If
             ddlLoginRole.DataSource = settingClass.GetDataTable("SELECT * FROM LoginRoles WHERE Id='8' ORDER BY Name ASC")
             ddlLoginRole.DataTextField = "Name"
             ddlLoginRole.DataValueField = "Id"

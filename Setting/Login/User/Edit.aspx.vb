@@ -163,6 +163,9 @@ Partial Class Setting_Login_User_Edit
             txtFullName.Text = myData("FullName").ToString()
             txtEmail.Text = myData("Email").ToString()
             ddlPricing.SelectedValue = Convert.ToInt32(myData("Pricing"))
+
+            divEmail.Visible = False
+            If Session("RoleName") = "Developer" Then divEmail.Visible = True
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
