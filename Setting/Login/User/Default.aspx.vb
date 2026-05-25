@@ -75,8 +75,8 @@ Partial Class Setting_Login_User_Default
                 End Using
             End Using
 
-            Dim activeDesc As String = "Customer Login Has Been Activated"
-            If active = 0 Then activeDesc = "Customer Login Has Been Deactivated"
+            Dim activeDesc As String = "Login Has Been Activated"
+            If active = 0 Then activeDesc = "Login Has Been Deactivated"
 
             dataLog = {"Logins", thisId, Session("LoginId").ToString(), activeDesc}
             settingClass.Logs(dataLog)
@@ -138,7 +138,7 @@ Partial Class Setting_Login_User_Default
                 End Using
             End Using
 
-            dataLog = {"Logins", thisId, Session("LoginId").ToString(), "Customer Login Reset Password"}
+            dataLog = {"Logins", thisId, Session("LoginId").ToString(), "Login Reset Password"}
             settingClass.Logs(dataLog)
 
             Session("SearchLoginUser") = txtSearch.Text
@@ -179,21 +179,6 @@ Partial Class Setting_Login_User_Default
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
     End Sub
-
-    Protected Function VisibleAction(roleName As String, levelName As String) As Boolean
-        If Session("RoleName") = "Developer" Then
-            Return True
-        End If
-
-        If Session("RoleName") = "IT" Then
-            If roleName = "Developer" Then Return False
-            If Session("LevelName") = "Leader" Then Return True
-            If Session("LevelName") = "Member" AndAlso roleName = "IT" Then Return False
-            Return True
-        End If
-
-        Return False
-    End Function
 
     Protected Function TextActive(active As Boolean) As String
         Dim result As String = "Enable"

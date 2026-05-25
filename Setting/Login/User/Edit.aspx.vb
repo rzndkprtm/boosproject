@@ -76,10 +76,12 @@ Partial Class Setting_Login_User_Edit
                 MessageError(True, "INVALID USERNAME. ONLY LETTERS, NUMBERS, DOT (.), UNDERSCRORE (_) & HYPHEN (-) ARE ALLOWED !")
                 Exit Sub
             End If
-            Dim checkUsername As String = settingClass.GetItemData("SELECT UserName FROM Logins WHERE UserName='" + txtEditUserName.Text + "'")
-            If txtEditUserName.Text = checkUsername Then
-                MessageError(True, "USERNAME ALREADY EXIST !")
-                Exit Sub
+            If lblUserName.Text <> txtEditUserName.Text Then
+                Dim checkUsername As String = settingClass.GetItemData("SELECT UserName FROM Logins WHERE UserName='" + txtEditUserName.Text + "'")
+                If txtEditUserName.Text = checkUsername Then
+                    MessageError(True, "USERNAME ALREADY EXIST !")
+                    Exit Sub
+                End If
             End If
 
             If msgError.InnerText = "" Then

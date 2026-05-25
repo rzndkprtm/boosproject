@@ -411,21 +411,6 @@ Partial Class Setting_Customer_Login
         divErrorProcess.Visible = visible : msgErrorProcess.InnerText = message
     End Sub
 
-    Protected Function VisibleAction(roleName As String, levelName As String) As Boolean
-        If Session("RoleName") = "Developer" Then
-            Return True
-        End If
-
-        If Session("RoleName") = "IT" Then
-            If roleName = "Developer" Then Return False
-            If Session("LevelName") = "Leader" Then Return True
-            If Session("LevelName") = "Member" AndAlso roleName = "IT" Then Return False
-            Return True
-        End If
-
-        Return False
-    End Function
-
     Protected Function TextActive(active As Boolean) As String
         Dim result As String = "Enable"
         If active = True Then : Return "Disable" : End If
