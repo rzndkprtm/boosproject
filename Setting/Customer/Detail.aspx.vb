@@ -146,7 +146,6 @@ Partial Class Setting_Customer_Detail
                                 myCmd.ExecuteNonQuery()
                             End Using
                         End Using
-
                         success = True
                     Catch exSql As SqlException
                         If exSql.Number = 2601 OrElse exSql.Number = 2627 Then
