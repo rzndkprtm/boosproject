@@ -86,8 +86,8 @@
                         </div>
                     </div>
                     <div class="card-footer text-center">
-                        <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" />
-                        <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Cancel" />
+                        <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" OnClick="btnSubmit_Click" />
+                        <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Cancel" OnClick="btnCancel_Click" />
                     </div>
                 </div>
             </div>

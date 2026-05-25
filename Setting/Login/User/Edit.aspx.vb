@@ -156,7 +156,6 @@ Partial Class Setting_Login_User_Edit
             ddlRole.SelectedValue = myData("RoleId").ToString()
             ddlLevel.SelectedValue = myData("LevelId").ToString()
             ddlCustomer.SelectedValue = myData("CustomerId").ToString()
-
             txtEditUserName.Text = myData("UserName").ToString()
             lblUserName.Text = myData("UserName").ToString()
             txtFullName.Text = myData("FullName").ToString()

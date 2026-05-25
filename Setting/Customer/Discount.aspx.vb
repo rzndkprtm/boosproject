@@ -1,4 +1,5 @@
-﻿Imports System.Globalization
+﻿Imports System.Data.SqlClient
+Imports System.Globalization
 
 Partial Class Setting_Customer_Discount
     Inherits Page
@@ -35,6 +36,9 @@ Partial Class Setting_Customer_Discount
             BindData(txtSearch.Text)
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 
@@ -52,6 +56,9 @@ Partial Class Setting_Customer_Discount
                     ClientScript.RegisterStartupScript(Me.GetType(), "showDetailDiscount", thisScript, True)
                 Catch ex As Exception
                     MessageError_DetailDiscount(True, ex.ToString())
+                    If Not Session("RoleName") = "Developer" Then
+                        MessageError_DetailDiscount(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                    End If
                     ClientScript.RegisterStartupScript(Me.GetType(), "showDetailDiscount", thisScript, True)
                 End Try
             End If
@@ -61,16 +68,21 @@ Partial Class Setting_Customer_Discount
     Protected Sub BindData(searchText As String)
         Session("SearchCustomerDiscount") = String.Empty
         Try
-            Dim search As String = String.Empty
-            If Not String.IsNullOrEmpty(searchText) Then
-                search = "AND Cust.Name LIKE '%" & searchText.Trim() & "%' OR Cust.DebtorCode LIKE '%" & searchText.Trim() & "%'"
-            End If
-            Dim thisQuery As String = String.Format("SELECT Cust.Id, Cust.DebtorCode, Cust.Name AS CustomerName FROM Customers Cust WHERE EXISTS (SELECT 1 FROM CustomerDiscounts Disc WHERE Disc.CustomerId = Cust.Id) {0} ORDER BY Cust.Name ASC", search)
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@SearchText", If(String.IsNullOrEmpty(searchText), CType(DBNull.Value, Object), searchText.Trim())),
+                New SqlParameter("@RoleName", Session("RoleName").ToString()),
+                New SqlParameter("@LevelName", Session("LevelName").ToString()),
+                New SqlParameter("@CompanyId", If(Session("CompanyId") Is Nothing, CType(DBNull.Value, Object), Session("CompanyId"))),
+                New SqlParameter("@LoginId", Session("LoginId"))
+            }
 
-            gvList.DataSource = settingClass.GetDataTable(thisQuery)
+            gvList.DataSource = settingClass.GetDataTableSP("sp_CustomerDiscounts", params)
             gvList.DataBind()
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 

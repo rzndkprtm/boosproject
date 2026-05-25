@@ -39,6 +39,9 @@ Partial Class Setting_Customer_Login
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         Catch ex As Exception
             MessageError_Process(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         End Try
     End Sub
@@ -55,6 +58,9 @@ Partial Class Setting_Customer_Login
             BindData(txtSearch.Text)
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 
@@ -91,6 +97,9 @@ Partial Class Setting_Customer_Login
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Catch ex As Exception
                     MessageError_Process(True, ex.ToString())
+                    If Not Session("RoleName") = "Developer" Then
+                        MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                    End If
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 End Try
             End If
@@ -211,6 +220,9 @@ Partial Class Setting_Customer_Login
             End If
         Catch ex As Exception
             MessageError_Process(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         End Try
     End Sub
@@ -243,6 +255,9 @@ Partial Class Setting_Customer_Login
             Response.Redirect("~/setting/customer/login", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 
@@ -271,6 +286,9 @@ Partial Class Setting_Customer_Login
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 
@@ -297,6 +315,9 @@ Partial Class Setting_Customer_Login
             Response.Redirect("~/setting/customer/login", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 
@@ -304,20 +325,39 @@ Partial Class Setting_Customer_Login
         Session("SearchCustomerLogin") = String.Empty
         Try
             Dim params As New List(Of SqlParameter) From {
-                New SqlParameter("@SearchText", If(String.IsNullOrEmpty(searchText), "", searchText.Trim()))
+                New SqlParameter("@SearchText", If(String.IsNullOrEmpty(searchText), CType(DBNull.Value, Object), searchText.Trim())),
+                New SqlParameter("@RoleName", Session("RoleName").ToString()),
+                New SqlParameter("@LevelName", Session("LevelName").ToString()),
+                New SqlParameter("@CompanyId", If(Session("CompanyId") Is Nothing, CType(DBNull.Value, Object), Session("CompanyId"))),
+                New SqlParameter("@LoginId", Session("LoginId"))
             }
+
             gvList.DataSource = settingClass.GetDataTableSP("sp_CustomerLoginList", params)
             gvList.DataBind()
             gvList.Columns(1).Visible = LoginAccess("Visible ID") ' ID
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 
     Protected Sub BindDataCustomer()
         ddlCustomer.Items.Clear()
         Try
-            ddlCustomer.DataSource = settingClass.GetDataTable("SELECT * FROM Customers WHERE Active=1 ORDER BY Name ASC")
+            Dim thisString As String = "SELECT * FROM Customers ORDER BY Name ASC"
+            If Session("RoleName") = "Account" Then
+                thisString = "SELECT * FROM Customers WHERE CompanyId='" & Session("CompanyId").ToString() & "' ORDER BY Name ASC"
+            End If
+            If Session("RoleName") = "Sales" Then
+                thisString = "SELECT * FROM Customers WHERE CompanyId='" & Session("CompanyId").ToString() & "' ORDER BY Name ASC"
+                If Session("LevelName") = "Member" Then
+                    thisString = "SELECT * FROM Customers CROSS APPLY STRING_SPLIT(Operator, ',') AS operatorArray WHERE CompanyId='" & Session("CompanyId").ToString() & "' AND operatorArray.VALUE='" & Session("LoginId").ToString() & "' ORDER BY Name ASC"
+                End If
+            End If
+
+            ddlCustomer.DataSource = settingClass.GetDataTable(thisString)
             ddlCustomer.DataTextField = "Name"
             ddlCustomer.DataValueField = "Id"
             ddlCustomer.DataBind()
