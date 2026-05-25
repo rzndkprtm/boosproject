@@ -336,7 +336,7 @@ Partial Class Setting_Customer_Login
                 New SqlParameter("@LoginId", Session("LoginId"))
             }
 
-            gvList.DataSource = settingClass.GetDataTableSP("sp_CustomerLoginList", params)
+            gvList.DataSource = settingClass.GetDataTableSP("sp_CustomerLogins", params)
             gvList.DataBind()
             gvList.Columns(1).Visible = LoginAccess("Visible ID") ' ID
         Catch ex As Exception
