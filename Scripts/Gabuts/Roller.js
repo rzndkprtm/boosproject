@@ -3132,7 +3132,15 @@ function showInfo(type) {
             info += "<br /><br />";
             info += "Gear Reduction Tube";
             info += "<br />";
-            info += "The standard chain length is 90% of the blind drop.";
+            info += "- Continuous Chain (Except Cont Nickel Plated & Cont Stainless Steel)";
+            info += "<br />";
+            info += "The standard chain length is 2/3 of the blind drop.";
+            info += "<br />";
+            info += "The standard chain length is calculated as 3/4 of the blind drop, with an additional 80 mm added.";
+            info += "<br />";
+            info += "- Non Continuous Chain";
+            info += "<br />";
+            info += "For Nickel Plated and Stainless Steel, the standard chain length is calculated as 90% of the blind drop.";
             info += "<br /><br />";
             info += "<b>- Custom</b>";
             info += "<br />";
