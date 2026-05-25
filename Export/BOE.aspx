@@ -1248,7 +1248,7 @@
                     writer.WriteEndElement()
                 End If
 
-                If blindName = "DB & Link 2 Blinds Dependent" Then
+                If blindName = "DB Link 2 Blinds Dependent" Then
                     kitId = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND BlindStatus='Control'")
                     kitIdB = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND BlindStatus='End'")
                     kitIdC = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND BlindStatus='Control'")
