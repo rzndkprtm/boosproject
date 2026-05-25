@@ -76,22 +76,19 @@
                                                     <ItemTemplate>
                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                         <ul class="dropdown-menu">
-                                                            <li runat="server" visible='<%# VisibleAction(Eval("RoleName").ToString(), Eval("LevelName").ToString()) %>'>
+                                                            <li>
                                                                 <asp:LinkButton runat="server" CssClass="dropdown-item" ID="linkDetail" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                             </li>
-                                                            <li runat="server" visible='<%# VisibleAction(Eval("RoleName").ToString(), Eval("LevelName").ToString()) %>'>
+                                                            <li>
                                                                 <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalActive" onclick='<%# String.Format("return showActive(`{0}`, `{1}`);", Eval("Id").ToString(), Convert.ToInt32(Eval("Active"))) %>'><%# TextActive(Eval("Active")) %></a>
                                                             </li>
-                                                            <li  runat="server" visible='<%# VisibleAction(Eval("RoleName").ToString(), Eval("LevelName").ToString()) %>'>
+                                                            <li>
                                                                 <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangePassword" onclick='<%# String.Format("return showChangePassword(`{0}`);", Eval("Id").ToString()) %>'>Change Password</a>
                                                             </li>
-                                                            <li runat="server" visible='<%# VisibleAction(Eval("RoleName").ToString(), Eval("LevelName").ToString()) %>'>
+                                                            <li>
                                                                 <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalResetPass" onclick='<%# String.Format("return showResetPass(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("UserName").ToString()) %>'>Reset Password</a>
                                                             </li>
-                                                            <li runat="server" visible='<%# VisibleAction(Eval("RoleName").ToString(), Eval("LevelName").ToString()) %>'>
-                                                                <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDencryptPass" onclick='<%# String.Format("return showDencryptPass(`{0}`, `{1}`);", Eval("UserName").ToString(), DencryptPassword(Eval("Password").ToString())) %>'>Show Password</a>
-                                                            </li>
-                                                            <li runat="server" visible='<%# VisibleAction(Eval("RoleName").ToString(), Eval("LevelName").ToString()) %>'><hr class="dropdown-divider"></li>
+                                                            <li><hr class="dropdown-divider"></li>
                                                             <li>
                                                                 <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('Logins', '<%# Eval("Id") %>')">Log</a>
                                                             </li>
@@ -240,21 +237,6 @@
             </div>
         </div>
     </div>
-    <div class="modal modal-blur fade" id="modalDencryptPass" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-warning">
-                    <h5 class="modal-title white">Show Password</h5>
-                </div>
-                <div class="modal-body text-center py-4">
-                    <span id="spanPassword"></span>
-                </div>
-                <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="modal modal-blur fade" id="modalLog" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -356,18 +338,7 @@
             return result;
         }
 
-        function showDencryptPass(username, password) {
-            let body = "UserName";
-            body += "<br />";
-            body += "<b>" + username + "</b>";
-            body += "<br /><br />";
-            body += "Password Decryption";
-            body += "<br />";
-            body += "<b>" + password + "</b>";
-            document.getElementById("spanPassword").innerHTML = body;
-        }
-
-        ["modalProcess", "modalActive", "modalChangePassword", "modalResetPass", "modalDencryptPass", "modalLog"].forEach(function (id) {
+        ["modalProcess", "modalActive", "modalChangePassword", "modalResetPass", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

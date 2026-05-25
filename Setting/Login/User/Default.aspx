@@ -76,22 +76,22 @@
                                                     <ItemTemplate>
                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                         <ul class="dropdown-menu">
-                                                            <li runat="server" visible='<%# VisibleAction(Eval("RoleName").ToString(), Eval("LevelName").ToString()) %>'>
+                                                            <li>
                                                                 <asp:LinkButton runat="server" CssClass="dropdown-item" ID="linkDetail" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                             </li>
-                                                            <li runat="server" visible='<%# VisibleAction(Eval("RoleName").ToString(), Eval("LevelName").ToString()) %>'>
+                                                            <li>
                                                                 <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalActive" onclick='<%# String.Format("return showActive(`{0}`, `{1}`);", Eval("Id").ToString(), Convert.ToInt32(Eval("Active"))) %>'><%# TextActive(Eval("Active")) %></a>
                                                             </li>
-                                                            <li  runat="server" visible='<%# VisibleAction(Eval("RoleName").ToString(), Eval("LevelName").ToString()) %>'>
+                                                            <li>
                                                                 <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangePassword" onclick='<%# String.Format("return showChangePassword(`{0}`);", Eval("Id").ToString()) %>'>Change Password</a>
                                                             </li>
-                                                            <li runat="server" visible='<%# VisibleAction(Eval("RoleName").ToString(), Eval("LevelName").ToString()) %>'>
+                                                            <li>
                                                                 <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalResetPass" onclick='<%# String.Format("return showResetPass(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("UserName").ToString()) %>'>Reset Password</a>
                                                             </li>
-                                                            <li runat="server" visible='<%# VisibleAction(Eval("RoleName").ToString(), Eval("LevelName").ToString()) %>'>
+                                                            <li>
                                                                 <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDencryptPass" onclick='<%# String.Format("return showDencryptPass(`{0}`, `{1}`);", Eval("UserName").ToString(), DencryptPassword(Eval("Password").ToString())) %>'>Show Password</a>
                                                             </li>
-                                                            <li runat="server" visible='<%# VisibleAction(Eval("RoleName").ToString(), Eval("LevelName").ToString()) %>'><hr class="dropdown-divider"></li>
+                                                            <li><hr class="dropdown-divider"></li>
                                                             <li>
                                                                 <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('Logins', '<%# Eval("Id") %>')">Log</a>
                                                             </li>
