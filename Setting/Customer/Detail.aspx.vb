@@ -1290,16 +1290,6 @@ Partial Class Setting_Customer_Detail
                 Exit Sub
             End If
 
-            If ddlLoginLevel.SelectedValue = "1" Then
-                Dim checkLevel As Integer = settingClass.GetItemData_Integer("SELECT COUNT(*) FROM Logins WHERE CustomerId='" & lblId.Text & "' AND RoleId='" & ddlLoginRole.SelectedValue & "' AND LevelId='" & ddlLoginLevel.SelectedValue & "'")
-
-                If checkLevel > 1 Then
-                    MessageError_ProcesLogin(True, "PLEASE CHANGE THE LEVEL USER TO MEMBER !")
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcessLogin", thisScript, True)
-                    Exit Sub
-                End If
-            End If
-
             If txtLoginUserName.Text = "" Then
                 MessageError_ProcesLogin(True, "USERNAME IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcessLogin", thisScript, True)
@@ -1579,18 +1569,7 @@ Partial Class Setting_Customer_Detail
     Protected Sub BindDataLoginRole()
         ddlLoginRole.Items.Clear()
         Try
-            Dim thisQuery As String = "SELECT * FROM LoginRoles ORDER BY Name ASC"
-            If Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" Then
-                thisQuery = "SELECT * FROM LoginRoles WHERE Id='8' ORDER BY Name ASC"
-                If lblId.Text = "3" Then
-                    thisQuery = "SELECT * FROM LoginRoles WHERE Id<>'1' AND Id<>'2' AND Id<>'3' AND Id<>'11' ORDER BY Name ASC"
-                End If
-            End If
-            If Session("RoleName") = "Sales" OrElse Session("RoleName") = "Account" Then
-                thisQuery = "SELECT * FROM LoginRoles WHERE Id='8' ORDER BY Name ASC"
-            End If
-
-            ddlLoginRole.DataSource = settingClass.GetDataTable(thisQuery)
+            ddlLoginRole.DataSource = settingClass.GetDataTable("SELECT * FROM LoginRoles WHERE Id='8' ORDER BY Name ASC")
             ddlLoginRole.DataTextField = "Name"
             ddlLoginRole.DataValueField = "Id"
             ddlLoginRole.DataBind()
