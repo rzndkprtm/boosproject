@@ -38,7 +38,7 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-6 form-group">
+                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
                                             <label class="form-label">Data Type</label>
                                             <asp:DropDownList runat="server" ID="ddlDataType" CssClass="choices form-select">
                                                 <asp:ListItem Value="" Text=""></asp:ListItem>
@@ -51,7 +51,7 @@
                                                 <asp:ListItem Value="Job Order" Text="Job Order"></asp:ListItem>
                                             </asp:DropDownList>
                                         </div>
-                                        <div class="col-6 form-group">
+                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
                                             <label class="form-label">File Type</label>
                                             <asp:DropDownList runat="server" ID="ddlFileType" CssClass="choices form-select">
                                                 <asp:ListItem Value="PDF" Text="PDF (.pdf)"></asp:ListItem>
