@@ -1,5 +1,4 @@
-﻿
-Imports System.Data
+﻿Imports System.Data
 Imports System.Data.SqlClient
 
 Partial Class Setting_Login_User_Edit
@@ -14,6 +13,22 @@ Partial Class Setting_Login_User_Edit
         If pageAccess = False Then
             Response.Redirect("~/setting/login/user", False)
             Exit Sub
+        End If
+
+        If String.IsNullOrEmpty(Request.QueryString("loginid")) Then
+            Response.Redirect("~/setting/login/user", False)
+            Exit Sub
+        End If
+
+        If Session("LoginId") = Request.QueryString("loginid").ToString() Then
+            Response.Redirect("~/setting/login/user", False)
+            Exit Sub
+        End If
+
+        lblId.Text = Request.QueryString("loginid").ToString()
+        If Not IsPostBack Then
+            MessageError(False, String.Empty)
+            BindData(lblId.Text)
         End If
     End Sub
 
@@ -68,18 +83,13 @@ Partial Class Setting_Login_User_Edit
             End If
 
             If msgError.InnerText = "" Then
-                If txtEditPassword.Text = "" Then txtEditPassword.Text = txtEditUserName.Text
-                Dim password As String = settingClass.Encrypt(txtEditPassword.Text)
-
-                Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Logins ORDER BY Id DESC")
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Logins VALUES (@Id, @CustomerId, @RoleId, @LevelId, @UserName, @Password, @FullName, @Email, 0, NULL, 1, @Pricing, 1)", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", thisId)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Logins SET CustomerId=@CustomerId, RoleId=@RoleId, LevelId=@LevelId, UserName=@UserName, FullName=@FullName, Email=@Email WHERE Id=@Id", thisConn)
+                        myCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         myCmd.Parameters.AddWithValue("@CustomerId", If(String.IsNullOrEmpty(ddlCustomer.SelectedValue), CType(DBNull.Value, Object), ddlCustomer.SelectedValue))
                         myCmd.Parameters.AddWithValue("@RoleId", ddlRole.SelectedValue)
                         myCmd.Parameters.AddWithValue("@LevelId", ddlLevel.SelectedValue)
                         myCmd.Parameters.AddWithValue("@UserName", txtEditUserName.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Password", password)
                         myCmd.Parameters.AddWithValue("@FullName", txtFullName.Text.Trim())
                         myCmd.Parameters.AddWithValue("@Email", txtEmail.Text.Trim())
                         myCmd.Parameters.AddWithValue("@Pricing", ddlPricing.SelectedValue)
@@ -89,7 +99,7 @@ Partial Class Setting_Login_User_Edit
                     End Using
                 End Using
 
-                Dim dataLog As Object() = {"Logins", thisId, Session("LoginId").ToString(), "Customer Login Created"}
+                Dim dataLog As Object() = {"Logins", lblId.Text, Session("LoginId").ToString(), "Login Updated"}
                 settingClass.Logs(dataLog)
 
                 Response.Redirect("~/setting/login/user", False)
@@ -112,6 +122,31 @@ Partial Class Setting_Login_User_Edit
             If myData Is Nothing Then
                 Response.Redirect("~/setting/login/user", False)
                 Exit Sub
+            End If
+
+            Dim roleId As String = myData("RoleId").ToString()
+            If Session("RoleName") = "IT" Then
+                If roleId = "1" Then
+                    Response.Redirect("~/setting/login/user", False)
+                    Exit Sub
+                End If
+
+                If Session("LevelName") = "Member" AndAlso (roleId = "1" OrElse roleId = "2") Then
+                    Response.Redirect("~/setting/login/user", False)
+                    Exit Sub
+                End If
+            End If
+
+            If Session("RoleName") = "Factory Office" Then
+                If roleId = "1" OrElse roleId = "2" Then
+                    Response.Redirect("~/setting/login/user", False)
+                    Exit Sub
+                End If
+
+                If Session("LevelName") = "Member" AndAlso (roleId = "1" OrElse roleId = "2" OrElse roleId = "3") Then
+                    Response.Redirect("~/setting/login/user", False)
+                    Exit Sub
+                End If
             End If
 
             BindRole()

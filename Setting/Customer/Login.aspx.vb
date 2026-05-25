@@ -178,7 +178,7 @@ Partial Class Setting_Customer_Login
                         End Using
                     End Using
 
-                    dataLog = {"Logins", thisId, Session("LoginId").ToString(), "Customer Login Created"}
+                    dataLog = {"Logins", thisId, Session("LoginId").ToString(), "Login Created"}
                     settingClass.Logs(dataLog)
 
                     Session("SearchCustomerLogin") = txtSearch.Text
@@ -202,7 +202,7 @@ Partial Class Setting_Customer_Login
                         End Using
                     End Using
 
-                    dataLog = {"Logins", lblId.Text, Session("LoginId").ToString(), "Customer Login Updated"}
+                    dataLog = {"Logins", lblId.Text, Session("LoginId").ToString(), "Login Updated"}
                     settingClass.Logs(dataLog)
 
                     Session("SearchCustomerLogin") = txtSearch.Text
@@ -233,8 +233,8 @@ Partial Class Setting_Customer_Login
                 End Using
             End Using
 
-            Dim activeDesc As String = "Customer Login Has Been Activated"
-            If active = 0 Then activeDesc = "Customer Login Has Been Deactivated"
+            Dim activeDesc As String = "Login Has Been Activated"
+            If active = 0 Then activeDesc = "Login Has Been Deactivated"
 
             dataLog = {"Logins", thisId, Session("LoginId").ToString(), activeDesc}
             settingClass.Logs(dataLog)
@@ -290,7 +290,7 @@ Partial Class Setting_Customer_Login
                 End Using
             End Using
 
-            dataLog = {"Logins", thisId, Session("LoginId").ToString(), "Customer Login Reset Password"}
+            dataLog = {"Logins", thisId, Session("LoginId").ToString(), "Login Reset Password"}
             settingClass.Logs(dataLog)
 
             Session("SearchCustomerLogin") = txtSearch.Text

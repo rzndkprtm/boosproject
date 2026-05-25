@@ -74,7 +74,12 @@ Partial Class Setting_Price_Base_Default
     Protected Sub BindProductGroup()
         ddlProductGroup.Items.Clear()
         Try
-            ddlProductGroup.DataSource = settingClass.GetDataTable("SELECT * FROM PriceProductGroups ORDER BY Id ASC")
+            Dim thisString As String = "SELECT * FROM PriceProductGroups ORDER BY Id ASC"
+            If Session("RoleName") = "Account" OrElse Session("RoleName") = "Sales" Then
+                thisString = "SELECT * FROM PriceProductGroups CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE companyArray.VALUE='" & Session("CompanyDetailId").ToString() & "' ORDER BY Id ASC"
+            End If
+
+            ddlProductGroup.DataSource = settingClass.GetDataTable(thisString)
             ddlProductGroup.DataTextField = "Name"
             ddlProductGroup.DataValueField = "Id"
             ddlProductGroup.DataBind()
@@ -90,7 +95,11 @@ Partial Class Setting_Price_Base_Default
     Protected Sub BindPriceGroup()
         ddlPriceGroup.Items.Clear()
         Try
-            ddlPriceGroup.DataSource = settingClass.GetDataTable("SELECT * FROM PriceGroups ORDER BY Id ASC")
+            Dim thisString As String = "SELECT * FROM PriceGroups ORDER BY Id ASC"
+            If Session("RoleName") = "Account" OrElse Session("RoleName") = "Sales" Then
+                thisString = "SELECT * FROM PriceGroups WHERE CompanyId='" & Session("CompanyId").ToString() & "' ORDER BY Id ASC"
+            End If
+            ddlPriceGroup.DataSource = settingClass.GetDataTable(thisString)
             ddlPriceGroup.DataTextField = "Name"
             ddlPriceGroup.DataValueField = "Id"
             ddlPriceGroup.DataBind()
