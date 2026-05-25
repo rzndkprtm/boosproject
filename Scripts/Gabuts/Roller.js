@@ -3125,26 +3125,26 @@ function showInfo(type) {
             title = "Chain Length Information";
 
             info = "<b>- Standard</b>";
-            info += "<br /><br />";
-            info += "Standard, Acmeda & Sunboss Tube";
+            info += "<br />";
+            info += "1. Standard, Acmeda & Sunboss Tube";
             info += "<br />";
             info += "The standard chain length is 2/3 of the blind drop.";
             info += "<br /><br />";
-            info += "Gear Reduction Tube";
+            info += "2. Gear Reduction Tube";
             info += "<br />";
-            info += "- Continuous Chain (Except Cont Nickel Plated & Cont Stainless Steel)";
+            info += "<u>- Continuous Chain</u>";
             info += "<br />";
             info += "The standard chain length is 2/3 of the blind drop.";
+            info += "<br /><br />";
+            info += "For Continuous Nickel Plated & Continuous Stainless Steel, the standard chain length is calculated as 90% of the blind drop.";
+            info += "<br />";
+            info += "<u>- Non Continuous Chain</u>";
             info += "<br />";
             info += "The standard chain length is calculated as 3/4 of the blind drop, with an additional 80 mm added.";
-            info += "<br />";
-            info += "- Non Continuous Chain";
-            info += "<br />";
-            info += "For Nickel Plated and Stainless Steel, the standard chain length is calculated as 90% of the blind drop.";
             info += "<br /><br />";
             info += "<b>- Custom</b>";
             info += "<br />";
-            info += "Based on your requirements";
+            info += "Based on your requirements.";
         }
         else if (type === "Second Size") {
             title = "Second Size Information";
