@@ -39,6 +39,9 @@ Partial Class Setting_Customer_Promo
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         Catch ex As Exception
             MessageError_Process(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         End Try
     End Sub
@@ -50,6 +53,9 @@ Partial Class Setting_Customer_Promo
             BindData(txtSearch.Text)
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 
@@ -69,6 +75,9 @@ Partial Class Setting_Customer_Promo
                     ClientScript.RegisterStartupScript(Me.GetType(), "showDetail", thisScript, True)
                 Catch ex As Exception
                     MessageError_Detail(True, ex.ToString())
+                    If Not Session("RoleName") = "Developer" Then
+                        MessageError_Detail(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                    End If
                     ClientScript.RegisterStartupScript(Me.GetType(), "showDetail", thisScript, True)
                 End Try
             End If
@@ -120,6 +129,9 @@ Partial Class Setting_Customer_Promo
             End If
         Catch ex As Exception
             MessageError_Process(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         End Try
     End Sub
@@ -132,19 +144,12 @@ Partial Class Setting_Customer_Promo
             Dim customerId As String = settingClass.GetItemData("SELECT CustomerId FROM CustomerPromos WHERE Id='" & thisId & "'")
 
             Using thisConn As New SqlConnection(myConn)
-                thisConn.Open()
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerPromos WHERE Id=@Id", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerPromos WHERE Id=@Id; DELETE FROM Logs WHERE Type='CustomerPromos' AND DataId=@Id;", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", thisId)
+
+                    thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Logs WHERE Type='CustomerPromos' AND DataId=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                thisConn.Close()
             End Using
 
             dataLog = {"Customers", customerId, Session("LoginId"), "Customer Promo Deleted"}
@@ -154,30 +159,51 @@ Partial Class Setting_Customer_Promo
             Response.Redirect("~/setting/customer/promo", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 
     Protected Sub BindData(searchText As String)
         Session("SearchCustomerPromo") = String.Empty
         Try
-            Dim search As String = String.Empty
-            If Not String.IsNullOrEmpty(searchText) Then
-                search = "WHERE Customers.Name LIKE '%" & searchText.Trim() & "%' OR Customers.DebtorCode LIKE '%" & searchText.Trim() & "%' OR Promos.Name LIKE '%" & searchText.Trim() & "%'"
-            End If
-            Dim thisQuery As String = String.Format("SELECT CustomerPromos.*, Customers.Name AS CustomerName, Promos.Name AS PromoName FROM CustomerPromos LEFT JOIN Customers ON CustomerPromos.CustomerId=Customers.Id LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id {0} ORDER BY Customers.Id, CustomerPromos.Id ASC", search)
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@SearchText", If(String.IsNullOrEmpty(searchText), CType(DBNull.Value, Object), searchText.Trim())),
+                New SqlParameter("@RoleName", Session("RoleName").ToString()),
+                New SqlParameter("@LevelName", Session("LevelName").ToString()),
+                New SqlParameter("@CompanyId", If(Session("CompanyId") Is Nothing, CType(DBNull.Value, Object), Session("CompanyId"))),
+                New SqlParameter("@LoginId", Session("LoginId"))
+            }
 
-            gvList.DataSource = settingClass.GetDataTable(thisQuery)
+            gvList.DataSource = settingClass.GetDataTableSP("sp_CustomerPromos", params)
             gvList.DataBind()
             gvList.Columns(1).Visible = LoginAccess("Visible ID") ' ID
+
+            btnAdd.Visible = LoginAccess("Add")
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 
     Protected Sub BindDataCustomer()
         ddlCustomer.Items.Clear()
         Try
-            ddlCustomer.DataSource = settingClass.GetDataTable("SELECT * FROM Customers WHERE Active=1 ORDER BY Name ASC")
+            Dim thisString As String = "SELECT * FROM Customers ORDER BY Name ASC"
+            If Session("RoleName") = "Account" Then
+                thisString = "SELECT * FROM Customers WHERE CompanyId='" & Session("CompanyId").ToString() & "' ORDER BY Name ASC"
+            End If
+            If Session("RoleName") = "Sales" Then
+                thisString = "SELECT * FROM Customers WHERE CompanyId='" & Session("CompanyId").ToString() & "' ORDER BY Name ASC"
+                If Session("LevelName") = "Member" Then
+                    thisString = "SELECT * FROM Customers CROSS APPLY STRING_SPLIT(Operator, ',') AS operatorArray WHERE CompanyId='" & Session("CompanyId").ToString() & "' AND operatorArray.VALUE='" & Session("LoginId").ToString() & "' ORDER BY Name ASC"
+                End If
+            End If
+
+            ddlCustomer.DataSource = settingClass.GetDataTable(thisString)
             ddlCustomer.DataTextField = "Name"
             ddlCustomer.DataValueField = "Id"
             ddlCustomer.DataBind()
