@@ -2122,7 +2122,7 @@ Partial Class Order_Add
                         If designName = "Venetian Blind" Then
                             controlLength = "Standard"
                             controlLengthValue = Math.Ceiling(drop * 2 / 3)
-                            If controlLengthValue < 450 Then controlLengthValue = 550
+                            If controlLengthValue < 550 Then controlLengthValue = 550
 
                             If Not String.IsNullOrEmpty(cordLengthText) AndAlso Not cordLengthText.ToLower().Contains("standard") AndAlso Not cordLengthText.ToLower().Contains("std") Then
                                 controlLength = "Custom"
