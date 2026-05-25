@@ -57,6 +57,9 @@ Partial Class Setting_Customer_ProductAccess
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Catch ex As Exception
                     MessageError_Process(True, ex.ToString())
+                    If Not Session("RoleName") = "Developer" Then
+                        MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                    End If
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 End Try
             End If
@@ -70,6 +73,9 @@ Partial Class Setting_Customer_ProductAccess
             BindData(txtSearch.Text)
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 
@@ -109,6 +115,9 @@ Partial Class Setting_Customer_ProductAccess
             End If
         Catch ex As Exception
             MessageError_Process(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         End Try
     End Sub
@@ -137,24 +146,31 @@ Partial Class Setting_Customer_ProductAccess
             Response.Redirect("~/setting/customer/productaccess", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 
     Protected Sub BindData(searchText As String)
         Session("SearchCustomerProductAccess") = String.Empty
         Try
-            Dim search As String = String.Empty
-            If Not String.IsNullOrEmpty(searchText) Then
-                search = "WHERE Customers.Name LIKE '%" & searchText.Trim() & "%' OR Customers.DebtorCode LIKE '%" & searchText.Trim() & "%'"
-            End If
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@SearchText", If(String.IsNullOrEmpty(searchText), CType(DBNull.Value, Object), searchText.Trim())),
+                New SqlParameter("@RoleName", Session("RoleName").ToString()),
+                New SqlParameter("@LevelName", Session("LevelName").ToString()),
+                New SqlParameter("@CompanyId", If(Session("CompanyId") Is Nothing, CType(DBNull.Value, Object), Session("CompanyId"))),
+                New SqlParameter("@LoginId", Session("LoginId"))
+            }
 
-            Dim thisQuery As String = String.Format("SELECT CustomerProductAccess.*, Customers.Name AS CustomerName FROM CustomerProductAccess LEFT JOIN Customers ON CustomerProductAccess.Id=Customers.Id {0} ORDER BY Customers.Name ASC", search)
-
-            gvList.DataSource = settingClass.GetDataTable(thisQuery)
+            gvList.DataSource = settingClass.GetDataTableSP("sp_CustomerProductAccess", params)
             gvList.DataBind()
             gvList.Columns(1).Visible = LoginAccess("Visible ID")
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 
