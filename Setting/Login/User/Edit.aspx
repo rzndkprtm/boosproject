@@ -54,10 +54,6 @@
                                             <label class="form-label">UserName</label>
                                             <asp:TextBox runat="server" ID="txtEditUserName" CssClass="form-control" placeholder="UserName ..." autocomplete="off"></asp:TextBox>
                                         </div>
-                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
-                                            <label class="form-label">Password</label>
-                                            <asp:TextBox runat="server" ID="txtEditPassword" TextMode="Password" CssClass="form-control" placeholder="Password ..." autocomplete="new-password"></asp:TextBox>
-                                        </div>
                                     </div>
                                     <div class="row mb-2">
                                         <div class="col-12 col-sm-12 col-lg-6 form-group">
@@ -95,7 +91,16 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-sm-12 col-lg-5"></div>
+            <div class="col-12 col-sm-12 col-lg-5">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title text-center">Information</h4>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body"></div>
+                    </div>
+                </div>
+            </div>
         </section>
     </div>
 

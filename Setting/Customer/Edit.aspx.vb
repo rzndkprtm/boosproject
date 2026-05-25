@@ -21,10 +21,6 @@ Partial Class Setting_Customer_Edit
         End If
 
         lblId.Text = Request.QueryString("customeredit").ToString()
-        If Not Session("RoleName") = "Developer" AndAlso lblId.Text = "1" Then
-            Response.Redirect("~/setting/customer/list", False)
-            Exit Sub
-        End If
         If Not IsPostBack Then
             BindData(lblId.Text)
         End If

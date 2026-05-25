@@ -95,7 +95,7 @@ Partial Class Setting_Login_User_Add
                     End Using
                 End Using
 
-                Dim dataLog As Object() = {"Logins", thisId, Session("LoginId").ToString(), "Customer Login Created"}
+                Dim dataLog As Object() = {"Logins", thisId, Session("LoginId").ToString(), "Login Created"}
                 settingClass.Logs(dataLog)
 
                 Response.Redirect("~/setting/login/user", False)
