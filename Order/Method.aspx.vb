@@ -1,5 +1,6 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
+Imports System.Security.Cryptography.X509Certificates
 Imports System.Web.Services
 
 Partial Class Order_Method
@@ -1659,7 +1660,7 @@ Partial Class Order_Method
                 If blindName = "Complete Set (Double)" Then Return "FIRST TRACK TYPE IS REQUIRED !"
                 Return "TRACK TYPE IS REQUIRED !"
             End If
-            If blindName = "Complete Set (Double)" AndAlso data.tracktypeB = "Express Track" Then
+            If blindName = "Complete Set (Double)" AndAlso data.tracktypeb = "Express Track" Then
                 Return "PLEASE CHECK YOUR FIRST TRACK TYPE. CURRENTLY, COMPLETE SET (DOUBLE) CANNOT USE THE EXPRESS TRACK TYPE. !"
             End If
             If String.IsNullOrEmpty(data.trackcolour) Then
@@ -1756,8 +1757,8 @@ Partial Class Order_Method
             If String.IsNullOrEmpty(data.headingb) Then Return "SECOND CURTAIN HEADING IS REQUIRED !"
             If String.IsNullOrEmpty(data.fabrictypeb) Then Return "SECOND FABRIC TYPE IS REQUIRED !"
             If String.IsNullOrEmpty(data.fabriccolourb) Then Return "SECOND FABRIC COLOUR IS REQUIRED !"
-            If String.IsNullOrEmpty(data.tracktypeB) Then Return "SECOND TRACK TYPE IS REQUIRED !"
-            If data.tracktypeB = "Express Track" Then Return "PLEASE CHECK YOUR SECOND TRACK TYPE. CURRENTLY, COMPLETE SET (DOUBLE) CANNOT USE THE EXPRESS TRACK TYPE. !"
+            If String.IsNullOrEmpty(data.tracktypeb) Then Return "SECOND TRACK TYPE IS REQUIRED !"
+            If data.tracktypeb = "Express Track" Then Return "PLEASE CHECK YOUR SECOND TRACK TYPE. CURRENTLY, COMPLETE SET (DOUBLE) CANNOT USE THE EXPRESS TRACK TYPE. !"
             If String.IsNullOrEmpty(data.trackcolourb) Then Return "SECOND TRACK COLOUR IS REQUIRED !"
             If String.IsNullOrEmpty(data.trackdrawb) Then Return "SECOND TRACK DRAW IS REQUIRED !"
             If String.IsNullOrEmpty(data.stackpositionb) Then Return "SECOND STACK POSITION IS REQUIRED !"
@@ -1778,7 +1779,7 @@ Partial Class Order_Method
                 If String.IsNullOrEmpty(data.controllengthb) Then Return "SECOND CONTROL LENGTH IS REQUIRED !"
                 If Not Integer.TryParse(data.controllengthb, controllengthB) OrElse controllengthB <= 0 Then Return "PLEASE CHECK YOUR SECOND CONTROL LENGTH ORDER !"
 
-                If data.tracktypeB = "Styletrack" OrElse data.tracktypeB = "Commercial" Then
+                If data.tracktypeb = "Styletrack" OrElse data.tracktypeb = "Commercial" Then
                     If Not String.IsNullOrEmpty(data.returnlengthvaluec) Then
                         If Not Integer.TryParse(data.returnlengthvaluec, returnLengthValueC) OrElse returnLengthValueC <= 0 Then Return "PLEASE CHECK YOUR SECOND LEFT RETURN LENGTH !"
                     End If
@@ -1811,7 +1812,7 @@ Partial Class Order_Method
             widthb = 0 : dropb = 0
             data.headingb = String.Empty
             data.fabrictypeb = String.Empty : data.fabriccolourb = String.Empty
-            data.tracktypeB = String.Empty : data.trackcolourb = String.Empty : data.trackdrawb = String.Empty
+            data.tracktypeb = String.Empty : data.trackcolourb = String.Empty : data.trackdrawb = String.Empty
             data.stackpositionb = String.Empty
             data.controlcolourb = String.Empty : controllengthB = 0
             returnLengthValueC = 0 : returnLengthValueD = 0
@@ -1822,7 +1823,7 @@ Partial Class Order_Method
 
         If blindName = "Complete Set (Double)" Then
             If Not data.trackdrawb = "Flick Stick" Then data.controlcolourb = String.Empty : controllengthB = 0
-            If data.tracktypeB = "Express Track" Then returnLengthValueC = 0 : returnLengthValueD = 0
+            If data.tracktypeb = "Express Track" Then returnLengthValueC = 0 : returnLengthValueD = 0
 
             totalitems = 2
 
@@ -1848,7 +1849,7 @@ Partial Class Order_Method
             widthb = 0 : dropb = 0
             data.headingb = String.Empty
             data.fabrictypeb = String.Empty : data.fabriccolourb = String.Empty
-            data.tracktypeB = String.Empty : data.trackcolourb = String.Empty : data.trackdrawb = String.Empty
+            data.tracktypeb = String.Empty : data.trackcolourb = String.Empty : data.trackdrawb = String.Empty
             data.stackpositionb = String.Empty
             data.controlcolourb = String.Empty : controllengthB = 0
             returnLengthValueC = 0 : returnLengthValueD = 0
@@ -1865,7 +1866,7 @@ Partial Class Order_Method
             widthb = 0 : dropb = 0
             data.headingb = String.Empty
             data.fabrictypeb = String.Empty : data.fabriccolourb = String.Empty
-            data.tracktypeB = String.Empty : data.trackcolourb = String.Empty : data.trackdrawb = String.Empty
+            data.tracktypeb = String.Empty : data.trackcolourb = String.Empty : data.trackdrawb = String.Empty
             data.stackpositionb = String.Empty
             data.controlcolourb = String.Empty : controllengthB = 0
             returnLengthValueC = 0 : returnLengthValueD = 0
@@ -1888,7 +1889,7 @@ Partial Class Order_Method
             widthb = 0 : dropb = 0
             data.headingb = String.Empty
             data.fabrictypeb = String.Empty : data.fabriccolourb = String.Empty
-            data.tracktypeB = String.Empty : data.trackcolourb = String.Empty : data.trackdrawb = String.Empty
+            data.tracktypeb = String.Empty : data.trackcolourb = String.Empty : data.trackdrawb = String.Empty
             data.stackpositionb = String.Empty
             data.controlcolourb = String.Empty : controllengthB = 0
             returnLengthValueC = 0 : returnLengthValueD = 0
@@ -1915,7 +1916,7 @@ Partial Class Order_Method
                 groupFabricB = orderClass.GetFabricGroup(data.fabrictypeb)
 
                 groupNameB = String.Format("{0} - {1}", designName, groupFabricB)
-                trackGroupNameB = String.Format("{0} - {1}", designName, data.tracktypeB)
+                trackGroupNameB = String.Format("{0} - {1}", designName, data.tracktypeb)
             End If
 
             If blindName = "Curtain Only" Then
@@ -1962,7 +1963,7 @@ Partial Class Order_Method
                         myCmd.Parameters.AddWithValue("@Heading", data.heading)
                         myCmd.Parameters.AddWithValue("@HeadingB", data.headingb)
                         myCmd.Parameters.AddWithValue("@TrackType", data.tracktype)
-                        myCmd.Parameters.AddWithValue("@TrackTypeB", data.tracktypeB)
+                        myCmd.Parameters.AddWithValue("@TrackTypeB", data.tracktypeb)
                         myCmd.Parameters.AddWithValue("@TrackColour", data.trackcolour)
                         myCmd.Parameters.AddWithValue("@TrackColourB", data.trackcolourb)
                         myCmd.Parameters.AddWithValue("@TrackDraw", data.trackdraw)
@@ -2028,7 +2029,7 @@ Partial Class Order_Method
                     myCmd.Parameters.AddWithValue("@Heading", data.heading)
                     myCmd.Parameters.AddWithValue("@HeadingB", data.headingb)
                     myCmd.Parameters.AddWithValue("@TrackType", data.tracktype)
-                    myCmd.Parameters.AddWithValue("@TrackTypeB", data.tracktypeB)
+                    myCmd.Parameters.AddWithValue("@TrackTypeB", data.tracktypeb)
                     myCmd.Parameters.AddWithValue("@TrackColour", data.trackcolour)
                     myCmd.Parameters.AddWithValue("@TrackColourB", data.trackcolourb)
                     myCmd.Parameters.AddWithValue("@TrackDraw", data.trackdraw)
@@ -4282,12 +4283,39 @@ Partial Class Order_Method
         Dim chainLengthE As String = String.Empty
         Dim chainLengthF As String = String.Empty
 
-        If Not String.IsNullOrEmpty(data.chaincolour) Then chainLength = orderClass.GetChainLength(data.chaincolour)
-        If Not String.IsNullOrEmpty(data.chaincolourb) Then chainLengthB = orderClass.GetChainLength(data.chaincolourb)
-        If Not String.IsNullOrEmpty(data.chaincolourc) Then chainLengthC = orderClass.GetChainLength(data.chaincolourc)
-        If Not String.IsNullOrEmpty(data.chaincolourd) Then chainLengthD = orderClass.GetChainLength(data.chaincolourd)
-        If Not String.IsNullOrEmpty(data.chaincoloure) Then chainLengthE = orderClass.GetChainLength(data.chaincoloure)
-        If Not String.IsNullOrEmpty(data.chaincolourf) Then chainLengthF = orderClass.GetChainLength(data.chaincolourf)
+        Dim chainType As String = String.Empty
+        Dim chainTypeB As String = String.Empty
+        Dim chainTypeC As String = String.Empty
+        Dim chainTypeD As String = String.Empty
+        Dim chainTypeE As String = String.Empty
+        Dim chainTypeF As String = String.Empty
+        Dim chainTypeG As String = String.Empty
+        Dim chainTypeH As String = String.Empty
+
+        If Not String.IsNullOrEmpty(data.chaincolour) Then
+            chainType = orderClass.GetChainType(data.chaincolour)
+            chainLength = orderClass.GetChainLength(data.chaincolour)
+        End If
+        If Not String.IsNullOrEmpty(data.chaincolourb) Then
+            chainTypeB = orderClass.GetChainType(data.chaincolourb)
+            chainLengthB = orderClass.GetChainLength(data.chaincolourb)
+        End If
+        If Not String.IsNullOrEmpty(data.chaincolourc) Then
+            chainTypeC = orderClass.GetChainType(data.chaincolourc)
+            chainLengthC = orderClass.GetChainLength(data.chaincolourc)
+        End If
+        If Not String.IsNullOrEmpty(data.chaincolourd) Then
+            chainTypeD = orderClass.GetChainType(data.chaincolourd)
+            chainLengthD = orderClass.GetChainLength(data.chaincolourd)
+        End If
+        If Not String.IsNullOrEmpty(data.chaincoloure) Then
+            chainTypeE = orderClass.GetChainType(data.chaincoloure)
+            chainLengthE = orderClass.GetChainLength(data.chaincoloure)
+        End If
+        If Not String.IsNullOrEmpty(data.chaincolourf) Then
+            chainTypeF = orderClass.GetChainType(data.chaincolourf)
+            chainLengthF = orderClass.GetChainLength(data.chaincolourf)
+        End If
 
         Dim bottomName As String = String.Empty
         Dim bottomNameB As String = String.Empty
@@ -4907,8 +4935,14 @@ Partial Class Order_Method
             If controlName = "Chain" Then
                 If data.controllength = "Standard" Then
                     Dim stdControlLength As Integer = Math.Ceiling(drop * 2 / 3)
-                    If tubeName.Contains("Gear Reduction") Then
-                        stdControlLength = Math.Ceiling(drop * 0.9)
+                    If chainLength = "Flexible" Then
+                        controllength = stdControlLength
+                        If tubeName.Contains("Gear Reduction") Then
+                            controllength = Math.Ceiling((drop * 3 / 4) + 80)
+                            If chainType = "Continuous" AndAlso data.chainstopper = "With Stopper" Then
+                                controllength = Math.Ceiling(drop * 0.9)
+                            End If
+                        End If
                     End If
                     If chainLength = "Static" Then
                         controllength = 500
@@ -4917,7 +4951,6 @@ Partial Class Order_Method
                         If stdControlLength > 1000 Then controllength = 1200
                         If stdControlLength > 1200 Then controllength = 1500
                     End If
-                    If chainLength = "Flexible" Then controllength = stdControlLength
                 End If
                 If Not tubeName = "Acmeda 49mm" Then data.springassist = String.Empty
             End If
@@ -5043,7 +5076,8 @@ Partial Class Order_Method
                         controllengthb = controllength
                     End If
                     data.controllengthvalueb = data.controllengthvalue
-                    chainLengthB = orderClass.GetChainType(data.chaincolourb)
+                    chainTypeB = orderClass.GetChainType(data.chaincolourb)
+                    chainLengthB = orderClass.GetChainLength(data.chaincolourb)
                 End If
                 If String.IsNullOrEmpty(data.chainstopperb) Then
                     data.chainstopperb = data.chainstopper
@@ -5051,9 +5085,6 @@ Partial Class Order_Method
 
                 If data.controllength = "Standard" Then
                     Dim stdControlLength As Integer = Math.Ceiling(drop * 2 / 3)
-                    If tubeName.Contains("Gear Reduction") Then
-                        stdControlLength = Math.Ceiling(drop * 0.9)
-                    End If
                     If chainLength = "Static" Then
                         controllength = 500
                         If stdControlLength > 500 Then controllength = 750
@@ -5061,14 +5092,19 @@ Partial Class Order_Method
                         If stdControlLength > 1000 Then controllength = 1200
                         If stdControlLength > 1200 Then controllength = 1500
                     End If
-                    If chainLength = "Flexible" Then controllength = stdControlLength
+                    If chainLength = "Flexible" Then
+                        controllength = stdControlLength
+                        If tubeName.Contains("Gear Reduction") Then
+                            controllength = Math.Ceiling((drop * 3 / 4) + 80)
+                            If chainType = "Continuous" AndAlso data.chainstopper = "With Stopper" Then
+                                controllength = Math.Ceiling(drop * 0.9)
+                            End If
+                        End If
+                    End If
                 End If
 
                 If data.controllengthb = String.Empty OrElse data.controllengthb = "Standard" Then
                     Dim stdControlLength As Integer = Math.Ceiling(dropb * 2 / 3)
-                    If tubeName.Contains("Gear Reduction") Then
-                        stdControlLength = Math.Ceiling(dropb * 0.9)
-                    End If
                     If chainLengthB = "Static" Then
                         controllengthb = 500
                         If stdControlLength > 500 Then controllengthb = 750
@@ -5076,7 +5112,15 @@ Partial Class Order_Method
                         If stdControlLength > 1000 Then controllengthb = 1200
                         If stdControlLength > 1200 Then controllengthb = 1500
                     End If
-                    If chainLengthB = "Flexible" Then controllengthb = stdControlLength
+                    If chainLengthB = "Flexible" Then
+                        controllengthb = stdControlLength
+                        If tubeName.Contains("Gear Reduction") Then
+                            controllengthb = Math.Ceiling((dropb * 3 / 4) + 80)
+                            If chainTypeB = "Continuous" AndAlso data.chainstopperb = "With Stopper" Then
+                                controllengthb = Math.Ceiling(dropb * 0.9)
+                            End If
+                        End If
+                    End If
                 End If
             End If
 
@@ -5222,9 +5266,6 @@ Partial Class Order_Method
             If controlName = "Chain" Then
                 If data.controllength = "Standard" Then
                     Dim stdControlLength As Integer = Math.Ceiling(drop * 2 / 3)
-                    If tubeName.Contains("Gear Reduction") Then
-                        stdControlLength = Math.Ceiling(drop * 0.9)
-                    End If
                     If chainLength = "Static" Then
                         controllength = 500
                         If stdControlLength > 500 Then controllength = 750
@@ -5232,7 +5273,15 @@ Partial Class Order_Method
                         If stdControlLength > 1000 Then controllength = 1200
                         If stdControlLength > 1200 Then controllength = 1500
                     End If
-                    If chainLength = "Flexible" Then controllength = stdControlLength
+                    If chainLength = "Flexible" Then
+                        controllength = stdControlLength
+                        If tubeName.Contains("Gear Reduction") Then
+                            controllength = Math.Ceiling((drop * 3 / 4) + 80)
+                            If chainType = "Continuous" AndAlso data.chainstopper = "With Stopper" Then
+                                controllength = Math.Ceiling(drop * 0.9)
+                            End If
+                        End If
+                    End If
                 End If
             End If
 
@@ -5378,7 +5427,8 @@ Partial Class Order_Method
                     data.chaincolourb = data.chaincolour
                     data.controllengthb = data.controllength
                     data.controllengthvalueb = data.controllengthvalue
-                    chainLengthB = orderClass.GetChainType(data.chaincolourb)
+                    chainTypeB = orderClass.GetChainType(data.chaincolourb)
+                    chainLengthB = orderClass.GetChainLength(data.chaincolourb)
                 End If
                 If String.IsNullOrEmpty(data.chainstopperb) Then
                     data.chainstopperb = data.chainstopper
@@ -5396,14 +5446,19 @@ Partial Class Order_Method
                         If stdControlLength > 1000 Then controllength = 1200
                         If stdControlLength > 1200 Then controllength = 1500
                     End If
-                    If chainLength = "Flexible" Then controllength = stdControlLength
+                    If chainLength = "Flexible" Then
+                        controllength = stdControlLength
+                        If tubeName.Contains("Gear Reduction") Then
+                            controllength = Math.Ceiling((drop * 3 / 4) + 80)
+                            If chainType = "Continuous" AndAlso data.chainstopper = "With Stopper" Then
+                                controllength = Math.Ceiling(drop * 0.9)
+                            End If
+                        End If
+                    End If
                 End If
 
                 If data.controllengthb = String.Empty OrElse data.controllengthb = "Standard" Then
                     Dim stdControlLength As Integer = Math.Ceiling(dropb * 2 / 3)
-                    If tubeName.Contains("Gear Reduction") Then
-                        stdControlLength = Math.Ceiling(dropb * 0.9)
-                    End If
                     If chainLengthB = "Static" Then
                         controllengthb = 500
                         If stdControlLength > 500 Then controllengthb = 750
@@ -5411,7 +5466,15 @@ Partial Class Order_Method
                         If stdControlLength > 1000 Then controllengthb = 1200
                         If stdControlLength > 1200 Then controllengthb = 1500
                     End If
-                    If chainLengthB = "Flexible" Then controllengthb = stdControlLength
+                    If chainLengthB = "Flexible" Then
+                        controllengthb = stdControlLength
+                        If tubeName.Contains("Gear Reduction") Then
+                            controllengthb = Math.Ceiling((dropb * 3 / 4) + 80)
+                            If chainTypeB = "Continuous" AndAlso data.chainstopperb = "With Stopper" Then
+                                controllengthb = Math.Ceiling(dropb * 0.9)
+                            End If
+                        End If
+                    End If
                 End If
             End If
 
@@ -5563,9 +5626,6 @@ Partial Class Order_Method
             If controlName = "Chain" Then
                 If data.controllength = "Standard" Then
                     Dim stdControlLength As Integer = Math.Ceiling(drop * 2 / 3)
-                    If tubeName.Contains("Gear Reduction") Then
-                        stdControlLength = Math.Ceiling(drop * 0.9)
-                    End If
                     If chainLength = "Static" Then
                         controllength = 500
                         If stdControlLength > 500 Then controllength = 750
@@ -5573,7 +5633,15 @@ Partial Class Order_Method
                         If stdControlLength > 1000 Then controllength = 1200
                         If stdControlLength > 1200 Then controllength = 1500
                     End If
-                    If chainLength = "Flexible" Then controllength = stdControlLength
+                    If chainLength = "Flexible" Then
+                        controllength = stdControlLength
+                        If tubeName.Contains("Gear Reduction") Then
+                            controllength = Math.Ceiling((drop * 3 / 4) + 80)
+                            If chainType = "Continuous" AndAlso data.chainstopper = "With Stopper" Then
+                                controllength = Math.Ceiling(drop * 0.9)
+                            End If
+                        End If
+                    End If
                 End If
             End If
 
@@ -5740,7 +5808,8 @@ Partial Class Order_Method
                 If String.IsNullOrEmpty(data.chaincolourc) Then
                     data.chaincolourc = data.chaincolour
                     data.controllengthc = data.controllength
-                    chainLengthC = orderClass.GetChainType(data.chaincolourc)
+                    chainTypeC = orderClass.GetChainType(data.chaincolourc)
+                    chainLengthC = orderClass.GetChainLength(data.chaincolourc)
                 End If
                 If String.IsNullOrEmpty(data.chainstopperc) Then
                     data.chainstopperc = data.chainstopper
@@ -5748,9 +5817,6 @@ Partial Class Order_Method
 
                 If data.controllength = "Standard" Then
                     Dim stdControlLength As Integer = Math.Ceiling(drop * 2 / 3)
-                    If tubeName.Contains("Gear Reduction") Then
-                        stdControlLength = Math.Ceiling(drop * 0.9)
-                    End If
                     If chainLength = "Static" Then
                         controllength = 500
                         If stdControlLength > 500 Then controllength = 750
@@ -5758,14 +5824,19 @@ Partial Class Order_Method
                         If stdControlLength > 1000 Then controllength = 1200
                         If stdControlLength > 1200 Then controllength = 1500
                     End If
-                    If chainLength = "Flexible" Then controllength = stdControlLength
+                    If chainLength = "Flexible" Then
+                        controllength = stdControlLength
+                        If tubeName.Contains("Gear Reduction") Then
+                            controllength = Math.Ceiling((drop * 3 / 4) + 80)
+                            If chainType = "Continuous" AndAlso data.chainstopper = "With Stopper" Then
+                                controllength = Math.Ceiling(drop * 0.9)
+                            End If
+                        End If
+                    End If
                 End If
 
                 If data.controllengthc = "" OrElse data.controllengthc = "Standard" Then
                     Dim stdControlLength As Integer = Math.Ceiling(dropc * 2 / 3)
-                    If tubeName.Contains("Gear Reduction") Then
-                        stdControlLength = Math.Ceiling(dropc * 0.9)
-                    End If
                     If chainLengthC = "Static" Then
                         controllengthc = 500
                         If stdControlLength > 500 Then controllengthc = 750
@@ -5773,7 +5844,15 @@ Partial Class Order_Method
                         If stdControlLength > 1000 Then controllengthc = 1200
                         If stdControlLength > 1200 Then controllengthc = 1500
                     End If
-                    If chainLengthC = "Flexible" Then controllengthc = stdControlLength
+                    If chainLengthC = "Flexible" Then
+                        controllengthc = stdControlLength
+                        If tubeName.Contains("Gear Reduction") Then
+                            controllengthc = Math.Ceiling((dropc * 3 / 4) + 80)
+                            If chainTypeC = "Continuous" AndAlso data.chainstopperc = "With Stopper" Then
+                                controllengthc = Math.Ceiling(dropc * 0.9)
+                            End If
+                        End If
+                    End If
                 End If
             End If
 
@@ -5930,7 +6009,8 @@ Partial Class Order_Method
                     data.chaincolourc = data.chaincolour
                     data.chainstopperc = data.chainstopper
                     data.controllengthc = data.controllength
-                    chainLengthC = orderClass.GetChainType(data.chaincolourc)
+                    chainTypeC = orderClass.GetChainType(data.chaincolourc)
+                    chainLengthC = orderClass.GetChainLength(data.chaincolourc)
                 End If
                 If String.IsNullOrEmpty(data.chainstopperc) Then
                     data.chainstopperc = data.chainstopper
@@ -5938,9 +6018,6 @@ Partial Class Order_Method
 
                 If data.controllength = "Standard" Then
                     Dim stdControlLength As Integer = Math.Ceiling(drop * 2 / 3)
-                    If tubeName.Contains("Gear Reduction") Then
-                        stdControlLength = Math.Ceiling(drop * 0.9)
-                    End If
                     If chainLength = "Static" Then
                         controllength = 500
                         If stdControlLength > 500 Then controllength = 750
@@ -5948,14 +6025,19 @@ Partial Class Order_Method
                         If stdControlLength > 1000 Then controllength = 1200
                         If stdControlLength > 1200 Then controllength = 1500
                     End If
-                    If chainLength = "Flexible" Then controllength = stdControlLength
+                    If chainLength = "Flexible" Then
+                        controllength = stdControlLength
+                        If tubeName.Contains("Gear Reduction") Then
+                            controllength = Math.Ceiling((drop * 3 / 4) + 80)
+                            If chainType = "Continuous" AndAlso data.chainstopper = "With Stopper" Then
+                                controllength = Math.Ceiling(drop * 0.9)
+                            End If
+                        End If
+                    End If
                 End If
 
                 If data.controllengthc = "" OrElse data.controllengthc = "Standard" Then
                     Dim stdControlLength As Integer = Math.Ceiling(dropc * 2 / 3)
-                    If tubeName.Contains("Gear Reduction") Then
-                        stdControlLength = Math.Ceiling(dropc * 0.9)
-                    End If
                     If chainLengthC = "Static" Then
                         controllengthc = 500
                         If stdControlLength > 500 Then controllengthc = 750
@@ -5963,7 +6045,15 @@ Partial Class Order_Method
                         If stdControlLength > 1000 Then controllengthc = 1200
                         If stdControlLength > 1200 Then controllengthc = 1500
                     End If
-                    If chainLengthC = "Flexible" Then controllengthc = stdControlLength
+                    If chainLengthC = "Flexible" Then
+                        controllengthc = stdControlLength
+                        If tubeName.Contains("Gear Reduction") Then
+                            controllengthc = Math.Ceiling((dropc * 3 / 4) + 80)
+                            If chainTypeC = "Continuous" AndAlso data.chainstopperc = "With Stopper" Then
+                                controllengthc = Math.Ceiling(dropc * 0.9)
+                            End If
+                        End If
+                    End If
                 End If
             End If
 
@@ -6143,7 +6233,8 @@ Partial Class Order_Method
                 If String.IsNullOrEmpty(data.chaincolourb) Then
                     data.chaincolourb = data.chaincolour
                     data.controllengthb = data.controllength
-                    chainLengthB = orderClass.GetChainType(data.chaincolourb)
+                    chainTypeB = orderClass.GetChainType(data.chaincolourb)
+                    chainLengthB = orderClass.GetChainLength(data.chaincolourb)
                 End If
                 If String.IsNullOrEmpty(data.chainstopperb) Then
                     data.chainstopperb = data.chainstopper
@@ -6152,7 +6243,8 @@ Partial Class Order_Method
                 If String.IsNullOrEmpty(data.chaincolourc) Then
                     data.chaincolourc = data.chaincolour
                     data.controllengthc = data.controllength
-                    chainLengthC = orderClass.GetChainType(data.chaincolourc)
+                    chainTypeC = orderClass.GetChainType(data.chaincolourc)
+                    chainLengthC = orderClass.GetChainLength(data.chaincolourc)
                 End If
                 If String.IsNullOrEmpty(data.chainstopperc) Then
                     data.chainstopperc = data.chainstopper
@@ -6161,7 +6253,8 @@ Partial Class Order_Method
                 If String.IsNullOrEmpty(data.chaincolourd) Then
                     data.chaincolourd = data.chaincolour
                     data.controllengthd = data.controllength
-                    chainLengthD = orderClass.GetChainType(data.chaincolourd)
+                    chainTypeD = orderClass.GetChainType(data.chaincolourd)
+                    chainLengthD = orderClass.GetChainLength(data.chaincolourd)
                 End If
                 If String.IsNullOrEmpty(data.chainstopperd) Then
                     data.chainstopperd = data.chainstopper
@@ -6169,9 +6262,6 @@ Partial Class Order_Method
 
                 If data.controllength = "Standard" Then
                     Dim stdControlLength As Integer = Math.Ceiling(drop * 2 / 3)
-                    If tubeName.Contains("Gear Reduction") Then
-                        stdControlLength = Math.Ceiling(drop * 0.9)
-                    End If
                     If chainLength = "Static" Then
                         controllength = 500
                         If stdControlLength > 500 Then controllength = 750
@@ -6179,14 +6269,19 @@ Partial Class Order_Method
                         If stdControlLength > 1000 Then controllength = 1200
                         If stdControlLength > 1200 Then controllength = 1500
                     End If
-                    If chainLength = "Flexible" Then controllength = stdControlLength
+                    If chainLength = "Flexible" Then
+                        controllength = stdControlLength
+                        If tubeName.Contains("Gear Reduction") Then
+                            controllength = Math.Ceiling((drop * 3 / 4) + 80)
+                            If chainType = "Continuous" AndAlso data.chainstopper = "With Stopper" Then
+                                controllength = Math.Ceiling(drop * 0.9)
+                            End If
+                        End If
+                    End If
                 End If
 
                 If data.controllengthb = "" OrElse data.controllengthb = "Standard" Then
                     Dim stdControlLength As Integer = Math.Ceiling(dropb * 2 / 3)
-                    If tubeName.Contains("Gear Reduction") Then
-                        stdControlLength = Math.Ceiling(dropb * 0.9)
-                    End If
                     If chainLengthB = "Static" Then
                         controllengthb = 500
                         If stdControlLength > 500 Then controllengthb = 750
@@ -6194,14 +6289,19 @@ Partial Class Order_Method
                         If stdControlLength > 1000 Then controllengthb = 1200
                         If stdControlLength > 1200 Then controllengthb = 1500
                     End If
-                    If chainLengthB = "Flexible" Then controllengthb = stdControlLength
+                    If chainLengthB = "Flexible" Then
+                        controllengthb = stdControlLength
+                        If tubeName.Contains("Gear Reduction") Then
+                            controllengthb = Math.Ceiling((dropb * 3 / 4) + 80)
+                            If chainTypeB = "Continuous" AndAlso data.chainstopperb = "With Stopper" Then
+                                controllengthb = Math.Ceiling(dropb * 0.9)
+                            End If
+                        End If
+                    End If
                 End If
 
                 If data.controllengthc = "Standard" Then
                     Dim stdControlLengthC As Integer = Math.Ceiling(dropc * 2 / 3)
-                    If tubeName.Contains("Gear Reduction") Then
-                        stdControlLengthC = Math.Ceiling(dropc * 0.9)
-                    End If
                     If chainLengthC = "Static" Then
                         controllengthc = 500
                         If stdControlLengthC > 500 Then controllengthc = 750
@@ -6209,14 +6309,19 @@ Partial Class Order_Method
                         If stdControlLengthC > 1000 Then controllengthc = 1200
                         If stdControlLengthC > 1200 Then controllengthc = 1500
                     End If
-                    If chainLengthC = "Flexible" Then controllengthc = stdControlLengthC
+                    If chainLengthC = "Flexible" Then
+                        controllengthc = stdControlLengthC
+                        If tubeName.Contains("Gear Reduction") Then
+                            controllengthc = Math.Ceiling((dropc * 3 / 4) + 80)
+                            If chainTypeC = "Continuous" AndAlso data.chainstopperc = "With Stopper" Then
+                                controllengthc = Math.Ceiling(dropc * 0.9)
+                            End If
+                        End If
+                    End If
                 End If
 
                 If data.controllengthd = "Standard" Then
                     Dim stdControlLengthD As Integer = Math.Ceiling(dropd * 2 / 3)
-                    If tubeName.Contains("Gear Reduction") Then
-                        stdControlLengthD = Math.Ceiling(dropd * 0.9)
-                    End If
                     If chainLengthD = "Static" Then
                         controllengthd = 500
                         If stdControlLengthD > 500 Then controllengthd = 750
@@ -6224,7 +6329,15 @@ Partial Class Order_Method
                         If stdControlLengthD > 1000 Then controllengthd = 1200
                         If stdControlLengthD > 1200 Then controllengthd = 1500
                     End If
-                    If chainLengthD = "Flexible" Then controllengthd = stdControlLengthD
+                    If chainLengthD = "Flexible" Then
+                        controllengthd = stdControlLengthD
+                        If tubeName.Contains("Gear Reduction") Then
+                            controllengthd = Math.Ceiling((dropd * 3 / 4) + 80)
+                            If chainTypeD = "Continuous" AndAlso data.chainstopperd = "With Stopper" Then
+                                controllengthd = Math.Ceiling(dropd * 0.9)
+                            End If
+                        End If
+                    End If
                 End If
             End If
 
@@ -6406,7 +6519,8 @@ Partial Class Order_Method
                     data.chaincolourd = data.chaincolour
                     data.chainstopperd = data.chainstopper
                     data.controllengthd = data.controllength
-                    chainLengthD = orderClass.GetChainType(data.chaincolourd)
+                    chainTypeD = orderClass.GetChainType(data.chaincolourd)
+                    chainLengthD = orderClass.GetChainLength(data.chaincolourd)
                 End If
                 If String.IsNullOrEmpty(data.chainstopperd) Then
                     data.chainstopperd = data.chainstopper
@@ -6414,9 +6528,6 @@ Partial Class Order_Method
 
                 If data.controllength = "Standard" Then
                     Dim stdControlLength As Integer = Math.Ceiling(drop * 2 / 3)
-                    If tubeName.Contains("Gear Reduction") Then
-                        stdControlLength = Math.Ceiling(drop * 0.9)
-                    End If
                     If chainLength = "Static" Then
                         controllength = 500
                         If stdControlLength > 500 Then controllength = 750
@@ -6424,14 +6535,19 @@ Partial Class Order_Method
                         If stdControlLength > 1000 Then controllength = 1200
                         If stdControlLength > 1200 Then controllength = 1500
                     End If
-                    If chainLength = "Flexible" Then controllength = stdControlLength
+                    If chainLength = "Flexible" Then
+                        controllength = stdControlLength
+                        If tubeName.Contains("Gear Reduction") Then
+                            controllength = Math.Ceiling((drop * 3 / 4) + 80)
+                            If chainType = "Continuous" AndAlso data.chainstopper = "With Stopper" Then
+                                controllength = Math.Ceiling(drop * 0.9)
+                            End If
+                        End If
+                    End If
                 End If
 
                 If data.controllengthd = "" OrElse data.controllengthd = "Standard" Then
                     Dim stdControlLength As Integer = Math.Ceiling(dropd * 2 / 3)
-                    If tubeName.Contains("Gear Reduction") Then
-                        stdControlLength = Math.Ceiling(dropd * 0.9)
-                    End If
                     If chainLengthD = "Static" Then
                         controllengthd = 500
                         If stdControlLength > 500 Then controllengthd = 750
@@ -6439,7 +6555,15 @@ Partial Class Order_Method
                         If stdControlLength > 1000 Then controllengthd = 1200
                         If stdControlLength > 1200 Then controllengthd = 1500
                     End If
-                    If chainLengthD = "Flexible" Then controllengthd = stdControlLength
+                    If chainLengthD = "Flexible" Then
+                        controllengthd = stdControlLength
+                        If tubeName.Contains("Gear Reduction") Then
+                            controllengthd = Math.Ceiling((dropd * 3 / 4) + 80)
+                            If chainTypeD = "Continuous" AndAlso data.chainstopperd = "With Stopper" Then
+                                controllengthd = Math.Ceiling(dropd * 0.9)
+                            End If
+                        End If
+                    End If
                 End If
             End If
 
@@ -6663,7 +6787,8 @@ Partial Class Order_Method
                     data.chaincolourc = data.chaincolour
                     data.chainstopperc = data.chainstopper
                     data.controllengthc = data.controllength
-                    chainLengthC = orderClass.GetChainType(data.chaincolourc)
+                    chainTypeC = orderClass.GetChainType(data.chaincolourc)
+                    chainLengthC = orderClass.GetChainLength(data.chaincolourc)
                 End If
                 If String.IsNullOrEmpty(data.chainstopperc) Then
                     data.chainstopperc = data.chainstopper
@@ -6673,7 +6798,8 @@ Partial Class Order_Method
                     data.chaincolourd = data.chaincolour
                     data.chainstopperd = data.chainstopper
                     data.controllengthd = data.controllength
-                    chainLengthD = orderClass.GetChainType(data.chaincolourd)
+                    chainTypeD = orderClass.GetChainType(data.chaincolourd)
+                    chainLengthD = orderClass.GetChainLength(data.chaincolourd)
                 End If
                 If String.IsNullOrEmpty(data.chainstopperd) Then
                     data.chainstopperd = data.chainstopper
@@ -6683,7 +6809,8 @@ Partial Class Order_Method
                     data.chaincolourf = data.chaincolour
                     data.chainstopperf = data.chainstopper
                     data.controllengthf = data.controllength
-                    chainLengthF = orderClass.GetChainType(data.chaincolourf)
+                    chainTypeF = orderClass.GetChainType(data.chaincolourf)
+                    chainLengthF = orderClass.GetChainLength(data.chaincolourf)
                 End If
                 If String.IsNullOrEmpty(data.chainstopperd) Then
                     data.chainstopperd = data.chainstopper
@@ -6693,9 +6820,6 @@ Partial Class Order_Method
 
                 If data.controllength = "Standard" Then
                     Dim stdControlLength As Integer = Math.Ceiling(drop * 2 / 3)
-                    If tubeName.Contains("Gear Reduction") Then
-                        stdControlLength = Math.Ceiling(drop * 0.9)
-                    End If
                     If chainLength = "Static" Then
                         controllength = 500
                         If stdControlLength > 500 Then controllength = 750
@@ -6703,14 +6827,19 @@ Partial Class Order_Method
                         If stdControlLength > 1000 Then controllength = 1200
                         If stdControlLength > 1200 Then controllength = 1500
                     End If
-                    If chainLength = "Flexible" Then controllength = stdControlLength
+                    If chainLength = "Flexible" Then
+                        controllength = stdControlLength
+                        If tubeName.Contains("Gear Reduction") Then
+                            controllength = Math.Ceiling((drop * 3 / 4) + 80)
+                            If chainType = "Continuous" AndAlso data.chainstopper = "With Stopper" Then
+                                controllength = Math.Ceiling(drop * 0.9)
+                            End If
+                        End If
+                    End If
                 End If
 
                 If data.controllengthc = "" OrElse data.controllengthc = "Standard" Then
                     Dim stdControlLength As Integer = Math.Ceiling(dropc * 2 / 3)
-                    If tubeName.Contains("Gear Reduction") Then
-                        stdControlLength = Math.Ceiling(dropc * 0.9)
-                    End If
                     If chainLengthC = "Static" Then
                         controllengthc = 500
                         If stdControlLength > 500 Then controllengthc = 750
@@ -6718,14 +6847,19 @@ Partial Class Order_Method
                         If stdControlLength > 1000 Then controllengthc = 1200
                         If stdControlLength > 1200 Then controllengthc = 1500
                     End If
-                    If chainLengthC = "Flexible" Then controllengthc = stdControlLength
+                    If chainLengthC = "Flexible" Then
+                        controllengthc = stdControlLength
+                        If tubeName.Contains("Gear Reduction") Then
+                            controllengthc = Math.Ceiling((dropc * 3 / 4) + 80)
+                            If chainTypeC = "Continuous" AndAlso data.chainstopperc = "With Stopper" Then
+                                controllengthc = Math.Ceiling(dropc * 0.9)
+                            End If
+                        End If
+                    End If
                 End If
 
                 If data.controllengthd = "" OrElse data.controllengthd = "Standard" Then
                     Dim stdControlLength As Integer = Math.Ceiling(dropd * 2 / 3)
-                    If tubeName.Contains("Gear Reduction") Then
-                        stdControlLength = Math.Ceiling(dropd * 0.9)
-                    End If
                     If chainLengthD = "Static" Then
                         controllengthd = 500
                         If stdControlLength > 500 Then controllengthd = 750
@@ -6733,14 +6867,19 @@ Partial Class Order_Method
                         If stdControlLength > 1000 Then controllengthd = 1200
                         If stdControlLength > 1200 Then controllengthd = 1500
                     End If
-                    If chainLengthD = "Flexible" Then controllengthd = stdControlLength
+                    If chainLengthD = "Flexible" Then
+                        controllengthd = stdControlLength
+                        If tubeName.Contains("Gear Reduction") Then
+                            controllengthd = Math.Ceiling((dropd * 3 / 4) + 80)
+                            If chainTypeD = "Continuous" AndAlso data.chainstopperd = "With Stopper" Then
+                                controllengthd = Math.Ceiling(dropd * 0.9)
+                            End If
+                        End If
+                    End If
                 End If
 
                 If data.controllengthf = "" OrElse data.controllengthf = "Standard" Then
                     Dim stdControlLength As Integer = Math.Ceiling(dropf * 2 / 3)
-                    If tubeName.Contains("Gear Reduction") Then
-                        stdControlLength = Math.Ceiling(dropf * 0.9)
-                    End If
                     If chainLengthF = "Static" Then
                         controllengthf = 500
                         If stdControlLength > 500 Then controllengthf = 750
@@ -6748,7 +6887,15 @@ Partial Class Order_Method
                         If stdControlLength > 1000 Then controllengthf = 1200
                         If stdControlLength > 1200 Then controllengthf = 1500
                     End If
-                    If chainLengthF = "Flexible" Then controllengthf = stdControlLength
+                    If chainLengthF = "Flexible" Then
+                        controllengthf = stdControlLength
+                        If tubeName.Contains("Gear Reduction") Then
+                            controllengthf = Math.Ceiling((dropf * 3 / 4) + 80)
+                            If chainTypeF = "Continuous" AndAlso data.chainstopperf = "With Stopper" Then
+                                controllengthf = Math.Ceiling(dropf * 0.9)
+                            End If
+                        End If
+                    End If
                 End If
 
                 If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" Then
