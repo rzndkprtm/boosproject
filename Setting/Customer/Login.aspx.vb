@@ -35,6 +35,8 @@ Partial Class Setting_Customer_Login
             BindLevel()
 
             divPassword.Visible = True
+            divEmail.Visible = False
+            If Session("RoleName") = "Developer" Then divEmail.Visible = True
 
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         Catch ex As Exception
@@ -93,6 +95,8 @@ Partial Class Setting_Customer_Login
                     txtEmail.Text = myData("Email").ToString()
 
                     divPassword.Visible = False
+                    divEmail.Visible = False
+                    If Session("RoleName") = "Developer" Then divEmail.Visible = True
 
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Catch ex As Exception

@@ -1062,18 +1062,6 @@
                     </div>
                     <div class="row">
                         <div class="col-12 form-group">
-                            <label class="form-label required">Full Name</label>
-                            <asp:TextBox runat="server" ID="txtLoginFullName" CssClass="form-control" placeholder="Full Name ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                    </div>
-                    <div class="row" runat="server" id="divLoginEmail">
-                        <div class="col-12 form-group">
-                            <label class="form-label required">Email</label>
-                            <asp:TextBox runat="server" ID="txtLoginEmail" CssClass="form-control" placeholder="Email ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 form-group">
                             <label class="form-label required">Username</label>
                             <asp:TextBox runat="server" ID="txtLoginUserName" CssClass="form-control" placeholder="UserName ..." autocomplete="off"></asp:TextBox>
                         </div>
@@ -1084,6 +1072,18 @@
                             <asp:TextBox runat="server" ID="txtLoginPassword" CssClass="form-control" placeholder="Password ..." autocomplete="off"></asp:TextBox>
                         </div>
                         <small class="form-hint" id="passwordinfo"></small>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label required">Full Name</label>
+                            <asp:TextBox runat="server" ID="txtLoginFullName" CssClass="form-control" placeholder="Full Name ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row" runat="server" id="divLoginEmail">
+                        <div class="col-12 form-group">
+                            <label class="form-label required">Email</label>
+                            <asp:TextBox runat="server" ID="txtLoginEmail" CssClass="form-control" placeholder="Email ..." autocomplete="off"></asp:TextBox>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-12 col-sm-12 col-lg-4 mb-2 form-group">
