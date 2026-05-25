@@ -91,6 +91,33 @@ Partial Class Setting_Login_User_Default
         End Try
     End Sub
 
+    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim thisId As String = txtIdDelete.Text
+
+            Using thisConn As New SqlConnection(myConn)
+                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Logins WHERE Id=@Id; UPDATE Logs SET ActionBy=NULL WHERE ActionBy=@Id; UPDATE OrderHeaders SET CreatedBy=NULL WHERE CreatedBy=@Id; DELETE FROM Sessions WHERE LoginId=@Id; UPDATE Notifications SET LoginId = LTRIM(RTRIM(REPLACE(',' + LoginId + ',', ',' + @Id + ',', ',' ))) WHERE ',' + LoginId + ',' LIKE '%,' + @Id + ',%'; DELETE FROM NotificationLogs WHERE LoginId=@Id;", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", thisId)
+
+                    thisConn.Open()
+                    myCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            dataLog = {"Logins", thisId, Session("LoginId").ToString(), "Login Deleted"}
+            settingClass.Logs(dataLog)
+
+            Session("SearchLoginUser") = txtSearch.Text
+            Response.Redirect("~/setting/login/user", False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
     Protected Sub btnChangePassword_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
@@ -137,6 +164,8 @@ Partial Class Setting_Login_User_Default
                     myCmd.ExecuteNonQuery()
                 End Using
             End Using
+
+            '
 
             dataLog = {"Logins", thisId, Session("LoginId").ToString(), "Login Reset Password"}
             settingClass.Logs(dataLog)

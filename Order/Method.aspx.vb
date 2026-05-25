@@ -1,6 +1,5 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
-Imports System.Security.Cryptography.X509Certificates
 Imports System.Web.Services
 
 Partial Class Order_Method
@@ -1376,6 +1375,10 @@ Partial Class Order_Method
                 End If
                 Return "THE TOP FABRIC SELECTED IS <b>EXPRESS</b>.<br />PLEASE CHOOSE <b>EXPRESS</b> AS WELL FOR THE BOTTOM FABRIC. !"
             End If
+        End If
+
+        If factory = "Regular" AndAlso data.mounting.Contains("Opening Size") Then
+            Return "FOR REGULAR FABRIC, PLEASE USE MOUNTING WITH MAKE SIZE. !"
         End If
 
         If String.IsNullOrEmpty(data.width) Then Return "WIDTH IS REQUIRED !"
