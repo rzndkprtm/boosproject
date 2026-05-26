@@ -87,6 +87,9 @@
                                                             <li runat="server" visible='<%# LoginAccess("Detail") %>'>
                                                                 <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                             </li>
+                                                            <li runat="server" visible='<%# LoginAccess("Edit") %>'>
+                                                                <asp:LinkButton runat="server" ID="linkEdit" CssClass="dropdown-item" Text="Edit" CommandName="Ubah" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                            </li>
                                                             <li runat="server" visible='<%# LoginAccess("Change Cash Sale") %>'>
                                                                 <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeCashSale" onclick='<%# String.Format("return showChangeCashSale(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("Name").ToString(), Convert.ToInt32(Eval("CashSale"))) %>'>Change Cash Sale</a>
                                                             </li>

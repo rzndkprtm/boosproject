@@ -21,6 +21,9 @@ Partial Class Setting_Customer_Promo
             MessageError(False, String.Empty)
             txtSearch.Text = Session("SearchCustomerPromo")
             BindData(txtSearch.Text)
+
+            BindDataCustomer()
+            BindDataPromo()
         End If
     End Sub
 
@@ -33,9 +36,6 @@ Partial Class Setting_Customer_Promo
         MessageError_Process(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showProcess(); };"
         Try
-            BindDataCustomer()
-            BindDataPromo()
-
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         Catch ex As Exception
             MessageError_Process(True, ex.ToString())

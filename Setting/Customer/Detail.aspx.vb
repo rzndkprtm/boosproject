@@ -59,7 +59,7 @@ Partial Class Setting_Customer_Detail
     End Sub
 
     Protected Sub btnEditCustomer_Click(sender As Object, e As EventArgs)
-        url = String.Format("~/setting/customer/edit?customeredit={0}", lblId.Text)
+        url = String.Format("~/setting/customer/edit?customerid={0}&returnpage=detail", lblId.Text)
         Response.Redirect(url, False)
     End Sub
 

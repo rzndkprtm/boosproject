@@ -7,6 +7,7 @@ Partial Class Setting_Customer_Edit
     Dim settingClass As New SettingClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
+    Dim returnPage As String = String.Empty
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
@@ -15,12 +16,16 @@ Partial Class Setting_Customer_Edit
             Exit Sub
         End If
 
-        If String.IsNullOrEmpty(Request.QueryString("customeredit")) Then
+        If String.IsNullOrEmpty(Request.QueryString("customerid")) Then
             Response.Redirect("~/setting/customer/list", False)
             Exit Sub
         End If
 
-        lblId.Text = Request.QueryString("customeredit").ToString()
+        If Not String.IsNullOrEmpty(Request.QueryString("returnpage")) Then
+            returnPage = Request.QueryString("returnpage").ToString()
+        End If
+
+        lblId.Text = Request.QueryString("customerid").ToString()
         If Not IsPostBack Then
             BindData(lblId.Text)
         End If
@@ -146,7 +151,10 @@ Partial Class Setting_Customer_Edit
                 Dim dataLog As Object() = {"Customers", lblId.Text, Session("LoginId").ToString(), "Customer Updated"}
                 settingClass.Logs(dataLog)
 
-                url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
+                url = "~/setting/customer/list"
+                If returnPage = "detail" Then
+                    url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
+                End If
                 Response.Redirect(url, False)
             End If
         Catch ex As Exception
@@ -158,7 +166,10 @@ Partial Class Setting_Customer_Edit
     End Sub
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
-        url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
+        url = "~/setting/customer/list"
+        If returnPage = "detail" Then
+            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
+        End If
         Response.Redirect(url, False)
     End Sub
 

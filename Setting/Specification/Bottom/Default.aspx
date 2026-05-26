@@ -68,7 +68,7 @@
                                                         <%# BindDesign(Eval("Id").ToString()) %>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="Company">
+                                                <asp:TemplateField HeaderText="Company Detail">
                                                     <ItemTemplate>
                                                         <%# BindCompany(Eval("Id").ToString()) %>
                                                     </ItemTemplate>

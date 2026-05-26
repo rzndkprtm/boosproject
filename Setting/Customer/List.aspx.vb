@@ -66,16 +66,12 @@ Partial Class Setting_Customer_List
             Session("SearchCustomer") = txtSearch.Text
 
             If e.CommandName = "Detail" Then
-                MessageError(False, String.Empty)
-                Try
-                    url = String.Format("~/setting/customer/detail?customerid={0}", dataId)
-                    Response.Redirect(url, False)
-                Catch ex As Exception
-                    MessageError(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                    End If
-                End Try
+                url = String.Format("~/setting/customer/detail?customerid={0}", dataId)
+                Response.Redirect(url, False)
+            End If
+            If e.CommandName = "Ubah" Then
+                url = String.Format("~/setting/customer/edit?customerid={0}", dataId)
+                Response.Redirect(url, False)
             End If
         End If
     End Sub
