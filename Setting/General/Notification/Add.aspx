@@ -24,7 +24,7 @@
     </div>
     <div class="page-content">
         <section class="row">
-            <div class="col-12 col-sm-12 col-lg-8">
+            <div class="col-12 col-sm-12 col-lg-7">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title">Add Form</h4>
@@ -33,12 +33,18 @@
                         <div class="card-body">
                             <div class="form form-vertical">
                                 <div class="form-body">
-                                    <div class="row mb-3 form-group">
-                                        <div class="col-12 col-sm-12 col-lg-4 mb-2">
+                                    <div class="row mb-2 form-group">
+                                        <div class="col-12 col-sm-12 col-lg-6 mb-2">
                                             <label class="form-label">Role</label>
                                             <asp:DropDownList runat="server" ID="ddlLoginRole" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlLoginRole_SelectedIndexChanged"></asp:DropDownList>
                                         </div>
-                                        <div class="col-12 col-sm-12 col-lg-8">
+                                        <div class="col-12 col-sm-12 col-lg-6" runat="server" id="divCompany">
+                                            <label class="form-label">Company</label>
+                                            <asp:DropDownList runat="server" ID="ddlCompany" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCompany_SelectedIndexChanged"></asp:DropDownList>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3 form-group">
+                                        <div class="col-12">
                                             <label class="form-label">Login Name</label>
                                             <asp:ListBox runat="server" ID="lbLoginId" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
                                         </div>
@@ -89,7 +95,20 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-sm-12 col-lg-8"></div>
+            <div class="col-12 col-sm-12 col-lg-5">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title text-center">Information</h4>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body">
+                            <ul>
+                                <li>ROLE CUSTOMER AKAN MENAMPILKAN FIELD COMPANY. INI BERFUNGSI UNTUK MENSORTI DATA LOGIN YANG AKAN DIKIRIM NOTIFICATION. JIKA ANDA KOSONGKAN MA</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
     </div>
 

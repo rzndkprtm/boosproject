@@ -4431,7 +4431,7 @@ Partial Class Order_Method
         End If
 
         If blindName = "Dual Blinds" OrElse blindName = "Link 2 Blinds Independent" OrElse blindName = "DB Link 2 Blinds Independent" Then
-            If controlName = "Chain" Then
+            If controlType = "Chain" Then
                 If Not String.IsNullOrEmpty(data.chaincolourb) Then
                     If String.IsNullOrEmpty(data.chainstopperb) Then Return "CHAIN STOPPER FOR SECOND BLIND IS REQUIRED !"
                     If String.IsNullOrEmpty(data.controllengthb) Then Return "CHAIN LENGTH FOR SECOND BLIND IS REQUIRED !"
@@ -4445,6 +4445,10 @@ Partial Class Order_Method
                             If Not Integer.TryParse(data.controllengthvalueb, controllengthb) OrElse controllengthb <= 0 Then Return "PLEASE CHECK YOUR CHAIN LENGTH VALUE FOR SECOND BLIND !"
                         End If
                     End If
+                End If
+
+                If Not String.IsNullOrEmpty(data.controllengthb) AndAlso String.IsNullOrEmpty(data.chaincolourb) Then
+                    Return "CHAIN COLOUR FOR SECOND BLIND IS REQUIRED !"
                 End If
             End If
         End If
@@ -4516,6 +4520,10 @@ Partial Class Order_Method
                             If Not Integer.TryParse(data.controllengthvaluec, controllengthc) OrElse controllengthc <= 0 Then Return "PLEASE CHECK YOUR CHAIN LENGTH VALUE FOR THIRD BLIND !"
                         End If
                     End If
+                End If
+
+                If Not String.IsNullOrEmpty(data.controllengthc) AndAlso String.IsNullOrEmpty(data.chaincolourc) Then
+                    Return "CHAIN COLOUR FOR THIRD BLIND IS REQUIRED !"
                 End If
             End If
         End If

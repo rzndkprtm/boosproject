@@ -381,6 +381,7 @@
                                                         <asp:BoundField DataField="FullName" HeaderText="Full Name" />
                                                         <asp:BoundField DataField="Email" HeaderText="Email" />
                                                         <asp:BoundField DataField="LastLogin" HeaderText="Last Login" DataFormatString="{0:dd MMM yyyy HH:mm:ss}" />
+                                                        <asp:BoundField DataField="DataPricing" HeaderText="Pricing" />
                                                         <asp:BoundField DataField="DataActive" HeaderText="Active" />
                                                         <asp:TemplateField ItemStyle-Width="120px">
                                                             <ItemTemplate>

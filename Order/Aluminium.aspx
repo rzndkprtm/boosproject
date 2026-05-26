@@ -129,7 +129,7 @@
                                             </div>
                                             <div class="row" id="divfirstblind">
                                                 <div class="col-12">
-                                                    <div class="divider divider-left-center">
+                                                    <div class="divider">
                                                         <div class="divider-text">First Blind / Blind A</div>
                                                     </div>
                                                 </div>
@@ -216,7 +216,7 @@
                                             </div>
                                             <div class="row" id="divfirstend">
                                                 <div class="col-12">
-                                                    <div class="divider divider-left-center">
+                                                    <div class="divider">
                                                         <div class="divider-text">
                                                             <a class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('First');">Open Layout (First Blind)</a>
                                                         </div>
@@ -226,7 +226,7 @@
                                             </div>
                                             <div class="row" id="divsecondblind">
                                                 <div class="col-12">
-                                                    <div class="divider divider-left-center">
+                                                    <div class="divider">
                                                         <div class="divider-text">Second Blind / Blind B</div>
                                                     </div>
                                                 </div>
@@ -300,7 +300,7 @@
                                             </div>
                                             <div class="row" id="divsecondend">
                                                 <div class="col-12">
-                                                    <div class="divider divider-left-center">
+                                                    <div class="divider">
                                                         <div class="divider-text">
                                                             <a class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Second');">Open Layout (Second Blind)</a>
                                                         </div>

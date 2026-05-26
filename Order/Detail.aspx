@@ -1236,7 +1236,7 @@
     <div class="modal fade text-center" id="modalMoreDownloadQuote" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-info">
+                <div class="modal-header bg-dark">
                     <h5 class="modal-title white">Download Quote</h5>
                 </div>
                 <div class="modal-body text-center py-4">

@@ -133,7 +133,7 @@ Public Class UnshipmentClass
             table.AddCell(CreateCell("CUSTOMER NAME", isBold:=True))
             table.AddCell(CreateCell("ORDER NUMBER", isBold:=True))
             table.AddCell(CreateCell("ORDER NAME", isBold:=True))
-            table.AddCell(CreateCell("PRODUCTION DATE", isBold:=True))
+            table.AddCell(CreateCell("PRODUCTION", isBold:=True))
             table.AddCell(CreateCell("FACTORY", isBold:=True))
 
             Dim thisData As DataTable = GetDataTableSP("sp_OrderUnshipment", params)
