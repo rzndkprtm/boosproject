@@ -31,6 +31,8 @@ Partial Class Setting_Xero
             lblAction.Text = "Add"
             titleProcess.InnerText = "Add Xero"
 
+            txtName.Enabled = True
+
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         Catch ex As Exception
             MessageError_Process(True, ex.ToString())
@@ -80,6 +82,9 @@ Partial Class Setting_Xero
                     txtAccountCode.Text = myData("AccountCode").ToString()
                     txtDescription.Text = myData("Description").ToString()
                     ddlActive.SelectedValue = Convert.ToInt32(myData("Active"))
+
+                    txtName.Enabled = False
+                    If Session("RoleName") = "Developer" Then txtName.Enabled = True
 
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Catch ex As Exception
