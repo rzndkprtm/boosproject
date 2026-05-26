@@ -1,5 +1,4 @@
-﻿
-Partial Class Order_Component
-    Inherits System.Web.UI.Page
+﻿Partial Class Order_Component
+    Inherits Page
 
 End Class

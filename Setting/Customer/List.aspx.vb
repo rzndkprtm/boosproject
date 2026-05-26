@@ -185,7 +185,7 @@ Partial Class Setting_Customer_List
             gvList.Columns(4).Visible = LoginAccess("Visible Company") ' COMPANY
             gvList.Columns(5).Visible = LoginAccess("Visible Company Detail") ' COMPANY DETAIL
             gvList.Columns(6).Visible = LoginAccess("Visible Area") ' AREA
-            gvList.Columns(7).Visible = LoginAccess("Visible Operator") ' OPERATOR
+            gvList.Columns(7).Visible = LoginAccess("Visible Sales") ' OPERATOR
             gvList.Columns(8).Visible = LoginAccess("Visible Cash Sale") ' CASH SALE
             gvList.Columns(9).Visible = LoginAccess("Visible On Stop") ' ON STOP
             gvList.Columns(10).Visible = LoginAccess("Visible Active") ' ACTIVE
