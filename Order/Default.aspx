@@ -97,6 +97,11 @@
                                                  </asp:TemplateField>
                                                  <asp:BoundField DataField="Id" HeaderText="ID" />
                                                  <asp:BoundField DataField="OrderId" HeaderText="Order ID" />
+                                                 <%--<asp:TemplateField HeaderText="Customer Name" ItemStyle-Wrap="true">
+                                                     <ItemTemplate>
+                                                         <%# BindCustomerText(Eval("CustomerName").ToString(), Eval("OperatorName").ToString()) %>
+                                                     </ItemTemplate>
+                                                 </asp:TemplateField>--%>
                                                  <asp:BoundField DataField="CustomerName" HeaderText="Customer Name" ItemStyle-Wrap="true" />
                                                  <asp:BoundField DataField="OrderNumber" HeaderText="Order Number" ItemStyle-Wrap="true" />
                                                  <asp:BoundField DataField="OrderName" HeaderText="Order Name" ItemStyle-Wrap="true" />

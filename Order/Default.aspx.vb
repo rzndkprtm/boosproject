@@ -867,6 +867,14 @@ Partial Class Order_Default
         divErrorShipmentOrder.Visible = visible : msgErrorShipmentOrder.InnerText = message
     End Sub
 
+    'Protected Function BindCustomerText(customerName As String, sales As String) As String
+    '    If Session("RoleName") = "Developer" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Account" OrElse (Session("RoleName") = "Sales" AndAlso Session("LevelName") = "Leader") Then
+    '        Dim thisString As String = String.Format("{0}<br />(Sales : {1})", customerName, sales)
+    '        Return thisString
+    '    End If
+    '    Return customerName
+    'End Function
+
     Protected Function VisibleEdit(status As String, active As Boolean) As Boolean
         If active = True Then
             If Session("RoleName") = "Developer" Then Return True
