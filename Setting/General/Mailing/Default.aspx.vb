@@ -50,7 +50,7 @@ Partial Class Setting_General_Mailing_Default
 
             Dim dataId As String = e.CommandArgument.ToString()
             If e.CommandName = "Ubah" Then
-                Dim url As String = String.Format("~/setting/general/mailing/edit?mailingid={0}", dataId)
+                Dim url As String = String.Format("~/setting/general/mailing/edit?mailid={0}", dataId)
                 Response.Redirect(url, False)
             End If
         End If

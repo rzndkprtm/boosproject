@@ -16,12 +16,12 @@ Partial Class Setting_General_Mailing_Edit
             Exit Sub
         End If
 
-        If String.IsNullOrEmpty(Request.QueryString("mailingid")) Then
+        If String.IsNullOrEmpty(Request.QueryString("mailid")) Then
             Response.Redirect("~/setting/general/mailing", False)
             Exit Sub
         End If
 
-        lblId.Text = Request.QueryString("mailingid").ToString()
+        lblId.Text = Request.QueryString("mailid").ToString()
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
