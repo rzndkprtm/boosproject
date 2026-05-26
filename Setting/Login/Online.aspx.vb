@@ -67,7 +67,7 @@ Partial Class Setting_Login_Online
                 Dim roleId As String = txtRoleId.Text
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Notifications VALUES (@Id, @RoleId, @LoginId, @Title, @Message, GETDATE(), GETDATE(), 1)", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Notifications VALUES (@Id, @RoleId, NULL, @LoginId, @Title, @Message, GETDATE(), GETDATE(), 1)", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
                         myCmd.Parameters.AddWithValue("@RoleId", roleId)
                         myCmd.Parameters.AddWithValue("@LoginId", loginId)
