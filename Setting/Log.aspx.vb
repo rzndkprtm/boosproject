@@ -19,6 +19,11 @@ Partial Class Setting_Log
         End If
     End Sub
 
+    Protected Sub tmrRefresh_Tick(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        BindData(txtSearch.Text)
+    End Sub
+
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         BindData(txtSearch.Text)
