@@ -30,7 +30,12 @@ Partial Class Setting_General_Notification_Edit
 
     Protected Sub ddlLoginRole_SelectedIndexChanged(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
-        BindLoginId(ddlLoginRole.SelectedValue)
+        BindLoginId(ddlLoginRole.SelectedValue, ddlCompany.SelectedValue)
+    End Sub
+
+    Protected Sub ddlCompany_SelectedIndexChanged(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        BindLoginId(ddlLoginRole.SelectedValue, ddlCompany.SelectedValue)
     End Sub
 
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
@@ -63,18 +68,26 @@ Partial Class Setting_General_Notification_Edit
             End If
 
             If msgError.InnerText = "" Then
+                If Not ddlLoginRole.SelectedValue = "8" Then ddlCompany.SelectedValue = ""
+
                 Dim loginId As String = String.Empty
                 If Not String.IsNullOrEmpty(lbLoginId.SelectedValue) Then
                     loginId = String.Join(",", lbLoginId.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
                 End If
                 If String.IsNullOrEmpty(lbLoginId.SelectedValue) Then
-                    loginId = settingClass.GetItemData("SELECT STRING_AGG(CAST(Id AS VARCHAR), ',') AS Ids FROM Logins WHERE RoleId='" & ddlLoginRole.SelectedValue & "'")
+                    If Not String.IsNullOrEmpty(ddlCompany.SelectedValue) Then
+                        loginId = settingClass.GetItemData("SELECT STRING_AGG(CAST(Logins.Id AS VARCHAR), ',') AS Ids FROM Logins LEFT JOIN Customers ON Logins.CustomerId=Customers.Id WHERE Logins.RoleId='" & ddlLoginRole.SelectedValue & "' AND Customers.CompanyId='" & ddlCompany.SelectedValue & "'")
+                    End If
+                    If String.IsNullOrEmpty(ddlCompany.SelectedValue) Then
+                        loginId = settingClass.GetItemData("SELECT STRING_AGG(CAST(Id AS VARCHAR), ',') AS Ids FROM Logins WHERE RoleId='" & ddlLoginRole.SelectedValue & "'")
+                    End If
                 End If
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Notifications SET RoleId=@RoleId, LoginId=@LoginId, Title=@Title, Message=@Message, StartDate=@StartDate, EndDate=@EndDate, Active=@Active WHERE Id=@Id; DELETE FROM NotificationLogs WHERE NotificationId=@Id;", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Notifications SET RoleId=@RoleId, CompanyId=@CompanyId, LoginId=@LoginId, Title=@Title, Message=@Message, StartDate=@StartDate, EndDate=@EndDate, Active=@Active WHERE Id=@Id; DELETE FROM NotificationLogs WHERE NotificationId=@Id;", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         myCmd.Parameters.AddWithValue("@RoleId", ddlLoginRole.SelectedValue)
+                        myCmd.Parameters.AddWithValue("@CompanyId", If(String.IsNullOrEmpty(ddlCompany.SelectedValue), CType(DBNull.Value, Object), ddlCompany.SelectedValue))
                         myCmd.Parameters.AddWithValue("@LoginId", loginId)
                         myCmd.Parameters.AddWithValue("@Title", txtTitle.Text.Trim())
                         myCmd.Parameters.AddWithValue("@Message", htmlContent)
@@ -110,11 +123,15 @@ Partial Class Setting_General_Notification_Edit
             If thisData Is Nothing Then Exit Sub
 
             Dim roleId As String = thisData("RoleId").ToString()
+            Dim companyId As String = thisData("CompanyId").ToString()
 
             BindLoginRole()
-            BindLoginId(roleId)
+            BindCompany()
+            BindLoginId(roleId, companyId)
+            VisibleCompany(roleId)
 
             ddlLoginRole.SelectedValue = thisData("RoleId").ToString()
+            ddlCompany.SelectedValue = thisData("CompanyId").ToString()
             txtTitle.Text = thisData("Title").ToString()
             hfMessage.Value = thisData("Message").ToString()
             txtStartDate.Text = Convert.ToDateTime(thisData("StartDate")).ToString("yyyy-MM-dd")
@@ -156,11 +173,35 @@ Partial Class Setting_General_Notification_Edit
         End Try
     End Sub
 
-    Protected Sub BindLoginId(roleId As String)
+    Protected Sub BindCompany()
+        ddlCompany.Items.Clear()
+        Try
+            ddlCompany.DataSource = settingClass.GetDataTable("SELECT * FROM Companys ORDER BY Name ASC")
+            ddlCompany.DataTextField = "Alias"
+            ddlCompany.DataValueField = "Id"
+            ddlCompany.DataBind()
+
+            If ddlCompany.Items.Count > 0 Then
+                ddlCompany.Items.Insert(0, New ListItem("", ""))
+            End If
+        Catch ex As Exception
+            ddlCompany.Items.Clear()
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindLoginId(roleId As String, companyId As String)
         lbLoginId.Items.Clear()
         Try
             If Not String.IsNullOrEmpty(roleId) Then
-                lbLoginId.DataSource = settingClass.GetDataTable("SELECT * FROM Logins WHERE RoleId='" & roleId & "' ORDER BY FullName ASC")
+                Dim thisString As String = "SELECT Logins.* FROM Logins WHERE Logins.RoleId='" & roleId & "' ORDER BY Logins.UserName ASC"
+                If Not String.IsNullOrEmpty(companyId) Then
+                    thisString = "SELECT Logins.* FROM Logins LEFT JOIN Customers ON Logins.CustomerId=Customers.Id WHERE Logins.RoleId='" & roleId & "' AND Customers.CompanyId='" & companyId & "' ORDER BY Logins.UserName ASC"
+                End If
+
+                lbLoginId.DataSource = settingClass.GetDataTable(thisString)
                 lbLoginId.DataTextField = "FullName"
                 lbLoginId.DataValueField = "Id"
                 lbLoginId.DataBind()
@@ -175,6 +216,11 @@ Partial Class Setting_General_Notification_Edit
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
         End Try
+    End Sub
+
+    Protected Sub VisibleCompany(roleId As String)
+        divCompany.Visible = False
+        If roleId = "8" Then divCompany.Visible = True
     End Sub
 
     Protected Sub MessageError(visible As Boolean, message As String)

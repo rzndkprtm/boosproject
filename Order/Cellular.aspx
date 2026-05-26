@@ -142,7 +142,7 @@
                                             <div id="divday">
                                                 <div class="row">
                                                     <div class="col-12">
-                                                        <div class="divider divider-left-center">
+                                                        <div class="divider">
                                                             <div class="divider-text">Top Fabric</div>
                                                         </div>
                                                     </div>
@@ -172,7 +172,7 @@
                                             <div id="divnight">
                                                 <div class="row">
                                                     <div class="col-12">
-                                                        <div class="divider divider-left-center">
+                                                        <div class="divider">
                                                             <div class="divider-text">Bottom Fabric</div>
                                                         </div>
                                                     </div>

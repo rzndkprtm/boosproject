@@ -112,31 +112,72 @@ $("#bottomtypef").on("change", function () {
 });
 
 $("#chaincolour").on("change", function () {
-    const controllength = document.getElementById("controllength").value;
+    const chainColour = $(this).val();
+    if (!chainColour) {
+        $("#controllength").val("");
+    }
 
-    bindChainStopper($(this).val());
-    visibleCustomChainLength($(this).val(), controllength, 1);
+    const controllength = $("#controllength").val();
+    bindChainStopper(chainColour);
+    visibleCustomChainLength(chainColour, controllength, 1);
 });
 
 $("#chaincolourb").on("change", function () {
-    const controllength = document.getElementById("controllengthb").value;
+    const chainColour = $(this).val();
+    if (!chainColour) {
+        $("#controllengthb").val("");
+    }
 
-    bindChainStopperB($(this).val());
-    visibleCustomChainLength($(this).val(), controllength, 2);
+    const controllength = $("#controllengthb").val();
+
+    bindChainStopperB(chainColour);
+    visibleCustomChainLength(chainColour, controllength, 2);
 });
 
 $("#chaincolourc").on("change", function () {
-    const controllength = document.getElementById("controllengthc").value;
+    const chainColour = $(this).val();
+    if (!chainColour) {
+        $("#controllengthc").val("");
+    }
 
-    bindChainStopperC($(this).val());
-    visibleCustomChainLength($(this).val(), controllength, 3);
+    const controllength = $("#controllengthc").val();
+
+    bindChainStopperC(chainColour);
+    visibleCustomChainLength(chainColour, controllength, 3);
 });
 
 $("#chaincolourd").on("change", function () {
-    const controllength = document.getElementById("controllengthd").value;
+    const chainColour = $(this).val();
+    if (!chainColour) {
+        $("#controllengthd").val("");
+    }
 
-    bindChainStopperD($(this).val());
-    visibleCustomChainLength($(this).val(), controllength, 4);
+    const controllength = $("#controllengthd").val();
+
+    bindChainStopperD(chainColour);
+    visibleCustomChainLength(chainColour, controllength, 4);
+});
+
+$("#chaincoloure").on("change", function () {
+    const chainColour = $(this).val();
+    if (!chainColour) {
+        $("#controllengthe").val("");
+    }
+
+    const controllength = $("#controllengthe").val();
+    bindChainStopperE(chainColour);
+    visibleCustomChainLength(chainColour, controllength, 5);
+});
+
+$("#chaincolourf").on("change", function () {
+    const chainColour = $(this).val();
+    if (!chainColour) {
+        $("#controllengthf").val("");
+    }
+
+    const controllength = $("#controllengthf").val();
+    bindChainStopperF(chainColour);
+    visibleCustomChainLength(chainColour, controllength, 6);
 });
 
 $("#controllength").on("change", function () {
@@ -157,6 +198,16 @@ $("#controllengthc").on("change", function () {
 $("#controllengthd").on("change", function () {
     const chaincolour = document.getElementById("chaincolourd").value;
     visibleCustomChainLength(chaincolour, $(this).val(), 4);
+});
+
+$("#controllengthe").on("change", function () {
+    const chaincolour = document.getElementById("chaincoloure").value;
+    visibleCustomChainLength(chaincolour, $(this).val(), 5);
+});
+
+$("#controllengthf").on("change", function () {
+    const chaincolour = document.getElementById("chaincolourf").value;
+    visibleCustomChainLength(chaincolour, $(this).val(), 6);
 });
 
 $("#width").on("input", function () {
@@ -1966,7 +2017,7 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
             "divbottomcolour", "divbottomcolourb", "divbottomcolourc", "divbottomcolourd", "divbottomcoloure", "divbottomcolourf",
             "divflatbottom", "divflatbottomb", "divflatbottomc", "divflatbottomd", "divflatbottome", "divflatbottomf",
             "divsize", "divsizeb", "divsizec", "divsized", "divsizee", "divsizef",
-            "divtoptrack", "divspringassist", "divbracketsize", "divbracketextension", "divadjusting", "divmarkup", "divprinting"
+            "divtoptrack", "divspringassist", "divbracketsize", "divbracketextension", "divadjusting", "divmarkup", "divprinting", "spanIndependent"
         ].map(id => document.getElementById(id));
 
         const toggleDisplay = (el, show) => {
@@ -2057,7 +2108,7 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                     divShow.push("divchainstopper", "divcontrollength", "divchainstopperb", "divcontrollengthb");
                 }
 
-                textdbfront.innerHTML = "FRONT SIDE BLINDS";
+                textdbfront.innerHTML = "FRONT SIDE BLIND";
                 textdbback.innerHTML = "BACK SIDE BLIND (SIDE CLOSEST TO THE WINDOW)";
             }
             else if (blindName === "Link 2 Blinds Dependent") {
@@ -2077,8 +2128,8 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                     divShow.push("divchainstopper", "divcontrollength");
                 }
 
-                textlinkdepfirst.innerHTML = "FIRST BLIND / CONTROL BLIND / BLIND NO 1";
-                textlinkdepsecond.innerHTML = "SECOND BLIND / END BLIND / BLIND NO 2";
+                textlinkdepfirst.innerHTML = "1ST BLIND / CONTROL BLIND / BLIND NO 1";
+                textlinkdepsecond.innerHTML = "2ND BLIND / END BLIND / BLIND NO 2";
             }
             else if (blindName === "Link 2 Blinds Independent") {
                 divShow.push(
@@ -2097,8 +2148,8 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                     divShow.push("divchainstopper", "divcontrollength", "divchainstopperb", "divcontrollengthb");
                 }
 
-                textlinkindfirst.innerHTML = "FIRST BLIND & LEFT CONTROL BLIND";
-                textlinkindsecond.innerHTML = "SECOND BLIND & RIGHT CONTROL BLIND";
+                textlinkindfirst.innerHTML = "1ST BLIND & LEFT CONTROL BLIND";
+                textlinkindsecond.innerHTML = "2ND BLIND & RIGHT CONTROL BLIND";
             }
             else if (blindName === "Link 3 Blinds Dependent") {
                 divShow.push(
@@ -2119,9 +2170,9 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                     divShow.push("divchainstopper", "divcontrollength");
                 }
 
-                textlinkdepfirst.innerHTML = "FIRST BLIND / CONTROL BLIND / BLIND NO 1";
-                textlinkdepsecond.innerHTML = "SECOND BLIND / MIDDLE BLIND / BLIND NO 2";
-                textlinkdepthird.innerHTML = "THIRD BLIND / END BLIND / BLIND NO 3";
+                textlinkdepfirst.innerHTML = "1ST BLIND / CONTROL BLIND / BLIND NO 1";
+                textlinkdepsecond.innerHTML = "2ND BLIND / MIDDLE BLIND / BLIND NO 2";
+                textlinkdepthird.innerHTML = "3RD BLIND / END BLIND / BLIND NO 3";
             }
             else if (blindName === "Link 3 Blinds Independent with Dependent") {
                 divShow.push(
@@ -2131,7 +2182,8 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                     "divfabric", "divroll", "divcontrolposition",
                     "divbottomtype", "divbottomcolour", "divsize",
                     "divbottomtypeb", "divbottomcolourb", "divsizeb",
-                    "divbottomtypec", "divbottomcolourc", "divsizec"
+                    "divbottomtypec", "divbottomcolourc", "divsizec",
+                    "spanIndependent"
                 );
 
                 if (["Gear Reduction 38mm", "Gear Reduction 45mm", "Gear Reduction 49mm"].includes(tubeName)) {
@@ -2142,9 +2194,9 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                     divShow.push("divchainstopper", "divcontrollength", "divchainstopperc", "divcontrollengthc");
                 }
 
-                textlinkindfirst.innerHTML = "FIRST BLIND / INDEPENDENT CONTROL";
-                textlinkindsecond.innerHTML = "SECOND BLIND / MIDDLE BLIND";
-                textlinkindthird.innerHTML = "THIRD BLIND / SECOND CONTROL";
+                textlinkindfirst.innerHTML = "1ST BLIND / INDEPENDENT CONTROL";
+                textlinkindsecond.innerHTML = "2ND BLIND / MIDDLE BLIND";
+                textlinkindthird.innerHTML = "3RD BLIND / SECOND CONTROL";
             }
             else if (blindName === "DB Link 2 Blinds Dependent") {
                 divShow.push(
@@ -2167,13 +2219,13 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                     divShow.push("divchainstopper", "divcontrollength", "divchainstopperc", "divcontrollengthc");
                 }
 
-                textdbfront.innerHTML = "ROLLER - FIRST SIDE";
-                textlinkdepfirst.innerHTML = "First Blind / Control Blind / Blind No 1";
-                textlinkdepsecond.innerHTML = "Second Blind / End Blind / Blind No 2";
+                textdbfront.innerHTML = "FRONT SIDE BLIND";
+                textlinkdepfirst.innerHTML = "1st Blind / Control Blind / Blind No 1";
+                textlinkdepsecond.innerHTML = "2nd Blind / End Blind / Blind No 2";
 
-                textthird.innerHTML = "ROLLER - SECOND SIDE";
-                textlinkdepthird.innerHTML = "Third Blind / Control Blind / Blind No 3";
-                textlinkdepfourth.innerHTML = "Fourth Blind / End Blind / Blind No 4";
+                textthird.innerHTML = "BACK SIDE BLIND (SIDE CLOSEST TO THE WINDOW)";
+                textlinkdepthird.innerHTML = "3rd Blind / Control Blind / Blind No 3";
+                textlinkdepfourth.innerHTML = "4th Blind / End Blind / Blind No 4";
             }
             else if (blindName === "DB Link 2 Blinds Independent") {
                 divShow.push(
@@ -2196,13 +2248,13 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                     divShow.push("divchainstopper", "divcontrollength", "divchainstopperb", "divcontrollengthb", "divchainstopperc", "divcontrollengthc", "divchainstopperd", "divcontrollengthd");
                 }
 
-                textdbfront.innerHTML = "ROLLER - FIRST SIDE";
-                textlinkindfirst.innerHTML = "First Blind / Blind No 1";
-                textlinkindsecond.innerHTML = "Second Blind / Blind No 2";
+                textdbfront.innerHTML = "FRONT SIDE BLIND";
+                textlinkindfirst.innerHTML = "1st Blind / Blind No 1";
+                textlinkindsecond.innerHTML = "2nd Blind / Blind No 2";
 
-                textthird.innerHTML = "ROLLER - SECOND SIDE";
-                textlinkindthird.innerHTML = "Third Blind / Blind No 3";
-                textlinkindfourth.innerHTML = "Fourth Blind / Blind No 4";
+                textthird.innerHTML = "BACK SIDE BLIND (SIDE CLOSEST TO THE WINDOW)";
+                textlinkindthird.innerHTML = "3rd Blind / Blind No 3";
+                textlinkindfourth.innerHTML = "4th Blind / Blind No 4";
             }
             else if (blindName === "DB Link 3 Blinds Dependent") {
                 divShow.push(
@@ -2229,15 +2281,15 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                     divShow.push("divchainstopper", "divcontrollength", "divchainstopperd", "divcontrollengthd");
                 }
 
-                textdbfront.innerHTML = "ROLLER - FIRST SIDE";
-                textlinkdepfirst.innerHTML = "First Blind / Control Blind / Blind No 1";
-                textlinkdepsecond.innerHTML = "Second Blind / Middle Blind / Blind No 2";
-                textlinkdepthird.innerHTML = "Third Blind / End Blind / Blind No 3";
+                textdbfront.innerHTML = "FRONT SIDE BLIND";
+                textlinkdepfirst.innerHTML = "1st Blind / Control Blind / Blind No 1";
+                textlinkdepsecond.innerHTML = "2nd Blind / Middle Blind / Blind No 2";
+                textlinkdepthird.innerHTML = "3rd Blind / End Blind / Blind No 3";
 
-                textfourth.innerHTML = "ROLLER - SECOND SIDE";
-                textlinkdepfourth.innerHTML = "Fourth Blind / Control Blind / Blind No 4";
-                textlinkdepfifth.innerHTML = "Fifth Blind / Middle Blind / Blind No 5";
-                textlinkdepsixth.innerHTML = "Sixth Blind / End Blind / Blind No 6";
+                textfourth.innerHTML = "BACK SIDE BLIND (SIDE CLOSEST TO THE WINDOW)";
+                textlinkdepfourth.innerHTML = "4th Blind / Control Blind / Blind No 4";
+                textlinkdepfifth.innerHTML = "5th Blind / Middle Blind / Blind No 5";
+                textlinkdepsixth.innerHTML = "6th Blind / End Blind / Blind No 6";
             }
             else if (blindName === "DB Link 3 Blinds Independent with Dependent") {
                 divShow.push(
@@ -2264,15 +2316,15 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                     divShow.push("divchainstopper", "divcontrollength", "divchainstopperc", "divcontrollengthc", "divchainstopperd", "divcontrollengthd", "divchainstopperf", "divcontrollengthf");
                 }
 
-                textdbfront.innerHTML = "ROLLER - FIRST SIDE";
-                textlinkindfirst.innerHTML = "First Blind / Ind Control Blind / Blind No 1";
-                textlinkindsecond.innerHTML = "Second Blind / Middle Blind / Blind No 2";
-                textlinkindthird.innerHTML = "Third Blind / End Blind / Blind No 3";
+                textdbfront.innerHTML = "FRONT SIDE BLIND";
+                textlinkindfirst.innerHTML = "1st Blind / Ind Control Blind / Blind No 1";
+                textlinkindsecond.innerHTML = "2nd Blind / Middle Blind / Blind No 2";
+                textlinkindthird.innerHTML = "3rd Blind / End Blind / Blind No 3";
 
-                textfourth.innerHTML = "ROLLER - SECOND SIDE";
-                textlinkindfourth.innerHTML = "Fourth Blind / Ind Control Blind / Blind No 4";
-                textlinkindfifth.innerHTML = "Fifth Blind / Middle Blind / Blind No 5";
-                textlinkindsixth.innerHTML = "Sixth Blind / End Blind / Blind No 6";
+                textfourth.innerHTML = "BACK SIDE BLIND (SIDE CLOSEST TO THE WINDOW)";
+                textlinkindfourth.innerHTML = "4th Blind / Ind Control Blind / Blind No 4";
+                textlinkindfifth.innerHTML = "5th Blind / Middle Blind / Blind No 5";
+                textlinkindsixth.innerHTML = "6th Blind / End Blind / Blind No 6";
             }
 
             if (itemAction === "edit" || itemAction === "view" || itemAction === "copy") {
@@ -2339,7 +2391,7 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
     });
 }
 
-function visibleCustomChainLength(chainColour, chainLength, number) {
+function visibleCustomChainLength(chainColour, controlLength, number) {
     return new Promise((resolve) => {
         let thisDiv = null;
         let thisDiv2 = null;
@@ -2356,6 +2408,12 @@ function visibleCustomChainLength(chainColour, chainLength, number) {
         } else if (number === 4) {
             thisDiv = document.getElementById("divcontrollengthvalued");
             thisDiv2 = document.getElementById("divcontrollengthvalued2");
+        } else if (number === 5) {
+            thisDiv = document.getElementById("divcontrollengthvaluee");
+            thisDiv2 = document.getElementById("divcontrollengthvaluee2");
+        } else if (number === 6) {
+            thisDiv = document.getElementById("divcontrollengthvaluef");
+            thisDiv2 = document.getElementById("divcontrollengthvaluef2");
         }
 
         if (!thisDiv || !thisDiv2) {
@@ -2365,22 +2423,25 @@ function visibleCustomChainLength(chainColour, chainLength, number) {
         thisDiv.style.display = "none";
         thisDiv2.style.display = "none";
 
-        if (chainLength === "Custom") {
-            getChainLength(chainColour).then(chainType => {
-                if (chainType === "Static") {
+        if (chainColour && controlLength === "Custom") {
+            getChainLength(chainColour).then(chainLength => {
+                if (chainLength === "Static") {
                     thisDiv.style.display = "none";
                     thisDiv2.style.display = "";
-                } else if (chainType === "Flexible") {
+                } else if (chainLength === "Flexible") {
                     thisDiv.style.display = "";
                     thisDiv2.style.display = "none";
                 } else {
                     thisDiv.style.display = "";
                     thisDiv2.style.display = "";
                 }
+
                 resolve();
+
             }).catch(error => {
                 resolve();
             });
+
         } else {
             resolve();
         }

@@ -191,7 +191,7 @@
                                             </div>
                                             <div class="row mt-3" id="divdbfront">
                                                 <div class="col-12">
-                                                    <div class="divider divider-left-center">
+                                                    <div class="divider">
                                                         <div class="divider-text" id="textdbfront"></div>
                                                     </div>
                                                 </div>
@@ -239,11 +239,12 @@
                                                         <option value="Left">Left</option>
                                                         <option value="Right">Right</option>
                                                     </select>
+                                                    <span id="spanIndependent">* Independent Blind</span>
                                                 </div>
                                             </div>
                                             <div class="row" id="divlinkindfirst">
                                                 <div class="col-12">
-                                                    <div class="divider divider-left-center">
+                                                    <div class="divider">
                                                         <div class="divider-text" id="textlinkindfirst"></div>
                                                     </div>
                                                 </div>
@@ -300,7 +301,7 @@
                                             </div>
                                             <div class="row" id="divlinkdepfirst">
                                                 <div class="col-12">
-                                                    <div class="divider divider-left-center">
+                                                    <div class="divider">
                                                         <div class="divider-text" id="textlinkdepfirst"></div>
                                                     </div>
                                                 </div>
@@ -358,14 +359,14 @@
                                             </div>
                                             <div class="row mt-3 mb-2" id="divdbback">
                                                 <div class="col-12">
-                                                    <div class="divider divider-left-center">
+                                                    <div class="divider">
                                                         <div class="divider-text" id="textdbback"></div>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="row" id="divsecond">
                                                 <div class="col-12">
-                                                    <div class="divider divider-left-center">
+                                                    <div class="divider">
                                                         <div class="divider-text" id="textsecond"></div>
                                                     </div>
                                                 </div>
@@ -405,7 +406,7 @@
                                             </div>
                                             <div class="row" id="divlinkindsecond">
                                                 <div class="col-12">
-                                                    <div class="divider divider-left-center">
+                                                    <div class="divider">
                                                         <div class="divider-text" id="textlinkindsecond"></div>
                                                     </div>
                                                 </div>
@@ -438,11 +439,7 @@
                                                     <label>Chain Stopper</label>
                                                 </div>
                                                 <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                    <select id="chainstopperb" class="form-select">
-                                                        <option value="">Stopper ...</option>
-                                                        <option value="With Stopper">With Stopper</option>
-                                                        <option value="No Stopper">No Stopper</option>
-                                                    </select>
+                                                    <select id="chainstopperb" class="form-select"></select>
                                                 </div>
                                             </div>
                                             <div class="row" id="divcontrollengthb">
@@ -478,7 +475,7 @@
                                             </div>
                                             <div class="row" id="divlinkdepsecond">
                                                 <div class="col-12">
-                                                    <div class="divider divider-left-center">
+                                                    <div class="divider">
                                                         <div class="divider-text" id="textlinkdepsecond"></div>
                                                     </div>
                                                 </div>
@@ -542,7 +539,7 @@
                                             </div>
                                             <div class="row" id="divthird">
                                                 <div class="col-12">
-                                                    <div class="divider divider-left-center">
+                                                    <div class="divider">
                                                         <div class="divider-text" id="textthird"></div>
                                                     </div>
                                                 </div>
@@ -582,7 +579,7 @@
                                             </div>
                                             <div class="row" id="divlinkindthird">
                                                 <div class="col-12">
-                                                    <div class="divider divider-left-center">
+                                                    <div class="divider">
                                                         <div class="divider-text" id="textlinkindthird"></div>
                                                     </div>
                                                 </div>
@@ -651,7 +648,7 @@
                                             </div>
                                             <div class="row" id="divlinkdepthird">
                                                 <div class="col-12">
-                                                    <div class="divider divider-left-center">
+                                                    <div class="divider">
                                                         <div class="divider-text" id="textlinkdepthird"></div>
                                                     </div>
                                                 </div>
@@ -712,7 +709,7 @@
                                             </div>
                                             <div class="row" id="divfourth">
                                                 <div class="col-12">
-                                                    <div class="divider divider-left-center">
+                                                    <div class="divider">
                                                         <div class="divider-text" id="textfourth"></div>
                                                     </div>
                                                 </div>
@@ -764,7 +761,7 @@
                                             </div>
                                             <div class="row" id="divlinkindfourth">
                                                 <div class="col-12">
-                                                    <div class="divider divider-left-center">
+                                                    <div class="divider">
                                                         <div class="divider-text" id="textlinkindfourth"></div>
                                                     </div>
                                                 </div>
@@ -821,7 +818,7 @@
                                             </div>
                                             <div class="row" id="divlinkdepfourth">
                                                 <div class="col-12">
-                                                    <div class="divider divider-left-center">
+                                                    <div class="divider">
                                                         <div class="divider-text" id="textlinkdepfourth"></div>
                                                     </div>
                                                 </div>
@@ -882,7 +879,7 @@
                                             </div>
                                             <div class="row" id="divfifth">
                                                 <div class="col-12">
-                                                    <div class="divider divider-left-center">
+                                                    <div class="divider">
                                                         <div class="divider-text" id="textfifth"></div>
                                                     </div>
                                                 </div>
@@ -919,7 +916,7 @@
                                             </div>
                                             <div class="row" id="divlinkindfifth">
                                                 <div class="col-12">
-                                                    <div class="divider divider-left-center">
+                                                    <div class="divider">
                                                         <div class="divider-text" id="textlinkindfifth"></div>
                                                     </div>
                                                 </div>
@@ -985,7 +982,7 @@
                                             </div>
                                             <div class="row" id="divlinkdepfifth">
                                                 <div class="col-12">
-                                                    <div class="divider divider-left-center">
+                                                    <div class="divider">
                                                         <div class="divider-text" id="textlinkdepfifth"></div>
                                                     </div>
                                                 </div>
@@ -1046,7 +1043,7 @@
                                             </div>
                                             <div class="row" id="divsixth">
                                                 <div class="col-12">
-                                                    <div class="divider divider-left-center">
+                                                    <div class="divider">
                                                         <div class="divider-text" id="textsixth"></div>
                                                     </div>
                                                 </div>
@@ -1083,7 +1080,7 @@
                                             </div>
                                             <div class="row" id="divlinkindsixth">
                                                 <div class="col-12">
-                                                    <div class="divider divider-left-center">
+                                                    <div class="divider">
                                                         <div class="divider-text" id="textlinkindsixth"></div>
                                                     </div>
                                                 </div>
@@ -1104,11 +1101,11 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Chain Colour</label>
                                                 </div>
-                                                <div class="col-9 col-sm-9 col-lg-6 form-group">
-                                                    <select id="chaincolourf" class="form-select"></select>
-                                                </div>
-                                                <div class="col-3 col-sm-3 col-lg-2">
-                                                    <a class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Chain Type');">Info</a>
+                                                <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                                    <div class="input-group">
+                                                        <select id="chaincolourf" class="form-select"></select>
+                                                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Chain');">Info</a>
+                                                    </div>                                                    
                                                 </div>
                                             </div>
                                             <div class="row" id="divchainstopperf">
@@ -1149,7 +1146,7 @@
                                             </div>
                                             <div class="row" id="divlinkdepsixth">
                                                 <div class="col-12">
-                                                    <div class="divider divider-left-center">
+                                                    <div class="divider">
                                                         <div class="divider-text" id="textlinkdepsixth"></div>
                                                     </div>
                                                 </div>
@@ -1504,5 +1501,5 @@
         </div>
     </div>
     
-    <script src="/Scripts/Gabuts/Roller.js?v=1.0.5"></script>
+    <script src="/Scripts/Gabuts/Roller.js?v=1.1.0"></script>
 </asp:Content>

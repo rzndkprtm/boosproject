@@ -867,13 +867,15 @@ Partial Class Order_Default
         divErrorShipmentOrder.Visible = visible : msgErrorShipmentOrder.InnerText = message
     End Sub
 
-    'Protected Function BindCustomerText(customerName As String, sales As String) As String
-    '    If Session("RoleName") = "Developer" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Account" OrElse (Session("RoleName") = "Sales" AndAlso Session("LevelName") = "Leader") Then
-    '        Dim thisString As String = String.Format("{0}<br />(Sales : {1})", customerName, sales)
-    '        Return thisString
-    '    End If
-    '    Return customerName
-    'End Function
+    Protected Function BindCustomerText(customerName As String, sales As String) As String
+        If Session("RoleName") = "Developer" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Account" OrElse (Session("RoleName") = "Sales" AndAlso Session("LevelName") = "Leader") Then
+            If String.IsNullOrWhiteSpace(sales) Then
+                Return customerName
+            End If
+            Return String.Format("{0}<br /><span style='font-size:13px; color:red;'>(Sales : {1})</span>", customerName, sales)
+        End If
+        Return customerName
+    End Function
 
     Protected Function VisibleEdit(status As String, active As Boolean) As Boolean
         If active = True Then
@@ -1040,12 +1042,6 @@ Partial Class Order_Default
     Protected Function VisibleSuratJalan(company As String, status As String, active As Boolean) As Boolean
         If active = True AndAlso company = "3" Then
             If Session("RoleName") = "Developer" Then Return True
-            'If Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Export" Then
-            '    If status = "New Order" Then Return True
-            '    If status = "In Production" Then Return True
-            '    If status = "On Hold" Then Return True
-            '    If status = "Shipped Out" Then Return True
-            'End If
         End If
         Return False
     End Function

@@ -51,11 +51,9 @@ Public Class PreviewClass
             Using conn As New SqlConnection(myConn)
                 Using cmd As New SqlCommand(spName, conn)
                     cmd.CommandType = CommandType.StoredProcedure
-
                     If params IsNot Nothing AndAlso params.Count > 0 Then
                         cmd.Parameters.AddRange(params.ToArray())
                     End If
-
                     Using da As New SqlDataAdapter(cmd)
                         da.Fill(dt)
                     End Using
@@ -916,7 +914,9 @@ Public Class PreviewClass
 
                         Dim controlLength As String = String.Empty
                         If controlName = "Chain" Then
-                            controlLength = String.Format("{0}: {1}mm", rollerData.Rows(i)("ChainLength").ToString(), rollerData.Rows(i)("ChainLengthValue"))
+                            If Not rollerData.Rows(i)("ChainLengthValue").ToString() = "0" Then
+                                controlLength = String.Format("{0}: {1}mm", rollerData.Rows(i)("ChainLength").ToString(), rollerData.Rows(i)("ChainLengthValue"))
+                            End If
                         End If
 
                         Dim bottomType As String = GetItemData("SELECT Name FROM Bottoms WHERE Id='" & rollerData.Rows(i)("BottomType").ToString() & "'")
@@ -941,6 +941,31 @@ Public Class PreviewClass
                             If itemBlind = "1" Then rollerType = String.Format("{0} (C) (IND)", blindAlias)
                             If itemBlind = "2" Then rollerType = String.Format("{0} (M)", blindAlias)
                             If itemBlind = "3" Then rollerType = String.Format("{0} (E)", blindAlias)
+                        End If
+
+                        If blindName = "DB Link 2 Blinds Dependent" OrElse blindName = "DB Link 2 Blinds Independent" Then
+                            If itemBlind = "1" Then rollerType = String.Format("{0} (C)", blindAlias)
+                            If itemBlind = "2" Then rollerType = String.Format("{0} (E)", blindAlias)
+                            If itemBlind = "3" Then rollerType = String.Format("{0} (C)", blindAlias)
+                            If itemBlind = "4" Then rollerType = String.Format("{0} (E)", blindAlias)
+                        End If
+
+                        If blindName = "DB Link 3 Blinds Dependent" Then
+                            If itemBlind = "1" Then rollerType = String.Format("{0} (C)", blindAlias)
+                            If itemBlind = "2" Then rollerType = String.Format("{0} (M)", blindAlias)
+                            If itemBlind = "3" Then rollerType = String.Format("{0} (E)", blindAlias)
+                            If itemBlind = "4" Then rollerType = String.Format("{0} (C)", blindAlias)
+                            If itemBlind = "5" Then rollerType = String.Format("{0} (M)", blindAlias)
+                            If itemBlind = "6" Then rollerType = String.Format("{0} (E)", blindAlias)
+                        End If
+
+                        If blindName = "DB Link 3 Blinds Independent with Dependent" Then
+                            If itemBlind = "1" Then rollerType = String.Format("{0} (C) (IND)", blindAlias)
+                            If itemBlind = "2" Then rollerType = String.Format("{0} (M)", blindAlias)
+                            If itemBlind = "3" Then rollerType = String.Format("{0} (E)", blindAlias)
+                            If itemBlind = "4" Then rollerType = String.Format("{0} (C) (IND)", blindAlias)
+                            If itemBlind = "5" Then rollerType = String.Format("{0} (M)", blindAlias)
+                            If itemBlind = "6" Then rollerType = String.Format("{0} (E)", blindAlias)
                         End If
 
                         items(0, i) = "Item : " & number
