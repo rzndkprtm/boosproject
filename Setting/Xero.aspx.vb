@@ -30,7 +30,6 @@ Partial Class Setting_Xero
         Try
             lblAction.Text = "Add"
             titleProcess.InnerText = "Add Xero"
-
             txtName.Enabled = True
 
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
@@ -183,19 +182,12 @@ Partial Class Setting_Xero
             Dim thisId As String = txtIdDelete.Text
 
             Using thisConn As New SqlConnection(myConn)
-                thisConn.Open()
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Xeros WHERE Id=@Id", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Xeros WHERE Id=@Id; DELETE FROM Logs WHERE Type='Xeros' AND DataId=@Id;", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", thisId)
+
+                    thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Logs WHERE Type='Xeros' AND DataId=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                thisConn.Close()
             End Using
 
             Session("SearchXero") = txtSearch.Text

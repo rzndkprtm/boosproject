@@ -66,7 +66,7 @@ Partial Class Setting_General_Company_Default
 
             Dim dataId As String = e.CommandArgument.ToString()
             If e.CommandName = "Detail" Then
-                url = String.Format("~/setting/general/company/detail?boosid={0}", dataId)
+                url = String.Format("~/setting/general/company/detail?cid={0}", dataId)
                 Response.Redirect(url, False)
             End If
         End If
@@ -107,7 +107,7 @@ Partial Class Setting_General_Company_Default
                         End Using
                     End Using
 
-                    dataLog = {"Companys", thisId, Session("LoginId").ToString(), "Created"}
+                    dataLog = {"Companys", thisId, Session("LoginId").ToString(), "Company Created"}
                     settingClass.Logs(dataLog)
 
                     Session("SearchCompany") = txtSearch.Text
@@ -130,7 +130,7 @@ Partial Class Setting_General_Company_Default
                         End Using
                     End Using
 
-                    dataLog = {"Companys", lblId.Text, Session("LoginId").ToString(), "Updated"}
+                    dataLog = {"Companys", lblId.Text, Session("LoginId").ToString(), "Company Updated"}
                     settingClass.Logs(dataLog)
 
                     Session("SearchCompany") = txtSearch.Text

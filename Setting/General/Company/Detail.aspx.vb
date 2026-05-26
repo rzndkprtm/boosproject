@@ -17,12 +17,12 @@ Partial Class Setting_General_Company_Detail
             Exit Sub
         End If
 
-        If String.IsNullOrEmpty(Request.QueryString("boosid")) Then
+        If String.IsNullOrEmpty(Request.QueryString("cid")) Then
             Response.Redirect("~/setting/general/company", False)
             Exit Sub
         End If
 
-        lblId.Text = Request.QueryString("boosid").ToString()
+        lblId.Text = Request.QueryString("cid").ToString()
         If Not IsPostBack Then
             MessageError(False, String.Empty)
 
@@ -117,7 +117,7 @@ Partial Class Setting_General_Company_Detail
                     End Using
                 End Using
 
-                dataLog = {"Companys", lblId.Text, Session("LoginId").ToString(), "Updated"}
+                dataLog = {"Companys", lblId.Text, Session("LoginId").ToString(), "Company Updated"}
                 settingClass.Logs(dataLog)
 
                 url = String.Format("~/setting/general/company/detail?boosid={0}", lblId.Text)
