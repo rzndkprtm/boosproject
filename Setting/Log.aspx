@@ -1,6 +1,7 @@
 ﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Log.aspx.vb" Inherits="Setting_Log" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Log" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
+    <asp:Timer runat="server" ID="tmrRefresh" Interval="30000" OnTick="tmrRefresh_Tick" />
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
@@ -52,27 +53,34 @@
                             <div class="row mb-3">
                                 <div class="col-12">
                                     <div class="table-responsive">
-                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom" OnPageIndexChanging="gvList_PageIndexChanging">
-                                            <RowStyle />
-                                            <Columns>
-                                                <asp:TemplateField ItemStyle-HorizontalAlign="Center">
-                                                    <ItemTemplate>
-                                                        <%# Container.DataItemIndex + 1 %>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:BoundField DataField="Type" HeaderText="Type" />
-                                                <asp:BoundField DataField="ActionName" HeaderText="Action By" />
-                                                <asp:BoundField DataField="ActionDate" HeaderText="Action Date" DataFormatString="{0:dd MMM yyyy HH:mm:ss}" />
-                                                <asp:TemplateField HeaderText="Description">
-                                                    <ItemTemplate>
-                                                        <%# GetDataName(Eval("Type"), Eval("DataId"), Eval("Description")) %>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                            </Columns>
-                                            <PagerStyle BackColor="DodgerBlue" ForeColor="White" HorizontalAlign="Center" />
-                                            <PagerSettings PreviousPageText="Prev" NextPageText="Next" Mode="NumericFirstLast" />
-                                            <AlternatingRowStyle BackColor="White" />
-                                        </asp:GridView>
+                                        <asp:UpdatePanel ID="upRefresh" runat="server">
+                                            <ContentTemplate>
+                                                <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom" OnPageIndexChanging="gvList_PageIndexChanging">
+                                                    <RowStyle />
+                                                    <Columns>
+                                                        <asp:TemplateField ItemStyle-HorizontalAlign="Center">
+                                                            <ItemTemplate>
+                                                                <%# Container.DataItemIndex + 1 %>
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                        <asp:BoundField DataField="Type" HeaderText="Type" />
+                                                        <asp:BoundField DataField="ActionName" HeaderText="Action By" />
+                                                        <asp:BoundField DataField="ActionDate" HeaderText="Action Date" DataFormatString="{0:dd MMM yyyy HH:mm:ss}" />
+                                                        <asp:TemplateField HeaderText="Description">
+                                                            <ItemTemplate>
+                                                                <%# GetDataName(Eval("Type"), Eval("DataId"), Eval("Description")) %>
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                    </Columns>
+                                                    <PagerStyle BackColor="DodgerBlue" ForeColor="White" HorizontalAlign="Center" />
+                                                    <PagerSettings PreviousPageText="Prev" NextPageText="Next" Mode="NumericFirstLast" />
+                                                    <AlternatingRowStyle BackColor="White" />
+                                                </asp:GridView>
+                                            </ContentTemplate>
+                                            <Triggers>
+                                                <asp:AsyncPostBackTrigger ControlID="tmrRefresh" EventName="Tick" />
+                                            </Triggers>
+                                        </asp:UpdatePanel>
                                     </div>
                                 </div>
                             </div>
