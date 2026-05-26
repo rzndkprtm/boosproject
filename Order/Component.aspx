@@ -70,7 +70,47 @@
                             <h4 class="card-title" id="cardtitle"></h4>
                         </div>
                         <div class="card-content">
-                            <div class="card-body"></div>
+                            <div class="card-body">
+                                <div class="form form-horizontal">
+                                    <div class="form-body">
+                                        <div class="row">
+                                            <div class="col-12 col-sm-12 col-lg-3">
+                                                <label>Product</label>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                <select id="blindtype" class="form-select"></select>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12 col-sm-12 col-lg-3">
+                                                <label>Product</label>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                <select id="colourtype" class="form-select"></select>
+                                            </div>
+                                        </div>
+                                        <div id="divdetail">
+                                            <hr />
+                                            <div class="row">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Quantity</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-2 form-group">
+                                                    <input type="number" id="qty" class="form-control" autocomplete="off" placeholder="Quantity" value="1" />
+                                                </div>
+                                            </div>
+                                            <div class="row mt-3">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Special Information</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-9 form-group">
+                                                    <textarea class="form-control" id="notes" rows="4" placeholder="Your notes ..." style="resize:none;"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="card-footer text-center">
                             <a href="javascript:void(0);" id="submit" class="btn btn-primary">Submit</a>
@@ -85,26 +125,6 @@
                         </div>
                         <div class="card-content">
                             <div class="card-body">
-                                <div class="form form-horizontal">
-                                    <div class="form-body">
-                                        <div class="row">
-                                            <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Venetian Type</label>
-                                            </div>
-                                            <div class="col-12 col-sm-12 col-lg-5 form-group">
-                                                <select id="blindtype" class="form-select"></select>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Venetian Type</label>
-                                            </div>
-                                            <div class="col-12 col-sm-12 col-lg-5 form-group">
-                                                <select id="tubetype" class="form-select"></select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -151,7 +171,7 @@
                     <span id="spanInfo"></span>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
                 </div>
             </div>
         </div>
