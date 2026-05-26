@@ -33,11 +33,11 @@
         <section class="row mb-3">
             <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
                 <asp:Button runat="server" ID="btnEditCustomer" CssClass="btn btn-primary" Text="Edit" OnClick="btnEditCustomer_Click" />
-                <a href="#" runat="server" id="aDelete" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalDelete">Delete</a>
-                <a href="#" runat="server" id="aCreateOrder" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#modalCreateOrder">Create Order</a>
-                <a href="#" runat="server" id="aRecalculate" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalRecalculate">Recalculate Price</a>
-                <a href="#" runat="server" id="aWelcome" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalWelcome">Welcome</a>
-                <a href="javascript:void(0)" class="btn btn-secondary" onclick="showLog('Customers', '<%= lblId.Text %>')">Log</a>
+                <a href="javascript:void(0);" runat="server" id="aDelete" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalDelete">Delete</a>
+                <a href="javascript:void(0);" runat="server" id="aCreateOrder" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#modalCreateOrder">Create Order</a>
+                <a href="javascript:void(0);" runat="server" id="aRecalculate" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalRecalculate">Recalculate Price</a>
+                <a href="javascript:void(0);" runat="server" id="aWelcome" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalWelcome">Welcome</a>
+                <a href="javascript:void(0);" class="btn btn-secondary" onclick="showLog('Customers', '<%= lblId.Text %>')">Log</a>
             </div>
         </section>
         <section class="row">            
