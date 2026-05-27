@@ -148,7 +148,7 @@
                                     <div class="row mt-3">
                                         <div class="col-12">
                                             <div class="table-responsive">
-                                                <asp:GridView runat="server" ID="gvChain" CssClass="table table-bordered table-hover" AutoGenerateColumns="true" ShowHeaderWhenEmpty="true" EmptyDataText="UNDER CONSTRUCTION :)" EmptyDataRowStyle-HorizontalAlign="Center"></asp:GridView>
+                                                <asp:GridView runat="server" ID="gvChain" CssClass="table table-bordered table-hover" AutoGenerateColumns="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center"></asp:GridView>
                                             </div>
                                         </div>
                                     </div>
@@ -157,7 +157,7 @@
                                     <div class="row mt-3">
                                         <div class="col-12">
                                             <div class="table-responsive">
-                                                <asp:GridView runat="server" ID="gvMotor" CssClass="table table-bordered table-hover" AutoGenerateColumns="true" ShowHeaderWhenEmpty="true" EmptyDataText="UNDER CONSTRUCTION :)" EmptyDataRowStyle-HorizontalAlign="Center"></asp:GridView>
+                                                <asp:GridView runat="server" ID="gvMotor" CssClass="table table-bordered table-hover" AutoGenerateColumns="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center"></asp:GridView>
                                             </div>
                                         </div>
                                     </div>
