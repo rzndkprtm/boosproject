@@ -64,6 +64,15 @@
                         Description
                     </div>
                 </a>
+                <a href="/setting/customer/business" class="dashboard-card">
+                    <div class="dashboard-number">
+                        <%= GetSumData("CustomerBusiness") %>
+                    </div>
+                    <div class="dashboard-title">Business</div>
+                    <div class="dashboard-desc">
+                        Description
+                    </div>
+                </a>
                 <a href="/setting/customer/login" class="dashboard-card">
                     <div class="dashboard-number">
                         <%= GetSumData("Logins") %>

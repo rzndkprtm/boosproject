@@ -1,5 +1,7 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data
+Imports System.Data.SqlClient
 Imports System.Globalization
+Imports System.Web.Services
 
 Partial Class Setting_Customer_Discount
     Inherits Page
@@ -9,6 +11,29 @@ Partial Class Setting_Customer_Discount
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataLog As Object() = Nothing
     Dim enUS As CultureInfo = New CultureInfo("en-US")
+
+    <WebMethod()>
+    Public Shared Function GetCustomerDiscount(customerId As String) As Object
+        Dim settingClass As New SettingClass
+        Dim dt As DataTable = settingClass.GetDataTable("SELECT Type, DataId, Discount FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END, DataId ASC")
+
+        Dim result As New List(Of Object)
+        For Each r As DataRow In dt.Rows
+            Dim typeName As String = r("Type").ToString()
+            Dim dataId As String = r("DataId").ToString()
+            Dim discount As Decimal = Convert.ToDecimal(r("Discount"))
+            Dim title As String = GetDiscountTitle(typeName, dataId)
+            Dim value As String = If(discount > 0, discount.ToString("G29", CultureInfo.GetCultureInfo("en-US")) & "%", "-")
+            result.Add(New With {.Type = typeName, .Product = title, .Discount = value})
+        Next
+        Return result
+    End Function
+
+    Private Shared Function GetDiscountTitle(type As String, dataId As String) As String
+        If String.IsNullOrEmpty(type) Then Return String.Empty
+        Dim settingClass As New SettingClass
+        Return SettingClass.GetItemData(String.Format("SELECT Name FROM {0} WHERE Id='{1}'", type, dataId))
+    End Function
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
@@ -43,26 +68,26 @@ Partial Class Setting_Customer_Discount
     End Sub
 
     Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
-        If Not String.IsNullOrEmpty(e.CommandArgument) Then
-            Dim dataId As String = e.CommandArgument.ToString()
+        'If Not String.IsNullOrEmpty(e.CommandArgument) Then
+        '    Dim dataId As String = e.CommandArgument.ToString()
 
-            If e.CommandName = "Detail" Then
-                MessageError_DetailDiscount(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showDetailDiscount(); };"
-                Try
-                    gvListDetailDiscount.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & dataId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END, DataId ASC")
-                    gvListDetailDiscount.DataBind()
+        '    If e.CommandName = "Detail" Then
+        '        MessageError_DetailDiscount(False, String.Empty)
+        '        Dim thisScript As String = "window.onload = function() { showDetailDiscount(); };"
+        '        Try
+        '            gvListDetailDiscount.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & dataId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END, DataId ASC")
+        '            gvListDetailDiscount.DataBind()
 
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showDetailDiscount", thisScript, True)
-                Catch ex As Exception
-                    MessageError_DetailDiscount(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError_DetailDiscount(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                    End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showDetailDiscount", thisScript, True)
-                End Try
-            End If
-        End If
+        '            ClientScript.RegisterStartupScript(Me.GetType(), "showDetailDiscount", thisScript, True)
+        '        Catch ex As Exception
+        '            MessageError_DetailDiscount(True, ex.ToString())
+        '            If Not Session("RoleName") = "Developer" Then
+        '                MessageError_DetailDiscount(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+        '            End If
+        '            ClientScript.RegisterStartupScript(Me.GetType(), "showDetailDiscount", thisScript, True)
+        '        End Try
+        '    End If
+        'End If
     End Sub
 
     Protected Sub BindData(searchText As String)
@@ -98,10 +123,6 @@ Partial Class Setting_Customer_Discount
 
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
-    End Sub
-
-    Protected Sub MessageError_DetailDiscount(visible As Boolean, message As String)
-        divErrorDetailDiscount.Visible = visible : msgErrorDetailDiscount.InnerText = message
     End Sub
 
     Protected Function LoginAccess(action As String) As Boolean

@@ -1,7 +1,7 @@
 ﻿Imports System.Data.SqlClient
 Imports System.Globalization
 
-Partial Class Setting_Customer_Promo
+Partial Class Setting_Customer_Promo_Default
     Inherits Page
 
     Dim settingClass As New SettingClass
@@ -33,17 +33,7 @@ Partial Class Setting_Customer_Promo
     End Sub
 
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
-        MessageError_Process(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showProcess(); };"
-        Try
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-        Catch ex As Exception
-            MessageError_Process(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-        End Try
+        Response.Redirect("~/setting/customer/promo/add", False)
     End Sub
 
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)

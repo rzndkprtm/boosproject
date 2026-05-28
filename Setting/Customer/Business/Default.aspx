@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Business.aspx.vb" Inherits="Setting_Customer_Business" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Customer Business" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Default.aspx.vb" Inherits="Setting_Customer_Business_Default" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Customer Business" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-heading">
@@ -100,56 +100,6 @@
         </section>
     </div>
 
-    <div class="modal fade text-left" id="modalProcess" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 runat="server" class="modal-title" id="titleProcess"></h5>
-                </div>
-                <div class="modal-body">
-                    <div class="row" runat="server" id="divErrorProcess">
-                        <div class="col-12">
-                            <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorProcess"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row3">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Customer Account</label>
-                            <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select"></asp:DropDownList>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 form-group">
-                            <label class="form-label">ABN Number</label>
-                            <asp:TextBox runat="server" ID="txtNumber" CssClass="form-control" placeholder="ABN Name ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Registered Name</label>
-                            <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Registered Name ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-6 form-group">
-                            <label class="form-label">Registered Date</label>
-                            <asp:TextBox runat="server" ID="txtRegistered" CssClass="form-control" TextMode="Date"></asp:TextBox>
-                        </div>
-                        <div class="col-6 form-group">
-                            <label class="form-label">Expiry Date</label>
-                            <asp:TextBox runat="server" ID="txtExpiry" CssClass="form-control" TextMode="Date"></asp:TextBox>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnProcess" Text="Submit" CssClass="btn btn-primary" OnClick="btnProcess_Click" />
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="modal modal-blur fade" id="modalPrimary" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -205,7 +155,6 @@
 
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblId"></asp:Label>
-        <asp:Label runat="server" ID="lblAction"></asp:Label>
     </div>
 
     <script type="text/javascript">
@@ -227,10 +176,6 @@
                 });
             }
         });
-
-        function showProcess() {
-            $("#modalProcess").modal("show");
-        }
 
         function showPrimary(id) {
             document.getElementById("<%=txtIdPrimary.ClientID %>").value = id;
@@ -274,7 +219,7 @@
             });
         }
 
-        ["modalProcess", "modalDelete", "modalLog", "modalPrimary"].forEach(function (id) {
+        ["modalDelete", "modalLog", "modalPrimary"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

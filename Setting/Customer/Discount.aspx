@@ -63,7 +63,7 @@
                                                 <asp:BoundField DataField="CustomerName" HeaderText="Customer Name" />
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
                                                     <ItemTemplate>
-                                                        <asp:LinkButton runat="server" ID="linkDetail" CssClass="btn btn-sm btn-primary" Text="View" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                        <a href="javascript:void(0);" id="aView" class="btn btn-sm btn-primary" onclick="openDiscountModal('<%# Eval("Id") %>')">View</a>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                             </Columns>
@@ -89,37 +89,20 @@
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><i data-feather="x"></i></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row mb-2" runat="server" id="divErrorDetailDiscount">
-                        <div class="col-12">
-                            <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorDetailDiscount"></span>
-                            </div>
-                        </div>
-                    </div>
                     <div class="row">
                         <div class="col-12">
                             <div class="table-responsive">
-                                <asp:GridView runat="server" ID="gvListDetailDiscount" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center">
-                                    <RowStyle />
-                                    <Columns>
-                                        <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="60px">
-                                            <ItemTemplate>
-                                                <%# Container.DataItemIndex + 1 %>
-                                            </ItemTemplate>
-                                        </asp:TemplateField>
-                                        <asp:BoundField DataField="Type" HeaderText="Type" />
-                                        <asp:TemplateField HeaderText="Product">
-                                            <ItemTemplate>
-                                                <%# DiscountTitle(Eval("Type").ToString(), Eval("DataId").ToString()) %>
-                                            </ItemTemplate>
-                                        </asp:TemplateField>
-                                        <asp:TemplateField HeaderText="Discount">
-                                            <ItemTemplate>
-                                                <%# DiscountValue(Eval("Discount")) %>
-                                            </ItemTemplate>
-                                        </asp:TemplateField>
-                                    </Columns>
-                                </asp:GridView>
+                                <table class="table table-bordered table-hover mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Type</th>
+                                            <th>Product</th>
+                                            <th>Discount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="discountBody"></tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -150,11 +133,35 @@
                         return;
                     }
 
-                    const btn = this.querySelector("a[id*='linkDetail']");
+                    const btn = this.querySelector("a[id*='aView']");
                     if (btn) btn.click();
                 });
             }
         });
+
+        function openDiscountModal(customerId) {
+            fetch('Discount.aspx/GetCustomerDiscount', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json; charset=utf-8' },
+                body: JSON.stringify({ customerId: customerId })
+            }).then(res => res.json()).then(res => {
+                const data = res.d;
+                let tbody = "";
+                data.forEach((x, i) => {
+                    tbody += `
+                        <tr>
+                        <td class="text-center">${i + 1}</td>
+                        <td>${x.Type}</td>
+                        <td>${x.Product}</td>
+                        <td>${x.Discount}</td>
+                        </tr>
+                        `;
+                });
+                document.getElementById("discountBody").innerHTML = tbody;
+                showDetailDiscount();
+                //new bootstrap.Modal(document.getElementById('modalDetailDiscount')).show();
+            });
+        }
 
         function showDetailDiscount() {
             $("#modalDetailDiscount").modal("show");
