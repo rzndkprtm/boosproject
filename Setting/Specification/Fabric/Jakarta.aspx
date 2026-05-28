@@ -67,6 +67,7 @@
                                                 <asp:BoundField DataField="Roller" HeaderText="Roller" />
                                                 <asp:BoundField DataField="Roman" HeaderText="Roman" />
                                                 <asp:BoundField DataField="Panel" HeaderText="Panel" />                                                
+                                                <asp:BoundField DataField="Curtain" HeaderText="Curtain" />                                                
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="200px">
                                                     <ItemTemplate>
                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
@@ -134,6 +135,12 @@
                         <div class="col-12 form-group">
                             <label class="form-label">Panel Glide</label>
                             <asp:TextBox runat="server" ID="txtPanel" CssClass="form-control" placeholder="Panel Glide ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">PCurtain</label>
+                            <asp:TextBox runat="server" ID="txtCurtain" CssClass="form-control" placeholder="Curtain ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
                 </div>
