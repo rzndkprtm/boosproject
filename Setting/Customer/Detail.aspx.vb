@@ -55,13 +55,6 @@ Partial Class Setting_Customer_Detail
             If Session("CustomerId") = lblId.Text AndAlso (Session("RoleName") = "Sales" OrElse Session("RoleName") = "Account") Then
                 secDetail.Visible = False
             End If
-
-            Dim eventTarget = Request("__EVENTTARGET")
-            Dim eventArg = Request("__EVENTARGUMENT")
-
-            'If eventTarget = "LoadContact" Then
-            '    LoadContactDetail(eventArg)
-            'End If
         End If
     End Sub
 
@@ -365,31 +358,6 @@ Partial Class Setting_Customer_Detail
 
 
     ' START CUSTOMER CONTACT
-
-    Private Sub LoadContactDetail(dataId As String)
-        Dim thisData As DataRow = settingClass.GetDataRow("SELECT Name, Email, Phone, Note, Tags WHERE Id='" & dataId & "'")
-
-        If thisData Is Nothing Then Exit Sub
-
-        txtContactName.Text = thisData("Name").ToString()
-        txtContactEmail.Text = thisData("Email").ToString()
-        txtContactPhone.Text = thisData("Phone").ToString()
-        txtContactNote.Text = thisData("Note").ToString()
-
-        For Each item As ListItem In lbContactTags.Items
-            item.Selected = False
-        Next
-
-        If Not String.IsNullOrEmpty(thisData("Tags").ToString()) Then
-            For Each t In thisData("Tags").ToString().Split(","c)
-                Dim item = lbContactTags.Items.FindByValue(t)
-                If item IsNot Nothing Then item.Selected = True
-            Next
-        End If
-
-        ScriptManager.RegisterStartupScript(Me, Me.GetType(), "showModal", "$('#modalProcessContact').modal('show');",
-        True)
-    End Sub
 
     Protected Sub gvListContact_RowCommand(sender As Object, e As GridViewCommandEventArgs)
         If Not String.IsNullOrEmpty(e.CommandArgument) Then

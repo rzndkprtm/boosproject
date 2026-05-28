@@ -1638,33 +1638,6 @@
         }
 
         // START CUSTOMER CONTACT
-        <%--function openAddContact() {
-            $('#<%= lblActionContact.ClientID %>').text('Add');
-            $('#<%= titleContact.ClientID %>').text('Add Customer Contact');
-            $('#<%= lblIdContact.ClientID %>').text('');
-
-            resetContactForm();
-
-            showProcessContact();
-        }
-
-        function openContactDetail(id) {
-            $('#<%= lblActionContact.ClientID %>').text('Edit');
-            $('#<%= titleContact.ClientID %>').text('Edit Customer Contact');
-
-            $('#<%= lblIdContact.ClientID %>').text(id);
-
-            // OPTIONAL: kalau mau ambil data detail via hidden field / ajax
-            __doPostBack('LoadContact', id);
-        }
-
-        function resetContactForm() {
-            $('#<%= txtContactName.ClientID %>').val('');
-            $('#<%= txtContactEmail.ClientID %>').val('');
-            $('#<%= txtContactPhone.ClientID %>').val('');
-            $('#<%= txtContactNote.ClientID %>').val('');
-            $('#<%= lbContactTags.ClientID %> option').prop('selected', false);
-        }--%>
 
         function showProcessContact() {
             $("#modalProcessContact").modal("show");
