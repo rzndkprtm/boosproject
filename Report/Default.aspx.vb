@@ -35,8 +35,7 @@ Partial Class Report_Default
     End Sub
 
     Protected Sub gvProduct_RowDataBound(sender As Object, e As GridViewRowEventArgs)
-        If ddlStatus.SelectedValue = "In Production" Then
-
+        If ddlStatus.SelectedValue = "In Production" OrElse ddlStatus.SelectedValue = "Unsubmitted" Then
             If e.Row.RowType = DataControlRowType.Header OrElse
                e.Row.RowType = DataControlRowType.DataRow OrElse
                e.Row.RowType = DataControlRowType.Footer Then
