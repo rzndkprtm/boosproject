@@ -28,7 +28,7 @@ Partial Class Setting_Customer_Detail
         End If
 
         If String.IsNullOrEmpty(Request.QueryString("customerid")) Then
-            Response.Redirect("~/setting/customer", False)
+            Response.Redirect("~/setting/customer/list", False)
             Exit Sub
         End If
 
@@ -365,147 +365,18 @@ Partial Class Setting_Customer_Detail
 
             Dim dataId As String = e.CommandArgument.ToString()
             If e.CommandName = "Detail" Then
-                MessageError_ProcessContact(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showProcessContact(); };"
-                Try
-                    lblIdContact.Text = dataId
-                    lblActionContact.Text = "Edit"
-                    titleContact.InnerText = "Edit Customer Contact"
-
-                    Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerContacts WHERE Id='" & dataId & "'")
-                    If thisData Is Nothing Then Exit Sub
-
-                    txtContactName.Text = thisData("Name").ToString()
-                    txtContactEmail.Text = thisData("Email").ToString()
-                    txtContactPhone.Text = thisData("Phone").ToString()
-                    txtContactNote.Text = thisData("Note").ToString()
-
-                    Dim tagsArray() As String = thisData("Tags").ToString().Split(",")
-                    Dim tagsList As List(Of String) = tagsArray.ToList()
-
-                    For Each i In tagsArray
-                        If Not (i.Equals(String.Empty)) Then
-                            lbContactTags.Items.FindByValue(i).Selected = True
-                        End If
-                    Next
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcessContact", thisScript, True)
-                Catch ex As Exception
-                    MessageError_ProcessContact(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError_ProcessContact(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                    End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcessContact", thisScript, True)
-                End Try
+                url = String.Format("~/setting/customer/contact/edit?contactid={0}", dataId)
+                Response.Redirect(url, False)
+                Exit Sub
             End If
         End If
     End Sub
 
     Protected Sub btnAddContact_Click(sender As Object, e As EventArgs)
-        MessageError_ProcessContact(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showProcessContact(); };"
         Session("selectedTabCustomer") = "list-contact"
-        Try
-            lblActionContact.Text = "Add"
-            titleContact.InnerText = "Add Customer Contact"
-
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcessContact", thisScript, True)
-        Catch ex As Exception
-            MessageError_ProcessContact(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_ProcessContact(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcessContact", thisScript, True)
-        End Try
-    End Sub
-
-    Protected Sub btnProcessContact_Click(sender As Object, e As EventArgs)
-        MessageError_ProcessContact(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showProcessContact(); };"
-        Session("selectedTabCustomer") = "list-contact"
-        Try
-            If txtContactName.Text = "" Then
-                MessageError_ProcessContact(True, "CONTACT NAME IS REQURIED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showProcessContact", thisScript, True)
-                Exit Sub
-            End If
-
-            If msgErrorProcessContact.InnerText = "" Then
-                Dim thisTags As String = String.Empty
-                Dim selected As String = String.Empty
-                For Each item As ListItem In lbContactTags.Items
-                    If item.Selected Then
-                        selected += item.Text & ","
-                    End If
-                Next
-
-                If Not selected = "" Then
-                    thisTags = selected.Remove(selected.Length - 1).ToString()
-                End If
-
-                If lblActionContact.Text = "Add" Then
-                    Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerContacts ORDER BY Id DESC")
-
-                    Dim checkData As Integer = settingClass.GetItemData_Integer("SELECT COUNT(*) FROM CustomerContacts WHERE CustomerId='" & lblId.Text & "'")
-                    Dim primaryData As Integer = 0
-                    If checkData = 0 AndAlso Not String.IsNullOrEmpty(txtContactEmail.Text) Then
-                        thisTags = "Confirming,Invoicing,Quoting,Newsletter"
-                        primaryData = 1
-                    End If
-
-                    Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerContacts VALUES (@Id, @CustomerId, @Name, @Email, @Phone, @Tags, @Note, @Primary)", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", thisId)
-                            myCmd.Parameters.AddWithValue("@CustomerId", lblId.Text)
-                            myCmd.Parameters.AddWithValue("@Name", txtContactName.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Email", txtContactEmail.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Phone", txtContactPhone.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Tags", thisTags)
-                            myCmd.Parameters.AddWithValue("@Note", txtContactNote.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Primary", primaryData)
-
-                            thisConn.Open()
-                            myCmd.ExecuteNonQuery()
-                        End Using
-                    End Using
-
-                    dataLog = {"CustomerContacts", thisId, Session("LoginId").ToString(), "Customer Contact Created"}
-                    settingClass.Logs(dataLog)
-
-                    url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
-                    Response.Redirect(url, False)
-                End If
-
-                If lblActionContact.Text = "Edit" Then
-                    Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerContacts SET CustomerId=@CustomerId, Name=@Name, Email=@Email, Phone=@Phone, Tags=@Tags, Note=@Note WHERE Id=@Id", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", lblIdContact.Text)
-                            myCmd.Parameters.AddWithValue("@CustomerId", lblId.Text)
-                            myCmd.Parameters.AddWithValue("@Name", txtContactName.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Email", txtContactEmail.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Phone", txtContactPhone.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Tags", thisTags)
-                            myCmd.Parameters.AddWithValue("@Note", txtContactNote.Text.Trim())
-
-                            thisConn.Open()
-                            myCmd.ExecuteNonQuery()
-                        End Using
-                    End Using
-
-                    dataLog = {"CustomerContacts", lblIdContact.Text, Session("LoginId"), "Customer Contact Updated"}
-                    settingClass.Logs(dataLog)
-
-                    url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
-                    Response.Redirect(url, False)
-                End If
-            End If
-        Catch ex As Exception
-            MessageError_ProcessContact(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_ProcessContact(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcessContact", thisScript, True)
-        End Try
+        url = String.Format("~/setting/customer/contact/add?custid={0}", lblId.Text)
+        Response.Redirect(url, False)
+        Exit Sub
     End Sub
 
     Protected Sub btnDeleteContact_Click(sender As Object, e As EventArgs)
@@ -607,10 +478,6 @@ Partial Class Setting_Customer_Detail
         divErrorContact.Visible = visible : msgErrorContact.InnerText = message
     End Sub
 
-    Protected Sub MessageError_ProcessContact(visible As Boolean, message As String)
-        divErrorProcessContact.Visible = visible : msgErrorProcessContact.InnerText = message
-    End Sub
-
     Protected Function VisibleYesPrimaryContact(primary As Boolean) As Boolean
         If primary = True Then : Return True : End If
         Return False
@@ -636,157 +503,18 @@ Partial Class Setting_Customer_Detail
 
             Dim dataId As String = e.CommandArgument.ToString()
             If e.CommandName = "Detail" Then
-                MessageError_ProcessAddress(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showProcessAddress(); };"
-                Try
-                    lblActionAddress.Text = "Edit"
-                    titleAddress.InnerText = "Edit Customer Address"
-                    lblIdAddress.Text = dataId
-
-                    Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerAddress WHERE Id='" & lblIdAddress.Text & "'")
-                    If thisData Is Nothing Then Exit Sub
-
-                    txtAddressDescription.Text = thisData("Description").ToString()
-                    txtAddressName.Text = thisData("Address").ToString()
-                    txtAddressSuburb.Text = thisData("Suburb").ToString()
-                    txtAddressState.Text = thisData("State").ToString()
-                    txtAddressPostCode.Text = thisData("PostCode").ToString()
-                    txtAddressNote.Text = thisData("Note").ToString()
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcessAddress", thisScript, True)
-                Catch ex As Exception
-                    MessageError_ProcessAddress(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError_ProcessAddress(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                    End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcessAddress", thisScript, True)
-                End Try
+                url = String.Format("~/setting/customer/address/edit?addressid={0}", dataId)
+                Response.Redirect(url, False)
+                Exit Sub
             End If
         End If
     End Sub
 
     Protected Sub btnAddAddress_Click(sender As Object, e As EventArgs)
-        MessageError_ProcessAddress(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showProcessAddress(); };"
         Session("selectedTabCustomer") = "list-address"
-        Try
-            lblActionAddress.Text = "Add"
-            titleAddress.InnerText = "Add Customer Address"
-
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcessAddress", thisScript, True)
-        Catch ex As Exception
-            MessageError_ProcessAddress(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_ProcessAddress(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcessAddress", thisScript, True)
-        End Try
-    End Sub
-
-    Protected Sub btnProcessAddress_Click(sender As Object, e As EventArgs)
-        MessageError_ProcessAddress(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showProcessAddress(); };"
-        Session("selectedTabCustomer") = "list-address"
-        Try
-            If txtAddressDescription.Text = "" Then
-                MessageError_ProcessAddress(True, "ADDRESS DESCRIPTION IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showProcessAddress", thisScript, True)
-                Exit Sub
-            End If
-
-            If txtAddressName.Text = "" Then
-                MessageError_ProcessAddress(True, "ADDRESS IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showProcessAddress", thisScript, True)
-                Exit Sub
-            End If
-
-            If txtAddressName.Text.Contains(",") OrElse txtAddressName.Text.Contains(";") Then
-                MessageError_ProcessAddress(True, "ADDRESS CANNOT CONTAIN COMMA (,) OR SEMICOLON (;) !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showProcessAddress", thisScript, True)
-                Exit Sub
-            End If
-
-            If txtAddressSuburb.Text = "" Then
-                MessageError_ProcessAddress(True, "SUBURB IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showProcessAddress", thisScript, True)
-                Exit Sub
-            End If
-
-            If txtAddressState.Text = "" Then
-                MessageError_ProcessAddress(True, "STATE IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showProcessAddress", thisScript, True)
-                Exit Sub
-            End If
-
-            If txtAddressPostCode.Text = "" Then
-                MessageError_ProcessAddress(True, "POST CODE IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showProcessAddress", thisScript, True)
-                Exit Sub
-            End If
-
-            If msgErrorProcessAddress.InnerText = "" Then
-                If lblActionAddress.Text = "Add" Then
-                    Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerAddress ORDER BY Id DESC")
-
-                    Dim checkData As Integer = settingClass.GetItemData_Integer("SELECT COUNT(*) FROM CustomerAddress WHERE CustomerId='" & lblId.Text & "'")
-                    Dim primaryData As Integer = 0
-                    If checkData = 0 Then primaryData = 1
-
-                    Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerAddress VALUES (@Id, @CustomerId, @Description, @Address, @Suburb, @State, @PostCode, @Note, @Primary)", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", thisId)
-                            myCmd.Parameters.AddWithValue("@CustomerId", lblId.Text)
-                            myCmd.Parameters.AddWithValue("@Description", txtAddressDescription.Text)
-                            myCmd.Parameters.AddWithValue("@Address", txtAddressName.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Suburb", txtAddressSuburb.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@State", txtAddressState.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@PostCode", txtAddressPostCode.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Note", txtAddressNote.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Primary", primaryData)
-
-                            thisConn.Open()
-                            myCmd.ExecuteNonQuery()
-                        End Using
-                    End Using
-
-                    dataLog = {"CustomerAddress", thisId, Session("LoginId"), "Customer Address Created"}
-                    settingClass.Logs(dataLog)
-
-                    url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
-                    Response.Redirect(url, False)
-                End If
-
-                If lblActionAddress.Text = "Edit" Then
-                    Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerAddress SET CustomerId=@CustomerId, Description=@Description, Address=@Address, Suburb=@Suburb, State=@State, PostCode=@PostCode, Note=@Note WHERE Id=@Id", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", lblIdAddress.Text)
-                            myCmd.Parameters.AddWithValue("@CustomerId", lblId.Text)
-                            myCmd.Parameters.AddWithValue("@Description", txtAddressDescription.Text)
-                            myCmd.Parameters.AddWithValue("@Address", txtAddressName.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Suburb", txtAddressSuburb.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@State", txtAddressState.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@PostCode", txtAddressPostCode.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Note", txtAddressNote.Text.Trim())
-
-                            thisConn.Open()
-                            myCmd.ExecuteNonQuery()
-                        End Using
-                    End Using
-
-                    dataLog = {"CustomerAddress", lblIdAddress.Text, Session("LoginId"), "Customer Address Updated"}
-                    settingClass.Logs(dataLog)
-
-                    url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
-                    Response.Redirect(url, False)
-                End If
-            End If
-        Catch ex As Exception
-            MessageError_ProcessAddress(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_ProcessAddress(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcessAddress", thisScript, True)
-        End Try
+        url = String.Format("~/setting/customer/address/add?custid={0}", lblId.Text)
+        Response.Redirect(url, False)
+        Exit Sub
     End Sub
 
     Protected Sub btnDeleteAddress_Click(sender As Object, e As EventArgs)
@@ -865,7 +593,6 @@ Partial Class Setting_Customer_Detail
     Protected Sub BindDataAddress(customerId As String)
         MessageError_Address(False, String.Empty)
         lblIdAddress.Text = String.Empty
-        lblActionAddress.Text = String.Empty
         Try
             gvListAddress.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerAddress WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
             gvListAddress.DataBind()
@@ -915,147 +642,25 @@ Partial Class Setting_Customer_Detail
         divErrorAddress.Visible = visible : msgErrorAddress.InnerText = message
     End Sub
 
-    Protected Sub MessageError_ProcessAddress(visible As Boolean, message As String)
-        divErrorProcessAddress.Visible = visible : msgErrorProcessAddress.InnerText = message
-    End Sub
-
     ' END CUSTOMER ADDRESS
 
     ' START CUSTOMER BUSINESS
 
     Protected Sub gvListBusiness_RowCommand(sender As Object, e As GridViewCommandEventArgs)
         If Not String.IsNullOrEmpty(e.CommandArgument) Then
-            Session("selectedTabCustomer") = "list-business"
-
             Dim dataId As String = e.CommandArgument.ToString()
             If e.CommandName = "Detail" Then
-                MessageError_ProcessBusiness(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showProcessBusiness(); };"
-                Try
-                    lblIdBusiness.Text = dataId
-                    lblActionBusiness.Text = "Edit"
-                    titleBusiness.InnerText = "Edit Customer Business"
-
-                    Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerBusiness WHERE Id='" & dataId & "'")
-                    If thisData Is Nothing Then Exit Sub
-
-                    txtBusinessNumber.Text = thisData("ABNNumber").ToString()
-                    txtBusinessName.Text = thisData("RegisteredName").ToString()
-
-                    If Not String.IsNullOrEmpty(thisData("RegisteredDate").ToString()) Then
-                        txtBusinessRegistered.Text = Convert.ToDateTime(thisData("RegisteredDate")).ToString("yyyy-MM-dd")
-                    End If
-
-                    If Not String.IsNullOrEmpty(thisData("ExpiryDate").ToString()) Then
-                        txtBusinessExpiry.Text = Convert.ToDateTime(thisData("ExpiryDate")).ToString("yyyy-MM-dd")
-                    End If
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcessBusiness", thisScript, True)
-                Catch ex As Exception
-                    MessageError_ProcessBusiness(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError_ProcessBusiness(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                    End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcessBusiness", thisScript, True)
-                End Try
+                Session("selectedTabCustomer") = "list-business"
+                url = String.Format("~/setting/customer/business/edit?businessid={0}", dataId)
+                Response.Redirect(url, False)
             End If
         End If
     End Sub
 
     Protected Sub btnAddBusiness_Click(sender As Object, e As EventArgs)
-        MessageError_ProcessBusiness(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showProcessBusiness(); };"
         Session("selectedTabCustomer") = "list-business"
-        Try
-            lblActionBusiness.Text = "Add"
-            titleBusiness.InnerText = "Add Customer Business"
-
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcessBusiness", thisScript, True)
-        Catch ex As Exception
-            MessageError_ProcessBusiness(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_ProcessBusiness(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcessBusiness", thisScript, True)
-        End Try
-    End Sub
-
-    Protected Sub btnProcessBusiness_Click(sender As Object, e As EventArgs)
-        MessageError_ProcessBusiness(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showProcessBusiness(); };"
-        Session("selectedTabCustomer") = "list-business"
-        Try
-            If txtBusinessNumber.Text = "" Then
-                MessageError_ProcessBusiness(True, "ABN NUMBER IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showProcessBusiness", thisScript, True)
-                Exit Sub
-            End If
-
-            If txtBusinessName.Text = "" Then
-                MessageError_ProcessBusiness(True, "REGISTERED NAME IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showProcessBusiness", thisScript, True)
-                Exit Sub
-            End If
-
-            If msgErrorProcessBusiness.InnerText = "" Then
-                If lblActionBusiness.Text = "Add" Then
-                    Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerBusiness ORDER BY Id DESC")
-
-                    Dim checkData As Integer = settingClass.GetItemData_Integer("SELECT COUNT(*) FROM CustomerBusiness WHERE CustomerId='" & lblId.Text & "'")
-                    Dim primaryData As Integer = 0
-                    If checkData = 0 Then primaryData = 1
-
-                    Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerBusiness VALUES (@Id, @CustomerId, @ABNNumber, @RegisteredName, @RegisteredDate, @ExpiryDate, @Primary)", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", thisId)
-                            myCmd.Parameters.AddWithValue("@CustomerId", lblId.Text)
-                            myCmd.Parameters.AddWithValue("@ABNNumber", txtBusinessNumber.Text)
-                            myCmd.Parameters.AddWithValue("@RegisteredName", txtBusinessName.Text)
-                            myCmd.Parameters.AddWithValue("@RegisteredDate", If(String.IsNullOrEmpty(txtBusinessRegistered.Text), CType(DBNull.Value, Object), txtBusinessRegistered.Text))
-                            myCmd.Parameters.AddWithValue("@ExpiryDate", If(String.IsNullOrEmpty(txtBusinessExpiry.Text), CType(DBNull.Value, Object), txtBusinessExpiry.Text))
-                            myCmd.Parameters.AddWithValue("@Primary", primaryData)
-
-                            thisConn.Open()
-                            myCmd.ExecuteNonQuery()
-                        End Using
-                    End Using
-
-                    dataLog = {"CustomerBusiness", thisId, Session("LoginId"), "Customer Business Created"}
-                    settingClass.Logs(dataLog)
-
-                    url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
-                    Response.Redirect(url, False)
-                End If
-
-                If lblActionBusiness.Text = "Edit" Then
-                    Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerBusiness SET  CustomerId=@CustomerId, ABNNumber=@ABNNumber, RegisteredName=@RegisteredName, RegisteredDate=@RegisteredDate, ExpiryDate=@ExpiryDate WHERE Id=@Id", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", lblIdBusiness.Text)
-                            myCmd.Parameters.AddWithValue("@CustomerId", lblId.Text)
-                            myCmd.Parameters.AddWithValue("@ABNNumber", txtBusinessNumber.Text)
-                            myCmd.Parameters.AddWithValue("@RegisteredName", txtBusinessName.Text)
-                            myCmd.Parameters.AddWithValue("@RegisteredDate", If(String.IsNullOrEmpty(txtBusinessRegistered.Text), CType(DBNull.Value, Object), txtBusinessRegistered.Text))
-                            myCmd.Parameters.AddWithValue("@ExpiryDate", If(String.IsNullOrEmpty(txtBusinessExpiry.Text), CType(DBNull.Value, Object), txtBusinessExpiry.Text))
-
-                            thisConn.Open()
-                            myCmd.ExecuteNonQuery()
-                        End Using
-                    End Using
-
-                    dataLog = {"CustomerBusiness", lblIdBusiness.Text, Session("LoginId"), "Customer Business Updated"}
-                    settingClass.Logs(dataLog)
-
-                    url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
-                    Response.Redirect(url, False)
-                End If
-            End If
-        Catch ex As Exception
-            MessageError_ProcessBusiness(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_ProcessBusiness(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcessBusiness", thisScript, True)
-        End Try
+        url = String.Format("~/setting/customer/business/add?custid={0}", lblId.Text)
+        Response.Redirect(url, False)
     End Sub
 
     Protected Sub btnDeleteBusiness_Click(sender As Object, e As EventArgs)
@@ -1134,7 +739,6 @@ Partial Class Setting_Customer_Detail
     Protected Sub BindDataBusiness(customerId As String)
         MessageError_Business(False, String.Empty)
         lblIdBusiness.Text = String.Empty
-        lblActionBusiness.Text = String.Empty
         Try
             gvListBusiness.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerBusiness WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
             gvListBusiness.DataBind()
@@ -1151,10 +755,6 @@ Partial Class Setting_Customer_Detail
 
     Protected Sub MessageError_Business(visible As Boolean, message As String)
         divErrorBusiness.Visible = visible : msgErrorBusiness.InnerText = message
-    End Sub
-
-    Protected Sub MessageError_ProcessBusiness(visible As Boolean, message As String)
-        divErrorProcessBusiness.Visible = visible : msgErrorProcessBusiness.InnerText = message
     End Sub
 
     Protected Function VisibleYesPrimaryBusiness(primary As Boolean) As Boolean
@@ -1177,47 +777,15 @@ Partial Class Setting_Customer_Detail
     ' START CUSTOMER LOGIN
     Protected Sub gvListLogin_RowCommand(sender As Object, e As GridViewCommandEventArgs)
         If Not String.IsNullOrEmpty(e.CommandArgument) Then
-            Session("selectedTabCustomer") = "list-login"
-
             Dim dataId As String = e.CommandArgument.ToString()
             If e.CommandName = "Detail" Then
-                MessageError_ProcesLogin(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showProcessLogin(); };"
-                Try
-                    lblIdLogin.Text = dataId
-                    lblActionLogin.Text = "Edit"
-                    titleLogin.InnerText = "Edit Customer Login"
-                    divLoginEmail.Visible = False
-                    divPassword.Visible = False
-                    If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" Then
-                        divLoginEmail.Visible = True
-                    End If
-
-                    Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Logins WHERE Id='" & lblIdLogin.Text & "'")
-                    If myData Is Nothing Then Exit Sub
-
-                    BindDataLoginRole()
-                    BindDataLoginLevel()
-
-                    ddlLoginRole.SelectedValue = myData("RoleId").ToString()
-                    ddlLoginLevel.SelectedValue = myData("LevelId").ToString()
-                    txtLoginUserName.Text = myData("UserName").ToString()
-                    lblLoginUserNameOld.Text = myData("UserName").ToString()
-                    txtLoginFullName.Text = myData("FullName").ToString()
-                    txtLoginEmail.Text = myData("Email").ToString()
-                    ddlPricing.SelectedValue = Convert.ToInt32(myData("Pricing"))
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcessLogin", thisScript, True)
-                Catch ex As Exception
-                    MessageError_ProcesLogin(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError_ProcesLogin(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                    End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcessLogin", thisScript, True)
-                End Try
+                Session("selectedTabCustomer") = "list-login"
+                url = String.Format("~/setting/customer/login/edit?loginid={0}", dataId)
+                Response.Redirect(url, False)
             ElseIf e.CommandName = "InstallerAccess" Then
                 MessageError_InstallerAccess(False, String.Empty)
                 Dim thisScript As String = "window.onload = function() { showInstallerAccess(); };"
+                Session("selectedTabCustomer") = "list-login"
                 Try
                     lblIdLogin.Text = dataId
 
@@ -1245,142 +813,9 @@ Partial Class Setting_Customer_Detail
     End Sub
 
     Protected Sub btnAddLogin_Click(sender As Object, e As EventArgs)
-        MessageError_ProcesLogin(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showProcessLogin(); };"
         Session("selectedTabCustomer") = "list-login"
-        Try
-            lblActionLogin.Text = "Add"
-            titleLogin.InnerText = "Add Customer Login"
-            divLoginEmail.Visible = False
-            divPassword.Visible = True
-            If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" Then
-                divLoginEmail.Visible = True
-            End If
-            txtLoginUserName.Text = settingClass.GenerateUsername(lblName.Text)
-            txtLoginPassword.Text = settingClass.GenerateNewPassword(15)
-
-            BindDataLoginRole()
-            BindDataLoginLevel()
-
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcessLogin", thisScript, True)
-        Catch ex As Exception
-            MessageError_ProcesLogin(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_ProcesLogin(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcessLogin", thisScript, True)
-        End Try
-    End Sub
-
-    Protected Sub btnProcessLogin_Click(sender As Object, e As EventArgs)
-        MessageError_ProcesLogin(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showProcessLogin(); };"
-
-        Session("selectedTabCustomer") = "list-login"
-        Try
-            If ddlLoginRole.SelectedValue = "" Then
-                MessageError_ProcesLogin(True, "ROLE MEMBER IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showProcessLogin", thisScript, True)
-                Exit Sub
-            End If
-
-            If ddlLoginLevel.SelectedValue = "" Then
-                MessageError_ProcesLogin(True, "LEVEL MEMBER IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showProcessLogin", thisScript, True)
-                Exit Sub
-            End If
-
-            If txtLoginUserName.Text = "" Then
-                MessageError_ProcesLogin(True, "USERNAME IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showProcessLogin", thisScript, True)
-                Exit Sub
-            End If
-
-            If Not Regex.IsMatch(txtLoginUserName.Text, "^[a-zA-Z0-9._-]+$") Then
-                MessageError_ProcesLogin(True, "INVALID USERNAME. ONLY LETTERS, NUMBERS, DOT (.), UNDERSCRORE (_) & HYPHEN (-) ARE ALLOWED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showProcessLogin", thisScript, True)
-                Exit Sub
-            End If
-
-            Dim checkUsername As String = settingClass.GetItemData("SELECT UserName FROM Logins WHERE UserName='" + txtLoginUserName.Text + "'")
-            If lblActionLogin.Text = "Add" Then
-                If txtLoginUserName.Text = checkUsername Then
-                    MessageError_ProcesLogin(True, "USERNAME ALREADY EXIST !")
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcessLogin", thisScript, True)
-                    Exit Sub
-                End If
-            End If
-
-            If lblActionLogin.Text = "Edit" And txtLoginUserName.Text <> lblLoginUserNameOld.Text Then
-                If txtLoginUserName.Text = checkUsername Then
-                    MessageError_ProcesLogin(True, "USERNAME ALREADY EXIST !")
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcessLogin", thisScript, True)
-                    Exit Sub
-                End If
-            End If
-
-            If msgErrorProcessLogin.InnerText = "" Then
-                If txtLoginPassword.Text = "" Then txtLoginPassword.Text = txtLoginUserName.Text
-                If txtLoginFullName.Text = "" Then txtLoginFullName.Text = txtLoginUserName.Text
-                Dim password As String = settingClass.Encrypt(txtLoginPassword.Text)
-
-                If lblActionLogin.Text = "Add" Then
-                    Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Logins ORDER BY Id DESC")
-                    Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Logins VALUES (@Id, @CustomerId, @RoleId, @LevelId, @UserName, @Password, @FullName, @Email, 0, NULL, 1, @Pricing, 1)", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", thisId)
-                            myCmd.Parameters.AddWithValue("@CustomerId", lblId.Text)
-                            myCmd.Parameters.AddWithValue("@RoleId", ddlLoginRole.SelectedValue)
-                            myCmd.Parameters.AddWithValue("@LevelId", ddlLoginLevel.SelectedValue)
-                            myCmd.Parameters.AddWithValue("@UserName", txtLoginUserName.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Password", password)
-                            myCmd.Parameters.AddWithValue("@FullName", txtLoginFullName.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Email", txtLoginEmail.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Pricing", ddlPricing.SelectedValue)
-
-                            thisConn.Open()
-                            myCmd.ExecuteNonQuery()
-                        End Using
-                    End Using
-
-                    dataLog = {"Logins", thisId, Session("LoginId").ToString(), "Customer Login Created"}
-                    settingClass.Logs(dataLog)
-
-                    url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
-                    Response.Redirect(url, False)
-                End If
-
-                If lblActionLogin.Text = "Edit" Then
-                    Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE Logins SET CustomerId=@CustomerId, RoleId=@RoleId, LevelId=@LevelId, UserName=@UserName, FullName=@FullName, Email=@Email, Pricing=@Pricing WHERE Id=@Id", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", lblIdLogin.Text)
-                            myCmd.Parameters.AddWithValue("@CustomerId", lblId.Text)
-                            myCmd.Parameters.AddWithValue("@RoleId", ddlLoginRole.SelectedValue)
-                            myCmd.Parameters.AddWithValue("@LevelId", ddlLoginLevel.SelectedValue)
-                            myCmd.Parameters.AddWithValue("@UserName", txtLoginUserName.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@FullName", txtLoginFullName.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Email", txtLoginEmail.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Pricing", ddlPricing.SelectedValue)
-
-                            thisConn.Open()
-                            myCmd.ExecuteNonQuery()
-                        End Using
-                    End Using
-
-                    dataLog = {"Logins", lblIdLogin.Text, Session("LoginId").ToString(), "Customer Login Updated"}
-                    settingClass.Logs(dataLog)
-
-                    url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
-                    Response.Redirect(url, False)
-                End If
-            End If
-        Catch ex As Exception
-            MessageError_ProcesLogin(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_ProcesLogin(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcessLogin", thisScript, True)
-        End Try
+        url = String.Format("~/setting/customer/login/add?custid={0}", lblId.Text)
+        Response.Redirect(url, False)
     End Sub
 
     Protected Sub btnInstallerAccess_Click(sender As Object, e As EventArgs)
@@ -1566,38 +1001,6 @@ Partial Class Setting_Customer_Detail
         End Try
     End Sub
 
-    Protected Sub BindDataLoginRole()
-        ddlLoginRole.Items.Clear()
-        Try
-            Dim thisString As String = "SELECT * FROM LoginRoles WHERE Id='8' ORDER BY Name ASC"
-            If Session("RoleName") = "Developer" Then
-                thisString = "SELECT * FROM LoginRoles ORDER BY Name ASC"
-            End If
-            ddlLoginRole.DataSource = settingClass.GetDataTable("SELECT * FROM LoginRoles WHERE Id='8' ORDER BY Name ASC")
-            ddlLoginRole.DataTextField = "Name"
-            ddlLoginRole.DataValueField = "Id"
-            ddlLoginRole.DataBind()
-
-            ddlLoginRole.Items.Insert(0, New ListItem("", ""))
-        Catch ex As Exception
-            ddlLoginRole.Items.Clear()
-        End Try
-    End Sub
-
-    Protected Sub BindDataLoginLevel()
-        ddlLoginLevel.Items.Clear()
-        Try
-            ddlLoginLevel.DataSource = settingClass.GetDataTable("SELECT * FROM LoginLevels ORDER BY Name ASC")
-            ddlLoginLevel.DataTextField = "Name"
-            ddlLoginLevel.DataValueField = "Id"
-            ddlLoginLevel.DataBind()
-
-            ddlLoginLevel.Items.Insert(0, New ListItem("", ""))
-        Catch ex As Exception
-            ddlLoginLevel.Items.Clear()
-        End Try
-    End Sub
-
     Protected Function DencryptPassword(password As String) As String
         Return settingClass.Decrypt(password)
     End Function
@@ -1615,10 +1018,6 @@ Partial Class Setting_Customer_Detail
         divErrorInstallerAccess.Visible = visible : msgErrorInstallerAccess.InnerText = message
     End Sub
 
-    Protected Sub MessageError_ProcesLogin(visible As Boolean, message As String)
-        divErrorProcessLogin.Visible = visible : msgErrorProcessLogin.InnerText = message
-    End Sub
-
     Protected Function VisibleInstallerAccess(roleId As String) As Boolean
         If Not String.IsNullOrEmpty(roleId) Then
             If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" Then
@@ -1633,6 +1032,7 @@ Partial Class Setting_Customer_Detail
     ' END CUSTOMER LOGIN
 
     ' CUSTOMER DISCOUNT
+
     Protected Sub gvListDiscount_RowCommand(sender As Object, e As GridViewCommandEventArgs)
         If Not String.IsNullOrEmpty(e.CommandArgument) Then
             Session("selectedTabCustomer") = "list-discount"
@@ -2002,69 +1402,9 @@ Partial Class Setting_Customer_Detail
     End Sub
 
     Protected Sub btnAddPromo_Click(sender As Object, e As EventArgs)
-        MessageError_ProcessPromo(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showProcessPromo(); };"
         Session("selectedTabCustomer") = "list-promo"
-        Try
-            lblActionPromo.Text = "Add"
-            titlePromo.InnerText = "Add Promo"
-
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcessPromo", thisScript, True)
-        Catch ex As Exception
-            MessageError_ProcessPromo(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_ProcessPromo(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcessPromo", thisScript, True)
-        End Try
-    End Sub
-
-    Protected Sub btnProcessPromo_Click(sender As Object, e As EventArgs)
-        MessageError_ProcessDiscount(False, String.Empty)
-        Session("selectedTabCustomer") = "list-promo"
-        Dim thisScript As String = "window.onload = function() { showProcessPromo(); };"
-        Try
-            If ddlListPromo.SelectedValue = "" Then
-                MessageError_ProcessPromo(True, "PROMO IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showProcessPromo", thisScript, True)
-                Exit Sub
-            End If
-
-            Dim checkData As Integer = settingClass.GetItemData_Integer("SELECT COUNT(*) FROM CustomerPromos WHERE CustomerId='" & lblId.Text & "' AND PromoId='" & ddlListPromo.SelectedValue & "'")
-            If checkData > 0 Then
-                MessageError_ProcessPromo(True, "THIS PROMO IS ALREADY REGISTERED. PLEASE USE A DIFFERENT PROMO !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showProcessPromo", thisScript, True)
-                Exit Sub
-            End If
-
-            If msgErrorProcessPromo.InnerText = "" Then
-                If lblActionPromo.Text = "Add" Then
-                    Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerPromos ORDER BY Id DESC")
-                    Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerPromos VALUES (@Id, @CustomerId, @PromoId)", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", thisId)
-                            myCmd.Parameters.AddWithValue("@CustomerId", lblId.Text)
-                            myCmd.Parameters.AddWithValue("@PromoId", ddlListPromo.SelectedValue)
-
-                            thisConn.Open()
-                            myCmd.ExecuteNonQuery()
-                        End Using
-                    End Using
-
-                    dataLog = {"CustomerPromos", thisId, Session("LoginId").ToString(), "Customer Promo Created"}
-                    settingClass.Logs(dataLog)
-
-                    url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
-                    Response.Redirect(url, False)
-                End If
-            End If
-        Catch ex As Exception
-            MessageError_ProcessPromo(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_ProcessPromo(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcessPromo", thisScript, True)
-        End Try
+        url = String.Format("~/setting/customer/promo/add?custid={0}", lblId.Text)
+        Response.Redirect(url, False)
     End Sub
 
     Protected Sub btnDeletePromo_Click(sender As Object, e As EventArgs)
@@ -2143,29 +1483,11 @@ Partial Class Setting_Customer_Detail
 
             btnAddPromo.Visible = LoginAccess("Add Promo")
             aResetPromo.Visible = LoginAccess("Reset Promo")
-
-            BindListPromo()
         Catch ex As Exception
             MessageError_Promo(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_Promo(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
-        End Try
-    End Sub
-
-    Protected Sub BindListPromo()
-        ddlListPromo.Items.Clear()
-        Try
-            ddlListPromo.DataSource = settingClass.GetDataTable("SELECT * FROM Promos WHERE Active=1 ORDER BY Name ASC")
-            ddlListPromo.DataTextField = "Name"
-            ddlListPromo.DataValueField = "Id"
-            ddlListPromo.DataBind()
-
-            If ddlListPromo.Items.Count > 1 Then
-                ddlListPromo.Items.Insert(0, New ListItem("", ""))
-            End If
-        Catch ex As Exception
-            ddlListPromo.Items.Clear()
         End Try
     End Sub
 
@@ -2186,10 +1508,6 @@ Partial Class Setting_Customer_Detail
 
     Protected Sub MessageError_DetailPromo(visible As Boolean, message As String)
         divErrorDetailPromo.Visible = visible : msgErrorDetailPromo.InnerText = message
-    End Sub
-
-    Protected Sub MessageError_ProcessPromo(visible As Boolean, message As String)
-        divErrorProcessPromo.Visible = visible : msgErrorProcessPromo.InnerText = message
     End Sub
 
     ' END CUSTOMER PROMO
@@ -2412,23 +1730,15 @@ Partial Class Setting_Customer_Detail
         MessageError_CreateOrder(visible, message)
 
         MessageError_Contact(visible, message)
-        MessageError_ProcessContact(visible, message)
-
         MessageError_Address(visible, message)
-        MessageError_ProcessAddress(visible, message)
-
         MessageError_Business(visible, message)
-        MessageError_ProcessBusiness(visible, message)
-
         MessageError_Login(visible, message)
-        MessageError_ProcesLogin(visible, message)
         MessageError_InstallerAccess(visible, message)
 
         MessageError_Discount(visible, message)
         MessageError_ProcessDiscount(visible, message)
 
         MessageError_Promo(visible, message)
-        MessageError_ProcessPromo(visible, message)
         MessageError_DetailPromo(visible, message)
 
         MessageError_Product(visible, message)

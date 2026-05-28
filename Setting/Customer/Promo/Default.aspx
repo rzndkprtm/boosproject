@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Address.aspx.vb" Inherits="Setting_Customer_Address" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Customer Address" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Default.aspx.vb" Inherits="Setting_Customer_Promo_Default" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Customer Promo" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-heading">
@@ -62,30 +62,20 @@
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:BoundField DataField="Id" HeaderText="ID" />
-                                                <asp:BoundField DataField="CustomerName" HeaderText="Customer" />
-                                                <asp:BoundField DataField="Description" HeaderText="Description" />
-                                                <asp:TemplateField HeaderText="Address">
-                                                    <ItemTemplate>
-                                                        <%# BindDetailAddress(Eval("Id").ToString()) %>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:BoundField DataField="Note" HeaderText="Note" />
-                                                <asp:BoundField DataField="DataPrimary" HeaderText="Primary" />
+                                                <asp:BoundField DataField="CustomerName" HeaderText="Customer Name" />
+                                                <asp:BoundField DataField="PromoName" HeaderText="Promo Name" />
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
                                                     <ItemTemplate>
                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                         <ul class="dropdown-menu">
                                                             <li>
-                                                                <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
-                                                            </li>
-                                                            <li runat="server" visible='<%# VisiblePrimary(Eval("Primary")) %>'>
-                                                                <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalPrimary" onclick='<%# String.Format("return showPrimary(`{0}`);", Eval("Id").ToString()) %>'>Set As Primary</a>
+                                                                <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                             </li>
                                                             <li>
                                                                 <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                             </li>
                                                             <li>
-                                                                <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('CustomerAddress', '<%# Eval("Id") %>')">Log</a>
+                                                                <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('CustomerPromos', '<%# Eval("Id") %>')">Log</a>
                                                             </li>
                                                         </ul>
                                                     </ItemTemplate>
@@ -105,56 +95,30 @@
         </section>
     </div>
 
-    <div class="modal modal-blur fade" id="modalProcess" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal fade text-left" id="modalProcess" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" runat="server" id="titleProcess"></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title">Add Promo</h5>
                 </div>
                 <div class="modal-body">
-                    <div class="row" runat="server" id="divErrorProcess">
+                    <div class="row mb-2" runat="server" id="divErrorProcess">
                         <div class="col-12">
                             <div class="alert alert-danger">
                                 <span runat="server" id="msgErrorProcess"></span>
                             </div>
                         </div>
                     </div>
-                    <div class="row mb-3">
+                    <div class="row">
                         <div class="col-12 form-group">
                             <label class="form-label">Customer Account</label>
                             <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select"></asp:DropDownList>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-12 col-sm-12 col-lg-5 form-group">
-                            <label class="form-label">Description</label>
-                            <asp:TextBox runat="server" ID="txtDescription" CssClass="form-control" placeholder="Delivery / Warehouse / Office ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                        <div class="col-12 col-sm-12 col-lg-7 form-group">
-                            <label class="form-label">Address</label>
-                            <asp:TextBox runat="server" ID="txtAddress" CssClass="form-control" placeholder="Address ..." autocomplete="off"></asp:TextBox>
-                            <p><small class="text-muted">* Do not add the characters comma (,) and semicolon (;)</small></p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 col-sm-12 col-lg-4 form-group">
-                            <label class="form-label">Suburb</label>
-                            <asp:TextBox runat="server" ID="txtSuburb" CssClass="form-control" placeholder="Suburb ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                        <div class="col-12 col-sm-12 col-lg-4 form-group">
-                            <label class="form-label">State</label>
-                            <asp:TextBox runat="server" ID="txtState" CssClass="form-control" placeholder="State ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                        <div class="col-12 col-sm-12 col-lg-4 form-group">
-                            <label class="form-label">Post Code</label>
-                            <asp:TextBox runat="server" ID="txtPostCode" CssClass="form-control" placeholder="Post Code ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                    </div>
-                    <div class="row">
+                    <div class="row mb-3">
                         <div class="col-12 form-group">
-                            <label class="form-label">Note</label>
-                            <asp:TextBox runat="server" TextMode="MultiLine" ID="txtNote" CssClass="form-control" Height="100px" placeholder="Note ..." autocomplete="off" style="resize:none;"></asp:TextBox>
+                            <label class="form-label">Promo</label>
+                            <asp:DropDownList runat="server" ID="ddlPromo" CssClass="choices form-select"></asp:DropDownList>
                         </div>
                     </div>
                 </div>
@@ -165,19 +129,51 @@
             </div>
         </div>
     </div>
-    <div class="modal modal-blur fade" id="modalPrimary" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+    <div class="modal modal-blur fade" id="modalDetail" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-secondary">
-                    <h5 class="modal-title white">Set Primary</h5>
+                <div class="modal-header">
+                    <h5 class="modal-title">Detail Promo</h5>
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
                 </div>
-                <div class="modal-body text-center py-4">
-                    <asp:TextBox runat="server" ID="txtIdPrimary" style="display:none;"></asp:TextBox>
-                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                <div class="modal-body">
+                    <div class="row mb-2" runat="server" id="divErrorDetail">
+                        <div class="col-12">
+                            <div class="alert alert-danger">
+                                <span runat="server" id="msgErrorDetail"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="table-responsive">
+                                <asp:GridView runat="server" ID="gvListDetail" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center">
+                                    <RowStyle />
+                                    <Columns>
+                                        <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="60px">
+                                            <ItemTemplate>
+                                                <%# Container.DataItemIndex + 1 %>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:BoundField DataField="Id" HeaderText="ID" />
+                                        <asp:TemplateField HeaderText="Type">
+                                            <ItemTemplate>
+                                                <%# PromoTitle(Eval("Type").ToString(), Eval("DataId").ToString()) %>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField HeaderText="Discount">
+                                            <ItemTemplate>
+                                                <%# PromoValue(Eval("Discount")) %>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                    </Columns>
+                                </asp:GridView>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnPrimary" CssClass="btn btn-secondary" Text="Confirm" OnClick="btnPrimary_Click" />
+                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
                 </div>
             </div>
         </div>
@@ -186,7 +182,7 @@
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-danger">
-                    <h5 class="modal-title white">Delete Address</h5>
+                    <h5 class="modal-title white">Delete Promo</h5>
                 </div>
                 <div class="modal-body text-center py-4">
                     <asp:TextBox runat="server" ID="txtIdDelete" style="display:none;"></asp:TextBox>
@@ -220,7 +216,6 @@
 
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblId"></asp:Label>
-        <asp:Label runat="server" ID="lblAction"></asp:Label>
     </div>
 
     <script type="text/javascript">
@@ -247,8 +242,8 @@
             $("#modalProcess").modal("show");
         }
 
-        function showPrimary(id) {
-            document.getElementById("<%=txtIdPrimary.ClientID %>").value = id;
+        function showDetail() {
+            $("#modalDetail").modal("show");
         }
 
         function showDelete(id) {
@@ -289,7 +284,7 @@
             });
         }
 
-        ["modalProcess", "modalDelete", "modalLog", "modalPrimary"].forEach(function (id) {
+        ["modalProcess", "modalDetail", "modalDelete", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

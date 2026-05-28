@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Login.aspx.vb" Inherits="Setting_Customer_Login" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Customer Login" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Default.aspx.vb" Inherits="Setting_Customer_Login_Default" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Customer Login" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-heading">
@@ -110,76 +110,6 @@
         </section>
     </div>
 
-    <div class="modal modal-blur fade" id="modalProcess" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" runat="server" id="titleProcess"></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row" runat="server" id="divErrorProcess">
-                        <div class="col-12">
-                            <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorProcess"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Customer Account</label>
-                            <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select"></asp:DropDownList>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-6 form-group">
-                            <label class="form-label">Role</label>
-                            <asp:DropDownList runat="server" ID="ddlRole" CssClass="form-select"></asp:DropDownList>
-                        </div>
-                        <div class="col-6 form-group">
-                            <label class="form-label">Level</label>
-                            <asp:DropDownList runat="server" ID="ddlLevel" CssClass="form-select"></asp:DropDownList>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-6 form-group">
-                            <label class="form-label">Username</label>
-                            <asp:TextBox runat="server" ID="txtUserName" CssClass="form-control" placeholder="UserName ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                        <div class="col-6 form-group" runat="server" id="divPassword">
-                            <label class="form-label">Password</label>
-                            <asp:TextBox runat="server" ID="txtPassword" CssClass="form-control" placeholder="Password ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Full Name</label>
-                            <asp:TextBox runat="server" ID="txtFullName" CssClass="form-control" placeholder="Full Name ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                    </div>
-                    <div class="row" runat="server" id="divEmail">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Email</label>
-                            <asp:TextBox runat="server" ID="txtEmail" CssClass="form-control" placeholder="Email ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-3 form-group">
-                            <label class="form-label">Pricing</label>
-                            <asp:DropDownList runat="server" ID="ddlPricing" CssClass="form-select">
-                                <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
-                                <asp:ListItem Value="0" Text="No"></asp:ListItem>
-                            </asp:DropDownList>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnProcess" Text="Submit" CssClass="btn btn-primary" OnClick="btnProcess_Click" />
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="modal modal-blur fade" id="modalActive" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -260,15 +190,9 @@
 
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblId"></asp:Label>
-        <asp:Label runat="server" ID="lblAction"></asp:Label>
-        <asp:Label runat="server" ID="lblUserName"></asp:Label>
     </div>
 
     <script type="text/javascript">
-        function showProcess() {
-            $("#modalProcess").modal("show");
-        }
-
         function showActive(id, active) {
             document.getElementById("<%=txtIdActive.ClientID %>").value = id;
             document.getElementById("<%=txtActive.ClientID %>").value = active;
@@ -340,7 +264,7 @@
             return result;
         }
 
-        ["modalProcess", "modalActive", "modalChangePassword", "modalResetPass", "modalLog"].forEach(function (id) {
+        ["modalActive", "modalChangePassword", "modalResetPass", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

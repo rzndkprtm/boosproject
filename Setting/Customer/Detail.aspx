@@ -771,61 +771,7 @@
     </div>
 
     <%--CUSTOMER CONTACT--%>
-    <div class="modal fade text-left" id="modalProcessContact" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 runat="server" class="modal-title" id="titleContact"></h5>
-                </div>
-                <div class="modal-body">
-                    <div class="row mb-2" runat="server" id="divErrorProcessContact">
-                        <div class="col-12">
-                            <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorProcessContact"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Name</label>
-                            <asp:TextBox runat="server" ID="txtContactName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
-                            <label class="form-label">Email</label>
-                            <asp:TextBox runat="server" ID="txtContactEmail" TextMode="Email" CssClass="form-control" placeholder="Email ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                        <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
-                            <label class="form-label">Phone</label>
-                            <asp:TextBox runat="server" ID="txtContactPhone" CssClass="form-control" placeholder="Phone ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Tags</label>
-                            <asp:ListBox runat="server" ID="lbContactTags" CssClass="choices form-select multiple-remove" SelectionMode="Multiple">
-                                 <asp:ListItem Value="Confirming" Text="Confirming"></asp:ListItem>
-                                 <asp:ListItem Value="Invoicing" Text="Invoicing"></asp:ListItem>
-                                 <asp:ListItem Value="Quoting" Text="Quoting"></asp:ListItem>
-                                 <asp:ListItem Value="Newsletter" Text="Newsletter"></asp:ListItem>
-                            </asp:ListBox>
-                        </div>
-                    </div>
-                    <div class="mb-2 row">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Note</label>
-                            <asp:TextBox runat="server" TextMode="MultiLine" ID="txtContactNote" CssClass="form-control" Height="100px" placeholder="Note ..." autocomplete="off" style="resize:none;"></asp:TextBox>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnProcessContact" Text="Submit" CssClass="btn btn-primary" OnClick="btnProcessContact_Click" />
-                </div>
-            </div>
-        </div>
-    </div>
+
     <div class="modal modal-blur fade" id="modalDeleteContact" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -863,60 +809,6 @@
     
     <%--CUSTOMER ADDRESS--%>
 
-    <div class="modal modal-blur fade" id="modalProcessAddress" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" runat="server" id="titleAddress"></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row" runat="server" id="divErrorProcessAddress">
-                        <div class="col-12">
-                            <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorProcessAddress"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mb-2 row">
-                        <div class="col-12 col-sm-12 col-lg-5 mb-2 form-group">
-                            <label class="form-label">Desciption</label>
-                            <asp:TextBox runat="server" ID="txtAddressDescription" CssClass="form-control" placeholder="Ex : Delivery / Warehouse / Office ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                        <div class="col-12 col-sm-12 col-lg-7 mb-2 form-group">
-                            <label class="form-label">Address</label>
-                            <asp:TextBox runat="server" ID="txtAddressName" CssClass="form-control" placeholder="Address ..." autocomplete="off"></asp:TextBox>
-                            <p><small class="text-muted">* Do not add the characters comma (,) and semicolon (;)</small></p>
-                        </div>
-                    </div>
-                    <div class="mb-2 row">
-                        <div class="col-12 col-sm-12 col-lg-4 mb-2 form-group">
-                            <label class="form-label">Suburb</label>
-                            <asp:TextBox runat="server" ID="txtAddressSuburb" CssClass="form-control" placeholder="Suburb ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                        <div class="col-12 col-sm-12 col-lg-4 mb-2 form-group">
-                            <label class="form-label">State</label>
-                            <asp:TextBox runat="server" ID="txtAddressState" CssClass="form-control" placeholder="State ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                        <div class="col-12 col-sm-12 col-lg-4 mb-2 form-group">
-                            <label class="form-label">Post Code</label>
-                            <asp:TextBox runat="server" ID="txtAddressPostCode" CssClass="form-control" placeholder="Post Code ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                    </div>
-                    <div class="mb-2 row">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Note</label>
-                            <asp:TextBox runat="server" TextMode="MultiLine" ID="txtAddressNote" CssClass="form-control" Height="70px" placeholder="Note ..." autocomplete="off" style="resize:none;"></asp:TextBox>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnProcessAddress" Text="Submit" CssClass="btn btn-primary" OnClick="btnProcessAddress_Click" />
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="modal modal-blur fade" id="modalDeleteAddress" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -954,51 +846,6 @@
 
     <%--CUSTOMER BUSINESS--%>
 
-    <div class="modal modal-blur fade" id="modalProcessBusiness" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" runat="server" id="titleBusiness"></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row" runat="server" id="divErrorProcessBusiness">
-                        <div class="col-12">
-                            <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorProcessBusiness"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mb-2 row">
-                        <div class="col-12 form-group">
-                            <label class="form-label">ABN Number</label>
-                            <asp:TextBox runat="server" ID="txtBusinessNumber" CssClass="form-control" placeholder="ABN Number ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                    </div>
-                    <div class="mb-2 row">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Registered Name</label>
-                            <asp:TextBox runat="server" ID="txtBusinessName" CssClass="form-control" placeholder="Registered Name ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                    </div>
-                    <div class="mb-2 row">
-                        <div class="col-6 form-group">
-                            <label class="form-label">Registered Date</label>
-                            <asp:TextBox runat="server" ID="txtBusinessRegistered" TextMode="Date" CssClass="form-control" placeholder="Registered Date ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                        <div class="col-6 form-group">
-                            <label class="form-label">Expiry Date</label>
-                            <asp:TextBox runat="server" ID="txtBusinessExpiry" TextMode="Date" CssClass="form-control" placeholder="Expiry Date ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnProcessBusiness" Text="Submit" CssClass="btn btn-primary" OnClick="btnProcessBusiness_Click" />
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="modal modal-blur fade" id="modalDeleteBusiness" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -1036,73 +883,6 @@
 
     <%--CUSTOMER LOGIN--%>
 
-    <div class="modal modal-blur fade" id="modalProcessLogin" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" runat="server" id="titleLogin"></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row" runat="server" id="divErrorProcessLogin">
-                        <div class="col-12">
-                            <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorProcessLogin"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-6 form-group">
-                            <label class="form-label required">Role</label>
-                            <asp:DropDownList runat="server" ID="ddlLoginRole" CssClass="choices form-select"></asp:DropDownList>
-                        </div>
-                        <div class="col-6 mb-2 form-group">
-                            <label class="form-label required">Level</label>
-                            <asp:DropDownList runat="server" ID="ddlLoginLevel" CssClass="choices form-select"></asp:DropDownList>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 form-group">
-                            <label class="form-label required">Username</label>
-                            <asp:TextBox runat="server" ID="txtLoginUserName" CssClass="form-control" placeholder="UserName ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                    </div>
-                    <div class="row" runat="server" id="divPassword">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Password</label>
-                            <asp:TextBox runat="server" ID="txtLoginPassword" CssClass="form-control" placeholder="Password ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                        <small class="form-hint" id="passwordinfo"></small>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 form-group">
-                            <label class="form-label required">Full Name</label>
-                            <asp:TextBox runat="server" ID="txtLoginFullName" CssClass="form-control" placeholder="Full Name ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                    </div>
-                    <div class="row" runat="server" id="divLoginEmail">
-                        <div class="col-12 form-group">
-                            <label class="form-label required">Email</label>
-                            <asp:TextBox runat="server" ID="txtLoginEmail" CssClass="form-control" placeholder="Email ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 col-sm-12 col-lg-4 mb-2 form-group">
-                            <label class="form-label">Pricing</label>
-                            <asp:DropDownList runat="server" ID="ddlPricing" CssClass="form-select">
-                                <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
-                                <asp:ListItem Value="0" Text="No"></asp:ListItem>
-                            </asp:DropDownList>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnProcessLogin" Text="Submit" CssClass="btn btn-primary" OnClick="btnProcessLogin_Click" />
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="modal modal-blur fade" id="modalInstallerAccess" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -1326,34 +1106,6 @@
 
     <%--CUSTOMER PROMO--%>
 
-    <div class="modal modal-blur fade" id="modalProcessPromo" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" runat="server" id="titlePromo"></h5>
-                </div>
-                <div class="modal-body">
-                    <div class="row mb-2" runat="server" id="divErrorProcessPromo">
-                        <div class="col-12">
-                            <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorProcessPromo"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row" runat="server">
-                        <div class="col-12 form-group">
-                            <label class="form-label required">Promo</label>
-                            <asp:DropDownList runat="server" ID="ddlListPromo" CssClass="form-select"></asp:DropDownList>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnProcessPromo" CssClass="btn btn-success" Text="Submit" OnClick="btnProcessPromo_Click" />
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="modal modal-blur fade" id="modalDetailPromo" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -1486,23 +1238,14 @@
 
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblIdContact"></asp:Label>
-        <asp:Label runat="server" ID="lblActionContact"></asp:Label>
-
         <asp:Label runat="server" ID="lblIdAddress"></asp:Label>
-        <asp:Label runat="server" ID="lblActionAddress"></asp:Label>
-
         <asp:Label runat="server" ID="lblIdBusiness"></asp:Label>
-        <asp:Label runat="server" ID="lblActionBusiness"></asp:Label>
-
-        <asp:Label runat="server" ID="lblIdLogin"></asp:Label>        
-        <asp:Label runat="server" ID="lblActionLogin"></asp:Label>
-        <asp:Label runat="server" ID="lblLoginUserNameOld"></asp:Label>
+        <asp:Label runat="server" ID="lblIdLogin"></asp:Label>
 
         <asp:Label runat="server" ID="lblIdDiscount"></asp:Label>
         <asp:Label runat="server" ID="lblActionDiscount" ClientIDMode="Static"></asp:Label>
 
         <asp:Label runat="server" ID="lblIdPromo"></asp:Label>
-        <asp:Label runat="server" ID="lblActionPromo"></asp:Label>
 
         <asp:Label runat="server" ID="lblIdProduct"></asp:Label>
     </div>
@@ -1639,10 +1382,6 @@
 
         // START CUSTOMER CONTACT
 
-        function showProcessContact() {
-            $("#modalProcessContact").modal("show");
-        }
-
         function showDeleteContact(id) {
             document.getElementById("<%=txtIdContactDelete.ClientID %>").value = id;
         }
@@ -1654,9 +1393,6 @@
         // END CUSTOMER CONTACT
 
         // START CUSTOMER ADDRESS
-        function showProcessAddress() {
-            $("#modalProcessAddress").modal("show");
-        }
 
         function showDeleteAddress(id) {
             document.getElementById("<%=txtIdAddressDelete.ClientID %>").value = id;
@@ -1665,12 +1401,10 @@
         function showPrimaryAddress(id) {
             document.getElementById("<%=txtIdPrimaryAddress.ClientID %>").value = id;
         }
+
         // END CUSTOMER ADDRESS
 
         // START CUSTOMER BUSINESS
-        function showProcessBusiness() {
-            $("#modalProcessBusiness").modal("show");
-        }
 
         function showDeleteBusiness(id) {
             document.getElementById("<%=txtIdBusinessDelete.ClientID %>").value = id;
@@ -1679,12 +1413,10 @@
         function showPrimaryBusiness(id) {
             document.getElementById("<%=txtIdPrimaryBusiness.ClientID %>").value = id;
         }
+
         // END CUSTOMER BUSINESS
 
         // START CUSTOMER LOGIN
-        function showProcessLogin() {
-            $("#modalProcessLogin").modal("show");
-        }
 
         function showInstallerAccess() {
             $("#modalInstallerAccess").modal("show");
@@ -1737,6 +1469,7 @@
             body += "<b>" + password + "</b>";
             document.getElementById("spanPassword").innerHTML = body;
         }
+
         // END CUSTOMER LOGIN
 
         // START CUSTOMER DISCOUNT
@@ -1778,12 +1511,10 @@
         function showDeleteDiscount(id) {
             document.getElementById("<%=txtIdDiscountDelete.ClientID %>").value = id;
         }
+
         // END CUSTOMER DISCOUNT
 
         // START CUSTOMER PROMO
-        function showProcessPromo() {
-            $("#modalProcessPromo").modal("show");
-        }
 
         function showDetailPromo() {
             $("#modalDetailPromo").modal("show");
@@ -1802,12 +1533,11 @@
 
         [
             "modalDelete", "modalCreateOrder", "modalRecalculate", "modalLog", "modalWelcome", "modalWaiting",
-            "modalProcessContact", "modalDeleteContact", "modalPrimaryContact",
-            "modalProcessAddress", "modalDeleteAddress", "modalPrimaryAddress",
-            "modalProcessBusiness", "modalDeleteBusiness", "modalPrimaryBusiness",
-            "modalProcessLogin", "modalInstallerAccess", "modalActiveLogin", "modalResetPass", "modalDencryptPass", "modalLoginCredentials", "modalChangePasswordLogin",
+            "modalDeleteContact", "modalPrimaryContact", "modalDeleteAddress", "modalPrimaryAddress",
+            "modalDeleteBusiness", "modalPrimaryBusiness",
+            "modalInstallerAccess", "modalActiveLogin", "modalResetPass", "modalDencryptPass", "modalLoginCredentials", "modalChangePasswordLogin",
             "modalProcessDiscount", "modalResetDiscount", "modalDeleteDiscount",
-            "modalProcessPromo", "modalDetailPromo", "modalResetPromo", "modalDeletePromo",
+            "modalDetailPromo", "modalResetPromo", "modalDeletePromo",
             "modalResetProduct", "modalProcessProduct"
         ].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
