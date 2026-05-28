@@ -62,6 +62,7 @@
                                         <label class="form-label">Status</label>
                                         <asp:DropDownList runat="server" ID="ddlStatus" CssClass="form-select">
                                             <asp:ListItem Value="" Text=""></asp:ListItem>
+                                            <asp:ListItem Value="Unsubmitted" Text="Unsubmitted"></asp:ListItem>
                                             <asp:ListItem Value="Submitted" Text="Submitted"></asp:ListItem>
                                             <asp:ListItem Value="In Production" Text="In Production"></asp:ListItem>
                                         </asp:DropDownList>
