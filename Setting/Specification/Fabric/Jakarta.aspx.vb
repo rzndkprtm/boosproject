@@ -111,7 +111,7 @@ Partial Class Setting_Specification_Fabric_Jakarta
             If msgErrorProcess.InnerText = "" Then
                 If lblAction.Text = "Add" Then
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO FabricGroupLocals VALUES (@Id, @Panel, @Roller, @Roman @Curtain)", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO FabricGroupLocals VALUES (@Id, @Panel, @Roller, @Roman, @Curtain)", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", ddlFabric.SelectedValue)
                             myCmd.Parameters.AddWithValue("@Panel", txtPanel.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Roller", txtRoller.Text.Trim())
@@ -132,7 +132,7 @@ Partial Class Setting_Specification_Fabric_Jakarta
 
                 If lblAction.Text = "Edit" Then
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE FabricGroupLocals SET Panel=@Panel, Roller=@Roller, Roman=@Roman Curtain=@Curtain WHERE Id=@Id", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("UPDATE FabricGroupLocals SET Panel=@Panel, Roller=@Roller, Roman=@Roman, Curtain=@Curtain WHERE Id=@Id", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", ddlFabric.SelectedValue)
                             myCmd.Parameters.AddWithValue("@Panel", txtPanel.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Roller", txtRoller.Text.Trim())

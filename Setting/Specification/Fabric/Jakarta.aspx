@@ -139,7 +139,7 @@
                     </div>
                     <div class="row">
                         <div class="col-12 form-group">
-                            <label class="form-label">PCurtain</label>
+                            <label class="form-label">Curtain</label>
                             <asp:TextBox runat="server" ID="txtCurtain" CssClass="form-control" placeholder="Curtain ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
