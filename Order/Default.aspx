@@ -37,12 +37,8 @@
                 <asp:Button runat="server" ID="btnRework" CssClass="btn btn-danger" Text="Rework Order" OnClick="btnRework_Click" />
                 <button class="btn btn-info dropdown-toggle me-1" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnAnother">Another</button>
                 <ul class="dropdown-menu">
-                    <li>
-                        <asp:Button runat="server" ID="btnFile" CssClass="dropdown-item" Text="File" OnClick="btnFile_Click" />
-                    </li>
-                    <li>
-                        <asp:Button runat="server" ID="btnUnshipment" CssClass="dropdown-item" Text="Unshipment" OnClick="btnUnshipment_Click" />
-                    </li>
+                    <li><asp:Button runat="server" ID="btnFile" CssClass="dropdown-item" Text="File" OnClick="btnFile_Click" /></li>
+                    <li><asp:Button runat="server" ID="btnUnshipment" CssClass="dropdown-item" Text="Unshipment" OnClick="btnUnshipment_Click" /></li>
                 </ul>
             </div>
         </section>
@@ -51,7 +47,7 @@
                 <div class="card">
                     <div class="card-content">
                         <div class="card-header">
-                            <div class="row">
+                            <div class="row mb-2">
                                 <div class="col-12 col-sm-12 col-lg-3 mb-2">
                                     <div class="input-group">
                                         <span class="input-group-text">Status</span>
