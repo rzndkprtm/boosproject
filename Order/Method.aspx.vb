@@ -1362,7 +1362,7 @@ Partial Class Order_Method
             Return "FABRIC COLOUR IS REQUIRED !"
         End If
 
-        If controlName = "Motorised" AndAlso factory = "Express" Then
+        If controlName = "DC Motor" AndAlso factory = "Express" Then
             Return "MOTORISED CONTROL AND EXPRESS FABRIC CANNOT BE PROCESSED AT THIS TIME. PLEASE REPLACE THE FABRIC WITH A REGULAR OPTION !"
         End If
 
@@ -1415,7 +1415,7 @@ Partial Class Order_Method
             End If
         End If
 
-        If blindName = "Standard" AndAlso (controlName = "Corded" OrElse controlName = "Motorised") Then
+        If blindName = "Standard" AndAlso (controlName = "Corded" OrElse controlName = "DC Motor") Then
             If String.IsNullOrEmpty(data.controlposition) Then Return "CONTROL POSITION IS REQUIRED!"
         End If
 
@@ -1470,14 +1470,14 @@ Partial Class Order_Method
             data.remote = String.Empty
             data.controlposition = String.Empty : data.controllength = String.Empty : clvalue = 0
         End If
-        If controlName = "Motorised" Then
+        If controlName = "DC Motor" Then
             data.controllength = String.Empty : clvalue = 0
         End If
 
         Dim fabricGroup As String = orderClass.GetFabricGroup(data.fabrictype)
 
         Dim controlNameGroup As String = controlName
-        If controlName = "Motorised" Then controlNameGroup = "Corded"
+        If controlName = "DC Motor" Then controlNameGroup = "Corded"
 
         Dim groupName As String = String.Format("{0} - {1} - {2} - {3}", blindName, controlNameGroup, fabricGroup, factory)
 
@@ -9544,9 +9544,11 @@ Partial Class Order_Method
         Dim markup As Integer
 
         Dim designName As String = String.Empty
+        Dim blindName As String = String.Empty
         Dim controlName As String = String.Empty
 
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
+        If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
         If Not String.IsNullOrEmpty(data.controltype) Then controlName = orderClass.GetControlName(data.controltype)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "OUTDOOR TYPE IS REQUIRED !"
@@ -9556,31 +9558,34 @@ Partial Class Order_Method
         If String.IsNullOrEmpty(data.qty) Then Return "QTY IS REQUIRED !"
         If Not Integer.TryParse(data.qty, qty) OrElse qty <= 0 Then Return "PLEASE CHECK YOUR QTY ORDER !"
 
-        If Not String.IsNullOrEmpty(data.room) Then
-            If data.room.IndexOfAny({","c, "&"c, "`"c, "'"c}) >= 0 OrElse data.room.Contains("&=") OrElse data.room.Contains("&+") Then
-                Return "ROOM / LOCATION MUST NOT CONTAIN: , & ` ' &= &+"
-            End If
-            If data.room.Trim().Length > 1000 Then Return "MAXIMUM 1000 CHARACTERS !"
+        If String.IsNullOrEmpty(data.room) OrElse data.room.IndexOfAny({","c, "&"c, "`"c, "'"c}) >= 0 OrElse data.room.Contains("&=") OrElse data.room.Contains("&+") Then
+            Return "ROOM TO INSTALL IS REQUIRED AND MUST NOT CONTAIN: , & ` ' &= &+"
         End If
 
         If String.IsNullOrEmpty(data.mounting) Then Return "MOUNTING IS REQUIRED !"
 
+        If String.IsNullOrEmpty(data.fabrictype) Then Return "FABRIC TYPE IS REQUIRED !"
+        If String.IsNullOrEmpty(data.fabriccolour) Then Return "FABRIC COLOUR IS REQUIRED !"
+
         If String.IsNullOrEmpty(data.width) Then Return "WIDTH IS REQUIRED !"
         If Not Integer.TryParse(data.width, width) OrElse width <= 0 Then Return "PLEASE CHECK YOUR WIDTH ORDER !"
         If data.rolename = "Customer" Then
-
+            If blindName = "Wire Guide" AndAlso width > 4800 Then Return "MAXIMUM WIDTH IS 4800MM !"
+            If blindName = "Zipper" AndAlso width > 6000 Then Return "MAXIMUM WIDTH IS 6000MM !"
         End If
 
         If String.IsNullOrEmpty(data.drop) Then Return "DROP IS REQUIRED !"
         If Not Integer.TryParse(data.drop, drop) OrElse drop <= 0 Then Return "PLEASE CHECK YOUR DROP ORDER !"
         If data.rolename = "Customer" Then
-
+            If blindName = "Wire Guide" AndAlso drop > 3500 Then Return "MAXIMUM WIDTH IS 3500MM !"
+            If blindName = "Zipper" AndAlso drop > 4500 Then Return "MAXIMUM WIDTH IS 4500MM !"
         End If
 
-        If String.IsNullOrEmpty(data.fabrictype) Then Return "FABRIC TYPE IS REQUIRED !"
-        If String.IsNullOrEmpty(data.fabriccolour) Then Return "FABRIC COLOUR IS REQUIRED !"
-        If String.IsNullOrEmpty(data.controlposition) Then Return "CONTROL POSITION IS REQUIRED !"
+        If controlName = "Aok" OrElse controlName = "Altus" Then
+            If String.IsNullOrEmpty(data.remote) Then Return "REMOTE TYPE IS REQUIRED !"
+        End If
 
+        If String.IsNullOrEmpty(data.controlposition) Then Return "CONTROL POSITION IS REQUIRED !"
         If controlName = "Crank" Then
             If String.IsNullOrEmpty(data.controllength) Then Return "CONTROL LENGTH IS REQUIRED !"
             If data.controllength = "Custom" Then
@@ -9602,30 +9607,33 @@ Partial Class Order_Method
         End If
 
         If controlName = "Crank" Then
+            data.remote = String.Empty
             If data.controllength = "Standard" Then
                 controllengthvalue = Math.Ceiling(drop * 2 / 3)
             End If
         End If
 
-        If controlName = "Motor" Then
+        If controlName = "Aok" OrElse controlName = "Altus" Then
             data.controllength = String.Empty : controllengthvalue = 0
         End If
 
         Dim linearMetre As Decimal = width / 1000
         Dim squareMetre As Decimal = width * drop / 1000000
 
-        Dim priceProductGroup As String = String.Empty ' orderClass.GetPriceProductGroupId(tubeName, data.designid)
+        Dim groupName As String = String.Format("{0} - {1}", designName, blindName)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
                 Dim itemId As String = orderClass.GetNewOrderItemId()
 
                 Using thisConn As SqlConnection = New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricColourId, PriceProductGroupId, Qty, Room, Mounting, Width, [Drop], ControlPosition, ControlLength, ControlLengthValue, LinearMetre, SquareMetre, TotalItems, Notes, MarkUp, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricColourId, @PriceProductGroupId, @Qty, @Room, @Mounting, @Width, @Drop, @ControlPosition, @ControlLength, @ControlLengthValue, @LinearMetre, @SquareMetre, @TotalItems, @Notes, @MarkUp, 1)", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, ChainId, FabricId, FabricColourId, PriceProductGroupId, Qty, Room, Mounting, Width, [Drop], ControlPosition, ControlLength, ControlLengthValue, LinearMetre, SquareMetre, TotalItems, Notes, MarkUp, Active) VALUES(@Id, @HeaderId, @ProductId, @ChainId, @FabricId, @FabricColourId, @PriceProductGroupId, @Qty, @Room, @Mounting, @Width, @Drop, @ControlPosition, @ControlLength, @ControlLengthValue, @LinearMetre, @SquareMetre, @TotalItems, @Notes, @MarkUp, 1)", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", itemId)
                         myCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                         myCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                         myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
+                        myCmd.Parameters.AddWithValue("@ChainId", If(String.IsNullOrEmpty(data.remote), CType(DBNull.Value, Object), data.remote))
                         myCmd.Parameters.AddWithValue("@FabricId", If(String.IsNullOrEmpty(data.fabrictype), CType(DBNull.Value, Object), data.fabrictype))
                         myCmd.Parameters.AddWithValue("@FabricColourId", If(String.IsNullOrEmpty(data.fabriccolour), CType(DBNull.Value, Object), data.fabriccolour))
                         myCmd.Parameters.AddWithValue("@Qty", "1")
@@ -9662,11 +9670,12 @@ Partial Class Order_Method
             Dim itemId As String = data.itemid
 
             Using thisConn As SqlConnection = New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET ProductId=@ProductId, FabricId=@FabricId, FabricColourId=@FabricColourId, PriceProductGroupId=@PriceProductGroupId, Qty=@Qty, Room=@Room, Mounting=@Mounting, Width=@Width, [Drop]=@Drop, ControlPosition=@ControlPosition, ControlLength=@ControlLength, ControlLengthValue=@ControlLengthValue, LinearMetre=@LinearMetre, SquareMetre=@SquareMetre, TotalItems=@TotalItems, Notes=@Notes, MarkUp=@MarkUp, Active=1 WHERE Id=@Id", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET ProductId=@ProductId, ChainId=@ChainId, FabricId=@FabricId, FabricColourId=@FabricColourId, PriceProductGroupId=@PriceProductGroupId, Qty=@Qty, Room=@Room, Mounting=@Mounting, Width=@Width, [Drop]=@Drop, ControlPosition=@ControlPosition, ControlLength=@ControlLength, ControlLengthValue=@ControlLengthValue, LinearMetre=@LinearMetre, SquareMetre=@SquareMetre, TotalItems=@TotalItems, Notes=@Notes, MarkUp=@MarkUp, Active=1 WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", itemId)
                     myCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                     myCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                     myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
+                    myCmd.Parameters.AddWithValue("@ChainId", If(String.IsNullOrEmpty(data.remote), CType(DBNull.Value, Object), data.remote))
                     myCmd.Parameters.AddWithValue("@FabricId", If(String.IsNullOrEmpty(data.fabrictype), CType(DBNull.Value, Object), data.fabrictype))
                     myCmd.Parameters.AddWithValue("@FabricColourId", If(String.IsNullOrEmpty(data.fabriccolour), CType(DBNull.Value, Object), data.fabriccolour))
                     myCmd.Parameters.AddWithValue("@Qty", "1")
@@ -10539,6 +10548,8 @@ Partial Class Order_Method
 
         Dim fabricColourReq As New JSONList With {.type = "FabricColour", .fabrictype = fabricId, .companydetailid = companyDetailId, .action = action}
 
+        Dim chainReq As New JSONList With {.type = "ControlColour", .designtype = designId, .companydetailid = companyDetailId, .controltype = controlId, .action = action}
+
         Dim result = New With {
                 .ItemData = itemDetail,
                 .BlindTypes = ListData(blindReq),
@@ -10546,7 +10557,8 @@ Partial Class Order_Method
                 .ColourTypes = ListData(colourReq),
                 .Mountings = ListData(mountingReq),
                 .Fabrics = ListData(fabricReq),
-                .FabricColours = ListData(fabricColourReq)
+                .FabricColours = ListData(fabricColourReq),
+                .Chains = ListData(chainReq)
             }
         Return result
     End Function

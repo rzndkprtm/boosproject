@@ -29,6 +29,7 @@ $("#controltype").on("change", function () {
     const controltype = $(this).val();
 
     bindColourType(blindtype, controltype);
+    bindRemote(designId, controltype);
 
     document.getElementById("controllength").value = "";
 });
@@ -354,7 +355,8 @@ function bindControlType(blindType) {
         if (!blindType) {
             const selectedValue = controltype.value || "";
             Promise.all([
-                bindColourType(blindType, selectedValue)
+                bindColourType(blindType, selectedValue),
+                bindRemote(designId, selectedValue)
             ]).then(resolve).catch(reject);
             return;
         }
@@ -391,12 +393,14 @@ function bindControlType(blindType) {
 
                     const selectedValue = controltype.value || "";
                     Promise.all([
-                        bindColourType(blindType, selectedValue)
+                        bindColourType(blindType, selectedValue),
+                        bindRemote(designId, selectedValue)
                     ]).then(resolve).catch(reject);
                 } else {
                     const selectedValue = controltype.value || "";
                     Promise.all([
-                        bindColourType(blindType, selectedValue)
+                        bindColourType(blindType, selectedValue),
+                        bindRemote(designId, selectedValue)
                     ]).then(resolve).catch(reject);
                 }
             },
@@ -506,6 +510,51 @@ function bindMounting(blindType) {
                     if (response.d.length === 1) {
                         mounting.selectedIndex = 0;
                     }
+                }
+                resolve();
+            },
+            error: function (error) {
+                reject(error);
+            }
+        });
+    });
+}
+
+function bindRemote(designType, controlType) {
+    return new Promise((resolve, reject) => {
+        const remote = document.getElementById("remote");
+        remote.innerHTML = "";
+
+        if (!designType || !controlType) {
+            resolve();
+            return;
+        }
+
+        const listData = { type: "ControlColour", designtype: designType, controltype: controlType, companydetailid: companyDetailId, action: itemAction };
+
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/ListData",
+            data: JSON.stringify({ data: listData }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (Array.isArray(response.d)) {
+                    remote.innerHTML = "";
+
+                    if (response.d.length > 1) {
+                        var defaultOption = document.createElement("option");
+                        defaultOption.text = "";
+                        defaultOption.value = "";
+                        remote.add(defaultOption);
+                    }
+
+                    response.d.forEach(function (item) {
+                        var option = document.createElement("option");
+                        option.value = item.Value;
+                        option.text = item.Text;
+                        remote.add(option);
+                    });
                 }
                 resolve();
             },
@@ -629,6 +678,7 @@ function bindFabricColour(fabricType) {
 function bindComponentForm(blindType, controlType, colourType) {
     return new Promise((resolve, reject) => {
         const detail = document.getElementById("divdetail");
+        const remote = document.getElementById("divremote");
         const controllength = document.getElementById("divcontrollength");
         const controllengthvalue = document.getElementById("divcontrollengthvalue");
         const markup = document.getElementById("divmarkup");
@@ -638,6 +688,7 @@ function bindComponentForm(blindType, controlType, colourType) {
         }
 
         toggleDisplay(detail, false);
+        toggleDisplay(remote, false);
         toggleDisplay(markup, false);
         toggleDisplay(controllength, false);
         toggleDisplay(controllengthvalue, false);
@@ -652,6 +703,9 @@ function bindComponentForm(blindType, controlType, colourType) {
         ]).then(([blindName, controlName]) => {
             if (controlName === "Crank") {
                 toggleDisplay(controllength, true);
+            }
+            if (controlName === "Aok" || controlName === "Altus") {
+                toggleDisplay(remote, true);
             }
 
             if (typeof priceAccess !== "undefined" && priceAccess) {
@@ -707,7 +761,7 @@ function controlForm(status, isEditItem, isCopyItem) {
 
     document.getElementById("submit").style.display = status ? "none" : "";
 
-    const inputs = ["blindtype", "controltype", "colourtype", "qty", "room", "mounting", "width", "drop", "fabrictype", "fabriccolour", "controlposition", "controllength", "controllengthvalue", "notes", "markup"];
+    const inputs = ["blindtype", "controltype", "colourtype", "qty", "room", "mounting", "width", "drop", "remote", "fabrictype", "fabriccolour", "controlposition", "controllength", "controllengthvalue", "notes", "markup"];
 
     inputs.forEach(id => {
         const inputElement = document.getElementById(id);
@@ -745,6 +799,7 @@ function setFormValues(itemData) {
         mounting: "Mounting",
         width: "Width",
         drop: "Drop",
+        remote: "ChainId",
         fabrictype: "FabricId",
         fabriccolour: "FabricColourId",
         controlposition: "ControlPosition",
@@ -775,7 +830,7 @@ function setFormValues(itemData) {
 function process() {
     toggleButtonState(true, "Processing...");
 
-    const fields = ["blindtype", "controltype", "colourtype", "qty", "room", "mounting", "width", "drop", "fabrictype", "fabriccolour", "controlposition", "controllength", "controllengthvalue", "notes", "markup"];
+    const fields = ["blindtype", "controltype", "colourtype", "qty", "room", "mounting", "width", "drop", "remote", "fabrictype", "fabriccolour", "controlposition", "controllength", "controllengthvalue", "notes", "markup"];
 
     const formData = {
         headerid: headerId,
@@ -885,6 +940,7 @@ async function bindItemOrder(itemId, companyDetailId, action) {
         fillSelect("#controltype", data.ControlTypes);
         fillSelect("#colourtype", data.ColourTypes);
         fillSelect("#mounting", data.Mountings);
+        fillSelect("#remote", data.Chains);
         fillSelect("#fabrictype", data.Fabrics);
         fillSelect("#fabriccolour", data.FabricColours);
 

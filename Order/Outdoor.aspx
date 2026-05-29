@@ -125,6 +125,22 @@
                                             </div>
                                             <div class="row mt-3">
                                                 <div class="col-12 col-sm-12 col-lg-3 mb-1">
+                                                    <label>Fabric Type</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                    <select id="fabrictype" class="form-select"></select>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-12 col-sm-12 col-lg-3 mb-1">
+                                                    <label>Fabric Colour</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-5 form-group">
+                                                    <select id="fabriccolour" class="form-select"></select>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-3">
+                                                <div class="col-12 col-sm-12 col-lg-3 mb-1">
                                                     <label>Width</label>
                                                 </div>
                                                 <div class="col-12 col-sm-12 col-lg-4 form-group">
@@ -145,20 +161,12 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="row mt-3">
+                                            <div class="row mt-3" id="divremote">
                                                 <div class="col-12 col-sm-12 col-lg-3 mb-1">
-                                                    <label>Fabric Type</label>
+                                                    <label>Remote</label>
                                                 </div>
                                                 <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                                    <select id="fabrictype" class="form-select"></select>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-12 col-sm-12 col-lg-3 mb-1">
-                                                    <label>Fabric Colour</label>
-                                                </div>
-                                                <div class="col-12 col-sm-12 col-lg-5 form-group">
-                                                    <select id="fabriccolour" class="form-select"></select>
+                                                    <select id="remote" class="form-select"></select>
                                                 </div>
                                             </div>
                                             <div class="row mt-3">
@@ -173,6 +181,7 @@
                                                     </select>
                                                 </div>
                                             </div>
+                                            
                                             <div class="row" id="divcontrollength">
                                                 <div class="col-12 col-sm-12 col-lg-3 mb-1">
                                                     <label>Control Length</label>
@@ -299,5 +308,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/Gabuts/Outdoor.js?v=1.0.0"></script>
+    <script src="/Scripts/Gabuts/Outdoor.js?v=1.0.1"></script>
 </asp:Content>
