@@ -2367,13 +2367,13 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
 
             if (["Alpha 1Nm", "Alpha 2Nm", "Alpha 3Nm"].includes(controlName)) {
                 divShow.push("divcharger");
-                if (companyDetailName === "BIG" || companyDetailName === "JPMD" || companyDetailName === "JPMD BP" || companyDetailName === "CWS") {
+                if (companyDetailName === "JPMD" || companyDetailName === "JPMD BP" || companyDetailName === "CWS") {
                     divShow.push("divextensioncable", "divsupply");
                 }
             }
 
             if (["Altus", "Sonesse 30 WF", "LSN40"].includes(controlName)) {
-                if (companyDetailName === "ACCENT" || companyDetailName === "OASIS") {
+                if (companyDetailName === "ACCENT" || companyDetailName === "BIG" || companyDetailName === "OASIS") {
                     divShow.push("divdrycontact");
                 }
             }
