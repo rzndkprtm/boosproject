@@ -61,10 +61,9 @@ Partial Class Setting_Customer_List
     End Sub
 
     Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
+        Session("SearchCustomer") = txtSearch.Text
         If Not String.IsNullOrEmpty(e.CommandArgument) Then
             Dim dataId As String = e.CommandArgument.ToString()
-            Session("SearchCustomer") = txtSearch.Text
-
             If e.CommandName = "Detail" Then
                 url = String.Format("~/setting/customer/detail?customerid={0}", dataId)
                 Response.Redirect(url, False)

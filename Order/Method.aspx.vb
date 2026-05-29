@@ -9620,7 +9620,7 @@ Partial Class Order_Method
         Dim linearMetre As Decimal = width / 1000
         Dim squareMetre As Decimal = width * drop / 1000000
 
-        Dim groupName As String = String.Format("{0} - {1}", designName, blindName)
+        Dim groupName As String = String.Format("{0} {1}", designName, blindName)
         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
