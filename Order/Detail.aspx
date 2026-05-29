@@ -150,7 +150,7 @@
                             </div>
                             <div class="row mb-2">
                                 <div class="col-4 col-sm-4 col-lg-4 mb-2">
-                                    <label>CreatedBy</label>
+                                    <label>Created By</label>
                                     <br />
                                     <asp:Label runat="server" ID="lblCreatedBy" Visible="false"></asp:Label>
                                     <asp:Label runat="server" ID="lblCreatedName" CssClass="font-bold"></asp:Label>
@@ -192,34 +192,34 @@
                                 <div class="card-body">
                                     <div class="row mb-2">
                                         <div class="col-4 col-sm-4 col-lg-4">
-                                            <label>Created Date</label>
+                                            <label>Created</label>
                                             <br />
                                             <asp:Label runat="server" ID="lblCreatedDate" CssClass="font-bold"></asp:Label>
                                         </div>
                                         <div class="col-4 col-sm-4 col-lg-4">
-                                            <label>Submitted Date</label>
+                                            <label>Submitted</label>
                                             <br />
                                             <asp:Label runat="server" ID="lblSubmittedDate" CssClass="font-bold"></asp:Label>
                                         </div>
                                         <div class="col-4 col-sm-4 col-lg-4">
-                                            <label>Production Date</label>
+                                            <label>Production</label>
                                             <br />
                                             <asp:Label runat="server" ID="lblProductionDate" CssClass="font-bold"></asp:Label>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-4 col-sm-4 col-lg-4">
-                                            <label>On Hold Date</label>
+                                            <label>On Hold</label>
                                             <br />
                                             <asp:Label runat="server" ID="lblOnHoldDate" CssClass="font-bold"></asp:Label>
                                         </div>
                                         <div class="col-4 col-sm-4 col-lg-4">
-                                            <label>Canceled Date</label>
+                                            <label>Canceled</label>
                                             <br />
                                             <asp:Label runat="server" ID="lblCanceledDate" CssClass="font-bold"></asp:Label>
                                         </div>
                                         <div class="col-4 col-sm-4 col-lg-4">
-                                            <label>Completed Date</label>
+                                            <label>Completed</label>
                                             <br />
                                             <asp:Label runat="server" ID="lblCompletedDate" CssClass="font-bold"></asp:Label>
                                         </div>
