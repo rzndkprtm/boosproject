@@ -4952,11 +4952,13 @@ Partial Class Order_Method
                         controllength = stdControlLength
                         If tubeName.Contains("Gear Reduction") Then
                             controllength = Math.Ceiling((drop * 3 / 4) + 80)
+
                             If chainType = "Continuous" AndAlso data.chainstopper = "With Stopper" Then
                                 controllength = Math.Ceiling(drop * 0.9)
                             End If
                         End If
                     End If
+
                     If chainLength = "Static" Then
                         controllength = 500
                         If stdControlLength > 500 Then controllength = 750

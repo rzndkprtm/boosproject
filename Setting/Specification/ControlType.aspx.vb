@@ -200,7 +200,7 @@ Partial Class Setting_Specification_ControlType
         Try
             Dim search As String = String.Empty
             If Not searchText = "" Then
-                search = "WHERE Id LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%' OR Alias LIKE '%" & searchText & "%' OR Description LIKE '%" & searchText & "%' OR Status LIKE '%" & searchText & "%'"
+                search = "WHERE Id LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%' OR Alias LIKE '%" & searchText & "%' OR Description LIKE '%" & searchText & "%'"
             End If
 
             Dim thisString As String = String.Format("SELECT * FROM ProductControls {0} ORDER BY Name ASC", search)
