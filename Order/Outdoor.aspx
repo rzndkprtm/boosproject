@@ -165,7 +165,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3 mb-1">
                                                     <label>Remote</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-6 form-group">
                                                     <select id="remote" class="form-select"></select>
                                                 </div>
                                             </div>

@@ -1439,6 +1439,9 @@ Public Class OrderClass
                     If designName = "Window" OrElse designName = "Door" Then
                         sellArray = {priceProductGroupId, doorPriceGroup, drop, width, "Sell"}
                     End If
+                    If designName = "Outdoor" Then
+                        sellArray = {priceProductGroupId, priceGroup, squareMetre, squareMetre, "Sell"}
+                    End If
 
                     Dim dataPriceSell As DataRow = GetGridPrice(sellArray)
                     Dim gridSellMethod As String = String.Empty

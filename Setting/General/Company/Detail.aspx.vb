@@ -120,7 +120,7 @@ Partial Class Setting_General_Company_Detail
                 dataLog = {"Companys", lblId.Text, Session("LoginId").ToString(), "Company Updated"}
                 settingClass.Logs(dataLog)
 
-                url = String.Format("~/setting/general/company/detail?boosid={0}", lblId.Text)
+                url = String.Format("~/setting/general/company/detail?cid={0}", lblId.Text)
                 Response.Redirect(url, False)
             End If
         Catch ex As Exception
@@ -164,7 +164,7 @@ Partial Class Setting_General_Company_Detail
                     dataLog = {"CompanyDetails", thisId, Session("LoginId").ToString(), "Company Detail Created"}
                     settingClass.Logs(dataLog)
 
-                    url = String.Format("~/setting/general/company/detail?boosid={0}", lblId.Text)
+                    url = String.Format("~/setting/general/company/detail?cid={0}", lblId.Text)
                     Response.Redirect(url, False)
                 End If
 
@@ -184,7 +184,7 @@ Partial Class Setting_General_Company_Detail
                     dataLog = {"CompanyDetails", lblDetailId.Text, Session("LoginId").ToString(), "Company Detail Updated"}
                     settingClass.Logs(dataLog)
 
-                    url = String.Format("~/setting/general/company/detail?boosid={0}", lblId.Text)
+                    url = String.Format("~/setting/general/company/detail?cid={0}", lblId.Text)
                     Response.Redirect(url, False)
                 End If
             End If
