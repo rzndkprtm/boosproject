@@ -2384,7 +2384,7 @@ Public Class PreviewClass
                     Dim table As New PdfPTable(7)
                     table.WidthPercentage = 100
 
-                    Dim items(12, outdoorData.Rows.Count - 1) As String
+                    Dim items(13, outdoorData.Rows.Count - 1) As String
 
                     For i As Integer = 0 To outdoorData.Rows.Count - 1
                         Dim number As Integer = i + 1
@@ -2400,15 +2400,16 @@ Public Class PreviewClass
                         items(0, i) = "Item : " & number
                         items(1, i) = outdoorData.Rows(i)("Room").ToString()
                         items(2, i) = outdoorData.Rows(i)("Mounting").ToString()
-                        items(3, i) = outdoorData.Rows(i)("Width").ToString()
-                        items(4, i) = outdoorData.Rows(i)("Drop").ToString()
-                        items(5, i) = outdoorData.Rows(i)("BlindName").ToString()
-                        items(6, i) = outdoorData.Rows(i)("FabricName").ToString()
-                        items(7, i) = outdoorData.Rows(i)("FabricColour").ToString()
-                        items(8, i) = outdoorData.Rows(i)("ControlName").ToString()
-                        items(9, i) = outdoorData.Rows(i)("ControlPosition").ToString()
-                        items(10, i) = controlLengthText
-                        items(11, i) = outdoorData.Rows(i)("Notes").ToString()
+                        items(3, i) = outdoorData.Rows(i)("BlindName").ToString()
+                        items(4, i) = outdoorData.Rows(i)("ControlName").ToString()
+                        items(5, i) = outdoorData.Rows(i)("FabricName").ToString()
+                        items(6, i) = outdoorData.Rows(i)("FabricColour").ToString()
+                        items(7, i) = outdoorData.Rows(i)("Width").ToString()
+                        items(8, i) = outdoorData.Rows(i)("Drop").ToString()
+                        items(9, i) = outdoorData.Rows(i)("ChainName").ToString()
+                        items(10, i) = outdoorData.Rows(i)("ControlPosition").ToString()
+                        items(11, i) = controlLengthText
+                        items(12, i) = outdoorData.Rows(i)("Notes").ToString()
                     Next
 
                     For i As Integer = 0 To items.GetLength(1) - 1 Step 6
@@ -2417,7 +2418,7 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Mounting", "Width (mm)", "Drop (mm)", "Type", "Fabric Type", "Fabric Colour", "Control Type", "Control Position", "Control Length", "Notes"}
+                        Dim headers As String() = {"", "Location", "Mounting", "Type", "Control Type", "Fabric Type", "Fabric Colour", "Width (mm)", "Drop (mm)", "Remote Type", "Control Position", "Control Length", "Notes"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))

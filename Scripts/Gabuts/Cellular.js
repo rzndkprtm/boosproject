@@ -905,7 +905,7 @@ function bindComponentForm(blindType, controlType, colourType) {
                     toggleDisplay(controlposition, false);
                     toggleDisplay(controlpositionb, true);
                 }
-            } else if (controlName === "Motorised") {
+            } else if (controlName === "DC Motor") {
                 toggleDisplay(remote, true);
                 toggleDisplay(controlposition, true);                
 
