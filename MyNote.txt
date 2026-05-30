@@ -3671,6 +3671,7 @@ Protected Sub ReadFileData(filePath As String, customerId As String)
 Mercure = Somfy LS40 3/30
 Altus = Somfy Altus 40 RTS 3/30
 Sonesse 30 WF = Somfy Sonesse 30 WF 2/20 RTS
+
 Sonesse 3Nm = Somfy Sonesse 40 RTS 3/30
 Sonesse 6Nm = Somfy Sonesse 40 RTS 6/20
 
