@@ -841,23 +841,23 @@ function bindComponentForm(tubeType, controlType, colourType) {
 
                 $("#controlcolourtitle").text("Chain Colour");
                 $("#controllengthtitle").text("Chain Length");
-            } else if (controlName === "Reg Cord Lock" || controlName === "Regular Cord Lock" || controlName === "Cord Lock" || controlName === "Cord") {
+            } else if (controlName === "Reg Cord Lock") {
                 toggleDisplay(cordcolour, true);
                 toggleDisplay(controllength, true);
 
                 $("#controlcolourtitle").text("Cord Colour");
                 $("#controllengthtitle").text("Cord Length");
-            } else if (controlName === "Altus" || controlName === "Mercure" || controlName === "Sonesse 30 WF" || controlName === "Sonesse 3Nm" || controlName === "Sonesse 6Nm" || controlName === "Alpha 1Nm" || controlName === "Alpha 2Nm" || controlName === "Alpha 3Nm" || controlName === "Motorised") {
+            } else if (controlName === "Somfy Altus 40 RTS 3/30" || controlName === "Somfy LS40 3/30" || controlName === "Somfy Sonesse 30 WF 2/20 RTS" || controlName === "Somfy Sonesse 40 RTS 3/30" || controlName === "Somfy Sonesse 40 RTS 6/20" || controlName === "Alpha DC Motor (1Nm / 30RPM)" || controlName === "Alpha DC Motor (2Nm / 31RPM)" || controlName === "Alpha DC Motor (3Nm / 20RPM)" || controlName === "Motorised") {
                 toggleDisplay(chainremote, true);
 
                 $("#controlcolourtitle").text("Remote Type");
             }
 
-            if (controlName === "Sonesse 30 WF" || controlName === "Alpha 1Nm" || controlName === "Alpha 2Nm" || controlName === "Alpha 3Nm") {
+            if (controlName === "Somfy Sonesse 30 WF 2/20 RTS" || controlName === "Alpha DC Motor (1Nm / 30RPM)" || controlName === "Alpha DC Motor (2Nm / 31RPM)" || controlName === "Alpha DC Motor (3Nm / 20RPM)") {
                 toggleDisplay(charger, true);
             }
 
-            if (controlName === "Alpha 1Nm" || controlName === "Alpha 2Nm" || controlName === "Alpha 3Nm") {
+            if (controlName === "Alpha DC Motor (1Nm / 30RPM)" || controlName === "Alpha DC Motor (2Nm / 31RPM)" || controlName === "Alpha DC Motor (3Nm / 20RPM)") {
                 toggleDisplay(extensioncable, true);
                 toggleDisplay(supply, true);
             }

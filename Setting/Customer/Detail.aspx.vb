@@ -1035,93 +1035,23 @@ Partial Class Setting_Customer_Detail
 
     Protected Sub gvListDiscount_RowCommand(sender As Object, e As GridViewCommandEventArgs)
         If Not String.IsNullOrEmpty(e.CommandArgument) Then
-            Session("selectedTabCustomer") = "list-discount"
-
             Dim dataId As String = e.CommandArgument.ToString()
-
-            If e.CommandName = "Detail" Then
-                MessageError_ProcessDiscount(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showProcessDiscount(); visibleDiscountType();};"
-                Try
-                    lblIdDiscount.Text = dataId
-                    lblActionDiscount.Text = "Edit"
-                    titleDiscount.InnerText = "Edit Discount"
-
-                    ddlDiscountType.Enabled = False
-                    ddlDiscountDataId.Enabled = False
-
-                    Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerDiscounts WHERE Id='" & lblIdDiscount.Text & "'")
-                    If myData Is Nothing Then Exit Sub
-
-                    BindDiscountData()
-                    BindDiscountDataB()
-
-                    Dim discountType As String = myData("Type").ToString()
-                    ddlDiscountType.SelectedValue = myData("Type").ToString()
-                    If discountType = "Designs" Then
-                        ddlDiscountDataId.SelectedValue = myData("DataId").ToString()
-                    End If
-                    If discountType = "PriceProductGroups" Then
-                        ddlDiscountDataIdB.SelectedValue = myData("DataId").ToString()
-                    End If
-
-                    txtDiscountValue.Text = Convert.ToDecimal(myData("Discount")).ToString("G29", enUS)
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcessDiscount", thisScript, True)
-                Catch ex As Exception
-                    MessageError_ProcessDiscount(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError_ProcessDiscount(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                    End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcessDiscount", thisScript, True)
-                End Try
-            End If
+            Session("selectedTabCustomer") = "list-discount"
+            url = String.Format("~/setting/customer/discount/edit?discountid={0}", dataId)
+            Response.Redirect(url, False)
         End If
     End Sub
 
-    Protected Sub btnAddDiscount_Click(sender As Object, e As EventArgs)
-        MessageError_ProcessDiscount(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() {showProcessDiscount(); hideAllDiscountInputs();};"
+    Protected Sub btnAddDiscountA_Click(sender As Object, e As EventArgs)
         Session("selectedTabCustomer") = "list-discount"
-        Try
-            lblActionDiscount.Text = "Add"
-            titleDiscount.InnerText = "Add Discount (All Products)"
-
-            ddlDiscountType.SelectedValue = "Designs"
-
-            BindDiscountData()
-
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcessDiscount", thisScript, True)
-        Catch ex As Exception
-            MessageError_ProcessDiscount(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_ProcessDiscount(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcessDiscount", thisScript, True)
-        End Try
+        url = String.Format("~/setting/customer/discount/add?custid={0}&type={1}", lblId.Text, "product")
+        Response.Redirect(url, False)
     End Sub
 
-    Protected Sub btnAddDiscountCustom_Click(sender As Object, e As EventArgs)
-        MessageError_ProcessDiscount(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showProcessDiscount(); visibleDiscountType(); };"
+    Protected Sub btnAddDiscountB_Click(sender As Object, e As EventArgs)
         Session("selectedTabCustomer") = "list-discount"
-        Try
-            lblActionDiscount.Text = "Add Custom"
-            titleDiscount.InnerText = "Add Discount (Custom Product)"
-
-            ddlDiscountType.SelectedValue = "Designs"
-
-            BindDiscountData()
-            BindDiscountDataB()
-
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcessDiscount", thisScript, True)
-        Catch ex As Exception
-            MessageError_ProcessDiscount(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_ProcessDiscount(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcessDiscount", thisScript, True)
-        End Try
+        url = String.Format("~/setting/customer/discount/add?custid={0}&type={1}", lblId.Text, "productgroup")
+        Response.Redirect(url, False)
     End Sub
 
     Protected Sub btnProcessDiscount_Click(sender As Object, e As EventArgs)
@@ -1277,7 +1207,6 @@ Partial Class Setting_Customer_Detail
             gvListDiscount.Columns(2).Visible = LoginAccess("Visible Type Discount")
 
             btnAddDiscount.Visible = LoginAccess("Add Discount")
-            btnAddDiscountCustom.Visible = LoginAccess("Add Discount Custom")
             aResetDiscount.Visible = LoginAccess("Reset Discount")
         Catch ex As Exception
             MessageError_Discount(True, ex.ToString())

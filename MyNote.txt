@@ -1630,7 +1630,7 @@ Protected Sub ReadFileData(filePath As String, customerId As String)
                         End If
 
                         If Not String.IsNullOrEmpty(charger) Then
-                            If controlName = "Altus" OrElse controlName = "Mercure" Then
+                            If controlName = "Somfy Altus 40 RTS 3/30" OrElse controlName = "Somfy LS40 3/30" Then
                                 Dim thisAlert As String = String.Format("PLEASE CHECK THE CHARGER (MOTOR) IS NOT REQUIRED FOR ITEM {0} !", itemNumber)
                                 MessageError(True, thisAlert)
                                 Exit For
@@ -1645,7 +1645,7 @@ Protected Sub ReadFileData(filePath As String, customerId As String)
                         End If
 
                         If Not String.IsNullOrEmpty(extensionCable) Then
-                            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "Sonesse 30 WF" Then
+                            If controlName = "Somfy Altus 40 RTS 3/30" OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "Somfy Sonesse 30 WF 2/20 RTS" Then
                                 Dim thisAlert As String = String.Format("PLEASE CHECK THE EXTENSION CABLE IS NOT REQUIRED FOR ITEM {0} !", itemNumber)
                                 MessageError(True, thisAlert)
                                 Exit For
@@ -1660,7 +1660,7 @@ Protected Sub ReadFileData(filePath As String, customerId As String)
                         End If
 
                         If Not String.IsNullOrEmpty(neoBox) Then
-                            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "Sonesse 30 WF" Then
+                            If controlName = "Somfy Altus 40 RTS 3/30" OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "Somfy Sonesse 30 WF 2/20 RTS" Then
                                 Dim thisAlert As String = String.Format("PLEASE CHECK THE NEO BOX IS NOT REQUIRED FOR ITEM {0} !", itemNumber)
                                 MessageError(True, thisAlert)
                                 Exit For
@@ -3666,3 +3666,16 @@ Protected Sub ReadFileData(filePath As String, customerId As String)
             End If
         End Using
     End Sub
+
+
+Mercure = Somfy LS40 3/30
+Altus = Somfy Altus 40 RTS 3/30
+Sonesse 30 WF = Somfy Sonesse 30 WF 2/20 RTS
+Sonesse 3Nm = Somfy Sonesse 40 RTS 3/30
+Sonesse 6Nm = Somfy Sonesse 40 RTS 6/20
+
+Alpha 1Nm = Alpha DC Motor (1Nm / 30RPM)
+Alpha 2Nm = Alpha DC Motor (2Nm / 31RPM)
+Alpha 3Nm = Alpha DC Motor (3Nm / 20RPM)
+
+Delete Action = Add Discount Custom

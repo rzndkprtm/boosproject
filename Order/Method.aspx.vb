@@ -328,16 +328,21 @@ Partial Class Order_Method
         End If
 
         If type = "CurtainTrackType" Then
-            result.Add(New With {.Value = "Styletrack", .Text = "Styletrack"})
-            result.Add(New With {.Value = "Commercial", .Text = "Commercial"})
-
-            If customtype = "S-Wave" Then
+            result.Clear()
+            If companydetailid = "2" OrElse companydetailid = "3" OrElse companydetailid = "4" Then
                 result.Clear()
                 result.Add(New With {.Value = "Express Track", .Text = "Express Track"})
+                result.Add(New With {.Value = "Styletrack", .Text = "Styletrack"})
                 result.Add(New With {.Value = "Commercial", .Text = "Commercial"})
+
+                If customtype = "S-Wave" Then
+                    result.Clear()
+                    result.Add(New With {.Value = "Express Track", .Text = "Express Track"})
+                    result.Add(New With {.Value = "Commercial", .Text = "Commercial"})
+                End If
             End If
 
-            If companyid = "3" Then
+            If companydetailid = "5" OrElse companydetailid = "6" OrElse companydetailid = "8" Then
                 result.Clear()
                 result.Add(New With {.Value = "Express Track", .Text = "Express Track"})
             End If
@@ -1628,6 +1633,8 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
         If Not String.IsNullOrEmpty(data.tubetype) Then orderClass.GetTubeName(data.tubetype)
 
+        Dim factory As String = orderClass.GetFabricFactory(data.fabriccolour)
+
         Dim customerPriceGroup As String = orderClass.GetPriceGroupByOrder(data.headerid)
         Dim roleName As String = orderClass.GetUserRoleName(data.loginid)
 
@@ -1665,6 +1672,9 @@ Partial Class Order_Method
             End If
             If blindName = "Complete Set (Double)" AndAlso data.tracktypeb = "Express Track" Then
                 Return "PLEASE CHECK YOUR FIRST TRACK TYPE. CURRENTLY, COMPLETE SET (DOUBLE) CANNOT USE THE EXPRESS TRACK TYPE. !"
+            End If
+            If factory = "Express" AndAlso data.tracktype = "Express Track" AndAlso Not data.heading = "S-Wave" Then
+                Return String.Format("AT PRESENT, {0} HEADING IS NOT AVAILABLE FOR EXPRESS FABRIC AND EXPRESS TRACK ORDERS. EXPRESS TRACK CAN ONLY BE USED WITH EXPRESS FABRIC AND THE S-WAVE HEADING STYLE.", data.heading.ToUpper())
             End If
             If String.IsNullOrEmpty(data.trackcolour) Then
                 If blindName = "Complete Set (Double)" Then Return "FIRST TRACK COLOUR IS REQUIRED !"
@@ -2990,12 +3000,10 @@ Partial Class Order_Method
         If String.IsNullOrEmpty(data.width) Then Return "WIDTH IS REQUIRED !"
         If Not Integer.TryParse(data.width, width) OrElse width <= 0 Then Return "PLEASE CHECK YOUR WIDTH ORDER !"
         If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
-            If controlName = "Chain" OrElse controlName = "Reg Cord Lock" OrElse controlName = "Cord Lock" Then
-                If width < 360 Then Return "MINIMUM WIDTH IS 360MM !"
-            End If
             If controlType = "Motorised" AndAlso width < 700 Then Return "MINIMUM WIDTH FOR MOTORISED IS 700MM !"
+            If width < 360 Then Return "MINIMUM WIDTH IS 360MM !"
 
-            If controlName = "Reg Cord Lock" OrElse controlName = "Cord Lock" Then
+            If controlName = "Reg Cord Lock" Then
                 If width > 2110 Then Return "MAXIMUM WIDTH FOR REG CORD LOCK IS 2110MM. PLEASE USE CHAIN OR MOTORISED !"
             End If
             If width > 2910 Then Return "MAXIMUM WIDTH IS 2910MM !"
@@ -3016,7 +3024,7 @@ Partial Class Order_Method
         End If
         If controlName.Contains("Cord Lock") AndAlso String.IsNullOrEmpty(data.controlcolour) Then Return "CORD COLOUR IS REQUIRED !"
 
-        If controlName = "Chain" OrElse controlName = "Cord Lock" OrElse controlName = "Reg Cord Lock" Then
+        If controlName = "Chain" OrElse controlName = "Reg Cord Lock" Then
             If String.IsNullOrEmpty(data.controllength) Then
                 If controlName = "Chain" Then Return "CHAIN LENGTH IS REQUIRED"
                 If controlName.Contains("Cord Lock") Then Return "CORD LENGTH IS REQUIRED !"
@@ -3027,7 +3035,7 @@ Partial Class Order_Method
                     If String.IsNullOrEmpty(data.chainlengthvalue) Then Return "CHAIN LENGTH VALUE IS REQUIRED !"
                     If Not Integer.TryParse(data.chainlengthvalue, controllength) OrElse controllength <= 0 Then Return "PLEASE CHECK YOUR CHAIN LENGTH VALUE ORDER !"
                 End If
-                If controlName = "Reg Cord Lock" OrElse controlName = "Cord Lock" Then
+                If controlName = "Reg Cord Lock" Then
                     If String.IsNullOrEmpty(data.cordlengthvalue) Then Return "CORD LENGTH VALUE IS REQUIRED !"
                     If Not Integer.TryParse(data.cordlengthvalue, controllength) OrElse controllength <= 0 Then Return "PLEASE CHECK YOUR CORD LENGTH VALUE ORDER !"
                 End If
@@ -3054,13 +3062,14 @@ Partial Class Order_Method
             data.chaincolour = Nothing
         End If
 
-        If controlName = "Chain" OrElse controlName = "Reg Cord Lock" OrElse controlName = "Cord Lock" OrElse controlName = "Altus" OrElse controlName = "Mercure" Then
+        If controlName = "Chain" OrElse controlName = "Reg Cord Lock" OrElse controlName = "Somfy Altus 40 RTS 3/30" OrElse controlName = "Somfy LS40 3/30" Then
             data.charger = String.Empty
         End If
         If controlType = "Motorised" Then
             data.controllength = String.Empty : controllength = 0
         End If
-        If controlName = "Chain" OrElse controlName = "Reg Cord Lock" OrElse controlName = "Cord Lock" OrElse controlName = "Mercure" OrElse controlName = "Altus" OrElse controlName = "Sonesse 30 WF" Then
+
+        If controlName = "Chain" OrElse controlName = "Reg Cord Lock" OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "Somfy Altus 40 RTS 3/30" OrElse controlName = "Somfy Sonesse 30 WF 2/20 RTS" Then
             data.extensioncable = String.Empty : data.supply = String.Empty
         End If
 
@@ -4862,7 +4871,7 @@ Partial Class Order_Method
                 End If
             End If
 
-            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" Then
+            If controlName = "Somfy Altus 40 RTS 3/30" OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "LSN40" Then
                 data.charger = String.Empty
             End If
 
@@ -4970,7 +4979,7 @@ Partial Class Order_Method
                 If Not tubeName = "Acmeda 49mm" Then data.springassist = String.Empty
             End If
 
-            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" Then
+            If controlName = "Somfy Altus 40 RTS 3/30" OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" Then
                 data.charger = String.Empty
             End If
 
@@ -4980,7 +4989,7 @@ Partial Class Order_Method
             End If
 
             If data.companyid = "2" Then data.drycontact = String.Empty
-            If controlName.Contains("Alpha") OrElse controlName = "Mercure" OrElse controlName = "Chain" Then
+            If controlName.Contains("Alpha") OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "Chain" Then
                 data.drycontact = String.Empty
             End If
 
@@ -5139,7 +5148,7 @@ Partial Class Order_Method
                 End If
             End If
 
-            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" Then
+            If controlName = "Somfy Altus 40 RTS 3/30" OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" Then
                 data.charger = String.Empty
             End If
 
@@ -5149,7 +5158,7 @@ Partial Class Order_Method
             End If
 
             If data.companyid = "2" Then data.drycontact = String.Empty
-            If controlName.Contains("Alpha") OrElse controlName = "Mercure" OrElse controlName = "Chain" Then
+            If controlName.Contains("Alpha") OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "Chain" Then
                 data.drycontact = String.Empty
             End If
 
@@ -5300,7 +5309,7 @@ Partial Class Order_Method
                 End If
             End If
 
-            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" Then
+            If controlName = "Somfy Altus 40 RTS 3/30" OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" Then
                 data.charger = String.Empty
             End If
 
@@ -5310,7 +5319,7 @@ Partial Class Order_Method
             End If
 
             If data.companyid = "2" Then data.drycontact = String.Empty
-            If controlName.Contains("Alpha") OrElse controlName = "Mercure" OrElse controlName = "Chain" Then
+            If controlName.Contains("Alpha") OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "Chain" Then
                 data.drycontact = String.Empty
             End If
 
@@ -5493,7 +5502,7 @@ Partial Class Order_Method
                 End If
             End If
 
-            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" Then
+            If controlName = "Somfy Altus 40 RTS 3/30" OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" Then
                 data.charger = String.Empty
             End If
 
@@ -5503,7 +5512,7 @@ Partial Class Order_Method
             End If
 
             If data.companyid = "2" Then data.drycontact = String.Empty
-            If controlName.Contains("Alpha") OrElse controlName = "Mercure" OrElse controlName = "Chain" Then
+            If controlName.Contains("Alpha") OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "Chain" Then
                 data.drycontact = String.Empty
             End If
 
@@ -5660,7 +5669,7 @@ Partial Class Order_Method
                 End If
             End If
 
-            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" Then
+            If controlName = "Somfy Altus 40 RTS 3/30" OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" Then
                 data.charger = String.Empty
             End If
 
@@ -5670,7 +5679,7 @@ Partial Class Order_Method
             End If
 
             If data.companyid = "2" Then data.drycontact = String.Empty
-            If controlName.Contains("Alpha") OrElse controlName = "Mercure" OrElse controlName = "Chain" Then
+            If controlName.Contains("Alpha") OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "Chain" Then
                 data.drycontact = String.Empty
             End If
 
@@ -5871,7 +5880,7 @@ Partial Class Order_Method
                 End If
             End If
 
-            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" Then
+            If controlName = "Somfy Altus 40 RTS 3/30" OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" Then
                 data.charger = String.Empty
             End If
 
@@ -5881,7 +5890,7 @@ Partial Class Order_Method
             End If
 
             If data.companyid = "2" Then data.drycontact = String.Empty
-            If controlName.Contains("Alpha") OrElse controlName = "Mercure" OrElse controlName = "Chain" Then
+            If controlName.Contains("Alpha") OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "Chain" Then
                 data.drycontact = String.Empty
             End If
 
@@ -6072,7 +6081,7 @@ Partial Class Order_Method
                 End If
             End If
 
-            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" Then
+            If controlName = "Somfy Altus 40 RTS 3/30" OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" Then
                 data.charger = String.Empty
             End If
 
@@ -6082,7 +6091,7 @@ Partial Class Order_Method
             End If
 
             If data.companyid = "2" Then data.drycontact = String.Empty
-            If controlName.Contains("Alpha") OrElse controlName = "Mercure" OrElse controlName = "Chain" Then
+            If controlName.Contains("Alpha") OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "Chain" Then
                 data.drycontact = String.Empty
             End If
 
@@ -6356,7 +6365,7 @@ Partial Class Order_Method
                 End If
             End If
 
-            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" Then
+            If controlName = "Somfy Altus 40 RTS 3/30" OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" Then
                 data.charger = String.Empty
             End If
 
@@ -6366,7 +6375,7 @@ Partial Class Order_Method
             End If
 
             If data.companyid = "2" Then data.drycontact = String.Empty
-            If controlName.Contains("Alpha") OrElse controlName = "Mercure" OrElse controlName = "Chain" Then
+            If controlName.Contains("Alpha") OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "Chain" Then
                 data.drycontact = String.Empty
             End If
 
@@ -6582,7 +6591,7 @@ Partial Class Order_Method
                 End If
             End If
 
-            If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" Then
+            If controlName = "Somfy Altus 40 RTS 3/30" OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" Then
                 data.charger = String.Empty
             End If
 
@@ -6592,7 +6601,7 @@ Partial Class Order_Method
             End If
 
             If data.companyid = "2" Then data.drycontact = String.Empty
-            If controlName.Contains("Alpha") OrElse controlName = "Mercure" OrElse controlName = "Chain" Then
+            If controlName.Contains("Alpha") OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "Chain" Then
                 data.drycontact = String.Empty
             End If
 
@@ -6913,7 +6922,7 @@ Partial Class Order_Method
                     End If
                 End If
 
-                If controlName = "Altus" OrElse controlName = "Mercure" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" Then
+                If controlName = "Somfy Altus 40 RTS 3/30" OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" Then
                     data.charger = String.Empty
                 End If
 
@@ -6923,7 +6932,7 @@ Partial Class Order_Method
                 End If
 
                 If data.companyid = "2" Then data.drycontact = String.Empty
-                If controlName.Contains("Alpha") OrElse controlName = "Mercure" OrElse controlName = "Chain" Then
+                If controlName.Contains("Alpha") OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "Chain" Then
                     data.drycontact = String.Empty
                 End If
 
@@ -9581,7 +9590,7 @@ Partial Class Order_Method
             If blindName = "Zipper" AndAlso drop > 4500 Then Return "MAXIMUM WIDTH IS 4500MM !"
         End If
 
-        If controlName = "Aok" OrElse controlName = "Altus" Then
+        If controlName = "Aok" OrElse controlName = "Somfy Altus 40 RTS 3/30" Then
             If String.IsNullOrEmpty(data.remote) Then Return "REMOTE TYPE IS REQUIRED !"
         End If
 
@@ -9613,7 +9622,7 @@ Partial Class Order_Method
             End If
         End If
 
-        If controlName = "Aok" OrElse controlName = "Altus" Then
+        If controlName = "Aok" OrElse controlName = "Somfy Altus 40 RTS 3/30" Then
             data.controllength = String.Empty : controllengthvalue = 0
         End If
 
@@ -10401,8 +10410,8 @@ Partial Class Order_Method
         Dim fabricColourReq As New JSONList With {.type = "FabricColour", .fabrictype = fabricId, .action = action}
         Dim fabricColourReqB As New JSONList With {.type = "FabricColour", .fabrictype = fabricIdB, .action = action}
 
-        Dim trackTypeReq As New JSONList With {.type = "CurtainTrackType", .customtype = heading, .action = action}
-        Dim trackTypeReqB As New JSONList With {.type = "CurtainTrackType", .customtype = headingb, .action = action}
+        Dim trackTypeReq As New JSONList With {.type = "CurtainTrackType", .customtype = heading, .companydetailid = companyDetailId, .action = action}
+        Dim trackTypeReqB As New JSONList With {.type = "CurtainTrackType", .customtype = headingb, .companydetailid = companyDetailId, .action = action}
 
         Dim trackColourReq As New JSONList With {.type = "CurtainTrackColour", .customtype = trackType, .action = action}
         Dim trackColourReqB As New JSONList With {.type = "CurtainTrackColour", .customtype = trackTypeb, .action = action}

@@ -699,7 +699,7 @@ function bindTrackType(heading) {
 
         const safeHeading = heading || "";
 
-        const listData = { type: "CurtainTrackType", customtype: safeHeading, companyid: companyId, action: itemAction };
+        const listData = { type: "CurtainTrackType", customtype: safeHeading, companydetailid: companyDetailId, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -747,7 +747,7 @@ function bindTrackTypeB(heading) {
 
         const safeHeading = heading || "";
 
-        const listData = { type: "CurtainTrackType", customtype: safeHeading, companyid: companyId, action: itemAction };
+        const listData = { type: "CurtainTrackType", customtype: safeHeading, companydetailid: companyDetailId, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -1420,6 +1420,9 @@ function showGallery(type) {
         info = `<img src="${urlImage}" style="max-width:100%;height:auto;">`;
     } else if (type === "Commercial") {
         let urlImage = "https://ordersblindonline.com/Assets/images/products/curtain/commercialtrack.jpg";
+        info = `<img src="${urlImage}" style="max-width:100%;height:auto;">`;
+    } else if (type === "Express") {
+        //let urlImage = "https://ordersblindonline.com/Assets/images/products/curtain/commercialtrack.jpg";
         info = `<img src="${urlImage}" style="max-width:100%;height:auto;">`;
     }
     document.getElementById("spanInfoGallery").innerHTML = info;

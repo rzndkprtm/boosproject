@@ -3,7 +3,7 @@ Imports System.Data.SqlClient
 Imports System.Globalization
 Imports System.Web.Services
 
-Partial Class Setting_Customer_Discount
+Partial Class Setting_Customer_Discount_Default
     Inherits Page
 
     Dim settingClass As New SettingClass
@@ -32,7 +32,7 @@ Partial Class Setting_Customer_Discount
     Private Shared Function GetDiscountTitle(type As String, dataId As String) As String
         If String.IsNullOrEmpty(type) Then Return String.Empty
         Dim settingClass As New SettingClass
-        Return SettingClass.GetItemData(String.Format("SELECT Name FROM {0} WHERE Id='{1}'", type, dataId))
+        Return settingClass.GetItemData(String.Format("SELECT Name FROM {0} WHERE Id='{1}'", type, dataId))
     End Function
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -65,29 +65,6 @@ Partial Class Setting_Customer_Discount
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
         End Try
-    End Sub
-
-    Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
-        'If Not String.IsNullOrEmpty(e.CommandArgument) Then
-        '    Dim dataId As String = e.CommandArgument.ToString()
-
-        '    If e.CommandName = "Detail" Then
-        '        MessageError_DetailDiscount(False, String.Empty)
-        '        Dim thisScript As String = "window.onload = function() { showDetailDiscount(); };"
-        '        Try
-        '            gvListDetailDiscount.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & dataId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END, DataId ASC")
-        '            gvListDetailDiscount.DataBind()
-
-        '            ClientScript.RegisterStartupScript(Me.GetType(), "showDetailDiscount", thisScript, True)
-        '        Catch ex As Exception
-        '            MessageError_DetailDiscount(True, ex.ToString())
-        '            If Not Session("RoleName") = "Developer" Then
-        '                MessageError_DetailDiscount(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-        '            End If
-        '            ClientScript.RegisterStartupScript(Me.GetType(), "showDetailDiscount", thisScript, True)
-        '        End Try
-        '    End If
-        'End If
     End Sub
 
     Protected Sub BindData(searchText As String)

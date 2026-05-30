@@ -1,6 +1,11 @@
 ﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Detail.aspx.vb" Inherits="Setting_Customer_Detail" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Customer Detail" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
+    <style>
+        .text-muted { font-size: 0.875rem; }
+        .fw-semibold { font-weight: 600; }
+        h6.text-uppercase { letter-spacing: .5px; border-bottom: 1px solid #dee2e6; padding-bottom: .5rem; }
+    </style>
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
@@ -40,132 +45,142 @@
                 <a href="javascript:void(0);" class="btn btn-secondary" onclick="showLog('Customers', '<%= lblId.Text %>')">Log</a>
             </div>
         </section>
-        <section class="row">            
-            <div class="col-12 col-sm-12 col-lg-9">
-                <div class="card">
-                    <div class="card-content">
-                        <div class="card-body">
-                            <div class="row mb-3">
-                                <div class="col-12">
-                                    <label>Customer Name</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblName" CssClass="font-bold"></asp:Label>
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-6 col-sm-6 col-lg-3 mb-3">
-                                    <label>Company</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblCompanyId" Visible="false"></asp:Label>
-                                    <asp:Label runat="server" ID="lblCompanyName" CssClass="font-bold"></asp:Label>
-                                </div>
-                                <div class="col-6 col-sm-6 col-lg-3 mb-3">
-                                    <label>Sub Company</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblCompanyDetailId" Visible="false"></asp:Label>
-                                    <asp:Label runat="server" ID="lblCompanyDetailName" CssClass="font-bold"></asp:Label>
-                                </div>
-                                <div class="col-6 col-sm-6 col-lg-3 mb-3">
-                                    <label>Area</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblArea" CssClass="font-bold"></asp:Label>
-                                </div>
-                                <div class="col-6 col-sm-6 col-lg-3 mb-3">
-                                    <label>Operator</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblOperator" CssClass="font-bold"></asp:Label>
-                                </div>                                
-                            </div>
-                            <div class="row mb-3" runat="server" id="divLevelSponsor">
-                                <div class="col-6 col-sm-6 col-lg-5 mb-3">
-                                    <label>Level</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblLevel" CssClass="font-bold"></asp:Label>
-                                </div>
-                                <div class="col-6 col-sm-6 col-lg-7 mb-3">
-                                    <label>Sponsor Name</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblSponsor" CssClass="font-bold"></asp:Label>
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-6 col-sm-6 col-lg-4 mb-3">
-                                    <label>Price Group</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblPriceGroup" CssClass="font-bold"></asp:Label>
-                                </div>
-                                <div class="col-6 col-sm-6 col-lg-4 mb-3">
-                                    <label>Shutter Price Group</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblPriceGroupShutter" CssClass="font-bold"></asp:Label>
-                                </div>
-                                <div class="col-6 col-sm-6 col-lg-4 mb-3">
-                                    <label>Door Price Group</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblPriceGroupDoor" CssClass="font-bold"></asp:Label>
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-6 col-sm-6 col-lg-3 mb-3">
-                                    <label>On Stop</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblOnStop" CssClass="font-bold"></asp:Label>
-                                </div>
-                                <div class="col-6 col-sm-6 col-lg-3 mb-3">
-                                    <label>Cash Sale</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblCashSale" CssClass="font-bold"></asp:Label>
-                                </div>
-                                <div class="col-6 col-sm-6 col-lg-3 mb-3">
-                                    <label>Newsletter</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblNewsletter" CssClass="font-bold"></asp:Label>
-                                </div>
-                                <div class="col-6 col-sm-6 col-lg-3 mb-3">
-                                    <label>Mininimum Surcharge</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblMinSurcharge" CssClass="font-bold"></asp:Label>
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-4 col-sm-4 col-lg-4">
-                                    <label>ID</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblId" CssClass="font-bold"></asp:Label>
-                                </div>
-                                <div class="col-4 col-sm-4 col-lg-4">
-                                    <label>Debtor Code</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblDebtorCode" CssClass="font-bold"></asp:Label>
-                                </div>
-                                <div class="col-4 col-sm-4 col-lg-4">
-                                    <label>Active</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblActive" CssClass="font-bold"></asp:Label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
         <section class="row" runat="server" id="secDetail">
             <div class="col-12">
                 <div class="card">
                     <div class="card-content">
                         <div class="card-body">
                             <div class="list-group list-group-horizontal-sm mb-1 text-center" id="dvTab" role="tablist">
-                                <a class="list-group-item list-group-item-action active" id="listContact" data-bs-toggle="list" href="#list-contact" role="tab">Contact</a>
+                                <a class="list-group-item list-group-item-action active" id="listGeneral" data-bs-toggle="list" href="#list-general" role="tab">General</a>
+                                <a class="list-group-item list-group-item-action" id="listContact" data-bs-toggle="list" href="#list-contact" role="tab">Contact</a>
                                 <a class="list-group-item list-group-item-action" id="listAddress" data-bs-toggle="list" href="#list-address" role="tab">Address</a>
                                 <a class="list-group-item list-group-item-action" id="listBusiness" data-bs-toggle="list" href="#list-business" role="tab">Business</a>
                                 <a class="list-group-item list-group-item-action" id="listLogin" data-bs-toggle="list" href="#list-login" role="tab">Login</a>
                                 <a class="list-group-item list-group-item-action" id="listDiscount" data-bs-toggle="list" href="#list-discount" role="tab">Discount</a>
                                 <a class="list-group-item list-group-item-action" id="listPromo" data-bs-toggle="list" href="#list-promo" role="tab">Promo</a>
-                                <a class="list-group-item list-group-item-action" id="listProduct" data-bs-toggle="list" href="#list-product" role="tab">Product Access</a>
+                                <a class="list-group-item list-group-item-action" id="listProduct" data-bs-toggle="list" href="#list-product" role="tab">Product</a>
                                 <a class="list-group-item list-group-item-action" id="listQuote" data-bs-toggle="list" href="#list-quote" role="tab">Quote</a>
                             </div>
                             <div class="tab-content text-justify">
-                                <div class="tab-pane fade show active" id="list-contact" role="tabpanel" aria-labelledby="listContact">
+                                <div class="tab-pane fade show active" id="list-general" role="tabpanel" aria-labelledby="listGeneral">
+                                    <div class="mt-4 border-bottom pb-3 mb-4">
+                                        <h3 class="fw-bold mb-1">
+                                            <asp:Label runat="server" ID="lblName"></asp:Label>
+                                        </h3>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <h6 class="text-uppercase fw-bold text-primary mb-3">Company Information</h6>
+                                            <div class="row mb-2">
+                                                <div class="col-4 text-muted">Company</div>
+                                                <div class="col-8 fw-semibold">
+                                                    <asp:Label runat="server" ID="lblCompanyName"></asp:Label>
+                                                    <asp:Label runat="server" ID="Label1" Visible="false"></asp:Label>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-2">
+                                                <div class="col-4 text-muted">Sub Company</div>
+                                                <div class="col-8 fw-semibold">
+                                                    <asp:Label runat="server" ID="lblCompanyDetailName"></asp:Label>
+                                                    <asp:Label runat="server" ID="Label2" Visible="false"></asp:Label>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-2">
+                                                <div class="col-4 text-muted">Area</div>
+                                                <div class="col-8 fw-semibold">
+                                                    <asp:Label runat="server" ID="lblArea"></asp:Label>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-4">
+                                                <div class="col-4 text-muted">Operator</div>
+                                                <div class="col-8 fw-semibold">
+                                                    <asp:Label runat="server" ID="lblOperator"></asp:Label>
+                                                </div>
+                                            </div>
+                                            <h6 class="text-uppercase fw-bold text-primary mb-3" runat="server" id="divLevelSponsor">Account Information</h6>
+                                            <div runat="server" id="divLevelSponsorContent">
+                                                <div class="row mb-2">
+                                                    <div class="col-4 text-muted">Level</div>
+                                                    <div class="col-8 fw-semibold">
+                                                        <asp:Label runat="server" ID="lblLevel"></asp:Label>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-4">
+                                                    <div class="col-4 text-muted">Sponsor</div>
+                                                    <div class="col-8 fw-semibold">
+                                                        <asp:Label runat="server" ID="lblSponsor"></asp:Label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <h6 class="text-uppercase fw-bold text-primary mb-3">Pricing Information</h6>
+                                            <div class="row mb-2">
+                                                <div class="col-4 text-muted">Price Group</div>
+                                                <div class="col-8 fw-semibold">
+                                                    <asp:Label runat="server" ID="lblPriceGroup"></asp:Label>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-2">
+                                                <div class="col-4 text-muted">Shutter Price Group</div>
+                                                <div class="col-8 fw-semibold">
+                                                    <asp:Label runat="server" ID="lblPriceGroupShutter"></asp:Label>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-4">
+                                                <div class="col-4 text-muted">Door Price Group</div>
+                                                <div class="col-8 fw-semibold">
+                                                    <asp:Label runat="server" ID="lblPriceGroupDoor"></asp:Label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <h6 class="text-uppercase fw-bold text-success mb-3">Status & Settings</h6>
+                                            <div class="row mb-2">
+                                                <div class="col-4 text-muted">On Stop</div>
+                                                <div class="col-8 fw-semibold">
+                                                    <asp:Label runat="server" ID="lblOnStop"></asp:Label>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-2">
+                                                <div class="col-4 text-muted">Cash Sale</div>
+                                                <div class="col-8 fw-semibold">
+                                                    <asp:Label runat="server" ID="lblCashSale"></asp:Label>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-2">
+                                                <div class="col-4 text-muted">Newsletter</div>
+                                                <div class="col-8 fw-semibold">
+                                                    <asp:Label runat="server" ID="lblNewsletter"></asp:Label>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-4">
+                                                <div class="col-4 text-muted">Minimum Surcharge</div>
+                                                <div class="col-8 fw-semibold">
+                                                    <asp:Label runat="server" ID="lblMinSurcharge"></asp:Label>
+                                                </div>
+                                            </div>
+                                            <h6 class="text-uppercase fw-bold text-secondary mb-3">System Information</h6>
+                                            <div class="row mb-2">
+                                                <div class="col-4 text-muted">ID</div>
+                                                <div class="col-8 fw-semibold">
+                                                    <asp:Label runat="server" ID="lblId"></asp:Label>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-2">
+                                                <div class="col-4 text-muted">Debtor Code</div>
+                                                <div class="col-8 fw-semibold">
+                                                    <asp:Label runat="server" ID="lblDebtorCode"></asp:Label>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-2">
+                                                <div class="col-4 text-muted">Active</div>
+                                                <div class="col-8 fw-semibold">
+                                                    <asp:Label runat="server" ID="lblActive"></asp:Label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="list-contact" role="tabpanel" aria-labelledby="listContact">
                                     <div class="row mt-5" runat="server" id="divErrorContact">
                                         <div class="col-12">
                                             <div class="alert alert-danger">
@@ -480,11 +495,16 @@
                                     </div>
                                     <div class="row mt-3">
                                         <div class="col-12">
-                                            <asp:Button runat="server" ID="btnAddDiscount" CssClass="btn btn-primary" Text="Add Discount (All Products)" OnClick="btnAddDiscount_Click" />
-
-                                            <asp:Button runat="server" ID="btnAddDiscountCustom" CssClass="btn btn-info" Text="Add Discount (Custom Product)" OnClick="btnAddDiscountCustom_Click" />
-
-                                            <a href="#" runat="server" id="aResetDiscount" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalResetDiscount">Reset Discount</a>
+                                            <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnAddDiscount">Add Discount</button>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <asp:Button runat="server" ID="btnAddDiscountA" CssClass="dropdown-item" Text="By Product" OnClick="btnAddDiscountA_Click" />
+                                                </li>
+                                                <li>
+                                                    <asp:Button runat="server" ID="btnAddDiscountB" CssClass="dropdown-item" Text="By Product Group" OnClick="btnAddDiscountB_Click" />
+                                                </li>
+                                            </ul>
+                                            <a href="javascript:void(0);" runat="server" id="aResetDiscount" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalResetDiscount">Reset Discount</a>
                                         </div>
                                     </div>
                                 </div>
@@ -1248,6 +1268,9 @@
         <asp:Label runat="server" ID="lblIdPromo"></asp:Label>
 
         <asp:Label runat="server" ID="lblIdProduct"></asp:Label>
+
+        <asp:Label runat="server" ID="lblCompanyId"></asp:Label>
+        <asp:Label runat="server" ID="lblCompanyDetailId"></asp:Label>
     </div>
     
     <script type="text/javascript">
@@ -1288,12 +1311,15 @@
 
         $(document).ready(function () {
             var selectedTab = $("#<%=selected_tab.ClientID%>");
-            var tabId = selectedTab.val() != "" ? selectedTab.val() : "list-contact";
+            var tabId = selectedTab.val() != "" ? selectedTab.val() : "list-general";
             $('#dvTab a[href="#' + tabId + '"]').tab('show');
             $("#dvTab a").click(function () {
                 selectedTab.val($(this).attr("href").substring(1));
             });
 
+            $("#listGeneral").on("click", function () {
+                updateSessionValue("list-general");
+            });
             $("#listContact").on("click", function () {
                 updateSessionValue("list-contact");
             });

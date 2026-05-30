@@ -93,7 +93,7 @@
                                             <div class="col-12 col-sm-12 col-lg-3">
                                                 <label>Control Type</label>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                            <div class="col-12 col-sm-12 col-lg-6 form-group">
                                                 <select id="controltype" class="form-select"></select>
                                             </div>
                                         </div>
@@ -408,5 +408,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/Gabuts/Roman.js?v=1.0.0"></script>
+    <script src="/Scripts/Gabuts/Roman.js?v=2.0.0"></script>
 </asp:Content>

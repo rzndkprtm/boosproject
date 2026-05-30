@@ -166,5 +166,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/Gabuts/Service.js?v=1.0.1"></script>
+    <script src="/Scripts/Gabuts/Service.js?v=2.0.0"></script>
 </asp:Content>

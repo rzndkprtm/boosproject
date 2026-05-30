@@ -618,5 +618,5 @@
         </div>
     </div>
     
-    <script src="/Scripts/Gabuts/Venetian.js?v=1.0.0"></script>
+    <script src="/Scripts/Gabuts/Venetian.js?v=2.0.0"></script>
 </asp:Content>

@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Discount.aspx.vb" Inherits="Setting_Customer_Discount" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Customer Discount" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Default.aspx.vb" Inherits="Setting_Customer_Discount_Default" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Customer Discount" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-heading">
@@ -51,7 +51,7 @@
                             <div class="row mb-3">
                                 <div class="col-12">
                                     <div class="table-responsive">
-                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom" OnPageIndexChanging="gvList_PageIndexChanging" OnRowCommand="gvList_RowCommand">
+                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom" OnPageIndexChanging="gvList_PageIndexChanging">
                                             <RowStyle />
                                             <Columns>
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center">
@@ -95,7 +95,7 @@
                                 <table class="table table-bordered table-hover mb-0">
                                     <thead>
                                         <tr>
-                                            <th>#</th>
+                                            <th></th>
                                             <th>Type</th>
                                             <th>Product</th>
                                             <th>Discount</th>
@@ -140,7 +140,7 @@
         });
 
         function openDiscountModal(customerId) {
-            fetch('Discount.aspx/GetCustomerDiscount', {
+            fetch('Default.aspx/GetCustomerDiscount', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json; charset=utf-8' },
                 body: JSON.stringify({ customerId: customerId })
@@ -159,7 +159,6 @@
                 });
                 document.getElementById("discountBody").innerHTML = tbody;
                 showDetailDiscount();
-                //new bootstrap.Modal(document.getElementById('modalDetailDiscount')).show();
             });
         }
 

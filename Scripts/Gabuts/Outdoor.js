@@ -704,7 +704,7 @@ function bindComponentForm(blindType, controlType, colourType) {
             if (controlName === "Crank") {
                 toggleDisplay(controllength, true);
             }
-            if (controlName === "Aok" || controlName === "Altus") {
+            if (controlName === "Aok" || controlName === "Somfy Altus 40 RTS 3/30") {
                 toggleDisplay(remote, true);
             }
 
