@@ -2358,21 +2358,21 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                 }
             }
 
-            if (["Alpha 1Nm", "Alpha 2Nm", "Alpha 3Nm", "Altus", "Mercure", "Sonesse 30 WF", "LSN40", "Battery Remote", "240V (Hardwired) Remote"].includes(controlName)) {
+            if (["Alpha DC Motor (1Nm / 30RPM)", "Alpha DC Motor (2Nm / 31RPM)", "Alpha DC Motor (3Nm / 20RPM)", "Somfy Altus 40 RTS 3/30", "Somfy LS40 3/30", "Somfy Sonesse 30 WF 2/20 RTS", "Somfy Sonesse 40 RTS 3/30", "Somfy Sonesse 40 RTS 6/20", "Battery Remote", "240V (Hardwired) Remote"].includes(controlName)) {
                 divShow.push("divremote");
             }
-            if (["Alpha 1Nm", "Alpha 2Nm", "Alpha 3Nm", "Sonesse 30 WF"].includes(controlName)) {
+            if (["Alpha DC Motor (1Nm / 30RPM)", "Alpha DC Motor (2Nm / 31RPM)", "Alpha DC Motor (3Nm / 20RPM)", "Somfy Sonesse 30 WF 2/20 RTS"].includes(controlName)) {
                 divShow.push("divcharger");
             }
 
-            if (["Alpha 1Nm", "Alpha 2Nm", "Alpha 3Nm"].includes(controlName)) {
+            if (["Alpha DC Motor (1Nm / 30RPM)", "Alpha DC Motor (2Nm / 31RPM)", "Alpha DC Motor (3Nm / 20RPM)"].includes(controlName)) {
                 divShow.push("divcharger");
                 if (companyDetailName === "JPMD" || companyDetailName === "JPMD BP" || companyDetailName === "CWS") {
                     divShow.push("divextensioncable", "divsupply");
                 }
             }
 
-            if (["Altus", "Sonesse 30 WF", "LSN40"].includes(controlName)) {
+            if (["Somfy Altus 40 RTS 3/30", "Somfy Sonesse 30 WF 2/20 RTS", "LSN40"].includes(controlName)) {
                 if (companyDetailName === "ACCENT" || companyDetailName === "BIG" || companyDetailName === "OASIS") {
                     divShow.push("divdrycontact");
                 }

@@ -34,78 +34,80 @@
                             </div>
                             <div class="tab-content text-justify">
                                 <div class="tab-pane fade show active" id="list-general" role="tabpanel" aria-labelledby="listGeneral">
-                                    <div class="row mt-3">
-                                        <div class="col-12">
-                                            <asp:Label runat="server" ID="lblName" CssClass="form-label font-bold" Font-Size="XX-Large"></asp:Label>
-                                        </div>
-                                    </div>
-                                    <div class="row mt-3">
-                                        <div class="col-12 col-sm-12 col-lg-3 mb-3">
-                                            <label>Design Name</label>
-                                            <br />
-                                            <asp:Label runat="server" ID="lblDesignName" CssClass="form-label font-bold"></asp:Label>
-                                        </div>
-                                        <div class="col-6 col-sm-6 col-lg-3 mb-3">
-                                            <label>Blind Name</label>
-                                            <br />
-                                            <asp:Label runat="server" ID="lblBlindName" CssClass="form-label font-bold"></asp:Label>
-                                        </div>
-                                        <div class="col-6 col-sm-6 col-lg-3 mb-3">
-                                            <label>Invoice Name</label>
-                                            <br />
-                                            <asp:Label runat="server" ID="lblInvoiceName" CssClass="form-label font-bold"></asp:Label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-3 mb-3">
-                                            <label>Company Detail</label>
-                                            <br />
-                                            <asp:Label runat="server" ID="lblCompanyName" CssClass="form-label font-bold"></asp:Label>
-                                        </div>
-                                        
-                                    </div>
-                                    <div class="row mb-3">
-                                        <div class="col-12 col-sm-12 col-lg-3 mb-3">
-                                            <label>Tube Name</label>
-                                            <br />
-                                            <asp:Label runat="server" ID="lblTubeType" CssClass="form-label font-bold"></asp:Label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-3 mb-3">
-                                            <label>Control Name</label>
-                                            <br />
-                                            <asp:Label runat="server" ID="lblControlType" CssClass="form-label font-bold"></asp:Label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-3 mb-3">
-                                            <label>Colour Name</label>
-                                            <br />
-                                            <asp:Label runat="server" ID="lblColourType" CssClass="form-label font-bold"></asp:Label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-3 mb-3">
-                                            <label>Status</label>
-                                            <br />
-                                            <asp:Label runat="server" ID="lblStatus" CssClass="form-label font-bold"></asp:Label>
-                                        </div>
-                                    </div>
-                                    <div class="row mb-3">
-                                        <div class="col-12 col-sm-12 col-lg-8">
-                                            <label>Description</label>
-                                            <br />
-                                            <asp:Label runat="server" ID="lblDescription" CssClass="form-label font-bold"></asp:Label>
+                                    <div class="border-bottom pb-3 mt-4 mb-4">
+                                        <h2 class="fw-bold mb-1">
+                                            <asp:Label runat="server" ID="lblName"></asp:Label>
+                                        </h2>
+                                        <div class="text-muted">
+                                            <asp:Label runat="server" ID="lblStatus"></asp:Label>
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-12"><hr /></div>
-                                    </div>
-                                    <div class="row mb-2" runat="server" id="divError">
-                                        <div class="col-12">
-                                            <div class="alert alert-danger">
-                                                <span runat="server" id="msgError"></span>
+                                        <div class="col-lg-6">
+                                            <h6 class="text-uppercase fw-bold text-primary mb-3">Product Information</h6>
+                                            <div class="row mb-2">
+                                                <div class="col-4 text-muted">Design Name</div>
+                                                <div class="col-8 fw-semibold">
+                                                    <asp:Label runat="server" ID="lblDesignName"></asp:Label>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-2">
+                                                <div class="col-4 text-muted">Blind Name</div>
+                                                <div class="col-8 fw-semibold">
+                                                    <asp:Label runat="server" ID="lblBlindName"></asp:Label>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-2">
+                                                <div class="col-4 text-muted">Invoice Name</div>
+                                                <div class="col-8 fw-semibold">
+                                                    <asp:Label runat="server" ID="lblInvoiceName"></asp:Label>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-4">
+                                                <div class="col-4 text-muted">Company Detail</div>
+                                                <div class="col-8 fw-semibold">
+                                                    <asp:Label runat="server" ID="lblCompanyName"></asp:Label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <h6 class="text-uppercase fw-bold text-success mb-3">Configuration</h6>
+                                            <div class="row mb-2">
+                                                <div class="col-4 text-muted">Tube Type</div>
+                                                <div class="col-8 fw-semibold">
+                                                    <asp:Label runat="server" ID="lblTubeType"></asp:Label>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-2">
+                                                <div class="col-4 text-muted">Control Type</div>
+                                                <div class="col-8 fw-semibold">
+                                                    <asp:Label runat="server" ID="lblControlType"></asp:Label>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-2">
+                                                <div class="col-4 text-muted">Colour Type</div>
+                                                <div class="col-8 fw-semibold">
+                                                    <asp:Label runat="server" ID="lblColourType"></asp:Label>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-lg-12 d-flex flex-wrap justify-content-start gap-1">
+                                    <div class="mt-4">
+                                        <h6 class="text-uppercase fw-bold text-secondary mb-3">Description</h6>
+                                        <div class="border rounded p-3 bg-light">
+                                            <asp:Label runat="server" ID="lblDescription"></asp:Label>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4" runat="server" id="divError">
+                                        <div class="alert alert-danger mb-0">
+                                            <span runat="server" id="msgError"></span>
+                                        </div>
+                                    </div>
+                                    <div class="border-top pt-3 mt-4">
+                                        <div class="d-flex flex-wrap gap-2">
                                             <asp:Button runat="server" ID="btnEditProduct" CssClass="btn btn-primary" Text="Edit Product" OnClick="btnEditProduct_Click" />
-                                            <a href="#" runat="server" id="aChangeStatus" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalChangeStatus">Change Status</a>
-                                            <a href="javascript:void(0);" class="btn btn-secondary" onclick="showLog('Products', '<%= lblId.Text %>')">Log</a>
+                                            <a href="#" runat="server" id="aChangeStatus" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#modalChangeStatus">Change Status</a>
+                                            <a href="javascript:void(0);" class="btn btn-outline-secondary" onclick="showLog('Products', '<%= lblId.Text %>')">View Log</a>
                                         </div>
                                     </div>
                                 </div>

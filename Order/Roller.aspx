@@ -88,7 +88,7 @@
                                             <div class="col-12 col-sm-12 col-lg-3">
                                                 <label>Control Type</label>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-5 form-group">
+                                            <div class="col-12 col-sm-12 col-lg-6 form-group">
                                                 <select id="controltype" class="form-select"></select>
                                             </div>
                                         </div>
@@ -1418,7 +1418,7 @@
                                 <tr>
                                     <td>Standard</td>
                                     <td></td>
-                                    <td>Chain, Mercure, Altus</td>
+                                    <td>Chain, Somfy LS40 3/30, Somfy Altus 40 RTS 3/30</td>
                                 </tr>
                                 <tr>
                                     <td>Gear Reduction 38mm</td>
@@ -1428,32 +1428,32 @@
                                 <tr>
                                     <td>Gear Reduction 45mm</td>
                                     <td>Up to 6 SQM</td>
-                                    <td>Chain, Mercure, Altus</td>
+                                    <td>Chain, Somfy LS40 3/30, Somfy Altus 40 RTS 3/30</td>
                                 </tr>
                                 <tr>
                                     <td>Gear Reduction 49mm</td>
                                     <td></td>
-                                    <td>Chain, Mercure, Altus, Sonesse 30 WF, Alpha 1Nm WF, Alpha 2Nm WF</td>
+                                    <td>Chain, Somfy LS40 3/30, Somfy Altus 40 RTS 3/30, Somfy Sonesse 30 WF 2/20 RTS, Alpha DC Motor (1Nm / 30RPM), Alpha DC Motor (2Nm / 31RPM)</td>
                                 </tr>
                                 <tr>
                                     <td>Acmeda 43mm</td>
                                     <td>Maximum width : 1810mm</td>
-                                    <td>Chain, Mercure, Altus, Sonesse 30 WF, Alpha 1Nm WF, Alpha 2Nm WF</td>
+                                    <td>Chain, Somfy LS40 3/30, Somfy Altus 40 RTS 3/30, Somfy Sonesse 30 WF 2/20 RTS, Alpha DC Motor (1Nm / 30RPM), Alpha DC Motor (2Nm / 31RPM)</td>
                                 </tr>
                                 <tr>
                                     <td>Acmeda 49mm</td>
                                     <td></td>
-                                    <td>Chain, Mercure, Altus, Sonesse 30 WF, Alpha 1Nm WF, Alpha 2Nm WF</td>
+                                    <td>Chain, Somfy LS40 3/30, Somfy Altus 40 RTS 3/30, Somfy Sonesse 30 WF 2/20 RTS, Alpha DC Motor (1Nm / 30RPM), Alpha DC Motor (2Nm / 31RPM)</td>
                                 </tr>
                                 <tr>
                                     <td>Sunboss 43mm</td>
                                     <td></td>
-                                    <td>Chain, Mercure, Altus, Sonesse 30 WF, Alpha 1Nm WF, Alpha 2Nm WF</td>
+                                    <td>Chain, Somfy LS40 3/30, Somfy Altus 40 RTS 3/30, Somfy Sonesse 30 WF 2/20 RTS, Alpha DC Motor (1Nm / 30RPM), Alpha DC Motor (2Nm / 31RPM)</td>
                                 </tr>
                                 <tr>
                                     <td>Sunboss 50mm</td>
                                     <td></td>
-                                    <td>Chain, Mercure, Altus, Sonesse 30 WF, Alpha 1Nm WF, Alpha 2Nm WF</td>
+                                    <td>Chain, Somfy LS40 3/30, Somfy Altus 40 RTS 3/30, Somfy Sonesse 30 WF 2/20 RTS, Alpha DC Motor (1Nm / 30RPM), Alpha DC Motor (2Nm / 31RPM)</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1501,5 +1501,5 @@
         </div>
     </div>
     
-    <script src="/Scripts/Gabuts/Roller.js?v=1.1.1"></script>
+    <script src="/Scripts/Gabuts/Roller.js?v=2.0.0"></script>
 </asp:Content>

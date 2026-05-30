@@ -1,6 +1,22 @@
 ﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Detail.aspx.vb" Inherits="Order_Detail" MasterPageFile="~/Site.master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Order Detail" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
+    <style>
+        .detail-section { margin-bottom: 1.75rem; }
+        .detail-title { font-size: .85rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #6c757d; margin-bottom: 1rem; padding-bottom: .5rem; border-bottom: 1px solid #dee2e6; }
+        .detail-row { display: flex; margin-bottom: .75rem; }
+        .detail-label { width: 180px; color: #6c757d; flex-shrink: 0; }
+        .detail-value { font-weight: 600; word-break: break-word; }
+        .note-box { border: 1px solid #dee2e6; border-radius: .375rem; padding: .75rem 1rem; background: #fafafa; min-height: 70px; }
+        .timeline-item { margin-bottom: 1rem; }
+        .timeline-label { font-size: .75rem; color: #6c757d; text-transform: uppercase; }
+        .timeline-value { font-weight: 600; }
+        .finance-value { font-size: 1.1rem; font-weight: 700; }
+        .finance-highlight { background: #fafafa; border-radius: .5rem; padding: 1rem; }
+        .card-header h5 { margin-bottom: 0; }
+        .fw-semibold { font-weight: 600; }
+        .table > :not(caption) > * > * { vertical-align: middle; }
+    </style>
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
@@ -32,7 +48,7 @@
                 </div>
             </div>
         </section>
-        <section class="row mb-4">
+        <section class="row mb-3">
             <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
                 <button class="btn btn-primary dropdown-toggle me-1" type="button" data-bs-toggle="dropdown" aria-expanded="false">Generate PDF</button>
                 <ul class="dropdown-menu">
@@ -120,150 +136,149 @@
             </div>
         </section>
         <section class="row">
-            <div class="col-12 col-sm-12 col-lg-6">
-                <div class="card">
-                    <div class="card-content">
-                        <div class="card-body">
-                            <div class="row mb-2">
-                                <div class="col-12 col-sm-12 col-lg-9 mb-2">
-                                    <label>Customer Name</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblCustomerName" CssClass="font-bold"></asp:Label>
+            <div class="col-lg-7">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="mb-4 pb-3 border-bottom">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h2 class="fw-bold mb-1">
+                                        <asp:Label runat="server" ID="lblCustomerName"></asp:Label>
+                                    </h2>
+                                    <div class="text-muted">Customer Order</div>
                                 </div>
-                                <div class="col-12 col-sm-12 col-lg-3 mb-2">
-                                    <label>Order #</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblOrderId" CssClass="font-bold"></asp:Label>
-                                </div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-6 col-sm-6 col-lg-6 mb-2">
-                                    <label>Customer Order Number</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblOrderNumber" CssClass="font-bold"></asp:Label>
-                                </div>
-                                <div class="col-6 col-sm-6 col-lg-6 mb-2">
-                                    <label>Customer Order Name</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblOrderName" CssClass="font-bold"></asp:Label>
+                                <div class="text-end">
+                                    <div class="small text-muted">ORDER #</div>
+                                    <div class="fs-4 fw-bold">
+                                        <asp:Label runat="server" ID="lblOrderId"></asp:Label>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="row mb-2">
-                                <div class="col-4 col-sm-4 col-lg-4 mb-2">
-                                    <label>Created By</label>
-                                    <br />
+                        </div>
+                        <div class="detail-section">
+                            <div class="detail-title">Order Details</div>
+                            <div class="detail-row">
+                                <div class="detail-label">Order Number</div>
+                                <div class="detail-value">
+                                    <asp:Label runat="server" ID="lblOrderNumber"></asp:Label>
+                                </div>
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label">Order Name</div>
+                                <div class="detail-value">
+                                    <asp:Label runat="server" ID="lblOrderName"></asp:Label>
+                                </div>
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label">Created By</div>
+                                <div class="detail-value">
+                                    <asp:Label runat="server" ID="lblCreatedName"></asp:Label>
                                     <asp:Label runat="server" ID="lblCreatedBy" Visible="false"></asp:Label>
-                                    <asp:Label runat="server" ID="lblCreatedName" CssClass="font-bold"></asp:Label>
-                                </div>
-                                <div class="col-4 col-sm-4 col-lg-4">
-                                    <label>Order Status</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblOrderStatus" CssClass="font-bold"></asp:Label>
-                                </div>
-                                <div class="col-4 col-sm-4 col-lg-4">
-                                    <label>Order Type</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblOrderType" CssClass="font-bold"></asp:Label>
                                 </div>
                             </div>
-                            <div class="row mb-2">
-                                <div class="col-12 col-sm-6 col-lg-7 mb-2">
-                                    <label>Order Note</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblOrderNote" CssClass="font-bold"></asp:Label>
+                            <div class="detail-row">
+                                <div class="detail-label">Order Status</div>
+                                <div class="detail-value">
+                                    <asp:Label runat="server" ID="lblOrderStatus"></asp:Label>
                                 </div>
                             </div>
-                            <div class="row" runat="server" id="divInternalNote">
-                                <div class="col-12">
-                                    <label>Internal Note (Latest)</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblInternalNote" CssClass="font-bold"></asp:Label>
+                            <div class="detail-row">
+                                <div class="detail-label">Order Type</div>
+                                <div class="detail-value">
+                                    <asp:Label runat="server" ID="lblOrderType"></asp:Label>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="detail-section">
+                            <div class="detail-title">Order Note</div>
+                            <div class="note-box">
+                                <asp:Label runat="server" ID="lblOrderNote"></asp:Label>
+                            </div>
+                        </div>
+                        <div runat="server" id="divInternalNote" class="detail-section">
+                            <div class="detail-title">Internal Note</div>
+                            <div class="note-box">
+                                <asp:Label runat="server" ID="lblInternalNote"></asp:Label>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-sm-12 col-lg-6">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card" runat="server" id="divDateOrder">
-                            <div class="card-content">
-                                <div class="card-body">
-                                    <div class="row mb-2">
-                                        <div class="col-4 col-sm-4 col-lg-4">
-                                            <label>Created</label>
-                                            <br />
-                                            <asp:Label runat="server" ID="lblCreatedDate" CssClass="font-bold"></asp:Label>
-                                        </div>
-                                        <div class="col-4 col-sm-4 col-lg-4">
-                                            <label>Submitted</label>
-                                            <br />
-                                            <asp:Label runat="server" ID="lblSubmittedDate" CssClass="font-bold"></asp:Label>
-                                        </div>
-                                        <div class="col-4 col-sm-4 col-lg-4">
-                                            <label>Production</label>
-                                            <br />
-                                            <asp:Label runat="server" ID="lblProductionDate" CssClass="font-bold"></asp:Label>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-4 col-sm-4 col-lg-4">
-                                            <label>On Hold</label>
-                                            <br />
-                                            <asp:Label runat="server" ID="lblOnHoldDate" CssClass="font-bold"></asp:Label>
-                                        </div>
-                                        <div class="col-4 col-sm-4 col-lg-4">
-                                            <label>Canceled</label>
-                                            <br />
-                                            <asp:Label runat="server" ID="lblCanceledDate" CssClass="font-bold"></asp:Label>
-                                        </div>
-                                        <div class="col-4 col-sm-4 col-lg-4">
-                                            <label>Completed</label>
-                                            <br />
-                                            <asp:Label runat="server" ID="lblCompletedDate" CssClass="font-bold"></asp:Label>
-                                        </div>
-                                    </div>
+            <div class="col-lg-5">
+                <div class="card border-0 shadow-sm mb-3" runat="server" id="divDateOrder">
+                    <div class="card-body">
+                        <div class="detail-title">Order Timeline</div>
+                        <div class="row">
+                            <div class="col-6 timeline-item">
+                                <div class="timeline-label">Created</div>
+                                <div class="timeline-value">
+                                    <asp:Label runat="server" ID="lblCreatedDate"></asp:Label>
+                                </div>
+                            </div>
+                            <div class="col-6 timeline-item">
+                                <div class="timeline-label">Submitted</div>
+                                <div class="timeline-value">
+                                    <asp:Label runat="server" ID="lblSubmittedDate"></asp:Label>
+                                </div>
+                            </div>
+                            <div class="col-6 timeline-item">
+                                <div class="timeline-label">Production</div>
+                                <div class="timeline-value">
+                                    <asp:Label runat="server" ID="lblProductionDate"></asp:Label>
+                                </div>
+                            </div>
+                            <div class="col-6 timeline-item">
+                                <div class="timeline-label">Completed</div>
+                                <div class="timeline-value">
+                                    <asp:Label runat="server" ID="lblCompletedDate"></asp:Label>
+                                </div>
+                            </div>
+                            <div class="col-6 timeline-item">
+                                <div class="timeline-label">On Hold</div>
+                                <div class="timeline-value">
+                                    <asp:Label runat="server" ID="lblOnHoldDate"></asp:Label>
+                                </div>
+                            </div>
+                            <div class="col-6 timeline-item">
+                                <div class="timeline-label">Cancelled</div>
+                                <div class="timeline-value">
+                                    <asp:Label runat="server" ID="lblCanceledDate"></asp:Label>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card" runat="server" id="divShipmentOrder">
-                            <div class="card-content">
-                                <div class="card-body">
-                                    <div class="row mb-2">
-                                        <div class="col-6">
-                                            <label>Shipment No</label>
-                                            <br />
-                                            <asp:Label runat="server" ID="lblShipmentNumber" CssClass="font-bold"></asp:Label>
-                                        </div>
-                                        <div class="col-6">
-                                            <label>Shipment Date</label>
-                                            <br />
-                                            <asp:Label runat="server" ID="lblShipmentDate" CssClass="font-bold"></asp:Label>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-4">
-                                            <label>Container No</label>
-                                            <br />
-                                            <asp:Label runat="server" ID="lblContainerNumber" CssClass="font-bold"></asp:Label>
-                                        </div>
-                                        <div class="col-4">
-                                            <label>Container ETA</label>
-                                            <br />
-                                            <asp:Label runat="server" ID="lblContainerEta" CssClass="font-bold"></asp:Label>
-                                        </div>
-                                        <div class="col-4">
-                                            <label>Courier</label>
-                                            <br />
-                                            <asp:Label runat="server" ID="lblCourier" CssClass="font-bold"></asp:Label>
-                                        </div>
-                                    </div>
-                                </div>
+                <div class="card border-0 shadow-sm" runat="server" id="divShipmentOrder">
+                    <div class="card-body">
+                        <div class="detail-title">Shipment Information</div>
+                        <div class="detail-row">
+                            <div class="detail-label">Shipment No</div>
+                            <div class="detail-value">
+                                <asp:Label runat="server" ID="lblShipmentNumber"></asp:Label>
+                            </div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Shipment Date</div>
+                            <div class="detail-value">
+                                <asp:Label runat="server" ID="lblShipmentDate"></asp:Label>
+                            </div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Container No</div>
+                            <div class="detail-value">
+                                <asp:Label runat="server" ID="lblContainerNumber"></asp:Label>
+                            </div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Container ETA</div>
+                            <div class="detail-value">
+                                <asp:Label runat="server" ID="lblContainerEta"></asp:Label>
+                            </div>
+                        </div>
+                        <div class="detail-row mb-0">
+                            <div class="detail-label">Courier</div>
+                            <div class="detail-value">
+                                <asp:Label runat="server" ID="lblCourier"></asp:Label>
                             </div>
                         </div>
                     </div>
@@ -325,55 +340,68 @@
             </div>
         </section>
         <section class="row" runat="server" id="secPricing">
-            <div class="col-12 col-sm-12 col-lg-6">
-                <div class="card" runat="server" id="divInvoicing">
-                    <div class="card-content">
-                        <div class="card-body">
-                            <div class="row mb-3">
-                                <div class="col-6 col-sm-6 col-lg-3">
-                                    <label>Invoiced Number</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblInvoiceNumber" CssClass="font-bold"></asp:Label>
-                                </div>
-                                <div class="col-6 col-sm-6 col-lg-3 mb-2">
-                                    <label>Invoiced Date</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblInvoiceDate" CssClass="font-bold"></asp:Label>
-                                </div>
-                                <div class="col-6 col-sm-6 col-lg-3">
-                                    <label>Collector</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblCollector" CssClass="font-bold"></asp:Label>
-                                </div>
-                                <div class="col-6 col-sm-6 col-lg-3">
-                                    <label>Payment Date</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblPaymentDate" CssClass="font-bold"></asp:Label>
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="detail-title">Financial Information</div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="detail-section mb-0" runat="server" id="divInvoicing">
+                                    <div class="enterprise-title">Invoicing</div>
+                                    <div class="detail-row">
+                                        <div class="detail-label">Invoice Number</div>
+                                        <div class="detail-value">
+                                            <asp:Label runat="server" ID="lblInvoiceNumber"></asp:Label>
+                                        </div>
+                                    </div>
+                                    <div class="detail-row">
+                                        <div class="detail-label">Invoice Date</div>
+                                        <div class="detail-value">
+                                            <asp:Label runat="server" ID="lblInvoiceDate"></asp:Label>
+                                        </div>
+                                    </div>
+                                    <div class="detail-row">
+                                        <div class="detail-label">Collector</div>
+                                        <div class="detail-value">
+                                            <asp:Label runat="server" ID="lblCollector"></asp:Label>
+                                        </div>
+                                    </div>
+                                    <div class="detail-row mb-0">
+                                        <div class="detail-label">Payment Date</div>
+                                        <div class="detail-value">
+                                            <asp:Label runat="server" ID="lblPaymentDate"></asp:Label>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-12 col-lg-6">
-                <div class="card" runat="server" id="divCosting">
-                    <div class="card-content">
-                        <div class="card-body">
-                            <div class="row mb-3">
-                                <div class="col-6 col-sm-6 col-lg-4">
-                                    <asp:Label runat="server" ID="lblPriceOrderTitle"></asp:Label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblPriceOrder" CssClass="font-bold"></asp:Label>
-                                </div>
-                                <div class="col-6 col-sm-6 col-lg-4 mb-2">
-                                    <asp:Label runat="server" ID="lblGstTitle"></asp:Label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblGst" CssClass="font-bold"></asp:Label>
-                                </div>
-                                <div class="col-12 col-sm-12 col-lg-4">
-                                    <asp:Label runat="server" ID="lblFinalPriceOrderTitle"></asp:Label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblFinalPriceOrder" CssClass="font-bold"></asp:Label>
+                            <div class="col-lg-6" runat="server" id="divCosting">
+                                <div class="finance-highlight">
+                                    <div class="enterprise-title">Cost Summary</div>
+                                    <div class="detail-row">
+                                        <div class="detail-label">
+                                            <asp:Label runat="server" ID="lblPriceOrderTitle"></asp:Label>
+                                        </div>
+                                        <div class="finance-value">
+                                            <asp:Label runat="server" ID="lblPriceOrder"></asp:Label>
+                                        </div>
+                                    </div>
+                                    <div class="detail-row">
+                                        <div class="detail-label">
+                                            <asp:Label runat="server" ID="lblGstTitle"></asp:Label>
+                                        </div>
+                                        <div class="finance-value">
+                                            <asp:Label runat="server" ID="lblGst"></asp:Label>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div class="detail-row mb-0">
+                                        <div class="detail-label fw-bold">
+                                            <asp:Label runat="server" ID="lblFinalPriceOrderTitle"></asp:Label>
+                                        </div>
+                                        <div class="finance-value">
+                                            <asp:Label runat="server" ID="lblFinalPriceOrder"></asp:Label>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -383,114 +411,114 @@
         </section>
         <section class="row mb-3">
             <div class="col-12">
-                <div class="card">
-                    <div class="card-content">
-                        <div class="card-header">
-                            <div class="row">
-                                <div class="col-12 col-sm-12 col-lg-5">
-                                    <h3 class="card-title">Order Item</h3>
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap">
+                            <div>
+                                <h5 class="mb-1 fw-bold">Order Items</h5>
+                                <div class="text-muted small">Products and services included in this order</div>
+                            </div>
+                            <div class="mt-2 mt-lg-0">
+                                <a href="#" runat="server" id="aAddItem" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#modalAddItem">New Item</a>
+                                <asp:Button runat="server" ID="btnAddService" CssClass="btn btn-outline-primary" Text="New Service" OnClick="btnAddService_Click" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-lg-6 mb-2" runat="server" id="divFuelSurcharge">
+                                <div class="border rounded p-3 bg-light h-100">
+                                    <div class="fw-semibold text-warning mb-1">Fuel Surcharge</div>
+                                    <div class="small text-muted">A $4 fuel surcharge will be applied once the order is submitted.</div>
                                 </div>
-                                <div class="col-12 col-sm-12 col-lg-7 d-flex justify-content-end">
-                                    <a href="#" runat="server" id="aAddItem" class="btn btn-primary me-1" data-bs-toggle="modal" data-bs-target="#modalAddItem">New Item</a>
-                                    <asp:Button runat="server" ID="btnAddService" CssClass="btn btn-info me-1" OnClick="btnAddService_Click" Text="New Service" />
+                            </div>
+                            <div class="col-lg-6 mb-2" runat="server" id="divMinimumOrderSurcharge">
+                                <div class="border rounded p-3 bg-light h-100">
+                                    <div class="fw-semibold text-warning mb-1">Minimum Order Surcharge</div>
+                                    <div class="small text-muted">This order will incur an additional minimum order surcharge of $15 after submission.
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="card-body">
-                            <div class="row" runat="server" id="divFuelSurcharge">
-                                <div class="col-12">
-                                    <div class="alert alert-light-warning color-warning">
-                                        <i class="bi bi-exclamation-circle"></i>
-                                        Please note that a $4 fuel surcharge will be applied once the order is submitted.
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row" runat="server" id="divMinimumOrderSurcharge">
-                                <div class="col-12">
-                                    <div class="alert alert-light-warning color-warning">
-                                        <i class="bi bi-exclamation-circle"></i>
-                                        Please note that this order will incur an additional charge: a minimum order surcharge of $15, which will be applied after the order has been submitted.
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="table-responsive">
-                                        <asp:GridView runat="server" ID="gvListItem" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="100" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom" OnPageIndexChanging="gvListItem_PageIndexChanging" OnRowCommand="gvListItem_RowCommand">
-                                            <RowStyle />
-                                            <Columns>
-                                                <asp:TemplateField ItemStyle-HorizontalAlign="Center">
-                                                    <ItemTemplate>
-                                                        <%# Container.DataItemIndex + 1 %>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:BoundField DataField="Id" HeaderText="ID" />
-                                                <asp:BoundField DataField="ProductId" HeaderText="Product ID" />
-                                                <asp:TemplateField HeaderText="Description">
-                                                    <ItemTemplate>
-                                                        <%# BindProductDescription(Eval("Id")) %>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="Buy Price">
-                                                    <ItemTemplate>
-                                                        <%# ItemCosting(Eval("Id").ToString(), "BuyPrice") %>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="Sell Price">
-                                                    <ItemTemplate>
-                                                        <%# ItemCosting(Eval("Id").ToString(), "SellPrice") %>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="Price">
-                                                    <ItemTemplate>
-                                                        <%# ItemCosting(Eval("Id").ToString(), "SellPrice") %>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="Mark Up">
-                                                    <ItemTemplate>
-                                                        <%# BindMarkUp(Eval("MarkUp")) %>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:TemplateField ItemStyle-Width="130px" ItemStyle-HorizontalAlign="Center">
-                                                    <ItemTemplate>
-                                                        <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
-                                                        <ul class="dropdown-menu">
-                                                            <li>
-                                                                <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
-                                                            </li>
-                                                            <li runat="server" visible='<%# VisibleCopy(Eval("ProductId").ToString()) %>'>
-                                                                <asp:LinkButton runat="server" ID="linkCopy" CssClass="dropdown-item" Text="Copy" CommandName="Copy" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
-                                                            </li>
-                                                            <li runat="server" visible='<%# VisibleDelete(Eval("ProductId").ToString()) %>'>
-                                                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalDeleteItem" onclick='<%# String.Format("return showDeleteItem(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
-                                                            </li>
-                                                            <li runat="server" visible='<%# VisiblePrinting(Eval("Id").ToString()) %>'>
-                                                                <hr class="dropdown-divider">
-                                                            </li>
-                                                            <li runat="server" visible='<%# VisiblePrinting(Eval("Id").ToString()) %>'>
-                                                                <asp:LinkButton runat="server" CssClass="dropdown-item" ID="linkPrinting" Text="Printing Fabric" CommandName="Printing" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
-                                                            </li>
-                                                            <li runat="server" visible='<%# VisibleCosting() %>'><hr class="dropdown-divider"></li>
-                                                            <li runat="server" visible='<%# VisibleCosting() %>'>
-                                                                <a href="javascript:void(0)" class="dropdown-item" onclick="loadCostings('<%# Eval("Id") %>', '<%= lblCompanyId.Text %>')">Costing</a>
-                                                            </li>
-                                                            <li runat="server" visible='<%# VisibleEditPrice() %>'>
-                                                                <asp:LinkButton runat="server" CssClass="dropdown-item" ID="linkEditCosting" Text="Edit Costing" CommandName="EditCosting" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
-                                                            </li>
-                                                            <li runat="server" visible='<%# VisibleLog() %>'><hr class="dropdown-divider"></li>
-                                                            <li runat="server" visible='<%# VisibleLog() %>'>
-                                                                <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('OrderDetails', '<%# Eval("Id") %>')">Log</a>
-                                                            </li>
-                                                        </ul>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                            </Columns>
-                                            <PagerStyle BackColor="DodgerBlue" ForeColor="White" HorizontalAlign="Center" />
-                                            <PagerSettings PreviousPageText="Prev" NextPageText="Next" Mode="NumericFirstLast" />
-                                            <AlternatingRowStyle BackColor="White" />
-                                        </asp:GridView>
-                                    </div>
-                                </div>
+                        <div class="border rounded">
+                            <div class="table-responsive">
+                                <asp:GridView runat="server" ID="gvListItem" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="100" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom" OnPageIndexChanging="gvListItem_PageIndexChanging" OnRowCommand="gvListItem_RowCommand">
+                                    <RowStyle />
+                                    <Columns>
+                                        <asp:TemplateField ItemStyle-HorizontalAlign="Center">
+                                            <ItemTemplate>
+                                                <%# Container.DataItemIndex + 1 %>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:BoundField DataField="Id" HeaderText="ID" />
+                                        <asp:BoundField DataField="ProductId" HeaderText="Product ID" />
+                                        <asp:TemplateField HeaderText="Description">
+                                            <ItemTemplate>
+                                                <%# BindProductDescription(Eval("Id")) %>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField HeaderText="Buy Price">
+                                            <ItemTemplate>
+                                                <%# ItemCosting(Eval("Id").ToString(), "BuyPrice") %>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField HeaderText="Sell Price">
+                                            <ItemTemplate>
+                                                <%# ItemCosting(Eval("Id").ToString(), "SellPrice") %>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField HeaderText="Price">
+                                            <ItemTemplate>
+                                                <%# ItemCosting(Eval("Id").ToString(), "SellPrice") %>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField HeaderText="Mark Up">
+                                            <ItemTemplate>
+                                                <%# BindMarkUp(Eval("MarkUp")) %>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField ItemStyle-Width="130px" ItemStyle-HorizontalAlign="Center">
+                                            <ItemTemplate>
+                                                <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
+                                                <ul class="dropdown-menu">
+                                                    <li>
+                                                        <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                    </li>
+                                                    <li runat="server" visible='<%# VisibleCopy(Eval("ProductId").ToString()) %>'>
+                                                        <asp:LinkButton runat="server" ID="linkCopy" CssClass="dropdown-item" Text="Copy" CommandName="Copy" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                    </li>
+                                                    <li runat="server" visible='<%# VisibleDelete(Eval("ProductId").ToString()) %>'>
+                                                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalDeleteItem" onclick='<%# String.Format("return showDeleteItem(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                    </li>
+                                                    <li runat="server" visible='<%# VisiblePrinting(Eval("Id").ToString()) %>'>
+                                                        <hr class="dropdown-divider" />
+                                                    </li>
+                                                    <li runat="server" visible='<%# VisiblePrinting(Eval("Id").ToString()) %>'>
+                                                        <asp:LinkButton runat="server" CssClass="dropdown-item" ID="linkPrinting" Text="Printing Fabric" CommandName="Printing" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                    </li>
+                                                    <li runat="server" visible='<%# VisibleCosting() %>'>
+                                                        <hr class="dropdown-divider" />
+                                                    </li>
+                                                    <li runat="server" visible='<%# VisibleCosting() %>'>
+                                                        <a href="javascript:void(0)" class="dropdown-item" onclick="loadCostings('<%# Eval("Id") %>', '<%= lblCompanyId.Text %>')">Costing</a>
+                                                    </li>
+                                                    <li runat="server" visible='<%# VisibleEditPrice() %>'>
+                                                        <asp:LinkButton runat="server" CssClass="dropdown-item" ID="linkEditCosting" Text="Edit Costing" CommandName="EditCosting" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                    </li>
+                                                    <li runat="server" visible='<%# VisibleLog() %>'>
+                                                        <hr class="dropdown-divider" />
+                                                    </li>
+                                                    <li runat="server" visible='<%# VisibleLog() %>'>
+                                                        <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('OrderDetails', '<%# Eval("Id") %>')">Log</a>
+                                                    </li>
+                                                </ul>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                    </Columns>
+                                    <PagerStyle BackColor="DodgerBlue" ForeColor="White" HorizontalAlign="Center" />
+                                    <PagerSettings PreviousPageText="Prev" NextPageText="Next" Mode="NumericFirstLast" />
+                                    <AlternatingRowStyle BackColor="White" />
+                                </asp:GridView>
                             </div>
                         </div>
                     </div>

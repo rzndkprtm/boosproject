@@ -1,4 +1,5 @@
-﻿Imports System.Data
+﻿Imports System.Activities.Expressions
+Imports System.Data
 Imports System.Data.SqlClient
 Imports System.IO
 Imports iTextSharp.text
@@ -1175,7 +1176,7 @@ Public Class PreviewClass
                         If controlName = "Reg Cord Lock" OrElse controlName = "Cord Lock" Then
                             controlColour = romanData.Rows(i)("ControlColour").ToString()
                         End If
-                        If controlName.Contains("Alpha") OrElse controlName = "Mercure" OrElse controlName = "Altus" OrElse controlName = "Sonesse 30 WF" Then
+                        If controlName.Contains("Alpha DC Motor") OrElse controlName.Contains("Somfy") OrElse controlName = "Motorised" Then
                             remoteType = chainName
                         End If
 
