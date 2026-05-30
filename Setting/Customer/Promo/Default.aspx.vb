@@ -1,5 +1,7 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data
+Imports System.Data.SqlClient
 Imports System.Globalization
+Imports System.Web.Services
 
 Partial Class Setting_Customer_Promo_Default
     Inherits Page
@@ -9,6 +11,57 @@ Partial Class Setting_Customer_Promo_Default
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataLog As Object() = Nothing
     Dim enUS As CultureInfo = New CultureInfo("en-US")
+
+    <WebMethod()>
+    Public Shared Function GetPromoDetail(customerPromoId As String) As List(Of PromoDetailModel)
+        Dim result As New List(Of PromoDetailModel)
+
+        Dim settingClass As New SettingClass()
+
+        Dim promoId As String =
+        settingClass.GetItemData("SELECT PromoId FROM CustomerPromos WHERE Id='" & customerPromoId.Replace("'", "''") & "'")
+
+        If String.IsNullOrEmpty(promoId) Then
+            Return result
+        End If
+
+        Dim dt As DataTable =
+        settingClass.GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId.Replace("'", "''") & "'")
+
+        For Each dr As DataRow In dt.Rows
+            Dim typeName As String = ""
+            Dim typeValue As String = dr("Type").ToString()
+            Dim dataId As String = dr("DataId").ToString()
+
+            If String.IsNullOrEmpty(typeValue) Then
+                typeName = ""
+            ElseIf typeValue = "FrameColours" Then
+                typeName = dataId
+            Else
+                typeName = settingClass.GetItemData(String.Format("SELECT Name FROM {0} WHERE Id='{1}'", typeValue, dataId.Replace("'", "''")))
+            End If
+
+            Dim discountText As String = "ERROR"
+
+            Dim discount As Decimal
+
+            If Decimal.TryParse(dr("Discount").ToString(), discount) Then
+
+                If discount > 0 Then
+                    discountText = discount.ToString("G29") & "%"
+                End If
+
+            End If
+
+            result.Add(New PromoDetailModel With {
+                .Id = dr("Id").ToString(),
+                .Type = typeName,
+                .Discount = discountText
+            })
+
+        Next
+        Return result
+    End Function
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
@@ -50,28 +103,28 @@ Partial Class Setting_Customer_Promo_Default
     End Sub
 
     Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
-        If Not String.IsNullOrEmpty(e.CommandArgument) Then
-            Session("SearchCustomerPromo") = txtSearch.Text
-            Dim dataId As String = e.CommandArgument.ToString()
+        'If Not String.IsNullOrEmpty(e.CommandArgument) Then
+        '    Session("SearchCustomerPromo") = txtSearch.Text
+        '    Dim dataId As String = e.CommandArgument.ToString()
 
-            If e.CommandName = "Detail" Then
-                MessageError_Detail(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showDetail(); };"
-                Try
-                    Dim promoId As String = settingClass.GetItemData("SELECT PromoId FROM CustomerPromos WHERE Id='" & dataId & "'")
-                    gvListDetail.DataSource = settingClass.GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
-                    gvListDetail.DataBind()
+        '    If e.CommandName = "Detail" Then
+        '        MessageError_Detail(False, String.Empty)
+        '        Dim thisScript As String = "window.onload = function() { showDetail(); };"
+        '        Try
+        '            Dim promoId As String = settingClass.GetItemData("SELECT PromoId FROM CustomerPromos WHERE Id='" & dataId & "'")
+        '            gvListDetail.DataSource = settingClass.GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
+        '            gvListDetail.DataBind()
 
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showDetail", thisScript, True)
-                Catch ex As Exception
-                    MessageError_Detail(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError_Detail(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                    End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showDetail", thisScript, True)
-                End Try
-            End If
-        End If
+        '            ClientScript.RegisterStartupScript(Me.GetType(), "showDetail", thisScript, True)
+        '        Catch ex As Exception
+        '            MessageError_Detail(True, ex.ToString())
+        '            If Not Session("RoleName") = "Developer" Then
+        '                MessageError_Detail(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+        '            End If
+        '            ClientScript.RegisterStartupScript(Me.GetType(), "showDetail", thisScript, True)
+        '        End Try
+        '    End If
+        'End If
     End Sub
 
     Protected Sub btnProcess_Click(sender As Object, e As EventArgs)
@@ -241,10 +294,6 @@ Partial Class Setting_Customer_Promo_Default
         divErrorProcess.Visible = visible : msgErrorProcess.InnerText = message
     End Sub
 
-    Protected Sub MessageError_Detail(visible As Boolean, message As String)
-        divErrorDetail.Visible = visible : msgErrorDetail.InnerText = message
-    End Sub
-
     Protected Function LoginAccess(action As String) As Boolean
         Try
             Dim roleId As String = Session("RoleId").ToString()
@@ -258,4 +307,10 @@ Partial Class Setting_Customer_Promo_Default
             Return False
         End Try
     End Function
+End Class
+
+Public Class PromoDetailModel
+    Public Property Id As String
+    Public Property Type As String
+    Public Property Discount As String
 End Class

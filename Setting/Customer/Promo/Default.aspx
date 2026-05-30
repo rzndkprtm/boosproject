@@ -53,7 +53,7 @@
                             <div class="row mb-3">
                                 <div class="col-12">
                                     <div class="table-responsive">
-                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom" OnPageIndexChanging="gvList_PageIndexChanging" OnRowCommand="gvList_RowCommand">
+                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom" OnPageIndexChanging="gvList_PageIndexChanging">
                                             <RowStyle />
                                             <Columns>
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center">
@@ -69,7 +69,8 @@
                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                         <ul class="dropdown-menu">
                                                             <li>
-                                                                <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                                <a href="javascript:void(0);" id="aDetail" class="dropdown-item" onclick="showDetail('<%# Eval("Id").ToString() %>');">Detail</a>
+                                                                <%--<asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>--%>
                                                             </li>
                                                             <li>
                                                                 <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
@@ -129,51 +130,32 @@
             </div>
         </div>
     </div>
-    <div class="modal modal-blur fade" id="modalDetail" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal modal-blur fade" id="modalDetail" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Detail Promo</h5>
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                    <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
                 <div class="modal-body">
-                    <div class="row mb-2" runat="server" id="divErrorDetail">
-                        <div class="col-12">
-                            <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorDetail"></span>
-                            </div>
-                        </div>
+                    <div class="alert alert-danger d-none" id="divErrorDetail">
+                        <span id="msgErrorDetail"></span>
                     </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="table-responsive">
-                                <asp:GridView runat="server" ID="gvListDetail" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center">
-                                    <RowStyle />
-                                    <Columns>
-                                        <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="60px">
-                                            <ItemTemplate>
-                                                <%# Container.DataItemIndex + 1 %>
-                                            </ItemTemplate>
-                                        </asp:TemplateField>
-                                        <asp:BoundField DataField="Id" HeaderText="ID" />
-                                        <asp:TemplateField HeaderText="Type">
-                                            <ItemTemplate>
-                                                <%# PromoTitle(Eval("Type").ToString(), Eval("DataId").ToString()) %>
-                                            </ItemTemplate>
-                                        </asp:TemplateField>
-                                        <asp:TemplateField HeaderText="Discount">
-                                            <ItemTemplate>
-                                                <%# PromoValue(Eval("Discount")) %>
-                                            </ItemTemplate>
-                                        </asp:TemplateField>
-                                    </Columns>
-                                </asp:GridView>
-                            </div>
-                        </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover mb-0" id="tblDetail">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Type</th>
+                                    <th>Discount</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                    <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -232,7 +214,7 @@
                         return;
                     }
 
-                    const btn = this.querySelector("a[id*='linkDetail']");
+                    const btn = this.querySelector("a[id*='aDetail']");
                     if (btn) btn.click();
                 });
             }
@@ -244,6 +226,49 @@
 
         function showDetail() {
             $("#modalDetail").modal("show");
+        }
+
+        function showDetail(id) {
+            $("#divErrorDetail").addClass("d-none");
+            $("#msgErrorDetail").html("");
+
+            $.ajax({
+                type: "POST",
+                url: "Default.aspx/GetPromoDetail",
+                data: JSON.stringify({ customerPromoId: id }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    let data = response.d;
+                    let html = "";
+
+                    if (data.length === 0) {
+                        html = `
+                            <tr>
+                            <td colspan="4" class="text-center">
+                            DATA NOT FOUND :)
+                            </td>
+                            </tr>`;
+                    }
+                    else {
+                        $.each(data, function (index, item) {
+                            html += `
+                            <tr>
+                                <td class="text-center">${index + 1}</td>
+                                <td>${item.Type}</td>
+                                <td>${item.Discount}</td>
+                            </tr>`;
+                        });
+                    }
+                    $("#tblDetail tbody").html(html);
+                    $("#modalDetail").modal("show");
+                },
+                error: function (xhr) {
+                    $("#divErrorDetail").removeClass("d-none");
+                    $("#msgErrorDetail").html(xhr.responseText || "Failed load detail.");
+                    $("#modalDetail").modal("show");
+                }
+            });
         }
 
         function showDelete(id) {
