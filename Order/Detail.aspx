@@ -196,7 +196,7 @@
                             </div>
                         </div>
                         <div runat="server" id="divInternalNote" class="detail-section">
-                            <div class="detail-title">Internal Note</div>
+                            <div class="detail-title">Internal Note (Latest)</div>
                             <div class="note-box">
                                 <asp:Label runat="server" ID="lblInternalNote"></asp:Label>
                             </div>
