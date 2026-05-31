@@ -324,7 +324,7 @@ function bindBlindType(designType) {
                 if (Array.isArray(response.d)) {
                     blindtype.innerHTML = "";
 
-                    if (response.d.length > 1) {
+                    if (response.d.length > 0) {
                         const defaultOption = document.createElement("option");
                         defaultOption.text = "";
                         defaultOption.value = "";
@@ -338,7 +338,7 @@ function bindBlindType(designType) {
                         blindtype.add(option);
                     });
 
-                    if (response.d.length === 1) {
+                    if (response.d.length === 0) {
                         blindtype.selectedIndex = 0;
                     }
 
