@@ -9590,7 +9590,7 @@ Partial Class Order_Method
             If blindName = "Zipper" AndAlso drop > 4500 Then Return "MAXIMUM WIDTH IS 4500MM !"
         End If
 
-        If controlName = "Aok" OrElse controlName = "Somfy Altus 40 RTS 3/30" Then
+        If controlName = "Aok" OrElse controlName = "Somfy Altus 50 RTS 40/17" Then
             If String.IsNullOrEmpty(data.remote) Then Return "REMOTE TYPE IS REQUIRED !"
         End If
 
@@ -9622,7 +9622,7 @@ Partial Class Order_Method
             End If
         End If
 
-        If controlName = "Aok" OrElse controlName = "Somfy Altus 40 RTS 3/30" Then
+        If controlName = "Aok" OrElse controlName = "Somfy Altus 50 RTS 40/17" Then
             data.controllength = String.Empty : controllengthvalue = 0
         End If
 
