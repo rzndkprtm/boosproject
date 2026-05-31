@@ -25,6 +25,11 @@ Partial Class Setting_Price_Base_Editable
             BindProductGroup()
             BindPriceGroup()
 
+            ddlCategory.SelectedValue = Session("EdittableCategory")
+            ddlProductGroup.SelectedValue = Session("EdittableProductGroup")
+            ddlMethod.SelectedValue = Session("EdittableMethod")
+            ddlPriceGroup.SelectedValue = Session("EdittablePriceGroup")
+
             btnAdd.Visible = LoginAccess("Add")
             btnImport.Visible = LoginAccess("Import")
 
@@ -219,6 +224,11 @@ Partial Class Setting_Price_Base_Editable
                     dataLog = {"PriceBases", thisId, Session("LoginId").ToString(), "Price Base Created"}
                     settingClass.Logs(dataLog)
 
+                    Session("EdittableCategory") = ddlCategory.SelectedValue
+                    Session("EdittableProductGroup") = ddlProductGroup.SelectedValue
+                    Session("EdittableMethod") = ddlMethod.SelectedValue
+                    Session("EdittablePriceGroup") = ddlPriceGroup.SelectedValue
+
                     Response.Redirect("~/setting/price/base/editable", False)
                 End If
 
@@ -242,6 +252,11 @@ Partial Class Setting_Price_Base_Editable
 
                     dataLog = {"PriceBases", lblId.Text, Session("LoginId").ToString(), "Price Base Updated"}
                     settingClass.Logs(dataLog)
+
+                    Session("EdittableCategory") = ddlCategory.SelectedValue
+                    Session("EdittableProductGroup") = ddlProductGroup.SelectedValue
+                    Session("EdittableMethod") = ddlMethod.SelectedValue
+                    Session("EdittablePriceGroup") = ddlPriceGroup.SelectedValue
 
                     Response.Redirect("~/setting/price/base/editable", False)
                 End If
@@ -275,6 +290,11 @@ Partial Class Setting_Price_Base_Editable
 
                 thisConn.Close()
             End Using
+
+            Session("EdittableCategory") = ddlCategory.SelectedValue
+            Session("EdittableProductGroup") = ddlProductGroup.SelectedValue
+            Session("EdittableMethod") = ddlMethod.SelectedValue
+            Session("EdittablePriceGroup") = ddlPriceGroup.SelectedValue
 
             Response.Redirect("~/setting/price/base/editable", False)
         Catch ex As Exception
