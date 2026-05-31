@@ -29,7 +29,9 @@ Partial Class Order_Default
             BindOrderType()
 
             ddlStatus.SelectedValue = Session("OrderStatus")
-            ddlCompany.SelectedValue = Session("OrderCompany")
+            If Not String.IsNullOrEmpty(Session("OrderCompany")) Then
+                ddlCompany.SelectedValue = Session("OrderCompany")
+            End If
             txtSearch.Text = Session("OrderSearch")
             ddlActive.SelectedValue = Session("OrderActive")
             ddlType.SelectedValue = Session("OrderType")
