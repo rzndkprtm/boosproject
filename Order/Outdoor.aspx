@@ -82,7 +82,7 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-12 col-sm-12 col-lg-3 mb-1">
+                                            <div class="col-12 col-sm-12 col-lg-5 mb-1">
                                                 <label>Control Type</label>
                                             </div>
                                             <div class="col-12 col-sm-12 col-lg-3 form-group">
