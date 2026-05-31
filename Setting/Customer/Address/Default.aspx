@@ -265,6 +265,7 @@
         document.addEventListener('click', function (e) {
 
             const row = e.target.closest("#<%= gvList.ClientID %> tr");
+            row.style.cursor = 'pointer';
 
             if (!row) return;
 
