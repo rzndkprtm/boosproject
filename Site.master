@@ -345,8 +345,38 @@
         </div>
 
         <script type="text/javascript">
+            document.addEventListener("DOMContentLoaded", function () {
+                checkNotification();
+                setInterval(checkNotification, 3000);
+            });
+
             var popupQueue = [];
             var currentPopup = null;
+
+            var loadedPopupIds = new Set();
+
+            function checkNotification() {
+                fetch('/Setting/General/Notification/Default.aspx/GetNotification', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: '{}'
+                })
+                    .then(response => response.json()).then(data => {
+                        let notifications = data.d || [];
+                        notifications.forEach(function (item) {
+                            if (!loadedPopupIds.has(item.popupId)) {
+                                loadedPopupIds.add(item.popupId);
+                                popupQueue.push(item);
+                            }
+                        });
+
+                        if (!currentPopup && popupQueue.length > 0) {
+                            showNextPopup();
+                        }
+                    });
+            }
 
             document.getElementById('modalNotification').addEventListener('hidden.bs.modal', function () {
                 if (!currentPopup) return;
