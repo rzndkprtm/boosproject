@@ -2065,7 +2065,7 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
             if (blindName === "Single Blind") {
                 divShow.push("divfabric", "divroll", "divcontrolposition", "divbottomtype", "divbottomcolour", "divsize");
 
-                if (companyDetailName === "ACCENT") {
+                if (companyDetailName === "ACCENT" || companyDetailName === "BIG" || companyDetailName === "OASIS") {
                     divShow.push("divtoptrack");
                 }
 
@@ -3159,7 +3159,7 @@ function showInfo(type) {
                 info = "<b>- Bottom Type</b> : <span style='color:red;'><span style='color:red;'>Flat Mohair</span>";
                 info += "<br />";
                 info += "A surcharge will be applied.";
-            } else if (companyDetailName === "ACCENT") {
+            } else if (companyDetailName === "ACCENT" || companyDetailName === "BIG" || companyDetailName === "OASIS") {
                 info = "<b>- Bottom Type</b> : <span style='color:red;'><span style='color:red;'>Flat Mohair</span>";
                 info += "<br />";
                 info += "A surcharge will be applied.";
@@ -3172,7 +3172,7 @@ function showInfo(type) {
                 info = "<b>- Bottom Type</b> : <span style='color:red;'>Deluxe Flat</span>, <span style='color:red;'>Deluxe Oval</span> & <span style='color:red;'>Flat Mohair</span>";
                 info += "<br />";
                 info += "A surcharge will be applied.";
-            } else if (companyDetailName === "ACCENT" || companyDetailName === "OASIS") {
+            } else if (companyDetailName === "ACCENT" || companyDetailName === "BIG" || companyDetailName === "OASIS") {
                 info = "<b>- Bottom Type</b> : <span style='color:red;'><span style='color:red;'>Flat Mohair</span>";
                 info += "<br />";
                 info += "A surcharge will be applied.";
