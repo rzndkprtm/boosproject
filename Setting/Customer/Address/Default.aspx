@@ -30,180 +30,88 @@
             </div>
         </section>
         <section class="row">
-    <div class="col-12">
-
-        <div class="card">
-
-            <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
-                <ContentTemplate>
-
-                    <div class="card-header">
-
-                        <div class="row g-2 align-items-center">
-
-                            <div class="col-12 col-lg-6">
-                                <asp:Button
-                                    runat="server"
-                                    ID="btnAdd"
-                                    CssClass="btn btn-primary"
-                                    Text="Add New"
-                                    OnClick="btnAdd_Click" />
-                            </div>
-
-                            <div class="col-12 col-lg-6">
-
-                                <asp:Panel runat="server" DefaultButton="btnSearch">
-
-                                    <div class="input-group">
-
-                                        <span class="input-group-text">
-                                            Search
-                                        </span>
-
-                                        <asp:TextBox
-                                            runat="server"
-                                            ID="txtSearch"
-                                            CssClass="form-control"
-                                            placeholder="Search..."
-                                            autocomplete="off">
-                                        </asp:TextBox>
-
-                                        <asp:Button
-                                            runat="server"
-                                            ID="btnSearch"
-                                            CssClass="btn btn-primary"
-                                            Text="Search"
-                                            OnClick="btnSearch_Click" />
-
+            <div class="col-12">
+                <div class="card">
+                    <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
+                        <ContentTemplate>
+                            <div class="card-header">
+                                <div class="row g-2 align-items-center">
+                                    <div class="col-12 col-lg-6">
+                                        <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Add New" OnClick="btnAdd_Click" />
                                     </div>
-
-                                </asp:Panel>
-
+                                    <div class="col-12 col-lg-6">
+                                        <asp:Panel runat="server" DefaultButton="btnSearch">
+                                            <div class="input-group">
+                                                <span class="input-group-text">Search</span>
+                                                <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" placeholder="Search..." autocomplete="off">
+                                                </asp:TextBox>
+                                                <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />
+                                            </div>
+                                        </asp:Panel>
+                                    </div>
+                                </div>
                             </div>
-
-                        </div>
-
-                    </div>
-
-                    <div class="card-body">
-
-                        <div class="d-flex justify-content-end mb-3">
-
-                            <nav id="navPager" runat="server" visible="false">
-
-                                <ul class="pagination pagination-sm mb-0">
-
-                                    <asp:Repeater
-                                        ID="rptPager"
-                                        runat="server"
-                                        OnItemCommand="rptPager_ItemCommand">
-
-                                        <ItemTemplate>
-
-                                            <li class='page-item <%# Eval("CssClass") %>'>
-
-                                                <asp:LinkButton
-                                                    ID="lnkPage"
-                                                    runat="server"
-                                                    CssClass="page-link"
-                                                    Text='<%# Eval("Text") %>'
-                                                    CommandName="Page"
-                                                    CommandArgument='<%# Eval("PageIndex") %>' />
-
-                                            </li>
-
-                                        </ItemTemplate>
-
-                                    </asp:Repeater>
-
-                                </ul>
-
-                            </nav>
-
-                        </div>
-
-                        <div class="table-responsive">
-
-                            <asp:GridView
-                                ID="gvList"
-                                runat="server"
-                                CssClass="table table-bordered table-hover mb-0"
-                                AutoGenerateColumns="False"
-                                AllowPaging="True"
-                                PageSize="50"
-                                ShowHeaderWhenEmpty="True"
-                                EmptyDataText="DATA NOT FOUND :)"
-                                EmptyDataRowStyle-HorizontalAlign="Center"
-                                OnRowCommand="gvList_RowCommand"
-                                OnDataBound="gvList_DataBound">
-
-                                <Columns>
-
-                                    <asp:TemplateField ItemStyle-HorizontalAlign="Center">
-                                        <ItemTemplate>
-                                            <%# (gvList.PageIndex * gvList.PageSize) + Container.DataItemIndex + 1 %>
-                                        </ItemTemplate>
-                                    </asp:TemplateField>
-
-                                    <asp:BoundField DataField="Id" HeaderText="ID" />
-    <asp:BoundField DataField="CustomerName" HeaderText="Customer" />
-    <asp:BoundField DataField="Description" HeaderText="Description" />
-    <asp:TemplateField HeaderText="Address">
-        <ItemTemplate>
-            <%# BindDetailAddress(Eval("Id").ToString()) %>
-        </ItemTemplate>
-    </asp:TemplateField>
-    <asp:BoundField DataField="Note" HeaderText="Note" />
-    <asp:BoundField DataField="DataPrimary" HeaderText="Primary" />
-    <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
-        <ItemTemplate>
-            <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
-            <ul class="dropdown-menu">
-                <li>
-                    <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
-                </li>
-                <li runat="server" visible='<%# VisiblePrimary(Eval("Primary")) %>'>
-                    <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalPrimary" onclick='<%# String.Format("return showPrimary(`{0}`);", Eval("Id").ToString()) %>'>Set As Primary</a>
-                </li>
-                <li>
-                    <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
-                </li>
-                <li>
-                    <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('CustomerAddress', '<%# Eval("Id") %>')">Log</a>
-                </li>
-            </ul>
-        </ItemTemplate>
-    </asp:TemplateField>
-
-                                </Columns>
-
-                            </asp:GridView>
-
-                        </div>
-
-                    </div>
-
-                </ContentTemplate>
-            </asp:UpdatePanel>
-
-        </div>
-
-    </div>
-</section>
-    </div>
-
-    <asp:UpdateProgress ID="upProgress" runat="server" AssociatedUpdatePanelID="updateData">
-        <ProgressTemplate>
-            <div class="position-fixed top-50 start-50 translate-middle" style="z-index:9999">
-                <div class="card shadow">
-                    <div class="card-body text-center">
-                        <div class="spinner-border"></div>
-                        <div class="mt-2">Loading...</div>
-                    </div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-end mb-3">
+                                    <nav id="navPager" runat="server" visible="false">
+                                        <ul class="pagination pagination-sm mb-0">
+                                            <asp:Repeater ID="rptPager" runat="server" OnItemCommand="rptPager_ItemCommand">
+                                                <ItemTemplate>
+                                                    <li class='page-item <%# Eval("CssClass") %>'>
+                                                        <asp:LinkButton runat="server" ID="lnkPage" CssClass="page-link" Text='<%# Eval("Text") %>' CommandName="Page" CommandArgument='<%# Eval("PageIndex") %>' />
+                                                    </li>
+                                                </ItemTemplate>
+                                            </asp:Repeater>
+                                        </ul>
+                                    </nav>
+                                </div>
+                                <div class="table-responsive">
+                                    <asp:GridView ID="gvList" runat="server" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="False" AllowPaging="True" PageSize="50" ShowHeaderWhenEmpty="True" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowCommand="gvList_RowCommand" OnDataBound="gvList_DataBound">
+                                        <Columns>
+                                            <asp:TemplateField ItemStyle-HorizontalAlign="Center">
+                                                <ItemTemplate>
+                                                    <%# (gvList.PageIndex * gvList.PageSize) + Container.DataItemIndex + 1 %>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:BoundField DataField="Id" HeaderText="ID" />
+                                            <asp:BoundField DataField="CustomerName" HeaderText="Customer" />
+                                            <asp:BoundField DataField="Description" HeaderText="Description" />
+                                            <asp:TemplateField HeaderText="Address">
+                                                <ItemTemplate>
+                                                    <%# BindDetailAddress(Eval("Id").ToString()) %>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:BoundField DataField="Note" HeaderText="Note" />
+                                            <asp:BoundField DataField="DataPrimary" HeaderText="Primary" />
+                                            <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
+                                                <ItemTemplate>
+                                                    <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
+                                                    <ul class="dropdown-menu">
+                                                        <li>
+                                                            <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                        </li>
+                                                        <li runat="server" visible='<%# VisiblePrimary(Eval("Primary")) %>'>
+                                                            <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalPrimary" onclick='<%# String.Format("return showPrimary(`{0}`);", Eval("Id").ToString()) %>'>Set As Primary</a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('CustomerAddress', '<%# Eval("Id") %>')">Log</a>
+                                                        </li>
+                                                    </ul>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                        </Columns>
+                                    </asp:GridView>
+                                </div>
+                            </div>
+                        </ContentTemplate>
+                    </asp:UpdatePanel>
                 </div>
             </div>
-        </ProgressTemplate>
-    </asp:UpdateProgress>    
+        </section>
+    </div>   
     <div class="modal modal-blur fade" id="modalPrimary" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -257,32 +165,71 @@
         </div>
     </div>
 
+    <div id="loadingOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,.5); z-index:99999;">
+        <div class="position-absolute top-50 start-50 translate-middle">
+            <div class="card shadow">
+                <div class="card-body text-center">
+                    <div class="spinner-border"></div>
+                    <div class="mt-2">Loading...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblId"></asp:Label>
     </div>
 
     <script type="text/javascript">
-        document.addEventListener('click', function (e) {
-
-            const row = e.target.closest("#<%= gvList.ClientID %> tr");
-            row.style.cursor = 'pointer';
-
-            if (!row) return;
-
-            if (
-                e.target.closest("a") ||
-                e.target.closest("button") ||
-                e.target.closest("[data-bs-toggle]")
-            ) {
-                return;
+        window.addEventListener("pageshow", function () {
+            var loading = document.getElementById("loadingOverlay");
+            if (loading) {
+                loading.style.display = "none";
             }
+        });
 
-            const btn = row.querySelector("a[id*='linkDetail']");
+        function initUpdatePanelLoading() {
+            if (typeof Sys === "undefined") return;
+            var prm = Sys.WebForms.PageRequestManager.getInstance();
 
-            if (btn) {
-                btn.click();
+            prm.add_beginRequest(function () {
+                document.getElementById("loadingOverlay").style.display = "block";
+            });
+
+            prm.add_endRequest(function () {
+                document.getElementById("loadingOverlay").style.display = "none";
+
+                bindGridRowClick();
+            });
+        }
+
+        function bindGridRowClick() {
+            const gv = document.getElementById('<%= gvList.ClientID %>');
+            if (!gv) return;
+
+            for (let i = 1; i < gv.rows.length; i++) {
+                const row = gv.rows[i];
+
+                row.style.cursor = "pointer";
+
+                row.onclick = function (e) {
+                    if (
+                        e.target.closest("a") ||
+                        e.target.closest("button") ||
+                        e.target.closest("[data-bs-toggle]")
+                    ) {
+                        return;
+                    }
+
+                    const btn = this.querySelector("a[id*='linkDetail']");
+                    if (btn) btn.click();
+                };
             }
+        }
 
+        document.addEventListener("DOMContentLoaded", function () {
+            initUpdatePanelLoading();
+            bindGridRowClick();
         });
 
         function showPrimary(id) {
