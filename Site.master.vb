@@ -8,6 +8,7 @@ Public Partial Class SiteMaster
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
+
     Protected Sub Page_Init(sender As Object, e As EventArgs)
         AddHandler Page.PreLoad, AddressOf master_Page_PreLoad
     End Sub
@@ -20,7 +21,7 @@ Public Partial Class SiteMaster
         If Not IsPostBack Then
             MyLoad()
             BindListNavigation()
-            BindNotification()
+            'BindNotification()
         End If
     End Sub
 

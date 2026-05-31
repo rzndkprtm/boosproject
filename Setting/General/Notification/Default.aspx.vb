@@ -1,4 +1,5 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data
+Imports System.Data.SqlClient
 Imports System.Web.Services
 
 Partial Class Setting_General_Notification_Default
@@ -8,6 +9,35 @@ Partial Class Setting_General_Notification_Default
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataLog As Object() = Nothing
+
+    <WebMethod()>
+    Public Shared Function GetNotification() As Object
+        Dim result As New List(Of Object)
+
+        Try
+            Dim settingClass As New SettingClass
+            Dim loginId As String = HttpContext.Current.Session("LoginId").ToString()
+
+            Dim dt As DataTable = settingClass.GetDataTable("SELECT N.* FROM Notifications N CROSS APPLY STRING_SPLIT(N.LoginId, ',') A WHERE A.VALUE='" & loginId & "' AND N.Active=1 AND CAST(GETDATE() AS DATE) BETWEEN CAST(N.StartDate AS DATE) AND CAST(N.EndDate AS DATE) AND NOT EXISTS (SELECT 1 FROM NotificationLogs L WHERE L.NotificationId=N.Id AND L.LoginId='" & loginId & "' ) ORDER BY N.Id")
+
+            For Each row As DataRow In dt.Rows
+                Dim fullName As String = "<strong>" & HttpContext.Current.Session("FullName").ToString() & "</strong>"
+
+                Dim thisMsg As String = row("Message").ToString()
+
+                thisMsg = thisMsg.Replace("[FullName]", fullName)
+                thisMsg = "Hi " & fullName & ",<br><br>" & thisMsg
+
+                result.Add(New With {
+                    .title = row("Title").ToString(),
+                    .message = thisMsg,
+                    .popupId = row("Id").ToString()
+                })
+            Next
+        Catch ex As Exception
+        End Try
+        Return result
+    End Function
 
     <WebMethod()>
     Public Shared Sub SavePopupLog(popupId As String)
