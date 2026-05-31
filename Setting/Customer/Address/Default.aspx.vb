@@ -34,6 +34,13 @@ Partial Class Setting_Customer_Address_Default
         Response.Redirect("~/setting/customer/address/add", False)
     End Sub
 
+    Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
+        If e.CommandName = "Page" Then
+            gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
+            BindData(txtSearch.Text)
+        End If
+    End Sub
+
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
         MessageError(False, String.Empty)
         Try
@@ -45,6 +52,10 @@ Partial Class Setting_Customer_Address_Default
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
         End Try
+    End Sub
+
+    Protected Sub gvList_DataBound(sender As Object, e As EventArgs)
+        BuildPager()
     End Sub
 
     Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
@@ -227,15 +238,4 @@ Partial Class Setting_Customer_Address_Default
             Return False
         End Try
     End Function
-
-    Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
-        If e.CommandName = "Page" Then
-            gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
-            BindData(txtSearch.Text)
-        End If
-    End Sub
-
-    Protected Sub gvList_DataBound(sender As Object, e As EventArgs)
-        BuildPager()
-    End Sub
 End Class
