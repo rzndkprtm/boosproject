@@ -21,7 +21,6 @@ Public Partial Class SiteMaster
         If Not IsPostBack Then
             MyLoad()
             BindListNavigation()
-            'BindNotification()
         End If
     End Sub
 
