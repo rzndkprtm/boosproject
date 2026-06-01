@@ -50,13 +50,28 @@ Partial Class Setting_Customer_Address_Edit
                 Exit Sub
             End If
 
+            If txtSuburb.Text.Contains(",") OrElse txtAddress.Text.Contains(";") Then
+                MessageError(True, "SUBURB CANNOT CONTAIN COMMA (,) OR SEMICOLON (;) !")
+                Exit Sub
+            End If
+
             If txtState.Text = "" Then
                 MessageError(True, "STATE IS REQUIRED !")
                 Exit Sub
             End If
 
+            If txtState.Text.Contains(",") OrElse txtAddress.Text.Contains(";") Then
+                MessageError(True, "STATE CANNOT CONTAIN COMMA (,) OR SEMICOLON (;) !")
+                Exit Sub
+            End If
+
             If txtPostCode.Text = "" Then
                 MessageError(True, "POST CODE IS REQUIRED !")
+                Exit Sub
+            End If
+
+            If txtPostCode.Text.Contains(",") OrElse txtAddress.Text.Contains(";") Then
+                MessageError(True, "POST CODE CANNOT CONTAIN COMMA (,) OR SEMICOLON (;) !")
                 Exit Sub
             End If
 

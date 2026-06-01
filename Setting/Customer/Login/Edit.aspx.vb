@@ -61,8 +61,7 @@ Partial Class Setting_Customer_Login_Edit
             End If
 
             If txtUserName.Text <> lblUserName.Text Then
-                Dim checkUsername As String = settingClass.GetItemData("SELECT UserName FROM Logins WHERE UserName='" + txtUserName.Text + "'")
-                If txtUserName.Text = checkUsername Then
+                If settingClass.IsUsernameExists(txtUserName.Text.Trim()) Then
                     MessageError(True, "USERNAME ALREADY EXIST !")
                     Exit Sub
                 End If

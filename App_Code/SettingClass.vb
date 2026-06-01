@@ -432,51 +432,71 @@ Public Class SettingClass
 
     Public Function GenerateUsername(accountName As String) As String
         Dim ignoreWords As String() = {"PT", "CV", "TOKO", "UD", "PD", "PTY", "LTD"}
-
         accountName = Regex.Replace(accountName, "[^a-zA-Z0-9 ]", "")
-
         Dim words As String() = accountName.Split(New Char() {" "c}, StringSplitOptions.RemoveEmptyEntries)
-
         Dim filtered As New List(Of String)
+
         For Each w As String In words
             If Not ignoreWords.Contains(w.ToUpper()) Then
                 filtered.Add(w.ToLower())
             End If
         Next
-
         If filtered.Count = 0 Then
-            Return "user"
+            Return GetUniqueUsername("user")
         End If
-
         Dim candidates As New List(Of String)
 
         If filtered.Count >= 2 Then
             Dim w1 As String = filtered(0)
             Dim w2 As String = filtered(1)
 
-            candidates.Add(Left(w1, Math.Min(3, w1.Length)) & Left(w2, Math.Min(3, w2.Length)))
-            candidates.Add(Left(w1, Math.Min(4, w1.Length)) & Left(w2, Math.Min(2, w2.Length)))
-            candidates.Add(Left(w1, Math.Min(2, w1.Length)) & Left(w2, Math.Min(4, w2.Length)))
+            candidates.Add(Left(w1, Math.Min(4, w1.Length)) & Left(w2, Math.Min(4, w2.Length)))
+            candidates.Add(Left(w1, Math.Min(5, w1.Length)) & Left(w2, Math.Min(3, w2.Length)))
+            candidates.Add(Left(w1, Math.Min(3, w1.Length)) & Left(w2, Math.Min(5, w2.Length)))
             candidates.Add(w1 & w2)
             candidates.Add(Left(w1, 1) & w2)
             candidates.Add(Left(w1, 1) & Left(w2, 1))
         Else
             Dim w As String = filtered(0)
-
-            candidates.Add(Left(w, Math.Min(6, w.Length)))
+            candidates.Add(Left(w, Math.Min(8, w.Length)))
             candidates.Add(w)
         End If
 
         For Each candidate As String In candidates
+            candidate = candidate.ToLower()
+            If candidate.Length > 8 Then
+                candidate = candidate.Substring(0, 8)
+            End If
             If Not IsUsernameExists(candidate) Then
                 Return candidate
             End If
         Next
-
-        Return candidates(0)
+        Return GetUniqueUsername(candidates(0))
     End Function
 
-    Private Function IsUsernameExists(username As String) As Boolean
+    Private Function GetUniqueUsername(baseUsername As String) As String
+        baseUsername = baseUsername.ToLower()
+        If baseUsername.Length > 8 Then
+            baseUsername = baseUsername.Substring(0, 8)
+        End If
+
+        Dim username As String = baseUsername
+        Dim counter As Integer = 1
+
+        While IsUsernameExists(username)
+            Dim suffix As String = counter.ToString()
+            Dim maxLength As Integer = 8 - suffix.Length
+            Dim prefix As String = baseUsername
+            If prefix.Length > maxLength Then
+                prefix = prefix.Substring(0, maxLength)
+            End If
+            username = prefix & suffix
+            counter += 1
+        End While
+        Return username
+    End Function
+
+    Public Function IsUsernameExists(username As String) As Boolean
         Using thisConn As New SqlConnection(myConn)
             thisConn.Open()
             Using myCmd As New SqlCommand("SELECT COUNT(1) FROM Logins WHERE LOWER(UserName) = @UserName", thisConn)
