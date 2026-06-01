@@ -68,7 +68,16 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-sm-12 col-lg-5"></div>
+            <div class="col-12 col-sm-12 col-lg-5">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title text-center">Information</h4>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body"></div>
+                    </div>
+                </div>
+            </div>
         </section>
     </div>
 
