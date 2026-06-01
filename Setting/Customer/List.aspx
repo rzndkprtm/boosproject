@@ -43,45 +43,22 @@
                             <div class="card-content">
                                 <div class="card-header">
                                     <div class="row">
-
                                         <div class="col-12 col-sm-12 col-lg-4 mb-2">
                                             <div class="input-group" runat="server" id="divCompany">
                                                 <span class="input-group-text">Company :</span>
-
-                                                <asp:DropDownList runat="server"
-                                                    ID="ddlCompany"
-                                                    CssClass="form-select"
-                                                    AutoPostBack="true"
-                                                    OnSelectedIndexChanged="ddlCompany_SelectedIndexChanged">
+                                                <asp:DropDownList runat="server" ID="ddlCompany" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCompany_SelectedIndexChanged">
                                                 </asp:DropDownList>
-
                                             </div>
                                         </div>
-
                                         <div class="col-12 col-sm-12 col-lg-8 d-flex justify-content-end">
-
                                             <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
                                                 <div class="input-group">
-
                                                     <span class="input-group-text">Search :</span>
-
-                                                    <asp:TextBox runat="server"
-                                                        ID="txtSearch"
-                                                        CssClass="form-control"
-                                                        autocomplete="off">
-                                                    </asp:TextBox>
-
-                                                    <asp:Button runat="server"
-                                                        ID="btnSearch"
-                                                        CssClass="btn btn-primary"
-                                                        Text="Search"
-                                                        OnClick="btnSearch_Click" />
-
+                                                    <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" autocomplete="off"></asp:TextBox>
+                                                    <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />
                                                 </div>
                                             </asp:Panel>
-
                                         </div>
-
                                     </div>
                                 </div>
                                 <div class="card-body">                                    
