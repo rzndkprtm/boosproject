@@ -24,8 +24,9 @@ Partial Class Setting_Customer_Address_Default
     End Sub
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
         gvList.PageIndex = 0
+
+        MessageError(False, String.Empty)
         BindData(txtSearch.Text)
     End Sub
 
@@ -35,10 +36,13 @@ Partial Class Setting_Customer_Address_Default
     End Sub
 
     Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
-        If e.CommandName = "Page" Then
-            gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
-            BindData(txtSearch.Text)
-        End If
+        Try
+            If e.CommandName = "Page" Then
+                gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
+                BindData(txtSearch.Text)
+            End If
+        Catch ex As Exception
+        End Try
     End Sub
 
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
@@ -55,7 +59,10 @@ Partial Class Setting_Customer_Address_Default
     End Sub
 
     Protected Sub gvList_DataBound(sender As Object, e As EventArgs)
-        BuildPager()
+        Try
+            BuildPager()
+        Catch ex As Exception
+        End Try
     End Sub
 
     Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
@@ -149,7 +156,7 @@ Partial Class Setting_Customer_Address_Default
         End Try
     End Sub
 
-    Private Sub BuildPager()
+    Protected Sub BuildPager()
         If gvList.PageCount <= 1 Then
             navPager.Visible = False
             Return
@@ -163,7 +170,7 @@ Partial Class Setting_Customer_Address_Default
         Dim pages As New List(Of Object)
 
         If currentPage > 0 Then
-            pages.Add(New With {.Text = "‹", .PageIndex = currentPage - 1, .CssClass = ""})
+            pages.Add(New With {.Text = "Previous", .PageIndex = currentPage - 1, .CssClass = ""})
         End If
 
         Dim startPage As Integer = Math.Max(0, currentPage - 2)
@@ -174,7 +181,7 @@ Partial Class Setting_Customer_Address_Default
         Next
 
         If currentPage < totalPages - 1 Then
-            pages.Add(New With {.Text = "›", .PageIndex = currentPage + 1, .CssClass = ""})
+            pages.Add(New With {.Text = "Next", .PageIndex = currentPage + 1, .CssClass = ""})
         End If
 
         rptPager.DataSource = pages

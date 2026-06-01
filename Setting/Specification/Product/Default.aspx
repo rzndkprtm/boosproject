@@ -22,6 +22,13 @@
         </div>
     </div>
     <div class="page-content">
+        <section class="row mb-2" runat="server" id="divError">
+            <div class="col-12">
+                <div class="alert alert-danger">
+                    <span runat="server" id="msgError"></span>
+                </div>
+            </div>
+        </section>
         <section class="row mb-3">
             <div class="col-12 d-flex flex-wrap justify-content-end gap-1">
                 <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary me-1" Text="Add New" OnClick="btnAdd_Click" />
@@ -30,104 +37,95 @@
             </div>
         </section>
         <section class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title">Filter Form</h4>
-                    </div>
-                    <div class="card-content">
-                        <div class="card-body">
-                            <div class="form form-vertical">
-                                <div class="form-body">
-                                    <div class="row mb-2">
-                                        <div class="col-12 col-sm-12 col-lg-4">
-                                            <div class="form-group">
-                                                <label class="form-label">Design Type</label>
-                                                <asp:DropDownList runat="server" ID="ddlDesignSort" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlDesignSort_SelectedIndexChanged"></asp:DropDownList>
+            <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
+                <ContentTemplate>
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">Filter Form</h4>
+                            </div>
+                            <div class="card-content">
+                                <div class="card-body">
+                                    <div class="form form-vertical">
+                                        <div class="form-body">
+                                            <div class="row mb-2">
+                                                <div class="col-12 col-sm-12 col-lg-4">
+                                                    <div class="form-group">
+                                                        <label class="form-label">Design Type</label>
+                                                        <asp:DropDownList runat="server" ID="ddlDesignSort" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlDesignSort_SelectedIndexChanged"></asp:DropDownList>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-5">
+                                                    <div class="form-group">
+                                                        <label class="form-label">Blind Type</label>
+                                                        <asp:DropDownList runat="server" ID="ddlBlindSort" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlBlindSort_SelectedIndexChanged"></asp:DropDownList>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label class="form-label">Company Detail</label>
+                                                    <asp:DropDownList runat="server" ID="ddlCompanyDetailSort" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCompanyDetailSort_SelectedIndexChanged"></asp:DropDownList>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-5">
-                                            <div class="form-group">
-                                                <label class="form-label">Blind Type</label>
-                                                <asp:DropDownList runat="server" ID="ddlBlindSort" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlBlindSort_SelectedIndexChanged"></asp:DropDownList>
+                                            <div class="row">
+                                                <div class="col-6 col-sm-6 col-lg-3">
+                                                    <div class="form-group">
+                                                        <label class="form-label">Tube Type</label>
+                                                        <asp:DropDownList runat="server" ID="ddlTubeSort" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlTubeSort_SelectedIndexChanged"></asp:DropDownList>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6 col-sm-6 col-lg-3">
+                                                    <div class="form-group">
+                                                        <label class="form-label">Control Type</label>
+                                                        <asp:DropDownList runat="server" ID="ddlControlSort" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlControlSort_SelectedIndexChanged"></asp:DropDownList>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6 col-sm-6 col-lg-3">
+                                                    <div class="form-group">
+                                                        <label class="form-label">Colour Type</label>
+                                                        <asp:DropDownList runat="server" ID="ddlColourSort" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlColourSort_SelectedIndexChanged"></asp:DropDownList>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6 col-sm-6 col-lg-3">
+                                                    <div class="form-group">
+                                                        <label class="form-label">Status</label>
+                                                        <asp:DropDownList runat="server" ID="ddlStatusSort" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlStatusSort_SelectedIndexChanged">
+                                                            <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                            <asp:ListItem Value="In Stock" Text="In Stock"></asp:ListItem>
+                                                            <asp:ListItem Value="Limited Stock" Text="Limited Stock"></asp:ListItem>
+                                                            <asp:ListItem Value="Out of Stock" Text="Out of Stock"></asp:ListItem>
+                                                            <asp:ListItem Value="Discontinued" Text="Discontinued"></asp:ListItem>
+                                                        </asp:DropDownList>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label class="form-label">Company Detail</label>
-                                            <asp:DropDownList runat="server" ID="ddlCompanyDetailSort" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCompanyDetailSort_SelectedIndexChanged"></asp:DropDownList>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-content">
+                                <div class="card-header">
                                     <div class="row">
-                                        <div class="col-6 col-sm-6 col-lg-3">
-                                            <div class="form-group">
-                                                <label class="form-label">Tube Type</label>
-                                                <asp:DropDownList runat="server" ID="ddlTubeSort" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlTubeSort_SelectedIndexChanged"></asp:DropDownList>
-                                            </div>
+                                        <div class="col-12 col-sm-12 col-lg-7">
+                                            <h4 class="card-title">List Product</h4>
                                         </div>
-                                        <div class="col-6 col-sm-6 col-lg-3">
-                                            <div class="form-group">
-                                                <label class="form-label">Control Type</label>
-                                                <asp:DropDownList runat="server" ID="ddlControlSort" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlControlSort_SelectedIndexChanged"></asp:DropDownList>
-                                            </div>
-                                        </div>
-                                        <div class="col-6 col-sm-6 col-lg-3">
-                                            <div class="form-group">
-                                                <label class="form-label">Colour Type</label>
-                                                <asp:DropDownList runat="server" ID="ddlColourSort" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlColourSort_SelectedIndexChanged"></asp:DropDownList>
-                                            </div>
-                                        </div>
-                                        <div class="col-6 col-sm-6 col-lg-3">
-                                            <div class="form-group">
-                                                <label class="form-label">Status</label>
-                                                <asp:DropDownList runat="server" ID="ddlStatusSort" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlStatusSort_SelectedIndexChanged">
-                                                    <asp:ListItem Value="" Text=""></asp:ListItem>
-                                                    <asp:ListItem Value="In Stock" Text="In Stock"></asp:ListItem>
-                                                    <asp:ListItem Value="Limited Stock" Text="Limited Stock"></asp:ListItem>
-                                                    <asp:ListItem Value="Out of Stock" Text="Out of Stock"></asp:ListItem>
-                                                    <asp:ListItem Value="Discontinued" Text="Discontinued"></asp:ListItem>
-                                                </asp:DropDownList>
-                                            </div>
+                                        <div class="col-12 col-sm-12 col-lg-5 d-flex justify-content-end">
+                                            <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">Search : </span>
+                                                    <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" placeholoder="" autocomplete="off"></asp:TextBox>
+                                                    <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />
+                                                </div>
+                                            </asp:Panel>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <section class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-content">
-                        <div class="card-header">
-                            <div class="row">
-                                <div class="col-12 col-sm-12 col-lg-7">
-                                    <h4 class="card-title">List Product</h4>
-                                </div>
-                                <div class="col-12 col-sm-12 col-lg-5 d-flex justify-content-end">
-                                    <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
-                                        <div class="input-group">
-                                            <span class="input-group-text">Search : </span>
-                                            <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" placeholoder="" autocomplete="off"></asp:TextBox>
-                                            <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />
-                                        </div>
-                                    </asp:Panel>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="row mb-2" runat="server" id="divError">
-                                <div class="col-12">
-                                    <div class="alert alert-danger">
-                                        <span runat="server" id="msgError"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-12">
+                                <div class="card-body">
                                     <div class="table-responsive">
-                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="True" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom" OnPageIndexChanging="gvList_PageIndexChanging" OnRowCommand="gvList_RowCommand">
+                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="True" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Visible="false" OnPageIndexChanging="gvList_PageIndexChanging" OnRowCommand="gvList_RowCommand" OnDataBound="gvList_DataBound">
                                             <RowStyle />
                                             <Columns>
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center">
@@ -170,17 +168,27 @@
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                             </Columns>
-                                            <PagerStyle BackColor="DodgerBlue" ForeColor="White" HorizontalAlign="Center" />
-                                            <PagerSettings PreviousPageText="Prev" NextPageText="Next" Mode="NumericFirstLast" />
-                                            <AlternatingRowStyle BackColor="White" />
                                         </asp:GridView>
+                                    </div>
+                                    <div class="d-flex justify-content-end mt-3">
+                                        <nav id="navPager" runat="server" visible="false">
+                                            <ul class="pagination pagination mb-0">
+                                                <asp:Repeater ID="rptPager" runat="server" OnItemCommand="rptPager_ItemCommand">
+                                                    <ItemTemplate>
+                                                        <li class='page-item <%# Eval("CssClass") %>'>
+                                                            <asp:LinkButton runat="server" ID="lnkPage" CssClass="page-link" Text='<%# Eval("Text") %>' CommandName="Page" CommandArgument='<%# Eval("PageIndex") %>' />
+                                                        </li>
+                                                    </ItemTemplate>
+                                                </asp:Repeater>
+                                            </ul>
+                                        </nav>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                </ContentTemplate>
+            </asp:UpdatePanel>
         </section>
     </div>
 
@@ -283,6 +291,16 @@
             </div>
         </div>
     </div>
+    <div id="loadingOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,.5); z-index:99999;">
+        <div class="position-absolute top-50 start-50 translate-middle">
+            <div class="card shadow">
+                <div class="card-body text-center">
+                    <div class="spinner-border"></div>
+                    <div class="mt-2">Loading...</div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblId"></asp:Label>
@@ -291,15 +309,38 @@
     </div>
 
     <script type="text/javascript">
-        document.addEventListener('DOMContentLoaded', function () {
+        window.addEventListener("pageshow", function () {
+            var loading = document.getElementById("loadingOverlay");
+            if (loading) loading.style.display = "none";
+        });
+
+        function initUpdatePanelLoading() {
+            if (typeof Sys === "undefined") return;
+            var prm = Sys.WebForms.PageRequestManager.getInstance();
+
+            prm.add_beginRequest(function () {
+                var loading = document.getElementById("loadingOverlay");
+                if (loading) loading.style.display = "block";
+            });
+
+            prm.add_endRequest(function () {
+                var loading = document.getElementById("loadingOverlay");
+                if (loading) loading.style.display = "none";
+
+                bindGridRowClick();
+            });
+        }
+
+        function bindGridRowClick() {
             const gv = document.getElementById('<%= gvList.ClientID %>');
             if (!gv) return;
 
             for (let i = 1; i < gv.rows.length; i++) {
                 const row = gv.rows[i];
-                row.style.cursor = 'pointer';
 
-                row.addEventListener('click', function (e) {
+                row.style.cursor = "pointer";
+
+                row.onclick = function (e) {
                     if (
                         e.target.closest("a") ||
                         e.target.closest("button") ||
@@ -310,8 +351,13 @@
 
                     const btn = this.querySelector("a[id*='linkDetail']");
                     if (btn) btn.click();
-                });
+                };
             }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            initUpdatePanelLoading();
+            bindGridRowClick();
         });
 
         function showChangeStatus(id, name, status) {

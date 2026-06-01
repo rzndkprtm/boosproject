@@ -22,6 +22,13 @@
         </div>
     </div>
     <div class="page-content">
+        <section class="row mb-2" runat="server" id="divError">
+            <div class="col-12">
+                <div class="alert alert-danger">
+                    <span runat="server" id="msgError"></span>
+                </div>
+            </div>
+        </section>
         <section class="row mb-3">
             <div class="col-12 d-flex justify-content-end">
                 <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Add New" OnClick="btnAdd_Click" />
@@ -57,13 +64,7 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <div class="row mb-2" runat="server" id="divError">
-                                <div class="col-12">
-                                    <div class="alert alert-danger">
-                                        <span runat="server" id="msgError"></span>
-                                    </div>
-                                </div>
-                            </div>
+                            
                             <div class="row mb-3">
                                 <div class="col-12">
                                     <div class="table-responsive">

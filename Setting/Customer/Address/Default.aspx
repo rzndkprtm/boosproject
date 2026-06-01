@@ -52,21 +52,8 @@
                                 </div>
                             </div>
                             <div class="card-body">
-                                <div class="d-flex justify-content-end mb-3">
-                                    <nav id="navPager" runat="server" visible="false">
-                                        <ul class="pagination pagination-sm mb-0">
-                                            <asp:Repeater ID="rptPager" runat="server" OnItemCommand="rptPager_ItemCommand">
-                                                <ItemTemplate>
-                                                    <li class='page-item <%# Eval("CssClass") %>'>
-                                                        <asp:LinkButton runat="server" ID="lnkPage" CssClass="page-link" Text='<%# Eval("Text") %>' CommandName="Page" CommandArgument='<%# Eval("PageIndex") %>' />
-                                                    </li>
-                                                </ItemTemplate>
-                                            </asp:Repeater>
-                                        </ul>
-                                    </nav>
-                                </div>
                                 <div class="table-responsive">
-                                    <asp:GridView ID="gvList" runat="server" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="False" AllowPaging="True" PageSize="50" ShowHeaderWhenEmpty="True" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowCommand="gvList_RowCommand" OnDataBound="gvList_DataBound">
+                                    <asp:GridView ID="gvList" runat="server" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="False" AllowPaging="True" PagerSettings-Visible="false" PageSize="50" ShowHeaderWhenEmpty="True" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowCommand="gvList_RowCommand" OnDataBound="gvList_DataBound">
                                         <Columns>
                                             <asp:TemplateField ItemStyle-HorizontalAlign="Center">
                                                 <ItemTemplate>
@@ -104,6 +91,19 @@
                                             </asp:TemplateField>
                                         </Columns>
                                     </asp:GridView>
+                                </div>
+                                <div class="d-flex justify-content-end mt-3">
+                                    <nav id="navPager" runat="server" visible="false">
+                                        <ul class="pagination pagination mb-0">
+                                            <asp:Repeater ID="rptPager" runat="server" OnItemCommand="rptPager_ItemCommand">
+                                                <ItemTemplate>
+                                                    <li class='page-item <%# Eval("CssClass") %>'>
+                                                        <asp:LinkButton runat="server" ID="lnkPage" CssClass="page-link" Text='<%# Eval("Text") %>' CommandName="Page" CommandArgument='<%# Eval("PageIndex") %>' />
+                                                    </li>
+                                                </ItemTemplate>
+                                            </asp:Repeater>
+                                        </ul>
+                                    </nav>
                                 </div>
                             </div>
                         </ContentTemplate>
@@ -182,9 +182,7 @@
     <script type="text/javascript">
         window.addEventListener("pageshow", function () {
             var loading = document.getElementById("loadingOverlay");
-            if (loading) {
-                loading.style.display = "none";
-            }
+            if (loading) loading.style.display = "none";
         });
 
         function initUpdatePanelLoading() {
@@ -192,11 +190,13 @@
             var prm = Sys.WebForms.PageRequestManager.getInstance();
 
             prm.add_beginRequest(function () {
-                document.getElementById("loadingOverlay").style.display = "block";
+                var loading = document.getElementById("loadingOverlay");
+                if (loading) loading.style.display = "block";
             });
 
             prm.add_endRequest(function () {
-                document.getElementById("loadingOverlay").style.display = "none";
+                var loading = document.getElementById("loadingOverlay");
+                if (loading) loading.style.display = "none";
 
                 bindGridRowClick();
             });

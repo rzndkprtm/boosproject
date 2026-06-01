@@ -100,7 +100,7 @@
                         Description
                     </div>
                 </a>
-                <a href="/setting/customer/productaccess" class="dashboard-card">
+                <a href="/setting/customer/product" class="dashboard-card">
                     <div class="dashboard-number">
                         <%= GetSumData("CustomerProductAccess") %>
                     </div>

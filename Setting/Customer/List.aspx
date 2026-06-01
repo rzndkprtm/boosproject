@@ -310,7 +310,6 @@
         });
 
         function initUpdatePanelLoading() {
-
             if (typeof Sys === "undefined") return;
 
             var prm = Sys.WebForms.PageRequestManager.getInstance();
@@ -328,17 +327,14 @@
         }
 
         function bindGridRowClick() {
-
             const gv = document.getElementById('<%= gvList.ClientID %>');
             if (!gv) return;
 
             for (let i = 1; i < gv.rows.length; i++) {
-
                 const row = gv.rows[i];
                 row.style.cursor = "pointer";
 
                 row.onclick = function (e) {
-
                     if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]"))
                         return;
 

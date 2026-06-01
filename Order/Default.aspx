@@ -20,9 +20,9 @@
         </div>
     </div>
     <div class="page-content">
-        <section class="row mb-3">
+        <section class="row mb-3" runat="server" id="divError">
             <div class="col-12">
-                <div class="row mb-2" runat="server" id="divError">
+                <div class="row mb-2">
                     <div class="col-12">
                         <div class="alert alert-danger">
                             <span runat="server" id="msgError"></span>
@@ -45,150 +45,160 @@
         <section class="row">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-content">
-                        <div class="card-header">
-                            <div class="row mb-2">
-                                <div class="col-12 col-sm-12 col-lg-3 mb-2">
-                                    <div class="input-group">
-                                        <span class="input-group-text">Status</span>
-                                        <asp:DropDownList runat="server" ID="ddlStatus" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlStatus_SelectedIndexChanged"></asp:DropDownList>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-sm-12 col-lg-3 mb-2">
-                                    <div class="input-group" runat="server" id="divType">
-                                        <span class="input-group-text">Order Type</span>
-                                        <asp:DropDownList runat="server" ID="ddlType" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlType_SelectedIndexChanged"></asp:DropDownList>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
-                                    <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
-                                        <div class="input-group">
-                                            <span class="input-group-text">Search</span>
-                                            <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" placeholoder="Order ID, Customer Name, Order Number, Order Name ....." autocomplete="off"></asp:TextBox>
-                                            <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />
+                    <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
+                        <ContentTemplate>
+                            <div class="card-content">
+                                <div class="card-header">
+                                    <div class="row mb-2">
+                                        <div class="col-12 col-sm-12 col-lg-3 mb-2">
+                                            <div class="input-group">
+                                                <span class="input-group-text">Status</span>
+                                                <asp:DropDownList runat="server" ID="ddlStatus" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlStatus_SelectedIndexChanged"></asp:DropDownList>
+                                            </div>
                                         </div>
-                                    </asp:Panel>
-                                </div>
-                            </div>
-                            <div class="row mb-1" runat="server" id="divCompany">
-                                <div class="col-12 col-sm-12 col-lg-3 mb-2">
-                                    <div class="input-group">
-                                        <span class="input-group-text">Company</span>
-                                        <asp:DropDownList runat="server" ID="ddlCompany" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCompany_SelectedIndexChanged"></asp:DropDownList>
+                                        <div class="col-12 col-sm-12 col-lg-3 mb-2">
+                                            <div class="input-group" runat="server" id="divType">
+                                                <span class="input-group-text">Order Type</span>
+                                                <asp:DropDownList runat="server" ID="ddlType" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlType_SelectedIndexChanged"></asp:DropDownList>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
+                                            <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">Search</span>
+                                                    <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" placeholoder="Order ID, Customer Name, Order Number, Order Name ....." autocomplete="off"></asp:TextBox>
+                                                    <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />
+                                                </div>
+                                            </asp:Panel>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-1" runat="server" id="divCompany">
+                                        <div class="col-12 col-sm-12 col-lg-3 mb-2">
+                                            <div class="input-group">
+                                                <span class="input-group-text">Company</span>
+                                                <asp:DropDownList runat="server" ID="ddlCompany" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCompany_SelectedIndexChanged"></asp:DropDownList>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="row mb-3">
-                                <div class="col-12">
+                                <div class="card-body">
                                     <div class="table-responsive">
-                                         <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="100" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom" OnPageIndexChanging="gvList_PageIndexChanging" OnRowCommand="gvList_RowCommand">
-                                             <RowStyle />
-                                             <Columns>
-                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center">
-                                                     <ItemTemplate>
-                                                         <%# Container.DataItemIndex + 1 %>
-                                                     </ItemTemplate>
-                                                 </asp:TemplateField>
-                                                 <asp:BoundField DataField="Id" HeaderText="ID" />
-                                                 <asp:BoundField DataField="OrderId" HeaderText="Order ID" />
-                                                 <asp:TemplateField HeaderText="Customer Name" ItemStyle-Wrap="true">
-                                                     <ItemTemplate>
-                                                         <%# BindCustomerText(Eval("CustomerName").ToString(), Eval("OperatorName").ToString()) %>
-                                                     </ItemTemplate>
-                                                 </asp:TemplateField>
-                                                 <asp:BoundField DataField="OrderNumber" HeaderText="Order Number" ItemStyle-Wrap="true" />
-                                                 <asp:BoundField DataField="OrderName" HeaderText="Order Name" ItemStyle-Wrap="true" />
-                                                 <asp:BoundField DataField="Status" HeaderText="Status" ItemStyle-Wrap="true" />
-                                                 <asp:BoundField DataField="CreatedDate" HeaderText="Created" DataFormatString="{0:dd MMM yyyy}" />
-                                                 <asp:BoundField DataField="SubmittedDate" HeaderText="Submitted" DataFormatString="{0:dd MMM yyyy}" />
-                                                 <asp:BoundField DataField="ProductionDate" HeaderText="Production" DataFormatString="{0:dd MMM yyyy}" />
-                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="Shipment">
-                                                     <ItemTemplate>
-                                                         <a class="btn btn-sm btn-secondary" href="#" data-bs-toggle="modal" data-bs-target="#modalShipment" onclick='<%# String.Format("return showShipment(`{0}`, `{1:dd MMM yyyy}`, `{2}`, `{3:dd MMM yyyy}`, `{4}`);", Eval("ShipmentNumber").ToString(), Eval("ShipmentDate"), Eval("ContainerNumber").ToString(), Eval("ContainerETA"), Eval("Courier").ToString()) %>'>Show</a>
-                                                     </ItemTemplate>
-                                                 </asp:TemplateField>
-                                                 <asp:TemplateField ItemStyle-Width="150px" ItemStyle-HorizontalAlign="Center">
-                                                     <ItemTemplate>
-                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
-                                                         <ul class="dropdown-menu">
-                                                             <li>
-                                                                 <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
-                                                             </li>
-                                                             <li runat="server" visible='<%# VisibleEdit(Eval("Status").ToString(), Eval("Active")) %>'>
+                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Visible="false" OnPageIndexChanging="gvList_PageIndexChanging" OnRowCommand="gvList_RowCommand" OnDataBound="gvList_DataBound">
+                                            <RowStyle />
+                                            <Columns>
+                                                <asp:TemplateField ItemStyle-HorizontalAlign="Center">
+                                                    <ItemTemplate>
+                                                        <%# Container.DataItemIndex + 1 %>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:BoundField DataField="Id" HeaderText="ID" />
+                                                <asp:BoundField DataField="OrderId" HeaderText="Order ID" />
+                                                <asp:TemplateField HeaderText="Customer Name" ItemStyle-Wrap="true">
+                                                    <ItemTemplate>
+                                                        <%# BindCustomerText(Eval("CustomerName").ToString(), Eval("OperatorName").ToString()) %>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:BoundField DataField="OrderNumber" HeaderText="Order Number" ItemStyle-Wrap="true" />
+                                                <asp:BoundField DataField="OrderName" HeaderText="Order Name" ItemStyle-Wrap="true" />
+                                                <asp:BoundField DataField="Status" HeaderText="Status" ItemStyle-Wrap="true" />
+                                                <asp:BoundField DataField="CreatedDate" HeaderText="Created" DataFormatString="{0:dd MMM yyyy}" />
+                                                <asp:BoundField DataField="SubmittedDate" HeaderText="Submitted" DataFormatString="{0:dd MMM yyyy}" />
+                                                <asp:BoundField DataField="ProductionDate" HeaderText="Production" DataFormatString="{0:dd MMM yyyy}" />
+                                                <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="Shipment">
+                                                    <ItemTemplate>
+                                                        <a class="btn btn-sm btn-secondary" href="#" data-bs-toggle="modal" data-bs-target="#modalShipment" onclick='<%# String.Format("return showShipment(`{0}`, `{1:dd MMM yyyy}`, `{2}`, `{3:dd MMM yyyy}`, `{4}`);", Eval("ShipmentNumber").ToString(), Eval("ShipmentDate"), Eval("ContainerNumber").ToString(), Eval("ContainerETA"), Eval("Courier").ToString()) %>'>Show</a>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:TemplateField ItemStyle-Width="150px" ItemStyle-HorizontalAlign="Center">
+                                                    <ItemTemplate>
+                                                        <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
+                                                        <ul class="dropdown-menu">
+                                                            <li>
+                                                                <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                            </li>
+                                                            <li runat="server" visible='<%# VisibleEdit(Eval("Status").ToString(), Eval("Active")) %>'>
                                                                  <asp:LinkButton runat="server" ID="linkEdit" CssClass="dropdown-item" Text="Edit" CommandName="Ubah" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
-                                                             </li>
-                                                             <li runat="server" visible='<%# VisibleDelete(New Object() {Eval("Active"), Eval("Status"), Eval("CreatedBy"), Eval("CreatedRole")}) %>'>
-                                                                 <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`);", Eval("Id").ToString(), "Delete Order") %>'>Delete</a>
-                                                             </li>
-                                                             <li runat="server" visible='<%# VisibleCopy(Eval("Active").ToString()) %>'>
-                                                                 <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`);", Eval("Id").ToString(), "Copy Order") %>'>Copy / Duplicate</a>
-                                                             </li>
-                                                             <li runat="server" visible='<%# VisibleUnsubmitOrder(Eval("Status").ToString(), Eval("Active")) %>'>
-                                                                 <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`);", Eval("Id").ToString(), "Unsubmit Order") %>'>Unsubmit Order</a>
-                                                             </li>
-                                                             <li runat="server" visible='<%# VisibleNewOrder(Eval("Status").ToString(), Eval("Active")) %>'>
-                                                                 <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`);", Eval("Id").ToString(), "New Order") %>'>New Order</a>
-                                                             </li>
-                                                             <li runat="server" visible='<%# VisibleProductionOrder(Eval("Status").ToString(), Eval("Active")) %>'>
-                                                                 <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`);", Eval("Id").ToString(), "Production Order") %>'>Production Order</a>
-                                                             </li>
-                                                             <li runat="server" visible='<%# VisibleHoldOrder(Eval("Status").ToString(), Eval("Active")) %>'>
-                                                                 <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`);", Eval("Id").ToString(), "Hold Order") %>'>Hold Order</a>
-                                                             </li>
-                                                             <li runat="server" visible='<%# VisibleUnHoldOrder(Eval("Status").ToString(), Eval("Active")) %>'>
-                                                                 <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`);", Eval("Id").ToString(), "Un Hold Order") %>'>Production Order</a>
-                                                             </li>
-                                                             <li runat="server" visible='<%# VisibleCancelOrder(Eval("Status").ToString(), Eval("Active")) %>'>
-                                                                 <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalCancelOrder" onclick='<%# String.Format("return idCancelOrder(`{0}`);", Eval("Id").ToString()) %>'>Cancel Order</a>
-                                                             </li>
-                                                             <li runat="server" visible='<%# VisibleRestore(Eval("Active")) %>'>
-                                                                 <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalRestore" onclick='<%# String.Format("return showRestore(`{0}`);", Eval("Id").ToString()) %>'>Restore</a>
-                                                             </li>
-                                                             <li runat="server" visible='<%# VisibleShipmentOrder(Eval("Status").ToString(), Eval("Active")) %>'>
-                                                                 <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalShipmentOrder" onclick='<%# String.Format("return idShipmentOrder(`{0}`);", Eval("Id").ToString()) %>'>Shipment Order</a>
-                                                             </li>
-                                                             <li runat="server" visible='<%# VisibleReceivePayment(Eval("Status").ToString(), Eval("Active")) %>'>
-                                                                 <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`);", Eval("Id").ToString(), "Receive Payment") %>'>Receive Payment</a>
-                                                             </li>
-                                                             <li runat="server" visible='<%# VisibleCompleteOrder(Eval("Status").ToString(), Eval("Active")) %>'>
-                                                                 <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`);", Eval("Id").ToString(), "Complete Order") %>'>Complete Order</a>
-                                                             </li>
-                                                             <li runat="server" visible='<%# VisibleBOEOrder(Eval("Status").ToString(), Eval("Active")) %>'>
-                                                                 <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`);", Eval("Id").ToString(), "BOE Download") %>'>Authorize BOE Download</a>
-                                                             </li>
-                                                             <li runat="server" visible='<%# VisibleSuratJalan(Eval("CompanyId").ToString(), Eval("Status").ToString(), Eval("Active")) %>'>
-                                                                 <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalPrintDO" onclick='<%# String.Format("return showPrintDO(`{0}`);", Eval("Id").ToString()) %>'>Surat Jalan</a>
-                                                             </li>
-                                                             <li runat="server" visible='<%# VisibleLog() %>'>
-                                                                 <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('OrderHeaders', '<%# Eval("Id") %>')">Log</a>
-                                                             </li>
-                                                         </ul>
-                                                     </ItemTemplate>
-                                                 </asp:TemplateField>
-                                             </Columns>
-                                             <PagerStyle BackColor="DodgerBlue" ForeColor="White" HorizontalAlign="Center" />
-                                             <PagerSettings PreviousPageText="Prev" NextPageText="Next" Mode="NumericFirstLast" />
-                                             <AlternatingRowStyle BackColor="White" />
-                                         </asp:GridView>
+                                                            </li>
+                                                            <li runat="server" visible='<%# VisibleDelete(New Object() {Eval("Active"), Eval("Status"), Eval("CreatedBy"), Eval("CreatedRole")}) %>'>
+                                                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`);", Eval("Id").ToString(), "Delete Order") %>'>Delete</a>
+                                                            </li>
+                                                            <li runat="server" visible='<%# VisibleCopy(Eval("Active").ToString()) %>'>
+                                                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`);", Eval("Id").ToString(), "Copy Order") %>'>Copy / Duplicate</a>
+                                                            </li>
+                                                            <li runat="server" visible='<%# VisibleUnsubmitOrder(Eval("Status").ToString(), Eval("Active")) %>'>
+                                                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`);", Eval("Id").ToString(), "Unsubmit Order") %>'>Unsubmit Order</a>
+                                                            </li>
+                                                            <li runat="server" visible='<%# VisibleNewOrder(Eval("Status").ToString(), Eval("Active")) %>'>
+                                                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`);", Eval("Id").ToString(), "New Order") %>'>New Order</a>
+                                                            </li>
+                                                            <li runat="server" visible='<%# VisibleProductionOrder(Eval("Status").ToString(), Eval("Active")) %>'>
+                                                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`);", Eval("Id").ToString(), "Production Order") %>'>Production Order</a>
+                                                            </li>
+                                                            <li runat="server" visible='<%# VisibleHoldOrder(Eval("Status").ToString(), Eval("Active")) %>'>
+                                                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`);", Eval("Id").ToString(), "Hold Order") %>'>Hold Order</a>
+                                                            </li>
+                                                            <li runat="server" visible='<%# VisibleUnHoldOrder(Eval("Status").ToString(), Eval("Active")) %>'>
+                                                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`);", Eval("Id").ToString(), "Un Hold Order") %>'>Production Order</a>
+                                                            </li>
+                                                            <li runat="server" visible='<%# VisibleCancelOrder(Eval("Status").ToString(), Eval("Active")) %>'>
+                                                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalCancelOrder" onclick='<%# String.Format("return idCancelOrder(`{0}`);", Eval("Id").ToString()) %>'>Cancel Order</a>
+                                                            </li>
+                                                            <li runat="server" visible='<%# VisibleRestore(Eval("Active")) %>'>
+                                                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalRestore" onclick='<%# String.Format("return showRestore(`{0}`);", Eval("Id").ToString()) %>'>Restore</a>
+                                                            </li>
+                                                            <li runat="server" visible='<%# VisibleShipmentOrder(Eval("Status").ToString(), Eval("Active")) %>'>
+                                                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalShipmentOrder" onclick='<%# String.Format("return idShipmentOrder(`{0}`);", Eval("Id").ToString()) %>'>Shipment Order</a>
+                                                            </li>
+                                                            <li runat="server" visible='<%# VisibleReceivePayment(Eval("Status").ToString(), Eval("Active")) %>'>
+                                                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`);", Eval("Id").ToString(), "Receive Payment") %>'>Receive Payment</a>
+                                                            </li>
+                                                            <li runat="server" visible='<%# VisibleCompleteOrder(Eval("Status").ToString(), Eval("Active")) %>'>
+                                                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`);", Eval("Id").ToString(), "Complete Order") %>'>Complete Order</a>
+                                                            </li>
+                                                            <li runat="server" visible='<%# VisibleBOEOrder(Eval("Status").ToString(), Eval("Active")) %>'>
+                                                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`);", Eval("Id").ToString(), "BOE Download") %>'>Authorize BOE Download</a>
+                                                            </li>
+                                                            <li runat="server" visible='<%# VisibleSuratJalan(Eval("CompanyId").ToString(), Eval("Status").ToString(), Eval("Active")) %>'>
+                                                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalPrintDO" onclick='<%# String.Format("return showPrintDO(`{0}`);", Eval("Id").ToString()) %>'>Surat Jalan</a>
+                                                            </li>
+                                                            <li runat="server" visible='<%# VisibleLog() %>'>
+                                                                <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('OrderHeaders', '<%# Eval("Id") %>')">Log</a>
+                                                            </li>
+                                                        </ul>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                            </Columns>
+                                        </asp:GridView>
+                                    </div>
+                                    <div class="d-flex justify-content-end mt-3">
+                                        <nav id="navPager" runat="server" visible="false">
+                                            <ul class="pagination pagination mb-0">
+                                                <asp:Repeater ID="rptPager" runat="server" OnItemCommand="rptPager_ItemCommand">
+                                                    <ItemTemplate>
+                                                        <li class='page-item <%# Eval("CssClass") %>'>
+                                                            <asp:LinkButton runat="server" ID="lnkPage" CssClass="page-link" Text='<%# Eval("Text") %>' CommandName="Page" CommandArgument='<%# Eval("PageIndex") %>' />
+                                                        </li>
+                                                    </ItemTemplate>
+                                                </asp:Repeater>
+                                            </ul>
+                                        </nav>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <div class="d-flex" runat="server" id="divActive">
-                            <div class="ms-auto">
-                                <div class="ms-2 d-inline-block">
-                                    <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlActive_SelectedIndexChanged">
-                                        <asp:ListItem Value="1" Text="Active"></asp:ListItem>
-                                        <asp:ListItem Value="0" Text="Non Active"></asp:ListItem>
-                                    </asp:DropDownList>
+                            <div class="card-footer">
+                                <div class="d-flex" runat="server" id="divActive">
+                                    <div class="ms-auto">
+                                        <div class="ms-2 d-inline-block">
+                                            <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlActive_SelectedIndexChanged">
+                                                <asp:ListItem Value="1" Text="Active"></asp:ListItem>
+                                                <asp:ListItem Value="0" Text="Non Active"></asp:ListItem>
+                                            </asp:DropDownList>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        </ContentTemplate>
+                    </asp:UpdatePanel>
                 </div>
             </div>
         </section>
@@ -390,17 +400,50 @@
             </div>
         </div>
     </div>
+    <div id="loadingOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,.5); z-index:99999;">
+        <div class="position-absolute top-50 start-50 translate-middle">
+            <div class="card shadow">
+                <div class="card-body text-center">
+                    <div class="spinner-border"></div>
+                    <div class="mt-2">Loading...</div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script type="text/javascript">
-        document.addEventListener('DOMContentLoaded', function () {
+        window.addEventListener("pageshow", function () {
+            var loading = document.getElementById("loadingOverlay");
+            if (loading) loading.style.display = "none";
+        });
+
+        function initUpdatePanelLoading() {
+            if (typeof Sys === "undefined") return;
+            var prm = Sys.WebForms.PageRequestManager.getInstance();
+
+            prm.add_beginRequest(function () {
+                var loading = document.getElementById("loadingOverlay");
+                if (loading) loading.style.display = "block";
+            });
+
+            prm.add_endRequest(function () {
+                var loading = document.getElementById("loadingOverlay");
+                if (loading) loading.style.display = "none";
+
+                bindGridRowClick();
+            });
+        }
+
+        function bindGridRowClick() {
             const gv = document.getElementById('<%= gvList.ClientID %>');
             if (!gv) return;
 
             for (let i = 1; i < gv.rows.length; i++) {
                 const row = gv.rows[i];
-                row.style.cursor = 'pointer';
 
-                row.addEventListener('click', function (e) {
+                row.style.cursor = "pointer";
+
+                row.onclick = function (e) {
                     if (
                         e.target.closest("a") ||
                         e.target.closest("button") ||
@@ -411,8 +454,13 @@
 
                     const btn = this.querySelector("a[id*='linkDetail']");
                     if (btn) btn.click();
-                });
+                };
             }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            initUpdatePanelLoading();
+            bindGridRowClick();
         });
 
         function showShipment(number, date, container, coneta, courier) {

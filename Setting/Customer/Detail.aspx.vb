@@ -1447,31 +1447,8 @@ Partial Class Setting_Customer_Detail
             Session("selectedTabCustomer") = "list-product"
             Dim dataId As String = e.CommandArgument.ToString()
             If e.CommandName = "Detail" Then
-                MessageErrorProcess_Product(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showProcessProduct(); };"
-                Try
-                    lblIdProduct.Text = dataId
-                    Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerProductAccess WHERE Id='" & lblIdProduct.Text & "'")
-                    If myData Is Nothing Then Exit Sub
-
-                    BindDesignProduct(lblCompanyId.Text)
-
-                    Dim tagsArray() As String = myData("DesignId").ToString().Split(",")
-                    Dim tagsList As List(Of String) = tagsArray.ToList()
-                    For Each i In tagsArray
-                        If Not (i.Equals(String.Empty)) Then
-                            lbProductTags.Items.FindByValue(i).Selected = True
-                        End If
-                    Next
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcessProduct", thisScript, True)
-                Catch ex As Exception
-                    MessageErrorProcess_Product(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageErrorProcess_Product(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                    End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcessProduct", thisScript, True)
-                End Try
+                url = String.Format("~/setting/customer/product/edit?productid={0}", dataId)
+                Response.Redirect(url, False)
             End If
         End If
     End Sub
@@ -1504,50 +1481,6 @@ Partial Class Setting_Customer_Detail
         End Try
     End Sub
 
-    Protected Sub btnProcessProduct_Click(sender As Object, e As EventArgs)
-        MessageError_Product(False, String.Empty)
-        Session("selectedTabCustomer") = "list-product"
-        Dim thisScript As String = "window.onload = function() { showProcessProduct(); };"
-        Try
-            Dim designId As String = String.Empty
-            Dim tags As String = String.Empty
-            For Each item As ListItem In lbProductTags.Items
-                If item.Selected Then
-                    tags += item.Value.ToString() & ","
-                End If
-            Next
-            If Not tags = "" Then
-                designId = tags.Remove(tags.Length - 1).ToString()
-            End If
-
-            If msgErrorProcessProduct.InnerText = "" Then
-                Using thisConn As New SqlConnection(myConn)
-                    thisConn.Open()
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerProductAccess SET DesignId=@DesignId WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                        myCmd.Parameters.AddWithValue("@DesignId", designId)
-
-                        myCmd.ExecuteNonQuery()
-                    End Using
-
-                    thisConn.Close()
-                End Using
-
-                dataLog = {"CustomerProductAccess", lblIdProduct.Text, Session("LoginId").ToString(), "Customer Product Access Updated"}
-                settingClass.Logs(dataLog)
-
-                url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
-                Response.Redirect(url, False)
-            End If
-        Catch ex As Exception
-            MessageErrorProcess_Product(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageErrorProcess_Product(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcessProduct", thisScript, True)
-        End Try
-    End Sub
-
     Protected Sub BindDataProduct(customerId As String)
         MessageError_Product(False, String.Empty)
         Try
@@ -1558,23 +1491,6 @@ Partial Class Setting_Customer_Detail
             If Not Session("RoleName") = "Developer" Then
                 MessageError_Product(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
-        End Try
-    End Sub
-
-    Protected Sub BindDesignProduct(companyId As String)
-        lbProductTags.Items.Clear()
-        Try
-            If Not String.IsNullOrEmpty(companyId) Then
-                lbProductTags.DataSource = settingClass.GetDataTable("SELECT * FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS companyArray WHERE companyArray.VALUE='" & companyId & "' ORDER BY Name ASC")
-                lbProductTags.DataTextField = "Name"
-                lbProductTags.DataValueField = "Id"
-                lbProductTags.DataBind()
-                If lbProductTags.Items.Count > 1 Then
-                    lbProductTags.Items.Insert(0, New ListItem("", ""))
-                End If
-            End If
-        Catch ex As Exception
-            lbProductTags.Items.Clear()
         End Try
     End Sub
 
@@ -1596,10 +1512,6 @@ Partial Class Setting_Customer_Detail
         End Try
         Return result
     End Function
-
-    Protected Sub MessageErrorProcess_Product(visible As Boolean, message As String)
-        divErrorProcessProduct.Visible = visible : msgErrorProcessProduct.InnerText = message
-    End Sub
 
     Protected Sub MessageError_Product(visible As Boolean, message As String)
         divErrorProduct.Visible = visible : msgErrorProduct.InnerText = message
@@ -1671,7 +1583,6 @@ Partial Class Setting_Customer_Detail
         MessageError_DetailPromo(visible, message)
 
         MessageError_Product(visible, message)
-        MessageErrorProcess_Product(visible, message)
 
         MessageError_Quote(visible, message)
     End Sub

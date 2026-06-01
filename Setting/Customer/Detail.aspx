@@ -1211,34 +1211,6 @@
 
     <%--CUSTOMER PRODUCT ACCESS--%>
     
-    <div class="modal fade text-left" id="modalProcessProduct" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Edit Product Access</h5>
-                </div>
-                <div class="modal-body">
-                    <div class="row mb-2" runat="server" id="divErrorProcessProduct">
-                        <div class="col-12">
-                            <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorProcessProduct"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mb-3 row">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Products</label>
-                            <asp:ListBox runat="server" ID="lbProductTags" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnProcessProduct" Text="Submit" CssClass="btn btn-primary" OnClick="btnProcessProduct_Click" />
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="modal modal-blur fade" id="modalResetProduct" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -1266,7 +1238,6 @@
         <asp:Label runat="server" ID="lblActionDiscount" ClientIDMode="Static"></asp:Label>
 
         <asp:Label runat="server" ID="lblIdPromo"></asp:Label>
-
         <asp:Label runat="server" ID="lblIdProduct"></asp:Label>
 
         <asp:Label runat="server" ID="lblCompanyId"></asp:Label>
@@ -1551,11 +1522,6 @@
         }
         // END CUSTOMER PROMO
 
-
-        // CUSTOMER PRODUCT ACCESS
-        function showProcessProduct() {
-            $("#modalProcessProduct").modal("show");
-        }
 
         [
             "modalDelete", "modalCreateOrder", "modalRecalculate", "modalLog", "modalWelcome", "modalWaiting",
