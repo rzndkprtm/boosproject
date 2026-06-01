@@ -19,6 +19,7 @@ Partial Class Setting_Customer_Login_Add
         If Not String.IsNullOrEmpty(Request.QueryString("custid")) Then
             lblCustomerId.Text = Request.QueryString("custid").ToString()
             txtUserName.Text = settingClass.GenerateUsername(GetCustomerName(lblCustomerId.Text))
+            txtFullName.Text = txtUserName.Text
             ddlCustomer.Enabled = False
             If Session("RoleNme") = "Developer" Then ddlCustomer.Enabled = True
         End If

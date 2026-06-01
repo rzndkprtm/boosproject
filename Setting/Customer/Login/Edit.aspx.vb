@@ -125,6 +125,9 @@ Partial Class Setting_Customer_Login_Edit
             lblLevel.Text = myData("LevelId").ToString()
             txtUserName.Text = myData("UserName").ToString()
             lblUserName.Text = myData("UserName").ToString()
+            Dim password As String = myData("Password").ToString()
+            txtPassword.Text = settingClass.Decrypt(password)
+            txtPassword.ReadOnly = True
             txtFullName.Text = myData("FullName").ToString()
             txtEmail.Text = myData("Email").ToString()
 
