@@ -38,31 +38,55 @@
         <section class="row">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-content">
-                        <div class="card-header">
-                            <div class="row">
-                                <div class="col-12 col-sm-12 col-lg-4 mb-2">
-                                    <div class="input-group" runat="server" id="divCompany">
-                                        <span class="input-group-text">Company : </span>
-                                        <asp:DropDownList runat="server" ID="ddlCompany" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCompany_SelectedIndexChanged"></asp:DropDownList>
+                    <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
+                        <ContentTemplate>
+                            <div class="card-content">
+                                <div class="card-header">
+                                    <div class="row">
+
+                                        <div class="col-12 col-sm-12 col-lg-4 mb-2">
+                                            <div class="input-group" runat="server" id="divCompany">
+                                                <span class="input-group-text">Company :</span>
+
+                                                <asp:DropDownList runat="server"
+                                                    ID="ddlCompany"
+                                                    CssClass="form-select"
+                                                    AutoPostBack="true"
+                                                    OnSelectedIndexChanged="ddlCompany_SelectedIndexChanged">
+                                                </asp:DropDownList>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 col-sm-12 col-lg-8 d-flex justify-content-end">
+
+                                            <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
+                                                <div class="input-group">
+
+                                                    <span class="input-group-text">Search :</span>
+
+                                                    <asp:TextBox runat="server"
+                                                        ID="txtSearch"
+                                                        CssClass="form-control"
+                                                        autocomplete="off">
+                                                    </asp:TextBox>
+
+                                                    <asp:Button runat="server"
+                                                        ID="btnSearch"
+                                                        CssClass="btn btn-primary"
+                                                        Text="Search"
+                                                        OnClick="btnSearch_Click" />
+
+                                                </div>
+                                            </asp:Panel>
+
+                                        </div>
+
                                     </div>
                                 </div>
-                                <div class="col-12 col-sm-12 col-lg-8 d-flex justify-content-end">
-                                    <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
-                                        <div class="input-group">
-                                            <span class="input-group-text">Search : </span>
-                                            <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" placeholoder="" autocomplete="off"></asp:TextBox>
-                                            <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />
-                                        </div>
-                                    </asp:Panel>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="row mb-3">
-                                <div class="col-12">
+                                <div class="card-body">                                    
                                     <div class="table-responsive">
-                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom" OnPageIndexChanging="gvList_PageIndexChanging" OnRowCommand="gvList_RowCommand">
+                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" OnPageIndexChanging="gvList_PageIndexChanging" OnRowCommand="gvList_RowCommand" OnDataBound="gvList_DataBound">
                                             <RowStyle />
                                             <Columns>
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center">
@@ -106,25 +130,40 @@
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                             </Columns>
-                                            <PagerStyle BackColor="DodgerBlue" ForeColor="White" HorizontalAlign="Center" />
-                                            <PagerSettings PreviousPageText="Prev" NextPageText="Next" Mode="NumericFirstLast" />
-                                            <AlternatingRowStyle BackColor="White" />
                                         </asp:GridView>
+                                    </div>
+                                    <div class="d-flex justify-content-right mb-2">
+                                        <nav id="navPager" runat="server" visible="false">
+                                            <ul class="pagination pagination mb-0">
+                                                <asp:Repeater ID="rptPager" runat="server" OnItemCommand="rptPager_ItemCommand">
+                                                    <ItemTemplate>
+                                                        <li class='page-item <%# Eval("CssClass") %>'>
+                                                            <asp:LinkButton runat="server"
+                                                                CssClass="page-link"
+                                                                Text='<%# Eval("Text") %>'
+                                                                CommandName="Page"
+                                                                CommandArgument='<%# Eval("PageIndex") %>' />
+                                                        </li>
+                                                    </ItemTemplate>
+                                                </asp:Repeater>
+                                            </ul>
+                                        </nav>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <div class="d-flex">
-                            <div class="ms-2 d-inline-block">
-                                <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlActive_SelectedIndexChanged">
-                                    <asp:ListItem Value="1" Text="Active"></asp:ListItem>
-                                    <asp:ListItem Value="0" Text="Non Active"></asp:ListItem>
-                                </asp:DropDownList>
+                            <div class="card-footer">
+                                <div class="d-flex">
+                                    <div class="ms-2 d-inline-block">
+                                        <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlActive_SelectedIndexChanged">
+                                            <asp:ListItem Value="1" Text="Active"></asp:ListItem>
+                                            <asp:ListItem Value="0" Text="Non Active"></asp:ListItem>
+                                        </asp:DropDownList>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
+                        </ContentTemplate>
+                    </asp:UpdatePanel>
+                    
                 </div>
             </div>
         </section>
@@ -276,25 +315,66 @@
             </div>
         </div>
     </div>
+    <div id="loadingOverlay" style="display:none; position:fixed; inset:0; background:rgba(255,255,255,.5); z-index:99999;">
+        <div class="position-absolute top-50 start-50 translate-middle">
+            <div class="card shadow">
+                <div class="card-body text-center">
+                    <div class="spinner-border"></div>
+                    <div class="mt-2">Loading...</div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script type="text/javascript">
-        document.addEventListener('DOMContentLoaded', function () {
+        window.addEventListener("pageshow", function () {
+            var loading = document.getElementById("loadingOverlay");
+            if (loading) loading.style.display = "none";
+        });
+
+        function initUpdatePanelLoading() {
+
+            if (typeof Sys === "undefined") return;
+
+            var prm = Sys.WebForms.PageRequestManager.getInstance();
+
+            prm.add_beginRequest(function () {
+                var loading = document.getElementById("loadingOverlay");
+                if (loading) loading.style.display = "block";
+            });
+
+            prm.add_endRequest(function () {
+                var loading = document.getElementById("loadingOverlay");
+                if (loading) loading.style.display = "none";
+                bindGridRowClick();
+            });
+        }
+
+        function bindGridRowClick() {
+
             const gv = document.getElementById('<%= gvList.ClientID %>');
             if (!gv) return;
 
             for (let i = 1; i < gv.rows.length; i++) {
-                const row = gv.rows[i];
-                row.style.cursor = 'pointer';
 
-                row.addEventListener('click', function (e) {
-                    if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]")) {
+                const row = gv.rows[i];
+                row.style.cursor = "pointer";
+
+                row.onclick = function (e) {
+
+                    if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]"))
                         return;
-                    }
 
                     const btn = this.querySelector("a[id*='linkDetail']");
                     if (btn) btn.click();
-                });
+
+                };
             }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            initUpdatePanelLoading();
+            bindGridRowClick();
         });
 
         function showChangeCashSale(id, name, status) {

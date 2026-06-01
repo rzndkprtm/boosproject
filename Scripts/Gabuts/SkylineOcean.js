@@ -1114,7 +1114,7 @@ function visibleBuildoutPosition(blindType, frameType, buildout) {
 
         getBlindName(blindType).then((blindName) => {
             if (blindName === "Hinged" || blindName === "Hinged Bi-fold") {
-                if ((frameType === "Small Bullnose Z Frame" || frameType === "Large Bullnose Z Frame" || frameType === "Colonial Z Frame") && buildout !== "") {
+                if ((frameType === "Small Bullnose Z Frame" || frameType === "Large Bullnose Z Frame" || frameType === "Colonial Bullnose Z Frame") && buildout !== "") {
                     divBuildoutPosition.style.display = "";
                 }
             }

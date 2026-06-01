@@ -7733,7 +7733,7 @@ Partial Class Order_Method
         End If
 
         If blindName = "Hinged" OrElse blindName = "Hinged Bi-fold" Then
-            If (data.frametype = "Small Bullnose Z Frame" OrElse data.frametype = "Large Bullnose Z Frame" OrElse data.frametype = "Colonial Z Frame" OrElse data.frametype = "Regal Z Frame") AndAlso Not String.IsNullOrEmpty(data.buildout) AndAlso String.IsNullOrEmpty(data.buildoutposition) Then
+            If (data.frametype = "Small Bullnose Z Frame" OrElse data.frametype = "Large Bullnose Z Frame" OrElse data.frametype = "Colonial Bullnose Z Frame" OrElse data.frametype = "Regal Z Frame") AndAlso Not String.IsNullOrEmpty(data.buildout) AndAlso String.IsNullOrEmpty(data.buildoutposition) Then
                 Return "BUILDOUT POSITION IS REQUIRED !"
             End If
         End If
