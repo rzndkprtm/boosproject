@@ -809,7 +809,7 @@ Partial Class Order_Method
                 If customtype = "Inside" Then
                     result.Add(New With {.Value = "Small Bullnose Z Frame", .Text = "Small Bullnose Z Frame"})
                     result.Add(New With {.Value = "Large Bullnose Z Frame", .Text = "Large Bullnose Z Frame"})
-                    result.Add(New With {.Value = "Colonial Z Frame", .Text = "Colonial Z Frame"})
+                    result.Add(New With {.Value = "Colonial Bullnose Z Frame", .Text = "Colonial Bullnose Z Frame"})
                 End If
                 result.Add(New With {.Value = "No Frame", .Text = "No Frame"})
             End If
