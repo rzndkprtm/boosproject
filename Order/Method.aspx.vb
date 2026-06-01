@@ -809,7 +809,7 @@ Partial Class Order_Method
                 If customtype = "Inside" Then
                     result.Add(New With {.Value = "Small Bullnose Z Frame", .Text = "Small Bullnose Z Frame"})
                     result.Add(New With {.Value = "Large Bullnose Z Frame", .Text = "Large Bullnose Z Frame"})
-                    result.Add(New With {.Value = "Colonial Bullnose Z Frame", .Text = "Colonial Bullnose Z Frame"})
+                    result.Add(New With {.Value = "Colonial Z Frame", .Text = "Colonial Z Frame"})
                 End If
                 result.Add(New With {.Value = "No Frame", .Text = "No Frame"})
             End If
@@ -842,7 +842,7 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
                 result.Add(New With {.Value = "Sill Plate (9.5mm)", .Text = "Sill Plate (9.5mm)"})
             End If
-            If customtype = "Small Bullnose Z Frame" OrElse customtype = "Large Bullnose Z Frame" OrElse customtype = "Colonial Bullnose Z Frame" Then
+            If customtype = "Small Bullnose Z Frame" OrElse customtype = "Large Bullnose Z Frame" OrElse customtype = "Colonial Z Frame" Then
                 result.Add(New With {.Value = "Yes", .Text = "Yes"})
                 result.Add(New With {.Value = "No", .Text = "No"})
                 result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
@@ -873,7 +873,7 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
                 result.Add(New With {.Value = "Sill Plate (9.5mm)", .Text = "Sill Plate (9.5mm)"})
             End If
-            If customtype = "Small Bullnose Z Frame" OrElse customtype = "Large Bullnose Z Frame" OrElse customtype = "Colonial Bullnose Z Frame" Then
+            If customtype = "Small Bullnose Z Frame" OrElse customtype = "Large Bullnose Z Frame" OrElse customtype = "Colonial Z Frame" Then
                 result.Add(New With {.Value = "Yes", .Text = "Yes"})
                 result.Add(New With {.Value = "No", .Text = "No"})
                 result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
@@ -905,7 +905,7 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "Sill Plate (9.5mm)", .Text = "Sill Plate (9.5mm)"})
                 result.Add(New With {.Value = "L Striker Plate", .Text = "L Striker Plate"})
             End If
-            If customtype = "Small Bullnose Z Frame" OrElse customtype = "Large Bullnose Z Frame" OrElse customtype = "Colonial Bullnose Z Frame" Then
+            If customtype = "Small Bullnose Z Frame" OrElse customtype = "Large Bullnose Z Frame" OrElse customtype = "Colonial Z Frame" Then
                 result.Add(New With {.Value = "Yes", .Text = "Yes"})
                 result.Add(New With {.Value = "No", .Text = "No"})
                 result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
@@ -938,7 +938,7 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "Sill Plate (9.5mm)", .Text = "Sill Plate (9.5mm)"})
                 result.Add(New With {.Value = "L Striker Plate", .Text = "L Striker Plate"})
             End If
-            If customtype = "Small Bullnose Z Frame" OrElse customtype = "Large Bullnose Z Frame" OrElse customtype = "Colonial Bullnose Z Frame" Then
+            If customtype = "Small Bullnose Z Frame" OrElse customtype = "Large Bullnose Z Frame" OrElse customtype = "Colonial Z Frame" Then
                 result.Add(New With {.Value = "Yes", .Text = "Yes"})
                 result.Add(New With {.Value = "No", .Text = "No"})
                 result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
@@ -7733,7 +7733,7 @@ Partial Class Order_Method
         End If
 
         If blindName = "Hinged" OrElse blindName = "Hinged Bi-fold" Then
-            If (data.frametype = "Small Bullnose Z Frame" OrElse data.frametype = "Large Bullnose Z Frame" OrElse data.frametype = "Colonial Bullnose Z Frame" OrElse data.frametype = "Regal Z Frame") AndAlso Not String.IsNullOrEmpty(data.buildout) AndAlso String.IsNullOrEmpty(data.buildoutposition) Then
+            If (data.frametype = "Small Bullnose Z Frame" OrElse data.frametype = "Large Bullnose Z Frame" OrElse data.frametype = "Colonial Z Frame" OrElse data.frametype = "Regal Z Frame") AndAlso Not String.IsNullOrEmpty(data.buildout) AndAlso String.IsNullOrEmpty(data.buildoutposition) Then
                 Return "BUILDOUT POSITION IS REQUIRED !"
             End If
         End If
