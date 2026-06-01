@@ -327,6 +327,7 @@
                 var loading = document.getElementById("loadingOverlay");
                 if (loading) loading.style.display = "none";
 
+                initChoices();
                 bindGridRowClick();
             });
         }
@@ -355,8 +356,23 @@
             }
         }
 
+        function initChoices() {
+            document.querySelectorAll("select.choices").forEach(function (el) {
+                if (el.choices) {
+                    el.choices.destroy();
+                }
+
+                el.choices = new Choices(el, {
+                    searchEnabled: true,
+                    itemSelectText: '',
+                    shouldSort: false
+                });
+            });
+        }
+
         document.addEventListener("DOMContentLoaded", function () {
             initUpdatePanelLoading();
+            initChoices();
             bindGridRowClick();
         });
 
