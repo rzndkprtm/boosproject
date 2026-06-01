@@ -63,7 +63,7 @@
                                 </div>
                                 <div class="card-body">                                    
                                     <div class="table-responsive">
-                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" OnPageIndexChanging="gvList_PageIndexChanging" OnRowCommand="gvList_RowCommand" OnDataBound="gvList_DataBound">
+                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" PagerSettings-Visible="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" OnPageIndexChanging="gvList_PageIndexChanging" OnRowCommand="gvList_RowCommand" OnDataBound="gvList_DataBound">
                                             <RowStyle />
                                             <Columns>
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center">
@@ -109,7 +109,7 @@
                                             </Columns>
                                         </asp:GridView>
                                     </div>
-                                    <div class="d-flex justify-content-right mb-2">
+                                    <div class="d-flex justify-content-right mt-2">
                                         <nav id="navPager" runat="server" visible="false">
                                             <ul class="pagination pagination mb-0">
                                                 <asp:Repeater ID="rptPager" runat="server" OnItemCommand="rptPager_ItemCommand">
