@@ -18,16 +18,12 @@ Partial Class Setting_Customer_Promo_Default
 
         Dim settingClass As New SettingClass()
 
-        Dim promoId As String =
-        settingClass.GetItemData("SELECT PromoId FROM CustomerPromos WHERE Id='" & customerPromoId.Replace("'", "''") & "'")
-
+        Dim promoId As String = settingClass.GetItemData("SELECT PromoId FROM CustomerPromos WHERE Id='" & customerPromoId.Replace("'", "''") & "'")
         If String.IsNullOrEmpty(promoId) Then
             Return result
         End If
 
-        Dim dt As DataTable =
-        settingClass.GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId.Replace("'", "''") & "'")
-
+        Dim dt As DataTable = settingClass.GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId.Replace("'", "''") & "'")
         For Each dr As DataRow In dt.Rows
             Dim typeName As String = ""
             Dim typeValue As String = dr("Type").ToString()
@@ -46,19 +42,12 @@ Partial Class Setting_Customer_Promo_Default
             Dim discount As Decimal
 
             If Decimal.TryParse(dr("Discount").ToString(), discount) Then
-
                 If discount > 0 Then
                     discountText = discount.ToString("G29") & "%"
                 End If
-
             End If
 
-            result.Add(New PromoDetailModel With {
-                .Id = dr("Id").ToString(),
-                .Type = typeName,
-                .Discount = discountText
-            })
-
+            result.Add(New PromoDetailModel With {.Id = dr("Id").ToString(), .Type = typeName, .Discount = discountText})
         Next
         Return result
     End Function
@@ -82,11 +71,22 @@ Partial Class Setting_Customer_Promo_Default
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
+        gvList.PageIndex = 0
         BindData(txtSearch.Text)
     End Sub
 
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
         Response.Redirect("~/setting/customer/promo/add", False)
+    End Sub
+
+    Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
+        Try
+            If e.CommandName = "Page" Then
+                gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
+                BindData(txtSearch.Text)
+            End If
+        Catch ex As Exception
+        End Try
     End Sub
 
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
@@ -102,29 +102,11 @@ Partial Class Setting_Customer_Promo_Default
         End Try
     End Sub
 
-    Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
-        'If Not String.IsNullOrEmpty(e.CommandArgument) Then
-        '    Session("SearchCustomerPromo") = txtSearch.Text
-        '    Dim dataId As String = e.CommandArgument.ToString()
-
-        '    If e.CommandName = "Detail" Then
-        '        MessageError_Detail(False, String.Empty)
-        '        Dim thisScript As String = "window.onload = function() { showDetail(); };"
-        '        Try
-        '            Dim promoId As String = settingClass.GetItemData("SELECT PromoId FROM CustomerPromos WHERE Id='" & dataId & "'")
-        '            gvListDetail.DataSource = settingClass.GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
-        '            gvListDetail.DataBind()
-
-        '            ClientScript.RegisterStartupScript(Me.GetType(), "showDetail", thisScript, True)
-        '        Catch ex As Exception
-        '            MessageError_Detail(True, ex.ToString())
-        '            If Not Session("RoleName") = "Developer" Then
-        '                MessageError_Detail(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-        '            End If
-        '            ClientScript.RegisterStartupScript(Me.GetType(), "showDetail", thisScript, True)
-        '        End Try
-        '    End If
-        'End If
+    Protected Sub gvList_DataBound(sender As Object, e As EventArgs)
+        Try
+            BuildPager()
+        Catch ex As Exception
+        End Try
     End Sub
 
     Protected Sub btnProcess_Click(sender As Object, e As EventArgs)
@@ -273,6 +255,38 @@ Partial Class Setting_Customer_Promo_Default
         Catch ex As Exception
             ddlPromo.Items.Clear()
         End Try
+    End Sub
+
+    Protected Sub BuildPager()
+        If gvList.PageCount <= 1 Then
+            navPager.Visible = False
+            Return
+        End If
+
+        navPager.Visible = True
+
+        Dim currentPage As Integer = gvList.PageIndex
+        Dim totalPages As Integer = gvList.PageCount
+
+        Dim pages As New List(Of Object)
+
+        If currentPage > 0 Then
+            pages.Add(New With {.Text = "Previous", .PageIndex = currentPage - 1, .CssClass = ""})
+        End If
+
+        Dim startPage As Integer = Math.Max(0, currentPage - 2)
+        Dim endPage As Integer = Math.Min(totalPages - 1, currentPage + 2)
+
+        For i As Integer = startPage To endPage
+            pages.Add(New With {.Text = (i + 1).ToString(), .PageIndex = i, .CssClass = If(i = currentPage, "active", "")})
+        Next
+
+        If currentPage < totalPages - 1 Then
+            pages.Add(New With {.Text = "Next", .PageIndex = currentPage + 1, .CssClass = ""})
+        End If
+
+        rptPager.DataSource = pages
+        rptPager.DataBind()
     End Sub
 
     Protected Function PromoTitle(type As String, dataId As String) As String

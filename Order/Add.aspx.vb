@@ -1276,33 +1276,25 @@ Partial Class Order_Add
 
                             Dim groupName As String = String.Format("{0} - {1} - {2} - {3}", blindType, controlType, fabricGroup, factory)
                             Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, designId, companyDetailId)
-                            Dim priceProductGroupB As String = String.Empty
 
                             If blindType = "Day & Night" Then
                                 widthB = width : dropB = drop
 
                                 linearMetreB = width / 1000
                                 squareMetreB = widthB * dropB / 1000000
-                                totalItems = 2
-
-                                Dim factoryB As String = orderClass.GetFabricFactory(fabricColourIdB)
 
                                 groupName = String.Format("{0} - {1} - {2}", blindType, controlType, factory)
-                                Dim groupNameB As String = String.Format("{0} - {1} - {2}", blindType, controlType, factoryB)
-
                                 priceProductGroup = orderClass.GetPriceProductGroupId(groupName, designId, companyDetailId)
-                                priceProductGroupB = orderClass.GetPriceProductGroupId(groupNameB, designId, companyDetailId)
                             End If
 
                             Dim itemId As String = orderClass.GetNewOrderItemId()
 
                             Using thisConn As SqlConnection = New SqlConnection(myConn)
-                                Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricIdB, FabricColourId, FabricColourIdB, PriceProductGroupId, PriceProductGroupIdB, Qty, Room, Mounting, Width, WidthB, [Drop], DropB, ControlPosition, ControlLength, ControlLengthValue, Supply, LinearMetre, LinearMetreB, SquareMetre, SquareMetreB, TotalItems, Notes, MarkUp, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricIdB, @FabricColourId, @FabricColourIdB, @PriceProductGroupId, @PriceProductGroupIdB, @Qty, @Room, @Mounting, @Width, @WidthB, @Drop, @DropB, @ControlPosition, @ControlLength, @ControlLengthValue, @Supply, @LinearMetre, @LinearMetreB, @SquareMetre, @SquareMetreB, @TotalItems, @Notes, @MarkUp, 1)", thisConn)
+                                Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricIdB, FabricColourId, FabricColourIdB, PriceProductGroupId, Qty, Room, Mounting, Width, WidthB, [Drop], DropB, ControlPosition, ControlLength, ControlLengthValue, Supply, LinearMetre, LinearMetreB, SquareMetre, SquareMetreB, TotalItems, Notes, MarkUp, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricIdB, @FabricColourId, @FabricColourIdB, @PriceProductGroupId, @PriceProductGroupIdB, @Qty, @Room, @Mounting, @Width, @WidthB, @Drop, @DropB, @ControlPosition, @ControlLength, @ControlLengthValue, @Supply, @LinearMetre, @LinearMetreB, @SquareMetre, @SquareMetreB, @TotalItems, @Notes, @MarkUp, 1)", thisConn)
                                     myCmd.Parameters.AddWithValue("@Id", itemId)
                                     myCmd.Parameters.AddWithValue("@HeaderId", headerId)
                                     myCmd.Parameters.AddWithValue("@ProductId", productId)
                                     myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
-                                    myCmd.Parameters.AddWithValue("@PriceProductGroupIdB", If(String.IsNullOrEmpty(priceProductGroupB), CType(DBNull.Value, Object), priceProductGroupB))
                                     myCmd.Parameters.AddWithValue("@Qty", "1")
                                     myCmd.Parameters.AddWithValue("@Room", room)
                                     myCmd.Parameters.AddWithValue("@FabricId", fabricId)

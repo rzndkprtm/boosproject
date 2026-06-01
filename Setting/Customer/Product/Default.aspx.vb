@@ -1,7 +1,7 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 
-Partial Class Setting_Customer_ProductAccess
+Partial Class Setting_Customer_Product_Default
     Inherits Page
 
     Dim settingClass As New SettingClass
@@ -25,7 +25,18 @@ Partial Class Setting_Customer_ProductAccess
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
+        gvList.PageIndex = 0
         BindData(txtSearch.Text)
+    End Sub
+
+    Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
+        Try
+            If e.CommandName = "Page" Then
+                gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
+                BindData(txtSearch.Text)
+            End If
+        Catch ex As Exception
+        End Try
     End Sub
 
     Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
@@ -33,35 +44,9 @@ Partial Class Setting_Customer_ProductAccess
             Dim dataId As String = e.CommandArgument.ToString()
 
             If e.CommandName = "Detail" Then
-                MessageError_Process(False, String.Empty)
                 Session("SearchCustomerAddress") = txtSearch.Text
-                Dim thisScript As String = "window.onload = function() { showProcess(); };"
-                Try
-                    lblId.Text = dataId
-
-                    Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerProductAccess WHERE Id='" & dataId & "'")
-                    If myData Is Nothing Then Exit Sub
-
-                    Dim companyId As String = settingClass.GetItemData("SELECT CompanyId FROM Customers WHERE Id='" & dataId & "'")
-
-                    BindProduct(companyId)
-
-                    Dim tagsArray() As String = myData("DesignId").ToString().Split(",")
-                    Dim tagsList As List(Of String) = tagsArray.ToList()
-                    For Each i In tagsArray
-                        If Not (i.Equals(String.Empty)) Then
-                            lbProduct.Items.FindByValue(i).Selected = True
-                        End If
-                    Next
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-                Catch ex As Exception
-                    MessageError_Process(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                    End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-                End Try
+                Dim url As String = String.Format("~/setting/customer/product/edit?productid={0}", dataId)
+                Response.Redirect(url, False)
             End If
         End If
     End Sub
@@ -79,46 +64,10 @@ Partial Class Setting_Customer_ProductAccess
         End Try
     End Sub
 
-    Protected Sub btnProcess_Click(sender As Object, e As EventArgs)
-        MessageError_Process(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showProcess(); };"
+    Protected Sub gvList_DataBound(sender As Object, e As EventArgs)
         Try
-            Dim designId As String = String.Empty
-            Dim tags As String = String.Empty
-            For Each item As ListItem In lbProduct.Items
-                If item.Selected Then
-                    tags += item.Value.ToString() & ","
-                End If
-            Next
-            If Not tags = "" Then
-                designId = tags.Remove(tags.Length - 1).ToString()
-            End If
-
-            If msgErrorProcess.InnerText = "" Then
-                Using thisConn As New SqlConnection(myConn)
-                    thisConn.Open()
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerProductAccess SET DesignId=@DesignId WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                        myCmd.Parameters.AddWithValue("@DesignId", designId)
-
-                        myCmd.ExecuteNonQuery()
-                    End Using
-
-                    thisConn.Close()
-                End Using
-
-                dataLog = {"CustomerProductAccess", lblId.Text, Session("LoginId").ToString(), "Customer Product Access Updated"}
-                settingClass.Logs(dataLog)
-
-                Session("SearchCustomerProductAccess") = txtSearch.Text
-                Response.Redirect("~/setting/customer/productaccess", False)
-            End If
+            BuildPager()
         Catch ex As Exception
-            MessageError_Process(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         End Try
     End Sub
 
@@ -143,7 +92,7 @@ Partial Class Setting_Customer_ProductAccess
             settingClass.Logs(dataLog)
 
             Session("SearchCustomerProductAccess") = txtSearch.Text
-            Response.Redirect("~/setting/customer/productaccess", False)
+            Response.Redirect("~/setting/customer/product", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -174,21 +123,36 @@ Partial Class Setting_Customer_ProductAccess
         End Try
     End Sub
 
-    Protected Sub BindProduct(companyId As String)
-        lbProduct.Items.Clear()
-        Try
-            If Not String.IsNullOrEmpty(companyId) Then
-                lbProduct.DataSource = settingClass.GetDataTable("SELECT * FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS companyArray WHERE companyArray.VALUE='" & companyId & "' ORDER BY Name ASC")
-                lbProduct.DataTextField = "Name"
-                lbProduct.DataValueField = "Id"
-                lbProduct.DataBind()
-                If lbProduct.Items.Count > 1 Then
-                    lbProduct.Items.Insert(0, New ListItem("", ""))
-                End If
-            End If
-        Catch ex As Exception
-            lbProduct.Items.Clear()
-        End Try
+    Protected Sub BuildPager()
+        If gvList.PageCount <= 1 Then
+            navPager.Visible = False
+            Return
+        End If
+
+        navPager.Visible = True
+
+        Dim currentPage As Integer = gvList.PageIndex
+        Dim totalPages As Integer = gvList.PageCount
+
+        Dim pages As New List(Of Object)
+
+        If currentPage > 0 Then
+            pages.Add(New With {.Text = "Previous", .PageIndex = currentPage - 1, .CssClass = ""})
+        End If
+
+        Dim startPage As Integer = Math.Max(0, currentPage - 2)
+        Dim endPage As Integer = Math.Min(totalPages - 1, currentPage + 2)
+
+        For i As Integer = startPage To endPage
+            pages.Add(New With {.Text = (i + 1).ToString(), .PageIndex = i, .CssClass = If(i = currentPage, "active", "")})
+        Next
+
+        If currentPage < totalPages - 1 Then
+            pages.Add(New With {.Text = "Next", .PageIndex = currentPage + 1, .CssClass = ""})
+        End If
+
+        rptPager.DataSource = pages
+        rptPager.DataBind()
     End Sub
 
     Protected Function BindDetailProduct(customerId As String) As String
@@ -212,10 +176,6 @@ Partial Class Setting_Customer_ProductAccess
 
     Private Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
-    End Sub
-
-    Protected Sub MessageError_Process(visible As Boolean, message As String)
-        divErrorProcess.Visible = visible : msgErrorProcess.InnerText = message
     End Sub
 
     Protected Function LoginAccess(action As String) As Boolean

@@ -72,9 +72,6 @@
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
                                                     </Columns>
-                                                    <PagerStyle BackColor="DodgerBlue" ForeColor="White" HorizontalAlign="Center" />
-                                                    <PagerSettings PreviousPageText="Prev" NextPageText="Next" Mode="NumericFirstLast" />
-                                                    <AlternatingRowStyle BackColor="White" />
                                                 </asp:GridView>
                                             </ContentTemplate>
                                             <Triggers>

@@ -20,7 +20,6 @@ $("#vieworder").on("click", () => window.location.href = `/order/detail?orderid=
 $("#blindtype").on("change", function () {
     bindTubeType($(this).val());
     bindMounting($(this).val());
-    visibleProduct($(this).val());
 
     document.getElementById("wandlength").value = "";
 });
@@ -305,7 +304,6 @@ function bindBlindType(designType) {
         if (!designType) {
             const selectedValue = blindtype.value || "";
             Promise.all([
-                visibleProduct(selectedValue),
                 bindTubeType(selectedValue),
                 bindMounting(selectedValue)
             ]).then(resolve).catch(reject);
@@ -344,14 +342,12 @@ function bindBlindType(designType) {
 
                     const selectedValue = blindtype.value || "";
                     Promise.all([
-                        visibleProduct(selectedValue),
                         bindTubeType(selectedValue),
                         bindMounting(selectedValue)
                     ]).then(resolve).catch(reject);
                 } else {
                     const selectedValue = blindtype.value || "";
                     Promise.all([
-                        visibleProduct(selectedValue),
                         bindTubeType(selectedValue),
                         bindMounting(selectedValue)
                     ]).then(resolve).catch(reject);
@@ -713,36 +709,6 @@ function getPanelQty(trackType, layoutCode) {
     });
 }
 
-function visibleProduct(blindType) {
-    return new Promise((resolve) => {
-        const panelstyle = document.getElementById("divpanelstyle");
-        const trackcolour = document.getElementById("divtrackcolour");
-
-        function toggleDisplay(element, show) {
-            if (element) element.style.display = show ? "" : "none";
-        }
-
-        toggleDisplay(panelstyle, false);
-        toggleDisplay(trackcolour, false);
-
-        if (!blindType) return resolve();
-
-        getBlindName(blindType).then(blindName => {
-            if (blindName === "Complete Set" || blindName === "Panel Only") {
-                toggleDisplay(panelstyle, true);
-            }
-
-            if (blindName === "Complete Set" || blindName === "Track Only") {
-                toggleDisplay(trackcolour, true);
-            }
-
-            resolve();
-        }).catch(error => {
-            resolve();
-        });
-    });
-}
-
 function visibleDetail(blindType, tubeType, colourType) {
     return new Promise((resolve) => {
         const detail = document.getElementById("divdetail");
@@ -946,7 +912,6 @@ async function bindItemOrder(itemId, companyDetailId, action) {
         document.getElementById("divloader").style.display = "none";
         document.getElementById("divorder").style.display = "";
 
-        visibleProduct(data.ItemData.BlindType);
         visibleDetail(data.ItemData.BlindType, data.ItemData.TubeType, data.ItemData.ProductId);
         visibleLayoutCustom(data.ItemData.LayoutCode);
         visibleWandLength(data.ItemData.WandLength);
@@ -1077,7 +1042,6 @@ async function initPanelGlide() {
     if (itemAction === "create") {
         await bindBlindType(designId);
         controlForm(false);
-        visibleProduct("");
         visibleDetail("", "", "");
         loader(itemAction);
     } else if (["edit", "view", "copy"].includes(itemAction)) {

@@ -78,7 +78,6 @@ Partial Class Setting_Customer_List
         Try
             BuildPager()
         Catch ex As Exception
-
         End Try
     End Sub
 
