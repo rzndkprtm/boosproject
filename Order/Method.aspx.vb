@@ -1456,8 +1456,6 @@ Partial Class Order_Method
 
             linearMetreB = width / 1000
             squareMetreB = widthb * dropb / 1000000
-
-            totalItems = 2
         End If
 
         If blindName = "Day & Night" OrElse blindName = "Top Down Bottom Up" Then
@@ -1487,14 +1485,11 @@ Partial Class Order_Method
         Dim groupName As String = String.Format("{0} - {1} - {2} - {3}", blindName, controlNameGroup, fabricGroup, factory)
 
         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
-        Dim priceProductGroupB As String = String.Empty
 
         If blindName = "Day & Night" Then
             groupName = String.Format("{0} - {1} - {2}", blindName, controlNameGroup, factory)
-            Dim groupNameB As String = String.Format("{0} - {1} - {2}", blindName, controlNameGroup, factoryB)
 
             priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
-            priceProductGroupB = orderClass.GetPriceProductGroupId(groupNameB, data.designid, data.companydetailid)
         End If
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
@@ -1507,7 +1502,6 @@ Partial Class Order_Method
                         myCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                         myCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                         myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
-                        myCmd.Parameters.AddWithValue("@PriceProductGroupIdB", If(String.IsNullOrEmpty(priceProductGroupB), CType(DBNull.Value, Object), priceProductGroupB))
                         myCmd.Parameters.AddWithValue("@Qty", "1")
                         myCmd.Parameters.AddWithValue("@Room", data.room)
                         myCmd.Parameters.AddWithValue("@FabricId", data.fabrictype)
@@ -1555,7 +1549,6 @@ Partial Class Order_Method
                     myCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                     myCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                     myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
-                    myCmd.Parameters.AddWithValue("@PriceProductGroupIdB", If(String.IsNullOrEmpty(priceProductGroupB), CType(DBNull.Value, Object), priceProductGroupB))
                     myCmd.Parameters.AddWithValue("@Qty", "1")
                     myCmd.Parameters.AddWithValue("@Room", data.room)
                     myCmd.Parameters.AddWithValue("@FabricId", data.fabrictype)
