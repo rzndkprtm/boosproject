@@ -14,8 +14,13 @@ Partial Class Setting_Customer_Login_Add
             Exit Sub
         End If
 
+        ddlCustomer.Enabled = True
+
         If Not String.IsNullOrEmpty(Request.QueryString("custid")) Then
             lblCustomerId.Text = Request.QueryString("custid").ToString()
+            txtUserName.Text = settingClass.GenerateUsername(GetCustomerName(lblCustomerId.Text))
+            ddlCustomer.Enabled = False
+            If Session("RoleNme") = "Developer" Then ddlCustomer.Enabled = True
         End If
 
         If Not IsPostBack Then
@@ -59,8 +64,7 @@ Partial Class Setting_Customer_Login_Add
                 Exit Sub
             End If
 
-            Dim checkUsername As String = settingClass.GetItemData("SELECT UserName FROM Logins WHERE UserName='" + txtUserName.Text + "'")
-            If txtUserName.Text = checkUsername Then
+            If settingClass.IsUsernameExists(txtUserName.Text.Trim()) Then
                 MessageError(True, "USERNAME ALREADY EXIST !")
                 Exit Sub
             End If
@@ -179,6 +183,14 @@ Partial Class Setting_Customer_Login_Add
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
     End Sub
+
+    Protected Function GetCustomerName(customerId As String) As String
+        Try
+            Return settingClass.GetItemData("SELECT Name FROM Customers WHERE Id='" & customerId & "'")
+        Catch ex As Exception
+            Return "ERROR"
+        End Try
+    End Function
 
     Protected Function LoginAccess(action As String) As Boolean
         Try

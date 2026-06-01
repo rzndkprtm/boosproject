@@ -89,7 +89,20 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-sm-12 col-lg-5"></div>
+            <div class="col-12 col-sm-12 col-lg-5">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title text-center">Information</h4>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body">
+                            <ul>
+                                <li>If this is the first contact created for the customer, it will automatically be assigned as the primary contact.</li> <li>The available tags should be selected based on the type of information the system will send to the contact.</li> <li>Please ensure all information entered is accurate and valid, especially the email address.</li> 
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
     </div>
 
