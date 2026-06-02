@@ -32,6 +32,7 @@ Partial Class Stocks
             BindVenetian(ddlCompanyDetail.SelectedValue)
             BindAluminium(ddlCompanyDetail.SelectedValue)
             BindCellularShades(ddlCompanyDetail.SelectedValue)
+            BindFabricChart(txtSearchFabricChart.Text, ddlCompanyDetail.SelectedValue)
 
             divCompanyDetail.Visible = LoginAccess("Visible Company Detail")
         End If
@@ -45,6 +46,7 @@ Partial Class Stocks
         BindVenetian(ddlCompanyDetail.SelectedValue)
         BindAluminium(ddlCompanyDetail.SelectedValue)
         BindCellularShades(ddlCompanyDetail.SelectedValue)
+        BindFabricChart(txtSearchFabricChart.Text, ddlCompanyDetail.SelectedValue)
     End Sub
 
     Protected Sub BindCompanyDetail()
@@ -560,6 +562,42 @@ Partial Class Stocks
                 End If
             Next
         End If
+    End Sub
+
+
+    ' FABRIC CHART
+
+    Protected Sub btnFabricChart_Click(sender As Object, e As EventArgs)
+        BindFabricChart(txtSearchFabricChart.Text, ddlCompanyDetail.SelectedValue)
+    End Sub
+
+    Protected Sub gvListFabricChart_RowDataBound(sender As Object, e As GridViewRowEventArgs)
+        If e.Row.RowType = DataControlRowType.Footer Then
+            For i As Integer = 0 To gvListFabricChart.Columns.Count - 1
+                Dim bf As BoundField = TryCast(gvListFabricChart.Columns(i), BoundField)
+                If bf IsNot Nothing Then
+                    e.Row.Cells(i).Text = bf.HeaderText
+                End If
+            Next
+        End If
+    End Sub
+
+    Protected Sub BindFabricChart(searchText As String, companyDetail As String)
+        MessageError_FabricChart(False, String.Empty)
+        Try
+            Dim paramsItem As New List(Of SqlParameter) From {
+                New SqlParameter("@SearchText", searchText),
+                New SqlParameter("@CompanyDetailId", companyDetail)
+            }
+            gvListFabricChart.DataSource = stockClass.GetDataTableSP("sp_GetStockFabricAvailability", paramsItem)
+            gvListFabricChart.DataBind()
+        Catch ex As Exception
+            MessageError_FabricChart(True, ex.ToString())
+        End Try
+    End Sub
+
+    Protected Sub MessageError_FabricChart(visible As Boolean, message As String)
+        divErrorFabricChart.Visible = visible : msgErrorFabricChart.InnerText = message
     End Sub
 
     Protected Function LoginAccess(action As String) As Boolean

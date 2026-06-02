@@ -136,6 +136,8 @@ Partial Class Setting_Customer_Login_Edit
             BindLevel()
 
             ddlCustomer.Enabled = False
+            divPassword.Visible = False
+            If Session("RoleName") = "Developer" Then divPassword.Visible = True
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then

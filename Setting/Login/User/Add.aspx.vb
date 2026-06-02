@@ -20,9 +20,6 @@ Partial Class Setting_Login_User_Add
             BindRole()
             BindLeve()
             BindCustomer()
-
-            divEmail.Visible = False
-            If Session("RoleName") = "Developer" Then divEmail.Visible = True
         End If
     End Sub
 

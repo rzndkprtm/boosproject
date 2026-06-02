@@ -20,6 +20,30 @@ Partial Class Setting_Customer_Detail
         HttpContext.Current.Session("selectedTabCustomer") = value
     End Sub
 
+    <WebMethod()>
+    Public Shared Function GetPromoDetail(id As String) As Object
+        Dim settingClass As New SettingClass()
+
+        Dim promoId As String = settingClass.GetItemData("SELECT PromoId FROM CustomerPromos WHERE Id='" & id & "'")
+
+        Dim dt As DataTable = settingClass.GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
+
+        Dim result As New List(Of Object)
+
+        For Each dr As DataRow In dt.Rows
+            Dim title As String = String.Empty
+
+            If dr("Type").ToString() = "FrameColours" Then
+                title = dr("DataId").ToString()
+            Else
+                title = settingClass.GetItemData(String.Format("SELECT Name FROM {0} WHERE Id='{1}'", dr("Type").ToString(), dr("DataId").ToString()))
+            End If
+
+            result.Add(New With {.Type = title, .Discount = Convert.ToDecimal(dr("Discount")).ToString("G29") & "%"})
+        Next
+        Return result
+    End Function
+
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
@@ -1304,31 +1328,6 @@ Partial Class Setting_Customer_Detail
     ' END CUSTOMER DISCOUNT
 
     ' START CUSTOMER PROMO
-    Protected Sub gvListPromo_RowCommand(sender As Object, e As GridViewCommandEventArgs)
-        If Not String.IsNullOrEmpty(e.CommandArgument) Then
-            Session("selectedTabCustomer") = "list-promo"
-
-            Dim dataId As String = e.CommandArgument.ToString()
-
-            If e.CommandName = "Detail" Then
-                MessageError_DetailPromo(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showDetailPromo(); };"
-                Try
-                    Dim promoId As String = settingClass.GetItemData("SELECT PromoId FROM CustomerPromos WHERE Id='" & dataId & "'")
-                    gvListDetailPromo.DataSource = settingClass.GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
-                    gvListDetailPromo.DataBind()
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showDetailPromo", thisScript, True)
-                Catch ex As Exception
-                    MessageError_DetailPromo(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError_DetailPromo(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                    End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showDetailPromo", thisScript, True)
-                End Try
-            End If
-        End If
-    End Sub
 
     Protected Sub btnAddPromo_Click(sender As Object, e As EventArgs)
         Session("selectedTabCustomer") = "list-promo"
@@ -1420,23 +1419,8 @@ Partial Class Setting_Customer_Detail
         End Try
     End Sub
 
-    Protected Function PromoValue(data As Decimal) As String
-        If data > 0 Then Return data.ToString("G29", enUS) & "%"
-        Return "ERROR"
-    End Function
-
-    Protected Function PromoTitle(type As String, dataId As String) As String
-        If String.IsNullOrEmpty(type) Then Return String.Empty
-        If type = "FrameColours" Then Return dataId
-        Return settingClass.GetItemData(String.Format("SELECT Name FROM {0} WHERE Id='{1}'", type, dataId))
-    End Function
-
     Protected Sub MessageError_Promo(visible As Boolean, message As String)
         divErrorPromo.Visible = visible : msgErrorPromo.InnerText = message
-    End Sub
-
-    Protected Sub MessageError_DetailPromo(visible As Boolean, message As String)
-        divErrorDetailPromo.Visible = visible : msgErrorDetailPromo.InnerText = message
     End Sub
 
     ' END CUSTOMER PROMO
@@ -1580,7 +1564,6 @@ Partial Class Setting_Customer_Detail
         MessageError_ProcessDiscount(visible, message)
 
         MessageError_Promo(visible, message)
-        MessageError_DetailPromo(visible, message)
 
         MessageError_Product(visible, message)
 

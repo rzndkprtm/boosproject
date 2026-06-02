@@ -1,7 +1,7 @@
 ﻿Imports System.Data.SqlClient
 Imports System.Web.Services
 
-Partial Class Stock
+Partial Class JPMDStock
     Inherits Page
 
     Dim stockClass As New StockClass
@@ -24,6 +24,7 @@ Partial Class Stock
             BindVenetian()
             BindAluminium()
             BindCellularShades()
+            BindFabricChart(txtSearchFabricChart.Text)
         End If
     End Sub
 
@@ -33,10 +34,10 @@ Partial Class Stock
         MessageError_Roller(False, String.Empty)
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
-                    New SqlParameter("@DesignId", "12"),
-                    New SqlParameter("@CompanyId", "2"),
-                    New SqlParameter("@Search", searchText)
-                }
+                New SqlParameter("@DesignId", "12"),
+                New SqlParameter("@CompanyId", "2"),
+                New SqlParameter("@Search", searchText)
+            }
             gvListRoller.DataSource = stockClass.GetDataTableSP("sp_GetStockFabric", paramsItem)
             gvListRoller.DataBind()
         Catch ex As Exception
@@ -97,10 +98,10 @@ Partial Class Stock
         MessageError_Profile(False, String.Empty)
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
-                    New SqlParameter("@DesignId", "4"),
-                    New SqlParameter("@CompanyId", "2"),
-                    New SqlParameter("@Search", String.Empty)
-                }
+                New SqlParameter("@DesignId", "4"),
+                New SqlParameter("@CompanyId", "2"),
+                New SqlParameter("@Search", String.Empty)
+            }
             gvListProfile.DataSource = stockClass.GetDataTableSP("sp_GetStockFabric", paramsItem)
             gvListProfile.DataBind()
         Catch ex As Exception
@@ -157,10 +158,10 @@ Partial Class Stock
         MessageError_Curtain(False, String.Empty)
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
-                    New SqlParameter("@DesignId", "3"),
-                    New SqlParameter("@CompanyId", "2"),
-                    New SqlParameter("@Search", searchText)
-                }
+                New SqlParameter("@DesignId", "3"),
+                New SqlParameter("@CompanyId", "2"),
+                New SqlParameter("@Search", searchText)
+            }
             gvListCurtain.DataSource = stockClass.GetDataTableSP("sp_GetStockFabric", paramsItem)
             gvListCurtain.DataBind()
         Catch ex As Exception
@@ -221,9 +222,9 @@ Partial Class Stock
         MessageError_Vertical(False, String.Empty)
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
-                    New SqlParameter("@CompanyId", "2"),
-                    New SqlParameter("@Search", searchText)
-                }
+                New SqlParameter("@CompanyId", "2"),
+                New SqlParameter("@Search", searchText)
+            }
             gvListVertical.DataSource = stockClass.GetDataTableSP("sp_GetStockFabricVertical", paramsItem)
             gvListVertical.DataBind()
         Catch ex As Exception
@@ -284,9 +285,9 @@ Partial Class Stock
         MessageError_Venetian(False, String.Empty)
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
-                    New SqlParameter("@DesignId", "10"),
-                    New SqlParameter("@CompanyDetailId", "2")
-                }
+                New SqlParameter("@DesignId", "10"),
+                New SqlParameter("@CompanyDetailId", "2")
+            }
             gvListVenetian.DataSource = stockClass.GetDataTableSP("sp_GetStockBlindColour", paramsItem)
             gvListVenetian.DataBind()
         Catch ex As Exception
@@ -343,9 +344,9 @@ Partial Class Stock
         MessageError_Aluminium(False, String.Empty)
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
-                    New SqlParameter("@DesignId", "1"),
-                    New SqlParameter("@CompanyDetailId", "2")
-                }
+                New SqlParameter("@DesignId", "1"),
+                New SqlParameter("@CompanyDetailId", "2")
+            }
             gvListAluminium.DataSource = stockClass.GetDataTableSP("sp_GetStockBlindColour", paramsItem)
             gvListAluminium.DataBind()
         Catch ex As Exception
@@ -401,9 +402,9 @@ Partial Class Stock
         MessageError_Cellular(False, String.Empty)
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
-                    New SqlParameter("@DesignId", "2"),
-                    New SqlParameter("@CompanyId", "2")
-                }
+                New SqlParameter("@DesignId", "2"),
+                New SqlParameter("@CompanyId", "2")
+            }
             gvListCellular.DataSource = stockClass.GetDataTableSP("sp_GetStockFabric", paramsItem)
             gvListCellular.DataBind()
         Catch ex As Exception
@@ -451,5 +452,40 @@ Partial Class Stock
                 End If
             Next
         End If
+    End Sub
+
+    ' FABRIC CHART
+
+    Protected Sub btnFabricChart_Click(sender As Object, e As EventArgs)
+        BindFabricChart(txtSearchFabricChart.Text)
+    End Sub
+
+    Protected Sub gvListFabricChart_RowDataBound(sender As Object, e As GridViewRowEventArgs)
+        If e.Row.RowType = DataControlRowType.Footer Then
+            For i As Integer = 0 To gvListFabricChart.Columns.Count - 1
+                Dim bf As BoundField = TryCast(gvListFabricChart.Columns(i), BoundField)
+                If bf IsNot Nothing Then
+                    e.Row.Cells(i).Text = bf.HeaderText
+                End If
+            Next
+        End If
+    End Sub
+
+    Protected Sub BindFabricChart(searchText As String)
+        MessageError_FabricChart(False, String.Empty)
+        Try
+            Dim paramsItem As New List(Of SqlParameter) From {
+                New SqlParameter("@SearchText", searchText),
+                New SqlParameter("@CompanyDetailId", "2")
+            }
+            gvListFabricChart.DataSource = stockClass.GetDataTableSP("sp_GetStockFabricAvailability", paramsItem)
+            gvListFabricChart.DataBind()
+        Catch ex As Exception
+            MessageError_FabricChart(True, ex.ToString())
+        End Try
+    End Sub
+
+    Protected Sub MessageError_FabricChart(visible As Boolean, message As String)
+        divErrorFabricChart.Visible = visible : msgErrorFabricChart.InnerText = message
     End Sub
 End Class

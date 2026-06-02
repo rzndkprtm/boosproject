@@ -23,8 +23,8 @@ Partial Class Setting_Customer_Contact_Default
     End Sub
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
         gvList.PageIndex = 0
+        MessageError(False, String.Empty)
         BindData(txtSearch.Text)
     End Sub
 
@@ -39,6 +39,13 @@ Partial Class Setting_Customer_Contact_Default
                 gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
                 BindData(txtSearch.Text)
             End If
+        Catch ex As Exception
+        End Try
+    End Sub
+
+    Protected Sub gvList_DataBound(sender As Object, e As EventArgs)
+        Try
+            BuildPager()
         Catch ex As Exception
         End Try
     End Sub
@@ -65,13 +72,6 @@ Partial Class Setting_Customer_Contact_Default
                 Response.Redirect(url, False)
             End If
         End If
-    End Sub
-
-    Protected Sub gvList_DataBound(sender As Object, e As EventArgs)
-        Try
-            BuildPager()
-        Catch ex As Exception
-        End Try
     End Sub
 
     Protected Sub btnPrimary_Click(sender As Object, e As EventArgs)
