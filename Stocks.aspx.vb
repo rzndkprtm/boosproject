@@ -18,13 +18,11 @@ Partial Class Stocks
             Exit Sub
         End If
 
-        If Session("selectedTabStocks") IsNot Nothing AndAlso Session("selectedTabStocks").ToString() <> "" Then
-            selected_tab.Value = Session("selectedTabStocks").ToString()
-        End If
-
         If Not IsPostBack Then
-            If Session("selectedTabStocks") IsNot Nothing AndAlso Session("selectedTabStocks").ToString() <> "" Then
+            If Session("selectedTabStocks") IsNot Nothing Then
                 selected_tab.Value = Session("selectedTabStocks").ToString()
+            Else
+                selected_tab.Value = "list-roller"
             End If
 
             BindCompanyDetail()
@@ -43,6 +41,8 @@ Partial Class Stocks
     End Sub
 
     Protected Sub ddlCompanyDetail_SelectedIndexChanged(sender As Object, e As EventArgs)
+        Session("selectedTabStocks") = selected_tab.Value
+
         BindRoller(txtSearchRoller.Text, ddlCompanyDetail.SelectedValue)
         BindDesignShades(ddlCompanyDetail.SelectedValue)
         BindCurtain(txtSearchCurtain.Text, ddlCompanyDetail.SelectedValue)
@@ -90,6 +90,7 @@ Partial Class Stocks
     End Sub
 
     Protected Sub btnSearchRoller_Click(sender As Object, e As EventArgs)
+        Session("selectedTabStocks") = "list-roller"
         BindRoller(txtSearchRoller.Text, ddlCompanyDetail.SelectedValue)
     End Sub
 
@@ -244,6 +245,7 @@ Partial Class Stocks
     End Sub
 
     Protected Sub btnSearchCurtain_Click(sender As Object, e As EventArgs)
+        Session("selectedTabStocks") = "list-curtain"
         BindCurtain(txtSearchCurtain.Text, ddlCompanyDetail.SelectedValue)
     End Sub
 
@@ -320,6 +322,7 @@ Partial Class Stocks
     End Sub
 
     Protected Sub btnSearchVertical_Click(sender As Object, e As EventArgs)
+        Session("selectedTabStocks") = "list-vertical"
         BindVertical(txtSearchVertical.Text, ddlCompanyDetail.SelectedValue)
     End Sub
 
@@ -572,6 +575,7 @@ Partial Class Stocks
     ' FABRIC CHART
 
     Protected Sub btnFabricChart_Click(sender As Object, e As EventArgs)
+        Session("selectedTabStocks") = "list-fabricchart"
         BindFabricChart(txtSearchFabricChart.Text, ddlCompanyDetail.SelectedValue)
     End Sub
 

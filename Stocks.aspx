@@ -467,66 +467,39 @@
     <asp:HiddenField ID="selected_tab" runat="server" />
 
     <script type="text/javascript">
-        window.addEventListener("pageshow", function () {
-            var loading = document.getElementById("loadingOverlay");
-            if (loading) loading.style.display = "none";
-        });
-
-        function initUpdatePanelLoading() {
-            if (typeof Sys === "undefined") return;
-            var prm = Sys.WebForms.PageRequestManager.getInstance();
-
-            prm.add_beginRequest(function () {
-                var loading = document.getElementById("loadingOverlay");
-                if (loading) loading.style.display = "block";
-            });
-
-            prm.add_endRequest(function () {
-                var loading = document.getElementById("loadingOverlay");
-                if (loading) loading.style.display = "none";
-            });
-        }
-
-        document.addEventListener("DOMContentLoaded", function () {
-            initUpdatePanelLoading();
-        });
-
         $(document).ready(function () {
             var selectedTab = $("#<%=selected_tab.ClientID%>");
-            var tabId = selectedTab.val() != "" ? selectedTab.val() : "list-roller";
-            $('#dvTab a[href="#' + tabId + '"]').tab('show');
+             var tabId = selectedTab.val() != "" ? selectedTab.val() : "list-roller";
+             $('#dvTab a[href="#' + tabId + '"]').tab('show');
+             $("#dvTab a").click(function () {
+                 selectedTab.val($(this).attr("href").substring(1));
+             });
 
-            $("#dvTab a").on("shown.bs.tab", function (e) {
-                selectedTab.val($(e.target).attr("href").substring(1));
-
-                updateSessionValue($(e.target).attr("href").substring(1));
-            });
-
-            $("#listRoller").on("click", function () {
-                updateSessionValue("list-roller");
-            });
-            $("#listProfile").on("click", function () {
-                updateSessionValue("list-profile");
-            });
-            $("#listCurtain").on("click", function () {
-                updateSessionValue("list-curtain");
-            });
-            $("#listVertical").on("click", function () {
-                updateSessionValue("list-vertical");
-            });
-            $("#listVenetian").on("click", function () {
-                updateSessionValue("list-venetian");
-            });
-            $("#listAluminium").on("click", function () {
-                updateSessionValue("list-aluminium");
-            });
-            $("#listCellular").on("click", function () {
-                updateSessionValue("list-cellular");
-            });
-            $("#listFabricChart").on("click", function () {
-                updateSessionValue("list-fabricchart");
-            });
-        });
+             $("#listRoller").on("click", function () {
+                 updateSessionValue("list-roller");
+             });
+             $("#listProfile").on("click", function () {
+                 updateSessionValue("list-profile");
+             });
+             $("#listCurtain").on("click", function () {
+                 updateSessionValue("list-curtain");
+             });
+             $("#listVertical").on("click", function () {
+                 updateSessionValue("list-vertical");
+             });
+             $("#listVenetian").on("click", function () {
+                 updateSessionValue("list-venetian");
+             });
+             $("#listAluminium").on("click", function () {
+                 updateSessionValue("list-aluminium");
+             });
+             $("#listCellular").on("click", function () {
+                 updateSessionValue("list-cellular");
+             });
+             $("#listFabricChart").on("click", function () {
+                 updateSessionValue("list-fabricchart");
+             });
+         });
 
         function updateSessionValue(session) {
             $.ajax({
