@@ -52,28 +52,24 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
-                                        <asp:UpdatePanel ID="upRefresh" runat="server">
-                                            <ContentTemplate>
-                                                <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Visible="false"  OnPageIndexChanging="gvList_PageIndexChanging">
-                                                    <RowStyle />
-                                                    <Columns>
-                                                        <asp:TemplateField ItemStyle-HorizontalAlign="Center">
-                                                            <ItemTemplate>
-                                                                <%# Container.DataItemIndex + 1 %>
-                                                            </ItemTemplate>
-                                                        </asp:TemplateField>
-                                                        <asp:BoundField DataField="Type" HeaderText="Type" />
-                                                        <asp:BoundField DataField="ActionName" HeaderText="Action By" />
-                                                        <asp:BoundField DataField="ActionDate" HeaderText="Action Date" DataFormatString="{0:dd MMM yyyy HH:mm:ss}" />
-                                                        <asp:TemplateField HeaderText="Description">
-                                                            <ItemTemplate>
-                                                                <%# GetDataName(Eval("Type"), Eval("DataId"), Eval("Description")) %>
-                                                            </ItemTemplate>
-                                                        </asp:TemplateField>
-                                                    </Columns>
-                                                </asp:GridView>
-                                            </ContentTemplate>
-                                        </asp:UpdatePanel>
+                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Visible="false"  OnPageIndexChanging="gvList_PageIndexChanging">
+                                            <RowStyle />
+                                            <Columns>
+                                                <asp:TemplateField ItemStyle-HorizontalAlign="Center">
+                                                    <ItemTemplate>
+                                                        <%# Container.DataItemIndex + 1 %>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:BoundField DataField="Type" HeaderText="Type" />
+                                                <asp:BoundField DataField="ActionName" HeaderText="Action By" />
+                                                <asp:BoundField DataField="ActionDate" HeaderText="Action Date" DataFormatString="{0:dd MMM yyyy HH:mm:ss}" />
+                                                <asp:TemplateField HeaderText="Description">
+                                                    <ItemTemplate>
+                                                        <%# GetDataName(Eval("Type"), Eval("DataId"), Eval("Description")) %>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                            </Columns>
+                                        </asp:GridView>
                                     </div>
                                     <div class="d-flex justify-content-end mt-3">
                                         <nav id="navPager" runat="server" visible="false">
