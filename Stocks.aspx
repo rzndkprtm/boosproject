@@ -484,8 +484,6 @@
             prm.add_endRequest(function () {
                 var loading = document.getElementById("loadingOverlay");
                 if (loading) loading.style.display = "none";
-
-                bindGridRowClick();
             });
         }
 
