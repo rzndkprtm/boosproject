@@ -688,6 +688,7 @@ Partial Class Order_Default
                 ddlStatus.Items.Add(New ListItem("Shipped Out", "Shipped Out"))
                 ddlStatus.Items.Add(New ListItem("Completed", "Completed"))
                 ddlStatus.Items.Add(New ListItem("Canceled", "Canceled"))
+                ddlStatus.Items.Add(New ListItem("Unshipment", "Unshipment"))
             End If
 
             If Session("RoleName") = "IT" Then
@@ -702,6 +703,7 @@ Partial Class Order_Default
                 ddlStatus.Items.Add(New ListItem("Shipped Out", "Shipped Out"))
                 ddlStatus.Items.Add(New ListItem("Completed", "Completed"))
                 ddlStatus.Items.Add(New ListItem("Canceled", "Canceled"))
+                ddlStatus.Items.Add(New ListItem("Unshipment", "Unshipment"))
             End If
 
             If Session("RoleName") = "Factory Office" Then
@@ -716,9 +718,25 @@ Partial Class Order_Default
                 ddlStatus.Items.Add(New ListItem("Shipped Out", "Shipped Out"))
                 ddlStatus.Items.Add(New ListItem("Completed", "Completed"))
                 ddlStatus.Items.Add(New ListItem("Canceled", "Canceled"))
+                ddlStatus.Items.Add(New ListItem("Unshipment", "Unshipment"))
             End If
 
-            If Session("RoleName") = "Sales" OrElse Session("RoleName") = "Account" Then
+            If Session("RoleName") = "Sales" Then
+                ddlStatus.Items.Add(New ListItem("Unsubmitted", "Unsubmitted"))
+                ddlStatus.Items.Add(New ListItem("Quoted", "Quoted"))
+                ddlStatus.Items.Add(New ListItem("New Order", "New Order"))
+                ddlStatus.Items.Add(New ListItem("Waiting Proforma", "Waiting Proforma"))
+                ddlStatus.Items.Add(New ListItem("Proforma Sent", "Proforma Sent"))
+                ddlStatus.Items.Add(New ListItem("Payment Received", "Payment Received"))
+                ddlStatus.Items.Add(New ListItem("In Production", "In Production"))
+                ddlStatus.Items.Add(New ListItem("On Hold", "On Hold"))
+                ddlStatus.Items.Add(New ListItem("Shipped Out", "Shipped Out"))
+                ddlStatus.Items.Add(New ListItem("Completed", "Completed"))
+                ddlStatus.Items.Add(New ListItem("Canceled", "Canceled"))
+                ddlStatus.Items.Add(New ListItem("Unshipment", "Unshipment"))
+            End If
+
+            If Session("RoleName") = "Account" Then
                 ddlStatus.Items.Add(New ListItem("Unsubmitted", "Unsubmitted"))
                 ddlStatus.Items.Add(New ListItem("Quoted", "Quoted"))
                 ddlStatus.Items.Add(New ListItem("New Order", "New Order"))
@@ -742,6 +760,7 @@ Partial Class Order_Default
                 ddlStatus.Items.Add(New ListItem("Shipped Out", "Shipped Out"))
                 ddlStatus.Items.Add(New ListItem("Completed", "Completed"))
                 ddlStatus.Items.Add(New ListItem("Canceled", "Canceled"))
+                ddlStatus.Items.Add(New ListItem("Unshipment", "Unshipment"))
             End If
 
             If Session("RoleName") = "Export" Then
@@ -749,6 +768,7 @@ Partial Class Order_Default
                 ddlStatus.Items.Add(New ListItem("On Hold", "On Hold"))
                 ddlStatus.Items.Add(New ListItem("Shipped Out", "Shipped Out"))
                 ddlStatus.Items.Add(New ListItem("Completed", "Completed"))
+                ddlStatus.Items.Add(New ListItem("Unshipment", "Unshipment"))
             End If
 
             If Session("RoleName") = "Customer" Then
@@ -832,6 +852,7 @@ Partial Class Order_Default
                 gvList.Columns(3).Visible = True
             End If
             gvList.Columns(7).Visible = LoginAccess("Visible Created Date")
+            gvList.Columns(10).Visible = LoginAccess("Visible Factory")
 
             btnAdd.Visible = LoginAccess("Add")
             btnRework.Visible = LoginAccess("Rework")
@@ -931,6 +952,111 @@ Partial Class Order_Default
             Return String.Format("{0}<br /><span style='font-size:13px; color:red;'>(Sales : {1})</span>", customerName, sales)
         End If
         Return customerName
+    End Function
+
+    Protected Function BindFactory(headerId As Integer) As String
+        Try
+            Dim factoryList As New List(Of String)
+
+            Dim detailData As DataTable = orderClass.GetDataTable("SELECT OrderDetails.*, Products.Name AS ProductName, Designs.Name AS DesignName, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.DesignId=Blinds.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1")
+            For iDetail As Integer = 0 To detailData.Rows.Count - 1
+                Dim designName As String = detailData.Rows(iDetail)("DesignName").ToString()
+                Dim blindName As String = detailData.Rows(iDetail)("BlindName").ToString()
+
+                Dim isBig As Boolean = False
+                Dim isAustralia As Boolean = False
+                Dim isTaiwan As Boolean = False
+                Dim isChina As Boolean = False
+
+                If designName = "Aluminium Blind" OrElse designName = "Design Shades" OrElse designName = "Linea Valance" OrElse designName = "Panel Glide" OrElse designName = "Pelmet" OrElse designName = "Roman Blind" OrElse designName = "Privacy Venetian" OrElse designName = "Venetian Blind" OrElse designName = "Vertical" OrElse designName = "Roller Blind" OrElse designName = "Sample" OrElse designName = "Skyline Shutter Express" OrElse designName = "Outdoor" OrElse designName = "Saphora Drape" OrElse designName = "Roller Horizon" Then
+                    isBig = True
+                End If
+
+                If designName = "Cellular Shades" Then
+                    Dim fabricColourId As String = detailData.Rows(iDetail)("FabricColourId").ToString()
+                    Dim fabricFactory As String = orderClass.GetItemData("SELECT Factory FROM FabricColours WHERE Id='" & fabricColourId & "'")
+
+                    If fabricFactory = "Express" Then isBig = True
+                    If fabricFactory = "Regular" Then isTaiwan = True
+                End If
+
+                If designName = "Curtain" Then
+                    Dim fabricColourId As String = detailData.Rows(iDetail)("FabricColourId").ToString()
+                    Dim fabricColourIdB As String = detailData.Rows(iDetail)("FabricColourIdB").ToString()
+
+                    Dim trackType As String = detailData.Rows(iDetail)("TrackType").ToString()
+                    Dim trackTypeB As String = detailData.Rows(iDetail)("TrackTypeB").ToString()
+
+                    Dim fabricFactory As String = String.Empty
+                    Dim fabricFactoryB As String = String.Empty
+
+                    If fabricColourId <> "" Then
+                        fabricFactory = orderClass.GetItemData("SELECT Factory FROM FabricColours WHERE Id='" & fabricColourId & "'")
+                    End If
+
+                    If fabricColourIdB <> "" Then
+                        fabricFactoryB = orderClass.GetItemData("SELECT Factory FROM FabricColours WHERE Id='" & fabricColourIdB & "'")
+                    End If
+
+                    If fabricFactory = "Express" Then
+                        isBig = True
+                    ElseIf fabricFactory = "Regular" Then
+                        isAustralia = True
+                    End If
+
+                    If fabricFactoryB = "Express" Then
+                        isBig = True
+                    ElseIf fabricFactoryB = "Regular" Then
+                        isAustralia = True
+                    End If
+
+                    If trackType = "Standard Track" Then
+                        isAustralia = True
+                    ElseIf trackType = "Motorised Track" Then
+                        isBig = True
+                    End If
+
+                    If trackTypeB = "Standard Track" Then
+                        isAustralia = True
+                    ElseIf trackTypeB = "Motorised Track" Then
+                        isBig = True
+                    End If
+                End If
+
+                If designName = "Skyline Shutter Ocean" OrElse designName = "Evolve Shutter Ocean" Then
+                    isChina = True
+                End If
+
+                If designName = "Door" OrElse designName = "Window" Then
+                    Dim frameColour As String = detailData.Rows(iDetail)("FrameColour").ToString()
+
+                    If frameColour.Contains("Regular") Then isAustralia = True
+                    If frameColour.Contains("Express") Then isBig = True
+                End If
+
+                If isBig AndAlso Not factoryList.Contains("BIG") Then
+                    factoryList.Add("BIG")
+                End If
+
+                If isTaiwan AndAlso Not factoryList.Contains("TAIWAN") Then
+                    factoryList.Add("TAIWAN")
+                End If
+
+                If isAustralia AndAlso Not factoryList.Contains("AUS") Then
+                    factoryList.Add("AUS")
+                End If
+
+                If isChina AndAlso Not factoryList.Contains("CHINA") Then
+                    factoryList.Add("CHINA")
+                End If
+            Next
+
+            Dim factory As String = String.Join(", ", factoryList)
+
+            Return factory
+        Catch ex As Exception
+            Return "ERROR"
+        End Try
     End Function
 
     Protected Function VisibleEdit(status As String, active As Boolean) As Boolean

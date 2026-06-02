@@ -328,7 +328,7 @@ Partial Class Setting_Specification_Product_Edit
         Try
             If Not String.IsNullOrEmpty(designId) Then
                 ddlBlind.DataSource = settingClass.GetDataTable("SELECT * FROM Blinds WHERE DesignId='" & designId & "' ORDER BY Name ASC")
-                ddlBlind.DataTextField = "Name"
+                ddlBlind.DataTextField = "Alias"
                 ddlBlind.DataValueField = "Id"
                 ddlBlind.DataBind()
 

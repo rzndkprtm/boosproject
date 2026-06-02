@@ -320,7 +320,7 @@ Partial Class Setting_Specification_Fabric_Default
         divError.Visible = visible : msgError.InnerText = message
     End Sub
 
-    Protected Function BindCompany(fabricId As String) As String
+    Protected Function BindCompanyDetail(fabricId As String) As String
         If Not String.IsNullOrEmpty(fabricId) Then
             Dim myData As DataTable = settingClass.GetDataTable("SELECT CompanyDetails.Name AS CompanyName FROM Fabrics CROSS APPLY STRING_SPLIT(Fabrics.CompanyDetailId, ',') AS splitArray LEFT JOIN CompanyDetails ON splitArray.VALUE=CompanyDetails.Id WHERE Fabrics.Id='" & fabricId & "' ORDER BY CompanyDetails.Id ASC")
             Dim hasil As String = String.Empty

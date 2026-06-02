@@ -26,25 +26,19 @@
             <div class="col-12 col-sm-12 col-lg-7">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Create Form</h4>
+                        <h4 class="card-title">Fabric Type Form</h4>
                     </div>
                     <div class="card-content">
                         <div class="card-body">
-                            <div class="form form-horizontal">
+                            <div class="form form-vertical">
                                 <div class="form-body">
                                     <div class="row">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Name</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                        <div class="col-12 col-sm-12 col-lg-7 form-group">
+                                            <label class="form-label">Name</label>
                                             <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
                                         </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Type</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                        <div class="col-12 col-sm-12 col-lg-5 form-group">
+                                            <label class="form-label">Type</label>
                                             <asp:DropDownList runat="server" ID="ddlType" CssClass="form-select">
                                                 <asp:ListItem Value="" Text=""></asp:ListItem>
                                                 <asp:ListItem Value="Blockout" Text="Blockout"></asp:ListItem>
@@ -56,34 +50,28 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Design Type</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-9 form-group">
-                                            <asp:ListBox runat="server" ID="lbDesign" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Tube Type</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-9 form-group">
-                                            <asp:ListBox runat="server" ID="lbTube" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Company Detail</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-9 form-group">
+                                        <div class="col-12 form-group">
+                                            <label class="form-label">Company Detail</label>
                                             <asp:ListBox runat="server" ID="lbCompany" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
                                         </div>
                                     </div>
-                                    <div class="row mt-3">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Group</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                    <asp:UpdatePanel runat="server" ID="upDesignTube" UpdateMode="Conditional">
+                                        <ContentTemplate>
+                                            <div class="row">
+                                                <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                                    <label class="form-label">Design Type</label>
+                                                    <asp:ListBox runat="server" ID="lbDesign" CssClass="choices form-select multiple-remove" SelectionMode="Multiple" AutoPostBack="true" OnSelectedIndexChanged="lbDesign_SelectedIndexChanged"></asp:ListBox>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                                    <label class="form-label">Tube Type</label>
+                                                    <asp:ListBox runat="server" ID="lbTube" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
+                                                </div>
+                                            </div>
+                                        </ContentTemplate>
+                                    </asp:UpdatePanel>
+                                    <div class="row">
+                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                            <label class="form-label">Group</label>
                                             <asp:DropDownList runat="server" ID="ddlGroup" CssClass="form-select">
                                                 <asp:ListItem Value="" Text=""></asp:ListItem>
                                                 <asp:ListItem Value="Group 1" Text="Group 1"></asp:ListItem>
@@ -96,23 +84,17 @@
                                                 <asp:ListItem Value="Semi Opaque" Text="Semi Opaque"></asp:ListItem>
                                             </asp:DropDownList>
                                         </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>No Rail Road</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                            <label class="form-label">No Rail Road</label>
                                             <asp:DropDownList runat="server" ID="ddlNoRailRoad" CssClass="form-select">
                                                 <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
                                                 <asp:ListItem Value="0" Text="No"></asp:ListItem>
                                             </asp:DropDownList>
                                         </div>
                                     </div>
-                                    <div class="row mb-3">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Status</label>
-                                        </div>
+                                    <div class="row">
                                         <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                            <label class="form-label">Status</label>
                                             <asp:DropDownList runat="server" ID="ddlStatus" CssClass="form-select">
                                                 <asp:ListItem Value="" Text=""></asp:ListItem>
                                                 <asp:ListItem Value="In Stock" Text="In Stock"></asp:ListItem>
@@ -139,7 +121,32 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-sm-12 col-lg-5"></div>
+            <div class="col-12 col-sm-12 col-lg-5">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title text-center">Information</h4>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body"></div>
+                    </div>
+                </div>
+            </div>
         </section>
     </div>
+
+    <script>
+        function rebindChoices() {
+            document.querySelectorAll("select.choices").forEach(function (el) {
+                if (el.dataset.choice === "active") return;
+
+                new Choices(el, {
+                    removeItemButton: true
+                });
+            });
+        }
+
+        Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
+            rebindChoices();
+        });
+    </script>
 </asp:Content>

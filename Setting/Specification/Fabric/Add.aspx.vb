@@ -17,11 +17,26 @@ Partial Class Setting_Specification_Fabric_Add
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-
             BindDesign()
-            BindTube()
             BindCompanyDetail()
         End If
+    End Sub
+
+    Protected Sub lbDesign_SelectedIndexChanged(sender As Object, e As EventArgs)
+        Dim designIds As New List(Of String)
+
+        For Each item As ListItem In lbDesign.Items
+            If item.Selected AndAlso Not String.IsNullOrEmpty(item.Value) Then
+                designIds.Add(item.Value)
+            End If
+        Next
+
+        If designIds.Count = 0 Then
+            lbTube.Items.Clear()
+            Exit Sub
+        End If
+
+        BindTube(designIds)
     End Sub
 
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
@@ -127,11 +142,30 @@ Partial Class Setting_Specification_Fabric_Add
         End Try
     End Sub
 
-    Protected Sub BindTube()
+    Protected Sub BindTube(designIds As List(Of String))
         lbTube.Items.Clear()
         Try
-            lbTube.DataSource = settingClass.GetDataTable("SELECT * FROM ProductTubes CROSS APPLY STRING_SPLIT(AppliesTo, ',') AS applyArray WHERE applyArray.VALUE='Fabrics' ORDER BY Name ASC")
-            lbTube.DataTextField = "Name"
+            Dim conditions As New List(Of String)
+            For Each designId As String In designIds
+
+                Dim designName As String = settingClass.GetItemData("SELECT Name FROM Designs WHERE Id='" & designId.Replace("'", "''") & "'")
+
+                If InStr(designName, "Roman", CompareMethod.Text) > 0 Then
+                    conditions.Add("Alias LIKE '%(Roman)%'")
+                End If
+
+                If InStr(designName, "Panel Glide", CompareMethod.Text) > 0 Then
+                    conditions.Add("Alias LIKE '%(PG)%'")
+                End If
+
+            Next
+
+            If conditions.Count = 0 Then Exit Sub
+
+            Dim query As String = "SELECT DISTINCT * FROM ProductTubes CROSS APPLY STRING_SPLIT(AppliesTo, ',') AS applyArray WHERE applyArray.VALUE='Fabrics' AND (" & String.Join(" OR ", conditions.Distinct()) & ") ORDER BY Name ASC"
+
+            lbTube.DataSource = settingClass.GetDataTable(query)
+            lbTube.DataTextField = "Alias"
             lbTube.DataValueField = "Id"
             lbTube.DataBind()
 
@@ -182,4 +216,6 @@ Partial Class Setting_Specification_Fabric_Add
             Return False
         End Try
     End Function
+
+
 End Class

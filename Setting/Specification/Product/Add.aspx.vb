@@ -304,7 +304,7 @@ Partial Class Setting_Specification_Product_Add
         ddlTube.Items.Clear()
         Try
             ddlTube.DataSource = settingClass.GetDataTable("SELECT * FROM ProductTubes ORDER BY Name ASC")
-            ddlTube.DataTextField = "Name"
+            ddlTube.DataTextField = "Alias"
             ddlTube.DataValueField = "Id"
             ddlTube.DataBind()
 
