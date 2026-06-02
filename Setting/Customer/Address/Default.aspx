@@ -61,6 +61,7 @@
                                                 </ItemTemplate>
                                             </asp:TemplateField>
                                             <asp:BoundField DataField="Id" HeaderText="ID" />
+                                            <asp:BoundField DataField="DebtorCode" HeaderText="Debtor Code" />
                                             <asp:BoundField DataField="CustomerName" HeaderText="Customer" />
                                             <asp:BoundField DataField="Description" HeaderText="Description" />
                                             <asp:TemplateField HeaderText="Address">

@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Stock.aspx.vb" Inherits="Stock" Debug="true" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="JPMDStock.aspx.vb" Inherits="JPMDStock" Debug="true" %>
 
 <html lang="en">
 <head runat="server">
@@ -40,7 +40,7 @@
                         <div class="container">
                             <div class="logo">
                                 <a runat="server" href="~/">
-                                    <asp:Image runat="server" ID="imgLogo" ImageUrl="~/Assets/images/logo/general.jpg" AlternateText="BOOS" />
+                                    <asp:Image runat="server" ID="imgLogo" ImageUrl="~/Assets/images/logo/jpmdirect.jpg?v=1.0.0" AlternateText="JPM Direct Pty Ltd" />
                                 </a>
                             </div>
                             <div class="header-top-right">
@@ -74,13 +74,7 @@
                                     </a>
                                 </li>
                                 <li class="menu-item">
-                                    <a runat="server" href="~/order" class='menu-link'>
-                                        <i class="bi bi-basket-fill"></i>
-                                        <span>Order</span>
-                                    </a>
-                                </li>
-                                <li class="menu-item">
-                                    <a runat="server" href="~/stocks" class='menu-link'>
+                                    <a runat="server" href="~/jpmdstock" class='menu-link'>
                                         <i class="bi bi-ui-checks"></i>
                                         <span>Stocks</span>
                                     </a>
@@ -122,6 +116,7 @@
                                                 <a class="list-group-item list-group-item-action" id="listCurtain" data-bs-toggle="list" href="#list-curtain" role="tab">Curtain</a>
                                                 <a class="list-group-item list-group-item-action" id="listVenetian" data-bs-toggle="list" href="#list-venetian" role="tab">Venetian Blind</a>
                                                 <a class="list-group-item list-group-item-action" id="listAluminium" data-bs-toggle="list" href="#list-aluminium" role="tab">Aluminium Blind</a>
+                                                <a class="list-group-item list-group-item-action" id="listFabricChart" data-bs-toggle="list" href="#list-fabricchart" role="tab">Fabric Chart</a>
                                             </div>
                                             <div class="tab-content text-justify">
                                                 <div class="tab-pane fade show active" id="list-roller" role="tabpanel" aria-labelledby="listRoller">
@@ -468,6 +463,47 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div class="tab-pane fade" id="list-fabricchart" role="tabpanel" aria-labelledby="listFabricChart">
+                                    <div class="row mt-5" runat="server" id="divErrorFabricChart">
+                                        <div class="col-12">
+                                            <div class="alert alert-danger">
+                                                <span runat="server" id="msgErrorFabricChart"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-5" runat="server">
+                                        <div class="col-12 col-sm-12 col-lg-7">
+                                            <asp:Panel runat="server" DefaultButton="btnFabricChart" Width="100%">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">Fabric Type : </span>
+                                                    <asp:TextBox runat="server" ID="txtSearchFabricChart" CssClass="form-control" placeholoder="" autocomplete="off"></asp:TextBox>
+                                                    <asp:Button runat="server" ID="btnFabricChart" CssClass="btn btn-primary" Text="Search" OnClick="btnFabricChart_Click" />
+                                                </div>
+                                            </asp:Panel>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-12">
+                                            <div class="table-responsive grid-container">
+                                                <asp:GridView runat="server" ID="gvListFabricChart" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" ShowFooter="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowDataBound="gvListFabricChart_RowDataBound">
+                                                    <RowStyle />
+                                                    <Columns>
+                                                        <asp:BoundField DataField="FabricName" HeaderText="Fabric Type" />
+                                                        <asp:BoundField DataField="Roller" HeaderText="Roller" />
+                                                        <asp:BoundField DataField="RomanClassic" HeaderText="Roman (Classic)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
+                                                        <asp:BoundField DataField="RomanPlantation" HeaderText="Roman (Plantation)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
+                                                        <asp:BoundField DataField="RomanSewless" HeaderText="Roman (Sewless)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
+                                                        <asp:BoundField DataField="PGPlain" HeaderText="PG (Plain)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
+                                                        <asp:BoundField DataField="PGPlantation" HeaderText="PG (Plantation)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
+                                                        <asp:BoundField DataField="PGSewless" HeaderText="PG (Sewless)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
+                                                        <asp:BoundField DataField="Vertical89mm" HeaderText="Vertical (89mm)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
+                                                        <asp:BoundField DataField="Vertical127mm" HeaderText="Vertical (127mm)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
+                                                    </Columns>
+                                                </asp:GridView>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -529,6 +565,9 @@
                 });
                 $("#listCellular").on("click", function () {
                     updateSessionValue("list-cellular");
+                });
+                $("#listFabricChart").on("click", function () {
+                    updateSessionValue("list-fabricchart");
                 });
             });
 

@@ -521,7 +521,7 @@
                                     <div class="row mt-5">
                                         <div class="col-12">
                                             <div class="table-responsive">
-                                                <asp:GridView runat="server" ID="gvListPromo" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowCommand="gvListPromo_RowCommand">
+                                                <asp:GridView runat="server" ID="gvListPromo" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center">
                                                     <RowStyle />
                                                     <Columns>
                                                         <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="60px">
@@ -538,7 +538,7 @@
                                                                 <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                                 <ul class="dropdown-menu">
                                                                     <li runat="server" visible='<%# LoginAccess("Detail Promo") %>'>
-                                                                        <asp:LinkButton runat="server" ID="linkDetailPromo" CssClass="dropdown-item" Text="Detail" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                                        <a href="javascript:void(0);" id="aDetailPromo" class="dropdown-item" onclick="showDetailPromo('<%# Eval("Id") %>');">Detail</a>
                                                                     </li>
                                                                     <li runat="server" visible='<%# LoginAccess("Delete Promo") %>'>
                                                                         <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeletePromo" onclick='<%# String.Format("return showDeletePromo(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
@@ -1134,37 +1134,19 @@
                     <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
                 </div>
                 <div class="modal-body">
-                    <div class="row mb-2" runat="server" id="divErrorDetailPromo">
-                        <div class="col-12">
-                            <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorDetailPromo"></span>
-                            </div>
-                        </div>
-                    </div>
                     <div class="row">
                         <div class="col-12">
                             <div class="table-responsive">
-                                <asp:GridView runat="server" ID="gvListDetailPromo" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center">
-                                    <RowStyle />
-                                    <Columns>
-                                        <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="60px">
-                                            <ItemTemplate>
-                                                <%# Container.DataItemIndex + 1 %>
-                                            </ItemTemplate>
-                                        </asp:TemplateField>
-                                        <asp:BoundField DataField="Id" HeaderText="ID" />
-                                        <asp:TemplateField HeaderText="Type">
-                                            <ItemTemplate>
-                                                <%# PromoTitle(Eval("Type").ToString(), Eval("DataId").ToString()) %>
-                                            </ItemTemplate>
-                                        </asp:TemplateField>
-                                        <asp:TemplateField HeaderText="Discount">
-                                            <ItemTemplate>
-                                                <%# PromoValue(Eval("Discount")) %>
-                                            </ItemTemplate>
-                                        </asp:TemplateField>
-                                    </Columns>
-                                </asp:GridView>
+                                <table class="table table-bordered table-hover mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th style="width:60px;"></th>
+                                            <th>Type</th>
+                                            <th>Discount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="promoDetailBody"></tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -1253,7 +1235,7 @@
                 { id: '<%= gvListLogin.ClientID %>', link: "linkDetailLogin" },
                 { id: '<%= gvListDiscount.ClientID %>', link: "linkDetailDiscount" },
                 { id: '<%= gvListProduct.ClientID %>', link: "linkDetailProduct" },
-                { id: '<%= gvListPromo.ClientID %>', link: "linkDetailPromo" },
+                { id: '<%= gvListPromo.ClientID %>', link: "aDetailPromo" },
             ];
 
             gridConfigs.forEach(cfg => {
@@ -1513,15 +1495,44 @@
 
         // START CUSTOMER PROMO
 
-        function showDetailPromo() {
-            $("#modalDetailPromo").modal("show");
+        function showDetailPromo(id) {
+            $.ajax({
+                type: "POST",
+                url: "Detail.aspx/GetPromoDetail",
+                data: JSON.stringify({id: id}),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (res) {
+                    let html = "";
+                    if (res.d.length > 0) {
+                        $.each(res.d, function (i, item) {
+                            html += `
+                            <tr>
+                            <td class="text-center">${i + 1}</td>
+                            <td>${item.Type}</td>
+                            <td>${item.Discount}</td>
+                            </tr>`;
+                        });
+                    } else {
+                        html = `
+                        <tr>
+                        <td colspan="3" class="text-center">DATA NOT FOUND :)</td>
+                        </tr>`;
+                    }
+                    $("#promoDetailBody").html(html);
+                    $("#modalDetailPromo").modal("show");
+                },
+                error: function (xhr) {
+                    console.log(xhr);
+                }
+            });
         }
 
         function showDeletePromo(id) {
             document.getElementById("<%=txtIdPromoDelete.ClientID %>").value = id;
         }
-        // END CUSTOMER PROMO
 
+        // END CUSTOMER PROMO
 
         [
             "modalDelete", "modalCreateOrder", "modalRecalculate", "modalLog", "modalWelcome", "modalWaiting",

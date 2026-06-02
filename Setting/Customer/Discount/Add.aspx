@@ -91,7 +91,23 @@
                         <h4 class="card-title text-center">Information</h4>
                     </div>
                     <div class="card-content">
-                        <div class="card-body"></div>
+                        <div class="card-body">
+                            <ul>
+                                <li>
+                                    <strong>Type: Product</strong>
+                                    <ul>
+                                        <li>If no products are selected, the discount will be applied to all products displayed in the list.</li>
+                                        <li>If specific products are selected, the discount will only be applied to the selected products.</li>
+                                    </ul>
+                                </li>
+                                <li class="mt-2">
+                                    <strong>Type: Product Group</strong>
+                                    <ul>
+                                        <li>At least one product must be selected. The discount will only apply to the selected product(s).</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
