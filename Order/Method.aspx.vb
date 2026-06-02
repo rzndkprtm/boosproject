@@ -1666,8 +1666,10 @@ Partial Class Order_Method
             If blindName = "Complete Set (Double)" AndAlso data.tracktypeb = "Express Track" Then
                 Return "PLEASE CHECK YOUR FIRST TRACK TYPE. CURRENTLY, COMPLETE SET (DOUBLE) CANNOT USE THE EXPRESS TRACK TYPE. !"
             End If
-            If factory = "Express" AndAlso data.tracktype = "Express Track" AndAlso Not data.heading = "S-Wave" Then
-                Return String.Format("AT PRESENT, {0} HEADING IS NOT AVAILABLE FOR EXPRESS FABRIC AND EXPRESS TRACK ORDERS. EXPRESS TRACK CAN ONLY BE USED WITH EXPRESS FABRIC AND THE S-WAVE HEADING STYLE.", data.heading.ToUpper())
+            If data.companyid = "2" Then
+                If factory = "Express" AndAlso data.tracktype = "Express Track" AndAlso Not data.heading = "S-Wave" Then
+                    Return String.Format("AT PRESENT, {0} HEADING IS NOT AVAILABLE FOR EXPRESS FABRIC AND EXPRESS TRACK ORDERS. EXPRESS TRACK CAN ONLY BE USED WITH EXPRESS FABRIC AND THE S-WAVE HEADING STYLE.", data.heading.ToUpper())
+                End If
             End If
             If String.IsNullOrEmpty(data.trackcolour) Then
                 If blindName = "Complete Set (Double)" Then Return "FIRST TRACK COLOUR IS REQUIRED !"
