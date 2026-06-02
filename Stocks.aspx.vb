@@ -18,11 +18,15 @@ Partial Class Stocks
             Exit Sub
         End If
 
-        If Not Session("selectedTabStocks") = "" Then
+        If Session("selectedTabStocks") IsNot Nothing AndAlso Session("selectedTabStocks").ToString() <> "" Then
             selected_tab.Value = Session("selectedTabStocks").ToString()
         End If
 
         If Not IsPostBack Then
+            If Session("selectedTabStocks") IsNot Nothing AndAlso Session("selectedTabStocks").ToString() <> "" Then
+                selected_tab.Value = Session("selectedTabStocks").ToString()
+            End If
+
             BindCompanyDetail()
 
             BindRoller(txtSearchRoller.Text, ddlCompanyDetail.SelectedValue)
