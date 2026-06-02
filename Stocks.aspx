@@ -495,8 +495,11 @@
             var selectedTab = $("#<%=selected_tab.ClientID%>");
             var tabId = selectedTab.val() != "" ? selectedTab.val() : "list-roller";
             $('#dvTab a[href="#' + tabId + '"]').tab('show');
-            $("#dvTab a").click(function () {
-                selectedTab.val($(this).attr("href").substring(1));
+
+            $("#dvTab a").on("shown.bs.tab", function (e) {
+                selectedTab.val($(e.target).attr("href").substring(1));
+
+                updateSessionValue($(e.target).attr("href").substring(1));
             });
 
             $("#listRoller").on("click", function () {
