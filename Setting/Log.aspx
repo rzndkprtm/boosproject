@@ -1,7 +1,6 @@
 ﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Log.aspx.vb" Inherits="Setting_Log" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Log" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
-    <asp:Timer runat="server" ID="tmrRefresh" Interval="30000" OnTick="tmrRefresh_Tick" />
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
@@ -74,9 +73,6 @@
                                                     </Columns>
                                                 </asp:GridView>
                                             </ContentTemplate>
-                                            <Triggers>
-                                                <asp:AsyncPostBackTrigger ControlID="tmrRefresh" EventName="Tick" />
-                                            </Triggers>
                                         </asp:UpdatePanel>
                                     </div>
                                     <div class="d-flex justify-content-end mt-3">
