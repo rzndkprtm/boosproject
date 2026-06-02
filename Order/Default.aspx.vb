@@ -52,10 +52,6 @@ Partial Class Order_Default
         Response.Redirect("~/order/file", False)
     End Sub
 
-    Protected Sub btnUnshipment_Click(sender As Object, e As EventArgs)
-        Response.Redirect("~/order/unshipment", False)
-    End Sub
-
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         gvList.PageIndex = 0
@@ -856,10 +852,7 @@ Partial Class Order_Default
 
             btnAdd.Visible = LoginAccess("Add")
             btnRework.Visible = LoginAccess("Rework")
-
-            btnAnother.Visible = LoginAccess("Another")
             btnFile.Visible = LoginAccess("File")
-            btnUnshipment.Visible = LoginAccess("Unshipment")
 
             divActive.Visible = LoginAccess("Active")
             divCompany.Visible = LoginAccess("Filter Company")
