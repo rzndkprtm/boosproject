@@ -1093,7 +1093,10 @@ Partial Class Order_Add
                             Exit For
                         End If
 
-                        Dim tubeId As String = orderClass.GetItemData("SELECT Id FROM ProductTubes WHERE Name='" & blindType & "'")
+                        Dim tubeName As String = blindType
+                        If blindType = "Standard" Then tubeName = "Standard (CS)"
+
+                        Dim tubeId As String = orderClass.GetItemData("SELECT Id FROM ProductTubes WHERE Alias='" & tubeName & "'")
 
                         Dim controlId As String = orderClass.GetItemData("SELECT Id FROM ProductControls WHERE Name='" & controlType & "'")
                         If String.IsNullOrEmpty(controlId) Then
