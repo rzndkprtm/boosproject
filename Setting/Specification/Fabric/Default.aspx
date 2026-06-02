@@ -84,7 +84,7 @@
                                                 <asp:BoundField DataField="Group" HeaderText="Group" />
                                                 <asp:TemplateField HeaderText="Company Detail">
                                                     <ItemTemplate>
-                                                        <%# BindCompany(Eval("Id").ToString()) %>
+                                                        <%# BindCompanyDetail(Eval("Id").ToString()) %>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:BoundField DataField="Status" HeaderText="Status" />

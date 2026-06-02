@@ -104,6 +104,11 @@
                                                 <asp:BoundField DataField="CreatedDate" HeaderText="Created" DataFormatString="{0:dd MMM yyyy}" />
                                                 <asp:BoundField DataField="SubmittedDate" HeaderText="Submitted" DataFormatString="{0:dd MMM yyyy}" />
                                                 <asp:BoundField DataField="ProductionDate" HeaderText="Production" DataFormatString="{0:dd MMM yyyy}" />
+                                                <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="Factory">
+                                                    <ItemTemplate>
+                                                        <%# BindFactory(Eval("Id").ToString()) %>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="Shipment">
                                                     <ItemTemplate>
                                                         <a class="btn btn-sm btn-secondary" href="#" data-bs-toggle="modal" data-bs-target="#modalShipment" onclick='<%# String.Format("return showShipment(`{0}`, `{1:dd MMM yyyy}`, `{2}`, `{3:dd MMM yyyy}`, `{4}`);", Eval("ShipmentNumber").ToString(), Eval("ShipmentDate"), Eval("ContainerNumber").ToString(), Eval("ContainerETA"), Eval("Courier").ToString()) %>'>Show</a>
