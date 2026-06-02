@@ -445,7 +445,7 @@ Partial Class Setting_Specification_Product_Default
         ddlTubeSort.Items.Clear()
         Try
             ddlTubeSort.DataSource = settingClass.GetDataTable("SELECT * FROM ProductTubes ORDER BY Name ASC")
-            ddlTubeSort.DataTextField = "Name"
+            ddlTubeSort.DataTextField = "Alias"
             ddlTubeSort.DataValueField = "Id"
             ddlTubeSort.DataBind()
 

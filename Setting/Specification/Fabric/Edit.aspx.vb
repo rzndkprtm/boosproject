@@ -189,7 +189,7 @@ Partial Class Setting_Specification_Fabric_Edit
         lbTube.Items.Clear()
         Try
             lbTube.DataSource = settingClass.GetDataTable("SELECT * FROM ProductTubes CROSS APPLY STRING_SPLIT(AppliesTo, ',') AS applyArray WHERE applyArray.VALUE='Fabrics' ORDER BY Name ASC")
-            lbTube.DataTextField = "Name"
+            lbTube.DataTextField = "Alias"
             lbTube.DataValueField = "Id"
             lbTube.DataBind()
 
