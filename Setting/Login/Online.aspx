@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Online.aspx.vb" Inherits="Setting_Login_Online" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Login Online" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" ValidateRequest="false" CodeFile="Online.aspx.vb" Inherits="Setting_Login_Online" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Login Online" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <asp:Timer runat="server" ID="tmrRefresh" Interval="30000" OnTick="tmrRefresh_Tick" />

@@ -9,6 +9,7 @@ Partial Class Setting_Price_Promo_Detail
 
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
+    Dim dataLog As Object()
     Dim enUS As CultureInfo = New CultureInfo("en-US")
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -125,10 +126,11 @@ Partial Class Setting_Price_Promo_Detail
                     End Using
                 End Using
 
-                Dim dataLog As Object() = {"Promos", lblId.Text, Session("LoginId").ToString(), "Promo Updated"}
+                dataLog = {"Promos", lblId.Text, Session("LoginId").ToString(), "Promo Updated"}
                 settingClass.Logs(dataLog)
 
-                Response.Redirect("~/setting/price/promo/detail", False)
+                url = String.Format("~/setting/price/promo/detail?promoid={0}", lblId.Text)
+                Response.Redirect(url, False)
             End If
         Catch ex As Exception
             MessageError_Process(True, ex.ToString())
@@ -174,7 +176,7 @@ Partial Class Setting_Price_Promo_Detail
                         End Using
                     End Using
 
-                    Dim dataLog As Object() = {"PromoDetails", thisId, Session("LoginId").ToString(), "Promo Detail Created"}
+                    dataLog = {"PromoDetails", thisId, Session("LoginId").ToString(), "Promo Detail Created"}
                     settingClass.Logs(dataLog)
 
                     url = String.Format("~/setting/price/promo/detail?promoid={0}", lblId.Text)
@@ -194,7 +196,7 @@ Partial Class Setting_Price_Promo_Detail
                         End Using
                     End Using
 
-                    Dim dataLog As Object() = {"PromoDetails", lblIdDetail.Text, Session("LoginId").ToString(), "Promo Detail Updated"}
+                    dataLog = {"PromoDetails", lblIdDetail.Text, Session("LoginId").ToString(), "Promo Detail Updated"}
                     settingClass.Logs(dataLog)
 
                     url = String.Format("~/setting/price/promo/detail?promoid={0}", lblId.Text)
@@ -216,19 +218,12 @@ Partial Class Setting_Price_Promo_Detail
             Dim dataId As String = txtIdDeleteDetail.Text
 
             Using thisConn As New SqlConnection(myConn)
-                thisConn.Open()
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM PromoDetails WHERE Id=@Id", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM PromoDetails WHERE Id=@Id; DELETE FROM Logs WHERE Type='PromoDetails' AND DataId=@Id;", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", dataId)
+
+                    thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Logs WHERE Type='PromoDetails' AND DataId=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", dataId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                thisConn.Close()
             End Using
 
             url = String.Format("~/setting/price/promo/detail?promoid={0}", lblId.Text)
