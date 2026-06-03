@@ -3,7 +3,7 @@
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <style>
         .grid-container { width: 100%; height: calc(100vh - 150px); overflow: auto; border: 1px solid #ddd; }
-        .grid-container table { width: 100%; border-collapse: collapse; table-layout: auto; }
+        .grid-container table { width: 100%; border-collapse: collapse; table-layout: auto; min-height: 180%; }
         .grid-container td, .grid-container th { white-space: nowrap; padding: 6px 10px; }
         .grid-container th { position: sticky; top: 0; background: #f5f5f5; z-index: 3; }
         .grid-container td:first-child, .grid-container th:first-child { position: sticky; left: 0; background: #fff; z-index: 2; white-space: normal; word-break: break-word; min-width: 220px; max-width: 320px; }

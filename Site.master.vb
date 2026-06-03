@@ -227,6 +227,7 @@ Public Partial Class SiteMaster
                 liOldOrder.Visible = True
                 liExport.Visible = True
                 liReport.Visible = True
+                liTicket.Visible = True
                 liGuide.Visible = True
                 liSales.Visible = True
                 liStocks.Visible = True
@@ -247,6 +248,7 @@ Public Partial Class SiteMaster
                 liOldOrder.Visible = True
                 liGuide.Visible = True
                 liReport.Visible = True
+                liTicket.Visible = True
                 liSales.Visible = True
                 liStocks.Visible = True
 
@@ -265,6 +267,7 @@ Public Partial Class SiteMaster
             If Session("RoleName") = "Account" Then
                 liOldOrder.Visible = True
                 liSales.Visible = True
+                liTicket.Visible = True
                 liGuide.Visible = True
                 liReport.Visible = True
                 liStocks.Visible = True
@@ -279,6 +282,7 @@ Public Partial Class SiteMaster
                 liOldOrder.Visible = True
                 liGuide.Visible = True
                 liStocks.Visible = True
+                liTicket.Visible = True
 
                 If Session("LevelName") = "Leader" Then
                     liSales.Visible = True
@@ -296,6 +300,7 @@ Public Partial Class SiteMaster
                 liGuide.Visible = True
                 liStocks.Visible = True
                 liReport.Visible = True
+                liTicket.Visible = True
             End If
 
             If Session("RoleName") = "Customer" Then

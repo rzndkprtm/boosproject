@@ -31,63 +31,60 @@
             </div>
         </section>
         <section class="row">
-            <div class="col-12 col-sm-12 col-lg-3">
+            <div class="col-12 col-sm-12 col-lg-4">
                 <div class="card">
-                    <div class="card-content">
-                        <div class="card-body">
-                            <div class="form form-vertical">
-                                <div class="row mb-2">
-                                    <div class="col-12">
-                                        <label>ID</label>
-                                        <br />
-                                        <asp:Label runat="server" ID="lblId" CssClass="form-control font-bold"></asp:Label>
-                                    </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-12">
-                                        <label>Promo Name</label>
-                                        <br />
-                                        <asp:Label runat="server" ID="lblName" CssClass="form-control font-bold"></asp:Label>
-                                    </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-12">
-                                        <label>Start Date</label>
-                                        <br />
-                                        <asp:Label runat="server" ID="lblStartDate" CssClass="form-control font-bold"></asp:Label>
-                                    </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-12">
-                                        <label>End Date</label>
-                                        <br />
-                                        <asp:Label runat="server" ID="lblEndDate" CssClass="form-control font-bold"></asp:Label>
-                                    </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-12">
-                                        <label>Description</label>
-                                        <br />
-                                        <asp:Label runat="server" ID="lblDescription" CssClass="form-control font-bold"></asp:Label>
-                                    </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-12">
-                                        <label>Active</label>
-                                        <br />
-                                        <asp:Label runat="server" ID="lblActive" CssClass="form-control font-bold"></asp:Label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Promo Information</h5>
                     </div>
+                    <div class="card-body">
+                        <dl class="row mb-0">
+                            <dt class="col-5 text-muted">Promo Name</dt>
+                            <dd class="col-7 fw-bold">
+                                <asp:Label runat="server" ID="lblName"></asp:Label>
+                            </dd>
+
+                            <dt class="col-5 text-muted">Start Date</dt>
+                            <dd class="col-7">
+                                <asp:Label runat="server" ID="lblStartDate"></asp:Label>
+                            </dd>
+
+                            <dt class="col-5 text-muted">End Date</dt>
+                            <dd class="col-7">
+                                <asp:Label runat="server" ID="lblEndDate"></asp:Label>
+                            </dd>
+
+                            <dt class="col-5 text-muted">Description</dt>
+                            <dd class="col-7">
+                                <asp:Label runat="server" ID="lblDescription"></asp:Label>
+                            </dd>
+
+                            <dt class="col-5 text-muted">Status</dt>
+                            <dd class="col-7">
+                                <asp:Label runat="server" ID="lblActive"></asp:Label>
+                            </dd>
+
+                        </dl>
+                    </div>
+
                     <div class="card-footer text-center">
-                        <a href="javascript:void(0)" class="btn btn-secondary" onclick="showLog('Promos', '<%= lblId.Text %>')">Log</a>
-                        <a href="#" runat="server" id="aEdit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalProcess">Edit Promo</a>
+                        <a href="javascript:void(0)"
+                            class="btn btn-secondary"
+                            onclick="showLog('Promos', '<%= lblId.Text %>')">
+                            Log
+                        </a>
+
+                        <a href="#"
+                            runat="server"
+                            id="aEdit"
+                            class="btn btn-primary"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modalProcess">
+                            Edit Promo
+                        </a>
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-sm-12 col-lg-9">
+            <div class="col-12 col-sm-12 col-lg-8">
                 <div class="card">
                     <div class="card-content">
                         <div class="card-header">
@@ -329,6 +326,7 @@
     </div>
 
     <div runat="server" visible="false">
+        <asp:Label runat="server" ID="lblId"></asp:Label>
         <asp:Label runat="server" ID="lblIdDetail"></asp:Label>
         <asp:Label runat="server" ID="lblAction"></asp:Label>
     </div>

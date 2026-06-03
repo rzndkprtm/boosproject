@@ -48,6 +48,10 @@ Partial Class Order_Default
         Response.Redirect("~/order/rework", False)
     End Sub
 
+    Protected Sub btnOcean_Click(sender As Object, e As EventArgs)
+        Response.Redirect("~/order/ocean", False)
+    End Sub
+
     Protected Sub btnFile_Click(sender As Object, e As EventArgs)
         Response.Redirect("~/order/file", False)
     End Sub
@@ -802,6 +806,7 @@ Partial Class Order_Default
 
             btnAdd.Visible = LoginAccess("Add")
             btnRework.Visible = LoginAccess("Rework")
+            btnOcean.Visible = LoginAccess("Ocean")
             btnFile.Visible = LoginAccess("File")
 
             divActive.Visible = LoginAccess("Active")
