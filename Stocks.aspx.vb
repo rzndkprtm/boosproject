@@ -1,5 +1,4 @@
 ﻿Imports System.Data.SqlClient
-Imports System.Web.Services
 
 Partial Class Stocks
     Inherits Page
