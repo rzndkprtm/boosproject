@@ -537,49 +537,27 @@
         <script src="/Assets/js/pages/horizontal-layout.js"></script>
 
         <script type="text/javascript">
-            $(document).ready(function () {
-                var selectedTab = $("#<%=selected_tab.ClientID%>");
-                var tabId = selectedTab.val() != "" ? selectedTab.val() : "list-roller";
+            function activateCurrentTab() {
+                var tabId = $("#<%= selected_tab.ClientID %>").val();
+                if (!tabId) tabId = "list-roller";
                 $('#dvTab a[href="#' + tabId + '"]').tab('show');
-                $("#dvTab a").click(function () {
-                    selectedTab.val($(this).attr("href").substring(1));
-                });
+            }
 
-                $("#listRoller").on("click", function () {
-                    updateSessionValue("list-roller");
+            function pageInit() {
+                $(document).off("click.stocktab").on("click.stocktab", "#dvTab a", function () {
+                    var tabId = $(this).attr("href").replace("#", "");
+                    $("#<%= selected_tab.ClientID %>").val(tabId);
                 });
-                $("#listProfile").on("click", function () {
-                    updateSessionValue("list-profile");
-                });
-                $("#listCurtain").on("click", function () {
-                    updateSessionValue("list-curtain");
-                });
-                $("#listVertical").on("click", function () {
-                    updateSessionValue("list-vertical");
-                });
-                $("#listVenetian").on("click", function () {
-                    updateSessionValue("list-venetian");
-                });
-                $("#listAluminium").on("click", function () {
-                    updateSessionValue("list-aluminium");
-                });
-                $("#listCellular").on("click", function () {
-                    updateSessionValue("list-cellular");
-                });
-                $("#listFabricChart").on("click", function () {
-                    updateSessionValue("list-fabricchart");
-                });
+                activateCurrentTab();
+            }
+
+            $(document).ready(function () {
+                pageInit();
             });
 
-            function updateSessionValue(session) {
-                $.ajax({
-                    type: "POST",
-                    url: "Stock.aspx/UpdateSession",
-                    data: JSON.stringify({ value: session }),
-                    contentType: "application/json; charset=utf-8",
-                    dataType: "json"
-                });
-            }
+            Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
+                pageInit();
+            });
 
             window.history.replaceState(null, null, window.location.href);
         </script>

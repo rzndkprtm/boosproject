@@ -1,21 +1,11 @@
 ﻿Imports System.Data.SqlClient
-Imports System.Web.Services
 
 Partial Class JPMDStock
     Inherits Page
 
     Dim stockClass As New StockClass
 
-    <WebMethod(EnableSession:=True)>
-    Public Shared Sub UpdateSession(value As String)
-        HttpContext.Current.Session("selectedTabStock") = value
-    End Sub
-
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        If Not Session("selectedTabStock") = "" Then
-            selected_tab.Value = Session("selectedTabStock").ToString()
-        End If
-
         If Not IsPostBack Then
             BindRoller(txtSearchRoller.Text)
             BindDesignShades()
