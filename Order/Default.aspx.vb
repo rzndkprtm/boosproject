@@ -108,56 +108,6 @@ Partial Class Order_Default
         End Try
     End Sub
 
-    Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
-        If Not String.IsNullOrEmpty(e.CommandArgument) Then
-            Dim dataId As String = e.CommandArgument.ToString()
-            If e.CommandName = "Detail" Then
-                MessageError(False, String.Empty)
-                Try
-                    Session("OrderSearch") = txtSearch.Text
-                    Session("OrderStatus") = ddlStatus.SelectedValue
-                    Session("OrderCompany") = ddlCompany.SelectedValue
-                    Session("OrderActive") = ddlActive.SelectedValue
-                    Session("OrderType") = ddlType.SelectedValue
-
-                    url = String.Format("~/order/detail?orderid={0}", dataId)
-
-                    Response.Redirect(url, False)
-                Catch ex As Exception
-                    MessageError(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError(True, "PLEASE CONTACT IT AT SUPPORT REZA@BIGBLINDS.CO.ID !")
-                        If Session("RoleName") = "Customer" Then
-                            MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
-                        End If
-                    End If
-                End Try
-            End If
-            If e.CommandName = "Ubah" Then
-                MessageError(False, String.Empty)
-                Try
-                    Session("OrderSearch") = txtSearch.Text
-                    Session("OrderStatus") = ddlStatus.SelectedValue
-                    Session("OrderCompany") = ddlCompany.SelectedValue
-                    Session("OrderActive") = ddlActive.SelectedValue
-                    Session("OrderType") = ddlType.SelectedValue
-
-                    url = String.Format("~/order/edit?boosid={0}", dataId)
-
-                    Response.Redirect(url, False)
-                Catch ex As Exception
-                    MessageError(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError(True, "PLEASE CONTACT IT AT SUPPORT REZA@BIGBLINDS.CO.ID !")
-                        If Session("RoleName") = "Customer" Then
-                            MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
-                        End If
-                    End If
-                End Try
-            End If
-        End If
-    End Sub
-
     Protected Sub gvList_DataBound(sender As Object, e As EventArgs)
         Try
             BuildPager()

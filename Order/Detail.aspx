@@ -156,7 +156,7 @@
                             </div>
                         </div>
                         <div class="detail-section">
-                            <div class="detail-title">Order Details</div>
+                            <div class="detail-title">Order Data</div>
                             <div class="detail-row">
                                 <div class="detail-label">Order Number</div>
                                 <div class="detail-value">
