@@ -467,49 +467,27 @@
     <asp:HiddenField ID="selected_tab" runat="server" />
 
     <script type="text/javascript">
-        $(document).ready(function () {
-            var selectedTab = $("#<%=selected_tab.ClientID%>");
-             var tabId = selectedTab.val() != "" ? selectedTab.val() : "list-roller";
-             $('#dvTab a[href="#' + tabId + '"]').tab('show');
-             $("#dvTab a").click(function () {
-                 selectedTab.val($(this).attr("href").substring(1));
-             });
-
-             $("#listRoller").on("click", function () {
-                 updateSessionValue("list-roller");
-             });
-             $("#listProfile").on("click", function () {
-                 updateSessionValue("list-profile");
-             });
-             $("#listCurtain").on("click", function () {
-                 updateSessionValue("list-curtain");
-             });
-             $("#listVertical").on("click", function () {
-                 updateSessionValue("list-vertical");
-             });
-             $("#listVenetian").on("click", function () {
-                 updateSessionValue("list-venetian");
-             });
-             $("#listAluminium").on("click", function () {
-                 updateSessionValue("list-aluminium");
-             });
-             $("#listCellular").on("click", function () {
-                 updateSessionValue("list-cellular");
-             });
-             $("#listFabricChart").on("click", function () {
-                 updateSessionValue("list-fabricchart");
-             });
-         });
-
-        function updateSessionValue(session) {
-            $.ajax({
-                type: "POST",
-                url: "Stocks.aspx/UpdateSession",
-                data: JSON.stringify({ value: session }),
-                contentType: "application/json; charset=utf-8",
-                dataType: "json"
-            });
+        function activateCurrentTab() {
+            var tabId = $("#<%= selected_tab.ClientID %>").val();
+            if (!tabId) tabId = "list-roller";
+            $('#dvTab a[href="#' + tabId + '"]').tab('show');
         }
+
+        function pageInit() {
+            $(document).off("click.stocktab").on("click.stocktab", "#dvTab a", function () {
+                var tabId = $(this).attr("href").replace("#", "");
+                $("#<%= selected_tab.ClientID %>").val(tabId);
+            });
+            activateCurrentTab();
+        }
+
+        $(document).ready(function () {
+            pageInit();
+        });
+
+        Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
+            pageInit();
+        });
 
         window.history.replaceState(null, null, window.location.href);
     </script>

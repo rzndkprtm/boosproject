@@ -6,11 +6,6 @@ Partial Class Stocks
 
     Dim stockClass As New StockClass
 
-    <WebMethod(EnableSession:=True)>
-    Public Shared Sub UpdateSession(value As String)
-        HttpContext.Current.Session("selectedTabStocks") = value
-    End Sub
-
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
@@ -19,12 +14,6 @@ Partial Class Stocks
         End If
 
         If Not IsPostBack Then
-            If Session("selectedTabStocks") IsNot Nothing Then
-                selected_tab.Value = Session("selectedTabStocks").ToString()
-            Else
-                selected_tab.Value = "list-roller"
-            End If
-
             BindCompanyDetail()
 
             BindRoller(txtSearchRoller.Text, ddlCompanyDetail.SelectedValue)
@@ -41,8 +30,6 @@ Partial Class Stocks
     End Sub
 
     Protected Sub ddlCompanyDetail_SelectedIndexChanged(sender As Object, e As EventArgs)
-        Session("selectedTabStocks") = selected_tab.Value
-
         BindRoller(txtSearchRoller.Text, ddlCompanyDetail.SelectedValue)
         BindDesignShades(ddlCompanyDetail.SelectedValue)
         BindCurtain(txtSearchCurtain.Text, ddlCompanyDetail.SelectedValue)
@@ -90,7 +77,6 @@ Partial Class Stocks
     End Sub
 
     Protected Sub btnSearchRoller_Click(sender As Object, e As EventArgs)
-        Session("selectedTabStocks") = "list-roller"
         BindRoller(txtSearchRoller.Text, ddlCompanyDetail.SelectedValue)
     End Sub
 
@@ -245,7 +231,6 @@ Partial Class Stocks
     End Sub
 
     Protected Sub btnSearchCurtain_Click(sender As Object, e As EventArgs)
-        Session("selectedTabStocks") = "list-curtain"
         BindCurtain(txtSearchCurtain.Text, ddlCompanyDetail.SelectedValue)
     End Sub
 
@@ -322,7 +307,6 @@ Partial Class Stocks
     End Sub
 
     Protected Sub btnSearchVertical_Click(sender As Object, e As EventArgs)
-        Session("selectedTabStocks") = "list-vertical"
         BindVertical(txtSearchVertical.Text, ddlCompanyDetail.SelectedValue)
     End Sub
 
@@ -575,7 +559,6 @@ Partial Class Stocks
     ' FABRIC CHART
 
     Protected Sub btnFabricChart_Click(sender As Object, e As EventArgs)
-        Session("selectedTabStocks") = "list-fabricchart"
         BindFabricChart(txtSearchFabricChart.Text, ddlCompanyDetail.SelectedValue)
     End Sub
 
