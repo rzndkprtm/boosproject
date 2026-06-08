@@ -297,7 +297,6 @@ Public Partial Class SiteMaster
 
             If Session("RoleName") = "Data Entry" Then
                 liOldOrder.Visible = True
-                liGuide.Visible = True
                 liStocks.Visible = True
                 liReport.Visible = True
                 liTicket.Visible = True

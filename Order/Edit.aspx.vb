@@ -17,7 +17,7 @@ Partial Class Order_Edit
             Exit Sub
         End If
 
-        If String.IsNullOrEmpty(Request.QueryString("boosid")) Then
+        If String.IsNullOrEmpty(Request.QueryString("orderid")) Then
             Response.Redirect("~/order/", False)
             Exit Sub
         End If
@@ -26,7 +26,7 @@ Partial Class Order_Edit
             returnPage = Request.QueryString("returnpage").ToString()
         End If
 
-        lblHeaderId.Text = Request.QueryString("boosid").ToString()
+        lblHeaderId.Text = Request.QueryString("orderid").ToString()
         If Not IsPostBack Then
             BackColor()
             BindDataHeader(lblHeaderId.Text)
@@ -84,8 +84,13 @@ Partial Class Order_Edit
             End If
 
             If msgError.InnerText = "" Then
+                Dim orderFactory As String = String.Empty
+                If Not String.IsNullOrEmpty(lbOrderFactory.SelectedValue) Then
+                    orderFactory = String.Join(",", lbOrderFactory.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
+                End If
+
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET OrderId=@OrderId, CustomerId=@CustomerId, OrderNumber=@OrderNumber, OrderName=@OrderName, OrderNote=@OrderNote, OrderType=@OrderType, CreatedBy=@CreatedBy WHERE Id=@Id", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET OrderId=@OrderId, CustomerId=@CustomerId, OrderNumber=@OrderNumber, OrderName=@OrderName, OrderNote=@OrderNote, OrderType=@OrderType, OrderFactory=@OrderFactory, CreatedBy=@CreatedBy WHERE Id=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
                         myCmd.Parameters.AddWithValue("@OrderId", txtOrderId.Text)
                         myCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
@@ -93,6 +98,7 @@ Partial Class Order_Edit
                         myCmd.Parameters.AddWithValue("@OrderName", txtOrderName.Text.Trim())
                         myCmd.Parameters.AddWithValue("@OrderNote", txtOrderNote.Text.Trim())
                         myCmd.Parameters.AddWithValue("@OrderType", ddlOrderType.SelectedValue)
+                        myCmd.Parameters.AddWithValue("@OrderFactory", orderFactory)
                         myCmd.Parameters.AddWithValue("@CreatedBy", ddlCreatedBy.SelectedValue)
 
                         thisConn.Open()
@@ -130,19 +136,66 @@ Partial Class Order_Edit
 
     Protected Sub BindDataHeader(headerId As String)
         Try
-            Dim thisQuery As String = "SELECT * FROM OrderHeaders WHERE Id='" & headerId & "'"
-            If Session("RoleName") = "Customer" Then
-                thisQuery = "SELECT * FROM OrderHeaders WHERE Id='" & headerId & "' AND CustomerId='" & Session("CustomerId").ToString() & "'"
-            End If
-            Dim myData As DataRow = orderClass.GetDataRow(thisQuery)
-            If myData Is Nothing Then
-                Response.Redirect("~/order", False)
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@HeaderId", CInt(headerId)),
+                New SqlParameter("@RoleName", Session("RoleName").ToString()),
+                New SqlParameter("@LevelName", If(Session("LevelName"), DBNull.Value)),
+                New SqlParameter("@CompanyId", If(Session("CompanyId"), DBNull.Value)),
+                New SqlParameter("@LoginId", If(Session("LoginId"), DBNull.Value)),
+                New SqlParameter("@CustomerId", If(Session("CustomerId"), DBNull.Value)),
+                New SqlParameter("@CustomerLevel", If(Session("CustomerLevel"), DBNull.Value))
+            }
+            Dim headerData As DataRow = orderClass.GetDataRowSP("sp_GetHeaderOnDetail", params)
+            If headerData Is Nothing Then
+                url = "~/order/"
+                If returnPage = "detail" Then
+                    url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+                End If
+                Response.Redirect(url, False)
                 Exit Sub
             End If
 
-            Dim statusOrder As String = myData("Status").ToString()
-            If (Session("RoleName") = "Customer") AndAlso (statusOrder = "In Production" OrElse statusOrder = "Canceled" Or statusOrder = "Completed") Then
-                url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+            Dim statusOrder As String = headerData("Status").ToString()
+            If Session("RoleName") = "Customer" AndAlso Not statusOrder = "Unsubmitted" Then
+                url = "~/order/"
+                If returnPage = "detail" Then
+                    url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+                End If
+                Response.Redirect(url, False)
+            End If
+
+            If Session("RoleName") = "IT" AndAlso (statusOrder = "Shipped Out" OrElse statusOrder = "Completed" OrElse statusOrder = "Canceled") Then
+                url = "~/order/"
+                If returnPage = "detail" Then
+                    url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+                End If
+                Response.Redirect(url, False)
+                Exit Sub
+            End If
+
+            If Session("RoleName") = "Factory Office" AndAlso (statusOrder = "Shipped Out" OrElse statusOrder = "Completed" OrElse statusOrder = "Canceled") Then
+                url = "~/order/"
+                If returnPage = "detail" Then
+                    url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+                End If
+                Response.Redirect(url, False)
+                Exit Sub
+            End If
+
+            If Session("RoleName") = "Account" AndAlso (statusOrder = "Unsubmitted" OrElse statusOrder = "In Production" OrElse statusOrder = "On Hold" OrElse statusOrder = "Shipped Out" OrElse statusOrder = "Completed" OrElse statusOrder = "Canceled") Then
+                url = "~/order/"
+                If returnPage = "detail" Then
+                    url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+                End If
+                Response.Redirect(url, False)
+                Exit Sub
+            End If
+
+            If Session("RoleName") = "Sales" AndAlso Not statusOrder = "Unsubmitted" Then
+                url = "~/order/"
+                If returnPage = "detail" Then
+                    url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+                End If
                 Response.Redirect(url, False)
                 Exit Sub
             End If
@@ -150,19 +203,31 @@ Partial Class Order_Edit
             BindDataCustomer()
             BindDataUser()
 
-            ddlCustomer.SelectedValue = myData("CustomerId").ToString()
-            ddlCreatedBy.SelectedValue = myData("CreatedBy").ToString()
-            txtOrderNumber.Text = myData("OrderNumber").ToString()
-            lblOrderNo.Text = myData("OrderNumber").ToString()
+            ddlCustomer.SelectedValue = headerData("CustomerId").ToString()
+            ddlCreatedBy.SelectedValue = headerData("CreatedBy").ToString()
+            txtOrderNumber.Text = headerData("OrderNumber").ToString()
+            lblOrderNo.Text = headerData("OrderNumber").ToString()
 
-            txtOrderName.Text = myData("OrderName").ToString()
-            txtOrderNote.Text = myData("OrderNote").ToString()
-            txtOrderId.Text = myData("OrderId").ToString()
-            ddlOrderType.SelectedValue = myData("OrderType").ToString()
+            txtOrderName.Text = headerData("OrderName").ToString()
+            txtOrderNote.Text = headerData("OrderNote").ToString()
+            txtOrderId.Text = headerData("OrderId").ToString()
+            ddlOrderType.SelectedValue = headerData("OrderType").ToString()
+            If Not headerData("OrderFactory").ToString() = "" Then
+                Dim factoryArray() As String = headerData("OrderFactory").ToString().Split(",")
+                For Each i In factoryArray
+                    If Not String.IsNullOrEmpty(i) Then
+                        Dim item = lbOrderFactory.Items.FindByValue(i)
+                        If item IsNot Nothing Then
+                            item.Selected = True
+                        End If
+                    End If
+                Next
+            End If
 
             divCustomer.Visible = False
             divCreatedBy.Visible = False
             divOrderType.Visible = False
+            divOrderFactory.Visible = False
 
             ddlCustomer.Enabled = False
             ddlCreatedBy.Enabled = False
@@ -175,6 +240,7 @@ Partial Class Order_Edit
                 divCustomer.Visible = True
                 divCreatedBy.Visible = True
                 divOrderType.Visible = True
+                divOrderFactory.Visible = True
 
                 ddlCustomer.Enabled = True
                 ddlCreatedBy.Enabled = True
@@ -182,6 +248,30 @@ Partial Class Order_Edit
                 txtOrderId.Enabled = True
                 ddlCustomer.Enabled = True
                 ddlCreatedBy.Enabled = True
+            End If
+
+            If Session("RoleName") = "IT" Then
+                divCustomer.Visible = True
+                divCreatedBy.Visible = True
+                divOrderType.Visible = True
+                divOrderFactory.Visible = True
+
+                ddlCustomer.Enabled = True
+                ddlCreatedBy.Enabled = True
+
+                txtOrderId.Enabled = True
+                If statusOrder = "In Production" OrElse statusOrder = "On Hold" Then
+                    txtOrderId.Enabled = False
+                End If
+                ddlCustomer.Enabled = False
+                ddlCreatedBy.Enabled = False
+            End If
+
+            If Session("RoleName") = "Factory Office" Then
+                divCustomer.Visible = True
+                divCreatedBy.Visible = True
+                ddlCustomer.Enabled = False
+                ddlCreatedBy.Enabled = False
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())

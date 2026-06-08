@@ -73,13 +73,13 @@
                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                         <ul class="dropdown-menu">
                                                             <li>
-                                                                <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalTerms" onclick='<%# String.Format("return showTerms(`{0}`);", Eval("Terms").ToString()) %>'>Show Terms & Conditions</a>
+                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalTerms" onclick='<%# String.Format("return showTerms(`{0}`);", Eval("Terms").ToString()) %>'>Show Terms & Conditions</a>
                                                             </li>
                                                             <li>
-                                                                <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalLogo" onclick='<%# String.Format("return showLogo(`{0}`);", Eval("Logo").ToString()) %>'>Show Logo</a>
+                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalLogo" onclick='<%# String.Format("return showLogo(`{0}`);", Eval("Logo").ToString()) %>'>Show Logo</a>
                                                             </li>
                                                             <li>
-                                                                <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('CustomerQuotes', '<%# Eval("Id") %>')">Log</a>
+                                                                <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('CustomerQuotes', '<%# Eval("Id") %>')">Log</a>
                                                             </li>
                                                         </ul>
                                                     </ItemTemplate>
@@ -109,7 +109,7 @@
                     <span id="textTerms"></span>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                 </div>
             </div>
         </div>
@@ -124,7 +124,7 @@
                     <asp:Image runat="server" CssClass="w-100" ID="imgLogo" />
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                 </div>
             </div>
         </div>

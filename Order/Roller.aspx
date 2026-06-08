@@ -13,7 +13,7 @@
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a runat="server" href="~/">Home</a></li>
                             <li class="breadcrumb-item"><a runat="server" href="~/order">Order</a></li>
-                            <li class="breadcrumb-item"><a id="orderDetail" href="#">Detail</a></li>
+                            <li class="breadcrumb-item"><a id="orderDetail" href="javascript:void(0);">Detail</a></li>
                             <li class="breadcrumb-item active" aria-current="page"><%: Page.Title %></li>
                         </ol>
                     </nav>
@@ -1227,7 +1227,18 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="row mt-3" id="divbracketsize">
+                                            <div class="row mt-3" id="divadjusting">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Adjusting Spanner</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-2 form-group">
+                                                    <select id="adjusting" class="form-select">
+                                                        <option value=""></option>
+                                                        <option value="Yes">Yes</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row" id="divbracketsize">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Bracket Size</label>
                                                 </div>
@@ -1254,17 +1265,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="row mt-3" id="divadjusting">
-                                                <div class="col-12 col-sm-12 col-lg-3">
-                                                    <label>Adjusting Spanner</label>
-                                                </div>
-                                                <div class="col-12 col-sm-12 col-lg-2 form-group">
-                                                    <select id="adjusting" class="form-select">
-                                                        <option value=""></option>
-                                                        <option value="Yes">Yes</option>
-                                                    </select>
-                                                </div>
-                                            </div>
+                                            
                                             <div class="row mt-3">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Special Information</label>
@@ -1366,7 +1367,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
                 </div>
             </div>
         </div>
@@ -1381,7 +1382,7 @@
                     <span id="spanInfo"></span>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
                 </div>
             </div>
         </div>
@@ -1393,7 +1394,7 @@
                     <span id="spanInfoGallery"></span>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
                 </div>
             </div>
         </div>
@@ -1460,7 +1461,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
                 </div>
             </div>
         </div>
@@ -1495,7 +1496,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
                 </div>
             </div>
         </div>

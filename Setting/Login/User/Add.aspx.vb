@@ -113,9 +113,36 @@ Partial Class Setting_Login_User_Add
     End Sub
 
     Protected Sub BindRole()
-        ddlCustomer.Items.Clear()
+        ddlRole.Items.Clear()
         Try
-            ddlRole.DataSource = settingClass.GetDataTable("SELECT * FROM LoginRoles WHERE Active=1 ORDER BY Name ASC")
+            Dim roleName As String = Convert.ToString(Session("RoleName"))
+            Dim levelName As String = Convert.ToString(Session("LevelName"))
+
+            Dim excludeIds As New List(Of String)
+            Select Case roleName
+                Case "IT"
+                    excludeIds.Add("1")
+
+                    If levelName = "Member" Then
+                        excludeIds.Add("2")
+                    End If
+                Case "Factory Office"
+                    excludeIds.Add("1")
+
+                    If levelName = "Member" Then
+                        excludeIds.AddRange({"2", "3"})
+                    End If
+                Case "Developer"
+            End Select
+
+            Dim sql As String = "SELECT * FROM LoginRoles WHERE Active=1"
+
+            If excludeIds.Count > 0 Then
+                sql &= " AND Id NOT IN ('" & String.Join("','", excludeIds) & "')"
+            End If
+            sql &= " ORDER BY Name ASC"
+
+            ddlRole.DataSource = settingClass.GetDataTable(sql)
             ddlRole.DataTextField = "Name"
             ddlRole.DataValueField = "Id"
             ddlRole.DataBind()
@@ -126,7 +153,7 @@ Partial Class Setting_Login_User_Add
         Catch ex As Exception
             ddlRole.Items.Clear()
             If Session("RoleName") = "Developer" Then
-                MessageError(True, ex.ToString())
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
         End Try
     End Sub

@@ -96,6 +96,19 @@
                                             </asp:DropDownList>
                                         </div>
                                     </div>
+                                    <div class="row mb-3" runat="server" id="divOrderFactory">
+                                        <div class="col-12 col-sm-12 col-lg-3">
+                                            <label>Order Factory</label>
+                                        </div>
+                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                            <asp:ListBox runat="server" ID="lbOrderFactory" CssClass="choices form-select multiple-remove" SelectionMode="Multiple">
+                                                <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                <asp:ListItem Value="BIG" Text="BIG"></asp:ListItem>
+                                                <asp:ListItem Value="CHINA" Text="CHINA"></asp:ListItem>
+                                                <asp:ListItem Value="TAIWAN" Text="TAIWAN"></asp:ListItem>
+                                            </asp:ListBox>
+                                        </div>
+                                    </div>
                                     <div class="row" runat="server" id="divError">
                                         <div class="col-12">
                                             <div class="alert alert-danger">
@@ -131,7 +144,7 @@
                     <span id="spanInfo"></span>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
                 </div>
             </div>
         </div>

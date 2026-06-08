@@ -4,8 +4,8 @@ Partial Class Setting_Customer_Login_Add
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim url As String = String.Empty
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
@@ -22,6 +22,10 @@ Partial Class Setting_Customer_Login_Add
             txtFullName.Text = txtUserName.Text
             ddlCustomer.Enabled = False
             If Session("RoleNme") = "Developer" Then ddlCustomer.Enabled = True
+        End If
+
+        If Not String.IsNullOrEmpty(Request.QueryString("returnpage")) Then
+            lblReturnPage.Text = Request.QueryString("returnpage").ToString()
         End If
 
         If Not IsPostBack Then
@@ -82,7 +86,7 @@ Partial Class Setting_Customer_Login_Add
 
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Logins ORDER BY Id DESC")
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Logins VALUES (@Id, @CustomerId, @RoleId, @LevelId, @UserName, @Password, @FullName, @Email, 0, NULL, 1, @Pricing, 1)", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Logins VALUES (@Id, @CustomerId, @RoleId, @LevelId, @UserName, @Password, @FullName, NULL, 0, NULL, 1, @Pricing, 1)", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
                         myCmd.Parameters.AddWithValue("@CustomerId", If(String.IsNullOrEmpty(ddlCustomer.SelectedValue), CType(DBNull.Value, Object), ddlCustomer.SelectedValue))
                         myCmd.Parameters.AddWithValue("@RoleId", ddlRole.SelectedValue)
@@ -90,7 +94,6 @@ Partial Class Setting_Customer_Login_Add
                         myCmd.Parameters.AddWithValue("@UserName", txtUserName.Text.Trim())
                         myCmd.Parameters.AddWithValue("@Password", password)
                         myCmd.Parameters.AddWithValue("@FullName", txtFullName.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Email", txtEmail.Text.Trim())
                         myCmd.Parameters.AddWithValue("@Pricing", ddlPricing.SelectedValue)
 
                         thisConn.Open()
@@ -101,7 +104,10 @@ Partial Class Setting_Customer_Login_Add
                 Dim dataLog As Object() = {"Logins", thisId, Session("LoginId").ToString(), "Login Created"}
                 settingClass.Logs(dataLog)
 
-                Dim url As String = String.Format("~/setting/customer/detail?customerid={0}", ddlCustomer.SelectedValue)
+                url = "~/setting/customer/login"
+                If lblReturnPage.Text = "detail" Then
+                    url = String.Format("~/setting/customer/detail?customerid={0}", ddlCustomer.SelectedValue)
+                End If
                 Response.Redirect(url, False)
             End If
         Catch ex As Exception
@@ -113,9 +119,9 @@ Partial Class Setting_Customer_Login_Add
     End Sub
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
-        Dim url As String = String.Format("~/setting/customer/detail?customerid={0}", ddlCustomer.SelectedValue)
-        If ddlCustomer.SelectedValue = "" Then
-            url = "~/setting/customer/login"
+        url = "~/setting/customer/login"
+        If lblReturnPage.Text = "detail" Then
+            url = String.Format("~/setting/customer/detail?customerid={0}", ddlCustomer.SelectedValue)
         End If
         Response.Redirect(url, False)
     End Sub

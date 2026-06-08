@@ -72,7 +72,7 @@
                                                         <asp:BoundField DataField="LastActiveMinute" HeaderText="Active (Minute Ago)" />
                                                         <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
                                                             <ItemTemplate>
-                                                                <a href="#" runat="server" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalSendNotif" onclick='<%# String.Format("return idSendNotif(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("RoleId").ToString()) %>'>Send Notification</a>
+                                                                <a href="javascript:void(0);" runat="server" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalSendNotif" onclick='<%# String.Format("return idSendNotif(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("RoleId").ToString()) %>'>Send Notification</a>
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
                                                     </Columns>
@@ -149,7 +149,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnSendNotif" CssClass="btn btn-info" Text="Submit" OnClick="btnSendNotif_Click" OnClientClick="return setSummernoteContent();" />
                 </div>
             </div>

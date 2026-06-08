@@ -94,8 +94,8 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-12">
-                                            <a href="javascript:void(0)" runat="server" id="aUpload" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalUpload">Upload Image</a>
-                                            <a href="javascript:void(0)" runat="server" id="aDelete" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalDelete">Delete Image</a>
+                                            <a href="javascript:void(0);" runat="server" id="aUpload" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalUpload">Upload Image</a>
+                                            <a href="javascript:void(0);" runat="server" id="aDelete" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalDelete">Delete Image</a>
                                         </div>
                                     </div>
                                 </div>
@@ -112,8 +112,8 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-12">
-                                            <a href="javascript:void(0)" runat="server" id="aUploadB" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalUploadB">Upload Image</a>
-                                            <a href="javascript:void(0)" runat="server" id="aDeleteB" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalDeleteB">Delete Image</a>
+                                            <a href="javascript:void(0);" runat="server" id="aUploadB" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalUploadB">Upload Image</a>
+                                            <a href="javascript:void(0);" runat="server" id="aDeleteB" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalDeleteB">Delete Image</a>
                                         </div>
                                     </div>
                                 </div>
@@ -130,8 +130,8 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-12">
-                                            <a href="javascript:void(0)" runat="server" id="aUploadC" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalUploadC">Upload Image</a>
-                                            <a href="javascript:void(0)" runat="server" id="aDeleteC" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalDeleteC">Delete Image</a>
+                                            <a href="javascript:void(0);" runat="server" id="aUploadC" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalUploadC">Upload Image</a>
+                                            <a href="javascript:void(0);" runat="server" id="aDeleteC" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalDeleteC">Delete Image</a>
                                         </div>
                                     </div>
                                 </div>
@@ -148,8 +148,8 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-12">
-                                            <a href="javascript:void(0)" runat="server" id="aUploadD" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalUploadD">Upload Image</a>
-                                            <a href="javascript:void(0)" runat="server" id="aDeleteD" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalDeleteD">Delete Image</a>
+                                            <a href="javascript:void(0);" runat="server" id="aUploadD" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalUploadD">Upload Image</a>
+                                            <a href="javascript:void(0);" runat="server" id="aDeleteD" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalDeleteD">Delete Image</a>
                                         </div>
                                     </div>
                                 </div>
@@ -172,7 +172,7 @@
                     <asp:FileUpload runat="server" ID="fuUpload" CssClass="form-control" />
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnUpload" CssClass="btn btn-info" Text="Submit" OnClick="btnUpload_Click" />
                 </div>
             </div>
@@ -190,7 +190,7 @@
                     <asp:FileUpload runat="server" ID="fuUploadB" CssClass="form-control" />
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnUploadB" CssClass="btn btn-info" Text="Submit" OnClick="btnUploadB_Click" />
                 </div>
             </div>
@@ -208,7 +208,7 @@
                     <asp:FileUpload runat="server" ID="fuUploadC" CssClass="form-control" />
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnUploadC" CssClass="btn btn-info" Text="Submit" OnClick="btnUploadC_Click" />
                 </div>
             </div>
@@ -226,7 +226,7 @@
                     <asp:FileUpload runat="server" ID="fuUploadD" CssClass="form-control" />
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnUploadD" CssClass="btn btn-info" Text="Submit" OnClick="btnUploadD_Click" />
                 </div>
             </div>
@@ -243,7 +243,7 @@
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnDelete" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDelete_Click" />
                 </div>
             </div>
@@ -260,7 +260,7 @@
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnDeleteB" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDeleteB_Click" />
                 </div>
             </div>
@@ -277,7 +277,7 @@
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnDeleteC" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDeleteC_Click" />
                 </div>
             </div>
@@ -294,7 +294,7 @@
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnDeleteD" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDeleteD_Click" />
                 </div>
             </div>

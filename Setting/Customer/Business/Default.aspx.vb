@@ -23,9 +23,11 @@ Partial Class Setting_Customer_Business_Default
     End Sub
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
         gvList.PageIndex = 0
+
+        MessageError(False, String.Empty)
         BindData(txtSearch.Text)
+        Session("SearchCustomerBusiness") = txtSearch.Text
     End Sub
 
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
@@ -54,18 +56,6 @@ Partial Class Setting_Customer_Business_Default
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
         End Try
-    End Sub
-
-    Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
-        If Not String.IsNullOrEmpty(e.CommandArgument) Then
-            Dim dataId As String = e.CommandArgument.ToString()
-
-            If e.CommandName = "Detail" Then
-                Session("SearchCustomerBusiness") = txtSearch.Text
-                Dim url As String = String.Format("~/setting/customer/business/edit?businessid={0}", dataId)
-                Response.Redirect(url, False)
-            End If
-        End If
     End Sub
 
     Protected Sub gvList_DataBound(sender As Object, e As EventArgs)
@@ -135,7 +125,6 @@ Partial Class Setting_Customer_Business_Default
     End Sub
 
     Protected Sub BindData(searchText As String)
-        Session("SearchCustomerBusiness") = String.Empty
         Try
             Dim params As New List(Of SqlParameter) From {
                 New SqlParameter("@SearchText", If(String.IsNullOrEmpty(searchText), CType(DBNull.Value, Object), searchText.Trim())),
@@ -155,6 +144,7 @@ Partial Class Setting_Customer_Business_Default
             End If
         End Try
     End Sub
+
     Protected Sub BuildPager()
         If gvList.PageCount <= 1 Then
             navPager.Visible = False
@@ -186,7 +176,6 @@ Partial Class Setting_Customer_Business_Default
         rptPager.DataSource = pages
         rptPager.DataBind()
     End Sub
-
 
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message

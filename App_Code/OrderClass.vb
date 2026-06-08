@@ -1179,6 +1179,122 @@ Public Class OrderClass
         Return result
     End Function
 
+    Public Sub UpdateOrderFactory(headerId As String)
+        Try
+            Try
+                Dim factoryList As New List(Of String)
+
+                Dim detailData As DataTable = GetDataTable("SELECT OrderDetails.*, Products.Name AS ProductName, Designs.Name AS DesignName, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.DesignId=Blinds.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1")
+                For iDetail As Integer = 0 To detailData.Rows.Count - 1
+                    Dim designName As String = detailData.Rows(iDetail)("DesignName").ToString()
+                    Dim blindName As String = detailData.Rows(iDetail)("BlindName").ToString()
+
+                    Dim isBig As Boolean = False
+                    Dim isAustralia As Boolean = False
+                    Dim isTaiwan As Boolean = False
+                    Dim isChina As Boolean = False
+
+                    If designName = "Aluminium Blind" OrElse designName = "Design Shades" OrElse designName = "Linea Valance" OrElse designName = "Panel Glide" OrElse designName = "Pelmet" OrElse designName = "Roman Blind" OrElse designName = "Privacy Venetian" OrElse designName = "Venetian Blind" OrElse designName = "Vertical" OrElse designName = "Roller Blind" OrElse designName = "Sample" OrElse designName = "Skyline Shutter Express" OrElse designName = "Outdoor" OrElse designName = "Saphora Drape" OrElse designName = "Roller Horizon" Then
+                        isBig = True
+                    End If
+
+                    If designName = "Cellular Shades" Then
+                        Dim fabricColourId As String = detailData.Rows(iDetail)("FabricColourId").ToString()
+                        Dim fabricFactory As String = GetItemData("SELECT Factory FROM FabricColours WHERE Id='" & fabricColourId & "'")
+
+                        If fabricFactory = "Express" Then isBig = True
+                        If fabricFactory = "Regular" Then isTaiwan = True
+                    End If
+
+                    If designName = "Curtain" Then
+                        Dim fabricColourId As String = detailData.Rows(iDetail)("FabricColourId").ToString()
+                        Dim fabricColourIdB As String = detailData.Rows(iDetail)("FabricColourIdB").ToString()
+
+                        Dim trackType As String = detailData.Rows(iDetail)("TrackType").ToString()
+                        Dim trackTypeB As String = detailData.Rows(iDetail)("TrackTypeB").ToString()
+
+                        Dim fabricFactory As String = String.Empty
+                        Dim fabricFactoryB As String = String.Empty
+
+                        If fabricColourId <> "" Then
+                            fabricFactory = GetItemData("SELECT Factory FROM FabricColours WHERE Id='" & fabricColourId & "'")
+                        End If
+
+                        If fabricColourIdB <> "" Then
+                            fabricFactoryB = GetItemData("SELECT Factory FROM FabricColours WHERE Id='" & fabricColourIdB & "'")
+                        End If
+
+                        If fabricFactory = "Express" Then
+                            isBig = True
+                        ElseIf fabricFactory = "Regular" Then
+                            isAustralia = True
+                        End If
+
+                        If fabricFactoryB = "Express" Then
+                            isBig = True
+                        ElseIf fabricFactoryB = "Regular" Then
+                            isAustralia = True
+                        End If
+
+                        If trackType = "Standard Track" Then
+                            isAustralia = True
+                        ElseIf trackType = "Motorised Track" Then
+                            isBig = True
+                        End If
+
+                        If trackTypeB = "Standard Track" Then
+                            isAustralia = True
+                        ElseIf trackTypeB = "Motorised Track" Then
+                            isBig = True
+                        End If
+                    End If
+
+                    If designName = "Skyline Shutter Ocean" OrElse designName = "Evolve Shutter Ocean" Then
+                        isChina = True
+                    End If
+
+                    If designName = "Door" OrElse designName = "Window" Then
+                        Dim frameColour As String = detailData.Rows(iDetail)("FrameColour").ToString()
+
+                        If frameColour.Contains("Regular") Then isAustralia = True
+                        If frameColour.Contains("Express") Then isBig = True
+                    End If
+
+                    If isBig AndAlso Not factoryList.Contains("BIG") Then
+                        factoryList.Add("BIG")
+                    End If
+
+                    If isTaiwan AndAlso Not factoryList.Contains("TAIWAN") Then
+                        factoryList.Add("TAIWAN")
+                    End If
+
+                    If isAustralia AndAlso Not factoryList.Contains("AUS") Then
+                        factoryList.Add("AUS")
+                    End If
+
+                    If isChina AndAlso Not factoryList.Contains("CHINA") Then
+                        factoryList.Add("CHINA")
+                    End If
+                Next
+
+                Dim factory As String = String.Join(", ", factoryList)
+
+                Using thisConn As SqlConnection = New SqlConnection(myConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET OrderFactory=@OrderFactory WHERE Id=@Id", thisConn)
+                        myCmd.Parameters.AddWithValue("@Id", headerId)
+                        myCmd.Parameters.AddWithValue("@OrderFactory", factory)
+
+                        thisConn.Open()
+                        myCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+            Catch ex As Exception
+            End Try
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
 
     ' PRICING
 

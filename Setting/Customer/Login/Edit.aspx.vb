@@ -5,8 +5,8 @@ Partial Class Setting_Customer_Login_Edit
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim url As String = String.Empty
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
@@ -77,14 +77,13 @@ Partial Class Setting_Customer_Login_Edit
 
             If msgError.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Logins SET CustomerId=@CustomerId, RoleId=@RoleId, LevelId=@LevelId, UserName=@UserName, FullName=@FullName, Email=@Email WHERE Id=@Id", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Logins SET CustomerId=@CustomerId, RoleId=@RoleId, LevelId=@LevelId, UserName=@UserName, FullName=@FullName WHERE Id=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         myCmd.Parameters.AddWithValue("@CustomerId", If(String.IsNullOrEmpty(ddlCustomer.SelectedValue), CType(DBNull.Value, Object), ddlCustomer.SelectedValue))
                         myCmd.Parameters.AddWithValue("@RoleId", ddlRole.SelectedValue)
                         myCmd.Parameters.AddWithValue("@LevelId", ddlLevel.SelectedValue)
                         myCmd.Parameters.AddWithValue("@UserName", txtUserName.Text.Trim())
                         myCmd.Parameters.AddWithValue("@FullName", txtFullName.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Email", txtEmail.Text.Trim())
                         myCmd.Parameters.AddWithValue("@Pricing", ddlPricing.SelectedValue)
 
                         thisConn.Open()
@@ -95,7 +94,10 @@ Partial Class Setting_Customer_Login_Edit
                 Dim dataLog As Object() = {"Logins", lblId.Text, Session("LoginId").ToString(), "Login Updated"}
                 settingClass.Logs(dataLog)
 
-                Dim url As String = String.Format("~/setting/customer/detail?customerid={0}", ddlCustomer.SelectedValue)
+                url = "~/setting/customer/login"
+                If lblReturnPage.Text = "detail" Then
+                    url = String.Format("~/setting/customer/detail?customerid={0}", ddlCustomer.SelectedValue)
+                End If
                 Response.Redirect(url, False)
             End If
         Catch ex As Exception
@@ -107,7 +109,10 @@ Partial Class Setting_Customer_Login_Edit
     End Sub
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
-        Dim url As String = String.Format("~/setting/customer/detail?customerid={0}", ddlCustomer.SelectedValue)
+        url = "~/setting/customer/login"
+        If lblReturnPage.Text = "detail" Then
+            url = String.Format("~/setting/customer/detail?customerid={0}", ddlCustomer.SelectedValue)
+        End If
         Response.Redirect(url, False)
     End Sub
 
@@ -125,19 +130,13 @@ Partial Class Setting_Customer_Login_Edit
             lblLevel.Text = myData("LevelId").ToString()
             txtUserName.Text = myData("UserName").ToString()
             lblUserName.Text = myData("UserName").ToString()
-            Dim password As String = myData("Password").ToString()
-            txtPassword.Text = settingClass.Decrypt(password)
-            txtPassword.ReadOnly = True
             txtFullName.Text = myData("FullName").ToString()
-            txtEmail.Text = myData("Email").ToString()
 
             BindCustomer()
             BindRole()
             BindLevel()
 
             ddlCustomer.Enabled = False
-            divPassword.Visible = False
-            If Session("RoleName") = "Developer" Then divPassword.Visible = True
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then

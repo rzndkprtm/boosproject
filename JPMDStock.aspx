@@ -45,7 +45,7 @@
                             </div>
                             <div class="header-top-right">
                                 <div class="dropdown">
-                                    <a href="#" class="user-dropdown d-flex dropend" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <a href="javascript:void(0);" class="user-dropdown d-flex dropend" data-bs-toggle="dropdown" aria-expanded="false">
                                         <div class="avatar avatar-md2">
                                             <img runat="server" src="~/Assets/images/avatars.png" alt="Avatar">
                                         </div>
@@ -58,7 +58,7 @@
                                         <li><a class="dropdown-item" runat="server" href="~/">Login</a></li>
                                     </ul>
                                 </div>
-                                <a href="#" class="burger-btn d-block d-xl-none">
+                                <a href="javascript:void(0);" class="burger-btn d-block d-xl-none">
                                     <i class="bi bi-justify fs-3"></i>
                                 </a>
                             </div>
@@ -537,29 +537,48 @@
         <script src="/Assets/js/pages/horizontal-layout.js"></script>
 
         <script type="text/javascript">
-            function activateCurrentTab() {
-                var tabId = $("#<%= selected_tab.ClientID %>").val();
-                if (!tabId) tabId = "list-roller";
-                $('#dvTab a[href="#' + tabId + '"]').tab('show');
+
+            function showLoading() {
+                $("#loadingOverlay").show();
             }
 
-            function pageInit() {
-                $(document).off("click.stocktab").on("click.stocktab", "#dvTab a", function () {
-                    var tabId = $(this).attr("href").replace("#", "");
-                    $("#<%= selected_tab.ClientID %>").val(tabId);
-                });
+            function hideLoading() {
+                $("#loadingOverlay").hide();
+            }
+
+            function activateCurrentTab() {
+                var tabId = $("#<%= selected_tab.ClientID %>").val();
+        if (!tabId) tabId = "list-roller";
+        $('#dvTab a[href="#' + tabId + '"]').tab('show');
+    }
+
+    function pageInit() {
+        $(document).off("click.stocktab").on("click.stocktab", "#dvTab a", function () {
+            var tabId = $(this).attr("href").replace("#", "");
+            $("#<%= selected_tab.ClientID %>").val(tabId);
+        });
+
                 activateCurrentTab();
             }
 
             $(document).ready(function () {
-                pageInit();
-            });
 
-            Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
                 pageInit();
+
+                var prm = Sys.WebForms.PageRequestManager.getInstance();
+
+                prm.add_beginRequest(function () {
+                    showLoading();
+                });
+
+                prm.add_endRequest(function () {
+                    hideLoading();
+                    pageInit();
+                });
             });
 
             window.history.replaceState(null, null, window.location.href);
+
         </script>
     </form>
 </body>

@@ -151,26 +151,23 @@ Public Class PreviewClass
 
     Public Function BindContent(headerId As String) As Byte()
         Using ms As New MemoryStream()
-            Dim headerData As DataRow = GetDataRow("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, Customers.CompanyDetailId AS CompanyDetailId FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id='" & headerId & "'")
-            Dim customerId As String = headerData("CustomerId").ToString()
-            Dim customerName As String = headerData("CustomerName").ToString()
+            Dim headerData As DataRow = GetDataRow("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, Customers.CompanyDetailId AS CompanyDetailId, Logins.FullName AS CreatedName FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id LEFT JOIN Logins ON OrderHeaders.CreatedBy=Logins.Id WHERE OrderHeaders.Id='" & headerId & "'")
             Dim companyId As String = headerData("CompanyId").ToString()
-            Dim companyDetailId As String = headerData("CompanyDetailId").ToString()
 
+            Dim customerName As String = headerData("CustomerName").ToString()
             Dim orderId As String = headerData("OrderId").ToString()
-            Dim orderDate As String = String.Empty
+            Dim orderNumber As String = headerData("OrderNumber").ToString()
+            Dim orderName As String = headerData("OrderName").ToString()
+            Dim orderNote As String = headerData("OrderNote").ToString()
+            Dim orderCreatedBy As String = headerData("CreatedName").ToString()
+            Dim orderCreatedDate As String = String.Empty
             If Not IsDBNull(headerData("CreatedDate")) Then
-                orderDate = Convert.ToDateTime(headerData("CreatedDate")).ToString("dd MMM yyyy")
+                orderCreatedDate = Convert.ToDateTime(headerData("CreatedDate")).ToString("dd MMM yyyy")
             End If
-
             Dim submitDate As String = String.Empty
             If Not IsDBNull(headerData("SubmittedDate")) Then
                 submitDate = Convert.ToDateTime(headerData("SubmittedDate")).ToString("dd MMM yyyy")
             End If
-
-            Dim orderNumber As String = headerData("OrderNumber").ToString()
-            Dim orderName As String = headerData("OrderName").ToString()
-            Dim orderNote As String = headerData("OrderNote").ToString()
 
             Dim totalItems As Integer = GetItemData_Integer("SELECT SUM(CASE WHEN Designs.Type='Blinds' THEN OrderDetails.TotalItems ELSE OrderDetails.Qty END) AS TotalItem FROM OrderDetails INNER JOIN Products ON OrderDetails.ProductId=Products.Id INNER JOIN Designs ON Products.DesignId=Designs.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND Designs.Type<>'Services'")
             Dim pageTotalItem As String = String.Format("{0} Item", totalItems)
@@ -180,11 +177,11 @@ Public Class PreviewClass
             Dim writer As PdfWriter = PdfWriter.GetInstance(doc, ms)
 
             Dim pageEvent As New PreviewEvents() With {
-                .PageOrderId = orderId, .PageOrderDate = orderDate,
+                .PageOrderId = orderId, .PageCreatedDate = orderCreatedDate,
                 .PageSubmitDate = submitDate, .PageCustomerName = customerName,
                 .PageOrderNumber = orderNumber, .PageOrderName = orderName,
                 .PageNote = orderNote, .PageTotalItem = pageTotalItem,
-                .pageCompany = companyId
+                .pageCompany = companyId, .PageCreatedBy = orderCreatedBy
             }
             writer.PageEvent = pageEvent
 
@@ -926,30 +923,30 @@ Public Class PreviewClass
                         End If
 
                         Dim rollerType As String = blindAlias
+                        If blindName = "Dual Blinds" Then
+                            If itemBlind = "1" Then rollerType = String.Format("{0} (Front Side)", blindAlias)
+                            If itemBlind = "2" Then rollerType = String.Format("{0} (Back Side)", blindAlias)
+                        End If
                         If blindName = "Link 2 Blinds Dependent" OrElse blindName = "Link 2 Blinds Independent" Then
                             If itemBlind = "1" Then rollerType = String.Format("{0} (C)", blindAlias)
                             If itemBlind = "2" Then rollerType = String.Format("{0} (E)", blindAlias)
                         End If
-
                         If blindName = "Link 3 Blinds Dependent" Then
                             If itemBlind = "1" Then rollerType = String.Format("{0} (C)", blindAlias)
                             If itemBlind = "2" Then rollerType = String.Format("{0} (M)", blindAlias)
                             If itemBlind = "3" Then rollerType = String.Format("{0} (E)", blindAlias)
                         End If
-
                         If blindName = "Link 3 Blinds Independent with Dependent" Then
                             If itemBlind = "1" Then rollerType = String.Format("{0} (C) (IND)", blindAlias)
                             If itemBlind = "2" Then rollerType = String.Format("{0} (M)", blindAlias)
                             If itemBlind = "3" Then rollerType = String.Format("{0} (E)", blindAlias)
                         End If
-
                         If blindName = "DB Link 2 Blinds Dependent" OrElse blindName = "DB Link 2 Blinds Independent" Then
                             If itemBlind = "1" Then rollerType = String.Format("{0} (C)", blindAlias)
                             If itemBlind = "2" Then rollerType = String.Format("{0} (E)", blindAlias)
                             If itemBlind = "3" Then rollerType = String.Format("{0} (C)", blindAlias)
                             If itemBlind = "4" Then rollerType = String.Format("{0} (E)", blindAlias)
                         End If
-
                         If blindName = "DB Link 3 Blinds Dependent" Then
                             If itemBlind = "1" Then rollerType = String.Format("{0} (C)", blindAlias)
                             If itemBlind = "2" Then rollerType = String.Format("{0} (M)", blindAlias)
@@ -958,7 +955,6 @@ Public Class PreviewClass
                             If itemBlind = "5" Then rollerType = String.Format("{0} (M)", blindAlias)
                             If itemBlind = "6" Then rollerType = String.Format("{0} (E)", blindAlias)
                         End If
-
                         If blindName = "DB Link 3 Blinds Independent with Dependent" Then
                             If itemBlind = "1" Then rollerType = String.Format("{0} (C) (IND)", blindAlias)
                             If itemBlind = "2" Then rollerType = String.Format("{0} (M)", blindAlias)
@@ -2469,13 +2465,14 @@ Public Class PreviewEvents
 
     Public Property PageTitle As String
     Public Property PageTitle2 As String
-    Public Property PageOrderId As String
-    Public Property PageOrderDate As String
-    Public Property PageSubmitDate As String
     Public Property PageCustomerName As String
+    Public Property PageOrderId As String
     Public Property PageOrderNumber As String
     Public Property PageOrderName As String
     Public Property PageNote As String
+    Public Property PageCreatedBy As String
+    Public Property PageCreatedDate As String
+    Public Property PageSubmitDate As String
     Public Property PageTotalItem As String
     Public Property PageTotalDoc As Integer
     Public Property pageCompany As String
@@ -2570,8 +2567,8 @@ Public Class PreviewEvents
         firstHeaderCell.VerticalAlignment = Element.ALIGN_TOP
         headerTable.AddCell(firstHeaderCell)
 
-        Dim labels As String() = {"Customer Account", "Order #", "Order Number", "Order Name", "Created Date", "Submitted Date", "Total Item Order"}
-        Dim values As String() = {PageCustomerName, PageOrderId, PageOrderNumber, PageOrderName, PageOrderDate, PageSubmitDate, PageTotalItem}
+        Dim labels As String() = {"Customer Account", "Order #", "Order Number", "Order Name", "Created By", "Created Date", "Submitted Date", "Total Item Order"}
+        Dim values As String() = {PageCustomerName, PageOrderId, PageOrderNumber, PageOrderName, PageCreatedBy, PageCreatedDate, PageSubmitDate, PageTotalItem}
 
         For i As Integer = 0 To labels.Length - 1
             nestedTable.AddCell(New PdfPCell(New Phrase(labels(i), New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD))) With {

@@ -34,7 +34,7 @@
         </section>
         <section class="row mb-3">
             <div class="col-12 d-flex justify-content-end flex-wrap gap-2">
-                <a runat="server" id="aCreate" class="btn btn-primary" href="#" data-bs-toggle="modal" data-bs-target="#modalCreate">Create Rework</a>
+                <a runat="server" id="aCreate" class="btn btn-primary" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalCreate">Create Rework</a>
             </div>
         </section>
         <section class="row">
@@ -99,10 +99,10 @@
                                                                 <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                             </li>
                                                             <li runat="server" visible='<%# VisibleDelete(Eval("Status").ToString()) %>' onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>
-                                                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                                <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                             </li>
                                                             <li runat="server" visible='<%# VisibleLog() %>'>
-                                                                <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('OrderReworks', '<%# Eval("Id") %>')">Log</a>
+                                                                <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('OrderReworks', '<%# Eval("Id") %>')">Log</a>
                                                             </li>
                                                         </ul>
                                                     </ItemTemplate>
@@ -170,7 +170,7 @@
                     </ol>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
                     <a runat="server" href="~/order" class="btn btn-primary">Go To Order Page</a>
                 </div>
             </div>
@@ -188,7 +188,7 @@
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnDelete" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDelete_Click" />
                 </div>
             </div>

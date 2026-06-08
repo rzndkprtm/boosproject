@@ -194,7 +194,7 @@ Partial Class Setting_Specification_Product_Alias
         Try
             Dim stringSearch As String = String.Empty
             If Not searchText = "" Then
-                stringSearch = "WHERE PI.Name LIKE '%" & searchText & "%' OR P2.Name LIKE '%" & searchText & "%'"
+                stringSearch = "WHERE P1.Name LIKE '%" & searchText & "%' OR P2.Name LIKE '%" & searchText & "%'"
             End If
 
             Dim thisString As String = String.Format("SELECT ProductAlias.*, P1.Name AS FirstName, P2.Name AS SecondName FROM ProductAlias LEFT JOIN Products P1 ON ProductAlias.FirstId = P1.Id LEFT JOIN Products P2 ON ProductAlias.SecondId = P2.Id {0} ORDER BY ProductAlias.Id ASC", stringSearch)

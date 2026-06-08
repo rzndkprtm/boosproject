@@ -58,7 +58,7 @@
                                         <li><asp:LinkButton runat="server" ID="linkLogout" CssClass="dropdown-item" Text="Logout" OnClick="linkLogout_Click"></asp:LinkButton></li>
                                     </ul>
                                 </div>
-                                <a href="#" class="burger-btn d-block d-xl-none">
+                                <a href="javascript:void(0);" class="burger-btn d-block d-xl-none">
                                     <i class="bi bi-justify fs-3"></i>
                                 </a>
                             </div>
@@ -338,7 +338,7 @@
                         <p id="messageNotification"></p>
                     </div>
                     <div class="modal-footer">
-                        <a href="#" class="btn btn-info" data-bs-dismiss="modal">I have read the information.</a>
+                        <a href="javascript:void(0);" class="btn btn-info" data-bs-dismiss="modal">I have read the information.</a>
                     </div>
                 </div>
             </div>

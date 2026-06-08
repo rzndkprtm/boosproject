@@ -89,8 +89,8 @@
                                             </asp:DropDownList>
                                         </div>
                                         <div class="col-7 col-sm-12 col-lg-6 form-group">
-                                            <label class="form-label">Operator</label>
-                                            <asp:ListBox runat="server" ID="lbOperator" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
+                                            <label class="form-label">Sales</label>
+                                            <asp:ListBox runat="server" ID="lbSales" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
                                         </div>
                                     </div>
                                     <div class="row mb-2">

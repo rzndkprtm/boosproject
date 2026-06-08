@@ -29,6 +29,11 @@
                 </div>
             </div>
         </section>
+        <section class="row mb-3">
+            <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
+                <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-secondary" Text="Add New" OnClick="btnAdd_Click" />
+            </div>
+        </section>
         <section class="row">
             <div class="col-12">
                 <div class="card">
@@ -36,10 +41,8 @@
                         <ContentTemplate>
                             <div class="card-header">
                                 <div class="row g-2 align-items-center">
-                                    <div class="col-12 col-lg-6">
-                                        <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Add New" OnClick="btnAdd_Click" />
-                                    </div>
-                                    <div class="col-12 col-lg-6">
+                                    <div class="col-12 col-sm-12 col-lg-6"></div>
+                                    <div class="col-12 col-sm-12 col-lg-6">
                                         <asp:Panel runat="server" DefaultButton="btnSearch">
                                             <div class="input-group">
                                                 <span class="input-group-text">Search</span>
@@ -53,7 +56,7 @@
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <asp:GridView ID="gvList" runat="server" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="False" AllowPaging="True" PagerSettings-Visible="false" PageSize="50" ShowHeaderWhenEmpty="True" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowCommand="gvList_RowCommand" OnDataBound="gvList_DataBound">
+                                    <asp:GridView ID="gvList" runat="server" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="False" AllowPaging="True" PagerSettings-Visible="false" PageSize="50" ShowHeaderWhenEmpty="True" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnPageIndexChanging="gvList_PageIndexChanging" OnDataBound="gvList_DataBound">
                                         <Columns>
                                             <asp:TemplateField ItemStyle-HorizontalAlign="Center">
                                                 <ItemTemplate>
@@ -76,16 +79,16 @@
                                                     <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                     <ul class="dropdown-menu">
                                                         <li>
-                                                            <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                            <a class="dropdown-item" id="aDetail" href='<%# Page.ResolveUrl("~/setting/customer/address/edit?addressid=" & Eval("Id")) %>'>Detail / Edit</a>
                                                         </li>
                                                         <li runat="server" visible='<%# VisiblePrimary(Eval("Primary")) %>'>
-                                                            <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalPrimary" onclick='<%# String.Format("return showPrimary(`{0}`);", Eval("Id").ToString()) %>'>Set As Primary</a>
+                                                            <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalPrimary" onclick='<%# String.Format("return showPrimary(`{0}`);", Eval("Id").ToString()) %>'>Set As Primary</a>
                                                         </li>
                                                         <li>
-                                                            <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                            <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                         </li>
                                                         <li>
-                                                            <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('CustomerAddress', '<%# Eval("Id") %>')">Log</a>
+                                                            <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('CustomerAddress', '<%# Eval("Id") %>')">Log</a>
                                                         </li>
                                                     </ul>
                                                 </ItemTemplate>
@@ -124,7 +127,7 @@
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnPrimary" CssClass="btn btn-secondary" Text="Confirm" OnClick="btnPrimary_Click" />
                 </div>
             </div>
@@ -141,7 +144,7 @@
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnDelete" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDelete_Click" />
                 </div>
             </div>
@@ -221,7 +224,7 @@
                         return;
                     }
 
-                    const btn = this.querySelector("a[id*='linkDetail']");
+                    const btn = this.querySelector("a[id*='aDetail']");
                     if (btn) btn.click();
                 };
             }

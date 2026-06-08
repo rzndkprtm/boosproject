@@ -58,78 +58,80 @@
 
         Dim stringCompany As String = String.Empty
         stringCompany = "AND Customers.CompanyId='" & company & "'"
-
         If company = "jpmd" Then
-            stringCompany = "AND Customers.CompanyId='2'"
-            companyId = "2"
+            stringCompany = "AND Customers.CompanyId='2'" : companyId = "2"
         End If
         If company = "local" Then
-            stringCompany = "AND Customers.CompanyId='3'"
-            companyId = "3"
+            stringCompany = "AND Customers.CompanyId='3'" : companyId = "3"
         End If
 
-        Dim stringStatus As String = String.Empty
-        If String.IsNullOrEmpty(status) Then
-            stringStatus = "AND OrderHeaders.Status='" & status & "'"
+        If action = "check" Then
+            Dim stringStatus As String = "AND OrderHeaders.Status='" & status & "'"
+            If type = "header" Then
+                Dim headerData As DataTable = GetDataTable(String.Format("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.DebtorCode AS DebtorCode, Logins.UserName AS UserName FROM OrderHeaders INNER JOIN Customers ON OrderHeaders.CustomerId=Customers.Id INNER JOIN Logins ON OrderHeaders.CreatedBy=Logins.Id WHERE OrderHeaders.Active=1 {0} {1} ORDER BY OrderHeaders.Id DESC", stringStatus, stringCompany))
+                DataHeader(headerData)
+            End If
+
+            If type = "detail" Then
+                Dim detailData As DataTable = GetDataTable(String.Format("SELECT OrderDetails.*, Products.DesignId AS DesignId, Products.BlindId AS BlindId, Designs.Name AS DesignName, Blinds.Name AS BlindName, Products.Name AS ProductName, ProductTubes.Name AS TubeName, ProductControls.Name AS ControlName, ProductColours.Name AS ColourName FROM OrderDetails INNER JOIN OrderHeaders ON OrderDetails.HeaderId=OrderHeaders.Id INNER JOIN Customers ON OrderHeaders.CustomerId=Customers.Id LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductTubes ON Products.TubeType=ProductTubes.Id LEFT JOIN ProductControls ON Products.ControlType=ProductControls.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.Active=1 AND OrderHeaders.Active=1 {0} {1} ORDER BY OrderDetails.Id ASC", stringStatus, stringCompany))
+                DataDetail(detailData)
+            End If
         End If
 
         If action = "download" Then
-            stringStatus = "AND (OrderHeaders.Status='New Order' OR OrderHeaders.Status='Payment Received')"
-        End If
+            Dim thisData As DataTable = GetDataTable(String.Format("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.DebtorCode AS DebtorCode, Logins.UserName AS UserName FROM OrderHeaders INNER JOIN Customers ON OrderHeaders.CustomerId=Customers.Id INNER JOIN Logins ON OrderHeaders.CreatedBy=Logins.Id WHERE OrderHeaders.Active=1 {0} AND (OrderHeaders.Status='New Order' OR OrderHeaders.Status='Payment Received') ORDER BY OrderHeaders.Id ASC", stringCompany))
+            If thisData.Rows.Count > 0 Then
+                For i As Integer = 0 To thisData.Rows.Count - 1
+                    Dim headerId As String = thisData.Rows(i)("Id").ToString()
+                    Dim orderId As String = thisData.Rows(i)("OrderId").ToString()
+                    Dim debtorCode As String = thisData.Rows(i)("DebtorCode").ToString()
 
-        If type = "header" Then
-            If action = "download" Then
-                Dim thisQuery As String = String.Format("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.DebtorCode AS DebtorCode, Logins.UserName AS UserName FROM OrderHeaders INNER JOIN Customers ON OrderHeaders.CustomerId=Customers.Id INNER JOIN Logins ON OrderHeaders.CreatedBy=Logins.Id WHERE OrderHeaders.Active=1 {0} {1} ORDER BY OrderHeaders.Id ASC", stringCompany, stringStatus)
+                    If String.IsNullOrEmpty(debtorCode) Then
+                        Continue For
+                    End If
 
-                Dim thisData As DataTable = GetDataTable(thisQuery)
-                If thisData.Rows.Count > 0 Then
-                    For i As Integer = 0 To thisData.Rows.Count - 1
-                        Dim headerId As String = thisData.Rows(i)("Id").ToString()
-                        Dim orderId As String = thisData.Rows(i)("OrderId").ToString()
-                        Dim debtorCode As String = thisData.Rows(i)("DebtorCode").ToString()
+                    Using thisConn As New SqlConnection(myConn)
+                        Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='In Production', ProductionDate=GETDATE(), Download='Yes' WHERE Id=@Id; INSERT INTO OrderShipments(Id) VALUES (@Id)", thisConn)
+                            myCmd.Parameters.AddWithValue("@Id", headerId)
 
-                        If String.IsNullOrEmpty(debtorCode) Then
-                            Continue For
-                        End If
-
-                        Using thisConn As New SqlConnection(myConn)
-                            Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='In Production', ProductionDate=GETDATE(), DownloadBOE=1 WHERE Id=@Id; INSERT INTO OrderShipments(Id) VALUES (@Id)", thisConn)
-                                myCmd.Parameters.AddWithValue("@Id", headerId)
-
-                                thisConn.Open()
-                                myCmd.ExecuteNonQuery()
-                            End Using
+                            thisConn.Open()
+                            myCmd.ExecuteNonQuery()
                         End Using
+                    End Using
 
-                        Dim dataLog As Object() = {"OrderHeaders", headerId, "2", "Order In Production"}
-                        orderClass.Logs(dataLog)
+                    Dim dataLog As Object() = {"OrderHeaders", headerId, "2", "Order In Production"}
+                    orderClass.Logs(dataLog)
 
-                        Dim salesClass As New SalesClass
-                        salesClass.RefreshData(companyId)
-                    Next
-                End If
+                    Dim salesClass As New SalesClass
+                    salesClass.RefreshData(companyId)
+                Next
             End If
 
-            Dim headerQuery As String = String.Format("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.DebtorCode AS DebtorCode, Logins.UserName AS UserName FROM OrderHeaders INNER JOIN Customers ON OrderHeaders.CustomerId=Customers.Id INNER JOIN Logins ON OrderHeaders.CreatedBy=Logins.Id WHERE OrderHeaders.Active=1 {0} AND (OrderHeaders.Status='In Production' OR OrderHeaders.Status='On Hold') AND OrderHeaders.DownloadBOE=1 ORDER BY OrderHeaders.Id DESC", stringCompany)
-
-            If action = "download" Then
-                headerQuery = String.Format("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.DebtorCode AS DebtorCode, Logins.UserName AS UserName FROM OrderHeaders INNER JOIN Customers ON OrderHeaders.CustomerId=Customers.Id INNER JOIN Logins ON OrderHeaders.CreatedBy=Logins.Id WHERE OrderHeaders.Active=1 {0} AND OrderHeaders.DownloadBOE=1 AND CAST(OrderHeaders.ProductionDate AS DATE) = CAST(GETDATE() AS DATE) ORDER BY OrderHeaders.Id ASC", stringCompany)
+            If type = "header" Then
+                Dim headerData As DataTable = GetDataTable(String.Format("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.DebtorCode AS DebtorCode, Logins.UserName AS UserName FROM OrderHeaders INNER JOIN Customers ON OrderHeaders.CustomerId=Customers.Id INNER JOIN Logins ON OrderHeaders.CreatedBy=Logins.Id WHERE OrderHeaders.Active=1 AND OrderHeaders.Download='Yes' {0} ORDER BY OrderHeaders.Id DESC", stringCompany))
+                DataHeader(headerData)
             End If
 
-            Dim headerData As DataTable = GetDataTable(headerQuery)
-            DataHeader(headerData)
+            If type = "detail" Then
+                Dim detailData As DataTable = GetDataTable(String.Format("SELECT OrderDetails.*, Products.DesignId AS DesignId, Products.BlindId AS BlindId, Designs.Name AS DesignName, Blinds.Name AS BlindName, Products.Name AS ProductName, ProductTubes.Name AS TubeName, ProductControls.Name AS ControlName, ProductColours.Name AS ColourName FROM OrderDetails INNER JOIN OrderHeaders ON OrderDetails.HeaderId=OrderHeaders.Id INNER JOIN Customers ON OrderHeaders.CustomerId=Customers.Id LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductTubes ON Products.TubeType=ProductTubes.Id LEFT JOIN ProductControls ON Products.ControlType=ProductControls.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.Active=1 AND OrderHeaders.Active=1 AND OrderHeaders.Download='Yes' {0} ORDER BY OrderDetails.Id ASC", stringCompany))
+                DataDetail(detailData)
+            End If
+
+            DownloadDate()
         End If
+    End Sub
 
-        If type = "detail" Then
-            Dim detailQuery As String = String.Format("SELECT OrderDetails.*, Products.DesignId AS DesignId, Products.BlindId AS BlindId, Designs.Name AS DesignName, Blinds.Name AS BlindName, Products.Name AS ProductName, ProductTubes.Name AS TubeName, ProductControls.Name AS ControlName, ProductColours.Name AS ColourName FROM OrderDetails INNER JOIN OrderHeaders ON OrderDetails.HeaderId=OrderHeaders.Id INNER JOIN Customers ON OrderHeaders.CustomerId=Customers.Id LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductTubes ON Products.TubeType=ProductTubes.Id LEFT JOIN ProductControls ON Products.ControlType=ProductControls.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.Active=1 AND OrderHeaders.Active=1 AND OrderHeaders.DownloadBOE=1 AND (OrderHeaders.Status='In Production' OR OrderHeaders.Status='On Hold') {0} ORDER BY OrderDetails.Id ASC", stringCompany)
+    Protected Sub DownloadDate()
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand("UPDATE OrderHeaders SET DownloadDate=GETDATE() WHERE Download='Yes' AND Active=1", thisConn)
 
-            If action = "download" Then
-                detailQuery = String.Format("SELECT OrderDetails.*, Products.DesignId AS DesignId, Products.BlindId AS BlindId, Designs.Name AS DesignName, Blinds.Name AS BlindName, Products.Name AS ProductName, ProductTubes.Name AS TubeName, ProductControls.Name AS ControlName, ProductColours.Name AS ColourName FROM OrderDetails INNER JOIN OrderHeaders ON OrderDetails.HeaderId=OrderHeaders.Id INNER JOIN Customers ON OrderHeaders.CustomerId=Customers.Id LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductTubes ON Products.TubeType=ProductTubes.Id LEFT JOIN ProductControls ON Products.ControlType=ProductControls.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.Active=1 AND OrderHeaders.Active=1 AND OrderHeaders.DownloadBOE=1 AND CAST(OrderHeaders.ProductionDate AS DATE) = CAST(GETDATE() AS DATE) {0} ORDER BY OrderDetails.Id ASC", stringCompany)
-            End If
-
-            Dim detailData As DataTable = GetDataTable(detailQuery)
-            DataDetail(detailData)
-        End If
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+        Catch ex As Exception
+        End Try
     End Sub
 
     Protected Sub DataHeader(myData As DataTable)

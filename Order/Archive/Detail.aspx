@@ -29,7 +29,7 @@
         <section class="row mb-3">
             <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
                 <asp:Button runat="server" ID="btnPreview" CssClass="btn btn-primary" Text="Preview"  OnClick="btnPreview_Click" />
-                <a class="btn btn-secondary" href="#" runat="server" id="aConvert" data-bs-toggle="modal" data-bs-target="#modalConvert">Unarchive Order</a>
+                <a class="btn btn-secondary" href="javascript:void(0);" runat="server" id="aConvert" data-bs-toggle="modal" data-bs-target="#modalConvert">Unarchive Order</a>
             </div>
         </section>
         <section class="row mb-3">
@@ -162,7 +162,7 @@
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnConvert" CssClass="btn btn-info" Text="Confirm" OnClick="btnConvert_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>

@@ -467,28 +467,47 @@
     <asp:HiddenField ID="selected_tab" runat="server" />
 
     <script type="text/javascript">
-        function activateCurrentTab() {
-            var tabId = $("#<%= selected_tab.ClientID %>").val();
-            if (!tabId) tabId = "list-roller";
-            $('#dvTab a[href="#' + tabId + '"]').tab('show');
+
+        function showLoading() {
+            $("#loadingOverlay").show();
         }
 
-        function pageInit() {
-            $(document).off("click.stocktab").on("click.stocktab", "#dvTab a", function () {
-                var tabId = $(this).attr("href").replace("#", "");
-                $("#<%= selected_tab.ClientID %>").val(tabId);
-            });
+        function hideLoading() {
+            $("#loadingOverlay").hide();
+        }
+
+        function activateCurrentTab() {
+            var tabId = $("#<%= selected_tab.ClientID %>").val();
+        if (!tabId) tabId = "list-roller";
+        $('#dvTab a[href="#' + tabId + '"]').tab('show');
+    }
+
+    function pageInit() {
+        $(document).off("click.stocktab").on("click.stocktab", "#dvTab a", function () {
+            var tabId = $(this).attr("href").replace("#", "");
+            $("#<%= selected_tab.ClientID %>").val(tabId);
+        });
+
             activateCurrentTab();
         }
 
         $(document).ready(function () {
-            pageInit();
-        });
 
-        Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
             pageInit();
+
+            var prm = Sys.WebForms.PageRequestManager.getInstance();
+
+            prm.add_beginRequest(function () {
+                showLoading();
+            });
+
+            prm.add_endRequest(function () {
+                hideLoading();
+                pageInit();
+            });
         });
 
         window.history.replaceState(null, null, window.location.href);
+
     </script>
 </asp:Content>

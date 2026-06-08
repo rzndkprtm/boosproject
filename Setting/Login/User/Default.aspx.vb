@@ -23,13 +23,16 @@ Partial Class Setting_Login_User_Default
     End Sub
 
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
+        Session("SearchLoginUser") = txtSearch.Text
         Response.Redirect("~/setting/login/user/add", False)
     End Sub
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
         gvList.PageIndex = 0
+
         MessageError(False, String.Empty)
         BindData(txtSearch.Text)
+        Session("SearchLoginUser") = txtSearch.Text
     End Sub
 
     Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
@@ -60,18 +63,6 @@ Partial Class Setting_Login_User_Default
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
         End Try
-    End Sub
-
-    Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
-        If Not String.IsNullOrEmpty(e.CommandArgument) Then
-            Dim dataId As String = e.CommandArgument.ToString()
-
-            If e.CommandName = "Detail" Then
-                Dim url As String = String.Format("~/setting/login/user/edit?loginid={0}", dataId)
-                Response.Redirect(url, False)
-                Exit Sub
-            End If
-        End If
     End Sub
 
     Protected Sub btnActive_Click(sender As Object, e As EventArgs)

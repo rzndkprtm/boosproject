@@ -15,7 +15,7 @@ Partial Class _Default
 
     Protected Sub BindData()
         Try
-            If Session("CompanyId") = "3" OrElse Session("CompanyId") = "5" Then
+            If Session("CompanyId") = "3" Then
                 Response.Redirect("~/order", False)
                 Exit Sub
             End If

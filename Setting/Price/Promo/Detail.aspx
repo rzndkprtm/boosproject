@@ -42,45 +42,27 @@
                             <dd class="col-7 fw-bold">
                                 <asp:Label runat="server" ID="lblName"></asp:Label>
                             </dd>
-
                             <dt class="col-5 text-muted">Start Date</dt>
                             <dd class="col-7">
                                 <asp:Label runat="server" ID="lblStartDate"></asp:Label>
                             </dd>
-
                             <dt class="col-5 text-muted">End Date</dt>
                             <dd class="col-7">
                                 <asp:Label runat="server" ID="lblEndDate"></asp:Label>
                             </dd>
-
                             <dt class="col-5 text-muted">Description</dt>
                             <dd class="col-7">
                                 <asp:Label runat="server" ID="lblDescription"></asp:Label>
                             </dd>
-
                             <dt class="col-5 text-muted">Status</dt>
                             <dd class="col-7">
                                 <asp:Label runat="server" ID="lblActive"></asp:Label>
                             </dd>
-
                         </dl>
                     </div>
-
                     <div class="card-footer text-center">
-                        <a href="javascript:void(0)"
-                            class="btn btn-secondary"
-                            onclick="showLog('Promos', '<%= lblId.Text %>')">
-                            Log
-                        </a>
-
-                        <a href="#"
-                            runat="server"
-                            id="aEdit"
-                            class="btn btn-primary"
-                            data-bs-toggle="modal"
-                            data-bs-target="#modalProcess">
-                            Edit Promo
-                        </a>
+                        <a href="javascript:void(0);" class="btn btn-secondary" onclick="showLog('Promos', '<%= lblId.Text %>')">Log</a>
+                        <a href="javascript:void(0);" runat="server" id="aEdit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalProcess">Edit Promo</a>
                     </div>
                 </div>
             </div>
@@ -129,10 +111,10 @@
                                                                 <asp:LinkButton runat="server" ID="linkDetailPromo" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                             </li>
                                                             <li runat="server" visible='<%# LoginAccess("Delete") %>'>
-                                                                <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteDetail" onclick='<%# String.Format("return showDeleteDetail(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteDetail" onclick='<%# String.Format("return showDeleteDetail(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                             </li>
                                                             <li>
-                                                                <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('PromoDetails', '<%# Eval("Id") %>')">Log</a>
+                                                                <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('PromoDetails', '<%# Eval("Id") %>')">Log</a>
                                                             </li>
                                                         </ul>
                                                     </ItemTemplate>
@@ -199,7 +181,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnProcess" CssClass="btn btn-primary" Text="Submit" OnClick="btnProcess_Click" />
                 </div>
             </div>
@@ -283,7 +265,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnProcessDetail" CssClass="btn btn-primary" Text="Submit" OnClick="btnProcessDetail_Click" />
                 </div>
             </div>
@@ -300,7 +282,7 @@
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnDeleteDetail" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDeleteDetail_Click" />
                 </div>
             </div>

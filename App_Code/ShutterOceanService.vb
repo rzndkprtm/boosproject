@@ -83,7 +83,8 @@ Public Class ShutterOceanService
                     .SpecialShape = rdr("SpecialShape").ToString(),
                     .TemplateProvided = rdr("TemplateProvided").ToString(),
                     .LinearMetre = Convert.ToDecimal(rdr("LinearMetre")),
-                    .SquareMetre = Convert.ToDecimal(rdr("SquareMetre"))
+                    .SquareMetre = Convert.ToDecimal(rdr("SquareMetre")),
+                    .Notes = rdr("Notes").ToString()
                 })
                 End While
             End Using
@@ -169,4 +170,5 @@ Public Class DataDetail
     Public Property TemplateProvided As String
     Public Property LinearMetre As Decimal
     Public Property SquareMetre As Decimal
+    Public Property Notes As String
 End Class

@@ -168,7 +168,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnSubmitTube" CssClass="btn btn-primary ml-1" Text="Submit" OnClick="btnSubmitTube_Click" />
                 </div>
             </div>
@@ -206,7 +206,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnSubmitControl" CssClass="btn btn-primary ml-1" Text="Submit" OnClick="btnSubmitControl_Click" />
                 </div>
             </div>
@@ -244,7 +244,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnSubmitColour" CssClass="btn btn-primary ml-1" Text="Submit" OnClick="btnSubmitColour_Click" />
                 </div>
             </div>
