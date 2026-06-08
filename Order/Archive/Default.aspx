@@ -101,7 +101,7 @@
                                                 <asp:BoundField DataField="SubmittedDate" HeaderText="Submitted" DataFormatString="{0:dd MMM yyyy}" />
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="Shipment">
                                                     <ItemTemplate>
-                                                        <a class="btn btn-sm btn-secondary" href="#" data-bs-toggle="modal" data-bs-target="#modalShipment" onclick='<%# String.Format("return showShipment(`{0}`, `{1:dd MMM yyyy}`, `{2}`, `{3}`);", Eval("ShipmentNo").ToString(), Eval("Shipped"), Eval("ConNote").ToString(), Eval("Courier").ToString()) %>'>Show</a>
+                                                        <a class="btn btn-sm btn-secondary" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalShipment" onclick='<%# String.Format("return showShipment(`{0}`, `{1:dd MMM yyyy}`, `{2}`, `{3}`);", Eval("ShipmentNo").ToString(), Eval("Shipped"), Eval("ConNote").ToString(), Eval("Courier").ToString()) %>'>Show</a>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:TemplateField ItemStyle-Width="150px" ItemStyle-HorizontalAlign="Center">
@@ -149,7 +149,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                 </div>
             </div>
         </div>

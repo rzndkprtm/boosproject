@@ -5,8 +5,8 @@ Partial Class Setting_Customer_Contact_Edit
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim url As String = String.Empty
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
@@ -18,6 +18,10 @@ Partial Class Setting_Customer_Contact_Edit
         If String.IsNullOrEmpty(Request.QueryString("contactid")) Then
             Response.Redirect("~/setting/customer/contact/", False)
             Exit Sub
+        End If
+
+        If Not String.IsNullOrEmpty(Request.QueryString("returnpage")) Then
+            lblReturnPage.Text = Request.QueryString("returnpage").ToString()
         End If
 
         lblId.Text = Request.QueryString("contactid").ToString()
@@ -70,7 +74,10 @@ Partial Class Setting_Customer_Contact_Edit
                 Dim dataLog As Object() = {"CustomerContacts", lblId.Text, Session("LoginId"), "Customer Contact Updated"}
                 settingClass.Logs(dataLog)
 
-                Dim url As String = String.Format("~/setting/customer/detail?customerid={0}", ddlCustomer.SelectedValue)
+                url = "~/setting/customer/contact"
+                If lblReturnPage.Text = "detail" Then
+                    url = String.Format("~/setting/customer/detail?customerid={0}", ddlCustomer.SelectedValue)
+                End If
                 Response.Redirect(url, False)
             End If
         Catch ex As Exception
@@ -82,7 +89,10 @@ Partial Class Setting_Customer_Contact_Edit
     End Sub
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
-        Dim url As String = String.Format("~/setting/customer/detail?customerid={0}", ddlCustomer.SelectedValue)
+        url = "~/setting/customer/contact"
+        If lblReturnPage.Text = "detail" Then
+            url = String.Format("~/setting/customer/detail?customerid={0}", ddlCustomer.SelectedValue)
+        End If
         Response.Redirect(url, False)
     End Sub
 

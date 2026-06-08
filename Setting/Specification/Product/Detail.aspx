@@ -106,7 +106,7 @@
                                     <div class="border-top pt-3 mt-4">
                                         <div class="d-flex flex-wrap gap-2">
                                             <asp:Button runat="server" ID="btnEditProduct" CssClass="btn btn-primary" Text="Edit Product" OnClick="btnEditProduct_Click" />
-                                            <a href="#" runat="server" id="aChangeStatus" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#modalChangeStatus">Change Status</a>
+                                            <a href="javascript:void(0);" runat="server" id="aChangeStatus" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#modalChangeStatus">Change Status</a>
                                             <a href="javascript:void(0);" class="btn btn-outline-secondary" onclick="showLog('Products', '<%= lblId.Text %>')">View Log</a>
                                         </div>
                                     </div>
@@ -150,10 +150,10 @@
                                                                         <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                                     </li>
                                                                     <li runat="server" visible='<%# LoginAccess("Delete Kit") %>'>
-                                                                        <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteKit" onclick='<%# String.Format("return showDeleteKit(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                                        <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteKit" onclick='<%# String.Format("return showDeleteKit(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                                     </li>
                                                                     <li>
-                                                                        <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('ProductKits', '<%# Eval("Id") %>')">Log</a>
+                                                                        <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('ProductKits', '<%# Eval("Id") %>')">Log</a>
                                                                     </li>
                                                                 </ul>
                                                             </ItemTemplate>
@@ -193,7 +193,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnChangeStatus" CssClass="btn btn-primary" Text="Submit" OnClick="btnChangeStatus_Click" />
                 </div>
             </div>
@@ -248,7 +248,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnProcessKit" CssClass="btn btn-primary" Text="Submit" OnClick="btnProcessKit_Click" />
                 </div>
             </div>
@@ -265,7 +265,7 @@
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnDeleteKit" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDeleteKit_Click" />
                 </div>
             </div>

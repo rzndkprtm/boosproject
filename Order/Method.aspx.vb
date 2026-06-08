@@ -1257,6 +1257,8 @@ Partial Class Order_Method
                 Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Added"}
                 orderClass.Logs(dataLog)
             Next
+            orderClass.UpdateOrderFactory(data.headerid)
+
             Return "Success"
         End If
 
@@ -1306,6 +1308,8 @@ Partial Class Order_Method
             orderClass.ResetPriceDetail(data.headerid, itemId)
             orderClass.CalculatePrice(data.headerid, itemId)
             orderClass.FinalCostItem(data.headerid, itemId)
+
+            orderClass.UpdateOrderFactory(data.headerid)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
             orderClass.Logs(dataLog)
@@ -1358,6 +1362,11 @@ Partial Class Order_Method
             Return "ROOM TO INSTALL IS REQUIRED AND MUST NOT CONTAIN: , & ` ' &= &+ !"
         End If
         If String.IsNullOrEmpty(data.mounting) Then Return "MOUNTING IS REQUIRED !"
+        If data.rolename = "Customer" AndAlso controlName = "DC Motor" Then
+            If String.IsNullOrEmpty(data.remote) Then
+                Return "REMOTE TYPE IS REQUIRED !"
+            End If
+        End If
         If String.IsNullOrEmpty(data.fabrictype) Then
             If blindName = "Day & Night" Then Return "TOP FABRIC TYPE IS REQUIRED !"
             Return "FABRIC TYPE IS REQUIRED !"
@@ -1538,6 +1547,8 @@ Partial Class Order_Method
                 Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Added"}
                 orderClass.Logs(dataLog)
             Next
+            orderClass.UpdateOrderFactory(data.headerid)
+
             Return "Success"
         End If
 
@@ -1581,6 +1592,7 @@ Partial Class Order_Method
             orderClass.ResetPriceDetail(data.headerid, itemId)
             orderClass.CalculatePrice(data.headerid, itemId)
             orderClass.FinalCostItem(data.headerid, itemId)
+            orderClass.UpdateOrderFactory(data.headerid)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
             orderClass.Logs(dataLog)
@@ -2010,6 +2022,8 @@ Partial Class Order_Method
                 Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Added"}
                 orderClass.Logs(dataLog)
             Next
+            orderClass.UpdateOrderFactory(data.headerid)
+
             Return "Success"
         End If
 
@@ -2072,6 +2086,7 @@ Partial Class Order_Method
             orderClass.ResetPriceDetail(data.headerid, itemId)
             orderClass.CalculatePrice(data.headerid, itemId)
             orderClass.FinalCostItem(data.headerid, itemId)
+            orderClass.UpdateOrderFactory(data.headerid)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
             orderClass.Logs(dataLog)
@@ -2253,6 +2268,8 @@ Partial Class Order_Method
                 Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Added"}
                 orderClass.Logs(dataLog)
             Next
+            orderClass.UpdateOrderFactory(data.headerid)
+
             Return "Success"
         End If
 
@@ -2292,6 +2309,7 @@ Partial Class Order_Method
             orderClass.ResetPriceDetail(data.headerid, itemId)
             orderClass.CalculatePrice(data.headerid, itemId)
             orderClass.FinalCostItem(data.headerid, itemId)
+            orderClass.UpdateOrderFactory(data.headerid)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
             orderClass.Logs(dataLog)
@@ -2427,6 +2445,8 @@ Partial Class Order_Method
                 Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Added"}
                 orderClass.Logs(dataLog)
             Next
+            orderClass.UpdateOrderFactory(data.headerid)
+
             Return "Success"
         End If
 
@@ -2463,6 +2483,7 @@ Partial Class Order_Method
             orderClass.ResetPriceDetail(data.headerid, itemId)
             orderClass.CalculatePrice(data.headerid, itemId)
             orderClass.FinalCostItem(data.headerid, itemId)
+            orderClass.UpdateOrderFactory(data.headerid)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
             orderClass.Logs(dataLog)
@@ -2681,6 +2702,8 @@ Partial Class Order_Method
                 Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Added"}
                 orderClass.Logs(dataLog)
             Next
+            orderClass.UpdateOrderFactory(data.headerid)
+
             Return "Success"
         End If
 
@@ -2721,6 +2744,7 @@ Partial Class Order_Method
             orderClass.ResetPriceDetail(data.headerid, itemId)
             orderClass.CalculatePrice(data.headerid, itemId)
             orderClass.FinalCostItem(data.headerid, itemId)
+            orderClass.UpdateOrderFactory(data.headerid)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
             orderClass.Logs(dataLog)
@@ -2901,6 +2925,8 @@ Partial Class Order_Method
                 Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Added"}
                 orderClass.Logs(dataLog)
             Next
+            orderClass.UpdateOrderFactory(data.headerid)
+
             Return "Success"
         End If
 
@@ -2944,6 +2970,7 @@ Partial Class Order_Method
             orderClass.ResetPriceDetail(data.headerid, itemId)
             orderClass.CalculatePrice(data.headerid, itemId)
             orderClass.FinalCostItem(data.headerid, itemId)
+            orderClass.UpdateOrderFactory(data.headerid)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
             orderClass.Logs(dataLog)
@@ -3141,6 +3168,8 @@ Partial Class Order_Method
                 Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Added"}
                 orderClass.Logs(dataLog)
             Next
+            orderClass.UpdateOrderFactory(data.headerid)
+
             Return "Success"
         End If
 
@@ -3184,6 +3213,7 @@ Partial Class Order_Method
             orderClass.ResetPriceDetail(data.headerid, itemId)
             orderClass.CalculatePrice(data.headerid, itemId)
             orderClass.FinalCostItem(data.headerid, itemId)
+            orderClass.UpdateOrderFactory(data.headerid)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
             orderClass.Logs(dataLog)
@@ -3389,6 +3419,8 @@ Partial Class Order_Method
                 Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Added"}
                 orderClass.Logs(dataLog)
             Next
+            orderClass.UpdateOrderFactory(data.headerid)
+
             Return "Success"
         End If
 
@@ -3423,6 +3455,7 @@ Partial Class Order_Method
             orderClass.ResetPriceDetail(data.headerid, itemId)
             orderClass.CalculatePrice(data.headerid, itemId)
             orderClass.FinalCostItem(data.headerid, itemId)
+            orderClass.UpdateOrderFactory(data.headerid)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
             orderClass.Logs(dataLog)
@@ -3852,6 +3885,8 @@ Partial Class Order_Method
                 Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Added"}
                 orderClass.Logs(dataLog)
             Next
+            orderClass.UpdateOrderFactory(data.headerid)
+
             Return "Success"
         End If
 
@@ -3923,6 +3958,7 @@ Partial Class Order_Method
             orderClass.ResetPriceDetail(data.headerid, itemId)
             orderClass.CalculatePrice(data.headerid, itemId)
             orderClass.FinalCostItem(data.headerid, itemId)
+            orderClass.UpdateOrderFactory(data.headerid)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
             orderClass.Logs(dataLog)
@@ -4161,6 +4197,8 @@ Partial Class Order_Method
                 Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Added"}
                 orderClass.Logs(dataLog)
             Next
+            orderClass.UpdateOrderFactory(data.headerid)
+
             Return "Success"
         End If
 
@@ -4205,6 +4243,7 @@ Partial Class Order_Method
             orderClass.ResetPriceDetail(data.headerid, itemId)
             orderClass.CalculatePrice(data.headerid, itemId)
             orderClass.FinalCostItem(data.headerid, itemId)
+            orderClass.UpdateOrderFactory(data.headerid)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
             orderClass.Logs(dataLog)
@@ -4940,6 +4979,15 @@ Partial Class Order_Method
             End If
 
             data.adjusting = String.Empty
+            If Not tubeName.Contains("Sunboss") Then
+                data.bracketsize = String.Empty
+            End If
+            If Not tubeName.Contains("Gear Reduction") Then
+                data.bracketextension = String.Empty
+            End If
+            If Not tubeName.Contains("Acmeda") Then
+                data.springassist = String.Empty
+            End If
 
             If controlType = "Motorised" Then
                 data.chaincolour = data.remote
@@ -4971,10 +5019,9 @@ Partial Class Order_Method
                         If stdControlLength > 1200 Then controllength = 1500
                     End If
                 End If
-                If Not tubeName = "Acmeda 49mm" Then data.springassist = String.Empty
             End If
 
-            If controlName = "Somfy Altus 40 RTS 3/30" OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" Then
+            If controlName = "Somfy Altus 40 RTS 3/30" OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" OrElse controlName = "Chain" Then
                 data.charger = String.Empty
             End If
 
@@ -5062,6 +5109,7 @@ Partial Class Order_Method
 
             data.toptrack = String.Empty
             data.adjusting = String.Empty
+            data.bracketextension = String.Empty
 
             data.printingc = String.Empty
             data.printingd = String.Empty
@@ -5069,8 +5117,6 @@ Partial Class Order_Method
             data.printingf = String.Empty
             data.printingg = String.Empty
             data.printingh = String.Empty
-
-            data.bracketextension = String.Empty
 
             If width > 1510 OrElse drop > 1510 Then
                 orderClass.DeleteFilePrinting(data.orderid, data.printing)
@@ -5080,11 +5126,19 @@ Partial Class Order_Method
                 data.printingb = String.Empty
             End If
 
+            If Not tubeName.Contains("Acmeda") Then
+                data.springassist = String.Empty
+            End If
+            If Not tubeName.Contains("Sunboss") Then
+                data.bracketsize = String.Empty
+            End If
+
             If controlType = "Motorised" Then
                 data.chaincolour = data.remote
                 data.chainstopper = String.Empty : data.chainstopperb = String.Empty
                 data.controllength = String.Empty : data.controllengthb = String.Empty
                 controllength = 0 : controllengthb = 0
+                data.springassist = String.Empty
             End If
 
             If controlName = "Chain" Then
@@ -5143,7 +5197,7 @@ Partial Class Order_Method
                 End If
             End If
 
-            If controlName = "Somfy Altus 40 RTS 3/30" OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" Then
+            If controlName = "Somfy Altus 40 RTS 3/30" OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" OrElse controlName = "Chain" Then
                 data.charger = String.Empty
             End If
 
@@ -5275,6 +5329,17 @@ Partial Class Order_Method
                 data.printingb = String.Empty
             End If
 
+            If Not tubeName.Contains("Gear Reduction") Then
+                data.bracketextension = String.Empty
+            End If
+            If Not tubeName.Contains("Sunboss") Then
+                data.bracketsize = String.Empty
+                data.adjusting = String.Empty
+            End If
+            If Not tubeName.Contains("Acmeda") Then
+                data.springassist = String.Empty
+            End If
+
             If controlType = "Motorised" Then
                 data.chaincolour = data.remote
                 data.chainstopper = String.Empty
@@ -5304,7 +5369,7 @@ Partial Class Order_Method
                 End If
             End If
 
-            If controlName = "Somfy Altus 40 RTS 3/30" OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" Then
+            If controlName = "Somfy Altus 40 RTS 3/30" OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" OrElse controlName = "Chain" Then
                 data.charger = String.Empty
             End If
 
@@ -5433,6 +5498,17 @@ Partial Class Order_Method
                 data.printingb = String.Empty
             End If
 
+            If Not tubeName.Contains("Gear Reduction") Then
+                data.bracketextension = String.Empty
+            End If
+            If Not tubeName.Contains("Sunboss") Then
+                data.bracketsize = String.Empty
+                data.adjusting = String.Empty
+            End If
+            If Not tubeName.Contains("Acmeda") Then
+                data.springassist = String.Empty
+            End If
+
             If controlType = "Motorised" Then
                 data.chaincolour = data.remote
                 data.chaincolourb = String.Empty
@@ -5497,7 +5573,7 @@ Partial Class Order_Method
                 End If
             End If
 
-            If controlName = "Somfy Altus 40 RTS 3/30" OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" Then
+            If controlName = "Somfy Altus 40 RTS 3/30" OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" OrElse controlName = "Chain" Then
                 data.charger = String.Empty
             End If
 
@@ -5635,6 +5711,17 @@ Partial Class Order_Method
                 data.printingc = String.Empty
             End If
 
+            If Not tubeName.Contains("Gear Reduction") Then
+                data.bracketextension = String.Empty
+            End If
+            If Not tubeName.Contains("Sunboss") Then
+                data.bracketsize = String.Empty
+                data.adjusting = String.Empty
+            End If
+            If Not tubeName.Contains("Acmeda") Then
+                data.springassist = String.Empty
+            End If
+
             If controlType = "Motorised" Then
                 data.chaincolour = data.remote
                 data.chainstopper = String.Empty
@@ -5664,7 +5751,7 @@ Partial Class Order_Method
                 End If
             End If
 
-            If controlName = "Somfy Altus 40 RTS 3/30" OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" Then
+            If controlName = "Somfy Altus 40 RTS 3/30" OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" OrElse controlName = "Chain" Then
                 data.charger = String.Empty
             End If
 
@@ -5816,6 +5903,17 @@ Partial Class Order_Method
                 data.printingc = String.Empty
             End If
 
+            If Not tubeName.Contains("Gear Reduction") Then
+                data.bracketextension = String.Empty
+            End If
+            If Not tubeName.Contains("Sunboss") Then
+                data.bracketsize = String.Empty
+                data.adjusting = String.Empty
+            End If
+            If Not tubeName.Contains("Acmeda") Then
+                data.springassist = String.Empty
+            End If
+
             If controlType = "Motorised" Then
                 data.chaincolour = data.remote
                 data.chainstopper = String.Empty : data.chainstopperc = String.Empty
@@ -5875,7 +5973,7 @@ Partial Class Order_Method
                 End If
             End If
 
-            If controlName = "Somfy Altus 40 RTS 3/30" OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" Then
+            If controlName = "Somfy Altus 40 RTS 3/30" OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" OrElse controlName = "Chain" Then
                 data.charger = String.Empty
             End If
 
@@ -6076,7 +6174,7 @@ Partial Class Order_Method
                 End If
             End If
 
-            If controlName = "Somfy Altus 40 RTS 3/30" OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" Then
+            If controlName = "Somfy Altus 40 RTS 3/30" OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" OrElse controlName = "Chain" Then
                 data.charger = String.Empty
             End If
 
@@ -7204,6 +7302,7 @@ Partial Class Order_Method
                 Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Added"}
                 orderClass.Logs(dataLog)
             Next
+            orderClass.UpdateOrderFactory(data.headerid)
 
             Return "Success"
         End If
@@ -7344,6 +7443,7 @@ Partial Class Order_Method
             orderClass.ResetPriceDetail(data.headerid, itemId)
             orderClass.CalculatePrice(data.headerid, itemId)
             orderClass.FinalCostItem(data.headerid, itemId)
+            orderClass.UpdateOrderFactory(data.headerid)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
             orderClass.Logs(dataLog)
@@ -7524,6 +7624,7 @@ Partial Class Order_Method
                 Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Added"}
                 orderClass.Logs(dataLog)
             Next
+            orderClass.UpdateOrderFactory(data.headerid)
 
             Return "Success"
         End If
@@ -7567,6 +7668,7 @@ Partial Class Order_Method
             orderClass.ResetPriceDetail(data.headerid, itemId)
             orderClass.CalculatePrice(data.headerid, itemId)
             orderClass.FinalCostItem(data.headerid, itemId)
+            orderClass.UpdateOrderFactory(data.headerid)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
             orderClass.Logs(dataLog)
@@ -8410,6 +8512,7 @@ Partial Class Order_Method
                 Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Added"}
                 orderClass.Logs(dataLog)
             Next
+            orderClass.UpdateOrderFactory(data.headerid)
 
             Return "Success"
         End If
@@ -8486,6 +8589,7 @@ Partial Class Order_Method
             orderClass.ResetPriceDetail(data.headerid, itemId)
             orderClass.CalculatePrice(data.headerid, itemId)
             orderClass.FinalCostItem(data.headerid, itemId)
+            orderClass.UpdateOrderFactory(data.headerid)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
             orderClass.Logs(dataLog)
@@ -9132,6 +9236,7 @@ Partial Class Order_Method
                 Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Added"}
                 orderClass.Logs(dataLog)
             Next
+            orderClass.UpdateOrderFactory(data.headerid)
 
             Return "Success"
         End If
@@ -9203,6 +9308,7 @@ Partial Class Order_Method
             orderClass.ResetPriceDetail(data.headerid, itemId)
             orderClass.CalculatePrice(data.headerid, itemId)
             orderClass.FinalCostItem(data.headerid, itemId)
+            orderClass.UpdateOrderFactory(data.headerid)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
             orderClass.Logs(dataLog)
@@ -9278,6 +9384,7 @@ Partial Class Order_Method
                 Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Added"}
                 orderClass.Logs(dataLog)
             Next
+            orderClass.UpdateOrderFactory(data.headerid)
 
             Return "Success"
         End If
@@ -9305,6 +9412,7 @@ Partial Class Order_Method
             orderClass.ResetPriceDetail(data.headerid, itemId)
             orderClass.CalculatePrice(data.headerid, itemId)
             orderClass.FinalCostItem(data.headerid, itemId)
+            orderClass.UpdateOrderFactory(data.headerid)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
             orderClass.Logs(dataLog)
@@ -9486,6 +9594,8 @@ Partial Class Order_Method
                 Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Added"}
                 orderClass.Logs(dataLog)
             Next
+            orderClass.UpdateOrderFactory(data.headerid)
+
             Return "Success"
         End If
 
@@ -9526,6 +9636,7 @@ Partial Class Order_Method
             orderClass.ResetPriceDetail(data.headerid, itemId)
             orderClass.CalculatePrice(data.headerid, itemId)
             orderClass.FinalCostItem(data.headerid, itemId)
+            orderClass.UpdateOrderFactory(data.headerid)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
             orderClass.Logs(dataLog)
@@ -9666,6 +9777,7 @@ Partial Class Order_Method
                 Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Added"}
                 orderClass.Logs(dataLog)
             Next
+            orderClass.UpdateOrderFactory(data.headerid)
 
             Return "Success"
         End If
@@ -9704,6 +9816,7 @@ Partial Class Order_Method
             orderClass.ResetPriceDetail(data.headerid, itemId)
             orderClass.CalculatePrice(data.headerid, itemId)
             orderClass.FinalCostItem(data.headerid, itemId)
+            orderClass.UpdateOrderFactory(data.headerid)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
             orderClass.Logs(dataLog)
@@ -9972,6 +10085,7 @@ Partial Class Order_Method
                 Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Added"}
                 orderClass.Logs(dataLog)
             Next
+            orderClass.UpdateOrderFactory(data.headerid)
 
             Return "Success"
         End If
@@ -10034,6 +10148,7 @@ Partial Class Order_Method
             orderClass.ResetPriceDetail(data.headerid, itemId)
             orderClass.CalculatePrice(data.headerid, itemId)
             orderClass.FinalCostItem(data.headerid, itemId)
+            orderClass.UpdateOrderFactory(data.headerid)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
             orderClass.Logs(dataLog)
@@ -10225,6 +10340,7 @@ Partial Class Order_Method
                 Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Added"}
                 orderClass.Logs(dataLog)
             Next
+            orderClass.UpdateOrderFactory(data.headerid)
 
             Return "Success"
         End If
@@ -10270,6 +10386,7 @@ Partial Class Order_Method
             orderClass.ResetPriceDetail(data.headerid, itemId)
             orderClass.CalculatePrice(data.headerid, itemId)
             orderClass.FinalCostItem(data.headerid, itemId)
+            orderClass.UpdateOrderFactory(data.headerid)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
             orderClass.Logs(dataLog)

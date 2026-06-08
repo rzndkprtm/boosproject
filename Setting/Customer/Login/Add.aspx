@@ -64,13 +64,7 @@
                                             <label class="form-label">Full Name</label>
                                             <asp:TextBox runat="server" ID="txtFullName" CssClass="form-control" placeholder="Full Name ..." autocomplete="off"></asp:TextBox>
                                         </div>
-                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
-                                            <label class="form-label">Email</label>
-                                            <asp:TextBox runat="server" ID="txtEmail" CssClass="form-control" placeholder="Email ..." autocomplete="off"></asp:TextBox>
-                                        </div>
-                                    </div>
-                                    <div class="row mb-2">
-                                        <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                        <div class="col-12 col-sm-12 col-lg-6 form-group" >
                                             <label class="form-label">Pricing</label>
                                             <asp:DropDownList runat="server" ID="ddlPricing" CssClass="form-select">
                                                 <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
@@ -110,6 +104,7 @@
 
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblCustomerId"></asp:Label>
+        <asp:Label runat="server" ID="lblReturnPage"></asp:Label>
     </div>
 
     <script type="text/javascript">

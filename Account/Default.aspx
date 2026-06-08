@@ -1,6 +1,32 @@
 ﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Default.aspx.vb" Inherits="Account_Default" MasterPageFile="~/Site.master" MaintainScrollPositionOnPostback="true" Debug="true" Title="My Account" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
+    <style>
+        .profile-card{ border:none; border-radius:16px; box-shadow:0 4px 20px rgba(0,0,0,.06); overflow:hidden; height:100%; }
+        .profile-card .card-header{ background:#fff; border-bottom:1px solid #edf2f7; padding:20px 24px; }
+        .profile-card .card-title{ margin:0; font-size:20px; font-weight:600; color:#1e293b; }
+        .profile-card .card-subtitle{ color:#64748b; font-size:13px; margin-top:4px; }
+        .profile-card .card-body{ padding:24px; }
+        .info-row{ display:flex; justify-content:space-between; align-items:center; padding:18px 0; border-bottom:1px solid #f1f5f9; }
+        .info-row:last-child{ border-bottom:none; }
+        .info-label{ font-size:13px; color:#64748b; margin-bottom:4px; }
+        .info-value{ font-size:16px; font-weight:600; color:#0f172a; }
+        .edit-link{ border:none; background:#eff6ff; color:#2563eb; padding:6px 10px; border-radius:8px; text-decoration:none; }
+        .edit-link:hover{ background:#dbeafe; }
+        .section-title{ font-size:16px; font-weight:600; margin-bottom:15px; color:#1e293b; }
+        .summary-box{ background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:18px; margin-bottom:20px; }
+        .note-box{ margin-top:20px; background:#f8fafc; border-left:4px solid #2563eb; padding:14px 16px; border-radius:10px; color:#475569; font-size:14px; }
+        .note-box i{ margin-right:8px; color:#2563eb; }
+        .table-responsive{ border:1px solid #e2e8f0; border-radius:12px; overflow-x:auto; overflow-y:hidden; }
+        .table{ margin-bottom:0 !important; table-layout:fixed; width:100%; }
+        .table th, .table td{ vertical-align:middle; word-break:break-word; }
+        .table th:nth-child(1){ width:60px; }
+        .table th:nth-child(2){ width:25%; }
+        .table th:nth-child(3){ width:45%; }
+        .table th:nth-child(4){ width:30%; }
+        .empty-contact{ text-align:center; padding:30px; color:#94a3b8; }
+    </style>
+
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
@@ -28,102 +54,91 @@
             </div>
         </section>
         <section class="row">
-            <div class="col-12 col-sm-12 col-lg-6">
-                <div class="card">
+            <div class="col-12 col-sm-12 col-lg-5">
+                <div class="card profile-card">
                     <div class="card-header">
-                        <h4 class="card-title">Personal Account Information</h4>
+                        <div class="card-title">Personal Account</div>
+                        <div class="card-subtitle"> your personal account information</div>
                     </div>
-                    <div class="card-content">
-                        <div class="card-body">
-                            <div class="row mb-3">
-                                <div class="col-12 col-sm-12 col-lg-6 mb-3">
-                                    <label>User Name</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblUserName" CssClass="font-bold"></asp:Label>
-                                </div>
-                                <div class="col-12 col-sm-12 col-lg-6">
-                                    <span>
-                                        <label>Full Name</label>
-                                        <a class="btn" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#modalName"><i class="bi bi-pencil-square"></i></a>
-                                    </span>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblFullName" CssClass="font-bold"></asp:Label>
+                    <div class="card-body">
+                        <div class="info-row">
+                            <div>
+                                <div class="info-label"> Username</div>
+                                <div class="info-value">
+                                    <asp:Label runat="server" ID="lblUserName"></asp:Label>
                                 </div>
                             </div>
-                            <div class="row mb-3">
-                                <div class="col-12 col-sm-12 col-lg-6">
-                                    <span>
-                                        <label>Email</label>
-                                        <a class="btn" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#modalEmail"><i class="bi bi-pencil-square"></i></a>
-                                    </span>                                    
-                                    <br />
-                                    <asp:Label runat="server" ID="lblUserEmail" CssClass="font-bold"></asp:Label>
+                        </div>
+                        <div class="info-row">
+                            <div>
+                                <div class="info-label">Full Name</div>
+                                <div class="info-value">
+                                    <asp:Label runat="server" ID="lblFullName"></asp:Label>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    <ul class="list-group list-group-flush">
-                                        <li class="list-group-item">
-                                            This section is personal and applies only to the credentials you are currently using.
-                                        </li>
-                                        <li class="list-group-item"></li>
-                                    </ul>
+                            <a class="edit-link" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalName">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                        </div>
+                        <div class="info-row">
+                            <div>
+                                <div class="info-label">Email Address</div>
+                                <div class="info-value">
+                                    <asp:Label runat="server" ID="lblUserEmail"></asp:Label>
                                 </div>
                             </div>
+                            <a class="edit-link" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalEmail">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                        </div>
+                        <div class="note-box">
+                            <i class="bi bi-info-circle-fill"></i>
+                            These details belong only to the login account currently being used.
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-sm-12 col-lg-6">
-                <div class="card">
+            <div class="col-12 col-sm-12 col-lg-7" runat="server" id="divCompany">
+                <div class="card profile-card">
                     <div class="card-header">
-                        <h4 class="card-title">Company Account Information</h4>
+                        <div class="card-title">Company Account</div>
+                        <div class="card-subtitle">Company and contact information</div>
                     </div>
-                    <div class="card-content">
-                        <div class="card-body">
-                            <div class="row mb-5">
-                                <div class="col-9">
-                                    <label>Account Name</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblCustomerName" CssClass="font-bold"></asp:Label>
+                    <div class="card-body">
+                        <div class="summary-box mt-2">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="info-label"> Account Name</div>
+                                    <div class="info-value">
+                                        <asp:Label runat="server" ID="lblCustomerName"></asp:Label>
+                                    </div>
                                 </div>
-                                <div class="col-3">
-                                    <label>Operator</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblOperator" CssClass="font-bold"></asp:Label>
-                                </div>
-                            </div>
-                            <div class="row mb-5">
-                                <div class="col-12">
-                                    <div class="table-responsive">
-                                        <asp:GridView runat="server" ID="gvContact" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center">
-                                            <Columns>
-                                                <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="60px">
-                                                    <ItemTemplate>
-                                                        <%# Container.DataItemIndex + 1 %>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:BoundField DataField="Name" HeaderText="Name" />
-                                                <asp:BoundField DataField="Email" HeaderText="Email" />
-                                                <asp:BoundField DataField="Tags" HeaderText="Tags" />
-                                            </Columns>
-                                        </asp:GridView>
+                                <div class="col-md-4">
+                                    <div class="info-label">Sales</div>
+                                    <div class="info-value">
+                                        <asp:Label runat="server" ID="lblSales"></asp:Label>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    <ul class="list-group list-group-flush">
-                                        <li class="list-group-item">
-                                            This section cannot be modified by you. Please contact the IT or Accounting department for assistance.
-                                        </li>
-                                        <li class="list-group-item">
-                                            This section contains our general information about your Account / Store / Retailer.
-                                        </li>
-                                        <li class="list-group-item"></li>
-                                    </ul>
-                                </div>
-                            </div>
+                        </div>
+                        <div class="section-title">Contact List</div>
+                        <div class="table-responsive">
+                            <asp:GridView runat="server" ID="gvContact" CssClass="table table-hover mb-0" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="No contact information available." EmptyDataRowStyle-HorizontalAlign="Center">
+                                <Columns>
+                                    <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="60px">
+                                        <ItemTemplate>
+                                            <%# Container.DataItemIndex + 1 %>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:BoundField DataField="Name" HeaderText="Name" ItemStyle-Wrap="true" />
+                                    <asp:BoundField DataField="Email" HeaderText="Email" ItemStyle-Wrap="true" />
+                                    <asp:BoundField DataField="Tags" HeaderText="Tags" ItemStyle-Wrap="true" />
+                                </Columns>
+                            </asp:GridView>
+                        </div>
+                        <div class="note-box">
+                            <i class="bi bi-shield-lock-fill"></i>
+                            Company account information is managed by IT or Accounting and cannot be modified from this page.
                         </div>
                     </div>
                 </div>
@@ -153,7 +168,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnName" CssClass="btn btn-primary" Text="Submit" OnClick="btnName_Click" />
                 </div>
             </div>
@@ -182,7 +197,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnEmail" CssClass="btn btn-primary" Text="Submit" OnClick="btnEmail_Click" />
                 </div>
             </div>

@@ -76,19 +76,19 @@
                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                         <ul class="dropdown-menu">
                                                             <li>
-                                                                <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalTest" data-title='<%# Eval("Title") %>' data-message='<%# Eval("Message") %>' onclick="showTest(this)">Preview</a>
+                                                                <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalTest" data-title='<%# Eval("Title") %>' data-message='<%# Eval("Message") %>' onclick="showTest(this)">Preview</a>
                                                             </li>
                                                             <li runat="server" visible='<%# LoginAccess("Detail") %>'>
                                                                 <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                             </li>
                                                             <li runat="server" visible='<%# LoginAccess("Delete") %>'>
-                                                                <a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                             </li>
                                                             <li>
-                                                                <a href="javascript:void(0)" class="dropdown-item" onclick="showRead('<%# Eval("Id") %>')">View Readers</a>
+                                                                <a href="javascript:void(0);" class="dropdown-item" onclick="showRead('<%# Eval("Id") %>')">View Readers</a>
                                                             </li>
                                                             <li>
-                                                                <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('Notifications', '<%# Eval("Id") %>')">Log</a>
+                                                                <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('Notifications', '<%# Eval("Id") %>')">Log</a>
                                                             </li>
                                                         </ul>
                                                     </ItemTemplate>
@@ -118,7 +118,7 @@
                     <p id="messageTest"></p>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-info" data-bs-dismiss="modal">I have read the information.</a>
+                    <a href="javascript:void(0);" class="btn btn-info" data-bs-dismiss="modal">I have read the information.</a>
                 </div>
             </div>
         </div>
@@ -134,7 +134,7 @@
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnDelete" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDelete_Click" />
                 </div>
             </div>

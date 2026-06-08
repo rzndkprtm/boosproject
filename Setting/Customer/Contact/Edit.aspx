@@ -108,6 +108,7 @@
 
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblId"></asp:Label>
+        <asp:Label runat="server" ID="lblReturnPage"></asp:Label>
     </div>
 
     <script type="text/javascript">

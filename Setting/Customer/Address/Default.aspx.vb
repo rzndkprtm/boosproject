@@ -28,6 +28,7 @@ Partial Class Setting_Customer_Address_Default
 
         MessageError(False, String.Empty)
         BindData(txtSearch.Text)
+        Session("SearchCustomerAddress") = txtSearch.Text
     End Sub
 
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
@@ -63,17 +64,6 @@ Partial Class Setting_Customer_Address_Default
             BuildPager()
         Catch ex As Exception
         End Try
-    End Sub
-
-    Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
-        If Not String.IsNullOrEmpty(e.CommandArgument) Then
-            Dim dataId As String = e.CommandArgument.ToString()
-            If e.CommandName = "Detail" Then
-                Session("SearchCustomerAddress") = txtSearch.Text
-                Dim url As String = String.Format("~/setting/customer/address/edit?addressid={0}", dataId)
-                Response.Redirect(url, False)
-            End If
-        End If
     End Sub
 
     Protected Sub btnPrimary_Click(sender As Object, e As EventArgs)

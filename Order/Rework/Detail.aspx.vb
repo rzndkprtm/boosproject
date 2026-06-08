@@ -156,7 +156,7 @@ Partial Class Order_Rework_Detail
                     Using thisConn As New SqlConnection(myConn)
                         thisConn.Open()
 
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderHeaders SELECT @NewID, @OrderId, CustomerId, CONVERT(VARCHAR(200), OrderNumber) + ' - ' + 'RW', CONVERT(VARCHAR(200), OrderName) + ' - ' + 'RW', NULL, OrderType, @Status, NULL, CreatedBy, GETDATE(), NULL, NULL, NULL, NULL, NULL, NULL, 0, 1 FROM OrderHeaders WHERE Id=@OldId;", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderHeaders SELECT @NewID, @OrderId, CustomerId, CONVERT(VARCHAR(200), OrderNumber) + ' - ' + 'RW', CONVERT(VARCHAR(200), OrderName) + ' - ' + 'RW', NULL, OrderType, OrderFactory, @Status, NULL, CreatedBy, GETDATE(), NULL, NULL, NULL, NULL, NULL, NULL, 'No', NULL, 1 FROM OrderHeaders WHERE Id=@OldId;", thisConn)
                             myCmd.Parameters.AddWithValue("@OldId", lblHeaderId.Text)
                             myCmd.Parameters.AddWithValue("@NewID", newHeaderId)
                             myCmd.Parameters.AddWithValue("@OrderId", orderId)
@@ -230,13 +230,17 @@ Partial Class Order_Rework_Detail
                 orderClass.Logs(dataLog)
             Next
 
-            Dim totalItems As Integer = orderClass.GetTotalItemOrder(newHeaderId)
-            If lblCompanyId.Text = "2" AndAlso minSurcharge = True AndAlso totalItems <= 3 Then
+            If lblCompanyId.Text = "2" AndAlso orderType = "Regular" Then
                 Dim thisId As String = orderClass.GetNewOrderItemId()
+                Dim productId As String = orderClass.GetItemData("SELECT Id FROM Products WHERE Name='Fuel Surcharge' AND (Status='In Stock' OR Status='Limited Stock')")
+                Dim productGroupId As String = orderClass.GetItemData("SELECT Id FROM PriceProductGroups WHERE Name='Fuel Surcharge' AND Active=1")
+
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, 2986, 112, 1, 0, 0, 1, 0, 1)", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, 1, 0, 0, 1, 0, 1)", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
                         myCmd.Parameters.AddWithValue("@HeaderId", newHeaderId)
+                        myCmd.Parameters.AddWithValue("@ProductId", If(String.IsNullOrEmpty(productId), CType(DBNull.Value, Object), productId))
+                        myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(productGroupId), CType(DBNull.Value, Object), productGroupId))
 
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
@@ -246,10 +250,38 @@ Partial Class Order_Rework_Detail
                 dataLog = {"OrderDetails", thisId, "2", "Order Item Added"}
                 orderClass.Logs(dataLog)
 
-                orderClass.ResetPriceDetail(lblHeaderId.Text, thisId)
-                orderClass.CalculatePrice(lblHeaderId.Text, thisId)
-                orderClass.FinalCostItem(lblHeaderId.Text, thisId)
+                orderClass.ResetPriceDetail(newHeaderId, thisId)
+                orderClass.CalculatePrice(newHeaderId, thisId)
+                orderClass.FinalCostItem(newHeaderId, thisId)
+
+                Dim totalItems As Integer = orderClass.GetTotalItemOrder(newHeaderId)
+                If minSurcharge = True AndAlso totalItems <= 3 Then
+                    thisId = orderClass.GetNewOrderItemId()
+                    productId = orderClass.GetItemData("SELECT Id FROM Products WHERE Name='Minimum Order Surcharge' AND (Status='In Stock' OR Status='Limited Stock')")
+                    productGroupId = orderClass.GetItemData("SELECT Id FROM PriceProductGroups WHERE Name='Minimum Order Surcharge' AND Active=1")
+
+                    Using thisConn As New SqlConnection(myConn)
+                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, 1, 0, 0, 1, 0, 1)", thisConn)
+                            myCmd.Parameters.AddWithValue("@Id", thisId)
+                            myCmd.Parameters.AddWithValue("@HeaderId", newHeaderId)
+                            myCmd.Parameters.AddWithValue("@ProductId", If(String.IsNullOrEmpty(productId), CType(DBNull.Value, Object), productId))
+                            myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(productGroupId), CType(DBNull.Value, Object), productGroupId))
+
+                            thisConn.Open()
+                            myCmd.ExecuteNonQuery()
+                        End Using
+                    End Using
+
+                    dataLog = {"OrderDetails", thisId, "2", "Order Item Added"}
+                    orderClass.Logs(dataLog)
+
+                    orderClass.ResetPriceDetail(newHeaderId, thisId)
+                    orderClass.CalculatePrice(newHeaderId, thisId)
+                    orderClass.FinalCostItem(newHeaderId, thisId)
+                End If
             End If
+
+            orderClass.UpdateOrderFactory(newHeaderId)
 
             Dim mailingClass As New MailingClass
             mailingClass.ReworkApprove(lblReworkId.Text)

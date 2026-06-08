@@ -109,8 +109,8 @@ Partial Class Setting_Customer_Add
             If msgError.InnerText = "" Then
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Customers ORDER BY Id DESC")
                 Dim operatorReps As String = String.Empty
-                If Not String.IsNullOrEmpty(lbOperator.SelectedValue) Then
-                    operatorReps = String.Join(",", lbOperator.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
+                If Not String.IsNullOrEmpty(lbSales.SelectedValue) Then
+                    operatorReps = String.Join(",", lbSales.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
                 End If
                 If Not ddlCompany.SelectedValue = "2" Then
                     ddlArea.SelectedValue = "" : operatorReps = String.Empty
@@ -272,26 +272,26 @@ Partial Class Setting_Customer_Add
     End Sub
 
     Protected Sub BindOperator(companyId As String)
-        lbOperator.Items.Clear()
+        lbSales.Items.Clear()
         Try
             If Not String.IsNullOrEmpty(companyId) Then
-                lbOperator.DataSource = settingClass.GetDataTable("SELECT Logins.* FROM Logins LEFT JOIN Customers ON Logins.CustomerId=Customers.Id WHERE Customers.CompanyId='" & companyId & "' AND Logins.RoleId='4' AND Logins.LevelId='2' ORDER BY Logins.UserName ASC")
-                lbOperator.DataTextField = "FullName"
-                lbOperator.DataValueField = "Id"
-                lbOperator.DataBind()
+                lbSales.DataSource = settingClass.GetDataTable("SELECT Logins.* FROM Logins LEFT JOIN Customers ON Logins.CustomerId=Customers.Id WHERE Customers.CompanyId='" & companyId & "' AND Logins.RoleId='4' AND Logins.LevelId='2' ORDER BY Logins.UserName ASC")
+                lbSales.DataTextField = "FullName"
+                lbSales.DataValueField = "Id"
+                lbSales.DataBind()
 
-                If lbOperator.Items.Count > 0 Then
-                    lbOperator.Items.Insert(0, New ListItem("", ""))
+                If lbSales.Items.Count > 0 Then
+                    lbSales.Items.Insert(0, New ListItem("", ""))
                 End If
 
-                lbOperator.Enabled = True
+                lbSales.Enabled = True
                 If Session("RoleName") = "Sales" AndAlso Session("LevelName") = "Member" Then
-                    lbOperator.SelectedValue = Session("LoginId").ToString()
-                    lbOperator.Enabled = False
+                    lbSales.SelectedValue = Session("LoginId").ToString()
+                    lbSales.Enabled = False
                 End If
             End If
         Catch ex As Exception
-            lbOperator.Items.Clear()
+            lbSales.Items.Clear()
             If Not Session("RoleName") = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
@@ -378,7 +378,7 @@ Partial Class Setting_Customer_Add
         ddlCompany.BackColor = Drawing.Color.Empty
         ddlCompanyDetail.BackColor = Drawing.Color.Empty
         ddlArea.BackColor = Drawing.Color.Empty
-        lbOperator.BackColor = Drawing.Color.Empty
+        lbSales.BackColor = Drawing.Color.Empty
         ddlPriceGroup.BackColor = Drawing.Color.Empty
         ddlPriceGroupShutter.BackColor = Drawing.Color.Empty
         ddlPriceGroupDoor.BackColor = Drawing.Color.Empty

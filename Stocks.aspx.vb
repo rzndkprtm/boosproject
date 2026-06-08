@@ -562,6 +562,20 @@ Partial Class Stocks
     End Sub
 
     Protected Sub gvListFabricChart_RowDataBound(sender As Object, e As GridViewRowEventArgs)
+        If e.Row.RowType = DataControlRowType.DataRow Then
+            For i As Integer = 1 To e.Row.Cells.Count - 1
+                Dim cellText As String = e.Row.Cells(i).Text.Trim()
+
+                e.Row.Cells(i).HorizontalAlign = HorizontalAlign.Center
+                e.Row.Cells(i).VerticalAlign = VerticalAlign.Middle
+
+                If cellText.Equals("No", StringComparison.OrdinalIgnoreCase) Then
+                    e.Row.Cells(i).BackColor = Drawing.Color.DarkRed
+                    e.Row.Cells(i).ForeColor = Drawing.Color.White
+                    e.Row.Cells(i).Font.Bold = True
+                End If
+            Next
+        End If
         If e.Row.RowType = DataControlRowType.Footer Then
             For i As Integer = 0 To gvListFabricChart.Columns.Count - 1
                 Dim bf As BoundField = TryCast(gvListFabricChart.Columns(i), BoundField)

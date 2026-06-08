@@ -27,7 +27,7 @@
             <div class="col-12 col-sm-12 col-lg-7">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Edit Form</h4>
+                        <h4 class="card-title">Login Form</h4>
                     </div>
                     <div class="card-content">
                         <div class="card-body">

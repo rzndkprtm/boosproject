@@ -4,8 +4,8 @@ Partial Class Setting_Customer_Contact_Add
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim url As String = String.Empty
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
@@ -16,6 +16,10 @@ Partial Class Setting_Customer_Contact_Add
 
         If Not String.IsNullOrEmpty(Request.QueryString("custid")) Then
             lblCustomerId.Text = Request.QueryString("custid").ToString()
+        End If
+
+        If Not String.IsNullOrEmpty(Request.QueryString("returnpage")) Then
+            lblReturnPage.Text = Request.QueryString("returnpage").ToString()
         End If
 
         If Not IsPostBack Then
@@ -78,7 +82,10 @@ Partial Class Setting_Customer_Contact_Add
                 Dim dataLog As Object() = {"CustomerContacts", thisId, Session("LoginId").ToString(), "Customer Contact Created"}
                 settingClass.Logs(dataLog)
 
-                Dim url As String = String.Format("~/setting/customer/detail?customerid={0}", ddlCustomer.SelectedValue)
+                url = "~/setting/customer/contact"
+                If lblReturnPage.Text = "detail" Then
+                    url = String.Format("~/setting/customer/detail?customerid={0}", ddlCustomer.SelectedValue)
+                End If
                 Response.Redirect(url, False)
             End If
         Catch ex As Exception
@@ -90,9 +97,9 @@ Partial Class Setting_Customer_Contact_Add
     End Sub
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
-        Dim url As String = String.Format("~/setting/customer/detail?customerid={0}", ddlCustomer.SelectedValue)
-        If ddlCustomer.SelectedValue = "" Then
-            url = "~/setting/customer/contact"
+        url = "~/setting/customer/contact"
+        If lblReturnPage.Text = "detail" Then
+            url = String.Format("~/setting/customer/detail?customerid={0}", ddlCustomer.SelectedValue)
         End If
         Response.Redirect(url, False)
     End Sub

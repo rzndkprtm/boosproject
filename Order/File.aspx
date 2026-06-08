@@ -42,7 +42,7 @@
                                 <div class="col-12 col-sm-12 col-lg-7 d-flex justify-content-end">
                                     <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
                                         <div class="input-group">
-                                            <span class="input-group-text">Search</span>
+                                            <span class="input-group-text">Order #</span>
                                             <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" placeholoder="....." autocomplete="off"></asp:TextBox>
                                             <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />
                                         </div>
@@ -134,7 +134,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
                 </div>
             </div>
         </div>

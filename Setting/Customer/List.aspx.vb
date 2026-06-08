@@ -27,21 +27,33 @@ Partial Class Setting_Customer_List
     End Sub
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
         gvList.PageIndex = 0
+
+        MessageError(False, String.Empty)
         BindData(txtSearch.Text, ddlCompany.SelectedValue, ddlActive.SelectedValue)
+
+        Session("SearchCustomer") = txtSearch.Text
+        Session("CompanyCustomer") = ddlCompany.SelectedValue
     End Sub
 
     Protected Sub ddlCompany_SelectedIndexChanged(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
         gvList.PageIndex = 0
+
+        MessageError(False, String.Empty)
         BindData(txtSearch.Text, ddlCompany.SelectedValue, ddlActive.SelectedValue)
+
+        Session("SearchCustomer") = txtSearch.Text
+        Session("CompanyCustomer") = ddlCompany.SelectedValue
     End Sub
 
     Protected Sub ddlActive_SelectedIndexChanged(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
         gvList.PageIndex = 0
+
+        MessageError(False, String.Empty)
         BindData(txtSearch.Text, ddlCompany.SelectedValue, ddlActive.SelectedValue)
+
+        Session("SearchCustomer") = txtSearch.Text
+        Session("CompanyCustomer") = ddlCompany.SelectedValue
     End Sub
 
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
@@ -57,7 +69,6 @@ Partial Class Setting_Customer_List
                 BindData(txtSearch.Text, ddlCompany.SelectedValue, ddlActive.SelectedValue)
             End If
         Catch ex As Exception
-
         End Try
     End Sub
 
@@ -79,21 +90,6 @@ Partial Class Setting_Customer_List
             BuildPager()
         Catch ex As Exception
         End Try
-    End Sub
-
-    Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
-        Session("SearchCustomer") = txtSearch.Text
-        If Not String.IsNullOrEmpty(e.CommandArgument) Then
-            Dim dataId As String = e.CommandArgument.ToString()
-            If e.CommandName = "Detail" Then
-                url = String.Format("~/setting/customer/detail?customerid={0}", dataId)
-                Response.Redirect(url, False)
-            End If
-            If e.CommandName = "Ubah" Then
-                url = String.Format("~/setting/customer/edit?customerid={0}", dataId)
-                Response.Redirect(url, False)
-            End If
-        End If
     End Sub
 
     Protected Sub btnCashSale_Click(sender As Object, e As EventArgs)
@@ -211,7 +207,6 @@ Partial Class Setting_Customer_List
             gvList.Columns(10).Visible = LoginAccess("Visible Active") ' ACTIVE
 
             btnAdd.Visible = LoginAccess("Add")
-            aExport.Visible = LoginAccess("Export")
             ddlActive.Visible = LoginAccess("Active")
             divCompany.Visible = LoginAccess("Filter Company")
         Catch ex As Exception
@@ -237,17 +232,6 @@ Partial Class Setting_Customer_List
 
             If ddlCompany.Items.Count > 1 Then
                 ddlCompany.Items.Insert(0, New ListItem("", ""))
-            End If
-
-            ddlCompany.SelectedValue = Session("CompanyId").ToString()
-
-            ddlExportCompany.DataSource = settingClass.GetDataTable(thisQuery)
-            ddlExportCompany.DataTextField = "Alias"
-            ddlExportCompany.DataValueField = "Id"
-            ddlExportCompany.DataBind()
-
-            If ddlExportCompany.Items.Count > 1 Then
-                ddlExportCompany.Items.Insert(0, New ListItem("", ""))
             End If
 
             ddlCompany.SelectedValue = Session("CompanyId").ToString()

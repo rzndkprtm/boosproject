@@ -21,14 +21,17 @@ Partial Class Setting_Boos
         If thisAction = "resetproformaorder" Then
             ResetProformaOrder()
         End If
-        If thisAction = "unshipment" Then
-            UnshipmentOrder()
-        End If
         If thisAction = "deleteorderactioncontext" Then
             DeleteOrderActionContext()
         End If
         If thisAction = "deletenullsession" Then
             DeleteNullSession()
+        End If
+        If thisAction = "updatefactory" Then
+            UpdateFactory()
+        End If
+        If thisAction = "downloadboe" Then
+            UpdateDownloadBOE()
         End If
         If thisAction = "shipment" Then
             If String.IsNullOrEmpty(Request.QueryString("OrdID")) Then
@@ -55,6 +58,19 @@ Partial Class Setting_Boos
         End If
     End Sub
 
+    Protected Sub UpdateDownloadBOE()
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Download='Done' WHERE Active=1 AND Download='Yes' AND DownloadDate IS NOT NULL AND DATEDIFF(MINUTE, DownloadDate, GETDATE()) >= 1", thisConn)
+
+                    thisConn.Open()
+                    myCmd.ExecuteNonQuery()
+                End Using
+            End Using
+        Catch ex As Exception
+        End Try
+    End Sub
+
     Protected Sub UpdateShipment(id As String, status As String, shipNumber As String, shipDate As Date, conNumber As String, courier As String, invNumber As String)
         Try
             Using thisConn As New SqlConnection(myConn)
@@ -71,6 +87,20 @@ Partial Class Setting_Boos
                     myCmd.ExecuteNonQuery()
                 End Using
             End Using
+        Catch ex As Exception
+        End Try
+    End Sub
+
+    Protected Sub UpdateFactory()
+        Try
+            Dim orderClass As New OrderClass
+            Dim orderData As DataTable = orderClass.GetDataTable("SELECT * FROM OrderHeaders WHERE Active=1 ORDER BY Id ASC")
+            If orderData.Rows.Count > 0 Then
+                For i As Integer = 0 To orderData.Rows.Count - 1
+                    Dim headerId As String = orderData.Rows(i)("Id").ToString()
+                    orderClass.UpdateOrderFactory(headerId)
+                Next
+            End If
         Catch ex As Exception
         End Try
     End Sub
@@ -144,21 +174,6 @@ Partial Class Setting_Boos
                     Dim mailingClass As New MailingClass
                     mailingClass.ResetProformaOrder(thisId)
                 Next
-            End If
-        Catch ex As Exception
-        End Try
-    End Sub
-
-    Protected Sub UnshipmentOrder()
-        Try
-            If Now.DayOfWeek >= DayOfWeek.Monday AndAlso Now.DayOfWeek <= DayOfWeek.Friday Then
-                Dim mailingClass As New MailingClass
-                Dim unshipmentClass As New UnshipmentClass
-
-                Dim toEmail As String = "order@jpmdirect.com.au;export@rimbabr.com;export@bigblinds.co.id;logistic@jpmdirect.com.au"
-                Dim ccEmail As String = "yudi@rimbabr.com;saiful@rimbabr.com"
-
-                mailingClass.SentUnshipment(toEmail, ccEmail, String.Empty, String.Empty, Session("RoleName").ToString(), Session("LevelName").ToString(), Session("LoginId"))
             End If
         Catch ex As Exception
         End Try

@@ -69,16 +69,10 @@
                         <a href="javascript:void(0);" runat="server" id="aUnsubmitOrder" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalUnsubmitOrder">Unsubmit Order</a>
                     </li>
                     <li>
-                        <a href="javascript:void(0);" runat="server" id="aCancelOrder" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalCancelOrder">Cancel Order</a>
-                    </li>
-                    <li>
                         <a href="javascript:void(0);" runat="server" id="aProductionOrder" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalProductionOrder">Production Order</a>
                     </li>
                     <li>
                         <a href="javascript:void(0);" runat="server" id="aHoldOrder" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalHoldOrder">Hold Order</a>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);" runat="server" id="aUnHoldOrder" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalUnHoldOrder">Production Order</a>
                     </li>
                     <li>
                         <a href="javascript:void(0);" runat="server" id="aShippedOrder" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalShippedOrder">Shipped Order</a>
@@ -86,13 +80,15 @@
                     <li>
                         <a href="javascript:void(0);" runat="server" id="aCompleteOrder" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalCompleteOrder">Complete Order</a>
                     </li>
+                    <li>
+                        <a href="javascript:void(0);" runat="server" id="aCancelOrder" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalCancelOrder">Cancel Order</a>
+                    </li>
                 </ul>
-                
                 <a href="javascript:void(0);" runat="server" id="aReworkOrder" class="btn btn-danger me-1" data-bs-toggle="modal" data-bs-target="#modalReworkOrder">Rework Order</a>
                 <button class="btn btn-info dropdown-toggle me-1" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnQuoteAction">Quote</button>
                 <ul class="dropdown-menu">
-                    <li><a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDetailQuote">Quote Details</a></li>
-                    <li><a href="#" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDownloadQuote">Download Quote</a></li>
+                    <li><a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDetailQuote">Quote Details</a></li>
+                    <li><a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDownloadQuote">Download Quote</a></li>
                     <li><asp:Button runat="server" ID="btnPreviewQuote" CssClass="dropdown-item" Text="Preview Quote" /></li>
                 </ul>
                 <button class="btn btn-primary dropdown-toggle me-1" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnInvoice">invoice</button>
@@ -101,7 +97,7 @@
                     <li><a href="javascript:void(0);" runat="server" id="aReceivePayment" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalReceivePayment">Receive Payment</a></li>
                     <li><asp:Button runat="server" ID="btnPreviewInvoice" CssClass="dropdown-item" Text="Preview Invoice" /></li>
                     <li><a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDownloadInvoice">Download Invoice (PDF)</a></li>
-                    <li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDownloadInvoiceCSV">Download Invoice (CSV)</a></li>
+                    <li><a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDownloadInvoiceCSV">Download Invoice (CSV)</a></li>
                     <li runat="server" id="liDividerInvoice"><hr class="dropdown-divider"></li>
                     <li runat="server" id="liUpdateInvoiceNumber">
                         <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalInvoiceNumber">Update Invoice Number</a>
@@ -125,7 +121,7 @@
                         <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalAddNote">Add Internal Note</a>
                     </li>                    
                     <li runat="server" id="liMoreHistoryNote">
-                        <a href="javascript:void(0)" class="dropdown-item" onclick="showHistoryNote('<%= lblHeaderId.Text %>')">History Note</a>
+                        <a href="javascript:void(0);" class="dropdown-item" onclick="showHistoryNote('<%= lblHeaderId.Text %>')">History Note</a>
                     </li>
                     <li runat="server" id="liMoreDividerRePrice"><hr class="dropdown-divider"></li>
                     <li runat="server" id="liMoreRePrice">
@@ -182,10 +178,16 @@
                                     <asp:Label runat="server" ID="lblOrderStatus"></asp:Label>
                                 </div>
                             </div>
-                            <div class="detail-row">
+                            <div class="detail-row" runat="server" id="divOrderType">
                                 <div class="detail-label">Order Type</div>
                                 <div class="detail-value">
                                     <asp:Label runat="server" ID="lblOrderType"></asp:Label>
+                                </div>
+                            </div>
+                            <div class="detail-row" runat="server" id="divOrderFactory">
+                                <div class="detail-label">Order Factory</div>
+                                <div class="detail-value">
+                                    <asp:Label runat="server" ID="lblOrderFactory"></asp:Label>
                                 </div>
                             </div>
                         </div>
@@ -419,7 +421,7 @@
                                 <div class="text-muted small">Products and services included in this order</div>
                             </div>
                             <div class="mt-2 mt-lg-0">
-                                <a href="#" runat="server" id="aAddItem" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#modalAddItem">New Item</a>
+                                <a href="javascript:void(0);" runat="server" id="aAddItem" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#modalAddItem">New Item</a>
                                 <asp:Button runat="server" ID="btnAddService" CssClass="btn btn-outline-primary" Text="New Service" OnClick="btnAddService_Click" />
                             </div>
                         </div>
@@ -488,7 +490,7 @@
                                                         <asp:LinkButton runat="server" ID="linkCopy" CssClass="dropdown-item" Text="Copy" CommandName="Copy" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                     </li>
                                                     <li runat="server" visible='<%# VisibleDelete(Eval("ProductId").ToString()) %>'>
-                                                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalDeleteItem" onclick='<%# String.Format("return showDeleteItem(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                        <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalDeleteItem" onclick='<%# String.Format("return showDeleteItem(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                     </li>
                                                     <li runat="server" visible='<%# VisiblePrinting(Eval("Id").ToString()) %>'>
                                                         <hr class="dropdown-divider" />
@@ -500,7 +502,7 @@
                                                         <hr class="dropdown-divider" />
                                                     </li>
                                                     <li runat="server" visible='<%# VisibleCosting() %>'>
-                                                        <a href="javascript:void(0)" class="dropdown-item" onclick="loadCostings('<%# Eval("Id") %>', '<%= lblCompanyId.Text %>')">Costing</a>
+                                                        <a href="javascript:void(0);" class="dropdown-item" onclick="loadCostings('<%# Eval("Id") %>', '<%= lblCompanyId.Text %>')">Costing</a>
                                                     </li>
                                                     <li runat="server" visible='<%# VisibleEditPrice() %>'>
                                                         <asp:LinkButton runat="server" CssClass="dropdown-item" ID="linkEditCosting" Text="Edit Costing" CommandName="EditCosting" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
@@ -509,7 +511,7 @@
                                                         <hr class="dropdown-divider" />
                                                     </li>
                                                     <li runat="server" visible='<%# VisibleLog() %>'>
-                                                        <a href="javascript:void(0)" class="dropdown-item" onclick="showLog('OrderDetails', '<%# Eval("Id") %>')">Log</a>
+                                                        <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('OrderDetails', '<%# Eval("Id") %>')">Log</a>
                                                     </li>
                                                 </ul>
                                             </ItemTemplate>
@@ -586,7 +588,7 @@
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnDeleteOrder" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDeleteOrder_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
@@ -602,7 +604,7 @@
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnQuoteOrder" CssClass="btn btn-info" Text="Confirm" OnClick="btnQuoteOrder_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
@@ -624,7 +626,7 @@
                     <asp:CheckBox runat="server" ID="chkSendEmail" CssClass="form-control" Checked="true" Text="&nbsp;&nbsp;&nbsp;SEND EMAIL CONFIRM" />
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnSubmitOrder" CssClass="btn btn-success" Text="Confirm" OnClick="btnSubmitOrder_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
@@ -640,7 +642,7 @@
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnNewOrder" CssClass="btn btn-info" Text="Confirm" OnClick="btnNewOrder_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
@@ -656,7 +658,7 @@
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnUnsubmitOrder" CssClass="btn btn-info" Text="Confirm" OnClick="btnUnsubmitOrder_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
@@ -684,7 +686,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnCancelOrder" CssClass="btn btn-info" Text="Submit" OnClick="btnCancelOrder_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
@@ -700,7 +702,7 @@
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnProductionOrder" CssClass="btn btn-info" Text="Confirm" OnClick="btnProductionOrder_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
@@ -716,24 +718,8 @@
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnHoldOrder" CssClass="btn btn-info" Text="Confirm" OnClick="btnHoldOrder_Click" OnClientClick="return showWaiting();" />
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade text-center" id="modalUnHoldOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-info">
-                    <h5 class="modal-title white">Production Order</h5>
-                </div>
-                <div class="modal-body text-center py-4">
-                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
-                </div>
-                <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnUnHoldOrder" CssClass="btn btn-info" Text="Confirm" OnClick="btnUnHoldOrder_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>
@@ -781,7 +767,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnShippedOrder" CssClass="btn btn-info" Text="Submit" OnClick="btnShippedOrder_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
@@ -797,7 +783,7 @@
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnCompleteOrder" CssClass="btn btn-info" Text="Confirm" OnClick="btnCompleteOrder_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
@@ -905,7 +891,7 @@
                     </div>
                 </div>
                 <div class="modal-footer ">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnReworkOrder" CssClass="btn btn-danger" Text="Next" OnClick="btnReworkOrder_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
@@ -1003,7 +989,7 @@
                 </div>
                 <div class="modal-footer justify-content-start">
                     <asp:Button runat="server" ID="btnDetailQuote" CssClass="btn btn-info" Text="Submit" OnClick="btnDetailQuote_Click" OnClientClick="return showWaiting();" />
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                 </div>
             </div>
         </div>
@@ -1018,7 +1004,7 @@
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnDownloadQuote" CssClass="btn btn-info" Text="Confirm" OnClick="btnDownloadQuote_Click" OnClientClick="return showWaiting($(this).closest('.modal').attr('id'));" />
                 </div>
             </div>
@@ -1061,7 +1047,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnSendInvoice" CssClass="btn btn-primary" Text="Submit" OnClick="btnSendInvoice_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
@@ -1077,7 +1063,7 @@
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnDownloadInvoice" CssClass="btn btn-primary" Text="Confirm" OnClick="btnDownloadInvoice_Click" OnClientClick="return showWaiting($(this).closest('.modal').attr('id'));" />
                 </div>
             </div>
@@ -1093,7 +1079,7 @@
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnDownloadInvoiceCSV" CssClass="btn btn-primary" Text="Confirm" OnClick="btnDownloadInvoiceCSV_Click" OnClientClick="return showWaiting($(this).closest('.modal').attr('id'));" />
                 </div>
             </div>
@@ -1122,7 +1108,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnInvoiceNumber" CssClass="btn btn-primary" Text="Submit" OnClick="btnInvoiceNumber_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
@@ -1180,7 +1166,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnInvoiceData" CssClass="btn btn-primary" Text="Submit" OnClick="btnInvoiceData_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
@@ -1196,7 +1182,7 @@
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnReceivePayment" CssClass="btn btn-primary" Text="Confirm" OnClick="btnReceivePayment_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
@@ -1255,7 +1241,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnBuilderDetail" CssClass="btn btn-success" Text="Submit" OnClick="btnBuilderDetail_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
@@ -1271,7 +1257,7 @@
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnMoreDownloadQuote" CssClass="btn btn-dark" Text="Confirm" OnClick="btnMoreDownloadQuote_Click"  OnClientClick="return showWaiting($(this).closest('.modal').attr('id'));" />
                 </div>
             </div>
@@ -1312,7 +1298,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnMoreEmailQuote" CssClass="btn btn-dark" Text="Submit" OnClick="btnMoreEmailQuote_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
@@ -1341,7 +1327,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnAddNote" CssClass="btn btn-dark" Text="Submit" OnClick="btnAddNote_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
@@ -1391,7 +1377,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnAddItem" CssClass="btn btn-primary" Text="Submit" OnClick="btnAddItem_Click" />
                 </div>
             </div>
@@ -1408,7 +1394,7 @@
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnDeleteItem" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDeleteItem_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
@@ -1441,7 +1427,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
                 </div>
             </div>
         </div>
@@ -1477,7 +1463,7 @@
                     Teks
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnRecalculate" CssClass="btn btn-dark" Text="Confirm" OnClick="btnRecalculate_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
@@ -1523,7 +1509,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnDateOrder" CssClass="btn btn-primary" Text="Submit" OnClick="btnDateOrder_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
@@ -1539,7 +1525,7 @@
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnDuplicateOrder" CssClass="btn btn-warning" Text="Confirm" OnClick="btnDuplicateOrder_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
@@ -1595,7 +1581,7 @@
 
         [
             "modalLog", "modalPreview", "modalWaiting", "modalBuilderDetail", "modalFileOrder",
-            "modalDeleteOrder", "modalQuoteOrder", "modalSubmitOrder", "modalUnsubmitOrder", "modalCancelOrder", "modalProductionOrder", "modalHoldOrder", "modalUnHoldOrder", "modalShippedOrder", "modalCompleteOrder",
+            "modalDeleteOrder", "modalQuoteOrder", "modalSubmitOrder", "modalUnsubmitOrder", "modalCancelOrder", "modalProductionOrder", "modalHoldOrder", "modalShippedOrder", "modalCompleteOrder",
             "modalReworkOrder",
             "modalSendInvoice", "modalReceivePayment", "modalDownloadInvoice", "modalDownloadInvoiceCSV", "modalInvoiceNumber", "modalInvoiceData",
             "modalDetailQuote", "modalDownloadQuote",
@@ -1848,7 +1834,7 @@
                 icon: 'success',
                 title: 'Order Submitted!',
                 html: 'Your order has been successfully submitted and is now being processed.<br>Thank you!',
-                timer: 5000,
+                timer: 3000,
                 timerProgressBar: true,
                 didClose: () => {
                     window.location = '/order/detail?orderid=' + orderId;

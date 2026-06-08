@@ -57,33 +57,68 @@ Partial Class Order_Default
     End Sub
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
         gvList.PageIndex = 0
+
+        MessageError(False, String.Empty)
         BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlCompany.SelectedValue, ddlType.SelectedValue, ddlActive.SelectedValue)
+
+        Session("OrderStatus") = ddlStatus.SelectedValue
+        Session("OrderCompany") = ddlCompany.SelectedValue
+        Session("OrderSearch") = txtSearch.Text
+        Session("OrderActive") = ddlActive.SelectedValue
+        Session("OrderType") = ddlType.SelectedValue
     End Sub
 
     Protected Sub ddlStatus_SelectedIndexChanged(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
         gvList.PageIndex = 0
+
+        MessageError(False, String.Empty)
         BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlCompany.SelectedValue, ddlType.SelectedValue, ddlActive.SelectedValue)
+
+        Session("OrderStatus") = ddlStatus.SelectedValue
+        Session("OrderCompany") = ddlCompany.SelectedValue
+        Session("OrderSearch") = txtSearch.Text
+        Session("OrderActive") = ddlActive.SelectedValue
+        Session("OrderType") = ddlType.SelectedValue
     End Sub
 
     Protected Sub ddlCompany_SelectedIndexChanged(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
         gvList.PageIndex = 0
+
+        MessageError(False, String.Empty)
         BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlCompany.SelectedValue, ddlType.SelectedValue, ddlActive.SelectedValue)
+
+        Session("OrderStatus") = ddlStatus.SelectedValue
+        Session("OrderCompany") = ddlCompany.SelectedValue
+        Session("OrderSearch") = txtSearch.Text
+        Session("OrderActive") = ddlActive.SelectedValue
+        Session("OrderType") = ddlType.SelectedValue
     End Sub
 
     Protected Sub ddlType_SelectedIndexChanged(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
         gvList.PageIndex = 0
+
+        MessageError(False, String.Empty)
         BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlCompany.SelectedValue, ddlType.SelectedValue, ddlActive.SelectedValue)
+
+        Session("OrderStatus") = ddlStatus.SelectedValue
+        Session("OrderCompany") = ddlCompany.SelectedValue
+        Session("OrderSearch") = txtSearch.Text
+        Session("OrderActive") = ddlActive.SelectedValue
+        Session("OrderType") = ddlType.SelectedValue
     End Sub
 
     Protected Sub ddlActive_SelectedIndexChanged(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
         gvList.PageIndex = 0
+
+        MessageError(False, String.Empty)
         BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlCompany.SelectedValue, ddlType.SelectedValue, ddlActive.SelectedValue)
+
+        Session("OrderStatus") = ddlStatus.SelectedValue
+        Session("OrderCompany") = ddlCompany.SelectedValue
+        Session("OrderSearch") = txtSearch.Text
+        Session("OrderActive") = ddlActive.SelectedValue
+        Session("OrderType") = ddlType.SelectedValue
     End Sub
 
     Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
@@ -124,6 +159,7 @@ Partial Class Order_Default
         Try
             Dim thisId As String = txtIdStatusOrder.Text
             Dim thisStatus As String = txtStatusOrder.Text
+            Dim thisOldStatus As String = txtOldStatusOrder.Text
 
             If thisStatus = "Delete Order" Then
                 dataLog = {"OrderHeaders", thisId, Session("LoginId").ToString(), "Order Deleted"}
@@ -139,19 +175,13 @@ Partial Class Order_Default
                 End If
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Active=0, DownloadBOE=0 WHERE Id=@Id; UPDATE OrderDetails SET Active=0 WHERE HeaderId=@Id;", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Active=0, Download='No' WHERE Id=@Id; UPDATE OrderDetails SET Active=0 WHERE HeaderId=@Id;", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
 
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
                     End Using
                 End Using
-
-                Session("OrderStatus") = ddlStatus.SelectedValue
-                Session("OrderCompany") = ddlCompany.SelectedValue
-                Session("OrderSearch") = txtSearch.Text
-                Session("OrderActive") = ddlActive.SelectedValue
-                Session("OrderType") = ddlType.SelectedValue
 
                 Response.Redirect("~/order", False)
             End If
@@ -181,7 +211,7 @@ Partial Class Order_Default
                         Using thisConn As New SqlConnection(myConn)
                             thisConn.Open()
 
-                            Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderHeaders SELECT @NewID, @OrderId, CustomerId, 'Copy ' + CAST(@NewID AS VARCHAR(20)) + ' - ' + OrderNumber, 'Copy ' + CAST(@NewID AS VARCHAR(20)) + ' - ' + OrderName, NULL, OrderType, 'Unsubmitted', NULL, @CreatedBy, GETDATE(), NULL, NULL, NULL, NULL, NULL, NULL, 0, 1 FROM OrderHeaders WHERE Id=@OldId; INSERT INTO OrderQuotes VALUES(@NewID, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
+                            Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderHeaders SELECT @NewID, @OrderId, CustomerId, 'Copy ' + CAST(@NewID AS VARCHAR(20)) + ' - ' + OrderNumber, 'Copy ' + CAST(@NewID AS VARCHAR(20)) + ' - ' + OrderName, NULL, OrderType, OrderFactory, 'Unsubmitted', NULL, @CreatedBy, GETDATE(), NULL, NULL, NULL, NULL, NULL, NULL, 'No', NULL, 1 FROM OrderHeaders WHERE Id=@OldId; INSERT INTO OrderQuotes VALUES(@NewID, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
                                 myCmd.Parameters.AddWithValue("@OldId", thisId)
                                 myCmd.Parameters.AddWithValue("@NewID", newIdHeader)
                                 myCmd.Parameters.AddWithValue("@OrderId", orderId)
@@ -253,7 +283,7 @@ Partial Class Order_Default
 
             If thisStatus = "Unsubmit Order" Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET SubmittedDate=NULL, Status='Unsubmitted', DownloadBOE=0 WHERE Id=@Id; DELETE FROM OrderInvoices WHERE Id=@Id", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET SubmittedDate=NULL, ProductionDate=NULL, OnHoldDate=NULL, Status='Unsubmitted', Download='No', DownloadDate=NULL, WHERE Id=@Id; DELETE FROM OrderInvoices WHERE Id=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
 
                         thisConn.Open()
@@ -264,18 +294,12 @@ Partial Class Order_Default
                 dataLog = {"OrderHeaders", thisId, Session("LoginId"), "Order Unsubmitted"}
                 orderClass.Logs(dataLog)
 
-                Session("OrderStatus") = ddlStatus.SelectedValue
-                Session("OrderCompany") = ddlCompany.SelectedValue
-                Session("OrderSearch") = txtSearch.Text
-                Session("OrderActive") = ddlActive.SelectedValue
-                Session("OrderType") = ddlType.SelectedValue
-
                 Response.Redirect("~/order", False)
             End If
 
             If thisStatus = "New Order" Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='New Order' WHERE Id=@Id; INSERT INTO OrderShipments(Id) VALUES (@Id)", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='New Order' WHERE Id=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
 
                         thisConn.Open()
@@ -289,19 +313,27 @@ Partial Class Order_Default
                 Dim mailingClass As New MailingClass
                 mailingClass.NewOrder(thisId)
 
-                Session("OrderStatus") = ddlStatus.SelectedValue
-                Session("OrderCompany") = ddlCompany.SelectedValue
-                Session("OrderSearch") = txtSearch.Text
-                Session("OrderActive") = ddlActive.SelectedValue
-                Session("OrderType") = ddlType.SelectedValue
-
                 Response.Redirect("~/order", False)
             End If
 
             If thisStatus = "Production Order" Then
                 Dim companyId As String = orderClass.GetCompanyIdByOrder(thisId)
+
+                Dim stringQuery As String = "UPDATE OrderHeaders SET Status='In Production', OnHoldDate=NULL WHERE Id=@Id;"
+                If thisOldStatus = "New Order" OrElse thisOldStatus = "Payment Received" Then
+                    stringQuery = "UPDATE OrderHeaders SET Status='In Production', ProductionDate=GETDATE(), OnHoldDate=NULL, Download='Yes' WHERE Id=@Id; INSERT INTO OrderShipments(Id) VALUES (@Id);"
+                End If
+                If thisOldStatus = "Shipped Out" Then
+                    stringQuery = "UPDATE OrderHeaders SET Status='In Production' WHERE Id=@Id; UPDATE OrderShipments SET ShipmentNumber=NULL, ShipmentDate=NULL, ContainerNumber=NULL, ContainerETA=NULL, Courier=NULL WHERE Id=@Id;"
+                End If
+
+                Dim download As String = orderClass.GetItemData("SELECT Download FROM OrderHeaders WHERE Id='" & thisId & "'")
+                If download = "No" Then
+                    stringQuery = "UPDATE OrderHeaders SET Status='In Production', ProductionDate=GETDATE(), OnHoldDate=NULL, Download='Yes' WHERE Id=@Id; INSERT INTO OrderShipments(Id) VALUES (@Id);"
+                End If
+
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='In Production', ProductionDate=GETDATE(), OnHoldDate=NULL, DownloadBOE=1 WHERE Id=@Id; INSERT INTO OrderShipments(Id) VALUES (@Id)", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand(stringQuery, thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
 
                         thisConn.Open()
@@ -315,44 +347,13 @@ Partial Class Order_Default
                 Dim salesClass As New SalesClass
                 salesClass.RefreshData(companyId)
 
-                Session("OrderStatus") = ddlStatus.SelectedValue
-                Session("OrderCompany") = ddlCompany.SelectedValue
-                Session("OrderSearch") = txtSearch.Text
-                Session("OrderActive") = ddlActive.SelectedValue
-                Session("OrderType") = ddlType.SelectedValue
-
                 Response.Redirect("~/order", False)
             End If
 
-            If thisStatus = "Un Hold Order" Then
-                'Dim companyId As String = orderClass.GetCompanyIdByOrder(thisId)
-                'Using thisConn As New SqlConnection(myConn)
-                '    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='In Production', ProductionDate=GETDATE(), OnHoldDate=NULL, DownloadBOE=1 WHERE Id=@Id; INSERT INTO OrderShipments(Id) VALUES (@Id)", thisConn)
-                '        myCmd.Parameters.AddWithValue("@Id", thisId)
-
-                '        thisConn.Open()
-                '        myCmd.ExecuteNonQuery()
-                '    End Using
-                'End Using
-
-                'dataLog = {"OrderHeaders", thisId, Session("LoginId"), "Order In Production"}
-                'orderClass.Logs(dataLog)
-
-                'Dim salesClass As New SalesClass
-                'salesClass.RefreshData(companyId)
-
-                'Session("OrderStatus") = ddlStatus.SelectedValue
-                'Session("OrderCompany") = ddlCompany.SelectedValue
-                'Session("OrderSearch") = txtSearch.Text
-                'Session("OrderActive") = ddlActive.SelectedValue
-                'Session("OrderType") = ddlType.SelectedValue
-
-                'Response.Redirect("~/order", False)
-            End If
-
             If thisStatus = "Hold Order" Then
+                Dim stringQuery As String = "UPDATE OrderHeaders SET Status='On Hold', OnHoldDate=GETDATE() WHERE Id=@Id;"
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='On Hold', OnHoldDate=GETDATE(), DownloadBOE=0 WHERE Id=@Id; DELETE FROM OrderShipments WHERE Id=@Id;", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand(stringQuery, thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
 
                         thisConn.Open()
@@ -362,12 +363,6 @@ Partial Class Order_Default
 
                 dataLog = {"OrderHeaders", thisId, Session("LoginId"), "Order On Hold"}
                 orderClass.Logs(dataLog)
-
-                Session("OrderStatus") = ddlStatus.SelectedValue
-                Session("OrderCompany") = ddlCompany.SelectedValue
-                Session("OrderSearch") = txtSearch.Text
-                Session("OrderActive") = ddlActive.SelectedValue
-                Session("OrderType") = ddlType.SelectedValue
 
                 Response.Redirect("~/order", False)
             End If
@@ -403,18 +398,12 @@ Partial Class Order_Default
                 dataLog = {"OrderHeaders", thisId, Session("LoginId"), "Confirm Payment Received"}
                 orderClass.Logs(dataLog)
 
-                Session("OrderStatus") = ddlStatus.SelectedValue
-                Session("OrderCompany") = ddlCompany.SelectedValue
-                Session("OrderSearch") = txtSearch.Text
-                Session("OrderActive") = ddlActive.SelectedValue
-                Session("OrderType") = ddlType.SelectedValue
-
                 Response.Redirect("~/order", False)
             End If
 
             If thisStatus = "Complete Order" Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Completed', DownloadBOE=0 CompletedDate=GETDATE() WHERE Id=@Id", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Completed', CompletedDate=GETDATE() WHERE Id=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
 
                         thisConn.Open()
@@ -428,9 +417,9 @@ Partial Class Order_Default
                 Response.Redirect("~/order", False)
             End If
 
-            If thisStatus = "BOE Download" Then
+            If thisStatus = "Download BOE" Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET DownloadBOE=1 WHERE Id=@Id", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Download='Yes', DownloadDate=NULL WHERE Id=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
 
                         thisConn.Open()
@@ -466,7 +455,7 @@ Partial Class Order_Default
                 Dim companyId As String = orderClass.GetCompanyIdByOrder(thisId)
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Canceled', StatusDescription=@StatusDescription, CanceledDate=GETDATE() WHERE Id=@Id", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Canceled', StatusDescription=@StatusDescription, CanceledDate=GETDATE() WHERE Id=@Id; UPDATE OrderShipments SET ShipmentNumber=NULL, ShipmentDate=NULL, ContainerNumber=NULL, ContainerETA=NULL, Courier=NULL WHERE Id=@Id; UPDATE OrderInvoices SET InvoiceNumber=NULL, Collector=NULL, InvoiceDate=NULL, DueDate=NULL, Payment=0, PaymentDate=NULL, Amount=0 WHERE Id=@Id;", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
                         myCmd.Parameters.AddWithValue("@StatusDescription", txtCancelDescription.Text.Trim())
 
@@ -543,7 +532,6 @@ Partial Class Order_Default
 
                 Response.Redirect("~/order", False)
             End If
-
         Catch ex As Exception
             MessageError_ShipmentOrder(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -572,19 +560,13 @@ Partial Class Order_Default
             End If
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Active=1 WHERE Id=@Id; UPDATE OrderDetails SET Active=1 WHERE HeaderId=@Id;", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Active=1, Download='No', DownloadDate=NULL WHERE Id=@Id; UPDATE OrderDetails SET Active=1 WHERE HeaderId=@Id;", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", thisId)
 
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
             End Using
-
-            Session("OrderStatus") = ddlStatus.SelectedValue
-            Session("OrderCompany") = ddlCompany.SelectedValue
-            Session("OrderSearch") = txtSearch.Text
-            Session("OrderActive") = ddlActive.SelectedValue
-            Session("OrderType") = ddlType.SelectedValue
 
             Response.Redirect("~/order", False)
         Catch ex As Exception
@@ -594,30 +576,6 @@ Partial Class Order_Default
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
-            End If
-        End Try
-    End Sub
-
-    Protected Sub btnPrintDO_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        Try
-            Dim thisId As String = txtIdPrintDO.Text
-
-            Dim suratJalanClass As New SuratJalanClass
-            Dim todayString As String = DateTime.Now.ToString("ddMMyyyyHHmmss")
-            Dim fileName As String = String.Format("SJ_{0}.pdf", todayString)
-            Dim pdfFilePath As String = Server.MapPath("~/File/SuratJalan/" & fileName)
-
-            suratJalanClass.BindContent(thisId, pdfFilePath)
-
-            Response.ContentType = "application/pdf"
-            Response.AddHeader("Content-Disposition", "attachment; filename=""" & fileName & """")
-            Response.TransmitFile(pdfFilePath)
-            HttpContext.Current.ApplicationInstance.CompleteRequest()
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
         End Try
     End Sub
@@ -803,6 +761,7 @@ Partial Class Order_Default
             End If
             gvList.Columns(7).Visible = LoginAccess("Visible Created Date")
             gvList.Columns(10).Visible = LoginAccess("Visible Factory")
+            gvList.Columns(12).Visible = LoginAccess("Visible BOE")
 
             btnAdd.Visible = LoginAccess("Add")
             btnRework.Visible = LoginAccess("Rework")
@@ -902,119 +861,32 @@ Partial Class Order_Default
         Return customerName
     End Function
 
-    Protected Function BindFactory(headerId As Integer) As String
-        Try
-            Dim factoryList As New List(Of String)
+    Protected Function VisibleEdit(data As Object) As Boolean
+        Dim active As Boolean = Convert.ToBoolean(data(0))
+        Dim status As String = Convert.ToString(data(1))
+        Dim createdBy As String = Convert.ToString(data(2))
+        Dim createdRole As String = Convert.ToString(data(3))
 
-            Dim detailData As DataTable = orderClass.GetDataTable("SELECT OrderDetails.*, Products.Name AS ProductName, Designs.Name AS DesignName, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.DesignId=Blinds.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1")
-            For iDetail As Integer = 0 To detailData.Rows.Count - 1
-                Dim designName As String = detailData.Rows(iDetail)("DesignName").ToString()
-                Dim blindName As String = detailData.Rows(iDetail)("BlindName").ToString()
-
-                Dim isBig As Boolean = False
-                Dim isAustralia As Boolean = False
-                Dim isTaiwan As Boolean = False
-                Dim isChina As Boolean = False
-
-                If designName = "Aluminium Blind" OrElse designName = "Design Shades" OrElse designName = "Linea Valance" OrElse designName = "Panel Glide" OrElse designName = "Pelmet" OrElse designName = "Roman Blind" OrElse designName = "Privacy Venetian" OrElse designName = "Venetian Blind" OrElse designName = "Vertical" OrElse designName = "Roller Blind" OrElse designName = "Sample" OrElse designName = "Skyline Shutter Express" OrElse designName = "Outdoor" OrElse designName = "Saphora Drape" OrElse designName = "Roller Horizon" Then
-                    isBig = True
-                End If
-
-                If designName = "Cellular Shades" Then
-                    Dim fabricColourId As String = detailData.Rows(iDetail)("FabricColourId").ToString()
-                    Dim fabricFactory As String = orderClass.GetItemData("SELECT Factory FROM FabricColours WHERE Id='" & fabricColourId & "'")
-
-                    If fabricFactory = "Express" Then isBig = True
-                    If fabricFactory = "Regular" Then isTaiwan = True
-                End If
-
-                If designName = "Curtain" Then
-                    Dim fabricColourId As String = detailData.Rows(iDetail)("FabricColourId").ToString()
-                    Dim fabricColourIdB As String = detailData.Rows(iDetail)("FabricColourIdB").ToString()
-
-                    Dim trackType As String = detailData.Rows(iDetail)("TrackType").ToString()
-                    Dim trackTypeB As String = detailData.Rows(iDetail)("TrackTypeB").ToString()
-
-                    Dim fabricFactory As String = String.Empty
-                    Dim fabricFactoryB As String = String.Empty
-
-                    If fabricColourId <> "" Then
-                        fabricFactory = orderClass.GetItemData("SELECT Factory FROM FabricColours WHERE Id='" & fabricColourId & "'")
-                    End If
-
-                    If fabricColourIdB <> "" Then
-                        fabricFactoryB = orderClass.GetItemData("SELECT Factory FROM FabricColours WHERE Id='" & fabricColourIdB & "'")
-                    End If
-
-                    If fabricFactory = "Express" Then
-                        isBig = True
-                    ElseIf fabricFactory = "Regular" Then
-                        isAustralia = True
-                    End If
-
-                    If fabricFactoryB = "Express" Then
-                        isBig = True
-                    ElseIf fabricFactoryB = "Regular" Then
-                        isAustralia = True
-                    End If
-
-                    If trackType = "Standard Track" Then
-                        isAustralia = True
-                    ElseIf trackType = "Motorised Track" Then
-                        isBig = True
-                    End If
-
-                    If trackTypeB = "Standard Track" Then
-                        isAustralia = True
-                    ElseIf trackTypeB = "Motorised Track" Then
-                        isBig = True
-                    End If
-                End If
-
-                If designName = "Skyline Shutter Ocean" OrElse designName = "Evolve Shutter Ocean" Then
-                    isChina = True
-                End If
-
-                If designName = "Door" OrElse designName = "Window" Then
-                    Dim frameColour As String = detailData.Rows(iDetail)("FrameColour").ToString()
-
-                    If frameColour.Contains("Regular") Then isAustralia = True
-                    If frameColour.Contains("Express") Then isBig = True
-                End If
-
-                If isBig AndAlso Not factoryList.Contains("BIG") Then
-                    factoryList.Add("BIG")
-                End If
-
-                If isTaiwan AndAlso Not factoryList.Contains("TAIWAN") Then
-                    factoryList.Add("TAIWAN")
-                End If
-
-                If isAustralia AndAlso Not factoryList.Contains("AUS") Then
-                    factoryList.Add("AUS")
-                End If
-
-                If isChina AndAlso Not factoryList.Contains("CHINA") Then
-                    factoryList.Add("CHINA")
-                End If
-            Next
-
-            Dim factory As String = String.Join(", ", factoryList)
-
-            Return factory
-        Catch ex As Exception
-            Return "ERROR"
-        End Try
-    End Function
-
-    Protected Function VisibleEdit(status As String, active As Boolean) As Boolean
         If active = True Then
             If Session("RoleName") = "Developer" Then Return True
             If Session("RoleName") = "IT" Then
-                If status = "Unsubmitted" OrElse status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Waiting Proforma" OrElse status = "New Order" Then Return True
+                If status = "Unsubmitted" OrElse status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Waiting Proforma" OrElse status = "New Order" OrElse status = "In Production" OrElse status = "On Hold" Then Return True
             End If
             If Session("RoleName") = "Factory Office" Then
                 If status = "Unsubmitted" OrElse status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Waiting Proforma" OrElse status = "New Order" Then Return True
+            End If
+            If Session("RoleName") = "Sales" Then
+                If status = "Unsubmitted" AndAlso createdBy = Session("LoginId").ToString() Then
+                    Return True
+                End If
+            End If
+            If Session("RoleName") = "Account" Then
+                If status = "Unsubmitted" OrElse status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Waiting Proforma" OrElse status = "New Order" Then Return True
+            End If
+            If Session("RoleName") = "Data Entry" Then
+                If status = "Unsubmitted" AndAlso createdBy = Session("LoginId").ToString() Then
+                    Return True
+                End If
             End If
         End If
         Return False
@@ -1032,12 +904,12 @@ Partial Class Order_Default
             If Session("RoleName") = "IT" AndAlso status = "Unsubmitted" Then Return True
             If Session("RoleName") = "Factory Office" AndAlso status = "Unsubmitted" Then Return True
 
-            If Session("RoleName") = "Sales" OrElse Session("RoleName") = "Data Entry" Then
-                If status = "Unsubmitted" Then
-                    If createdBy = Session("LoginId").ToString() OrElse createdRole = Session("RoleId") Then
-                        Return True
-                    End If
-                End If
+            If Session("RoleName") = "Sales" Then
+                If status = "Unsubmitted" AndAlso createdBy = Session("LoginId").ToString() Then Return True
+            End If
+
+            If Session("RoleName") = "Data Entry" Then
+                If status = "Unsubmitted" AndAlso (createdBy = Session("LoginId").ToString() OrElse createdRole = Session("RoleId")) Then Return True
             End If
 
             If Session("RoleName") = "Customer" AndAlso status = "Unsubmitted" Then Return True
@@ -1050,6 +922,7 @@ Partial Class Order_Default
             If Session("RoleName") = "Developer" Then Return True
             If Session("RoleName") = "IT" Then Return True
             If Session("RoleName") = "Factory Office" Then Return True
+            If Session("RoleName") = "Sales" Then Return True
             If Session("RoleName") = "Data Entry" Then Return True
             If Session("RoleName") = "Customer" Then Return True
         End If
@@ -1068,27 +941,35 @@ Partial Class Order_Default
             If Session("RoleName") = "Developer" AndAlso (status = "New Order" OrElse status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "In Production" OrElse status = "On Hold") Then Return True
             If Session("RoleName") = "IT" AndAlso (status = "New Order" OrElse status = "Waiting Proforma" OrElse status = "Proforma Sent") Then Return True
             If Session("RoleName") = "Factory Office" AndAlso (status = "New Order" OrElse status = "Waiting Proforma" OrElse status = "Proforma Sent") Then Return True
-            If Session("RoleName") = "Sales" AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent") Then Return True
-            If Session("RoleName") = "Account" AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent") Then Return True
+            If Session("RoleName") = "Sales" AndAlso (status = "New Order" OrElse status = "Waiting Proforma") Then Return True
+            If Session("RoleName") = "Account" AndAlso (status = "New Order" OrElse status = "Waiting Proforma" OrElse status = "Proforma Sent") Then Return True
         End If
         Return False
     End Function
 
     Protected Function VisibleNewOrder(status As String, active As String) As Boolean
-        If active = True AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent") AndAlso (Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Account") Then Return True
+        If active = True AndAlso status = "Waiting Proforma" AndAlso (Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Account") Then Return True
         Return False
     End Function
 
     Protected Function VisibleReceivePayment(status As String, active As Boolean) As Boolean
-        If active = True AndAlso status = "Proforma Sent" AndAlso (Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Sales" OrElse Session("RoleName") = "Account") Then
-            Return True
+        If active = True Then
+            If status = "Proforma Sent" AndAlso (Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Sales" OrElse Session("RoleName") = "Account") Then
+                Return True
+            End If
         End If
         Return False
     End Function
 
     Protected Function VisibleProductionOrder(status As String, active As Boolean) As Boolean
         If active = True Then
-            If Session("RoleName") = "Developer" AndAlso (status = "New Order" OrElse status = "Payment Received") Then Return True
+            If Session("RoleName") = "Developer" AndAlso (status = "New Order" OrElse status = "Payment Received" Or status = "On Hold" OrElse status = "Shipped Out") Then Return True
+            If Session("RoleName") = "IT" AndAlso (status = "New Order" OrElse status = "Payment Received" Or status = "On Hold") Then Return True
+            If Session("RoleName") = "Factory Office" AndAlso (status = "New Order" OrElse status = "Payment Received" Or status = "On Hold") Then Return True
+            If Session("RoleName") = "Data Entry" AndAlso (status = "New Order" OrElse status = "Payment Received" Or status = "On Hold") Then Return True
+            If Session("RoleName") = "Export" AndAlso (status = "On Hold" OrElse status = "Shipped Out") Then Return True
+            If Session("RoleName") = "Sales" AndAlso (status = "New Order" OrElse status = "Payment Received") Then Return True
+            If Session("RoleName") = "Account" AndAlso (status = "New Order" OrElse status = "Payment Received") Then Return True
         End If
         Return False
     End Function
@@ -1098,16 +979,7 @@ Partial Class Order_Default
             If status = "In Production" AndAlso (Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Data Entry") Then
                 Return True
             End If
-            If status = "New Order" AndAlso (Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office") Then
-                Return True
-            End If
-        End If
-        Return False
-    End Function
-
-    Protected Function VisibleUnHoldOrder(status As String, active As Boolean) As Boolean
-        If active = True Then
-            If status = "On Hold" AndAlso (Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Data Entry") Then
+            If status = "New Order" AndAlso (Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Sales" OrElse Session("RoleName") = "Account" OrElse Session("RoleName") = "Data Entry") Then
                 Return True
             End If
         End If
@@ -1164,14 +1036,7 @@ Partial Class Order_Default
 
     Protected Function VisibleBOEOrder(status As String, active As Boolean) As Boolean
         If active = True Then
-            If Session("RoleName") = "Developer" Then Return True
-        End If
-        Return False
-    End Function
-
-    Protected Function VisibleSuratJalan(company As String, status As String, active As Boolean) As Boolean
-        If active = True AndAlso company = "3" Then
-            If Session("RoleName") = "Developer" Then Return True
+            If Session("RoleName") = "Developer" AndAlso status = "No" Then Return True
         End If
         Return False
     End Function

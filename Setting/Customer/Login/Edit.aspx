@@ -54,19 +54,9 @@
                                             <label class="form-label">UserName</label>
                                             <asp:TextBox runat="server" ID="txtUserName" CssClass="form-control" placeholder="UserName ..." autocomplete="off"></asp:TextBox>
                                         </div>
-                                        <div class="col-12 col-sm-12 col-lg-6 form-group" runat="server" id="divPassword">
-                                            <label class="form-label">Password</label>
-                                            <asp:TextBox runat="server" ID="txtPassword" CssClass="form-control" placeholder="Password ..." autocomplete="off"></asp:TextBox>
-                                        </div>
-                                    </div>
-                                    <div class="row mb-2">
                                         <div class="col-12 col-sm-12 col-lg-6 form-group">
                                             <label class="form-label">Full Name</label>
                                             <asp:TextBox runat="server" ID="txtFullName" CssClass="form-control" placeholder="Full Name ..." autocomplete="off"></asp:TextBox>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
-                                            <label class="form-label">Email</label>
-                                            <asp:TextBox runat="server" ID="txtEmail" CssClass="form-control" placeholder="Email ..." autocomplete="off"></asp:TextBox>
                                         </div>
                                     </div>
                                     <div class="row mb-2">
@@ -112,6 +102,7 @@
         <asp:Label runat="server" ID="lblId"></asp:Label>
         <asp:Label runat="server" ID="lblUserName"></asp:Label>
         <asp:Label runat="server" ID="lblLevel"></asp:Label>
+        <asp:Label runat="server" ID="lblReturnPage"></asp:Label>
     </div>
 
     <script type="text/javascript">

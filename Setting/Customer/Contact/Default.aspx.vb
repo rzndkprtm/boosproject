@@ -24,8 +24,10 @@ Partial Class Setting_Customer_Contact_Default
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
         gvList.PageIndex = 0
+
         MessageError(False, String.Empty)
         BindData(txtSearch.Text)
+        Session("SearchCustomerContact") = txtSearch.Text
     End Sub
 
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
@@ -61,17 +63,6 @@ Partial Class Setting_Customer_Contact_Default
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
         End Try
-    End Sub
-
-    Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
-        If Not String.IsNullOrEmpty(e.CommandArgument) Then
-            Dim dataId As String = e.CommandArgument.ToString()
-            If e.CommandName = "Detail" Then
-                Session("SearchCustomerContact") = txtSearch.Text
-                Dim url As String = String.Format("~/setting/customer/contact/edit?contactid={0}", dataId)
-                Response.Redirect(url, False)
-            End If
-        End If
     End Sub
 
     Protected Sub btnPrimary_Click(sender As Object, e As EventArgs)

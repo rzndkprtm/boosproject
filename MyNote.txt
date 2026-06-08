@@ -1,6 +1,10 @@
 ﻿git update-index --assume-unchanged Web.config
-
 git update-index --no-assume-unchanged Web.config
+
+INSERT INTO OrderHeaders_New(Id, OrderId, CustomerId, OrderNumber, OrderName, OrderNote, OrderType, OrderFactory, Status, StatusDescription, CreatedBy, CreatedDate, QuotedDate, SubmittedDate, ProductionDate, OnHoldDate, CanceledDate, CompletedDate, Download, DownloadDate, Active) SELECT Id, OrderId, CustomerId, OrderNumber, OrderName, OrderNote, OrderType, NULL, Status, StatusDescription, CreatedBy, CreatedDate, QuotedDate, SubmittedDate, ProductionDate, OnHoldDate, CanceledDate, CompletedDate, DownloadBOE, NULL, Active FROM OrderHeaders
+
+UPDATE OrderHeaders SET Download='Done' WHERE Download='1'
+UPDATE OrderHeaders SET Download='No' WHERE Download='0'
 
 https://github.com/rzndkprtm/boosproject
 
