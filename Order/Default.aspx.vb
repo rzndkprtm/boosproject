@@ -732,8 +732,6 @@ Partial Class Order_Default
     End Sub
 
     Protected Sub BindDataOrder(search As String, status As String, company As String, orderType As String, active As String)
-        Session("OrderStatus") = String.Empty : Session("OrderCompany") = String.Empty
-        Session("OrderSearch") = String.Empty : Session("OrderActive") = String.Empty
         Try
             Dim params As New List(Of SqlParameter) From {
                 New SqlParameter("@Search", search.Trim()),
