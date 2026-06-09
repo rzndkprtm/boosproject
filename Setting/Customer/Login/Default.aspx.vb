@@ -130,6 +130,18 @@ Partial Class Setting_Customer_Login_Default
         End Try
     End Sub
 
+    Protected Sub btnLoginCredentials_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            MessageError(True, "UNDER CONSTRUCTION !")
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
     Protected Sub btnResetPass_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
