@@ -31,6 +31,8 @@ Partial Class Order_Add
             BindDataCustomer()
             BindDataUser(ddlCustomer.SelectedValue)
 
+            If ddlCustomer.SelectedValue = "127" Then ddlMethod.SelectedValue = "Upload"
+
             BindComponentForm(ddlCustomer.SelectedValue, ddlMethod.SelectedValue)
         End If
     End Sub
@@ -3382,7 +3384,6 @@ Partial Class Order_Add
 
             divMethod.Visible = False
             divManual.Visible = False
-            divApi.Visible = False
             divUpload.Visible = False
 
             divOrderType.Visible = False
@@ -3400,11 +3401,10 @@ Partial Class Order_Add
                 divCreatedBy.Visible = True
             End If
 
-            If Session("CustomerId") = "127" OrElse customerId = "127" OrElse Session("CustomerId") = "985" OrElse customerId = "985" Then divMethod.Visible = True
+            If customerId = "127" OrElse customerId = "985" Then divMethod.Visible = True
 
             If method = "Manual" Then divManual.Visible = True
             If method = "Upload" Then divUpload.Visible = True
-            If method = "API" Then divApi.Visible = True
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then

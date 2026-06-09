@@ -146,6 +146,27 @@
         </section>
     </div>
 
+    <div class="modal fade" id="modalInfo" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <h5 class="modal-title white">Personal Account (Email)</h5>
+                </div>
+                <div class="modal-body py-4">
+                    Hi <b><%: Session("FullName") %></b>,<br /><br />
+                    We have noticed that your account does not have an email address registered.<br /><br />
+                    Please add your email address by navigating to <b>Personal Account → Email Address.</b><br /><br />
+                    Your email address is used for account-related purposes, including password recovery and receiving login credentials or other important system notifications when required.<br /><br />
+                    Thank you for your attention.<br /><br /><br />
+                    Kind Regards,<br />
+                    Support Team
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade text-left" id="modalName" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -174,7 +195,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade text-left" id="modalEmail" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -209,6 +229,10 @@
     </div>
 
     <script type="text/javascript">
+        function showInfo() {
+            $("#modalInfo").modal("show");
+        }
+
         function showName() {
             $("#modalName").modal("show");
         }
@@ -217,7 +241,7 @@
             $("#modalEmail").modal("show");
         }
 
-        ["modalName", "modalEmail"].forEach(function (id) {
+        ["modalInfo", "modalName", "modalEmail"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

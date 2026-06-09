@@ -283,7 +283,7 @@ Partial Class Order_Default
 
             If thisStatus = "Unsubmit Order" Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET SubmittedDate=NULL, ProductionDate=NULL, OnHoldDate=NULL, Status='Unsubmitted', Download='No', DownloadDate=NULL, WHERE Id=@Id; DELETE FROM OrderInvoices WHERE Id=@Id", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET SubmittedDate=NULL, ProductionDate=NULL, OnHoldDate=NULL, Status='Unsubmitted', Download='No', DownloadDate=NULL WHERE Id=@Id; DELETE FROM OrderInvoices WHERE Id=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
 
                         thisConn.Open()
@@ -368,6 +368,7 @@ Partial Class Order_Default
             End If
 
             If thisStatus = "Receive Payment" Then
+                Dim companyId As String = orderClass.GetCompanyIdByOrder(thisId)
                 Using thisConn As New SqlConnection(myConn)
                     thisConn.Open()
 
@@ -377,6 +378,9 @@ Partial Class Order_Default
                     End Using
 
                     Dim amount As Decimal = orderClass.GetItemData_Decimal("SELECT (SUM(SellPrice) * 1.10) AS SumPrice FROM OrderCostings WHERE HeaderId='" & thisId & "' AND Type='Final'")
+                    If companyId = "3" Then
+                        amount = orderClass.GetItemData_Decimal("SELECT (SUM(SellPrice) * 1.10) AS SumPrice FROM OrderCostings WHERE HeaderId='" & thisId & "' AND Type='Final'")
+                    End If
 
                     Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderInvoices SET PaymentDate=GETDATE(), DueDate=NULL, Payment=1, Amount=@Amount WHERE Id=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
@@ -1050,7 +1054,7 @@ Partial Class Order_Default
 
     Protected Function VisibleBOEOrder(status As String, active As Boolean) As Boolean
         If active = True Then
-            If Session("RoleName") = "Developer" AndAlso status = "No" Then Return True
+            If Session("RoleName") = "Developer" AndAlso (status = "No" OrElse status = "Done") Then Return True
         End If
         Return False
     End Function

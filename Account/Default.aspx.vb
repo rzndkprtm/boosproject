@@ -98,6 +98,11 @@ Partial Class Account_Default
 
             gvContact.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerContacts WHERE CustomerId='" & loginData("CustomerId").ToString() & "' ORDER BY Id ASC")
             gvContact.DataBind()
+
+            'If String.IsNullOrEmpty(txtUserEmail.Text) Then
+            '    Dim thisScript As String = "window.onload = function() { showInfo(); };"
+            '    ClientScript.RegisterStartupScript(Me.GetType(), "showName", thisScript, True)
+            'End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
