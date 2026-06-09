@@ -194,14 +194,14 @@ Public Class MailingClass
 
             If String.IsNullOrEmpty(customerId) OrElse String.IsNullOrEmpty(loginId) Then Exit Sub
 
-            Dim customerData As DataRow = GetDataRow("SELECT Customers.*, Companys.Name AS CompanyName, Customers.Operator AS CustomerOperator FROM Customers LEFT JOIN Companys ON Customers.CompanyId=Companys.Id LEFT JOIN Logins ON Customers.Operator=Logins.Id WHERE Customers.Id='" & customerId & "'")
+            Dim customerData As DataRow = GetDataRow("SELECT Customers.*, Companys.Name AS CompanyName FROM Customers LEFT JOIN Companys ON Customers.CompanyId=Companys.Id WHERE Customers.Id='" & customerId & "'")
             If customerData Is Nothing Then Exit Sub
             Dim companyId As String = customerData("CompanyId").ToString()
-            Dim customerName As String = customerData("nAME").ToString()
+            Dim customerName As String = customerData("Name").ToString()
             Dim companyName As String = customerData("CompanyName").ToString()
             If companyId = "3" Then companyName = "PT Bumi Indah Global"
 
-            Dim customerOperator As String = customerData("CustomerOperator").ToString()
+            Dim customerOperator As String = customerData("Operator").ToString()
 
             Dim contactData As DataRow = GetDataRow("SELECT * FROM CustomerContacts WHERE CustomerId='" & customerId & "' AND [Primary]=1")
             If contactData Is Nothing Then Exit Sub
