@@ -79,33 +79,46 @@
         End If
 
         If action = "download" Then
-            Dim thisData As DataTable = GetDataTable(String.Format("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.DebtorCode AS DebtorCode, Logins.UserName AS UserName FROM OrderHeaders INNER JOIN Customers ON OrderHeaders.CustomerId=Customers.Id INNER JOIN Logins ON OrderHeaders.CreatedBy=Logins.Id WHERE OrderHeaders.Active=1 {0} AND (OrderHeaders.Status='New Order' OR OrderHeaders.Status='Payment Received') ORDER BY OrderHeaders.Id ASC", stringCompany))
-            If thisData.Rows.Count > 0 Then
-                For i As Integer = 0 To thisData.Rows.Count - 1
-                    Dim headerId As String = thisData.Rows(i)("Id").ToString()
-                    Dim orderId As String = thisData.Rows(i)("OrderId").ToString()
-                    Dim debtorCode As String = thisData.Rows(i)("DebtorCode").ToString()
+            Using thisConn As New SqlConnection(myConn)
+                Using myCmd As New SqlCommand("sp_ProcessOrderToProduction", thisConn)
+                    myCmd.CommandType = CommandType.StoredProcedure
+                    myCmd.Parameters.Add("@ActionBy", SqlDbType.Int).Value = 2
 
-                    If String.IsNullOrEmpty(debtorCode) Then
-                        Continue For
-                    End If
+                    thisConn.Open()
+                    myCmd.ExecuteNonQuery()
+                End Using
+            End Using
 
-                    Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='In Production', ProductionDate=GETDATE(), Download='Yes' WHERE Id=@Id; INSERT INTO OrderShipments(Id) VALUES (@Id)", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", headerId)
+            Dim salesClass As New SalesClass
+            salesClass.RefreshData(companyId)
 
-                            thisConn.Open()
-                            myCmd.ExecuteNonQuery()
-                        End Using
-                    End Using
+            'Dim thisData As DataTable = GetDataTable(String.Format("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.DebtorCode AS DebtorCode, Logins.UserName AS UserName FROM OrderHeaders INNER JOIN Customers ON OrderHeaders.CustomerId=Customers.Id INNER JOIN Logins ON OrderHeaders.CreatedBy=Logins.Id WHERE OrderHeaders.Active=1 {0} AND (OrderHeaders.Status='New Order' OR OrderHeaders.Status='Payment Received') ORDER BY OrderHeaders.Id ASC", stringCompany))
+            'If thisData.Rows.Count > 0 Then
+            '    For i As Integer = 0 To thisData.Rows.Count - 1
+            '        Dim headerId As String = thisData.Rows(i)("Id").ToString()
+            '        Dim orderId As String = thisData.Rows(i)("OrderId").ToString()
+            '        Dim debtorCode As String = thisData.Rows(i)("DebtorCode").ToString()
 
-                    Dim dataLog As Object() = {"OrderHeaders", headerId, "2", "Order In Production"}
-                    orderClass.Logs(dataLog)
+            '        If String.IsNullOrEmpty(debtorCode) Then
+            '            Continue For
+            '        End If
 
-                    Dim salesClass As New SalesClass
-                    salesClass.RefreshData(companyId)
-                Next
-            End If
+            '        Using thisConn As New SqlConnection(myConn)
+            '            Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='In Production', ProductionDate=GETDATE(), Download='Yes' WHERE Id=@Id; INSERT INTO OrderShipments(Id) VALUES (@Id)", thisConn)
+            '                myCmd.Parameters.AddWithValue("@Id", headerId)
+
+            '                thisConn.Open()
+            '                myCmd.ExecuteNonQuery()
+            '            End Using
+            '        End Using
+
+            '        Dim dataLog As Object() = {"OrderHeaders", headerId, "2", "Order In Production"}
+            '        orderClass.Logs(dataLog)
+            '    Next
+            'End If
+
+            'Dim salesClass As New SalesClass
+            'salesClass.RefreshData(companyId)
 
             If type = "header" Then
                 Dim headerData As DataTable = GetDataTable(String.Format("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.DebtorCode AS DebtorCode, Logins.UserName AS UserName FROM OrderHeaders INNER JOIN Customers ON OrderHeaders.CustomerId=Customers.Id INNER JOIN Logins ON OrderHeaders.CreatedBy=Logins.Id WHERE OrderHeaders.Active=1 AND OrderHeaders.Download='Yes' {0} ORDER BY OrderHeaders.Id DESC", stringCompany))
