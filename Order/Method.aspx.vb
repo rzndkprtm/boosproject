@@ -1708,19 +1708,17 @@ Partial Class Order_Method
             Return "PLEASE CHECK YOUR WIDTH ORDER !"
         End If
 
-        If data.rolename = "Customer" OrElse data.rolename = "Installer" Then
+        If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
             If width < 600 Then
                 If blindName = "Complete Set (Double)" Then Return "MINIMUM FIRST WIDTH IS 600MM !"
                 Return "MINIMUM WIDTH IS 600MM !"
             End If
-            If blindName = "Fabric Only" AndAlso width > 2800 Then Return "MAXIMUM WIDTH IS 2800MM !"
-            If data.companyid = "2" Then
-                If width > 6000 Then
-                    If blindName = "Complete Set (Double)" Then Return "MAXIMUM FIRST WIDTH IS 6000MM !"
-                    Return "MAXIMUM WIDTH IS 6000MM !"
-                End If
+            If width > 6000 Then
+                If blindName = "Complete Set (Double)" Then Return "MAXIMUM FIRST WIDTH IS 6000MM !"
+                Return "MAXIMUM WIDTH IS 6000MM !"
             End If
         End If
+        If blindName = "Fabric Only" AndAlso width > 2800 Then Return "MAXIMUM WIDTH IS 2800MM !"
 
         If blindName = "Complete Set (Single)" OrElse blindName = "Complete Set (Double)" OrElse blindName = "Curtain Only" OrElse blindName = "Fabric Only" Then
             If String.IsNullOrEmpty(data.drop) Then
