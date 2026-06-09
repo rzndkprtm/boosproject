@@ -1593,6 +1593,7 @@
         <asp:Label runat="server" ID="lblCreatedRole"></asp:Label>
         <asp:Label runat="server" ID="lblOrderStatusDescription"></asp:Label>
         <asp:Label runat="server" ID="lblOrderPaid"></asp:Label>
+        <asp:Label runat="server" ID="lblDownloadBoe"></asp:Label>
     </div>
     
     <script type="text/javascript">
