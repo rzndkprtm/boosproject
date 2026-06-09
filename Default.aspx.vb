@@ -15,15 +15,16 @@ Partial Class _Default
 
     Protected Sub BindData()
         Try
-            If Session("CompanyId") = "3" Then
-                Response.Redirect("~/order", False)
-                Exit Sub
-            End If
-
             secDefault.Visible = True
 
-            Dim companyId As String = If(Session("CompanyId"), "").ToString()
-            If String.IsNullOrEmpty(companyId) OrElse companyId = "2" Then
+            Dim companyId As String = String.Empty
+            If Session("RoleName") = "Developer" OrElse Session("RoleName") = "Factory Office" Then
+                companyId = "2"
+            End If
+
+            If Session("CompanyId") = "2" Then companyId = "2"
+
+            If Not String.IsNullOrEmpty(companyId) Then
                 Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM Newsletters WHERE CompanyId='2' AND Active=1")
                 If thisData Is Nothing Then
                     Exit Sub
