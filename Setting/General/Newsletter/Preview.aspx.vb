@@ -35,6 +35,8 @@ Partial Class Setting_General_Newsletter_Preview
             End If
 
             imgNewsletter.ImageUrl = thisData("Link").ToString()
+
+            MessageError(True, thisData("Link").ToString())
         Catch ex As Exception
             MessageError(True, ex.ToString)
             If Not Session("RoleName") = "Developer" Then
