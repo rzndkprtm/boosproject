@@ -87,8 +87,8 @@
                 <a href="javascript:void(0);" runat="server" id="aReworkOrder" class="btn btn-danger me-1" data-bs-toggle="modal" data-bs-target="#modalReworkOrder">Rework Order</a>
                 <button class="btn btn-info dropdown-toggle me-1" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnQuoteAction">Quote</button>
                 <ul class="dropdown-menu">
-                    <li><a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDetailQuote">Quote Details</a></li>
-                    <li><a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDownloadQuote">Download Quote</a></li>
+                    <li><a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDetailQuote">Quote Details</a></li>
+                    <li><a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDownloadQuote">Download Quote</a></li>
                     <li><asp:Button runat="server" ID="btnPreviewQuote" CssClass="dropdown-item" Text="Preview Quote" /></li>
                 </ul>
                 <button class="btn btn-primary dropdown-toggle me-1" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnInvoice">invoice</button>
@@ -123,9 +123,15 @@
                     <li runat="server" id="liMoreHistoryNote">
                         <a href="javascript:void(0);" class="dropdown-item" onclick="showHistoryNote('<%= lblHeaderId.Text %>')">History Note</a>
                     </li>
-                    <li runat="server" id="liMoreDividerRePrice"><hr class="dropdown-divider"></li>
+                    <li runat="server" id="liMoreDividerAdditional"><hr class="dropdown-divider"></li>
                     <li runat="server" id="liMoreRePrice">
                         <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalRecalculate">Re Price Order</a>
+                    </li>
+                    <li runat="server" id="liMoreSuratJalan">
+                        <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalRecalculate">Surat Jalan</a>
+                    </li>
+                    <li runat="server" id="liMoreDownloadBOE">
+                        <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDownloadBOE">Download BOE</a>
                     </li>
                 </ul>
                 <a href="javascript:void(0);" runat="server" id="aLog" class="btn btn-secondary me-1" onclick="showLogFromElement(this)">Log</a>
@@ -578,6 +584,52 @@
             </div>
         </div>
     </div>
+    <div class="modal fade text-left" id="modalDateOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Date Order</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-2">
+                        <div class="col-6 form-group">
+                            <label class="form-label">Created Date</label>
+                            <asp:TextBox runat="server" ID="txtCreatedDate" CssClass="form-control" TextMode="Date"></asp:TextBox>
+                        </div>
+                        <div class="col-6 form-group">
+                            <label class="form-label">Submitted Date</label>
+                            <asp:TextBox runat="server" TextMode="Date" ID="txtSubmittedDate" CssClass="form-control"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6 form-group">
+                            <label class="form-label">Production Date</label>
+                            <asp:TextBox runat="server" ID="txtProductionDate" CssClass="form-control" TextMode="Date"></asp:TextBox>
+                        </div>
+                        <div class="col-6 form-group">
+                            <label class="form-label">Hold Date</label>
+                            <asp:TextBox runat="server" TextMode="Date" ID="txtHoldDate" CssClass="form-control"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6 form-group">
+                            <label class="form-label">Canceled Date</label>
+                            <asp:TextBox runat="server" TextMode="Date" ID="txtCanceledDate" CssClass="form-control"></asp:TextBox>
+                        </div>
+                        <div class="col-6 form-group">
+                            <label class="form-label">Completed Date</label>
+                            <asp:TextBox runat="server" TextMode="Date" ID="txtCompletedDate" CssClass="form-control"></asp:TextBox>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnDateOrder" CssClass="btn btn-primary" Text="Submit" OnClick="btnDateOrder_Click" OnClientClick="return showWaiting();" />
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade text-center" id="modalDeleteOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -593,7 +645,23 @@
                 </div>
             </div>
         </div>
-    </div>    
+    </div>
+    <div class="modal fade text-center" id="modalDuplicateOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title white">Duplicate Order</h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnDuplicateOrder" CssClass="btn btn-warning" Text="Confirm" OnClick="btnDuplicateOrder_Click" OnClientClick="return showWaiting();" />
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade text-center" id="modalQuoteOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -1084,7 +1152,7 @@
                 </div>
             </div>
         </div>
-    </div>    
+    </div>
     <div class="modal fade text-left" id="modalInvoiceNumber" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -1469,64 +1537,36 @@
             </div>
         </div>
     </div>
-    <div class="modal fade text-left" id="modalDateOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal modal-blur fade" id="modalSuratJalan" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Date Order</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-header bg-dark">
+                    <h5 class="modal-title white">Surat Jalan</h5>
                 </div>
-                <div class="modal-body">
-                    <div class="row mb-2">
-                        <div class="col-6 form-group">
-                            <label class="form-label">Created Date</label>
-                            <asp:TextBox runat="server" ID="txtCreatedDate" CssClass="form-control" TextMode="Date"></asp:TextBox>
-                        </div>
-                        <div class="col-6 form-group">
-                            <label class="form-label">Submitted Date</label>
-                            <asp:TextBox runat="server" TextMode="Date" ID="txtSubmittedDate" CssClass="form-control"></asp:TextBox>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-6 form-group">
-                            <label class="form-label">Production Date</label>
-                            <asp:TextBox runat="server" ID="txtProductionDate" CssClass="form-control" TextMode="Date"></asp:TextBox>
-                        </div>
-                        <div class="col-6 form-group">
-                            <label class="form-label">Hold Date</label>
-                            <asp:TextBox runat="server" TextMode="Date" ID="txtHoldDate" CssClass="form-control"></asp:TextBox>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-6 form-group">
-                            <label class="form-label">Canceled Date</label>
-                            <asp:TextBox runat="server" TextMode="Date" ID="txtCanceledDate" CssClass="form-control"></asp:TextBox>
-                        </div>
-                        <div class="col-6 form-group">
-                            <label class="form-label">Completed Date</label>
-                            <asp:TextBox runat="server" TextMode="Date" ID="txtCompletedDate" CssClass="form-control"></asp:TextBox>
-                        </div>
-                    </div>
+                <div class="modal-body text-center py-4">
+                    Hi <b><%: Session("FullName") %></b>,<br />
+                    Teks
                 </div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnDateOrder" CssClass="btn btn-primary" Text="Submit" OnClick="btnDateOrder_Click" OnClientClick="return showWaiting();" />
+                    <asp:Button runat="server" ID="btnSuratJalan" CssClass="btn btn-dark" Text="Confirm" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>
     </div>
-    <div class="modal fade text-center" id="modalDuplicateOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal modal-blur fade" id="modalDownloadBOE" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-warning">
-                    <h5 class="modal-title white">Duplicate Order</h5>
+                <div class="modal-header bg-dark">
+                    <h5 class="modal-title white">Download BOE</h5>
                 </div>
                 <div class="modal-body text-center py-4">
-                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                    Hi <b><%: Session("FullName") %></b>,<br />
+                    Teks
                 </div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnDuplicateOrder" CssClass="btn btn-warning" Text="Confirm" OnClick="btnDuplicateOrder_Click" OnClientClick="return showWaiting();" />
+                    <asp:Button runat="server" ID="btnDownloadBOE" CssClass="btn btn-dark" Text="Confirm" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>
@@ -1586,7 +1626,7 @@
             "modalSendInvoice", "modalReceivePayment", "modalDownloadInvoice", "modalDownloadInvoiceCSV", "modalInvoiceNumber", "modalInvoiceData",
             "modalDetailQuote", "modalDownloadQuote",
             "modalMoreDownloadQuote", "modalMoreEmailQuote",
-            "modalAddNote", "modalHistoryNote", "modalRecalculate",
+            "modalAddNote", "modalHistoryNote", "modalRecalculate", "modalSuratJalan", "modalDownloadBOE",
             "modalAddItem", "modalDeleteItem", "modalCosting", "modalCostingBuy",
             "modalDateOrder", "modalDuplicateOrder"
         ].forEach(id => {

@@ -918,18 +918,14 @@ Partial Class Order_Default
 
         If active = True Then
             If Session("RoleName") = "Developer" Then Return True
-
             If Session("RoleName") = "IT" AndAlso status = "Unsubmitted" Then Return True
             If Session("RoleName") = "Factory Office" AndAlso status = "Unsubmitted" Then Return True
-
             If Session("RoleName") = "Sales" Then
                 If status = "Unsubmitted" AndAlso createdBy = Session("LoginId").ToString() Then Return True
             End If
-
             If Session("RoleName") = "Data Entry" Then
                 If status = "Unsubmitted" AndAlso (createdBy = Session("LoginId").ToString() OrElse createdRole = Session("RoleId")) Then Return True
             End If
-
             If Session("RoleName") = "Customer" AndAlso status = "Unsubmitted" Then Return True
         End If
         Return False

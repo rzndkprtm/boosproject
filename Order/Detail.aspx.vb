@@ -1828,49 +1828,54 @@ Partial Class Order_Detail
             BindEmailInvoice()
             BindDataFile(lblOrderId.Text)
 
-            aLog.Attributes("data-id") = headerId
-
-            divInternalNote.Visible = False
-            divOrderType.Visible = False
-            divOrderFactory.Visible = False
-
-            secBuilder.Visible = False
             btnEditOrder.Visible = False
             aDeleteOrder.Visible = False
             aQuoteOrder.Visible = False
+            aSubmitOrder.Visible = False : chkSendEmail.Visible = False
+            aDuplicateOrder.Visible = False
 
             btnUpdateStatus.Visible = False
             aNewOrder.Visible = False
-            aSubmitOrder.Visible = False : chkSendEmail.Visible = False
             aUnsubmitOrder.Visible = False
-            aCancelOrder.Visible = False
             aProductionOrder.Visible = False
             aHoldOrder.Visible = False
             aShippedOrder.Visible = False
             aCompleteOrder.Visible = False
+            aCancelOrder.Visible = False
 
             aReworkOrder.Visible = False
 
             btnQuoteAction.Visible = False
 
             btnInvoice.Visible = False
-            aSendInvoice.Visible = False : aReceivePayment.Visible = False
-            liDividerInvoice.Visible = False : liUpdateInvoiceNumber.Visible = False
+            aSendInvoice.Visible = False
+            aReceivePayment.Visible = False
+            liDividerInvoice.Visible = False
+            liUpdateInvoiceNumber.Visible = False
             liUpdateInvoiceData.Visible = False
 
             aBuilder.Visible = False
             aFileOrder.Visible = False
-            aDuplicateOrder.Visible = False
-            aLog.Visible = False
-
             btnMoreAction.Visible = False
+
             liMoreDownloadQuote.Visible = False
             liMoreEmailQuote.Visible = False
             liMoreDividerQuote.Visible = False
             liMoreAddNote.Visible = False
             liMoreHistoryNote.Visible = False
-            liMoreDividerRePrice.Visible = False
+            liMoreDividerAdditional.Visible = False
             liMoreRePrice.Visible = False
+            liMoreSuratJalan.Visible = False
+            liMoreDownloadBOE.Visible = False
+
+            aLog.Visible = False
+            aLog.Attributes("data-id") = headerId
+
+            divOrderType.Visible = False
+            divOrderFactory.Visible = False
+            divInternalNote.Visible = False
+
+            secBuilder.Visible = False
 
             aAddItem.Visible = False
             btnAddService.Visible = False
@@ -1880,18 +1885,23 @@ Partial Class Order_Detail
 
             If Session("RoleName") = "Developer" Then
                 btnEditOrder.Visible = True
+                aDuplicateOrder.Visible = True
+                aDeleteOrder.Visible = True
                 btnMoreAction.Visible = True
                 liMoreAddNote.Visible = True
                 liMoreHistoryNote.Visible = True
-                liMoreDividerRePrice.Visible = True
+                liMoreDividerAdditional.Visible = True
                 liMoreRePrice.Visible = True
                 aFileOrder.Visible = True
                 aLog.Visible = True
-                aDuplicateOrder.Visible = True
 
                 divInternalNote.Visible = True
                 divOrderType.Visible = True
                 divOrderFactory.Visible = True
+
+                If lblCompanyId.Text = "3" Then
+                    liMoreSuratJalan.Visible = True
+                End If
 
                 If lblOrderType.Text = "Regular" Then
                     btnQuoteAction.Visible = True
@@ -1995,6 +2005,7 @@ Partial Class Order_Detail
                 End If
                 If lblOrderStatus.Text = "In Production" Then
                     btnUpdateStatus.Visible = True
+                    aUnsubmitOrder.Visible = True
                     aHoldOrder.Visible = True
                     aCancelOrder.Visible = True
                     aShippedOrder.Visible = True
@@ -2062,7 +2073,7 @@ Partial Class Order_Detail
                 btnMoreAction.Visible = True
                 liMoreAddNote.Visible = True
                 liMoreHistoryNote.Visible = True
-                liMoreDividerRePrice.Visible = True
+                liMoreDividerAdditional.Visible = True
                 liMoreRePrice.Visible = True
 
                 aFileOrder.Visible = True
@@ -2084,7 +2095,7 @@ Partial Class Order_Detail
                 If lblOrderStatus.Text = "Unsubmitted" Then
                     liMoreDownloadQuote.Visible = True
                     liMoreEmailQuote.Visible = True
-                    liMoreDividerRePrice.Visible = True
+                    liMoreDividerAdditional.Visible = True
                     liMoreRePrice.Visible = True
 
                     liMoreDividerQuote.Visible = True
@@ -2107,7 +2118,7 @@ Partial Class Order_Detail
                     liDividerInvoice.Visible = True
                     liUpdateInvoiceNumber.Visible = True
 
-                    liMoreDividerRePrice.Visible = True
+                    liMoreDividerAdditional.Visible = True
                     liMoreRePrice.Visible = True
 
                     btnUpdateStatus.Visible = True
@@ -2125,7 +2136,7 @@ Partial Class Order_Detail
                     liDividerInvoice.Visible = True
                     liUpdateInvoiceNumber.Visible = True
 
-                    liMoreDividerRePrice.Visible = True
+                    liMoreDividerAdditional.Visible = True
                     liMoreRePrice.Visible = True
 
                     btnEditOrder.Visible = True
@@ -2257,7 +2268,7 @@ Partial Class Order_Detail
                 btnMoreAction.Visible = True
                 liMoreAddNote.Visible = True
                 liMoreHistoryNote.Visible = True
-                liMoreDividerRePrice.Visible = True
+                liMoreDividerAdditional.Visible = True
                 liMoreRePrice.Visible = True
 
                 aDuplicateOrder.Visible = True
@@ -2272,7 +2283,6 @@ Partial Class Order_Detail
                     liMoreDownloadQuote.Visible = True
                     liMoreEmailQuote.Visible = True
                     liMoreDividerQuote.Visible = True
-                    liMoreDividerRePrice.Visible = True
                     liMoreRePrice.Visible = True
 
                     If lblOrderType.Text = "Regular" Then
@@ -2305,7 +2315,6 @@ Partial Class Order_Detail
                     liMoreDividerQuote.Visible = True
                     liMoreAddNote.Visible = True
                     liMoreHistoryNote.Visible = True
-                    liMoreDividerRePrice.Visible = True
                     liMoreRePrice.Visible = True
 
                     btnInvoice.Visible = True
@@ -2326,7 +2335,6 @@ Partial Class Order_Detail
                     liMoreDividerQuote.Visible = True
                     liMoreAddNote.Visible = True
                     liMoreHistoryNote.Visible = True
-                    liMoreDividerRePrice.Visible = True
                     liMoreRePrice.Visible = True
 
                     btnEditOrder.Visible = True
@@ -2464,7 +2472,7 @@ Partial Class Order_Detail
                     liMoreDividerQuote.Visible = True
                     liMoreDownloadQuote.Visible = True
                     liMoreEmailQuote.Visible = True
-                    liMoreDividerRePrice.Visible = True
+                    liMoreDividerAdditional.Visible = True
                     liMoreRePrice.Visible = True
 
                     If lblOrderType.Text = "Regular" Then
@@ -2487,7 +2495,7 @@ Partial Class Order_Detail
                     liMoreDownloadQuote.Visible = True
                     liMoreEmailQuote.Visible = True
                     liMoreDividerQuote.Visible = True
-                    liMoreDividerRePrice.Visible = True
+                    liMoreDividerAdditional.Visible = True
                     liMoreRePrice.Visible = True
 
                     btnEditOrder.Visible = True
@@ -2501,7 +2509,7 @@ Partial Class Order_Detail
                 If lblOrderStatus.Text = "Waiting Proforma" Then
                     btnInvoice.Visible = True : aSendInvoice.Visible = True
                     liDividerInvoice.Visible = True : liUpdateInvoiceNumber.Visible = True
-                    liMoreDividerRePrice.Visible = True
+                    liMoreDividerAdditional.Visible = True
                     liMoreRePrice.Visible = True
 
                     btnUpdateStatus.Visible = True
@@ -2602,7 +2610,7 @@ Partial Class Order_Detail
                     liMoreDividerQuote.Visible = True
                     liMoreDownloadQuote.Visible = True
                     liMoreEmailQuote.Visible = True
-                    liMoreDividerRePrice.Visible = True
+                    liMoreDividerAdditional.Visible = True
                     liMoreRePrice.Visible = True
 
                     btnEditOrder.Visible = True
@@ -2630,7 +2638,7 @@ Partial Class Order_Detail
                     liDividerInvoice.Visible = True
                     liUpdateInvoiceNumber.Visible = True
 
-                    liMoreDividerRePrice.Visible = True
+                    liMoreDividerAdditional.Visible = True
                     liMoreRePrice.Visible = True
 
                     btnEditOrder.Visible = True
