@@ -1926,13 +1926,12 @@ Partial Class Order_Detail
                     btnAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "Quoted" Then
+                    aDeleteOrder.Visible = True
+                    aSubmitOrder.Visible = True : chkSendEmail.Visible = True
+
                     liMoreDownloadQuote.Visible = True
                     liMoreEmailQuote.Visible = True
                     liMoreDividerQuote.Visible = True
-
-                    aDeleteOrder.Visible = True
-                    aSubmitOrder.Visible = True
-                    chkSendEmail.Visible = True
 
                     aAddItem.Visible = True
                     btnAddService.Visible = True
@@ -1991,9 +1990,7 @@ Partial Class Order_Detail
                     aProductionOrder.Visible = True
 
                     btnInvoice.Visible = True
-                    If lblOrderPaid.Text = "" Then
-                        aSendInvoice.Visible = True
-                    End If
+                    If lblOrderPaid.Text = "" Then aSendInvoice.Visible = True
                     liDividerInvoice.Visible = True
                     liUpdateInvoiceData.Visible = True
 
@@ -2008,9 +2005,7 @@ Partial Class Order_Detail
                     aShippedOrder.Visible = True
 
                     btnInvoice.Visible = True
-                    If lblOrderPaid.Text = "" Then
-                        aSendInvoice.Visible = True
-                    End If
+                    If lblOrderPaid.Text = "" Then aSendInvoice.Visible = True
                     liDividerInvoice.Visible = True
                     liUpdateInvoiceData.Visible = True
 
@@ -2018,17 +2013,15 @@ Partial Class Order_Detail
                     btnAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "On Hold" Then
-                    btnInvoice.Visible = True
-                    If lblOrderPaid.Text = "" Then
-                        aSendInvoice.Visible = True
-                    End If
-                    liDividerInvoice.Visible = True
-                    liUpdateInvoiceData.Visible = True
-
                     btnUpdateStatus.Visible = True
                     aUnsubmitOrder.Visible = True
                     aProductionOrder.Visible = True
                     aCancelOrder.Visible = True
+
+                    btnInvoice.Visible = True
+                    If lblOrderPaid.Text = "" Then aSendInvoice.Visible = True
+                    liDividerInvoice.Visible = True
+                    liUpdateInvoiceData.Visible = True
 
                     aAddItem.Visible = True
                     btnAddService.Visible = True
@@ -2051,15 +2044,11 @@ Partial Class Order_Detail
                 End If
                 If lblOrderStatus.Text = "Completed" Then
                     btnInvoice.Visible = True
-                    If lblOrderPaid.Text = "" Then
-                        aSendInvoice.Visible = True
-                    End If
+                    If lblOrderPaid.Text = "" Then aSendInvoice.Visible = True
                     liDividerInvoice.Visible = True
                     liUpdateInvoiceData.Visible = True
 
-                    If isReworkOrder = False Then
-                        aReworkOrder.Visible = True
-                    End If
+                    If isReworkOrder = False Then aReworkOrder.Visible = True
                 End If
 
                 divDateOrder.Attributes.Add("onclick", "showDateOrder()")
