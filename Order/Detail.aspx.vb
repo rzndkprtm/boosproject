@@ -1769,6 +1769,7 @@ Partial Class Order_Detail
             lblCreatedBy.Text = headerData("CreatedBy").ToString()
             lblCreatedName.Text = headerData("CreatedFullName").ToString()
             lblCreatedRole.Text = headerData("CreatedRole").ToString()
+            lblDownloadBoe.Text = headerData("Download").ToString()
 
             lblCreatedDate.Text = "-"
             If Not String.IsNullOrEmpty(headerData("CreatedDate").ToString()) Then
@@ -1901,6 +1902,9 @@ Partial Class Order_Detail
 
                 If lblCompanyId.Text = "3" Then
                     liMoreSuratJalan.Visible = True
+                End If
+                If lblDownloadBoe.Text = "No" OrElse lblDownloadBoe.Text = "Done" Then
+                    liMoreDownloadBOE.Visible = True
                 End If
 
                 If lblOrderType.Text = "Regular" Then
