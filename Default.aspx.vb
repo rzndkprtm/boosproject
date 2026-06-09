@@ -8,29 +8,22 @@ Partial Class _Default
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        If Not IsPostBack Then
-            BindData()
-        End If
+        BindData()
     End Sub
 
     Protected Sub BindData()
         Try
             secDefault.Visible = True
-
-            Dim companyId As String = String.Empty
-            If Session("RoleName") = "Developer" OrElse Session("RoleName") = "Factory Office" Then
-                companyId = "2"
+            If Session("CompanyId") = "3" Then
+                Response.Redirect("~/order", False)
+                Exit Sub
             End If
 
-            If Session("CompanyId") = "2" Then companyId = "2"
-
-            If Not String.IsNullOrEmpty(companyId) Then
-                Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM Newsletters WHERE CompanyId='2' AND Active=1")
-                If thisData Is Nothing Then
-                    Exit Sub
-                End If
-                imgNewsletter.ImageUrl = thisData("Link").ToString()
+            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM Newsletters WHERE CompanyId='2' AND Active=1")
+            If thisData Is Nothing Then
+                Exit Sub
             End If
+            imgNewsletter.ImageUrl = thisData("Link").ToString()
         Catch ex As Exception
         End Try
     End Sub
