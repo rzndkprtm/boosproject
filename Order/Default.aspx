@@ -155,6 +155,9 @@
                                                             <li runat="server" visible='<%# VisibleCancelOrder(Eval("Status").ToString(), Eval("Active")) %>'>
                                                                 <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalCancelOrder" onclick='<%# String.Format("return idCancelOrder(`{0}`);", Eval("Id").ToString()) %>'>Cancel Order</a>
                                                             </li>
+                                                            <li runat="server" visible='<%# VisibleSurat(Eval("Status").ToString(), Eval("CompanyId").ToString(), Eval("Active")) %>'>
+                                                                <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), "Surat Jalan", Eval("Status").ToString()) %>'>Surat Jalan</a>
+                                                            </li>
                                                             <li runat="server" visible='<%# VisibleBOEOrder(Eval("Download").ToString(), Eval("Active")) %>'>
                                                                 <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), "Download BOE", "") %>'>Download BOE</a>
                                                             </li>
@@ -273,7 +276,7 @@
                 </div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnStatusOrder" CssClass="btn btn-info" Text="Confirm" OnClick="btnStatusOrder_Click" OnClientClick="return showWaiting();" />
+                    <asp:Button runat="server" ID="btnStatusOrder" CssClass="btn btn-info" Text="Confirm" OnClick="btnStatusOrder_Click" OnClientClick="return showWaiting($(this).closest('.modal').attr('id'));" />
                 </div>
             </div>
         </div>

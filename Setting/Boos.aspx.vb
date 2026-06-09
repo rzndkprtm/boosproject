@@ -61,7 +61,7 @@ Partial Class Setting_Boos
     Protected Sub UpdateDownloadBOE()
         Try
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Download='Done' WHERE Active=1 AND Download='Yes' AND DownloadDate IS NOT NULL AND DATEDIFF(MINUTE, DownloadDate, GETDATE()) >= 1", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Download='Done' WHERE Active=1 AND Download='Yes' AND DownloadDate IS NOT NULL AND DATEDIFF(MINUTE, DownloadDate, GETDATE()) >= 10", thisConn)
 
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()

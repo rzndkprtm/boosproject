@@ -429,6 +429,22 @@ Partial Class Order_Default
 
                 Response.Redirect("~/order", False)
             End If
+
+            If thisStatus = "Surat Jalan" Then
+                Dim suratClass As New SuratClass
+                Dim pdfBytes As Byte() = suratClass.BindContent(thisId)
+
+                Dim orderId As String = orderClass.GetItemData("SELECT OrderId FROM OrderHeaders WHERE Id='" & thisId & "'")
+
+                Dim fileName As String = String.Format("SURAT JALAN {0}.pdf", orderId)
+
+                Response.Clear()
+                Response.ContentType = "application/pdf"
+                Response.AddHeader("Content-Disposition", "attachment; filename=" & fileName & "")
+                Response.BinaryWrite(pdfBytes)
+                Response.Flush()
+                Response.End()
+            End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -1035,6 +1051,16 @@ Partial Class Order_Default
     Protected Function VisibleBOEOrder(status As String, active As Boolean) As Boolean
         If active = True Then
             If Session("RoleName") = "Developer" AndAlso status = "No" Then Return True
+        End If
+        Return False
+    End Function
+
+    Protected Function VisibleSurat(status As String, companyId As String, active As Boolean) As Boolean
+        If active = True Then
+            If companyId = "3" AndAlso Session("RoleName") = "Developer" Then Return True
+            If companyId = "3" AndAlso (Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Export") AndAlso (status = "In Production" OrElse status = "Shipped Out") Then
+                Return True
+            End If
         End If
         Return False
     End Function
