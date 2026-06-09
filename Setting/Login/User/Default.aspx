@@ -80,7 +80,7 @@
                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                         <ul class="dropdown-menu">
                                                             <li>
-                                                                <a class="dropdown-item" id="aDetail" href='<%# Page.ResolveUrl("~/setting/login/user/edit?loginid=" & Eval("Id") & "&returnpage=detail") %>'>Detail / Edit</a>
+                                                                <a class="dropdown-item" id="aDetail" href='<%# Page.ResolveUrl("~/setting/login/user/edit?loginid=" & Eval("Id")) %>'>Detail / Edit</a>
                                                             </li>
                                                             <li>
                                                                 <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalActive" onclick='<%# String.Format("return showActive(`{0}`, `{1}`);", Eval("Id").ToString(), Convert.ToInt32(Eval("Active"))) %>'><%# TextActive(Eval("Active")) %></a>

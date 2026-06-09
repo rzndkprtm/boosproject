@@ -22,103 +22,65 @@
     </div>
     <div class="page-content">
         <section class="row">
-            <div class="col-12 col-sm-12 col-lg-8">
+            <div class="col-12 col-sm-12 col-lg-7">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Create Form</h4>
+                        <h4 class="card-title">Order Form</h4>
                     </div>
                     <div class="card-content">
                         <div class="card-body">
-                            <div class="form form-horizontal">
+                            <div class="form form-vertical">
                                 <div class="form-body">
                                     <div class="row" runat="server" id="divCustomer">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Customer Account</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-7 form-group">
+                                        <div class="col-12 form-group">
+                                            <label class="form-label">Customer Account</label>
                                             <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCustomer_SelectedIndexChanged"></asp:DropDownList>
                                         </div>
-                                        <div class="col-12 col-sm-12 col-lg-2 form-group">
-                                            <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Customer Account');">Info</a>
-                                        </div>
                                     </div>
-                                    <div class="row mb-3" runat="server" id="divCreatedBy">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Created By</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-9 form-group">
+                                    <div class="row" runat="server" id="divCreatedBy">
+                                        <div class="col-12 form-group">
+                                            <label class="form-label">Created By</label>
                                             <asp:DropDownList runat="server" ID="ddlCreatedBy" CssClass="choices form-select"></asp:DropDownList>
                                         </div>
                                     </div>
                                     <div class="row mb-3" runat="server" id="divMethod">
-                                        <div class="col-12 col-sm-12 col-lg-3">
+                                        <div class="col-12 col-sm-12 col-lg-5 form-group">
                                             <label class="form-label">Method</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-4 form-group">
                                             <asp:DropDownList runat="server" ID="ddlMethod" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlMethod_SelectedIndexChanged">
                                                 <asp:ListItem Value="Manual" Text="Manual Entry"></asp:ListItem>
                                                 <asp:ListItem Value="Upload" Text="Upload Excel"></asp:ListItem>
-                                                <%--<asp:ListItem Value="API" Text="API Integration"></asp:ListItem>--%>
                                             </asp:DropDownList>
                                         </div>
                                     </div>
                                     <div runat="server" id="divManual">
                                         <div class="row mt-3">
-                                            <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Order Number</label>
+                                            <div class="col-12 col-sm-12 col-lg-5 form-group">
+                                                <label class="form-label">Order Number</label>
+                                                <asp:TextBox runat="server" ID="txtOrderNumber" CssClass="form-control" placeholder="Order Number ..." autocomplete="off"></asp:TextBox>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-9 form-group">
-                                                <div class="input-group">
-                                                    <asp:TextBox runat="server" ID="txtOrderNumber" CssClass="form-control" placeholder="Order Number ..." autocomplete="off"></asp:TextBox>
-                                                    <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Order Number');"> ? </a>
-                                                </div>
+                                            <div class="col-12 col-sm-12 col-lg-7 form-group">
+                                                <label class="form-label">Order Name</label>
+                                                <asp:TextBox runat="server" ID="txtOrderName" CssClass="form-control" placeholder="Order Name ...." autocomplete="off"></asp:TextBox>
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Order Name</label>
-                                            </div>
-                                            <div class="col-12 col-sm-12 col-lg-9 form-group">
-                                                <div class="input-group">
-                                                    <asp:TextBox runat="server" ID="txtOrderName" CssClass="form-control" placeholder="Order Name ...." autocomplete="off"></asp:TextBox>
-                                                    <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Order Name');"> ? </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row mb-3">
-                                            <div class="col-12 col-sm-12 col-lg-3">
-                                                <label>Order Note</label>
-                                            </div>
-                                            <div class="col-12 col-sm-12 col-lg-9 form-group">
+                                            <div class="col-12 form-group">
+                                                <label class="form-label">Order Note</label>
                                                 <asp:TextBox runat="server" TextMode="MultiLine" ID="txtOrderNote" Height="130px" CssClass="form-control" placeholder="Order Note ...." autocomplete="off" style="resize: none"></asp:TextBox>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div runat="server" id="divApi">
-                                        <div class="row">
-                                            <div class="col-12 col-sm-12 col-lg-3" >
-                                                <label class="form-label">Order ID</label>
-                                            </div>
-                                            <div class="col-12 col-sm-12 col-lg-6 form-group">
-                                                <asp:TextBox runat="server" ID="txtApiId" CssClass="form-control" placeholder="Order ID ..." autocomplete="off"></asp:TextBox>
                                             </div>
                                         </div>
                                     </div>
                                     <div runat="server" id="divUpload">
                                         <div class="row">
-                                            <div class="col-12 col-sm-12 col-lg-3" >
+                                            <div class="col-12 form-group">
                                                 <label class="form-label">Upload Your File</label>
-                                            </div>
-                                            <div class="col-12 col-sm-12 col-lg-9 form-group">
                                                 <asp:FileUpload runat="server" ID="fuFile" CssClass="form-control" />
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row mb-3" runat="server" id="divOrderType">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Order Type</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                        <div class="col-12 col-sm-12 col-lg-5 form-group">
+                                            <label class="form-label">Order Type</label>
                                             <asp:DropDownList runat="server" ID="ddlOrderType" CssClass="form-select">
                                                 <asp:ListItem Value="Regular" Text="Regular"></asp:ListItem>
                                                 <asp:ListItem Value="Builder" Text="Builder"></asp:ListItem>
@@ -162,34 +124,30 @@
     </div>
 
     <script type="text/javascript">
-        function showInfo(type) {
-            let info;
+        document.addEventListener("DOMContentLoaded", function () {
 
-            if (type === "Order Number") {
-                info = "<b>Order Number</b>";
-                info += "<br /><br />";
-            } else if (type === "Order Name") {
-                info = "<b>Order Name</b>";
-                info += "<br /><br />";
-            } else if (type === "Customer Account") {
-                const roleName = '<%= Session("RoleName")  %>';
+            const ddlMethod = document.getElementById("ddlMethod");
+            const divManual = document.getElementById("divManual");
+            const divUpload = document.getElementById("divUpload");
 
-                info = "<b>Customer Account</b>";
-                info += "<br /><br />";
-                if (roleName === "Sales") {
-                    info += "Please use the <b>JPM Direct Pty Ltd</b> account for testing purposes or for orders placed by you as a representative."
-                    info += "<br /><br />";
-                    info += "If the order is for a customer, kindly search for and select your customer’s name when creating the order.";
-                } else {
-                    info += "Please select the customer’s name based on the order details you are creating.";
-                }                
-            } else {
-                info = "";
+            function toggleMethod() {
+
+                if (ddlMethod.value === "Manual") {
+                    divManual.style.display = "";
+                    divUpload.style.display = "none";
+                }
+                else {
+                    divManual.style.display = "none";
+                    divUpload.style.display = "";
+                }
+
             }
 
-            document.getElementById("spanInfo").innerHTML = info;
-        }
+            ddlMethod.addEventListener("change", toggleMethod);
 
+            toggleMethod();
+
+        });
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

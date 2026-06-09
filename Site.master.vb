@@ -109,6 +109,11 @@ Public Partial Class SiteMaster
                     Exit Sub
                 End If
 
+                'If String.IsNullOrEmpty(personalEmail) AndAlso Not Request.AppRelativeCurrentExecutionFilePath.ToLower() = "~/account/default.aspx" Then
+                '    Response.Redirect("~/account/?uid=" & Session("LoginId").ToString(), False)
+                '    Exit Sub
+                'End If
+
                 imgLogo.ImageUrl = "~/Assets/images/logo/general.jpg?v=1.0.0"
                 If companyId = "2" Then
                     imgLogo.ImageUrl = "~/Assets/images/logo/jpmdirect.jpg?v=1.0.0"
