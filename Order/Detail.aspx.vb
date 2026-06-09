@@ -1907,27 +1907,20 @@ Partial Class Order_Detail
                     liMoreDownloadBOE.Visible = True
                 End If
 
-                If lblOrderType.Text = "Regular" Then
-                    btnQuoteAction.Visible = True
-                End If
+                If lblOrderType.Text = "Regular" Then btnQuoteAction.Visible = True
                 If lblOrderType.Text = "Builder" Then
                     aBuilder.Visible = True
                     secBuilder.Visible = True
                 End If
+
                 If lblOrderStatus.Text = "Unsubmitted" Then
+                    aDeleteOrder.Visible = True
+                    aSubmitOrder.Visible = True : chkSendEmail.Visible = True
+                    If lblOrderType.Text = "Builder" Then aQuoteOrder.Visible = True
+
                     liMoreDownloadQuote.Visible = True
                     liMoreEmailQuote.Visible = True
                     liMoreDividerQuote.Visible = True
-
-                    aDeleteOrder.Visible = True
-
-                    If lblOrderType.Text = "Regular" Then
-                        aSubmitOrder.Visible = True
-                        chkSendEmail.Visible = True
-                    End If
-                    If lblOrderType.Text = "Builder" Then
-                        aQuoteOrder.Visible = True
-                    End If
 
                     aAddItem.Visible = True
                     btnAddService.Visible = True
