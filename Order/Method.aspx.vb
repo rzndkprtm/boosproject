@@ -1714,9 +1714,11 @@ Partial Class Order_Method
                 Return "MINIMUM WIDTH IS 600MM !"
             End If
             If blindName = "Fabric Only" AndAlso width > 2800 Then Return "MAXIMUM WIDTH IS 2800MM !"
-            If width > 6000 Then
-                If blindName = "Complete Set (Double)" Then Return "MAXIMUM FIRST WIDTH IS 6000MM !"
-                Return "MAXIMUM WIDTH IS 6000MM !"
+            If data.companyid = "2" Then
+                If width > 6000 Then
+                    If blindName = "Complete Set (Double)" Then Return "MAXIMUM FIRST WIDTH IS 6000MM !"
+                    Return "MAXIMUM WIDTH IS 6000MM !"
+                End If
             End If
         End If
 
