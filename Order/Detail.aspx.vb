@@ -1874,7 +1874,6 @@ Partial Class Order_Detail
             divOrderType.Visible = False
             divOrderFactory.Visible = False
             divInternalNote.Visible = False
-
             secBuilder.Visible = False
 
             aAddItem.Visible = False
@@ -1887,6 +1886,7 @@ Partial Class Order_Detail
                 btnEditOrder.Visible = True
                 aDuplicateOrder.Visible = True
                 aDeleteOrder.Visible = True
+
                 btnMoreAction.Visible = True
                 liMoreAddNote.Visible = True
                 liMoreHistoryNote.Visible = True
