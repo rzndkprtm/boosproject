@@ -769,7 +769,7 @@ function bindComponentForm(blindType, subType) {
                 } else if (subType === "3 on 1 Left-Right-Right") {
                     divShow.push("divfirstblind", "divfirstend", "divsecondblind", "divsecondend", "divthirdblind", "divthirdend", "divsize", "divsizeb", "divsizec", "divcordlength", "divcordlengthb", "divcordlengthc");
                 }
-            } else if (blindName === "Econo 50mm (Cordless)") {
+            } else if (blindName === "Econo 50mm (Cordless)" || blindName === "Ultraslat 50mm (Cordless)") {
                 divShow.push("divsize", "divtilterposition", "divwandlength", "divvalancesection",);
             }
 
