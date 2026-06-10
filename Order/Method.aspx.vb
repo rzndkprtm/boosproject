@@ -690,7 +690,7 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "3 on 1 Left-Right-Right", .Text = "3 on 1 Venetian (Left-Right-Right)"})
             End If
 
-            If blindName = "Econo 50mm (Cordless)" Then
+            If blindName = "Econo 50mm (Cordless)" OrElse blindName = "Ultraslat 50mm (Cordless)" Then
                 result.Add(New With {.Value = "Single", .Text = "Single Venetian"})
             End If
         End If
@@ -707,7 +707,7 @@ Partial Class Order_Method
             If blindName = "Ultraslat 50mm" OrElse blindName = "Ultraslat 63mm" Then
                 result.Add(New With {.Value = "76mm Valance", .Text = "76mm"})
             End If
-            If blindName = "Econo 50mm (Cordless)" Then
+            If blindName = "Econo 50mm (Cordless)" OrElse blindName = "Ultraslat 50mm (Cordless)" Then
                 result.Add(New With {.Value = "Standard", .Text = "Standard"})
             End If
         End If
@@ -720,7 +720,7 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "Both Sides", .Text = "Both Sides"})
 
             End If
-            If blindName = "Econo 50mm (Cordless)" Then
+            If blindName = "Econo 50mm (Cordless)" OrElse blindName = "Ultraslat 50mm (Cordless)" Then
                 result.Clear()
                 result.Add(New With {.Value = "Left", .Text = "Left"})
                 result.Add(New With {.Value = "Right", .Text = "Right"})
