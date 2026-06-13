@@ -35,17 +35,14 @@ Partial Class Setting_Customer_Business_Add
                 MessageError(True, "ACCOUNT IS REQURIED !")
                 Exit Sub
             End If
-
             If txtName.Text = "" Then
                 MessageError(True, "REGISTERED NAME IS REQURIED !")
                 Exit Sub
             End If
-
             If txtNumber.Text = "" Then
                 MessageError(True, "ABN NUMBER IS REQURIED !")
                 Exit Sub
             End If
-
             If msgError.InnerText = "" Then
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerBusiness ORDER BY Id DESC")
 
@@ -102,9 +99,7 @@ Partial Class Setting_Customer_Business_Add
                 End If
             End If
 
-            Dim thisQuery As String = String.Format("SELECT * FROM Customers WHERE Active=1 {0} ORDER BY Name ASC", role)
-
-            ddlCustomer.DataSource = settingClass.GetDataTable(thisQuery)
+            ddlCustomer.DataSource = settingClass.GetDataTable(String.Format("SELECT * FROM Customers WHERE Active=1 {0} ORDER BY Name ASC", role))
             ddlCustomer.DataTextField = "Name"
             ddlCustomer.DataValueField = "Id"
             ddlCustomer.DataBind()

@@ -35,7 +35,6 @@
             <div class="col-12 d-flex justify-content-end flex-wrap gap-2">
                 <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Create Order" OnClick="btnAdd_Click" />
                 <asp:Button runat="server" ID="btnRework" CssClass="btn btn-danger" Text="Rework Order" OnClick="btnRework_Click" />
-                <asp:Button runat="server" ID="btnOcean" CssClass="btn btn-info" Text="Ocean" OnClick="btnOcean_Click" />
                 <asp:Button runat="server" ID="btnFile" CssClass="btn btn-secondary" Text="File" OnClick="btnFile_Click" />
             </div>
         </section>
@@ -140,9 +139,6 @@
                                                             <li runat="server" visible='<%# VisibleHoldOrder(Eval("Status").ToString(), Eval("Active")) %>'>
                                                                 <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), "Hold Order", Eval("Status").ToString()) %>'>Hold Order</a>
                                                             </li>
-                                                            <li runat="server" visible='<%# VisibleRestore(Eval("Active")) %>'>
-                                                                <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalRestore" onclick='<%# String.Format("return showRestore(`{0}`);", Eval("Id").ToString()) %>'>Restore</a>
-                                                            </li>
                                                             <li runat="server" visible='<%# VisibleShipmentOrder(Eval("Status").ToString(), Eval("Active")) %>'>
                                                                 <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalShipmentOrder" onclick='<%# String.Format("return idShipmentOrder(`{0}`);", Eval("Id").ToString()) %>'>Shipment Order</a>
                                                             </li>
@@ -158,7 +154,7 @@
                                                             <li runat="server" visible='<%# VisibleSurat(Eval("Status").ToString(), Eval("CompanyId").ToString(), Eval("Active")) %>'>
                                                                 <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), "Surat Jalan", Eval("Status").ToString()) %>'>Surat Jalan</a>
                                                             </li>
-                                                            <li runat="server" visible='<%# VisibleBOEOrder(Eval("Download").ToString(), Eval("Active")) %>'>
+                                                            <li runat="server" visible='<%# VisibleDownloadBOE(Eval("Status").ToString(), Eval("Download").ToString(), Eval("Active")) %>'>
                                                                 <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return showStatusOrder(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), "Download BOE", "") %>'>Download BOE</a>
                                                             </li>
                                                             <li runat="server" visible='<%# VisibleLog() %>'>
@@ -364,23 +360,6 @@
             </div>
         </div>
     </div>
-    <div class="modal fade text-center" id="modalRestore" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-danger">
-                    <h5 class="modal-title white">Restore Order</h5>
-                </div>
-                <div class="modal-body text-center py-4">
-                    <asp:TextBox runat="server" ID="txtIdRestore" style="display:none;"></asp:TextBox>
-                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
-                </div>
-                <div class="modal-footer">
-                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnSubmitRestore" CssClass="btn btn-danger" Text="Confirm" OnClick="btnSubmitRestore_Click" />
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="modal modal-blur fade" id="modalLog" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -509,10 +488,6 @@
             document.getElementById("<%=txtIdCancelOrder.ClientID %>").value = id;
         }
 
-        function showRestore(id) {
-            document.getElementById("<%=txtIdRestore.ClientID %>").value = id;
-        }
-
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
             $("#tblLogs tbody").html("");
@@ -559,7 +534,7 @@
             return true;
         }
 
-        ["modalBOEDownload", "modalShipment", "modalStatusOrder", "modalCancelOrder", "modalShipmentOrder", "modalRestore", "modalLog"].forEach(function (id) {
+        ["modalBOEDownload", "modalShipment", "modalStatusOrder", "modalCancelOrder", "modalShipmentOrder", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

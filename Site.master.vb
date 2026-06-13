@@ -200,6 +200,7 @@ Public Partial Class SiteMaster
             liLogin.Visible = False
             liCustomer.Visible = False
             liSpecification.Visible = False
+            liTubeType.Visible = False : liControlType.Visible = False : liColourType.Visible = False
             liJob.Visible = False
             liPrice.Visible = False
             liDatabase.Visible = False
@@ -221,13 +222,13 @@ Public Partial Class SiteMaster
                 liLogin.Visible = True
                 liCustomer.Visible = True
                 liSpecification.Visible = True
+                liTubeType.Visible = True : liControlType.Visible = True : liColourType.Visible = True
                 liJob.Visible = True
                 liPrice.Visible = True
                 liDatabase.Visible = True
                 liXero.Visible = True
                 liLog.Visible = True
             End If
-
             If Session("RoleName") = "IT" Then
                 liOldOrder.Visible = True
                 liExport.Visible = True
@@ -248,7 +249,6 @@ Public Partial Class SiteMaster
                 liXero.Visible = True
                 liLog.Visible = True
             End If
-
             If Session("RoleName") = "Factory Office" Then
                 liOldOrder.Visible = True
                 liGuide.Visible = True
@@ -268,7 +268,6 @@ Public Partial Class SiteMaster
                 liXero.Visible = True
                 liLog.Visible = True
             End If
-
             If Session("RoleName") = "Account" Then
                 liOldOrder.Visible = True
                 liSales.Visible = True
@@ -282,7 +281,6 @@ Public Partial Class SiteMaster
                 liPrice.Visible = True
                 liXero.Visible = True
             End If
-
             If Session("RoleName") = "Sales" Then
                 liOldOrder.Visible = True
                 liGuide.Visible = True
@@ -299,23 +297,17 @@ Public Partial Class SiteMaster
                 liPrice.Visible = True
                 liXero.Visible = True
             End If
-
             If Session("RoleName") = "Data Entry" Then
                 liOldOrder.Visible = True
                 liStocks.Visible = True
                 liReport.Visible = True
                 liTicket.Visible = True
             End If
-
             If Session("RoleName") = "Customer" Then
                 liOldOrder.Visible = True
                 liGuide.Visible = True
                 liStocks.Visible = True
                 liQuotation.Visible = True
-            End If
-
-            If Session("RoleName") = "Installer" Then
-
             End If
         Catch ex As Exception
             Session.Clear()

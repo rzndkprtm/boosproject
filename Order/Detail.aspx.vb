@@ -28,13 +28,56 @@ Partial Class Order_Detail
 
         lblHeaderId.Text = Request.QueryString("orderid").ToString()
         If Not IsPostBack Then
-            btnPreview.OnClientClick = "window.open('view?action=jobsheet&boosid=" & lblHeaderId.Text & "','_blank'); return false;"
-            btnPreviewInvoice.OnClientClick = "window.open('view?action=invoice&boosid=" & lblHeaderId.Text & "','_blank'); return false;"
-            btnPreviewQuote.OnClientClick = "window.open('view?action=quote&boosid=" & lblHeaderId.Text & "','_blank'); return false;"
-
             AllMessageError(False, String.Empty)
             BindDataOrder(lblHeaderId.Text)
+
+            btnPreview.OnClientClick = "window.open('view?action=jobsheet&boosid=" & lblHeaderId.Text & "','_blank'); return false;"
+            btnSuratJalan.OnClientClick = "window.open('view?action=suratjalan&boosid=" & lblHeaderId.Text & "','_blank'); return false;"
+            btnPreviewInvoice.OnClientClick = "window.open('view?action=invoice&boosid=" & lblHeaderId.Text & "','_blank'); return false;"
+
+            Dim quoteString As String = "window.open('view?action=quote&boosid=" & lblHeaderId.Text & "','_blank'); return false;"
+            If lblOrderType.Text = "Builder" Then
+                quoteString = "window.open('view?action=quotebuilder&boosid=" & lblHeaderId.Text & "','_blank'); return false;"
+            End If
+            If Session("RoleName") = "Customer" Then
+                quoteString = "window.open('view?action=quotes&boosid=" & lblHeaderId.Text & "','_blank'); return false;"
+            End If
+            btnPreviewQuote.OnClientClick = quoteString
         End If
+    End Sub
+
+    Protected Sub btnDateOrder_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET CreatedDate=@CreatedDate, SubmittedDate=@SubmittedDate, ProductionDate=@ProductionDate, OnHoldDate=@OnHoldDate, CanceledDate=@CanceledDate, CompletedDate=@CompletedDate WHERE Id=@Id;", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
+                    myCmd.Parameters.AddWithValue("@CreatedDate", If(String.IsNullOrEmpty(txtCreatedDate.Text), CType(DBNull.Value, Object), txtCreatedDate.Text))
+                    myCmd.Parameters.AddWithValue("@SubmittedDate", If(String.IsNullOrEmpty(txtSubmittedDate.Text), CType(DBNull.Value, Object), txtSubmittedDate.Text))
+                    myCmd.Parameters.AddWithValue("@ProductionDate", If(String.IsNullOrEmpty(txtProductionDate.Text), CType(DBNull.Value, Object), txtProductionDate.Text))
+                    myCmd.Parameters.AddWithValue("@OnHoldDate", If(String.IsNullOrEmpty(txtHoldDate.Text), CType(DBNull.Value, Object), txtHoldDate.Text))
+                    myCmd.Parameters.AddWithValue("@CanceledDate", If(String.IsNullOrEmpty(txtCanceledDate.Text), CType(DBNull.Value, Object), txtCanceledDate.Text))
+                    myCmd.Parameters.AddWithValue("@CompletedDate", If(String.IsNullOrEmpty(txtCompletedDate.Text), CType(DBNull.Value, Object), txtCompletedDate.Text))
+
+                    thisConn.Open()
+                    myCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Dim salesClass As New SalesClass
+            salesClass.RefreshData(lblCompanyId.Text)
+
+            dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), "Date Order Updated"}
+            orderClass.Logs(dataLog)
+
+            url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
     End Sub
 
     Protected Sub btnDownload_Click(sender As Object, e As EventArgs)
@@ -138,7 +181,7 @@ Partial Class Order_Detail
                     Using thisConn As New SqlConnection(myConn)
                         thisConn.Open()
 
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderHeaders SELECT @NewID, @OrderId, CustomerId, 'Copy ' + CAST(@NewID AS VARCHAR(20)) + ' - ' + OrderNumber, 'Copy ' + CAST(@NewID AS VARCHAR(20)) + ' - ' + OrderName, NULL, OrderType, OrderFactory, 'Unsubmitted', NULL, @CreatedBy, GETDATE(), NULL, NULL, NULL, NULL, NULL, NULL, 'No', NULL, 1 FROM OrderHeaders WHERE Id=@OldId; INSERT INTO OrderQuotes VALUES(@NewID, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderHeaders SELECT @NewID, @OrderId, CustomerId, 'Copy ' + CAST(@NewID AS VARCHAR(20)) + ' - ' + OrderNumber, 'Copy ' + CAST(@NewID AS VARCHAR(20)) + ' - ' + OrderName, NULL, OrderType, OrderFactory, 'Unsubmitted', NULL, @CreatedBy, GETDATE(), NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, 0, 'No', NULL, 1 FROM OrderHeaders WHERE Id=@OldId; INSERT INTO OrderQuotes VALUES(@NewID, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
                             myCmd.Parameters.AddWithValue("@OldId", lblHeaderId.Text)
                             myCmd.Parameters.AddWithValue("@NewID", newIdHeader)
                             myCmd.Parameters.AddWithValue("@OrderId", orderId)
@@ -258,30 +301,6 @@ Partial Class Order_Detail
                 dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), "Quote Order"}
                 orderClass.Logs(dataLog)
 
-                'Dim thisId As String = orderClass.GetNewOrderItemId()
-
-                'Dim productId As String = orderClass.GetItemData("SELECT Id FROM Products WHERE Name='Fuel Surcharge' AND (Status='In Stock' OR Status='Limited Stock')")
-                'Dim productGroupId As String = orderClass.GetItemData("SELECT Id FROM PriceProductGroups WHERE Name='Fuel Surcharge' AND Active=1")
-
-                'Using thisConn As New SqlConnection(myConn)
-                '    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, 1, 0, 0, 1, 0, 1)", thisConn)
-                '        myCmd.Parameters.AddWithValue("@Id", thisId)
-                '        myCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
-                '        myCmd.Parameters.AddWithValue("@ProductId", If(String.IsNullOrEmpty(productId), CType(DBNull.Value, Object), productId))
-                '        myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(productGroupId), CType(DBNull.Value, Object), productGroupId))
-
-                '        thisConn.Open()
-                '        myCmd.ExecuteNonQuery()
-                '    End Using
-                'End Using
-
-                'dataLog = {"OrderDetails", thisId, "2", "Order Item Added"}
-                'orderClass.Logs(dataLog)
-
-                'orderClass.ResetPriceDetail(lblHeaderId.Text, thisId)
-                'orderClass.CalculatePrice(lblHeaderId.Text, thisId)
-                'orderClass.FinalCostItem(lblHeaderId.Text, thisId)
-
                 url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
                 Response.Redirect(url, False)
             End If
@@ -344,7 +363,7 @@ Partial Class Order_Detail
             Dim invoiceNumber As String = lblOrderId.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET SubmittedDate=GETDATE(), Status=@Status WHERE Id=@Id; INSERT OrderInvoices(Id, InvoiceNumber, Payment, Amount) VALUES (@Id, @InvoiceNumber, @Payment, 0)", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET SubmittedDate=GETDATE(), Status=@Status, InvoiceNumber=@InvoiceNumber, Payment=0, Amount=0 WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
                     myCmd.Parameters.AddWithValue("@Status", orderStatus)
                     myCmd.Parameters.AddWithValue("@InvoiceNumber", invoiceNumber)
@@ -485,7 +504,7 @@ Partial Class Order_Detail
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
 
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET SubmittedDate=NULL, ProductionDate=NULL, OnHoldDate=NULL, Status='Unsubmitted', Download='No', DownloadDate=NULL WHERE Id=@Id; DELETE FROM OrderInvoices WHERE Id=@Id;", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET SubmittedDate=NULL, ProductionDate=NULL, OnHoldDate=NULL, Status='Unsubmitted', Download='No', DownloadDate=NULL, ShipmentDate=NULL, ShipmentNumber=NULL, ContainerNumber=NULL, ContainerETA=NULL, Courier=NULL, InvoiceNumber=NULL, Collector=NULL, InvoiceDate=NULL, DueDate=NULL, Payment=0, PaymentDate=NULL, Amount=0 WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
 
                     myCmd.ExecuteNonQuery()
@@ -526,65 +545,19 @@ Partial Class Order_Detail
         End Try
     End Sub
 
-    Protected Sub btnCancelOrder_Click(sender As Object, e As EventArgs)
-        MessageError_CancelOrder(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showCancelOrder(); };"
-        Try
-            If txtCancelDescription.Text = "" Then
-                MessageError_CancelOrder(True, "CANCEL DESCRIPTION IS REQURIED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showCancelOrder", thisScript, True)
-                Exit Sub
-            End If
-
-            If msgErrorCancelOrder.InnerText = "" Then
-                Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Canceled', CanceledDate=GETDATE(), Download='No' WHERE Id=@Id; UPDATE OrderShipments SET ShipmentNumber=NULL, ShipmentDate=NULL, ContainerNumber=NULL, ContainerETA=NULL, Courier=NULL WHERE Id=@Id; UPDATE OrderInvoices SET InvoiceNumber=NULL, Collector=NULL, InvoiceDate=NULL, DueDate=NULL, Payment=0, PaymentDate=NULL, Amount=0 WHERE Id=@Id;", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
-                        myCmd.Parameters.AddWithValue("@StatusDescription", txtCancelDescription.Text.Trim())
-
-                        thisConn.Open()
-                        myCmd.ExecuteNonQuery()
-                    End Using
-                End Using
-
-                Dim salesClass As New SalesClass
-                salesClass.RefreshData(lblCompanyId.Text)
-
-                Dim descLog As String = String.Format("Order Canceled | {0}", txtCancelDescription.Text.Trim())
-
-                dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), descLog}
-                orderClass.Logs(dataLog)
-
-                url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
-                Response.Redirect(url, False)
-            End If
-        Catch ex As Exception
-            MessageError_CancelOrder(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_CancelOrder(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showCancelOrder", thisScript, True)
-        End Try
-    End Sub
-
     Protected Sub btnProductionOrder_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
             Dim stringQuery As String = "UPDATE OrderHeaders SET Status='In Production', OnHoldDate=NULL WHERE Id=@Id;"
             If lblOrderStatus.Text = "New Order" OrElse lblOrderStatus.Text = "Payment Received" Then
-                stringQuery = "UPDATE OrderHeaders SET Status='In Production', ProductionDate=GETDATE(), OnHoldDate=NULL, Download='Yes' WHERE Id=@Id; INSERT INTO OrderShipments(Id) VALUES (@Id);"
+                stringQuery = "UPDATE OrderHeaders SET Status='In Production', ProductionDate=GETDATE(), OnHoldDate=NULL, Download='Yes' WHERE Id=@Id"
             End If
             If lblOrderStatus.Text = "Shipped Out" Then
-                stringQuery = "UPDATE OrderHeaders SET Status='In Production' WHERE Id=@Id; UPDATE OrderShipments SET ShipmentNumber=NULL, ShipmentDate=NULL, ContainerNumber=NULL, ContainerETA=NULL, Courier=NULL WHERE Id=@Id;"
-            End If
-
-            Dim download As String = orderClass.GetItemData("SELECT Download FROM OrderHeaders WHERE Id='" & lblHeaderId.Text & "'")
-            If download = "No" Then
-                stringQuery = "UPDATE OrderHeaders SET Status='In Production', ProductionDate=GETDATE(), OnHoldDate=NULL, Download='Yes' WHERE Id=@Id; INSERT INTO OrderShipments(Id) VALUES (@Id);"
+                stringQuery = "UPDATE OrderHeaders SET Status='In Production', ShipmentNumber=NULL, ShipmentDate=NULL, ContainerNumber=NULL, ContainerETA=NULL, Courier=NULL WHERE Id=@Id"
             End If
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='In Production', ProductionDate=GETDATE() WHERE Id=@Id", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand(stringQuery, thisConn)
                     myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
 
                     thisConn.Open()
@@ -597,19 +570,6 @@ Partial Class Order_Detail
 
             Dim salesClass As New SalesClass
             salesClass.RefreshData(lblCompanyId.Text)
-
-            Dim shipmentString As String = "INSERT INTO OrderShipments(Id) VALUES (@Id)"
-            If lblOrderStatus.Text = "Shipped Out" Then
-                shipmentString = "UPDATE OrderShipments SET ShipmentNumber=NULL, ShipmentDate=NULL, ContainerNumber=NULL, ContainerETA=NULL, Courier=NULL WHERE Id=@Id"
-            End If
-            Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand(shipmentString, thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
-
-                    thisConn.Open()
-                    myCmd.ExecuteNonQuery()
-                End Using
-            End Using
 
             url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
             Response.Redirect(url, False)
@@ -658,7 +618,7 @@ Partial Class Order_Detail
         Try
             If msgErrorShippedOrder.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Shipped Out' WHERE Id=@Id; UPDATE OrderShipments SET ShipmentNumber=@ShipmentNumber, ShipmentDate=@ShipmentDate, ContainerNumber=@ContainerNumber, ContainerETA=@ContainerETA, Courier=@Courier WHERE Id=@Id", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Shipped Out', ShipmentNumber=@ShipmentNumber, ShipmentDate=@ShipmentDate, ContainerNumber=@ContainerNumber, ContainerETA=@ContainerETA, Courier=@Courier WHERE Id=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
                         myCmd.Parameters.AddWithValue("@ShipmentNumber", txtShipmentNumber.Text.Trim())
                         myCmd.Parameters.AddWithValue("@ShipmentDate", If(String.IsNullOrEmpty(txtShipmentDate.Text), CType(DBNull.Value, Object), txtShipmentDate.Text))
@@ -711,6 +671,47 @@ Partial Class Order_Detail
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
             End If
+        End Try
+    End Sub
+
+    Protected Sub btnCancelOrder_Click(sender As Object, e As EventArgs)
+        MessageError_CancelOrder(False, String.Empty)
+        Dim thisScript As String = "window.onload = function() { showCancelOrder(); };"
+        Try
+            If txtCancelDescription.Text = "" Then
+                MessageError_CancelOrder(True, "CANCEL DESCRIPTION IS REQURIED !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showCancelOrder", thisScript, True)
+                Exit Sub
+            End If
+
+            If msgErrorCancelOrder.InnerText = "" Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Canceled', CanceledDate=GETDATE(), ShipmentNumber=NULL, ShipmentDate=NULL, ContainerNumber=NULL, ContainerETA=NULL, Courier=NULL, InvoiceNumber=NULL, Collector=NULL, InvoiceDate=NULL, DueDate=NULL, Payment=0, PaymentDate=NULL, Amount=0, Download='No' WHERE Id=@Id", thisConn)
+                        myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
+                        myCmd.Parameters.AddWithValue("@StatusDescription", txtCancelDescription.Text.Trim())
+
+                        thisConn.Open()
+                        myCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                Dim salesClass As New SalesClass
+                salesClass.RefreshData(lblCompanyId.Text)
+
+                Dim descLog As String = String.Format("Order Canceled | {0}", txtCancelDescription.Text.Trim())
+
+                dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), descLog}
+                orderClass.Logs(dataLog)
+
+                url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+                Response.Redirect(url, False)
+            End If
+        Catch ex As Exception
+            MessageError_CancelOrder(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_CancelOrder(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+            ClientScript.RegisterStartupScript(Me.GetType(), "showCancelOrder", thisScript, True)
         End Try
     End Sub
 
@@ -912,7 +913,13 @@ Partial Class Order_Detail
             End If
 
             Dim quoteClass As New QuoteClass
-            Dim pdfBytes As Byte() = quoteClass.BindContentCustomer(lblHeaderId.Text)
+            Dim pdfBytes As Byte() = quoteClass.BindContent(lblHeaderId.Text)
+            If lblOrderType.Text = "Builder" Then
+                pdfBytes = quoteClass.BindContentBuilder(lblHeaderId.Text)
+            End If
+            If Session("RoleName") = "Customer" Then
+                pdfBytes = quoteClass.BindContentCustomer(lblHeaderId.Text)
+            End If
 
             Dim fileName As String = String.Format("QUOTE-{0}-{1}", lblOrderNumber.Text, lblOrderName.Text)
 
@@ -978,22 +985,15 @@ Partial Class Order_Detail
 
             If msgErrorSendInvoice.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
-                    thisConn.Open()
-
                     If lblOrderStatus.Text = "Waiting Proforma" Then
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Proforma Sent' WHERE Id=@Id;", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Proforma Sent', Collector=@Collector, InvoiceDate=GETDATE(), DueDate=DATEADD(DAY, 14, GETDATE()) WHERE Id=@Id;", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
+                            myCmd.Parameters.AddWithValue("@Collector", Session("LoginId").ToString())
+
+                            thisConn.Open()
                             myCmd.ExecuteNonQuery()
                         End Using
                     End If
-
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderInvoices SET Collector=@Collector, InvoiceDate=GETDATE(), DueDate=DATEADD(DAY, 14, GETDATE()) WHERE Id=@Id;", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
-                        myCmd.Parameters.AddWithValue("@Collector", Session("LoginId").ToString())
-                        myCmd.ExecuteNonQuery()
-                    End Using
-
-                    thisConn.Close()
                 End Using
 
                 Dim mailingClass As New MailingClass
@@ -1032,7 +1032,7 @@ Partial Class Order_Detail
                     amount = orderClass.GetItemData_Decimal("SELECT (SUM(SellPrice) * 1.11) AS SumPrice FROM OrderCostings WHERE HeaderId='" & lblHeaderId.Text & "' AND Type='Final'")
                 End If
 
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderInvoices SET PaymentDate=GETDATE(), DueDate=NULL, Payment=1, Amount=@Amount WHERE Id=@Id", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET PaymentDate=GETDATE(), DueDate=NULL, Payment=1, Amount=@Amount WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
                     myCmd.Parameters.AddWithValue("@Amount", amount)
                     myCmd.ExecuteNonQuery()
@@ -1144,7 +1144,7 @@ Partial Class Order_Detail
             End If
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderInvoices SET InvoiceNumber=@InvoiceNumber WHERE Id=@Id;", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET InvoiceNumber=@InvoiceNumber WHERE Id=@Id;", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
                     myCmd.Parameters.AddWithValue("@InvoiceNumber", txtUpdateInvoiceNumber.Text.Trim())
 
@@ -1176,10 +1176,10 @@ Partial Class Order_Detail
                 amount = orderClass.GetItemData_Decimal("SELECT (SUM(SellPrice) * 1.10) AS SumPrice FROM OrderCostings WHERE HeaderId='" & lblHeaderId.Text & "' AND Type='Final'")
             End If
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderInvoices SET InvoiceNumber=@InvoiceNumber, Collector=@Collector, InvoiceDate=@InvoiceDate, PaymentDate=@PaymentDate, DueDate=@DueDate, Payment=@Payment, Amount=@Amount WHERE Id=@Id;", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET InvoiceNumber=@InvoiceNumber, Collector=@Collector, InvoiceDate=@InvoiceDate, PaymentDate=@PaymentDate, DueDate=@DueDate, Payment=@Payment, Amount=@Amount WHERE Id=@Id;", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
                     myCmd.Parameters.AddWithValue("@InvoiceNumber", txtInvoiceNumber.Text.Trim())
-                    myCmd.Parameters.AddWithValue("@Collector", ddlCollector.SelectedValue)
+                    myCmd.Parameters.AddWithValue("@Collector", If(String.IsNullOrEmpty(ddlCollector.SelectedValue), CType(DBNull.Value, Object), ddlCollector.SelectedValue))
                     myCmd.Parameters.AddWithValue("@InvoiceDate", If(String.IsNullOrEmpty(txtInvoiceDate.Text), CType(DBNull.Value, Object), txtInvoiceDate.Text))
                     myCmd.Parameters.AddWithValue("@PaymentDate", If(String.IsNullOrEmpty(txtPaymentDate.Text), CType(DBNull.Value, Object), txtPaymentDate.Text))
                     myCmd.Parameters.AddWithValue("@DueDate", If(String.IsNullOrEmpty(txtDueDate.Text), CType(DBNull.Value, Object), txtDueDate.Text))
@@ -1205,35 +1205,6 @@ Partial Class Order_Detail
                 MessageError_InvoiceData(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showInvoiceData", thisScript, True)
-        End Try
-    End Sub
-
-    Protected Sub gvListOrderFile_RowCommand(sender As Object, e As GridViewCommandEventArgs)
-        Try
-            Dim fileName As String = e.CommandArgument.ToString()
-            Dim directoryPath As String = Server.MapPath(String.Format("~/File/Order/{0}/", lblOrderId.Text))
-            Dim filePath As String = IO.Path.Combine(directoryPath, fileName)
-
-            Select Case e.CommandName
-                Case "DownloadFile"
-                    If IO.File.Exists(filePath) Then
-                        Response.ContentType = "application/octet-stream"
-                        Response.AppendHeader("Content-Disposition", "attachment; filename=" & fileName)
-                        Response.TransmitFile(filePath)
-                        Response.End()
-                    End If
-
-                Case "DeleteFile"
-                    If IO.File.Exists(filePath) Then
-                        IO.File.Delete(filePath)
-                    End If
-                    BindDataFile(lblOrderId.Text)
-            End Select
-        Catch ex As Exception
-            MessageError_FileOrder(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_FileOrder(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
         End Try
     End Sub
 
@@ -1297,100 +1268,18 @@ Partial Class Order_Detail
         End Try
     End Sub
 
-    Protected Sub btnMoreDownloadQuote_Click(sender As Object, e As EventArgs)
+    Protected Sub btnRecalculate_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            If gvListItem.Rows.Count = 0 Then
-                MessageError(True, "PLEASE ADD MINIMAL 1 ITEM ORDER !")
-                Exit Sub
-            End If
+            orderClass.CalculatePriceByOrder(lblHeaderId.Text)
 
-            Dim quoteClass As New QuoteClass
-            If lblOrderType.Text = "Regular" Then
-                Dim pdfBytes As Byte() = quoteClass.BindContent(lblHeaderId.Text)
-
-                Response.Clear()
-                Response.ContentType = "application/pdf"
-                Response.AddHeader("Content-Disposition", "attachment; filename=QUOTE-" & lblOrderId.Text & ".pdf")
-                Response.BinaryWrite(pdfBytes)
-                Response.Flush()
-                Response.End()
-            End If
-
-            If lblOrderType.Text = "Builder" Then
-                Dim pdfBytes As Byte() = quoteClass.BindContentBuilder(lblHeaderId.Text)
-
-                Response.Clear()
-                Response.ContentType = "application/pdf"
-                Response.AddHeader("Content-Disposition", "attachment; filename=QUOTE-" & lblOrderId.Text & ".pdf")
-                Response.BinaryWrite(pdfBytes)
-                Response.Flush()
-                Response.End()
-            End If
+            url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+            Response.Redirect(url, False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
-        End Try
-    End Sub
-
-    Protected Sub btnMoreEmailQuote_Click(sender As Object, e As EventArgs)
-        MessageError_MoreEmailQuote(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showEmailQuote(); };"
-        Try
-            If String.IsNullOrEmpty(txtEmailQuoteTo.Text) Then
-                MessageError_MoreEmailQuote(True, "CUSTOMER EMAIL TO IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showEmailQuote", thisScript, True)
-                Exit Sub
-            End If
-
-            Dim isValidEmail As Boolean = orderClass.IsValidEmail(txtEmailQuoteTo.Text)
-            If IsValid = False Then
-                MessageError_MoreEmailQuote(True, "PLEASE CHECK YOUR CUSTOMER EMAIL TO !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showEmailQuote", thisScript, True)
-                Exit Sub
-            End If
-
-            Dim ccCustomer As String = String.Empty
-            If Not String.IsNullOrEmpty(txtEmailQuoteCCCustomer.Text) Then
-                Dim raw As String = txtEmailQuoteCCCustomer.Text
-                Dim lines As String() = raw.Split(New String() {vbCrLf, vbLf}, StringSplitOptions.RemoveEmptyEntries)
-
-                Dim cleanedEmails As New List(Of String)
-                For Each line As String In lines
-                    Dim email As String = line.Trim()
-                    If email <> "" Then cleanedEmails.Add(email)
-                Next
-                ccCustomer = String.Join(";", cleanedEmails)
-            End If
-
-            Dim ccStaff As String = String.Empty
-            If Not String.IsNullOrEmpty(txtEmailQuoteCCStaff.Text) Then
-                Dim raw As String = txtEmailQuoteCCStaff.Text
-                Dim lines As String() = raw.Split(New String() {vbCrLf, vbLf}, StringSplitOptions.RemoveEmptyEntries)
-
-                Dim cleanedEmails As New List(Of String)
-                For Each line As String In lines
-                    Dim email As String = line.Trim()
-                    If email <> "" Then cleanedEmails.Add(email)
-                Next
-                ccStaff = String.Join(";", cleanedEmails)
-            End If
-
-            If msgErrorMoreEmailQuote.InnerText = "" Then
-                Dim mailingClass As New MailingClass
-                mailingClass.SentQuote(lblHeaderId.Text, Session("LoginId").ToString(), txtEmailQuoteTo.Text, ccCustomer, ccStaff)
-
-                url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
-                Response.Redirect(url, False)
-            End If
-        Catch ex As Exception
-            MessageError_MoreEmailQuote(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_MoreEmailQuote(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showEmailQuote", thisScript, True)
         End Try
     End Sub
 
@@ -1425,6 +1314,35 @@ Partial Class Order_Detail
                 MessageError_AddNote(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showAddNote", thisScript, True)
+        End Try
+    End Sub
+
+    Protected Sub gvListOrderFile_RowCommand(sender As Object, e As GridViewCommandEventArgs)
+        Try
+            Dim fileName As String = e.CommandArgument.ToString()
+            Dim directoryPath As String = Server.MapPath(String.Format("~/File/Order/{0}/", lblOrderId.Text))
+            Dim filePath As String = IO.Path.Combine(directoryPath, fileName)
+
+            Select Case e.CommandName
+                Case "DownloadFile"
+                    If IO.File.Exists(filePath) Then
+                        Response.ContentType = "application/octet-stream"
+                        Response.AppendHeader("Content-Disposition", "attachment; filename=" & fileName)
+                        Response.TransmitFile(filePath)
+                        Response.End()
+                    End If
+
+                Case "DeleteFile"
+                    If IO.File.Exists(filePath) Then
+                        IO.File.Delete(filePath)
+                    End If
+                    BindDataFile(lblOrderId.Text)
+            End Select
+        Catch ex As Exception
+            MessageError_FileOrder(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_FileOrder(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 
@@ -1506,11 +1424,11 @@ Partial Class Order_Detail
                     If Session("RoleName") = "Customer" Then
                         itemAction = "view"
                         If lblOrderStatus.Text = "Unsubmitted" Then itemAction = "edit"
+                    End If
 
-                        If designType = "Services" Then
-                            MessageError(True, "ACCESS DENIED. YOU ARE NOT AUTHORIZED TO PERFORM THIS ACTION !")
-                            Exit Sub
-                        End If
+                    If designType = "Services" Then
+                        MessageError(True, "ACCESS DENIED. YOU ARE NOT AUTHORIZED TO PERFORM THIS ACTION !")
+                        Exit Sub
                     End If
 
                     If String.IsNullOrEmpty(itemAction) Then
@@ -1617,22 +1535,58 @@ Partial Class Order_Detail
     End Sub
 
     Protected Sub btnAddService_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
+        MessageError_AddService(False, String.Empty)
+        Dim thisScript As String = "window.onload = function() { showService(); };"
         Try
-            Dim page As String = orderClass.GetDesignPage("16")
-            Dim queryString As String = String.Format("do={0}&orderid={1}&itemid={2}&dtype={3}&uid={4}", "create", lblHeaderId.Text, String.Empty, "16", Session("LoginId").ToString())
-            Dim contextId As String = InsertContext(queryString)
-
-            url = String.Format("{0}?boos={1}", page, contextId)
-            Response.Redirect(url, False)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                If Session("RoleName") = "Customer" Then
-                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
-                End If
+            If ddlAddService.SelectedValue = "" Then
+                MessageError_AddService(True, "ITEM SERVICE IS REQUIRED !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showService", thisScript, True)
+                Exit Sub
             End If
+            If msgErrorAddService.InnerText = "" Then
+                Dim designId As String = "16"
+
+                Dim productName As String = orderClass.GetProductName(ddlAddService.SelectedValue)
+                Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(productName, designId, lblCompanyDetailId.Text)
+
+                Dim itemId As String = orderClass.GetNewOrderItemId()
+
+                Using thisConn As SqlConnection = New SqlConnection(myConn)
+                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails (Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], LinearMetre, SquareMetre, TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, 1, 0, 0, 0, 0, 1, 0, 1)", thisConn)
+                        myCmd.Parameters.AddWithValue("@Id", itemId)
+                        myCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
+                        myCmd.Parameters.AddWithValue("@ProductId", ddlAddService.SelectedValue)
+                        myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
+
+                        thisConn.Open()
+                        myCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                orderClass.ResetPriceDetail(lblHeaderId.Text, itemId)
+
+                If Not String.IsNullOrEmpty(txtNoteService.Text.Trim()) Then
+                    Dim costingArray As Object() = {lblHeaderId.Text, itemId, 0, "Note", txtNoteService.Text, 0, 0}
+                    orderClass.OrderCostings(costingArray)
+                    orderClass.FinalCostItem(lblHeaderId.Text, itemId)
+                End If
+
+                orderClass.CalculatePrice(lblHeaderId.Text, itemId)
+                orderClass.UpdateServiceItem(lblHeaderId.Text, itemId, txtBuyService.Text, txtSellService.Text)
+                orderClass.FinalCostItem(lblHeaderId.Text, itemId)
+
+                Dim dataLog As Object() = {"OrderDetails", itemId, Session("LoginId"), "Order Item Added"}
+                orderClass.Logs(dataLog)
+
+                url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+                Response.Redirect(url, False)
+            End If
+        Catch ex As Exception
+            MessageError_AddService(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_AddService(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+            ClientScript.RegisterStartupScript(Me.GetType(), "showService", thisScript, True)
         End Try
     End Sub
 
@@ -1686,52 +1640,6 @@ Partial Class Order_Detail
         End Try
     End Sub
 
-    Protected Sub btnRecalculate_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        Try
-            orderClass.CalculatePriceByOrder(lblHeaderId.Text)
-
-            url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
-            Response.Redirect(url, False)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
-    Protected Sub btnDateOrder_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        Try
-            Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET CreatedDate=@CreatedDate, SubmittedDate=@SubmittedDate, ProductionDate=@ProductionDate, OnHoldDate=@OnHoldDate, CanceledDate=@CanceledDate, CompletedDate=@CompletedDate WHERE Id=@Id;", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
-                    myCmd.Parameters.AddWithValue("@CreatedDate", If(String.IsNullOrEmpty(txtCreatedDate.Text), CType(DBNull.Value, Object), txtCreatedDate.Text))
-                    myCmd.Parameters.AddWithValue("@SubmittedDate", If(String.IsNullOrEmpty(txtSubmittedDate.Text), CType(DBNull.Value, Object), txtSubmittedDate.Text))
-                    myCmd.Parameters.AddWithValue("@ProductionDate", If(String.IsNullOrEmpty(txtProductionDate.Text), CType(DBNull.Value, Object), txtProductionDate.Text))
-                    myCmd.Parameters.AddWithValue("@OnHoldDate", If(String.IsNullOrEmpty(txtHoldDate.Text), CType(DBNull.Value, Object), txtHoldDate.Text))
-                    myCmd.Parameters.AddWithValue("@CanceledDate", If(String.IsNullOrEmpty(txtCanceledDate.Text), CType(DBNull.Value, Object), txtCanceledDate.Text))
-                    myCmd.Parameters.AddWithValue("@CompletedDate", If(String.IsNullOrEmpty(txtCompletedDate.Text), CType(DBNull.Value, Object), txtCompletedDate.Text))
-
-                    thisConn.Open()
-                    myCmd.ExecuteNonQuery()
-                End Using
-            End Using
-
-            dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), "Date Order Updated"}
-            orderClass.Logs(dataLog)
-
-            url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
-            Response.Redirect(url, False)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
     Protected Sub BindDataOrder(headerId As String)
         Try
             Dim params As New List(Of SqlParameter) From {
@@ -1770,6 +1678,7 @@ Partial Class Order_Detail
             lblCreatedName.Text = headerData("CreatedFullName").ToString()
             lblCreatedRole.Text = headerData("CreatedRole").ToString()
             lblDownloadBoe.Text = headerData("Download").ToString()
+            Dim customerOnStop As String = headerData("CustomerOnStop").ToString()
 
             lblCreatedDate.Text = "-"
             If Not String.IsNullOrEmpty(headerData("CreatedDate").ToString()) Then
@@ -1777,9 +1686,10 @@ Partial Class Order_Detail
                 txtCreatedDate.Text = Convert.ToDateTime(headerData("CreatedDate")).ToString("yyyy-MM-dd")
             End If
 
-            lblQuotedDate.Text = String.Empty
+            lblQuotedDate.Text = "-"
             If Not String.IsNullOrEmpty(headerData("QuotedDate").ToString()) Then
                 lblQuotedDate.Text = Convert.ToDateTime(headerData("QuotedDate")).ToString("dd MMM yyyy")
+                txtQuotedDate.Text = Convert.ToDateTime(headerData("QuotedDate")).ToString("yyyy-MM-dd")
             End If
 
             lblSubmittedDate.Text = "-"
@@ -1813,19 +1723,88 @@ Partial Class Order_Detail
             End If
 
             BindDesignType()
+            BindService()
             BindDataQuote()
             BindDataItem(lblOrderStatus.Text)
             BindDataCosting(gvListItem.Rows.Count)
-            BindDataInvoice()
-            BindDataShipment()
+
+            'BIND INVOICE
+            lblInvoiceNumber.Text = "-"
+            lblInvoiceDate.Text = "-"
+            lblCollector.Text = "-"
+            lblPaymentDate.Text = "-"
+            If Not String.IsNullOrEmpty(headerData("InvoiceNumber").ToString()) Then
+                lblInvoiceNumber.Text = headerData("InvoiceNumber").ToString()
+                txtUpdateInvoiceNumber.Text = headerData("InvoiceNumber").ToString()
+                txtInvoiceNumber.Text = headerData("InvoiceNumber").ToString()
+            End If
+
+            If Not String.IsNullOrEmpty(headerData("InvoiceDate").ToString()) Then
+                lblInvoiceDate.Text = Convert.ToDateTime(headerData("InvoiceDate")).ToString("dd MMM yyyy")
+                txtInvoiceDate.Text = Convert.ToDateTime(headerData("InvoiceDate")).ToString("yyyy-MM-dd")
+            End If
+
+            If Not String.IsNullOrEmpty(headerData("DueDate").ToString()) Then
+                txtDueDate.Text = Convert.ToDateTime(headerData("DueDate")).ToString("yyyy-MM-dd")
+            End If
+
+            If Not String.IsNullOrEmpty(headerData("CollectorName").ToString()) Then
+                lblCollector.Text = headerData("CollectorName").ToString()
+                ddlCollector.SelectedValue = headerData("Collector").ToString()
+            End If
+
+            If Not String.IsNullOrEmpty(headerData("PaymentDate").ToString()) Then
+                lblPaymentDate.Text = Convert.ToDateTime(headerData("PaymentDate")).ToString("dd MMM yyyy")
+                txtPaymentDate.Text = Convert.ToDateTime(headerData("PaymentDate")).ToString("yyyy-MM-dd")
+            End If
+
+            ddlPayment.SelectedValue = Convert.ToInt32(headerData("Payment"))
+            lblOrderPaid.Text = headerData("OrderPaid").ToString()
+
+            If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" Then
+                divInvoicing.Attributes.Add("onclick", "showInvoiceData()")
+                divInvoicing.Style.Add("cursor", "pointer")
+            End If
+
+            ' BIND SHIPMENT
+            lblShipmentNumber.Text = "-"
+            lblShipmentDate.Text = "-"
+            lblContainerNumber.Text = "-"
+            lblContainerEta.Text = "-"
+            lblCourier.Text = "-"
+            If Not String.IsNullOrEmpty(headerData("ShipmentNumber").ToString()) Then
+                lblShipmentNumber.Text = headerData("ShipmentNumber").ToString()
+                txtShipmentNumber.Text = headerData("ShipmentNumber").ToString()
+            End If
+
+            If Not String.IsNullOrEmpty(headerData("ShipmentDate").ToString()) Then
+                lblShipmentDate.Text = Convert.ToDateTime(headerData("ShipmentDate")).ToString("dd MMM yyyy")
+                txtShipmentDate.Text = Convert.ToDateTime(headerData("ShipmentDate")).ToString("yyyy-MM-dd")
+            End If
+
+            If Not String.IsNullOrEmpty(headerData("ContainerEta").ToString()) Then
+                lblContainerEta.Text = Convert.ToDateTime(headerData("ContainerEta")).ToString("dd MMM yyyy")
+                txtContainerEta.Text = Convert.ToDateTime(headerData("ContainerEta")).ToString("yyyy-MM-dd")
+            End If
+
+            If Not String.IsNullOrEmpty(headerData("ContainerNumber").ToString()) Then
+                lblContainerNumber.Text = headerData("ContainerNumber").ToString()
+                txtContainerNumber.Text = headerData("ContainerNumber").ToString()
+            End If
+
+            If Not String.IsNullOrEmpty(headerData("Courier").ToString()) Then
+                lblCourier.Text = headerData("Courier").ToString()
+                txtCourier.Text = headerData("Courier").ToString()
+            End If
+
             If lblOrderType.Text = "Builder" Then
                 BindDataBuilder()
             End If
             If lblOrderStatus.Text = "Shipped Out" OrElse lblOrderStatus.Text = "Completed" Then
                 BindDataRework(headerId)
             End If
+
             BindCollector()
-            BindEmailQuote()
             BindEmailInvoice()
             BindDataFile(lblOrderId.Text)
 
@@ -1847,6 +1826,7 @@ Partial Class Order_Detail
             aReworkOrder.Visible = False
 
             btnQuoteAction.Visible = False
+            aQuoteCustomer.Visible = False
 
             btnInvoice.Visible = False
             aSendInvoice.Visible = False
@@ -1855,88 +1835,64 @@ Partial Class Order_Detail
             liUpdateInvoiceNumber.Visible = False
             liUpdateInvoiceData.Visible = False
 
-            aBuilder.Visible = False
-            aFileOrder.Visible = False
-            btnMoreAction.Visible = False
+            aBuilderData.Visible = False
+            aFile.Visible = False
+            aMoreDownloadBOE.Visible = False
+            btnSuratJalan.Visible = False
+            aRePrice.Visible = False
 
-            liMoreDownloadQuote.Visible = False
-            liMoreEmailQuote.Visible = False
-            liMoreDividerQuote.Visible = False
-            liMoreAddNote.Visible = False
-            liMoreHistoryNote.Visible = False
-            liMoreDividerAdditional.Visible = False
-            liMoreRePrice.Visible = False
-            liMoreSuratJalan.Visible = False
-            liMoreDownloadBOE.Visible = False
-
-            aLog.Visible = False
-            aLog.Attributes("data-id") = headerId
+            aLog.Visible = False : aLog.Attributes("data-id") = headerId
 
             divOrderType.Visible = False
             divOrderFactory.Visible = False
             divInternalNote.Visible = False
-            secBuilder.Visible = False
 
             aAddItem.Visible = False
-            btnAddService.Visible = False
+            aAddService.Visible = False
 
             Dim isReworkOrder As Boolean = orderClass.IsReworkOrder(headerId)
-            Dim roleName As String = orderClass.GetUserRoleName(lblCreatedBy.Text)
 
             If Session("RoleName") = "Developer" Then
-                btnEditOrder.Visible = True
                 aDuplicateOrder.Visible = True
-                aDeleteOrder.Visible = True
 
-                btnMoreAction.Visible = True
-                liMoreAddNote.Visible = True
-                liMoreHistoryNote.Visible = True
-                liMoreDividerAdditional.Visible = True
-                liMoreRePrice.Visible = True
-                aFileOrder.Visible = True
+                aFile.Visible = True
                 aLog.Visible = True
+                aRePrice.Visible = True
+                If lblCompanyId.Text = "3" Then btnSuratJalan.Visible = True
 
-                divInternalNote.Visible = True
-                divOrderType.Visible = True
-                divOrderFactory.Visible = True
-
-                If lblCompanyId.Text = "3" Then
-                    liMoreSuratJalan.Visible = True
-                End If
-                If lblDownloadBoe.Text = "No" OrElse lblDownloadBoe.Text = "Done" Then
-                    liMoreDownloadBOE.Visible = True
-                End If
-
-                If lblOrderType.Text = "Regular" Then btnQuoteAction.Visible = True
-                If lblOrderType.Text = "Builder" Then
-                    aBuilder.Visible = True
-                    secBuilder.Visible = True
-                End If
+                If lblOrderType.Text = "Builder" Then aBuilderData.Visible = True
 
                 If lblOrderStatus.Text = "Unsubmitted" Then
+                    btnEditOrder.Visible = True
+                    aDeleteOrder.Visible = True
                     aDeleteOrder.Visible = True
                     aSubmitOrder.Visible = True : chkSendEmail.Visible = True
                     If lblOrderType.Text = "Builder" Then aQuoteOrder.Visible = True
 
-                    liMoreDownloadQuote.Visible = True
-                    liMoreEmailQuote.Visible = True
-                    liMoreDividerQuote.Visible = True
+                    btnQuoteAction.Visible = True
 
                     aAddItem.Visible = True
-                    btnAddService.Visible = True
+                    aAddService.Visible = True
+
+                    If lblDownloadBoe.Text = "No" OrElse lblDownloadBoe.Text = "Done" Then
+                        aMoreDownloadBOE.Visible = True
+                    End If
                 End If
                 If lblOrderStatus.Text = "Quoted" Then
+                    btnEditOrder.Visible = True
+                    aDeleteOrder.Visible = True
                     aDeleteOrder.Visible = True
                     aSubmitOrder.Visible = True : chkSendEmail.Visible = True
 
-                    liMoreDownloadQuote.Visible = True
-                    liMoreEmailQuote.Visible = True
-                    liMoreDividerQuote.Visible = True
+                    btnQuoteAction.Visible = True
 
                     aAddItem.Visible = True
-                    btnAddService.Visible = True
+                    aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "Waiting Proforma" Then
+                    btnEditOrder.Visible = True
+                    aDeleteOrder.Visible = True
+
                     btnUpdateStatus.Visible = True
                     aUnsubmitOrder.Visible = True
                     aCancelOrder.Visible = True
@@ -1948,13 +1904,15 @@ Partial Class Order_Detail
                     liUpdateInvoiceNumber.Visible = True
 
                     aAddItem.Visible = True
-                    btnAddService.Visible = True
+                    aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "Proforma Sent" Then
+                    btnEditOrder.Visible = True
+                    aDeleteOrder.Visible = True
+
                     btnUpdateStatus.Visible = True
                     aUnsubmitOrder.Visible = True
                     aCancelOrder.Visible = True
-                    aNewOrder.Visible = True
 
                     btnInvoice.Visible = True
                     aSendInvoice.Visible = True
@@ -1963,25 +1921,31 @@ Partial Class Order_Detail
                     liUpdateInvoiceNumber.Visible = True
 
                     aAddItem.Visible = True
-                    btnAddService.Visible = True
+                    aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "Payment Received" Then
-                    btnInvoice.Visible = True
-                    liDividerInvoice.Visible = True
-                    liUpdateInvoiceData.Visible = True
+                    btnEditOrder.Visible = True
+                    aDeleteOrder.Visible = True
 
                     btnUpdateStatus.Visible = True
                     aProductionOrder.Visible = True
                     aHoldOrder.Visible = True
                     aCancelOrder.Visible = True
 
+                    btnInvoice.Visible = True
+                    liDividerInvoice.Visible = True
+                    liUpdateInvoiceData.Visible = True
+
                     aAddItem.Visible = True
-                    btnAddService.Visible = True
+                    aAddService.Visible = True
+
+                    If lblDownloadBoe.Text = "No" OrElse lblDownloadBoe.Text = "Done" Then
+                        aMoreDownloadBOE.Visible = True
+                    End If
                 End If
                 If lblOrderStatus.Text = "New Order" Then
-                    liMoreDownloadQuote.Visible = True
-                    liMoreEmailQuote.Visible = True
-                    liMoreDividerQuote.Visible = True
+                    btnEditOrder.Visible = True
+                    aDeleteOrder.Visible = True
 
                     btnUpdateStatus.Visible = True
                     aUnsubmitOrder.Visible = True
@@ -1995,9 +1959,12 @@ Partial Class Order_Detail
                     liUpdateInvoiceData.Visible = True
 
                     aAddItem.Visible = True
-                    btnAddService.Visible = True
+                    aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "In Production" Then
+                    btnEditOrder.Visible = True
+                    aDeleteOrder.Visible = True
+
                     btnUpdateStatus.Visible = True
                     aUnsubmitOrder.Visible = True
                     aHoldOrder.Visible = True
@@ -2010,9 +1977,16 @@ Partial Class Order_Detail
                     liUpdateInvoiceData.Visible = True
 
                     aAddItem.Visible = True
-                    btnAddService.Visible = True
+                    aAddService.Visible = True
+
+                    If lblDownloadBoe.Text = "No" OrElse lblDownloadBoe.Text = "Done" Then
+                        aMoreDownloadBOE.Visible = True
+                    End If
                 End If
                 If lblOrderStatus.Text = "On Hold" Then
+                    btnEditOrder.Visible = True
+                    aDeleteOrder.Visible = True
+
                     btnUpdateStatus.Visible = True
                     aUnsubmitOrder.Visible = True
                     aProductionOrder.Visible = True
@@ -2024,7 +1998,11 @@ Partial Class Order_Detail
                     liUpdateInvoiceData.Visible = True
 
                     aAddItem.Visible = True
-                    btnAddService.Visible = True
+                    aAddService.Visible = True
+
+                    If lblDownloadBoe.Text = "No" OrElse lblDownloadBoe.Text = "Done" Then
+                        aMoreDownloadBOE.Visible = True
+                    End If
                 End If
                 If lblOrderStatus.Text = "Shipped Out" Then
                     btnInvoice.Visible = True
@@ -2051,104 +2029,475 @@ Partial Class Order_Detail
                     If isReworkOrder = False Then aReworkOrder.Visible = True
                 End If
 
-                divDateOrder.Attributes.Add("onclick", "showDateOrder()")
-                divDateOrder.Style.Add("cursor", "pointer")
+                divInternalNote.Visible = True
+                divOrderType.Visible = True
+                divOrderFactory.Visible = True
+
+                divDateAction.Attributes.Add("onclick", "showDateOrder()")
+                divDateAction.Style.Add("cursor", "pointer")
+
+                divShipmentOrder.Attributes.Add("onclick", "showShippedOrder()")
+                divShipmentOrder.Style.Add("cursor", "pointer")
+
+                divInvoicing.Attributes.Add("onclick", "showInvoiceData()")
+                divInvoicing.Style.Add("cursor", "pointer")
             End If
-
             If Session("RoleName") = "IT" Then
-                btnMoreAction.Visible = True
-                liMoreAddNote.Visible = True
-                liMoreHistoryNote.Visible = True
-                liMoreDividerAdditional.Visible = True
-                liMoreRePrice.Visible = True
-
-                aFileOrder.Visible = True
                 aDuplicateOrder.Visible = True
+                aFile.Visible = True
                 aLog.Visible = True
 
+                If lblCompanyId.Text = "3" Then btnSuratJalan.Visible = True
+                If lblOrderType.Text = "Builder" Then aBuilderData.Visible = True
+
+                If lblOrderStatus.Text = "Unsubmitted" Then
+                    btnEditOrder.Visible = True
+                    aDeleteOrder.Visible = True
+                    aSubmitOrder.Visible = True : chkSendEmail.Visible = True
+                    aRePrice.Visible = True
+
+                    btnQuoteAction.Visible = True
+
+                    If lblOrderType.Text = "Builder" Then aQuoteOrder.Visible = True
+
+                    aAddItem.Visible = True
+                    aAddService.Visible = True
+                End If
+                If lblOrderStatus.Text = "Quoted" Then
+                    btnEditOrder.Visible = True
+                    aSubmitOrder.Visible = True
+                    aRePrice.Visible = True
+
+                    btnQuoteAction.Visible = True
+
+                    aAddItem.Visible = True
+                    aAddService.Visible = True
+                End If
+                If lblOrderStatus.Text = "Waiting Proforma" Then
+                    btnEditOrder.Visible = True
+                    aRePrice.Visible = True
+
+                    btnUpdateStatus.Visible = True
+                    aUnsubmitOrder.Visible = True
+                    aCancelOrder.Visible = True
+                    aNewOrder.Visible = True
+
+                    btnInvoice.Visible = True
+                    aSendInvoice.Visible = True
+                    liDividerInvoice.Visible = True
+                    liUpdateInvoiceNumber.Visible = True
+
+                    aAddItem.Visible = True
+                    aAddService.Visible = True
+                End If
+                If lblOrderStatus.Text = "Proforma Sent" Then
+                    btnEditOrder.Visible = True
+                    aRePrice.Visible = True
+
+                    btnUpdateStatus.Visible = True
+                    aUnsubmitOrder.Visible = True
+                    aCancelOrder.Visible = True
+
+                    btnInvoice.Visible = True
+                    aSendInvoice.Visible = True
+                    aReceivePayment.Visible = True
+                    liDividerInvoice.Visible = True
+                    liUpdateInvoiceNumber.Visible = True
+                End If
+                If lblOrderStatus.Text = "Payment Received" Then
+                    btnEditOrder.Visible = True
+
+                    btnUpdateStatus.Visible = True
+                    aProductionOrder.Visible = True
+                    aHoldOrder.Visible = True
+
+                    btnInvoice.Visible = True
+                    liDividerInvoice.Visible = True
+                    liUpdateInvoiceData.Visible = True
+
+                    aAddItem.Visible = True
+                    aAddService.Visible = True
+                End If
+                If lblOrderStatus.Text = "New Order" Then
+                    btnEditOrder.Visible = True
+                    aRePrice.Visible = True
+
+                    btnUpdateStatus.Visible = True
+                    aUnsubmitOrder.Visible = True
+                    aProductionOrder.Visible = True
+                    aHoldOrder.Visible = True
+                    aCancelOrder.Visible = True
+
+                    btnInvoice.Visible = True
+                    liDividerInvoice.Visible = True
+                    liUpdateInvoiceData.Visible = True
+
+                    If lblOrderPaid.Text = "" Then
+                        aSendInvoice.Visible = True
+                        aRePrice.Visible = True
+                        aAddItem.Visible = True
+                        aAddService.Visible = True
+                    End If
+                End If
+                If lblOrderStatus.Text = "In Production" Then
+                    btnEditOrder.Visible = True
+
+                    btnUpdateStatus.Visible = True
+                    aHoldOrder.Visible = True
+                    aCancelOrder.Visible = True
+                    aShippedOrder.Visible = True
+
+                    btnInvoice.Visible = True
+                    liDividerInvoice.Visible = True
+                    liUpdateInvoiceData.Visible = True
+
+                    If lblOrderPaid.Text = "" Then
+                        aSendInvoice.Visible = True
+                        aRePrice.Visible = True
+                        aAddItem.Visible = True
+                        aAddService.Visible = True
+                    End If
+                End If
+                If lblOrderStatus.Text = "On Hold" Then
+                    btnEditOrder.Visible = True
+
+                    btnUpdateStatus.Visible = True
+                    aProductionOrder.Visible = True
+                    aCancelOrder.Visible = True
+
+                    btnInvoice.Visible = True
+                    liDividerInvoice.Visible = True
+                    liUpdateInvoiceData.Visible = True
+
+                    If lblOrderPaid.Text = "" Then
+                        aRePrice.Visible = True
+                        aSendInvoice.Visible = True
+                        aAddItem.Visible = True
+                        aAddService.Visible = True
+                    End If
+                End If
+                If lblOrderStatus.Text = "Shipped Out" Then
+                    btnUpdateStatus.Visible = True
+                    aCompleteOrder.Visible = True
+
+                    btnInvoice.Visible = True
+                    liDividerInvoice.Visible = True
+                    liUpdateInvoiceData.Visible = True
+
+                    If lblOrderPaid.Text = "" Then
+                        aRePrice.Visible = True
+                        aSendInvoice.Visible = True
+                    End If
+
+                    If isReworkOrder = False Then
+                        aReworkOrder.Visible = True
+                    End If
+                End If
+                If lblOrderStatus.Text = "Completed" Then
+                    If isReworkOrder = False Then
+                        aReworkOrder.Visible = True
+                    End If
+                End If
+
                 divInternalNote.Visible = True
                 divOrderType.Visible = True
                 divOrderFactory.Visible = True
 
-                If lblOrderType.Text = "Regular" Then
+                divDateAction.Attributes.Add("onclick", "showDateOrder()")
+                divDateAction.Style.Add("cursor", "pointer")
+            End If
+            If Session("RoleName") = "Factory Office" Then
+                aDuplicateOrder.Visible = True
+                aFile.Visible = True
+                If lblCompanyId.Text = "3" Then btnSuratJalan.Visible = True
+                If lblOrderType.Text = "Builder" Then aBuilderData.Visible = True
+
+                If lblOrderStatus.Text = "Unsubmitted" Then
+                    aSubmitOrder.Visible = True : chkSendEmail.Visible = True
+                    If lblOrderType.Text = "Builder" Then aQuoteOrder.Visible = True
+
+                    btnEditOrder.Visible = True
+                    aDeleteOrder.Visible = True
+                    aRePrice.Visible = True
+                    btnQuoteAction.Visible = True
+
+                    aAddItem.Visible = True
+                    aAddService.Visible = True
+                End If
+                If lblOrderStatus.Text = "Quoted" Then
+                    btnEditOrder.Visible = True
+                    aSubmitOrder.Visible = True
+                    aRePrice.Visible = True
+
+                    btnQuoteAction.Visible = True
+
+                    aAddItem.Visible = True
+                    aAddService.Visible = True
+                End If
+                If lblOrderStatus.Text = "Waiting Proforma" Then
+                    btnEditOrder.Visible = True
+                    aRePrice.Visible = True
+
+                    btnUpdateStatus.Visible = True
+                    aUnsubmitOrder.Visible = True
+                    aCancelOrder.Visible = True
+                    aNewOrder.Visible = True
+
+                    btnInvoice.Visible = True
+                    aSendInvoice.Visible = True
+
+                    aAddItem.Visible = True
+                    aAddService.Visible = True
+                End If
+                If lblOrderStatus.Text = "Proforma Sent" Then
+                    btnEditOrder.Visible = True
+                    aRePrice.Visible = True
+
+                    btnUpdateStatus.Visible = True
+                    aUnsubmitOrder.Visible = True
+                    aCancelOrder.Visible = True
+
+                    btnInvoice.Visible = True
+                    aSendInvoice.Visible = True
+                    aReceivePayment.Visible = True
+                End If
+                If lblOrderStatus.Text = "Payment Received" Then
+                    btnEditOrder.Visible = True
+
+                    btnUpdateStatus.Visible = True
+                    aProductionOrder.Visible = True
+
+                    btnInvoice.Visible = True
+                    liDividerInvoice.Visible = True
+                    liUpdateInvoiceData.Visible = True
+                End If
+                If lblOrderStatus.Text = "New Order" Then
+                    btnEditOrder.Visible = True
+
+                    btnUpdateStatus.Visible = True
+                    aCancelOrder.Visible = True
+                    aHoldOrder.Visible = True
+                    aUnsubmitOrder.Visible = True
+                    aProductionOrder.Visible = True
+
+                    btnInvoice.Visible = True
+                    liDividerInvoice.Visible = True
+                    liUpdateInvoiceData.Visible = True
+
+                    If lblOrderPaid.Text = "" Then
+                        aSendInvoice.Visible = True
+                        aRePrice.Visible = True
+                        aAddItem.Visible = True
+                        aAddService.Visible = True
+                    End If
+                End If
+                If lblOrderStatus.Text = "In Production" Then
+                    btnUpdateStatus.Visible = True
+                    aHoldOrder.Visible = True
+                    aCancelOrder.Visible = True
+                    aShippedOrder.Visible = True
+
+                    btnInvoice.Visible = True
+                    liDividerInvoice.Visible = True
+                    liUpdateInvoiceData.Visible = True
+
+                    If lblOrderPaid.Text = "" Then
+                        aSendInvoice.Visible = True
+                        aRePrice.Visible = True
+                        aAddItem.Visible = True
+                        aAddService.Visible = True
+                    End If
+                End If
+                If lblOrderStatus.Text = "On Hold" Then
+                    btnUpdateStatus.Visible = True
+                    aProductionOrder.Visible = True
+                    aCancelOrder.Visible = True
+
+                    btnInvoice.Visible = True
+                    liDividerInvoice.Visible = True
+                    liUpdateInvoiceData.Visible = True
+
+                    If lblOrderPaid.Text = "" Then
+                        aSendInvoice.Visible = True
+                        aRePrice.Visible = True
+                        aAddItem.Visible = True
+                        aAddService.Visible = True
+                    End If
+                End If
+                If lblOrderStatus.Text = "Shipped Out" Then
+                    btnUpdateStatus.Visible = True
+                    aCompleteOrder.Visible = True
+
+                    btnInvoice.Visible = True
+                    If lblOrderPaid.Text = "" Then
+                        aSendInvoice.Visible = True
+                    End If
+                    liDividerInvoice.Visible = True
+                    liUpdateInvoiceData.Visible = True
+
+                    If isReworkOrder = False Then aReworkOrder.Visible = True
+                End If
+                If lblOrderStatus.Text = "Completed" Then
+                    If isReworkOrder = False Then aReworkOrder.Visible = True
+                End If
+
+                divInternalNote.Visible = True
+                divOrderType.Visible = True
+                divOrderFactory.Visible = True
+            End If
+            If Session("RoleName") = "Sales" Then
+                aDuplicateOrder.Visible = True
+                aFile.Visible = True
+
+                If lblOrderType.Text = "Builder" Then aBuilderData.Visible = True
+
+                If lblOrderStatus.Text = "Unsubmitted" Then
+                    btnEditOrder.Visible = True
+
+                    btnQuoteAction.Visible = True
+                    If lblOrderType.Text = "Regular" Then
+                        If Session("LoginId") = lblCreatedBy.Text Then aDeleteOrder.Visible = True
+                        aSubmitOrder.Visible = True
+                        aAddItem.Visible = True
+                    End If
+                    If lblOrderType.Text = "Builder" Then
+                        aQuoteOrder.Visible = True
+                        aAddItem.Visible = True
+                    End If
+
+                End If
+                If lblOrderStatus.Text = "Quoted" Then
+                    btnEditOrder.Visible = True
+                    aSubmitOrder.Visible = True
+
+                    btnQuoteAction.Visible = True
+
+                    aAddItem.Visible = True
+                    aAddService.Visible = True
+                End If
+                If lblOrderStatus.Text = "Waiting Proforma" Then
+                    btnUpdateStatus.Visible = True
+                    aUnsubmitOrder.Visible = True
+                    aCancelOrder.Visible = True
+
+                    btnInvoice.Visible = True
+                    aSendInvoice.Visible = True
+                    liDividerInvoice.Visible = True
+                    liUpdateInvoiceNumber.Visible = True
+
+                    aAddItem.Visible = True
+                    aAddService.Visible = True
+                End If
+                If lblOrderStatus.Text = "Proforma Sent" Then
+                    btnInvoice.Visible = True
+                    aSendInvoice.Visible = True
+                    aReceivePayment.Visible = True
+                    liDividerInvoice.Visible = True
+                    liUpdateInvoiceNumber.Visible = True
+
+                    btnUpdateStatus.Visible = True
+                    aCancelOrder.Visible = True
+                End If
+                If lblOrderStatus.Text = "Payment Received" Then
+                    btnInvoice.Visible = True
+                End If
+                If lblOrderStatus.Text = "New Order" Then
+                    btnUpdateStatus.Visible = True
+                    aUnsubmitOrder.Visible = True
+                    aProductionOrder.Visible = True
+                    aHoldOrder.Visible = True
+                    aCancelOrder.Visible = True
+
+                    btnInvoice.Visible = True
+                    liDividerInvoice.Visible = True
+                    liUpdateInvoiceData.Visible = True
+
+                    If lblOrderPaid.Text = "" Then
+                        aSendInvoice.Visible = True
+                    End If
+                End If
+                If lblOrderStatus.Text = "In Production" Then
+                    btnInvoice.Visible = True
+                    liDividerInvoice.Visible = True
+                    liUpdateInvoiceData.Visible = True
+
+                    If lblOrderPaid.Text = "" Then
+                        aSendInvoice.Visible = True
+                    End If
+                End If
+                If lblOrderStatus.Text = "On Hold" Then
+                    btnInvoice.Visible = True
+                    liDividerInvoice.Visible = True
+                    liUpdateInvoiceData.Visible = True
+
+                    If lblOrderPaid.Text = "" Then
+                        aSendInvoice.Visible = True
+                    End If
+                End If
+                If lblOrderStatus.Text = "Shipped Out" Then
+                    btnInvoice.Visible = True
+                End If
+                If lblOrderStatus.Text = "Completed" Then
+                    btnInvoice.Visible = True
+                End If
+
+                divInternalNote.Visible = True
+                divOrderType.Visible = True
+                divOrderFactory.Visible = True
+            End If
+            If Session("RoleName") = "Account" Then
+                aFile.Visible = True
+                If lblOrderType.Text = "Builder" Then aBuilderData.Visible = True
+
+                If lblOrderStatus.Text = "Unsubmitted" Then
+                    btnEditOrder.Visible = True
+                    aRePrice.Visible = True
+                    btnQuoteAction.Visible = True
+
+                    aAddItem.Visible = True
+                    aAddService.Visible = True
+                End If
+                If lblOrderStatus.Text = "Quoted" Then
+                    aRePrice.Visible = True
                     btnQuoteAction.Visible = True
                 End If
-                If lblOrderType.Text = "Builder" Then
-                    aBuilder.Visible = True
-                    secBuilder.Visible = True
-                End If
-
-                If lblOrderStatus.Text = "Unsubmitted" Then
-                    liMoreDownloadQuote.Visible = True
-                    liMoreEmailQuote.Visible = True
-                    liMoreDividerAdditional.Visible = True
-                    liMoreRePrice.Visible = True
-
-                    liMoreDividerQuote.Visible = True
-                    If lblOrderType.Text = "Regular" Then
-                        aSubmitOrder.Visible = True
-                        chkSendEmail.Visible = True
-                    End If
-                    If lblOrderType.Text = "Builder" Then
-                        aQuoteOrder.Visible = True
-                    End If
-
-                    btnEditOrder.Visible = True
-                    aDeleteOrder.Visible = True
-                    aAddItem.Visible = True
-                    btnAddService.Visible = True
-                End If
                 If lblOrderStatus.Text = "Waiting Proforma" Then
-                    btnInvoice.Visible = True
-                    aSendInvoice.Visible = True
-                    liDividerInvoice.Visible = True
-                    liUpdateInvoiceNumber.Visible = True
-
-                    liMoreDividerAdditional.Visible = True
-                    liMoreRePrice.Visible = True
+                    btnEditOrder.Visible = True
+                    aRePrice.Visible = True
 
                     btnUpdateStatus.Visible = True
                     aUnsubmitOrder.Visible = True
                     aCancelOrder.Visible = True
                     aNewOrder.Visible = True
 
-                    btnEditOrder.Visible = True
-                    aAddItem.Visible = True
-                    btnAddService.Visible = True
-                End If
-                If lblOrderStatus.Text = "Proforma Sent" Then
                     btnInvoice.Visible = True
                     aSendInvoice.Visible = True
                     liDividerInvoice.Visible = True
                     liUpdateInvoiceNumber.Visible = True
 
-                    liMoreDividerAdditional.Visible = True
-                    liMoreRePrice.Visible = True
-
+                    aAddItem.Visible = True
+                    aAddService.Visible = True
+                End If
+                If lblOrderStatus.Text = "Proforma Sent" Then
                     btnEditOrder.Visible = True
+                    aRePrice.Visible = True
 
                     btnUpdateStatus.Visible = True
-                    aUnsubmitOrder.Visible = True
                     aCancelOrder.Visible = True
+                    aUnsubmitOrder.Visible = True
+
+                    btnInvoice.Visible = True
+                    aSendInvoice.Visible = True
+                    aReceivePayment.Visible = True
+                    liDividerInvoice.Visible = True
+                    liUpdateInvoiceNumber.Visible = True
                 End If
                 If lblOrderStatus.Text = "Payment Received" Then
                     btnInvoice.Visible = True
                     liDividerInvoice.Visible = True
                     liUpdateInvoiceData.Visible = True
-
-                    aProductionOrder.Visible = True
-                    aHoldOrder.Visible = True
-                    aCancelOrder.Visible = True
-
-                    btnEditOrder.Visible = True
-                    aAddItem.Visible = True
-                    btnAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "New Order" Then
-                    liMoreDownloadQuote.Visible = True
-                    liMoreEmailQuote.Visible = True
-                    liMoreDividerQuote.Visible = True
-
                     btnEditOrder.Visible = True
 
                     btnUpdateStatus.Visible = True
@@ -2158,596 +2507,145 @@ Partial Class Order_Detail
                     aCancelOrder.Visible = True
 
                     btnInvoice.Visible = True
-                    If lblOrderPaid.Text = "" Then
-                        aSendInvoice.Visible = True
-                    End If
                     liDividerInvoice.Visible = True
                     liUpdateInvoiceData.Visible = True
 
                     If lblOrderPaid.Text = "" Then
+                        aSendInvoice.Visible = True
+                        aRePrice.Visible = True
+                        aAddService.Visible = True
                         aAddItem.Visible = True
-                        btnAddService.Visible = True
                     End If
                 End If
                 If lblOrderStatus.Text = "In Production" Then
-                    liMoreDownloadQuote.Visible = True
-                    liMoreEmailQuote.Visible = True
-                    liMoreDividerQuote.Visible = True
-
-                    btnEditOrder.Visible = True
-
                     btnInvoice.Visible = True
-                    If lblOrderPaid.Text = "" Then
-                        aSendInvoice.Visible = True
-                    End If
                     liDividerInvoice.Visible = True
                     liUpdateInvoiceData.Visible = True
 
-                    btnUpdateStatus.Visible = True
-                    aHoldOrder.Visible = True
-                    aCancelOrder.Visible = True
-                    aShippedOrder.Visible = True
-
                     If lblOrderPaid.Text = "" Then
+                        aSendInvoice.Visible = True
+                        aRePrice.Visible = True
                         aAddItem.Visible = True
-                        btnAddService.Visible = True
+                        aAddService.Visible = True
                     End If
                 End If
                 If lblOrderStatus.Text = "On Hold" Then
-                    liMoreDownloadQuote.Visible = True
-                    liMoreEmailQuote.Visible = True
-                    liMoreDividerQuote.Visible = True
-
                     btnInvoice.Visible = True
-                    If lblOrderPaid.Text = "" Then
-                        aSendInvoice.Visible = True
-                    End If
                     liDividerInvoice.Visible = True
                     liUpdateInvoiceData.Visible = True
 
-                    btnUpdateStatus.Visible = True
-                    aProductionOrder.Visible = True
-                    aCancelOrder.Visible = True
-
-                    btnEditOrder.Visible = True
-
                     If lblOrderPaid.Text = "" Then
+                        aSendInvoice.Visible = True
+                        aRePrice.Visible = True
                         aAddItem.Visible = True
-                        btnAddService.Visible = True
+                        aAddService.Visible = True
                     End If
                 End If
                 If lblOrderStatus.Text = "Shipped Out" Then
                     btnInvoice.Visible = True
-                    If lblOrderPaid.Text = "" Then
-                        aSendInvoice.Visible = True
-                    End If
                     liDividerInvoice.Visible = True
                     liUpdateInvoiceData.Visible = True
 
                     btnUpdateStatus.Visible = True
                     aCompleteOrder.Visible = True
 
-                    If isReworkOrder = False Then
-                        aReworkOrder.Visible = True
+                    If lblOrderPaid.Text = "" Then
+                        aSendInvoice.Visible = True
+                        aRePrice.Visible = True
+                        aAddService.Visible = True
                     End If
                 End If
                 If lblOrderStatus.Text = "Completed" Then
                     btnInvoice.Visible = True
-                    aSendInvoice.Visible = True
-                    liDividerInvoice.Visible = True
-                    liUpdateInvoiceData.Visible = True
-
-                    If isReworkOrder = False Then
-                        aReworkOrder.Visible = True
-                    End If
                 End If
 
-                divDateOrder.Attributes.Add("onclick", "showDateOrder()")
-                divDateOrder.Style.Add("cursor", "pointer")
-            End If
-
-            If Session("RoleName") = "Factory Office" Then
                 divInternalNote.Visible = True
                 divOrderType.Visible = True
                 divOrderFactory.Visible = True
-
-                btnMoreAction.Visible = True
-                liMoreAddNote.Visible = True
-                liMoreHistoryNote.Visible = True
-                liMoreDividerAdditional.Visible = True
-                liMoreRePrice.Visible = True
-
+            End If
+            If Session("RoleName") = "Data Entry" Then
                 aDuplicateOrder.Visible = True
-                aFileOrder.Visible = True
 
-                If lblOrderType.Text = "Builder" Then
-                    aBuilder.Visible = True
-                    secBuilder.Visible = True
-                End If
+                If lblOrderType.Text = "Builder" Then aBuilderData.Visible = True
 
                 If lblOrderStatus.Text = "Unsubmitted" Then
-                    liMoreDownloadQuote.Visible = True
-                    liMoreEmailQuote.Visible = True
-                    liMoreDividerQuote.Visible = True
-                    liMoreRePrice.Visible = True
-
-                    If lblOrderType.Text = "Regular" Then
-                        aSubmitOrder.Visible = True
-                        chkSendEmail.Visible = True
-                    End If
-                    If lblOrderType.Text = "Builder" Then
-                        aQuoteOrder.Visible = True
-                    End If
-
                     btnEditOrder.Visible = True
-                    aDeleteOrder.Visible = True
-                    aAddItem.Visible = True
-                    btnAddService.Visible = True
-                End If
+                    If lblCreatedRole.Text = Session("RoleId") Then
+                        aDeleteOrder.Visible = True
 
+                        If lblOrderType.Text = "Regular" Then aSubmitOrder.Visible = True
+                    End If
+                    If lblOrderType.Text = "Builder" Then aQuoteOrder.Visible = True
+                    aAddItem.Visible = True
+                End If
                 If lblOrderStatus.Text = "Quoted" Then
-                    liMoreDownloadQuote.Visible = True
-                    liMoreEmailQuote.Visible = True
-                    liMoreDividerQuote.Visible = True
-
-                    aDeleteOrder.Visible = True
-                    aSubmitOrder.Visible = True
-
+                    btnQuoteAction.Visible = True
+                    aFile.Visible = True
                     aAddItem.Visible = True
-                    btnAddService.Visible = True
                 End If
-
-                If lblOrderStatus.Text = "Waiting Proforma" Then
-                    liMoreDividerQuote.Visible = True
-                    liMoreAddNote.Visible = True
-                    liMoreHistoryNote.Visible = True
-                    liMoreRePrice.Visible = True
-
-                    btnInvoice.Visible = True
-                    aSendInvoice.Visible = True
-
-                    btnEditOrder.Visible = True
-
-                    btnUpdateStatus.Visible = True
-                    aUnsubmitOrder.Visible = True
-                    aCancelOrder.Visible = True
-                    aNewOrder.Visible = True
-
-                    aAddItem.Visible = True
-                    btnAddService.Visible = True
-                End If
-
-                If lblOrderStatus.Text = "Proforma Sent" Then
-                    liMoreDividerQuote.Visible = True
-                    liMoreAddNote.Visible = True
-                    liMoreHistoryNote.Visible = True
-                    liMoreRePrice.Visible = True
-
-                    btnEditOrder.Visible = True
-
-                    btnUpdateStatus.Visible = True
-                    aUnsubmitOrder.Visible = True
-                    aCancelOrder.Visible = True
-
-                    btnInvoice.Visible = True
-                    aSendInvoice.Visible = True
-                    aReceivePayment.Visible = True
-                End If
-
-                If lblOrderStatus.Text = "Payment Received" Then
-                    liMoreDividerQuote.Visible = True
-                    liMoreAddNote.Visible = True
-                    liMoreHistoryNote.Visible = True
-
-                    btnEditOrder.Visible = True
-
-                    btnInvoice.Visible = True
-                End If
-
                 If lblOrderStatus.Text = "New Order" Then
-                    liMoreDownloadQuote.Visible = True
-                    liMoreEmailQuote.Visible = True
-                    liMoreDividerQuote.Visible = True
-
-                    btnEditOrder.Visible = True
-
                     btnUpdateStatus.Visible = True
                     aCancelOrder.Visible = True
                     aHoldOrder.Visible = True
-                    aUnsubmitOrder.Visible = True
                     aProductionOrder.Visible = True
-
-                    btnInvoice.Visible = True
-                    If lblOrderPaid.Text = "" Then
-                        aSendInvoice.Visible = True
-                    End If
-                    liDividerInvoice.Visible = True
-                    liUpdateInvoiceData.Visible = True
-
-                    If lblOrderPaid.Text = "" Then
-                        aAddItem.Visible = True
-                        btnAddService.Visible = True
-                    End If
                 End If
-
+                If lblOrderStatus.Text = "Payment Received" Then
+                    btnUpdateStatus.Visible = True
+                    aProductionOrder.Visible = True
+                    aHoldOrder.Visible = True
+                End If
                 If lblOrderStatus.Text = "In Production" Then
-                    btnInvoice.Visible = True
-                    If lblOrderPaid.Text = "" Then
-                        aSendInvoice.Visible = True
-                    End If
-                    liDividerInvoice.Visible = True
-                    liUpdateInvoiceData.Visible = True
-
                     btnUpdateStatus.Visible = True
                     aHoldOrder.Visible = True
-                    aCancelOrder.Visible = True
                     aShippedOrder.Visible = True
-
-                    If lblOrderPaid.Text = "" Then
-                        aAddItem.Visible = True
-                        btnAddService.Visible = True
-                    End If
+                    aCancelOrder.Visible = True
                 End If
-
                 If lblOrderStatus.Text = "On Hold" Then
-                    btnInvoice.Visible = True
-                    If lblOrderPaid.Text = "" Then
-                        aSendInvoice.Visible = True
-                    End If
-                    liDividerInvoice.Visible = True
-                    liUpdateInvoiceData.Visible = True
-
                     btnUpdateStatus.Visible = True
                     aProductionOrder.Visible = True
                     aCancelOrder.Visible = True
-
-                    If lblOrderPaid.Text = "" Then
-                        aAddItem.Visible = True
-                        btnAddService.Visible = True
-                    End If
                 End If
-
                 If lblOrderStatus.Text = "Shipped Out" Then
-                    btnInvoice.Visible = True
-                    If lblOrderPaid.Text = "" Then
-                        aSendInvoice.Visible = True
-                    End If
-                    liDividerInvoice.Visible = True
-                    liUpdateInvoiceData.Visible = True
-
-                    btnUpdateStatus.Visible = True
-                    aCompleteOrder.Visible = True
-
                     If isReworkOrder = False Then
                         aReworkOrder.Visible = True
                     End If
                 End If
 
-                If lblOrderStatus.Text = "Completed" Then
-                    btnInvoice.Visible = True
-                    If lblOrderPaid.Text = "" Then
-                        aSendInvoice.Visible = True
-                    End If
-                    liDividerInvoice.Visible = True
-                    liUpdateInvoiceData.Visible = True
-
-                    If isReworkOrder = False Then
-                        aReworkOrder.Visible = True
-                    End If
-                End If
-            End If
-
-            If Session("RoleName") = "Sales" Then
                 divInternalNote.Visible = True
                 divOrderType.Visible = True
                 divOrderFactory.Visible = True
-
-                btnMoreAction.Visible = True
-                liMoreAddNote.Visible = True
-                liMoreHistoryNote.Visible = True
-
-                aFileOrder.Visible = True
-                aDuplicateOrder.Visible = True
-
-                If lblOrderType.Text = "Builder" Then
-                    aBuilder.Visible = True
-                    secBuilder.Visible = True
-                End If
-
-                If lblOrderStatus.Text = "Unsubmitted" Then
-                    liMoreDividerQuote.Visible = True
-                    liMoreDownloadQuote.Visible = True
-                    liMoreEmailQuote.Visible = True
-                    liMoreDividerAdditional.Visible = True
-                    liMoreRePrice.Visible = True
-
-                    If lblOrderType.Text = "Regular" Then
-                        If Session("LoginId") = lblCreatedBy.Text Then
-                            btnEditOrder.Visible = True
-                            aDeleteOrder.Visible = True
-                        End If
-                        aSubmitOrder.Visible = True
-                        aAddItem.Visible = True
-                    End If
-
-                    If lblOrderType.Text = "Builder" Then
-                        btnEditOrder.Visible = True
-                        aQuoteOrder.Visible = True
-                        aAddItem.Visible = True
-                    End If
-                End If
-
-                If lblOrderStatus.Text = "Quoted" Then
-                    liMoreDownloadQuote.Visible = True
-                    liMoreEmailQuote.Visible = True
-                    liMoreDividerQuote.Visible = True
-                    liMoreDividerAdditional.Visible = True
-                    liMoreRePrice.Visible = True
-
-                    btnEditOrder.Visible = True
-                    aCancelOrder.Visible = True
-                    aSubmitOrder.Visible = True
-
-                    aAddItem.Visible = True
-                    btnAddService.Visible = True
-                End If
-
-                If lblOrderStatus.Text = "Waiting Proforma" Then
-                    btnInvoice.Visible = True : aSendInvoice.Visible = True
-                    liDividerInvoice.Visible = True : liUpdateInvoiceNumber.Visible = True
-                    liMoreDividerAdditional.Visible = True
-                    liMoreRePrice.Visible = True
-
-                    btnUpdateStatus.Visible = True
-                    aUnsubmitOrder.Visible = True
-                    aCancelOrder.Visible = True
-
-                    aAddItem.Visible = True
-                    btnAddService.Visible = True
-                End If
-
-                If lblOrderStatus.Text = "Proforma Sent" Then
-                    btnInvoice.Visible = True
-                    aSendInvoice.Visible = True
-                    aReceivePayment.Visible = True
-                    liDividerInvoice.Visible = True
-                    liUpdateInvoiceNumber.Visible = True
-
-                    btnUpdateStatus.Visible = True
-                    aCancelOrder.Visible = True
-                End If
-
-                If lblOrderStatus.Text = "Payment Received" Then
-                    btnInvoice.Visible = True
-
-                    btnUpdateStatus.Visible = True
-                    aProductionOrder.Visible = True
-                End If
-
-                If lblOrderStatus.Text = "New Order" Then
-                    btnUpdateStatus.Visible = True
-                    aUnsubmitOrder.Visible = True
-                    aProductionOrder.Visible = True
-                    aHoldOrder.Visible = True
-                    aCancelOrder.Visible = True
-
-                    btnInvoice.Visible = True
-                    If lblOrderPaid.Text = "" Then
-                        aSendInvoice.Visible = True
-                    End If
-                    liDividerInvoice.Visible = True
-                    liUpdateInvoiceData.Visible = True
-                End If
-
-                If lblOrderStatus.Text = "In Production" Then
-                    btnInvoice.Visible = True
-                    If lblOrderPaid.Text = "" Then
-                        aSendInvoice.Visible = True
-                    End If
-                    liDividerInvoice.Visible = True
-                    liUpdateInvoiceData.Visible = True
-                End If
-
-                If lblOrderStatus.Text = "On Hold" Then
-                    btnInvoice.Visible = True
-                    If lblOrderPaid.Text = "" Then
-                        aSendInvoice.Visible = True
-                    End If
-                    liDividerInvoice.Visible = True
-                    liUpdateInvoiceData.Visible = True
-                End If
-
-                If lblOrderStatus.Text = "Shipped Out" Then
-                    btnInvoice.Visible = True
-                    If lblOrderPaid.Text = "" Then
-                        aSendInvoice.Visible = True
-                    End If
-                    liDividerInvoice.Visible = True
-                    liUpdateInvoiceData.Visible = True
-                End If
-
-                If lblOrderStatus.Text = "Completed" Then
-                    btnInvoice.Visible = True
-                    If lblOrderPaid.Text = "" Then
-                        aSendInvoice.Visible = True
-                    End If
-                    liDividerInvoice.Visible = True
-                    liUpdateInvoiceData.Visible = True
-                End If
             End If
-
-            If Session("RoleName") = "Account" Then
-                divInternalNote.Visible = True
-                divOrderType.Visible = True
-                divOrderFactory.Visible = True
-
-                btnMoreAction.Visible = True
-                liMoreAddNote.Visible = True
-                liMoreHistoryNote.Visible = True
-
-                aFileOrder.Visible = True
-
-                If lblOrderType.Text = "Builder" Then
-                    aBuilder.Visible = True
-                    secBuilder.Visible = True
-                End If
-
-                If lblOrderStatus.Text = "Unsubmitted" Then
-                    liMoreDividerQuote.Visible = True
-                    liMoreDownloadQuote.Visible = True
-                    liMoreEmailQuote.Visible = True
-                    liMoreDividerAdditional.Visible = True
-                    liMoreRePrice.Visible = True
-
-                    btnEditOrder.Visible = True
-                    aDeleteOrder.Visible = True
-
-                    btnAddService.Visible = True
-                End If
-
-                If lblOrderStatus.Text = "Quoted" Then
-                    liMoreDownloadQuote.Visible = True
-                    liMoreEmailQuote.Visible = True
-                    liMoreDividerQuote.Visible = True
-
-                    btnEditOrder.Visible = True
-                    aDeleteOrder.Visible = True
-                    aSubmitOrder.Visible = True
-
-                    aAddItem.Visible = True
-                    btnAddService.Visible = True
-                End If
-
-                If lblOrderStatus.Text = "Waiting Proforma" Then
-                    btnInvoice.Visible = True
-                    aSendInvoice.Visible = True
-                    liDividerInvoice.Visible = True
-                    liUpdateInvoiceNumber.Visible = True
-
-                    liMoreDividerAdditional.Visible = True
-                    liMoreRePrice.Visible = True
-
-                    btnEditOrder.Visible = True
-
-                    btnUpdateStatus.Visible = True
-                    aUnsubmitOrder.Visible = True
-                    aCancelOrder.Visible = True
-                    aNewOrder.Visible = True
-
-                    btnAddService.Visible = True
-                End If
-
-                If lblOrderStatus.Text = "Proforma Sent" Then
-                    btnUpdateStatus.Visible = True
-                    aCancelOrder.Visible = True
-                    aUnsubmitOrder.Visible = True
-
-                    btnEditOrder.Visible = True
-
-                    btnInvoice.Visible = True
-                    aSendInvoice.Visible = True
-                    aReceivePayment.Visible = True
-                    liDividerInvoice.Visible = True
-                    liUpdateInvoiceNumber.Visible = True
-                End If
-
-                If lblOrderStatus.Text = "Payment Received" Then
-                    btnEditOrder.Visible = True
-
-                    btnInvoice.Visible = True
-                    liDividerInvoice.Visible = True
-                    liUpdateInvoiceData.Visible = True
-                End If
-
-                If lblOrderStatus.Text = "New Order" Then
-                    liMoreDownloadQuote.Visible = True
-                    liMoreEmailQuote.Visible = True
-                    liMoreDividerQuote.Visible = True
-
-                    btnInvoice.Visible = True
-                    If lblOrderPaid.Text = "" Then
-                        aSendInvoice.Visible = True
-                    End If
-                    liDividerInvoice.Visible = True
-                    liUpdateInvoiceData.Visible = True
-
-                    btnAddService.Visible = True
-                End If
-
-                If lblOrderStatus.Text = "In Production" Then
-                    btnInvoice.Visible = True
-                    If lblOrderPaid.Text = "" Then
-                        aSendInvoice.Visible = True
-                    End If
-                    liDividerInvoice.Visible = True
-                    liUpdateInvoiceData.Visible = True
-
-                    btnAddService.Visible = True
-                End If
-
-                If lblOrderStatus.Text = "On Hold" Then
-                    btnInvoice.Visible = True
-                    If lblOrderPaid.Text = "" Then
-                        aSendInvoice.Visible = True
-                    End If
-                    liDividerInvoice.Visible = True
-                    liUpdateInvoiceData.Visible = True
-
-                    btnAddService.Visible = True
-                End If
-
-                If lblOrderStatus.Text = "Shipped Out" Then
-                    btnInvoice.Visible = True
-                    If lblOrderPaid.Text = "" Then
-                        aSendInvoice.Visible = True
-                    End If
-                    liDividerInvoice.Visible = True
-                    liUpdateInvoiceData.Visible = True
-
-                    btnAddService.Visible = True
-                End If
-
-                If lblOrderStatus.Text = "Completed" Then
-                    btnInvoice.Visible = True
-                    If lblOrderPaid.Text = "" Then
-                        aSendInvoice.Visible = True
-                    End If
-                    liDividerInvoice.Visible = True
-                    liUpdateInvoiceData.Visible = True
-
-                    btnAddService.Visible = True
-                End If
-            End If
-
             If Session("RoleName") = "Export" Then
-                If lblOrderStatus.Text = "Unsubmitted" OrElse lblOrderStatus.Text = "Waiting Proforma" OrElse lblOrderStatus.Text = "Proforma Sent" OrElse lblOrderStatus.Text = "Payment Received" OrElse lblOrderStatus.Text = "New Order" OrElse lblOrderStatus.Text = "On Hold" OrElse lblOrderStatus.Text = "Canceled" Then
+                aFile.Visible = True
+
+                If lblCompanyId.Text = "3" Then btnSuratJalan.Visible = True
+
+                If lblOrderStatus.Text = "Unsubmitted" OrElse lblOrderStatus.Text = "Waiting Proforma" OrElse lblOrderStatus.Text = "Proforma Sent" OrElse lblOrderStatus.Text = "Payment Received" OrElse lblOrderStatus.Text = "New Order" OrElse lblOrderStatus.Text = "Canceled" Then
                     Response.Redirect("~/order", False)
                     Exit Sub
                 End If
 
-                divInternalNote.Visible = True
-                divOrderType.Visible = True
-                divOrderFactory.Visible = True
-
-                btnMoreAction.Visible = True
-                liMoreAddNote.Visible = True
-                liMoreHistoryNote.Visible = True
-
                 If lblOrderStatus.Text = "In Production" Then
                     btnUpdateStatus.Visible = True
                     aShippedOrder.Visible = True
                 End If
-
                 If lblOrderStatus.Text = "Shipped Out" Then
                     btnUpdateStatus.Visible = True
-                    aShippedOrder.Visible = True
                     aCompleteOrder.Visible = True
-                End If
-            End If
 
+                    divShipmentOrder.Attributes.Add("onclick", "showShippedOrder()")
+                    divShipmentOrder.Style.Add("cursor", "pointer")
+                End If
+
+                divInternalNote.Visible = True
+                divOrderType.Visible = True
+                divOrderFactory.Visible = True
+            End If
             If Session("RoleName") = "Customer" Then
-                btnQuoteAction.Visible = True
                 aDuplicateOrder.Visible = True
+
+                btnQuoteAction.Visible = True
+                aQuoteCustomer.Visible = True
 
                 If lblOrderStatus.Text = "Unsubmitted" Then
                     btnEditOrder.Visible = True
@@ -2756,89 +2654,19 @@ Partial Class Order_Detail
                     aAddItem.Visible = True
                 End If
 
-                If lblOrderStatus.Text = "Shipped Out" OrElse lblOrderStatus.Text = "Completed" Then
-                    If isReworkOrder = False Then
-                        aReworkOrder.Visible = True
-                    End If
-                End If
-            End If
-
-            If Session("RoleName") = "Data Entry" Then
-                divInternalNote.Visible = True
-                divOrderType.Visible = True
-                divOrderFactory.Visible = True
-
-                aFileOrder.Visible = True
-                aDuplicateOrder.Visible = True
-
-                liMoreDownloadQuote.Visible = True
-                liMoreEmailQuote.Visible = True
-                liMoreDividerQuote.Visible = True
-
-                If lblOrderType.Text = "Builder" Then
-                    aBuilder.Visible = True
-                    secBuilder.Visible = True
-                End If
-
-                If lblOrderStatus.Text = "Unsubmitted" Then
-                    If lblCreatedRole.Text = Session("RoleId") Then
-                        btnEditOrder.Visible = True
-                        aDeleteOrder.Visible = True
-
-                        aAddItem.Visible = True
-
-                        If lblOrderType.Text = "Regular" Then
-                            aSubmitOrder.Visible = True
-                        End If
-                        If lblOrderType.Text = "Builder" Then
-                            aQuoteOrder.Visible = True
-                        End If
-                    End If
-                End If
-
-                If lblOrderStatus.Text = "Quoted" Then
-                    btnMoreAction.Visible = True
-                    liMoreAddNote.Visible = True
-                    liMoreHistoryNote.Visible = True
-
-                    If lblOrderType.Text = "Builder" Then
-                        aAddItem.Visible = True
-                        btnAddService.Visible = True
-                    End If
-                End If
-
-                If lblOrderStatus.Text = "New Order" Then
-                    btnUpdateStatus.Visible = True
-                    aCancelOrder.Visible = True
-                    aHoldOrder.Visible = True
-                    aProductionOrder.Visible = True
-                End If
-
-                If lblOrderStatus.Text = "In Production" Then
-                    btnUpdateStatus.Visible = True
-                    aHoldOrder.Visible = True
-                    aShippedOrder.Visible = True
-                    aCancelOrder.Visible = True
-                End If
-
-                If lblOrderStatus.Text = "On Hold" Then
-                    btnUpdateStatus.Visible = True
-                    aProductionOrder.Visible = True
-                    aCancelOrder.Visible = True
-                End If
-
                 If lblOrderStatus.Text = "Shipped Out" Then
-                    If isReworkOrder = False Then
+                    If isReworkOrder = False AndAlso customerOnStop = "No" Then
+                        aReworkOrder.Visible = True
+                    End If
+                End If
+                If lblOrderStatus.Text = "Completed" Then
+                    If isReworkOrder = False AndAlso customerOnStop = "No" Then
                         aReworkOrder.Visible = True
                     End If
                 End If
             End If
-
-            If Session("RoleName") = "Installer" Then
-                secBuilder.Visible = True
-                If lblOrderStatus.Text = "Quoted" Then
-                    aSubmitOrder.Visible = True
-                End If
+            If Session("RoleName") = "Installer" AndAlso lblOrderStatus.Text = "Quoted" Then
+                aSubmitOrder.Visible = True
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -2854,7 +2682,7 @@ Partial Class Order_Detail
     Protected Sub BindDesignType()
         ddlDesign.Items.Clear()
         Try
-            ddlDesign.DataSource = orderClass.GetDataTable("SELECT Designs.Id, Designs.Name AS NameText FROM CustomerProductAccess CROSS APPLY STRING_SPLIT(CustomerProductAccess.DesignId, ',') AS designArray INNER JOIN Designs ON designArray.VALUE=Designs.Id WHERE CustomerProductAccess.Id='" & lblCustomerId.Text & "' AND Designs.Type<>'Additional' AND Designs.Active=1 ORDER BY Designs.Name ASC")
+            ddlDesign.DataSource = orderClass.GetDataTable("SELECT Designs.Id, Designs.Name AS NameText FROM CustomerProductAccess CROSS APPLY STRING_SPLIT(CustomerProductAccess.DesignId, ',') AS designArray INNER JOIN Designs ON designArray.VALUE=Designs.Id WHERE CustomerProductAccess.Id='" & lblCustomerId.Text & "' AND Designs.Type<>'Services' AND Designs.Active=1 ORDER BY Designs.Name ASC")
             ddlDesign.DataTextField = "NameText"
             ddlDesign.DataValueField = "Id"
             ddlDesign.DataBind()
@@ -2864,6 +2692,25 @@ Partial Class Order_Detail
             End If
         Catch ex As Exception
             ddlDesign.Items.Clear()
+            If Session("RoleName") = "Developer" Then
+                MessageError(True, ex.ToString())
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindService()
+        ddlAddService.Items.Clear()
+        Try
+            ddlAddService.DataSource = orderClass.GetDataTable("SELECT Id, Name FROM Products CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId=16 AND BlindId=96 AND companyArray.VALUE='" & lblCompanyDetailId.Text & "' AND Status='In Stock' ORDER BY Name ASC")
+            ddlAddService.DataTextField = "Name"
+            ddlAddService.DataValueField = "Id"
+            ddlAddService.DataBind()
+
+            If ddlAddService.Items.Count > 0 Then
+                ddlAddService.Items.Insert(0, New ListItem("", ""))
+            End If
+        Catch ex As Exception
+            ddlAddService.Items.Clear()
             If Session("RoleName") = "Developer" Then
                 MessageError(True, ex.ToString())
             End If
@@ -2892,8 +2739,7 @@ Partial Class Order_Detail
     End Sub
 
     Protected Sub BindDataItem(status As String)
-        divMinimumOrderSurcharge.Visible = False
-        divFuelSurcharge.Visible = False
+        divMinimumOrderSurcharge.Visible = False : divFuelSurcharge.Visible = False
         Try
             Dim param As New List(Of SqlParameter) From {
                 New SqlParameter("@HeaderId", Convert.ToInt32(lblHeaderId.Text))
@@ -2915,9 +2761,7 @@ Partial Class Order_Detail
             Dim totalItems As Integer = orderClass.GetTotalItemOrder(lblHeaderId.Text)
             If status = "Unsubmitted" AndAlso lblCompanyId.Text = "2" AndAlso totalItems > 0 Then
                 divFuelSurcharge.Visible = True
-                If totalItems <= 3 Then
-                    divMinimumOrderSurcharge.Visible = True
-                End If
+                If totalItems <= 3 Then divMinimumOrderSurcharge.Visible = True
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -3010,7 +2854,7 @@ Partial Class Order_Detail
             If lblCompanyId.Text = "2" Then
                 Dim priceBuy As Decimal = orderClass.GetItemData_Decimal("SELECT SUM(BuyPrice) AS BuyPrice FROM OrderCostings WHERE HeaderId='" & lblHeaderId.Text & "' AND Type='Final'")
 
-                Dim gstBuy As Decimal = priceBuy * 10 / 1000
+                Dim gstBuy As Decimal = priceBuy * 10 / 100
                 Dim totalBuy As Decimal = priceBuy + gstBuy
 
                 spanOrderBuy.InnerText = "$ " & priceBuy.ToString("N2", enUS)
@@ -3027,141 +2871,29 @@ Partial Class Order_Detail
         End If
     End Sub
 
-    Protected Sub BindDataInvoice()
-        Dim param As New List(Of SqlParameter) From {
-            New SqlParameter("@InvoiceId", Convert.ToInt32(lblHeaderId.Text))
-        }
-
-        Dim invoiceData As DataRow = orderClass.GetDataRowSP("sp_GetInvoiceById", param)
-
-        lblInvoiceNumber.Text = "-"
-        lblInvoiceDate.Text = "-"
-        lblCollector.Text = "-"
-        lblPaymentDate.Text = "-"
-
-        If invoiceData IsNot Nothing Then
-            If Not String.IsNullOrEmpty(invoiceData("InvoiceNumber").ToString()) Then
-                lblInvoiceNumber.Text = invoiceData("InvoiceNumber").ToString()
-                txtUpdateInvoiceNumber.Text = invoiceData("InvoiceNumber").ToString()
-                txtInvoiceNumber.Text = invoiceData("InvoiceNumber").ToString()
-            End If
-
-            If Not String.IsNullOrEmpty(invoiceData("InvoiceDate").ToString()) Then
-                lblInvoiceDate.Text = Convert.ToDateTime(invoiceData("InvoiceDate")).ToString("dd MMM yyyy")
-                txtInvoiceDate.Text = Convert.ToDateTime(invoiceData("InvoiceDate")).ToString("yyyy-MM-dd")
-            End If
-
-            If Not String.IsNullOrEmpty(invoiceData("DueDate").ToString()) Then
-                txtDueDate.Text = Convert.ToDateTime(invoiceData("DueDate")).ToString("yyyy-MM-dd")
-            End If
-
-            If Not String.IsNullOrEmpty(invoiceData("CollectorName").ToString()) Then
-                lblCollector.Text = invoiceData("CollectorName").ToString()
-                ddlCollector.SelectedValue = invoiceData("Collector").ToString()
-            End If
-
-            If Not String.IsNullOrEmpty(invoiceData("PaymentDate").ToString()) Then
-                lblPaymentDate.Text = Convert.ToDateTime(invoiceData("PaymentDate")).ToString("dd MMM yyyy")
-                txtPaymentDate.Text = Convert.ToDateTime(invoiceData("PaymentDate")).ToString("yyyy-MM-dd")
-            End If
-
-            ddlPayment.SelectedValue = Convert.ToInt32(invoiceData("Payment"))
-            lblOrderPaid.Text = invoiceData("OrderPaid").ToString()
-
-            If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" Then
-                divInvoicing.Attributes.Add("onclick", "showInvoiceData()")
-                divInvoicing.Style.Add("cursor", "pointer")
-            End If
-        End If
-    End Sub
-
-    Protected Sub BindDataShipment()
-        Dim param As New List(Of SqlParameter) From {
-            New SqlParameter("@ShipmentId", Convert.ToInt32(lblHeaderId.Text))
-        }
-
-        Dim shipmentData As DataRow = orderClass.GetDataRowSP("sp_GetShipmentById", param)
-
-        lblShipmentNumber.Text = "-"
-        lblShipmentDate.Text = "-"
-        lblContainerNumber.Text = "-"
-        lblContainerEta.Text = "-"
-        lblCourier.Text = "-"
-
-        If shipmentData IsNot Nothing Then
-            If Not String.IsNullOrEmpty(shipmentData("ShipmentNumber").ToString()) Then
-                lblShipmentNumber.Text = shipmentData("ShipmentNumber").ToString()
-                txtShipmentNumber.Text = shipmentData("ShipmentNumber").ToString()
-            End If
-
-            If Not String.IsNullOrEmpty(shipmentData("ShipmentDate").ToString()) Then
-                lblShipmentDate.Text = Convert.ToDateTime(shipmentData("ShipmentDate")).ToString("dd MMM yyyy")
-                txtShipmentDate.Text = Convert.ToDateTime(shipmentData("ShipmentDate")).ToString("yyyy-MM-dd")
-            End If
-
-            If Not String.IsNullOrEmpty(shipmentData("ContainerEta").ToString()) Then
-                lblContainerEta.Text = Convert.ToDateTime(shipmentData("ContainerEta")).ToString("dd MMM yyyy")
-                txtContainerEta.Text = Convert.ToDateTime(shipmentData("ContainerEta")).ToString("yyyy-MM-dd")
-            End If
-
-            If Not String.IsNullOrEmpty(shipmentData("ContainerNumber").ToString()) Then
-                lblContainerNumber.Text = shipmentData("ContainerNumber").ToString()
-                txtContainerNumber.Text = shipmentData("ContainerNumber").ToString()
-            End If
-
-            If Not String.IsNullOrEmpty(shipmentData("Courier").ToString()) Then
-                lblCourier.Text = shipmentData("Courier").ToString()
-                txtCourier.Text = shipmentData("Courier").ToString()
-            End If
-        End If
-
-        If lblOrderStatus.Text = "In Production" OrElse lblOrderStatus.Text = "On Hold" OrElse lblOrderStatus.Text = "Shipped Out" OrElse lblOrderStatus.Text = "Completed" Then
-            If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" Then
-                divShipmentOrder.Attributes.Add("onclick", "showShippedOrder()")
-                divShipmentOrder.Style.Add("cursor", "pointer")
-            End If
-        End If
-    End Sub
-
     Protected Sub BindDataBuilder()
         Try
             Dim dataBuilder As DataRow = orderClass.GetDataRow("SELECT * FROM OrderBuilders WHERE Id='" & lblHeaderId.Text & "'")
-
             If dataBuilder IsNot Nothing Then
-                lblEstimator.Text = dataBuilder("Estimator").ToString()
                 txtEstimator.Text = dataBuilder("Estimator").ToString()
-
-                lblSupervisor.Text = dataBuilder("Supervisor").ToString()
                 txtSupervisor.Text = dataBuilder("Supervisor").ToString()
-
-                lblAddress.Text = dataBuilder("Address").ToString()
                 txtAddress.Text = dataBuilder("Address").ToString()
 
-                lblCallForCheckMeasure.Text = String.Empty
                 txtCallForCheckMeasure.Text = String.Empty
+                txtCheckMeasureDue.Text = String.Empty
+                txtToBeInstalled.Text = String.Empty
+                txtInstalled.Text = String.Empty
+
                 If Not String.IsNullOrEmpty(dataBuilder("CallForCheckMeasure").ToString()) Then
-                    lblCallForCheckMeasure.Text = Convert.ToDateTime(dataBuilder("CallForCheckMeasure")).ToString("dd MMM yyyy")
                     txtCallForCheckMeasure.Text = Convert.ToDateTime(dataBuilder("CallForCheckMeasure")).ToString("yyyy-MM-dd")
                 End If
-
-                lblCheckMeasureDue.Text = String.Empty
-                txtCheckMeasureDue.Text = String.Empty
                 If Not String.IsNullOrEmpty(dataBuilder("CheckMeasureDue").ToString()) Then
-                    lblCheckMeasureDue.Text = Convert.ToDateTime(dataBuilder("CheckMeasureDue")).ToString("dd MMM yyyy")
                     txtCheckMeasureDue.Text = Convert.ToDateTime(dataBuilder("CheckMeasureDue")).ToString("yyyy-MM-dd")
                 End If
-
-                lblToBeInstalled.Text = String.Empty
-                txtToBeInstalled.Text = String.Empty
                 If Not String.IsNullOrEmpty(dataBuilder("ToBeInstalled").ToString()) Then
-                    lblToBeInstalled.Text = Convert.ToDateTime(dataBuilder("ToBeInstalled")).ToString("dd MMM yyyy")
                     txtToBeInstalled.Text = Convert.ToDateTime(dataBuilder("ToBeInstalled")).ToString("yyyy-MM-dd")
                 End If
-
-                lblInstalled.Text = String.Empty
-                txtInstalled.Text = String.Empty
                 If Not String.IsNullOrEmpty(dataBuilder("Installed").ToString()) Then
-                    lblInstalled.Text = Convert.ToDateTime(dataBuilder("Installed")).ToString("dd MMM yyyy")
                     txtInstalled.Text = Convert.ToDateTime(dataBuilder("Installed")).ToString("yyyy-MM-dd")
                 End If
             End If
@@ -3209,8 +2941,7 @@ Partial Class Order_Detail
 
     Protected Sub BindDataRework(headerId As String)
         If Not String.IsNullOrEmpty(headerId) Then
-            gvListItemRework.DataSource = orderClass.GetDataTable("SELECT OrderDetails.* FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN OrderReworks ON OrderReworks.HeaderId=OrderDetails.HeaderId AND OrderReworks.Status='Unsubmitted' AND OrderReworks.Active=1 LEFT JOIN OrderReworkDetails ON OrderReworkDetails.ItemId=OrderDetails.Id AND OrderReworkDetails.ReworkId=OrderReworks.Id AND OrderReworkDetails.Active=1 WHERE OrderDetails.HeaderId=" & headerId & " AND OrderDetails.Active=1 AND (Designs.Type='Blinds' OR Designs.Type='Shutters' OR Designs.Type='Doors' OR Designs.Type='Samples') AND OrderReworkDetails.ItemId IS NULL ORDER BY OrderDetails.Id ASC"
-)
+            gvListItemRework.DataSource = orderClass.GetDataTable("SELECT OrderDetails.* FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN OrderReworks ON OrderReworks.HeaderId=OrderDetails.HeaderId AND OrderReworks.Status='Unsubmitted' AND OrderReworks.Active=1 LEFT JOIN OrderReworkDetails ON OrderReworkDetails.ItemId=OrderDetails.Id AND OrderReworkDetails.ReworkId=OrderReworks.Id AND OrderReworkDetails.Active=1 WHERE OrderDetails.HeaderId=" & headerId & " AND OrderDetails.Active=1 AND (Designs.Type='Blinds' OR Designs.Type='Shutters' OR Designs.Type='Doors' OR Designs.Type='Samples') AND OrderReworkDetails.ItemId IS NULL ORDER BY OrderDetails.Id ASC")
             gvListItemRework.DataBind()
 
             gvListItemRework.Columns(1).Visible = False ' ID
@@ -3218,58 +2949,6 @@ Partial Class Order_Detail
                 gvListItemRework.Columns(1).Visible = True ' ID
             End If
         End If
-    End Sub
-
-    Protected Sub BindEmailQuote()
-        Try
-            txtEmailQuoteTo.Text = orderClass.GetCustomerPrimaryEmail(lblCustomerId.Text)
-
-            Dim dataEmailCustomer As DataTable = orderClass.GetDataTable("SELECT Email FROM CustomerContacts CROSS APPLY STRING_SPLIT(Tags, ',') AS thisArray WHERE CustomerId='" & lblCustomerId.Text & "' AND LTRIM(RTRIM(Email)) <> '' AND Email IS NOT NULL AND thisArray.VALUE='Quoting' AND [Primary]=0")
-            If dataEmailCustomer.Rows.Count > 0 Then
-                Dim listEmail As New List(Of String)
-
-                For Each row As DataRow In dataEmailCustomer.Rows
-                    listEmail.Add(row("Email").ToString())
-                Next
-
-                txtEmailQuoteCCCustomer.Text = String.Join(vbCrLf, listEmail)
-            End If
-
-            Dim dataCCMailing As DataTable = orderClass.GetDataTable("SELECT * FROM Mailings WHERE CompanyId='" & lblCompanyId.Text & "' AND Name='Send Quote' AND Active=1")
-            If dataCCMailing.Rows.Count > 0 Then
-                Dim listEmail As New List(Of String)
-
-                For Each row As DataRow In dataCCMailing.Rows
-                    Dim emails As String() = row("Cc").ToString().Split(";"c)
-
-                    For Each email As String In emails
-                        If Not String.IsNullOrWhiteSpace(email) Then
-                            listEmail.Add(email.Trim())
-                        End If
-                    Next
-                Next
-
-                txtEmailQuoteCCStaff.Text = String.Join(vbCrLf, listEmail)
-            End If
-
-            Dim operatorEmail As String = orderClass.GetItemData("SELECT ISNULL(STRING_AGG(Logins.Email, ';'), '') FROM Customers OUTER APPLY STRING_SPLIT(Customers.Operator, ',') operatorArray LEFT JOIN Logins ON Logins.Id = TRY_CAST(operatorArray.value AS INT) WHERE Customers.Id='" & lblCustomerId.Text & "';")
-            If Not String.IsNullOrEmpty(operatorEmail) Then
-                Dim listEmail As New List(Of String)
-                If Not String.IsNullOrWhiteSpace(txtEmailQuoteCCStaff.Text) Then
-                    listEmail.AddRange(txtEmailQuoteCCStaff.Text.Split({vbCrLf}, StringSplitOptions.RemoveEmptyEntries))
-                End If
-                Dim operatorEmails = operatorEmail.Split(";"c)
-                For Each email As String In operatorEmails
-                    If Not String.IsNullOrWhiteSpace(email) Then
-                        listEmail.Add(email.Trim())
-                    End If
-                Next
-                listEmail = listEmail.Distinct().ToList()
-                txtEmailQuoteCCStaff.Text = String.Join(vbCrLf, listEmail)
-            End If
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-        End Try
     End Sub
 
     Protected Sub BindEmailInvoice()
@@ -3324,7 +3003,7 @@ Partial Class Order_Detail
         End Try
     End Sub
 
-    Protected Function BindProductDescription(itemId As Integer) As String
+    Protected Function BindProductDescription(itemId As String) As String
         Dim result As String = String.Empty
 
         Dim param As New List(Of SqlParameter) From {
@@ -3463,11 +3142,11 @@ Partial Class Order_Detail
         If designName = "Cellular Shades" Then
             result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
             If blindName = "Day & Night" Then
-                result = itemDescription
+                result = String.Format("{0} {1} {2}", itemDescription, size, squareMetreText)
                 result &= "<br />"
-                result &= String.Format("{0} {1} {2}", fabricColourName, size, squareMetreText)
+                result &= fabricColourName
                 result &= "<br />"
-                result &= String.Format("{0} {1} {2}", fabricColourNameB, sizeB, squareMetreTextB)
+                result &= fabricColourNameB
             End If
         End If
 
@@ -3746,6 +3425,7 @@ Partial Class Order_Detail
         End If
 
         If designName = "Vertical" Then
+            fabricColourName = fabricColourName.Replace("127mm", "").Replace("89mm", "").Trim()
             result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
             If blindName = "Track Only" Then
                 result = String.Format("{0} ({1}mm) {2}", itemDescription, width, linearMetreText)
@@ -3770,10 +3450,12 @@ Partial Class Order_Detail
 
         If designName = "Service" Then
             result = productName
-            If Not String.IsNullOrEmpty(itemNote) Then
-                result &= "<br />"
-                result &= itemNote
-            End If
+        End If
+
+        Dim checkNote As String = orderClass.GetItemData("SELECT Description FROM OrderCostings WHERE ItemId='" & itemId & "' AND Type='Note'")
+        If Not String.IsNullOrEmpty(checkNote) Then
+            result &= "<br />"
+            result &= String.Format("<i>* {0} </i>", checkNote)
         End If
         Return result
     End Function
@@ -3828,6 +3510,7 @@ Partial Class Order_Detail
 
         MessageError_DetailQuote(visible, message)
 
+        MessageError_AddService(visible, message)
         MessageError_AddNote(visible, message)
 
         MessageError_SendInvoice(visible, message)
@@ -3837,7 +3520,6 @@ Partial Class Order_Detail
         MessageError_CancelOrder(visible, message)
         MessageError_ShippedOrder(visible, message)
         MessageError_ReworkOrder(visible, message)
-        MessageError_MoreEmailQuote(visible, message)
     End Sub
 
     Protected Sub MessageError(visible As Boolean, message As String)
@@ -3861,16 +3543,16 @@ Partial Class Order_Detail
         divErrorDetailQuote.Visible = visible : msgErrorDetailQuote.InnerText = message
     End Sub
 
+    Protected Sub MessageError_AddService(visible As Boolean, message As String)
+        divErrorAddService.Visible = visible : msgErrorAddService.InnerText = message
+    End Sub
+
     Protected Sub MessageError_AddNote(visible As Boolean, message As String)
         divErrorAddNote.Visible = visible : msgErrorAddNote.InnerText = message
     End Sub
 
     Protected Sub MessageError_CancelOrder(visible As Boolean, message As String)
         divErrorCancelOrder.Visible = visible : msgErrorCancelOrder.InnerText = message
-    End Sub
-
-    Protected Sub MessageError_MoreEmailQuote(visible As Boolean, message As String)
-        divErrorMoreEmailQuote.Visible = visible : msgErrorMoreEmailQuote.InnerText = message
     End Sub
 
     Protected Sub MessageError_SendInvoice(visible As Boolean, message As String)
@@ -4060,7 +3742,7 @@ Partial Class Order_Detail
         If Session("RoleName") = "Developer" Then result = True
 
         If Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Account" Then
-            If lblOrderPaid.Text = "" Then result = True
+            If lblOrderPaid.Text = "" AndAlso Not lblOrderStatus.Text = "Canceled" Then result = True
         End If
 
         If Session("RoleName") = "Sales" Then
@@ -4081,6 +3763,13 @@ Partial Class Order_Detail
         If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" Then
             Return True
         End If
+        Return False
+    End Function
+
+    Protected Function VisibleFileDelete() As Boolean
+        If Session("RoleName") = "Developer" Then Return True
+        If Session("RoleName") = "IT" Then Return True
+        If Session("RoleName") = "Factory Office" Then Return True
         Return False
     End Function
 

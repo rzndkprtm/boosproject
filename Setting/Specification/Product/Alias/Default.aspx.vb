@@ -1,40 +1,45 @@
 ﻿Imports System.Data.SqlClient
 
-Partial Class Order_Ocean_Default
+Partial Class Setting_Specification_Product_Alias_Default
     Inherits Page
 
-    Dim orderClass As New OceanClass
+    Dim settingClass As New SettingClass
 
-    Dim myConn As String = ConfigurationManager.ConnectionStrings("SunlightConnection").ConnectionString
-    Dim url As String = String.Empty
+    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataLog As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        'Dim pageAccess As Boolean = LoginAccess("Load")
-        'If pageAccess = False Then
-        '    Response.Redirect("~/", False)
-        '    Exit Sub
-        'End If
+        Dim pageAccess As Boolean = LoginAccess("Load")
+        If pageAccess = False Then
+            Response.Redirect("~/setting/specification/product", False)
+            Exit Sub
+        End If
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-            txtSearch.Text = Session("OrderSearch")
-
-            BindDataOrder(txtSearch.Text)
+            txtSearch.Text = Session("SearchProductAlias")
+            BindData(txtSearch.Text)
         End If
     End Sub
 
+    Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
+        Response.Redirect("~/setting/specification/product/alias/add", False)
+    End Sub
+
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
         gvList.PageIndex = 0
-        BindDataOrder(txtSearch.Text)
+
+        MessageError(False, String.Empty)
+        BindData(txtSearch.Text)
+
+        Session("SearchProductAlias") = txtSearch.Text
     End Sub
 
     Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
         Try
             If e.CommandName = "Page" Then
                 gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
-                BindDataOrder(txtSearch.Text)
+                BindData(txtSearch.Text)
             End If
         Catch ex As Exception
         End Try
@@ -44,14 +49,11 @@ Partial Class Order_Ocean_Default
         MessageError(False, String.Empty)
         Try
             gvList.PageIndex = e.NewPageIndex
-            BindDataOrder(txtSearch.Text)
+            BindData(txtSearch.Text)
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPORT AT REZA@BIGBLINDS.CO.ID !")
-                If Session("RoleName") = "Customer" Then
-                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
-                End If
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
         End Try
     End Sub
@@ -63,20 +65,51 @@ Partial Class Order_Ocean_Default
         End Try
     End Sub
 
-    Protected Sub BindDataOrder(search As String)
-        Session("OrderSearch") = String.Empty
+    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
         Try
-            Dim params As New List(Of SqlParameter) From {
-                New SqlParameter("@SearchText", search.Trim())
-            }
+            Dim thisId As String = txtIdDelete.Text
 
-            gvList.DataSource = orderClass.GetDataTableSP("sp_OrderHeadersShutters_List", params)
-            gvList.DataBind()
+            Using thisConn As New SqlConnection(myConn)
+                thisConn.Open()
+
+                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM ProductAlias WHERE Id=@Id", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", thisId)
+                    myCmd.ExecuteNonQuery()
+                End Using
+
+                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Logs WHERE Type='ProductAlias' AND DataId=@Id", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", thisId)
+                    myCmd.ExecuteNonQuery()
+                End Using
+
+                thisConn.Close()
+            End Using
+
+            Session("SearchProductAlias") = txtSearch.Text
+            Response.Redirect("~/setting/specification/product/alias", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
+        End Try
+    End Sub
+
+    Protected Sub BindData(searchText As String)
+        Try
+            Dim stringSearch As String = String.Empty
+            If Not searchText = "" Then
+                stringSearch = "WHERE P1.Name LIKE '%" & searchText & "%' OR P2.Name LIKE '%" & searchText & "%'"
+            End If
+
+            Dim thisString As String = String.Format("SELECT ProductAlias.*, P1.Name AS FirstName, P2.Name AS SecondName FROM ProductAlias LEFT JOIN Products P1 ON ProductAlias.FirstId = P1.Id LEFT JOIN Products P2 ON ProductAlias.SecondId = P2.Id {0} ORDER BY ProductAlias.Id ASC", stringSearch)
+            gvList.DataSource = settingClass.GetDataTable(thisString)
+            gvList.DataBind()
+
+            btnAdd.Visible = LoginAccess("Add")
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
         End Try
     End Sub
 

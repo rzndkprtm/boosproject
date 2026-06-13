@@ -20,6 +20,10 @@ Partial Class Setting_Customer_Login_Edit
             Exit Sub
         End If
 
+        If Not String.IsNullOrEmpty(Request.QueryString("returnpage")) Then
+            lblReturnPage.Text = Request.QueryString("returnpage").ToString()
+        End If
+
         lblId.Text = Request.QueryString("loginid").ToString()
         If Not IsPostBack Then
             MessageError(False, String.Empty)
@@ -77,13 +81,14 @@ Partial Class Setting_Customer_Login_Edit
 
             If msgError.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Logins SET CustomerId=@CustomerId, RoleId=@RoleId, LevelId=@LevelId, UserName=@UserName, FullName=@FullName WHERE Id=@Id", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Logins SET CustomerId=@CustomerId, RoleId=@RoleId, LevelId=@LevelId, UserName=@UserName, FullName=@FullName, Email=@Email WHERE Id=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         myCmd.Parameters.AddWithValue("@CustomerId", If(String.IsNullOrEmpty(ddlCustomer.SelectedValue), CType(DBNull.Value, Object), ddlCustomer.SelectedValue))
                         myCmd.Parameters.AddWithValue("@RoleId", ddlRole.SelectedValue)
                         myCmd.Parameters.AddWithValue("@LevelId", ddlLevel.SelectedValue)
                         myCmd.Parameters.AddWithValue("@UserName", txtUserName.Text.Trim())
                         myCmd.Parameters.AddWithValue("@FullName", txtFullName.Text.Trim())
+                        myCmd.Parameters.AddWithValue("@Email", txtEmail.Text.Trim())
                         myCmd.Parameters.AddWithValue("@Pricing", ddlPricing.SelectedValue)
 
                         thisConn.Open()
@@ -118,7 +123,7 @@ Partial Class Setting_Customer_Login_Edit
 
     Protected Sub BindData(loginId As String)
         Try
-            Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Logins WHERE Id='" & loginId & "'")
+            Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Logins WHERE Id='" & loginId & "' AND RoleId='8'")
             If myData Is Nothing Then
                 Response.Redirect("~/setting/customer/login/", False)
                 Exit Sub
@@ -131,12 +136,16 @@ Partial Class Setting_Customer_Login_Edit
             txtUserName.Text = myData("UserName").ToString()
             lblUserName.Text = myData("UserName").ToString()
             txtFullName.Text = myData("FullName").ToString()
+            txtEmail.Text = myData("Email").ToString()
 
             BindCustomer()
             BindRole()
             BindLevel()
 
             ddlCustomer.Enabled = False
+
+            divEmail.Visible = False
+            If Session("RoleName") = "Developer" Then divEmail.Visible = True
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then

@@ -22,7 +22,7 @@
     </div>
     <div class="page-content">
         <section class="row">
-            <div class="col-12 col-sm-12 col-lg-7">
+            <div class="col-12 col-sm-12 col-lg-6 mb-2">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title">Order Form</h4>
@@ -31,19 +31,19 @@
                         <div class="card-body">
                             <div class="form form-vertical">
                                 <div class="form-body">
-                                    <div class="row" runat="server" id="divCustomer">
+                                    <div class="row mb-2" runat="server" id="divCustomer">
                                         <div class="col-12 form-group">
                                             <label class="form-label">Customer Account</label>
                                             <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCustomer_SelectedIndexChanged"></asp:DropDownList>
                                         </div>
                                     </div>
-                                    <div class="row" runat="server" id="divCreatedBy">
+                                    <div class="row mb-2" runat="server" id="divCreatedBy">
                                         <div class="col-12 form-group">
                                             <label class="form-label">Created By</label>
                                             <asp:DropDownList runat="server" ID="ddlCreatedBy" CssClass="choices form-select"></asp:DropDownList>
                                         </div>
                                     </div>
-                                    <div class="row mb-3" runat="server" id="divMethod">
+                                    <div class="row mb-2" runat="server" id="divMethod">
                                         <div class="col-12 col-sm-12 col-lg-5 form-group">
                                             <label class="form-label">Method</label>
                                             <asp:DropDownList runat="server" ID="ddlMethod" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlMethod_SelectedIndexChanged">
@@ -53,14 +53,16 @@
                                         </div>
                                     </div>
                                     <div runat="server" id="divManual">
-                                        <div class="row mt-3">
-                                            <div class="col-12 col-sm-12 col-lg-5 form-group">
+                                        <div class="row mb-2">
+                                            <div class="col-12 form-group">
                                                 <label class="form-label">Order Number</label>
                                                 <asp:TextBox runat="server" ID="txtOrderNumber" CssClass="form-control" placeholder="Order Number ..." autocomplete="off"></asp:TextBox>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-7 form-group">
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-12 form-group">
                                                 <label class="form-label">Order Name</label>
-                                                <asp:TextBox runat="server" ID="txtOrderName" CssClass="form-control" placeholder="Order Name ...." autocomplete="off"></asp:TextBox>
+                                                <asp:TextBox runat="server" ID="txtOrderName" CssClass="form-control" placeholder="Order Name ..." autocomplete="off"></asp:TextBox>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -78,7 +80,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row mb-3" runat="server" id="divOrderType">
+                                    <div class="row" runat="server" id="divOrderType">
                                         <div class="col-12 col-sm-12 col-lg-5 form-group">
                                             <label class="form-label">Order Type</label>
                                             <asp:DropDownList runat="server" ID="ddlOrderType" CssClass="form-select">
@@ -101,6 +103,18 @@
                     <div class="card-footer text-center">
                         <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" OnClick="btnSubmit_Click" />
                         <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Cancel" OnClick="btnCancel_Click" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-12 col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title text-center">Information</h4>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body">
+
+                        </div>
                     </div>
                 </div>
             </div>

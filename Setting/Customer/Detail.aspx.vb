@@ -1,7 +1,6 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 Imports System.Globalization
-Imports System.IO
 Imports System.Web.Services
 
 Partial Class Setting_Customer_Detail
@@ -32,13 +31,11 @@ Partial Class Setting_Customer_Detail
 
         For Each dr As DataRow In dt.Rows
             Dim title As String = String.Empty
-
             If dr("Type").ToString() = "FrameColours" Then
                 title = dr("DataId").ToString()
             Else
                 title = settingClass.GetItemData(String.Format("SELECT Name FROM {0} WHERE Id='{1}'", dr("Type").ToString(), dr("DataId").ToString()))
             End If
-
             result.Add(New With {.Type = title, .Discount = Convert.ToDecimal(dr("Discount")).ToString("G29") & "%"})
         Next
         Return result
@@ -95,7 +92,6 @@ Partial Class Setting_Customer_Detail
                 Dim orderClass As New OrderClass
                 For i As Integer = 0 To dataOrder.Rows.Count - 1
                     Dim orderId As String = dataOrder.Rows(i)("Id").ToString()
-
                     orderClass.CalculatePriceByOrder(orderId)
                 Next
 
@@ -255,7 +251,6 @@ Partial Class Setting_Customer_Detail
         Session("selectedTabCustomer") = "list-contact"
         url = String.Format("~/setting/customer/contact/add?custid={0}&returnpage=detail", lblId.Text)
         Response.Redirect(url, False)
-        Exit Sub
     End Sub
 
     Protected Sub btnDeleteContact_Click(sender As Object, e As EventArgs)
@@ -311,7 +306,7 @@ Partial Class Setting_Customer_Detail
                 thisConn.Close()
             End Using
 
-            dataLog = {"CustomerContacts", lblIdContact.Text, Session("LoginId"), "Set As Primary Contact"}
+            dataLog = {"CustomerContacts", thisId, Session("LoginId"), "Set As Primary Contact"}
             settingClass.Logs(dataLog)
 
             url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
@@ -329,9 +324,6 @@ Partial Class Setting_Customer_Detail
         Try
             gvListContact.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerContacts WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
             gvListContact.DataBind()
-            gvListContact.Columns(1).Visible = LoginAccess("Visible ID Contact")
-
-            btnAddContact.Visible = LoginAccess("Add Contact")
 
             Dim primaryContact As String = settingClass.GetItemData("SELECT Email FROM CustomerContacts WHERE CustomerId='" & customerId & "' AND [Primary]=1")
             loginContactPrimary.InnerText = primaryContact
@@ -373,7 +365,6 @@ Partial Class Setting_Customer_Detail
         Session("selectedTabCustomer") = "list-address"
         url = String.Format("~/setting/customer/address/add?custid={0}&returnpage=detail", lblId.Text)
         Response.Redirect(url, False)
-        Exit Sub
     End Sub
 
     Protected Sub btnDeleteAddress_Click(sender As Object, e As EventArgs)
@@ -448,9 +439,6 @@ Partial Class Setting_Customer_Detail
         Try
             gvListAddress.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerAddress WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
             gvListAddress.DataBind()
-            gvListAddress.Columns(1).Visible = LoginAccess("Visible ID Address")
-
-            btnAddAddress.Visible = LoginAccess("Add Address")
         Catch ex As Exception
             MessageError_Address(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -576,9 +564,6 @@ Partial Class Setting_Customer_Detail
         Try
             gvListBusiness.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerBusiness WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
             gvListBusiness.DataBind()
-            gvListBusiness.Columns(1).Visible = LoginAccess("Visible ID Business")
-
-            btnAddBusiness.Visible = LoginAccess("Add Business")
         Catch ex As Exception
             MessageError_Business(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -635,45 +620,10 @@ Partial Class Setting_Customer_Detail
                 End Using
             End Using
 
-            Dim activeDesc As String = "Customer Login Has Been Activated"
-            If active = 0 Then activeDesc = "Customer Login Has Been Deactivated"
+            Dim activeDesc As String = "Login Has Been Activated"
+            If active = 0 Then activeDesc = "Login Has Been Deactivated"
 
             dataLog = {"Logins", thisId, Session("LoginId").ToString(), activeDesc}
-            settingClass.Logs(dataLog)
-
-            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
-            Response.Redirect(url, False)
-        Catch ex As Exception
-            MessageError_Login(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Login(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
-    Protected Sub btnDeleteLogin_Click(sender As Object, e As EventArgs)
-        MessageError_Login(False, String.Empty)
-        Session("selectedTabCustomer") = "list-login"
-        Try
-            Dim thisId As String = txtIdDeleteLogin.Text
-            Dim roleName As String = String.Empty
-            Dim levelName As String = String.Empty
-
-            If roleName = "Customer" AndAlso levelName = "Member" Then
-
-            End If
-
-
-            Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Logins WHERE Id=@Id; DELETE FROM Logs WHERE Type='Logins' AND DataId=@Id; UDPATE OrderHeaders SET CreatedBy=NULL WHERE CreatedBy=@Id;", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-
-                    thisConn.Open()
-                    myCmd.ExecuteNonQuery()
-                End Using
-            End Using
-
-            dataLog = {"Logins", thisId, Session("LoginId").ToString(), ""}
             settingClass.Logs(dataLog)
 
             url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
@@ -781,11 +731,6 @@ Partial Class Setting_Customer_Detail
 
             gvListLogin.DataSource = settingClass.GetDataTable(thisQuery)
             gvListLogin.DataBind()
-            gvListLogin.Columns(1).Visible = LoginAccess("Visible ID Login")
-            gvListLogin.Columns(5).Visible = LoginAccess("Visible Email Login")
-
-            btnAddLogin.Visible = LoginAccess("Add Login")
-            aCredentialsLogin.Visible = LoginAccess("Login Credentials")
         Catch ex As Exception
             MessageError_Login(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -793,10 +738,6 @@ Partial Class Setting_Customer_Detail
             End If
         End Try
     End Sub
-
-    Protected Function DencryptPassword(password As String) As String
-        Return settingClass.Decrypt(password)
-    End Function
 
     Protected Function TextActive_Login(active As Boolean) As String
         If active = True Then Return "Disable"
@@ -810,15 +751,6 @@ Partial Class Setting_Customer_Detail
     ' END CUSTOMER LOGIN
 
     ' CUSTOMER DISCOUNT
-
-    Protected Sub gvListDiscount_RowCommand(sender As Object, e As GridViewCommandEventArgs)
-        If Not String.IsNullOrEmpty(e.CommandArgument) Then
-            Dim dataId As String = e.CommandArgument.ToString()
-            Session("selectedTabCustomer") = "list-discount"
-            url = String.Format("~/setting/customer/discount/edit?discountid={0}", dataId)
-            Response.Redirect(url, False)
-        End If
-    End Sub
 
     Protected Sub btnAddDiscountA_Click(sender As Object, e As EventArgs)
         Session("selectedTabCustomer") = "list-discount"
@@ -907,11 +839,6 @@ Partial Class Setting_Customer_Detail
         Try
             gvListDiscount.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END, DataId ASC")
             gvListDiscount.DataBind()
-            gvListDiscount.Columns(1).Visible = LoginAccess("Visible ID Discount")
-            gvListDiscount.Columns(2).Visible = LoginAccess("Visible Type Discount")
-
-            btnAddDiscount.Visible = LoginAccess("Add Discount")
-            aResetDiscount.Visible = LoginAccess("Reset Discount")
         Catch ex As Exception
             MessageError_Discount(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -1009,10 +936,6 @@ Partial Class Setting_Customer_Detail
         Try
             gvListPromo.DataSource = settingClass.GetDataTable("SELECT CustomerPromos.*, Promos.Name AS PromoName, Promos.StartDate AS StartDate, Promos.EndDate AS EndDate FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "'")
             gvListPromo.DataBind()
-            gvListPromo.Columns(1).Visible = LoginAccess("Visible ID Promo")
-
-            btnAddPromo.Visible = LoginAccess("Add Promo")
-            aResetPromo.Visible = LoginAccess("Reset Promo")
         Catch ex As Exception
             MessageError_Promo(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -1106,6 +1029,7 @@ Partial Class Setting_Customer_Detail
     ' END CUSTOMER PRODUCT ACCESS
 
     ' START CUSTOMER QUOTE
+
     Protected Sub BindDataQuote(customerId As String)
         MessageError_Quote(False, String.Empty)
         Try
@@ -1142,7 +1066,6 @@ Partial Class Setting_Customer_Detail
                 result = String.Join(", ", parts)
             End If
         End If
-
         Return result
     End Function
 

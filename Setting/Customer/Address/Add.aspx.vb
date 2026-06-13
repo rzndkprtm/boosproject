@@ -35,47 +35,38 @@ Partial Class Setting_Customer_Address_Add
                 MessageError(True, "ACCOUNT IS REQURIED !")
                 Exit Sub
             End If
-
             If txtAddress.Text = "" Then
                 MessageError(True, "ADDRESS IS REQUIRED !")
                 Exit Sub
             End If
-
             If txtAddress.Text.Contains(",") OrElse txtAddress.Text.Contains(";") Then
                 MessageError(True, "ADDRESS CANNOT CONTAIN COMMA (,) OR SEMICOLON (;) !")
                 Exit Sub
             End If
-
             If txtSuburb.Text = "" Then
                 MessageError(True, "SUBURB IS REQUIRED !")
                 Exit Sub
             End If
-
             If txtSuburb.Text.Contains(",") OrElse txtAddress.Text.Contains(";") Then
                 MessageError(True, "SUBURB CANNOT CONTAIN COMMA (,) OR SEMICOLON (;) !")
                 Exit Sub
             End If
-
             If txtState.Text = "" Then
                 MessageError(True, "STATE IS REQUIRED !")
                 Exit Sub
             End If
-
             If txtState.Text.Contains(",") OrElse txtAddress.Text.Contains(";") Then
                 MessageError(True, "STATE CANNOT CONTAIN COMMA (,) OR SEMICOLON (;) !")
                 Exit Sub
             End If
-
             If txtPostCode.Text = "" Then
                 MessageError(True, "POST CODE IS REQUIRED !")
                 Exit Sub
             End If
-
             If txtPostCode.Text.Contains(",") OrElse txtAddress.Text.Contains(";") Then
                 MessageError(True, "POST CODE CANNOT CONTAIN COMMA (,) OR SEMICOLON (;) !")
                 Exit Sub
             End If
-
             If msgError.InnerText = "" Then
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerAddress ORDER BY Id DESC")
                 Dim checkData As Integer = settingClass.GetItemData_Integer("SELECT COUNT(*) FROM CustomerAddress WHERE CustomerId='" & ddlCustomer.SelectedValue & "'")
@@ -135,9 +126,7 @@ Partial Class Setting_Customer_Address_Add
                 End If
             End If
 
-            Dim thisQuery As String = String.Format("SELECT * FROM Customers WHERE Active=1 {0} ORDER BY Name ASC", role)
-
-            ddlCustomer.DataSource = settingClass.GetDataTable(thisQuery)
+            ddlCustomer.DataSource = settingClass.GetDataTable(String.Format("SELECT * FROM Customers WHERE Active=1 {0} ORDER BY Name ASC", role))
             ddlCustomer.DataTextField = "Name"
             ddlCustomer.DataValueField = "Id"
             ddlCustomer.DataBind()

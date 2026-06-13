@@ -156,12 +156,13 @@ Partial Class Order_Rework_Detail
                     Using thisConn As New SqlConnection(myConn)
                         thisConn.Open()
 
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderHeaders SELECT @NewID, @OrderId, CustomerId, CONVERT(VARCHAR(200), OrderNumber) + ' - ' + 'RW', CONVERT(VARCHAR(200), OrderName) + ' - ' + 'RW', NULL, OrderType, OrderFactory, @Status, NULL, CreatedBy, GETDATE(), NULL, NULL, NULL, NULL, NULL, NULL, 'No', NULL, 1 FROM OrderHeaders WHERE Id=@OldId;", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderHeaders SELECT @NewID, @OrderId, CustomerId, CONVERT(VARCHAR(200), OrderNumber) + ' - ' + 'RW', CONVERT(VARCHAR(200), OrderName) + ' - ' + 'RW', NULL, OrderType, OrderFactory, @Status, NULL, CreatedBy, GETDATE(), NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, @InvoiceNumber, NULL, 0, NULL, 0, 'No', NULL, 1 FROM OrderHeaders WHERE Id=@OldId;", thisConn)
                             myCmd.Parameters.AddWithValue("@OldId", lblHeaderId.Text)
                             myCmd.Parameters.AddWithValue("@NewID", newHeaderId)
                             myCmd.Parameters.AddWithValue("@OrderId", orderId)
                             myCmd.Parameters.AddWithValue("@Status", status)
                             myCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
+                            myCmd.Parameters.AddWithValue("@InvoiceNumber", orderId)
 
                             myCmd.ExecuteNonQuery()
                         End Using
@@ -182,11 +183,8 @@ Partial Class Order_Rework_Detail
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
 
-                Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderQuotes VALUES(@NewID, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00); INSERT OrderInvoices(Id, InvoiceNumber, Payment, Amount) VALUES (@NewID, @InvoiceNumber, @Payment, 0);", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderQuotes VALUES(@NewID, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00)", thisConn)
                     myCmd.Parameters.AddWithValue("@NewID", newHeaderId)
-                    myCmd.Parameters.AddWithValue("@InvoiceNumber", orderId)
-                    myCmd.Parameters.AddWithValue("@Payment", False)
-
                     myCmd.ExecuteNonQuery()
                 End Using
 

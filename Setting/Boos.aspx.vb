@@ -61,8 +61,7 @@ Partial Class Setting_Boos
     Protected Sub UpdateDownloadBOE()
         Try
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Download='Done' WHERE Active=1 AND Download='Yes' AND DownloadDate IS NOT NULL AND DATEDIFF(MINUTE, DownloadDate, GETDATE()) >= 10", thisConn)
-
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Download='Done' WHERE Active=1 AND Download='Yes' AND DownloadDate IS NOT NULL AND DATEDIFF(MINUTE, DownloadDate, GETDATE())>=10", thisConn)
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
@@ -74,7 +73,7 @@ Partial Class Setting_Boos
     Protected Sub UpdateShipment(id As String, status As String, shipNumber As String, shipDate As Date, conNumber As String, courier As String, invNumber As String)
         Try
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderShipments SET ShipmentNumber=@ShipmentNumber, ShipmentDate=@ShipmentDate, ContainerNumber=@ContainerNumber, Courier=@Courier WHERE Id=@Id; UPDATE OrderHeaders SET Status=@Status WHERE Id=@Id; UPDATE OrderInvoices SET InvoiceNumber=@InvoiceNumber WHERE Id=@Id", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status=@Status, ShipmentNumber=@ShipmentNumber, ShipmentDate=@ShipmentDate, ContainerNumber=@ContainerNumber, Courier=@Courier, InvoiceNumber=@InvoiceNumber WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", id)
                     myCmd.Parameters.AddWithValue("@ShipmentNumber", shipNumber)
                     myCmd.Parameters.AddWithValue("@ShipmentDate", shipDate)
@@ -137,7 +136,7 @@ Partial Class Setting_Boos
     Protected Sub ResetProformaOrder()
         Try
             Dim orderClass As New OrderClass
-            Dim thisData As DataTable = orderClass.GetDataTable("SELECT OrderHeaders.* FROM OrderHeaders LEFT JOIN OrderInvoices ON OrderHeaders.Id=OrderInvoices.Id WHERE OrderHeaders.Status='Proforma Sent' AND OrderInvoices.DueDate=CAST(GETDATE() AS DATE)")
+            Dim thisData As DataTable = orderClass.GetDataTable("SELECT * FROM OrderHeaders WHERE Status='Proforma Sent' AND DueDate=CAST(GETDATE() AS DATE)")
             If thisData.Rows.Count > 0 Then
                 For i As Integer = 0 To thisData.Rows.Count - 1
                     Dim thisId As String = thisData.Rows(i)("Id").ToString()
@@ -145,7 +144,7 @@ Partial Class Setting_Boos
                     Using thisConn As New SqlConnection(myConn)
                         thisConn.Open()
 
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Unsubmitted', SubmittedDate=NULL WHERE Id=@Id; DELETE FROM OrderInvoices WHERE Id=@Id;", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Unsubmitted', SubmittedDate=NULL, InvoiceNumber=NULL, Collector=NULL, InvoiceDate=NULL, DueDate=NULL, Payment=0, PaymentDate=NULL, Amount=0 WHERE Id=@Id", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", thisId)
 
                             myCmd.ExecuteNonQuery()

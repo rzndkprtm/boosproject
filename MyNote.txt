@@ -3665,17 +3665,3 @@ Protected Sub ReadFileData(filePath As String, customerId As String)
             End If
         End Using
     End Sub
-
-
-Mercure = Somfy LS40 3/30
-Altus = Somfy Altus 40 RTS 3/30
-Sonesse 30 WF = Somfy Sonesse 30 WF 2/20 RTS
-
-Sonesse 3Nm = Somfy Sonesse 40 RTS 3/30
-Sonesse 6Nm = Somfy Sonesse 40 RTS 6/20
-
-Alpha 1Nm = Alpha DC Motor (1Nm / 30RPM)
-Alpha 2Nm = Alpha DC Motor (2Nm / 31RPM)
-Alpha 3Nm = Alpha DC Motor (3Nm / 20RPM)
-
-Delete Action = Add Discount Custom

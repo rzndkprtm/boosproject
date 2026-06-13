@@ -7,14 +7,15 @@ Partial Class Order_View
         If Not IsPostBack Then
             Dim action As String = Request("action")
 
-            If action = "jobsheet" OrElse action = "invoice" OrElse action = "quote" Then
-                Dim headerId As String = Request("boosid")
-                If String.IsNullOrEmpty(headerId) OrElse String.IsNullOrEmpty(action) Then Exit Sub
+            Dim headerId As String = Request("boosid")
+            If String.IsNullOrEmpty(headerId) OrElse String.IsNullOrEmpty(action) Then Exit Sub
 
-                If action = "jobsheet" Then JobSheet(headerId)
-                If action = "invoice" Then Invoice(headerId)
-                If action = "quote" Then QuoteCustomer(headerId)
-            End If
+            If action = "jobsheet" Then JobSheet(headerId)
+            If action = "invoice" Then Invoice(headerId)
+            If action = "quote" Then Quote(headerId)
+            If action = "quotebuilder" Then QuoteBuilder(headerId)
+            If action = "quotes" Then QuoteCustomer(headerId)
+            If action = "suratjalan" Then SuratJalan(headerId)
         End If
     End Sub
 
@@ -43,9 +44,82 @@ Partial Class Order_View
             Dim invoiceClass As New InvoiceClass
             Dim pdfBytes As Byte() = invoiceClass.BindContent(headerId)
 
-            Dim invoiceNumber As String = invoiceClass.GetItemData("SELECT InvoiceNumber FROM OrderInvoices WHERE Id='" & headerId & "'")
+            Dim invoiceNumber As String = invoiceClass.GetItemData("SELECT InvoiceNumber FROM OrderHeaders WHERE Id='" & headerId & "'")
 
             Dim fileName As String = String.Format("INVOICE {0}.pdf", invoiceNumber)
+
+            Response.Clear()
+            Response.ContentType = "application/pdf"
+            Response.AddHeader("Content-Disposition", "inline; filename=" & fileName & "")
+            Response.BinaryWrite(pdfBytes)
+            Response.Flush()
+            Response.End()
+        Catch ex As Exception
+        End Try
+    End Sub
+
+    Protected Sub Quote(headerId As String)
+        Try
+            Dim quoteClass As New QuoteClass
+            Dim pdfBytes As Byte() = quoteClass.BindContent(headerId)
+
+            Dim orderData As DataRow = quoteClass.GetDataRow("SELECT * FROM OrderHeaders WHERE Id='" & headerId & "'")
+
+            Dim orderNumber As String = String.Empty
+            Dim orderName As String = String.Empty
+
+            If Not orderData Is Nothing Then
+                orderNumber = orderData("OrderNumber")
+                orderName = orderData("OrderName")
+            End If
+
+            Dim fileName As String = String.Format("QUOTE-{0}-{1}.pdf", orderNumber, orderName)
+
+            Response.Clear()
+            Response.ContentType = "application/pdf"
+            Response.AddHeader("Content-Disposition", "inline; filename=" & fileName & "")
+            Response.BinaryWrite(pdfBytes)
+            Response.Flush()
+            Response.End()
+        Catch ex As Exception
+        End Try
+    End Sub
+
+    Protected Sub QuoteBuilder(headerId As String)
+        Try
+            Dim quoteClass As New QuoteClass
+            Dim pdfBytes As Byte() = quoteClass.BindContentBuilder(headerId)
+
+            Dim orderData As DataRow = quoteClass.GetDataRow("SELECT * FROM OrderHeaders WHERE Id='" & headerId & "'")
+
+            Dim orderNumber As String = String.Empty
+            Dim orderName As String = String.Empty
+
+            If Not orderData Is Nothing Then
+                orderNumber = orderData("OrderNumber")
+                orderName = orderData("OrderName")
+            End If
+
+            Dim fileName As String = String.Format("QUOTE-{0}-{1}.pdf", orderNumber, orderName)
+
+            Response.Clear()
+            Response.ContentType = "application/pdf"
+            Response.AddHeader("Content-Disposition", "inline; filename=" & fileName & "")
+            Response.BinaryWrite(pdfBytes)
+            Response.Flush()
+            Response.End()
+        Catch ex As Exception
+        End Try
+    End Sub
+
+    Protected Sub SuratJalan(headerId As String)
+        Try
+            Dim suratClass As New SuratClass
+            Dim pdfBytes As Byte() = suratClass.BindContent(headerId)
+
+            Dim orderId As String = suratClass.GetItemData("SELECT OrderId FROM OrderHeaders WHERE Id='" & headerId & "'")
+
+            Dim fileName As String = String.Format("SURAT JALAN {0}.pdf", orderId)
 
             Response.Clear()
             Response.ContentType = "application/pdf"
@@ -72,11 +146,11 @@ Partial Class Order_View
                 orderName = orderData("OrderName")
             End If
 
-            Dim fileName As String = String.Format("QUOTE-{0}-{1}", orderNumber, orderName)
+            Dim fileName As String = String.Format("QUOTE-{0}-{1}.pdf", orderNumber, orderName)
 
             Response.Clear()
             Response.ContentType = "application/pdf"
-            Response.AddHeader("Content-Disposition", "inline; filename=" & fileName & ".pdf")
+            Response.AddHeader("Content-Disposition", "inline; filename=" & fileName & "")
             Response.BinaryWrite(pdfBytes)
             Response.Flush()
             Response.End()

@@ -41,12 +41,14 @@
                         <ContentTemplate>
                             <div class="card-header">
                                 <div class="row">
-                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-2"></div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-2">
+                                        <h5 class="card-title">List Business</h5>
+                                    </div>
                                     <div class="col-lg-6 col-md-6 col-sm-12 d-flex justify-content-end">
                                         <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
                                             <div class="input-group">
                                                 <span class="input-group-text">Search : </span>
-                                                <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" placeholoder="" autocomplete="off"></asp:TextBox>
+                                                <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" autocomplete="off"></asp:TextBox>
                                                 <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />
                                             </div>
                                         </asp:Panel>
@@ -77,10 +79,10 @@
                                                             <a class="dropdown-item" id="aDetail" href='<%# Page.ResolveUrl("~/setting/customer/business/edit?businessid=" & Eval("Id")) %>'>Detail / Edit</a>
                                                         </li>
                                                         <li runat="server" visible='<%# VisiblePrimary(Eval("Primary")) %>'>
-                                                            <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalPrimary" onclick='<%# String.Format("return showPrimary(`{0}`);", Eval("Id").ToString()) %>'>Set As Primary</a>
+                                                            <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalPrimary" onclick='<%# String.Format("return dataPrimary(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("CustomerId").ToString()) %>'>Set As Primary</a>
                                                         </li>
                                                         <li>
-                                                            <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                            <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return dataDelete(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("CustomerId").ToString()) %>'>Delete</a>
                                                         </li>
                                                         <li>
                                                             <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('CustomerBusiness', '<%# Eval("Id") %>')">Log</a>
@@ -119,7 +121,8 @@
                     <h5 class="modal-title white">Set Primary</h5>
                 </div>
                 <div class="modal-body text-center py-4">
-                    <asp:TextBox runat="server" ID="txtIdPrimary" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtPrimaryId" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtPrimaryCustomerId" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
@@ -136,7 +139,8 @@
                     <h5 class="modal-title white">Delete Business</h5>
                 </div>
                 <div class="modal-body text-center py-4">
-                    <asp:TextBox runat="server" ID="txtIdDelete" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtDeleteId" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtDeleteCustomerId" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
@@ -188,16 +192,13 @@
         function initUpdatePanelLoading() {
             if (typeof Sys === "undefined") return;
             var prm = Sys.WebForms.PageRequestManager.getInstance();
-
             prm.add_beginRequest(function () {
                 var loading = document.getElementById("loadingOverlay");
                 if (loading) loading.style.display = "block";
             });
-
             prm.add_endRequest(function () {
                 var loading = document.getElementById("loadingOverlay");
                 if (loading) loading.style.display = "none";
-
                 bindGridRowClick();
             });
         }
@@ -205,21 +206,13 @@
         function bindGridRowClick() {
             const gv = document.getElementById('<%= gvList.ClientID %>');
             if (!gv) return;
-
             for (let i = 1; i < gv.rows.length; i++) {
                 const row = gv.rows[i];
-
                 row.style.cursor = "pointer";
-
                 row.onclick = function (e) {
-                    if (
-                        e.target.closest("a") ||
-                        e.target.closest("button") ||
-                        e.target.closest("[data-bs-toggle]")
-                    ) {
+                    if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]")) {
                         return;
                     }
-
                     const btn = this.querySelector("a[id*='aDetail']");
                     if (btn) btn.click();
                 };
@@ -231,12 +224,14 @@
             bindGridRowClick();
         });
 
-        function showPrimary(id) {
-            document.getElementById("<%=txtIdPrimary.ClientID %>").value = id;
+        function dataPrimary(businessid, customerid) {
+            document.getElementById("<%=txtPrimaryId.ClientID %>").value = businessid;
+            document.getElementById("<%=txtPrimaryCustomerId.ClientID %>").value = customerid;
         }
 
-        function showDelete(id) {
-            document.getElementById("<%=txtIdDelete.ClientID %>").value = id;
+        function dataDelete(businessid, customerid) {
+            document.getElementById("<%=txtDeleteId.ClientID %>").value = id;
+            document.getElementById("<%=txtDeleteCustomerId.ClientID %>").value = customerid;
         }
 
         function showLog(type, dataId) {

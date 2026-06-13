@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Default.aspx.vb" Inherits="Setting_Customer_Contact_Default" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Customer Contact" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Default.aspx.vb" Inherits="Setting_Specification_Product_Alias_Default" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Product Alias" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-heading">
@@ -13,7 +13,8 @@
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a runat="server" href="~/">Home</a></li>
                             <li class="breadcrumb-item"><a runat="server" href="~/setting">Setting</a></li>
-                            <li class="breadcrumb-item"><a runat="server" href="~/setting/customer">Customer</a></li>
+                            <li class="breadcrumb-item"><a runat="server" href="~/setting/specification">Specification</a></li>
+                            <li class="breadcrumb-item"><a runat="server" href="~/setting/specification/product">Product</a></li>
                             <li class="breadcrumb-item active" aria-current="page"><%: Page.Title %></li>
                         </ol>
                     </nav>
@@ -22,7 +23,7 @@
         </div>
     </div>
     <div class="page-content">
-        <section class="row mb-2" runat="server" id="divError">
+        <section class="row mb-3" runat="server" id="divError">
             <div class="col-12">
                 <div class="alert alert-danger">
                     <span runat="server" id="msgError"></span>
@@ -31,7 +32,7 @@
         </section>
         <section class="row mb-3">
             <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
-                <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-secondary" Text="Add New" OnClick="btnAdd_Click" />
+                <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-secondary" Text="Add Alias" OnClick="btnAdd_Click" />
             </div>
         </section>
         <section class="row">
@@ -42,14 +43,12 @@
                             <div class="card-content">
                                 <div class="card-header">
                                     <div class="row">
-                                        <div class="col-12 col-sm-12 col-lg-6 mb-2">
-                                            <h5 class="card-title">List Contact</h5>
-                                        </div>
+                                        <div class="col-12 col-sm-12 col-lg-6"></div>
                                         <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
                                             <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
                                                 <div class="input-group">
                                                     <span class="input-group-text">Search : </span>
-                                                    <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" autocomplete="off"></asp:TextBox>
+                                                    <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" placeholoder="" autocomplete="off"></asp:TextBox>
                                                     <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />
                                                 </div>
                                             </asp:Panel>
@@ -57,60 +56,53 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <div class="table-responsive">
-                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Visible="false" OnPageIndexChanging="gvList_PageIndexChanging" OnDataBound="gvList_DataBound">
-                                            <RowStyle />
-                                            <Columns>
-                                                <asp:TemplateField ItemStyle-HorizontalAlign="Center">
-                                                    <ItemTemplate>
-                                                        <%# Container.DataItemIndex + 1 %>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:BoundField DataField="Id" HeaderText="ID" />
-                                                <asp:BoundField DataField="DebtorCode" HeaderText="Debtor Code" />
-                                                <asp:BoundField DataField="CustomerName" HeaderText="Customer" />
-                                                <asp:BoundField DataField="Name" HeaderText="Name" />
-                                                <asp:BoundField DataField="Email" HeaderText="Email" />
-                                                <asp:BoundField DataField="Phone" HeaderText="Phone" />
-                                                <asp:BoundField DataField="Tags" HeaderText="Tags" />
-                                                <asp:BoundField DataField="DataPrimary" HeaderText="Primary" />
-                                                <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
-                                                    <ItemTemplate>
-                                                        <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
-                                                        <ul class="dropdown-menu">
-                                                            <li>
-                                                                <a class="dropdown-item" id="aDetail" href='<%# Page.ResolveUrl("~/setting/customer/contact/edit?contactid=" & Eval("Id")) %>'>Detail / Edit</a>
-                                                            </li>
-                                                            <li runat="server" visible='<%# VisiblePrimary(Eval("Primary")) %>'>
-                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalPrimary" onclick='<%# String.Format("return showPrimary(`{0}`);", Eval("Id").ToString()) %>'>Set As Primary</a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('CustomerContacts', '<%# Eval("Id") %>')">Log</a>
-                                                            </li>
-                                                        </ul>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                            </Columns>
-                                            <PagerStyle BackColor="DodgerBlue" ForeColor="White" HorizontalAlign="Center" />
-                                            <PagerSettings PreviousPageText="Prev" NextPageText="Next" Mode="NumericFirstLast" />
-                                            <AlternatingRowStyle BackColor="White" />
-                                        </asp:GridView>
-                                    </div>
-                                    <div class="d-flex justify-content-end mt-3">
-                                        <nav id="navPager" runat="server" visible="false">
-                                            <ul class="pagination pagination mb-0">
-                                                <asp:Repeater ID="rptPager" runat="server" OnItemCommand="rptPager_ItemCommand">
-                                                    <ItemTemplate>
-                                                        <li class='page-item <%# Eval("CssClass") %>'>
-                                                            <asp:LinkButton runat="server" ID="lnkPage" CssClass="page-link" Text='<%# Eval("Text") %>' CommandName="Page" CommandArgument='<%# Eval("PageIndex") %>' />
-                                                        </li>
-                                                    </ItemTemplate>
-                                                </asp:Repeater>
-                                            </ul>
-                                        </nav>
+                                    <div class="row mb-3">
+                                        <div class="col-12">
+                                            <div class="table-responsive">
+                                                <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="True" EmptyDataText="DATA NOT FOUND :)" PageSize="50" ShowHeaderWhenEmpty="true" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Visible="false" OnPageIndexChanging="gvList_PageIndexChanging" OnDataBound="gvList_DataBound">
+                                                    <RowStyle />
+                                                    <Columns>
+                                                        <asp:TemplateField ItemStyle-HorizontalAlign="Center">
+                                                            <ItemTemplate>
+                                                                <%# Container.DataItemIndex + 1 %>
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                        <asp:BoundField DataField="Id" HeaderText="ID" />
+                                                        <asp:BoundField DataField="FirstName" HeaderText="Product Name" />
+                                                        <asp:BoundField DataField="SecondName" HeaderText="Product Name" />
+                                                        <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="200px">
+                                                            <ItemTemplate>
+                                                                <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
+                                                                <ul class="dropdown-menu">
+                                                                    <li runat="server" visible='<%# LoginAccess("Detail") %>'>
+                                                                        <a class="dropdown-item" id="aEdit" href='<%# Page.ResolveUrl("~/setting/specification/product/alias/edit?aliasid=" & Eval("Id")) %>'>Edit</a>
+                                                                    </li>
+                                                                    <li runat="server" visible='<%# LoginAccess("Delete") %>'>
+                                                                        <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('ProductAlias', '<%# Eval("Id") %>')">Log</a>
+                                                                    </li>
+                                                                </ul>
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                    </Columns>
+                                                </asp:GridView>
+                                            </div>
+                                            <div class="d-flex justify-content-end mt-3">
+                                                <nav id="navPager" runat="server" visible="false">
+                                                    <ul class="pagination pagination mb-0">
+                                                        <asp:Repeater ID="rptPager" runat="server" OnItemCommand="rptPager_ItemCommand">
+                                                            <ItemTemplate>
+                                                                <li class='page-item <%# Eval("CssClass") %>'>
+                                                                    <asp:LinkButton runat="server" ID="lnkPage" CssClass="page-link" Text='<%# Eval("Text") %>' CommandName="Page" CommandArgument='<%# Eval("PageIndex") %>' />
+                                                                </li>
+                                                            </ItemTemplate>
+                                                        </asp:Repeater>
+                                                    </ul>
+                                                </nav>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -120,31 +112,14 @@
             </div>
         </section>
     </div>
-    
-    <div class="modal modal-blur fade" id="modalPrimary" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-secondary">
-                    <h5 class="modal-title white">Set Primary</h5>
-                </div>
-                <div class="modal-body text-center py-4">
-                    <asp:TextBox runat="server" ID="txtIdPrimary" style="display:none;"></asp:TextBox>
-                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
-                </div>
-                <div class="modal-footer">
-                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnPrimary" CssClass="btn btn-secondary" Text="Confirm" OnClick="btnPrimary_Click" />
-                </div>
-            </div>
-        </div>
-    </div>
+
     <div class="modal fade text-center" id="modalDelete" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-danger">
-                    <h5 class="modal-title white">Delete Contact</h5>
+                    <h5 class="modal-title white">Delete Alias</h5>
                 </div>
-                <div class="modal-body text-center py-4">
+                <div class="modal-body">
                     <asp:TextBox runat="server" ID="txtIdDelete" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
@@ -182,11 +157,6 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <div runat="server" visible="false">
-        <asp:Label runat="server" ID="lblId"></asp:Label>
-        <asp:Label runat="server" ID="lblAction"></asp:Label>
     </div>
 
     <script type="text/javascript">
@@ -230,7 +200,7 @@
                         return;
                     }
 
-                    const btn = this.querySelector("a[id*='aDetail']");
+                    const btn = this.querySelector("a[id*='aEdit']");
                     if (btn) btn.click();
                 };
             }
@@ -240,10 +210,6 @@
             initUpdatePanelLoading();
             bindGridRowClick();
         });
-
-        function showPrimary(id) {
-            document.getElementById("<%=txtIdPrimary.ClientID %>").value = id;
-        }
 
         function showDelete(id) {
             document.getElementById("<%=txtIdDelete.ClientID %>").value = id;
@@ -283,7 +249,7 @@
             });
         }
 
-        ["modalDelete", "modalLog", "modalPrimary"].forEach(function (id) {
+        ["modalDelete", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

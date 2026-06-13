@@ -38,17 +38,14 @@ Partial Class Setting_Customer_Business_Edit
                 MessageError(True, "ACCOUNT IS REQURIED !")
                 Exit Sub
             End If
-
             If txtName.Text = "" Then
                 MessageError(True, "REGISTERED NAME IS REQURIED !")
                 Exit Sub
             End If
-
             If txtNumber.Text = "" Then
                 MessageError(True, "ABN NUMBER IS REQURIED !")
                 Exit Sub
             End If
-
             If msgError.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerBusiness SET  CustomerId=@CustomerId, ABNNumber=@ABNNumber, RegisteredName=@RegisteredName WHERE Id=@Id", thisConn)
@@ -121,9 +118,7 @@ Partial Class Setting_Customer_Business_Edit
                 End If
             End If
 
-            Dim thisQuery As String = String.Format("SELECT * FROM Customers WHERE Active=1 {0} ORDER BY Name ASC", role)
-
-            ddlCustomer.DataSource = settingClass.GetDataTable(thisQuery)
+            ddlCustomer.DataSource = settingClass.GetDataTable(String.Format("SELECT * FROM Customers WHERE Active=1 {0} ORDER BY Name ASC", role))
             ddlCustomer.DataTextField = "Name"
             ddlCustomer.DataValueField = "Id"
             ddlCustomer.DataBind()

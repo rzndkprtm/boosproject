@@ -9,6 +9,11 @@
             Response.Redirect("~/setting", False)
             Exit Sub
         End If
+
+        If Not IsPostBack Then
+            divAdditional.Visible = False : divHr.Visible = False
+            If Session("RoleName") = "Developer" Then divAdditional.Visible = True : divHr.Visible = True
+        End If
     End Sub
 
     Protected Function GetSumData(params As String) As String

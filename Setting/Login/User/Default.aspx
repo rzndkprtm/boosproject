@@ -89,6 +89,9 @@
                                                                 <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                             </li>
                                                             <li>
+                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalLoginCredentials" onclick='<%# String.Format("return dataLoginCredentials(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("Email").ToString()) %>'>Send Login Credentials</a>
+                                                            </li>
+                                                            <li>
                                                                 <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangePassword" onclick='<%# String.Format("return showChangePassword(`{0}`);", Eval("Id").ToString()) %>'>Change Password</a>
                                                             </li>
                                                             <li>
@@ -97,7 +100,6 @@
                                                             <li>
                                                                 <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDencryptPass" onclick='<%# String.Format("return showDencryptPass(`{0}`, `{1}`);", Eval("UserName").ToString(), DencryptPassword(Eval("Password").ToString())) %>'>Show Password</a>
                                                             </li>
-                                                            <li><hr class="dropdown-divider"></li>
                                                             <li>
                                                                 <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('Logins', '<%# Eval("Id") %>')">Log</a>
                                                             </li>
@@ -160,6 +162,36 @@
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnDelete" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDelete_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal modal-blur fade" id="modalLoginCredentials" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Send Login Credentials</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <asp:TextBox runat="server" ID="txtIdLoginCredentials" style="display:none;"></asp:TextBox>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Email Address</label>
+                            <asp:TextBox runat="server" ID="txtEmailLoginCredentials" CssClass="form-control" placeholder="Email Address ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row" runat="server" id="divErrorLoginCredentials">
+                        <div class="col-12">
+                            <div class="alert alert-danger">
+                                <span runat="server" id="msgErrorLoginCredentials"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnLoginCredentials" Text="Submit" CssClass="btn btn-primary" OnClick="btnLoginCredentials_Click" />
                 </div>
             </div>
         </div>
@@ -382,6 +414,15 @@
             return result;
         }
 
+        function dataLoginCredentials(id, email) {
+            document.getElementById("<%=txtIdLoginCredentials.ClientID %>").value = id;
+            document.getElementById("<%=txtEmailLoginCredentials.ClientID %>").value = email;
+        }
+
+        function showLoginCredentials() {
+            $("#modalLoginCredentials").modal("show");
+        }
+
         function showDencryptPass(username, password) {
             let body = "UserName";
             body += "<br />";
@@ -393,7 +434,7 @@
             document.getElementById("spanPassword").innerHTML = body;
         }
 
-        ["modalActive", "modalDelete", "modalChangePassword", "modalResetPass", "modalDencryptPass", "modalLog"].forEach(function (id) {
+        ["modalActive", "modalDelete", "modalLoginCredentials", "modalChangePassword", "modalResetPass", "modalDencryptPass", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

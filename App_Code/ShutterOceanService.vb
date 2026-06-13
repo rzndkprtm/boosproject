@@ -11,7 +11,7 @@ Public Class ShutterOceanService
         Using conn As New SqlConnection(ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString)
             Await conn.OpenAsync()
 
-            Dim cmdHeader As New SqlCommand("SELECT OrderHeaders.*, Customers.Name AS CustomerName FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id=@Id", conn)
+            Dim cmdHeader As New SqlCommand("SELECT OrderHeaders.OrderId, OrderHeaders.OrderNote, Customers.Name AS CustomerName FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id=@Id", conn)
             cmdHeader.Parameters.AddWithValue("@Id", headerId)
 
             Using rd = Await cmdHeader.ExecuteReaderAsync()

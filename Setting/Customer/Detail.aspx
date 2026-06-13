@@ -196,7 +196,6 @@
                                                                 <%# Container.DataItemIndex + 1 %>
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
-                                                        <asp:BoundField DataField="Id" HeaderText="ID" />
                                                         <asp:BoundField DataField="Name" HeaderText="Name" />
                                                         <asp:BoundField DataField="Email" HeaderText="Email" />
                                                         <asp:BoundField DataField="Phone" HeaderText="Phone" />
@@ -211,10 +210,10 @@
                                                             <ItemTemplate>
                                                                 <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                                 <ul class="dropdown-menu">
-                                                                    <li runat="server" visible='<%# LoginAccess("Detail Contact") %>'>
+                                                                    <li>
                                                                         <a class="dropdown-item" id="aDetailContact" href='<%# Page.ResolveUrl("~/setting/customer/contact/edit?contactid=" & Eval("Id") & "&returnpage=detail") %>'>Detail / Edit</a>
                                                                     </li>
-                                                                    <li runat="server" visible='<%# LoginAccess("Delete Contact") %>'>
+                                                                    <li>
                                                                         <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteContact" onclick='<%# String.Format("return showDeleteContact(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                                     </li>
                                                                     <li runat="server" visible='<%# VisiblePrimaryContact(Eval("Primary")) %>'>
@@ -258,7 +257,6 @@
                                                                 <%# Container.DataItemIndex + 1 %>
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
-                                                        <asp:BoundField DataField="Id" HeaderText="ID" />
                                                         <asp:BoundField DataField="Description" HeaderText="Description" />
                                                         <asp:TemplateField HeaderText="Address">
                                                             <ItemTemplate>
@@ -276,10 +274,10 @@
                                                             <ItemTemplate>
                                                                 <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                                 <ul class="dropdown-menu">
-                                                                    <li runat="server" visible='<%# LoginAccess("Detail Address") %>'>
+                                                                    <li>
                                                                         <a class="dropdown-item" id="aDetailAddress" href='<%# Page.ResolveUrl("~/setting/customer/address/edit?addressid=" & Eval("Id") & "&returnpage=detail") %>'>Detail / Edit</a>
                                                                     </li>
-                                                                    <li runat="server" visible='<%# LoginAccess("Delete Address") %>'>
+                                                                    <li>
                                                                         <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteAddress" onclick='<%# String.Format("return showDeleteAddress(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                                     </li>
                                                                     <li runat="server" visible='<%# VisiblePrimaryAddress(Eval("Primary")) %>'>
@@ -322,7 +320,6 @@
                                                                     <%# Container.DataItemIndex + 1 %>
                                                                 </ItemTemplate>
                                                             </asp:TemplateField>
-                                                            <asp:BoundField DataField="Id" HeaderText="ID" />
                                                             <asp:BoundField DataField="ABNNumber" HeaderText="ABN Number" />
                                                             <asp:BoundField DataField="RegisteredName" HeaderText="Registered Name" />
                                                             <asp:TemplateField HeaderText="Primary">
@@ -335,10 +332,10 @@
                                                                 <ItemTemplate>
                                                                     <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                                     <ul class="dropdown-menu">
-                                                                        <li runat="server" visible='<%# LoginAccess("Detail Business") %>'>
+                                                                        <li>
                                                                             <a class="dropdown-item" id="aDetailBusiness" href='<%# Page.ResolveUrl("~/setting/customer/business/edit?businessid=" & Eval("Id") & "&returnpage=detail") %>'>Detail / Edit</a>
                                                                         </li>
-                                                                        <li runat="server" visible='<%# LoginAccess("Delete Business") %>'>
+                                                                        <li>
                                                                             <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteBusiness" onclick='<%# String.Format("return showDeleteBusiness(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                                         </li>
                                                                         <li runat="server" visible='<%# VisiblePrimaryBusiness(Eval("Primary")) %>'>
@@ -383,7 +380,6 @@
                                                                 <%# Container.DataItemIndex + 1 %>
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
-                                                        <asp:BoundField DataField="Id" HeaderText="ID" />
                                                         <asp:TemplateField HeaderText="Role">
                                                             <ItemTemplate>
                                                                 <%# If(IsDBNull(Eval("RoleName")) OrElse IsDBNull(Eval("LevelName")) OrElse String.IsNullOrEmpty(Eval("RoleName") & "") OrElse String.IsNullOrEmpty(Eval("LevelName") & ""), "Requires correction", Eval("RoleName") & " - " & Eval("LevelName")) %>
@@ -391,7 +387,6 @@
                                                         </asp:TemplateField>
                                                         <asp:BoundField DataField="UserName" HeaderText="User" />
                                                         <asp:BoundField DataField="FullName" HeaderText="Full Name" />
-                                                        <asp:BoundField DataField="Email" HeaderText="Email" />
                                                         <asp:BoundField DataField="LastLogin" HeaderText="Last Login" DataFormatString="{0:dd MMM yyyy HH:mm:ss}" />
                                                         <asp:BoundField DataField="DataPricing" HeaderText="Pricing" />
                                                         <asp:BoundField DataField="DataActive" HeaderText="Active" />
@@ -399,23 +394,17 @@
                                                             <ItemTemplate>
                                                                 <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                                 <ul class="dropdown-menu">
-                                                                    <li runat="server" visible='<%# LoginAccess("Detail Login") %>'>
+                                                                    <li>
                                                                         <a class="dropdown-item" id="aDetailLogin" href='<%# Page.ResolveUrl("~/setting/customer/login/edit?loginid=" & Eval("Id") & "&returnpage=detail") %>'>Detail / Edit</a>
                                                                     </li>
-                                                                    <li runat="server" visible='<%# LoginAccess("Active Login") %>'>
+                                                                    <li>
                                                                         <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalActiveLogin" onclick='<%# String.Format("return showActiveLogin(`{0}`, `{1}`);", Eval("Id").ToString(), Convert.ToInt32(Eval("Active"))) %>'><%# TextActive_Login(Eval("Active")) %></a>
                                                                     </li>
-                                                                    <li runat="server" visible='<%# LoginAccess("Delete Login") %>'>
-                                                                        <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteLogin" onclick='<%# String.Format("return showDeleteLogin(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
-                                                                    </li>
-                                                                    <li runat="server" visible='<%# LoginAccess("Change Password Login") %>'>
+                                                                    <li>
                                                                         <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangePasswordLogin" onclick='<%# String.Format("return showChangePasswordLogin(`{0}`);", Eval("Id").ToString()) %>'>Change Password</a>
                                                                     </li>
-                                                                    <li runat="server" visible='<%# LoginAccess("Reset Login") %>'>
+                                                                    <li>
                                                                         <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalResetPasswordLogin" onclick='<%# String.Format("return showResetPasswordLogin(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("UserName").ToString()) %>'>Reset Password</a>
-                                                                    </li>
-                                                                    <li runat="server" visible='<%# LoginAccess("Dencrypt Login") %>'>
-                                                                        <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDencryptPasswordLogin" onclick='<%# String.Format("return showDencryptPasswordLogin(`{0}`, `{1}`);", Eval("UserName").ToString(), DencryptPassword(Eval("Password").ToString())) %>'>Show Password</a>
                                                                     </li>
                                                                     <li>
                                                                         <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('Logins', '<%# Eval("Id") %>')">Log</a>
@@ -448,7 +437,7 @@
                                     <div class="row mt-5">
                                         <div class="col-12">
                                             <div class="table-responsive">
-                                                <asp:GridView runat="server" ID="gvListDiscount" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowCommand="gvListDiscount_RowCommand">
+                                                <asp:GridView runat="server" ID="gvListDiscount" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center">
                                                     <RowStyle />
                                                     <Columns>
                                                         <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="60px">
@@ -456,7 +445,6 @@
                                                                 <%# Container.DataItemIndex + 1 %>
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
-                                                        <asp:BoundField DataField="Id" HeaderText="ID" />
                                                         <asp:BoundField DataField="Type" HeaderText="Type" />
                                                         <asp:TemplateField HeaderText="Discount Tile">
                                                             <ItemTemplate>
@@ -473,10 +461,10 @@
                                                             <ItemTemplate>
                                                                 <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                                 <ul class="dropdown-menu">
-                                                                    <li runat="server" visible='<%# LoginAccess("Detail Discount") %>'>
-                                                                        <asp:LinkButton runat="server" ID="linkDetailDiscount" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                                    <li>
+                                                                        <a class="dropdown-item" id="aDetailDiscount" href='<%# Page.ResolveUrl("~/setting/customer/discount/edit?discountid=" & Eval("Id") & "&returnpage=detail") %>'>Detail / Edit</a>
                                                                     </li>
-                                                                    <li runat="server" visible='<%# LoginAccess("Delete Discount") %>'>
+                                                                    <li>
                                                                         <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteDiscount" onclick='<%# String.Format("return showDeleteDiscount(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                                     </li>
                                                                     <li>
@@ -526,7 +514,6 @@
                                                                 <%# Container.DataItemIndex + 1 %>
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
-                                                        <asp:BoundField DataField="Id" HeaderText="ID" />
                                                         <asp:BoundField DataField="PromoName" HeaderText="Promo" />
                                                          <asp:BoundField DataField="StartDate" HeaderText="Start Date" DataFormatString="{0:dd MMM yyyy}" />
                                                         <asp:BoundField DataField="EndDate" HeaderText="End Date" DataFormatString="{0:dd MMM yyyy}" />
@@ -534,10 +521,10 @@
                                                             <ItemTemplate>
                                                                 <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                                 <ul class="dropdown-menu">
-                                                                    <li runat="server" visible='<%# LoginAccess("Detail Promo") %>'>
+                                                                    <li>
                                                                         <a href="javascript:void(0);" id="aDetailPromo" class="dropdown-item" onclick="showDetailPromo('<%# Eval("Id") %>');">Detail</a>
                                                                     </li>
-                                                                    <li runat="server" visible='<%# LoginAccess("Delete Promo") %>'>
+                                                                    <li>
                                                                         <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeletePromo" onclick='<%# String.Format("return showDeletePromo(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                                     </li>
                                                                     <li>
@@ -571,7 +558,7 @@
                                     <div class="row mt-5">
                                         <div class="col-12">
                                             <div class="table-responsive">
-                                                <asp:GridView runat="server" ID="gvListProduct" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowCommand="gvListProduct_RowCommand">
+                                                <asp:GridView runat="server" ID="gvListProduct" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center">
                                                     <RowStyle />
                                                     <Columns>
                                                         <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="60px">
@@ -579,7 +566,6 @@
                                                                 <%# Container.DataItemIndex + 1 %>
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
-                                                        <asp:BoundField DataField="Id" HeaderText="ID" />
                                                         <asp:TemplateField HeaderText="Product" HeaderStyle-HorizontalAlign="Center">
                                                             <ItemTemplate>
                                                                 <%# BindDetailProduct(Eval("Id").ToString()) %>
@@ -589,10 +575,10 @@
                                                             <ItemTemplate>
                                                                 <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                                 <ul class="dropdown-menu">
-                                                                    <li runat="server" visible='<%# LoginAccess("Detail Product Access") %>'>
-                                                                        <asp:LinkButton runat="server" ID="linkDetailProduct" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                                    <li>
+                                                                        <a class="dropdown-item" id="aDetailProduct" href='<%# Page.ResolveUrl("~/setting/customer/product/edit?productid=" & Eval("Id") & "&returnpage=detail") %>'>Detail / Edit</a>
                                                                     </li>
-                                                                    <li runat="server" visible='<%# LoginAccess("Reset Product Access") %>'>
+                                                                    <li>
                                                                         <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalResetProduct">Reset</a>
                                                                     </li>
                                                                     <li>
@@ -868,23 +854,6 @@
             </div>
         </div>
     </div>
-    <div class="modal modal-blur fade" id="modalDeleteLogin" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-warning">
-                    <h5 class="modal-title white">Delete Login</h5>
-                </div>
-                <div class="modal-body text-center py-4">
-                    <asp:TextBox runat="server" ID="txtIdDeleteLogin" style="display:none;"></asp:TextBox>
-                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
-                </div>
-                <div class="modal-footer">
-                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnDeleteLogin" CssClass="btn btn-warning" Text="Confirm" OnClick="btnDeleteLogin_Click" />
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="modal modal-blur fade" id="modalChangePasswordLogin" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -922,21 +891,6 @@
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnResetPasswordLogin" CssClass="btn btn-info" Text="Confirm" OnClick="btnResetPasswordLogin_Click" />
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal modal-blur fade" id="modalDencryptPasswordLogin" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-warning">
-                    <h5 class="modal-title white">Show Password</h5>
-                </div>
-                <div class="modal-body text-center py-4">
-                    <span id="spanPassword"></span>
-                </div>
-                <div class="modal-footer">
-                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
                 </div>
             </div>
         </div>
@@ -1103,8 +1057,8 @@
                 { id: '<%= gvListAddress.ClientID %>', link: "aDetailAddress" },
                 { id: '<%= gvListBusiness.ClientID %>', link: "aDetailBusiness" },
                 { id: '<%= gvListLogin.ClientID %>', link: "aDetailLogin" },
-                { id: '<%= gvListDiscount.ClientID %>', link: "linkDetailDiscount" },
-                { id: '<%= gvListProduct.ClientID %>', link: "linkDetailProduct" },
+                { id: '<%= gvListDiscount.ClientID %>', link: "aDetailDiscount" },
+                { id: '<%= gvListProduct.ClientID %>', link: "aDetailProduct" },
                 { id: '<%= gvListPromo.ClientID %>', link: "aDetailPromo" },
             ];
 
@@ -1276,10 +1230,6 @@
             document.getElementById("titleActiveLogin").innerHTML = title;
         }
 
-        function showDeleteLogin(id) {
-            document.getElementById("<%=txtIdDeleteLogin.ClientID %>").value = id;
-        }
-
         function showChangePasswordLogin(id, active) {
             document.getElementById("<%=txtIdChangePassword.ClientID %>").value = id;
         }
@@ -1291,17 +1241,6 @@
             document.getElementById("<%=txtIdResetPass.ClientID %>").value = id;
             document.getElementById("<%=txtNewResetPass.ClientID %>").value = newPass;
             document.getElementById("spanDescResetPass").innerHTML = result;
-        }
-
-        function showDencryptPasswordLogin(username, password) {
-            let body = "UserName";
-            body += "<br />";
-            body += "<b>" + username + "</b>";
-            body += "<br /><br />";
-            body += "Password Decryption";
-            body += "<br />";
-            body += "<b>" + password + "</b>";
-            document.getElementById("spanPassword").innerHTML = body;
         }
 
         function generateNewPassword(length) {
@@ -1368,12 +1307,13 @@
 
         [
             "modalDelete", "modalRecalculate", "modalLog", "modalWelcome", "modalWaiting",
-            "modalDeleteContact", "modalPrimaryContact", "modalDeleteAddress", "modalPrimaryAddress",
+            "modalDeleteContact", "modalPrimaryContact",
+            "modalDeleteAddress", "modalPrimaryAddress",
             "modalDeleteBusiness", "modalPrimaryBusiness",
-            "modalActiveLogin", "modalDeleteLogin", "modalResetPasswordLogin", "modalDencryptPass", "modalLoginCredentials", "modalChangePasswordLogin",
+            "modalActiveLogin", "modalResetPasswordLogin", "modalLoginCredentials", "modalChangePasswordLogin",
             "modalResetDiscount", "modalDeleteDiscount",
             "modalDetailPromo", "modalResetPromo", "modalDeletePromo",
-            "modalResetProduct", "modalProcessProduct"
+            "modalResetProduct"
         ].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
