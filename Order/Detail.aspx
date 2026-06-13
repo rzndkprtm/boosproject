@@ -3,7 +3,8 @@
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <style>
         .detail-section { margin-bottom: 1.75rem; }
-        .detail-title { font-size: .85rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #6c757d; margin-bottom: 1rem; padding-bottom: .5rem; border-bottom: 1px solid #dee2e6; }
+        .detail-title { font-size: .85rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #6c757d; margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: .5rem; border-bottom: 1px solid #dee2e6; }
         .detail-row { display: flex; margin-bottom: .75rem; }
         .detail-label { width: 180px; color: #6c757d; flex-shrink: 0; }
         .detail-value { font-weight: 600; word-break: break-word; }
@@ -54,6 +55,7 @@
                 <ul class="dropdown-menu">
                     <li><asp:Button runat="server" ID="btnPreview" CssClass="dropdown-item" Text="Preview" /></li>
                     <li><asp:Button runat="server" ID="btnDownload" CssClass="dropdown-item" Text="Download" OnClick="btnDownload_Click" /></li>
+                    <li><asp:Button runat="server" ID="btnSuratJalan" CssClass="dropdown-item" Text="Surat Jalan" /></li>
                 </ul>
                 <asp:Button runat="server" ID="btnEditOrder" CssClass="btn btn-secondary me-1" Text="Edit Order" OnClick="btnEditOrder_Click" />
                 <a href="javascript:void(0);" runat="server" id="aDeleteOrder" class="btn btn-danger me-1" data-bs-toggle="modal" data-bs-target="#modalDeleteOrder">Delete Order</a>
@@ -87,7 +89,7 @@
                 <a href="javascript:void(0);" runat="server" id="aReworkOrder" class="btn btn-danger me-1" data-bs-toggle="modal" data-bs-target="#modalReworkOrder">Rework Order</a>
                 <button class="btn btn-info dropdown-toggle me-1" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnQuoteAction">Quote</button>
                 <ul class="dropdown-menu">
-                    <li><a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDetailQuote">Quote Details</a></li>
+                    <li><a href="javascript:void(0);" runat="server" id="aQuoteCustomer" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDetailQuote">Quote Details</a></li>
                     <li><a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDownloadQuote">Download Quote</a></li>
                     <li><asp:Button runat="server" ID="btnPreviewQuote" CssClass="dropdown-item" Text="Preview Quote" /></li>
                 </ul>
@@ -106,34 +108,8 @@
                         <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalInvoiceData">Update Invoice Data</a>
                     </li>
                 </ul>
-                <a href="javascript:void(0);" runat="server" id="aBuilder" class="btn btn-success me-1" data-bs-toggle="modal" data-bs-target="#modalBuilderDetail">Builder Details</a>
-                <a href="javascript:void(0);" runat="server" id="aFileOrder" class="btn btn-secondary me-1" data-bs-toggle="modal" data-bs-target="#modalFileOrder">Files</a>
-                <button class="btn btn-dark dropdown-toggle me-1" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnMoreAction">More</button>
-                <ul class="dropdown-menu">
-                    <li runat="server" id="liMoreDownloadQuote">
-                        <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalMoreDownloadQuote">Download Quote</a>
-                    </li>
-                    <li runat="server" id="liMoreEmailQuote">
-                        <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalMoreEmailQuote">Email Quote</a>
-                    </li>
-                    <li runat="server" id="liMoreDividerQuote"><hr class="dropdown-divider"></li>
-                    <li runat="server" id="liMoreAddNote">
-                        <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalAddNote">Add Internal Note</a>
-                    </li>                    
-                    <li runat="server" id="liMoreHistoryNote">
-                        <a href="javascript:void(0);" class="dropdown-item" onclick="showHistoryNote('<%= lblHeaderId.Text %>')">History Note</a>
-                    </li>
-                    <li runat="server" id="liMoreDividerAdditional"><hr class="dropdown-divider"></li>
-                    <li runat="server" id="liMoreRePrice">
-                        <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalRecalculate">Re Price Order</a>
-                    </li>
-                    <li runat="server" id="liMoreSuratJalan">
-                        <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalRecalculate">Surat Jalan</a>
-                    </li>
-                    <li runat="server" id="liMoreDownloadBOE">
-                        <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDownloadBOE">Download BOE</a>
-                    </li>
-                </ul>
+                <a href="javascript:void(0);" runat="server" id="aBuilderData" class="btn btn-primary me-1" data-bs-toggle="modal" data-bs-target="#modalBuilderDetail">Builder Data</a>
+                <a href="javascript:void(0);" runat="server" id="aFile" class="btn btn-dark me-1" data-bs-toggle="modal" data-bs-target="#modalFileOrder">Files</a>
                 <a href="javascript:void(0);" runat="server" id="aLog" class="btn btn-secondary me-1" onclick="showLogFromElement(this)">Log</a>
             </div>
         </section>
@@ -158,7 +134,6 @@
                             </div>
                         </div>
                         <div class="detail-section">
-                            <div class="detail-title">Order Data</div>
                             <div class="detail-row">
                                 <div class="detail-label">Order Number</div>
                                 <div class="detail-value">
@@ -204,7 +179,13 @@
                             </div>
                         </div>
                         <div runat="server" id="divInternalNote" class="detail-section">
-                            <div class="detail-title">Internal Note (Latest)</div>
+                            <div class="section-header">
+                                <div class="detail-title">Internal Note (Latest)</div>
+                                <div>
+                                    <a href="javascript:void(0);" class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="modal" data-bs-target="#modalAddNote">Add Note</a>
+                                    <a href="javascript:void(0);" class="btn btn-sm btn-outline-danger" onclick="showHistoryNote('<%= lblHeaderId.Text %>')">History Note</a>
+                                </div>
+                            </div>                            
                             <div class="note-box">
                                 <asp:Label runat="server" ID="lblInternalNote"></asp:Label>
                             </div>
@@ -215,42 +196,53 @@
             <div class="col-lg-5">
                 <div class="card border-0 shadow-sm mb-3" runat="server" id="divDateOrder">
                     <div class="card-body">
-                        <div class="detail-title">Order Timeline</div>
-                        <div class="row">
-                            <div class="col-6 timeline-item">
+                        <div class="section-header">
+                            <div class="detail-title">Order Timeline</div>
+                            <div>
+                                <a href="javascript:void(0);" runat="server" id="aMoreDownloadBOE" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalDownloadBOE">Download BOE</a>
+                            </div>
+                        </div>
+                        <div class="row" runat="server" id="divDateAction">
+                            <div class="col-md-6 timeline-item">
                                 <div class="timeline-label">Created</div>
                                 <div class="timeline-value">
                                     <asp:Label runat="server" ID="lblCreatedDate"></asp:Label>
                                 </div>
                             </div>
-                            <div class="col-6 timeline-item">
+                            <div class="col-md-6 timeline-item">
                                 <div class="timeline-label">Submitted</div>
                                 <div class="timeline-value">
                                     <asp:Label runat="server" ID="lblSubmittedDate"></asp:Label>
                                 </div>
                             </div>
-                            <div class="col-6 timeline-item">
+                            <div class="col-md-6 timeline-item">
                                 <div class="timeline-label">Production</div>
                                 <div class="timeline-value">
                                     <asp:Label runat="server" ID="lblProductionDate"></asp:Label>
                                 </div>
                             </div>
-                            <div class="col-6 timeline-item">
-                                <div class="timeline-label">Completed</div>
-                                <div class="timeline-value">
-                                    <asp:Label runat="server" ID="lblCompletedDate"></asp:Label>
-                                </div>
-                            </div>
-                            <div class="col-6 timeline-item">
+                            <div class="col-md-6 timeline-item">
                                 <div class="timeline-label">On Hold</div>
                                 <div class="timeline-value">
                                     <asp:Label runat="server" ID="lblOnHoldDate"></asp:Label>
                                 </div>
                             </div>
-                            <div class="col-6 timeline-item">
-                                <div class="timeline-label">Cancelled</div>
+                            <div class="col-md-6 timeline-item">
+                                <div class="timeline-label">Completed</div>
+                                <div class="timeline-value">
+                                    <asp:Label runat="server" ID="lblCompletedDate"></asp:Label>
+                                </div>
+                            </div>
+                            <div class="col-md-6 timeline-item">
+                                <div class="timeline-label">Canceled</div>
                                 <div class="timeline-value">
                                     <asp:Label runat="server" ID="lblCanceledDate"></asp:Label>
+                                </div>
+                            </div>
+                            <div class="col-md-6 timeline-item">
+                                <div class="timeline-label">Quoted</div>
+                                <div class="timeline-value">
+                                    <asp:Label runat="server" ID="lblQuotedDate"></asp:Label>
                                 </div>
                             </div>
                         </div>
@@ -258,7 +250,9 @@
                 </div>
                 <div class="card border-0 shadow-sm" runat="server" id="divShipmentOrder">
                     <div class="card-body">
-                        <div class="detail-title">Shipment Information</div>
+                        <div class="section-header">
+                            <div class="detail-title">Shipment Information</div>
+                        </div>
                         <div class="detail-row">
                             <div class="detail-label">Shipment No</div>
                             <div class="detail-value">
@@ -293,69 +287,20 @@
                 </div>
             </div>
         </section>
-        <section class="row" runat="server" id="secBuilder">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-content">
-                        <div class="card-body">
-                            <div class="row mb-2">
-                                <div class="col-6 col-sm-6 col-lg-2 mb-2">
-                                    <label>Estimator</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblEstimator" CssClass="font-bold"></asp:Label>
-                                </div>
-                                <div class="col-6 col-sm-6 col-lg-2">
-                                    <label>Supervisor</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblSupervisor" CssClass="font-bold"></asp:Label>
-                                </div>
-                                <div class="col-6 col-sm-6 col-lg-2 mb-2">
-                                    <label>Address</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblAddress" CssClass="font-bold"></asp:Label>
-                                </div>
-                                <div class="col-6 col-sm-6 col-lg-2">
-                                    <label>Quoted Date</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblQuotedDate" CssClass="font-bold"></asp:Label>
-                                </div>
-                                <div class="col-6 col-sm-6 col-lg-2 mb-2">
-                                    <label>Call For Check Measure</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblCallForCheckMeasure" CssClass="font-bold"></asp:Label>
-                                </div>
-                                <div class="col-6 col-sm-6 col-lg-2">
-                                    <label>Check Measure Due</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblCheckMeasureDue" CssClass="font-bold"></asp:Label>
-                                </div>
-                            </div>
-                            <div class="row mb-1">
-                                <div class="col-6 col-sm-6 col-lg-2">
-                                    <label>To Be Installed</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblToBeInstalled" CssClass="font-bold"></asp:Label>
-                                </div>
-                                <div class="col-6 col-sm-6 col-lg-2">
-                                    <label>Installed</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblInstalled" CssClass="font-bold"></asp:Label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
         <section class="row" runat="server" id="secPricing">
             <div class="col-12">
                 <div class="card border-0 shadow-sm">
                     <div class="card-body">
-                        <div class="detail-title">Financial Information</div>
+                        <div class="section-header">
+                            <div class="detail-title">Financial Information</div>
+                            <div>
+                                <a href="javascript:void(0);" runat="server" id="aRePrice" class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#modalRePrice">Re Price Order</a>
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-lg-6">
-                                <div class="detail-section mb-0" runat="server" id="divInvoicing">
-                                    <div class="enterprise-title">Invoicing</div>
+                                <div class="detail-section" runat="server" id="divInvoicing">
+                                    <div class="enterprise-title mb-2">INVOICING</div>
                                     <div class="detail-row">
                                         <div class="detail-label">Invoice Number</div>
                                         <div class="detail-value">
@@ -374,7 +319,7 @@
                                             <asp:Label runat="server" ID="lblCollector"></asp:Label>
                                         </div>
                                     </div>
-                                    <div class="detail-row mb-0">
+                                    <div class="detail-row">
                                         <div class="detail-label">Payment Date</div>
                                         <div class="detail-value">
                                             <asp:Label runat="server" ID="lblPaymentDate"></asp:Label>
@@ -384,7 +329,7 @@
                             </div>
                             <div class="col-lg-6" runat="server" id="divCosting">
                                 <div class="finance-highlight">
-                                    <div class="enterprise-title">Cost Summary</div>
+                                    <div class="enterprise-title mb-2">COST SUMMARY</div>
                                     <div class="detail-row">
                                         <div class="detail-label">
                                             <asp:Label runat="server" ID="lblPriceOrderTitle"></asp:Label>
@@ -402,7 +347,7 @@
                                         </div>
                                     </div>
                                     <hr />
-                                    <div class="detail-row mb-0">
+                                    <div class="detail-row">
                                         <div class="detail-label fw-bold">
                                             <asp:Label runat="server" ID="lblFinalPriceOrderTitle"></asp:Label>
                                         </div>
@@ -428,7 +373,7 @@
                             </div>
                             <div class="mt-2 mt-lg-0">
                                 <a href="javascript:void(0);" runat="server" id="aAddItem" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#modalAddItem">New Item</a>
-                                <asp:Button runat="server" ID="btnAddService" CssClass="btn btn-outline-primary" Text="New Service" OnClick="btnAddService_Click" />
+                                <a href="javascript:void(0);" runat="server" id="aAddService" class="btn btn-outline-primary me-2" data-bs-toggle="modal" data-bs-target="#modalAddService">New Service</a>
                             </div>
                         </div>
                     </div>
@@ -614,12 +559,18 @@
                     </div>
                     <div class="row mb-2">
                         <div class="col-6 form-group">
+                            <label class="form-label">Completed Date</label>
+                            <asp:TextBox runat="server" TextMode="Date" ID="txtCompletedDate" CssClass="form-control"></asp:TextBox>
+                        </div>
+                        <div class="col-6 form-group">
                             <label class="form-label">Canceled Date</label>
                             <asp:TextBox runat="server" TextMode="Date" ID="txtCanceledDate" CssClass="form-control"></asp:TextBox>
                         </div>
+                    </div>
+                    <div class="row mb-2">
                         <div class="col-6 form-group">
-                            <label class="form-label">Completed Date</label>
-                            <asp:TextBox runat="server" TextMode="Date" ID="txtCompletedDate" CssClass="form-control"></asp:TextBox>
+                            <label class="form-label">Quoted Date</label>
+                            <asp:TextBox runat="server" TextMode="Date" ID="txtQuotedDate" CssClass="form-control"></asp:TextBox>
                         </div>
                     </div>
                 </div>
@@ -886,9 +837,15 @@
                                         <asp:BoundField DataField="FileName" HeaderText="File Name" />
                                         <asp:TemplateField HeaderText="Action" ItemStyle-Width="180px">
                                             <ItemTemplate>
-                                                <a class="btn btn-sm btn-info" href='<%# ResolveUrl("~/Handler/Download.ashx?folder=" & Eval("FolderName") & "&file=" & Eval("FileName")) %>'>Download</a>
-
-                                                <asp:LinkButton ID="btnDelete" runat="server" CssClass="btn btn-sm btn-danger" CommandName="DeleteFile" CommandArgument='<%# Eval("FileName") %>' OnClientClick="return confirm('Are you sure want to delete this file?');">Delete</asp:LinkButton>
+                                                <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
+                                                <ul class="dropdown-menu">
+                                                    <li>
+                                                        <a class="dropdown-item" href='<%# ResolveUrl("~/Handler/Download.ashx?folder=" & Eval("FolderName") & "&file=" & Eval("FileName")) %>'>Download</a>
+                                                    </li>
+                                                    <li runat="server" visible='<%# VisibleFileDelete() %>'>
+                                                        <asp:LinkButton ID="btnDelete" runat="server" CssClass="dropdown-item" CommandName="DeleteFile" CommandArgument='<%# Eval("FileName") %>' OnClientClick="return confirm('Are you sure want to delete this file?');">Delete</asp:LinkButton>
+                                                    </li>
+                                                </ul>
                                             </ItemTemplate>
                                         </asp:TemplateField>
                                     </Columns>
@@ -1260,7 +1217,7 @@
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Builder Detail</h5>
+                    <h5 class="modal-title">Builder Data</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -1310,64 +1267,7 @@
                 </div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnBuilderDetail" CssClass="btn btn-success" Text="Submit" OnClick="btnBuilderDetail_Click" OnClientClick="return showWaiting();" />
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade text-center" id="modalMoreDownloadQuote" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-dark">
-                    <h5 class="modal-title white">Download Quote</h5>
-                </div>
-                <div class="modal-body text-center py-4">
-                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
-                </div>
-                <div class="modal-footer">
-                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnMoreDownloadQuote" CssClass="btn btn-dark" Text="Confirm" OnClick="btnMoreDownloadQuote_Click"  OnClientClick="return showWaiting($(this).closest('.modal').attr('id'));" />
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade text-left" id="modalMoreEmailQuote" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Email Quote</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row mb-2">
-                        <div class="col-12 form-group">
-                            <label class="form-label">To</label>
-                            <asp:TextBox runat="server" ID="txtEmailQuoteTo" CssClass="form-control" placeholder="Customer Email ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-12 form-group">
-                            <label class="form-label">CC Customer</label>
-                            <asp:TextBox runat="server" ID="txtEmailQuoteCCCustomer" TextMode="MultiLine" CssClass="form-control" Height="135px" placeholder="CC Customer ..." autocomplete="off" style="resize:none;"></asp:TextBox>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-12 form-group">
-                            <label class="form-label">CC Staff</label>
-                            <asp:TextBox runat="server" ID="txtEmailQuoteCCStaff" TextMode="MultiLine" CssClass="form-control" Height="135px" placeholder="CC Staff ..." autocomplete="off" style="resize:none;"></asp:TextBox>
-                        </div>
-                    </div>
-                    <div class="row mb-2" runat="server" id="divErrorMoreEmailQuote">
-                        <div class="col-12">
-                            <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorMoreEmailQuote"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnMoreEmailQuote" CssClass="btn btn-dark" Text="Submit" OnClick="btnMoreEmailQuote_Click" OnClientClick="return showWaiting();" />
+                    <asp:Button runat="server" ID="btnBuilderDetail" CssClass="btn btn-primary" Text="Submit" OnClick="btnBuilderDetail_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>
@@ -1436,8 +1336,8 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row mb-3">
-                        <div class="col-12">
+                    <div class="row">
+                        <div class="col-12 form-group">
                             <label class="form-label required">SELECT PRODUCT</label>
                             <asp:DropDownList runat="server" ID="ddlDesign" CssClass="choices form-select"></asp:DropDownList>
                             <small class="form-hint" style="color:red;">* Please select a product then click the submit button</small>
@@ -1447,6 +1347,51 @@
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnAddItem" CssClass="btn btn-primary" Text="Submit" OnClick="btnAddItem_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal modal-blur fade" id="modalAddService" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Item Service</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label required">SELECT ITEM</label>
+                            <asp:DropDownList runat="server" ID="ddlAddService" CssClass="choices form-select"></asp:DropDownList>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label required">ADDITIONAL NOTE</label>
+                            <asp:TextBox runat="server" ID="txtNoteService" CssClass="form-control" placeholder="Additional Note ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                            <label class="form-label required">BUY PRICE</label>
+                            <asp:TextBox runat="server" ID="txtBuyService" CssClass="form-control" placeholder="Buy Price ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                            <label class="form-label required">SELL PRICE</label>
+                            <asp:TextBox runat="server" ID="txtSellService" CssClass="form-control" placeholder="Sell Price ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row mb-2" runat="server" id="divErrorAddService">
+                        <div class="col-12">
+                            <div class="alert alert-danger">
+                                <span runat="server" id="msgErrorAddService"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnAddServices" CssClass="btn btn-primary" Text="Submit" OnClick="btnAddService_Click" />
                 </div>
             </div>
         </div>
@@ -1520,36 +1465,21 @@
             </div>
         </div>
     </div>
-    <div class="modal modal-blur fade" id="modalRecalculate" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+    <div class="modal modal-blur fade" id="modalRePrice" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-dark">
-                    <h5 class="modal-title white">Recalculate Price</h5>
+                <div class="modal-header bg-info">
+                    <h5 class="modal-title white">Re-Price Order</h5>
                 </div>
-                <div class="modal-body text-center py-4">
-                    Hi <b><%: Session("FullName") %></b>,<br />
-                    Teks
+                <div class="modal-body py-4">
+                    Hi <b><%: Session("FullName") %></b>,<br /><br />
+                    <b>The price will be recalculated using the latest pricing version.</b><br /><br />
+                    If the issue persists, please contact the IT team.<br />
+                    This issue is caused by a product group that is not registered in the system.
                 </div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnRecalculate" CssClass="btn btn-dark" Text="Confirm" OnClick="btnRecalculate_Click" OnClientClick="return showWaiting();" />
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal modal-blur fade" id="modalSuratJalan" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-dark">
-                    <h5 class="modal-title white">Surat Jalan</h5>
-                </div>
-                <div class="modal-body text-center py-4">
-                    Hi <b><%: Session("FullName") %></b>,<br />
-                    Teks
-                </div>
-                <div class="modal-footer">
-                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnSuratJalan" CssClass="btn btn-dark" Text="Confirm" OnClientClick="return showWaiting();" />
+                    <asp:Button runat="server" ID="btnRecalculate" CssClass="btn btn-info" Text="Confirm" OnClick="btnRecalculate_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>
@@ -1626,9 +1556,8 @@
             "modalReworkOrder",
             "modalSendInvoice", "modalReceivePayment", "modalDownloadInvoice", "modalDownloadInvoiceCSV", "modalInvoiceNumber", "modalInvoiceData",
             "modalDetailQuote", "modalDownloadQuote",
-            "modalMoreDownloadQuote", "modalMoreEmailQuote",
-            "modalAddNote", "modalHistoryNote", "modalRecalculate", "modalSuratJalan", "modalDownloadBOE",
-            "modalAddItem", "modalDeleteItem", "modalCosting", "modalCostingBuy",
+            "modalAddNote", "modalHistoryNote", "modalRePrice", "modalDownloadBOE",
+            "modalAddItem", "modalAddService", "modalDeleteItem", "modalCosting", "modalCostingBuy",
             "modalDateOrder", "modalDuplicateOrder"
         ].forEach(id => {
             document.getElementById(id).addEventListener("hide.bs.modal", () => {
@@ -1809,12 +1738,12 @@
             });
         }
 
-        function showEmailQuote() {
-            $("#modalMoreEmailQuote").modal("show");
-        }
-
         function showSendInvoice() {
             $("#modalSendInvoice").modal("show");
+        }
+
+        function showService() {
+            $("#modalAddService").modal("show");
         }
 
         function showInvoiceNumber() {

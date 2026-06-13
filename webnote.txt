@@ -1,0 +1,20 @@
+﻿git update-index --assume-unchanged Web.config
+git update-index --no-assume-unchanged Web.config
+
+https://github.com/rzndkprtm/boosproject
+
+BIGBLINDS
+
+https://swh7.conetix.com.au:8443/
+User : ordersbl
+Password : ramin41mta
+
+no-reply@ordersblindonline.com
+fq95P~38o
+
+FTP
+IP : 202.74.70.10
+User : bigblinds
+Password : 4Y_xv&nbC4Hw3fio
+
+088212742812

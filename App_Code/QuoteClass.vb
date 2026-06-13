@@ -68,7 +68,6 @@ Public Class QuoteClass
         Catch ex As Exception
             dt = New DataTable()
         End Try
-
         Return dt
     End Function
 
@@ -287,7 +286,7 @@ Public Class QuoteClass
             Dim doc As New Document(PageSize.A4, 36, 36, 110, 180)
             Dim writer As PdfWriter = PdfWriter.GetInstance(doc, ms)
 
-            Dim headerData As DataRow = GetDataRow("SELECT OrderHeaders.*, OrderInvoices.InvoiceNumber AS InvoiceNumber, OrderInvoices.InvoiceDate AS InvoiceDate, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, Customers.CompanyDetailId AS CompanyDetailId FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id LEFT JOIN OrderInvoices ON OrderHeaders.Id=OrderInvoices.Id WHERE OrderHeaders.Id='" & headerId & "'")
+            Dim headerData As DataRow = GetDataRow("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, Customers.CompanyDetailId AS CompanyDetailId FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id='" & headerId & "'")
 
             Dim orderId As String = headerData("OrderId").ToString()
             Dim customerId As String = headerData("CustomerId").ToString()
@@ -493,14 +492,15 @@ Public Class QuoteClass
 
                 If designName = "Cellular Shades" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)
-                    itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, fabricColourName, size, squareMetreText)
+                    itemDescription = String.Format("{0} {1} {2}", invoiceName, size, squareMetreText)
                     If blindName = "Day & Night" Then
-                        If itemNumber = "1" Then
-                            itemDescription = String.Format("{0} {1} {2} {3}", invoiceName.Replace("& Night ", ""), fabricColourName, size, squareMetreText)
-                        End If
-                        If itemNumber = "2" Then
-                            itemDescription = String.Format("{0} {1} {2} {3}", invoiceName.Replace("Day & ", ""), fabricColourName, size, squareMetreText)
-                        End If
+                        Dim secondFabricColour As String = GetItemData("SELECT FabricColourIdB FROM OrderDetails WHERE Id='" & itemId & "'")
+                        Dim fabricColourNameB As String = GetFabricColourName(secondFabricColour)
+
+                        itemDescription &= vbCrLf
+                        itemDescription &= fabricColourName
+                        itemDescription &= vbCrLf
+                        itemDescription &= fabricColourNameB
                     End If
                 End If
 
@@ -538,6 +538,8 @@ Public Class QuoteClass
 
                 If designName = "Vertical" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)
+                    fabricColourName = fabricColourName.Replace("127mm", "").Replace("89mm", "").Trim()
+
                     itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, fabricColourName, size, squareMetreText)
                     If blindName = "Track Only" Then
                         itemDescription = String.Format("{0} ({1}mm) {2}", invoiceName, width, linearMetreText)
@@ -1293,7 +1295,7 @@ Public Class QuoteClass
             Dim doc As New Document(PageSize.A4, 36, 36, 110, 180)
             Dim writer As PdfWriter = PdfWriter.GetInstance(doc, ms)
 
-            Dim headerData As DataRow = GetDataRow("SELECT OrderHeaders.*, OrderInvoices.InvoiceNumber AS InvoiceNumber, OrderInvoices.InvoiceDate AS InvoiceDate, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, Customers.CompanyDetailId AS CompanyDetailId FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id LEFT JOIN OrderInvoices ON OrderHeaders.Id=OrderInvoices.Id WHERE OrderHeaders.Id='" & headerId & "'")
+            Dim headerData As DataRow = GetDataRow("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, Customers.CompanyDetailId AS CompanyDetailId FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id='" & headerId & "'")
 
             Dim orderId As String = headerData("OrderId").ToString()
             Dim customerId As String = headerData("CustomerId").ToString()

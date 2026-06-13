@@ -30,7 +30,7 @@
             </div>
         </section>
         <section class="row">
-            <div class="col-12 col-sm-12 col-lg-9">
+            <div class="col-12">
                 <div class="card">
                     <div class="card-content">
                         <div class="card-header">
@@ -57,18 +57,14 @@
                                                 </asp:TemplateField>
                                                 <asp:TemplateField HeaderText="New Price (Buy)" ItemStyle-Width="180px">
                                                     <ItemTemplate>
-                                                        <div class="input-group">
-                                                            <span runat="server" class="input-group-text"><%# BindCurrency() %></span>
-                                                            <asp:TextBox runat="server" ID="txtNewBuyPrice" CssClass="form-control" Text='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:0.##}", Eval("BuyPrice")) %>'></asp:TextBox>
-                                                        </div>
+                                                        <asp:TextBox runat="server" ID="txtNewBuyPrice" CssClass="form-control" Visible='<%# Eval("Type").ToString() <> "Note" %>' Text='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:0.##}", Eval("BuyPrice")) %>'></asp:TextBox>
+                                                        <asp:Label runat="server" Text="-" Visible='<%# Eval("Type").ToString() = "Note" %>'></asp:Label>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:TemplateField HeaderText="New Price (Sell)" ItemStyle-Width="180px">
                                                     <ItemTemplate>
-                                                        <div class="input-group">
-                                                            <span runat="server" class="input-group-text"><%# BindCurrency() %></span>
-                                                            <asp:TextBox runat="server" ID="txtNewSellPrice" CssClass="form-control" Text='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:0.##}", Eval("SellPrice")) %>'></asp:TextBox>
-                                                        </div>
+                                                        <asp:TextBox runat="server" ID="txtNewSellPrice" CssClass="form-control" Visible='<%# Eval("Type").ToString() <> "Note" %>' Text='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:0.##}", Eval("SellPrice")) %>'></asp:TextBox>
+                                                        <asp:Label runat="server" Text="-" Visible='<%# Eval("Type").ToString() = "Note" %>'></asp:Label>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:TemplateField ItemStyle-Width="100px">
@@ -77,7 +73,6 @@
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                             </Columns>
-                                            <AlternatingRowStyle BackColor="White" />
                                         </asp:GridView>
                                     </div>
                                 </div>
@@ -85,11 +80,20 @@
                         </div>
                         <div class="card-footer d-flex justify-content-between align-items-center">
                             <div>
-                                <a class="btn btn-secondary" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalAdd">Add Surcharge</a>
+                                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Add Costings</button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalAdd">Add Surcharge</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalNote">Add Note</a>
+                                    </li>
+                                </ul>
+                                
                             </div>
                             <div>
                                 <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" OnClick="btnSubmit_Click" />
-                                <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Cancel / Close" OnClick="btnCancel_Click" />
+                                <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Close / Finish" OnClick="btnCancel_Click" />
                             </div>
                         </div>
                     </div>
@@ -164,6 +168,28 @@
             </div>
         </div>
     </div>
+    <div class="modal fade text-left" id="modalNote" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Add Note</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Description</label>
+                            <asp:TextBox runat="server" ID="txtNote" CssClass="form-control" placeholder="Description ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnNote" CssClass="btn btn-secondary" Text="Submit" OnClick="btnNote_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblId"></asp:Label>
@@ -174,7 +200,7 @@
     </div>
 
     <script type="text/javascript">
-        ["modalAdd", "modalDelete"].forEach(function (id) {
+        ["modalAdd", "modalDelete", "modalNote"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

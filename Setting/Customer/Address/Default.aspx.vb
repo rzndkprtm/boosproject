@@ -5,7 +5,6 @@ Partial Class Setting_Customer_Address_Default
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataLog As Object() = Nothing
 
@@ -69,8 +68,8 @@ Partial Class Setting_Customer_Address_Default
     Protected Sub btnPrimary_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim thisId As String = txtIdPrimary.Text
-            Dim customerId As String = settingClass.GetItemData("SELECT CustomerId FROM CustomerAddress WHERE Id='" & thisId & "'")
+            Dim thisId As String = txtPrimaryId.Text
+            Dim customerId As String = txtPrimaryCustomerId.Text
 
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerAddress SET [Primary]=0 WHERE CustomerId=@CustomerId; UPDATE CustomerAddress SET [Primary]=1 WHERE Id=@Id;", thisConn)
@@ -98,20 +97,21 @@ Partial Class Setting_Customer_Address_Default
     Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim thisId As String = txtIdDelete.Text
+            Dim thisId As String = txtDeleteId.Text
+            Dim thisCustomerId As String = txtDeleteCustomerId.Text
+
             Dim fullAddress As String = settingClass.GetItemData("SELECT CONCAT('Description: ', ISNULL(Description, ''), ', ', 'Address: ', ISNULL(Address, ''), ', ', 'Suburb: ', ISNULL(Suburb, ''), ', ', 'State: ', ISNULL(State, ''), ', ', 'PostCode: ', ISNULL(PostCode, '')) AS FullDescription FROM CustomerAddress WHERE Id='" & thisId & "'")
 
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Logs WHERE Type='CustomerAddress' AND DataId=@Id; DELETE FROM CustomerAddress WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", thisId)
-
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
             End Using
 
             Dim stringLog As String = String.Format("Customer Address Deleted | {0}", fullAddress)
-            dataLog = {"Customers", lblId.Text, Session("LoginId").ToString(), stringLog}
+            dataLog = {"Customers", thisCustomerId, Session("LoginId").ToString(), stringLog}
             settingClass.Logs(dataLog)
 
             Session("SearchCustomerAddress") = txtSearch.Text

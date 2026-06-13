@@ -54,7 +54,7 @@
             </div>
         </section>
         <section class="row">
-            <div class="col-12 col-sm-12 col-lg-5">
+            <div class="col-12 col-sm-12 col-lg-5 mb-3">
                 <div class="card profile-card">
                     <div class="card-header">
                         <div class="card-title">Personal Account</div>
@@ -107,13 +107,13 @@
                     <div class="card-body">
                         <div class="summary-box mt-2">
                             <div class="row">
-                                <div class="col-md-8">
+                                <div class="col-12 col-sm-12 col-lg-8 mb-3">
                                     <div class="info-label"> Account Name</div>
                                     <div class="info-value">
                                         <asp:Label runat="server" ID="lblCustomerName"></asp:Label>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-12 col-sm-12 col-lg-4">
                                     <div class="info-label">Sales</div>
                                     <div class="info-value">
                                         <asp:Label runat="server" ID="lblSales"></asp:Label>

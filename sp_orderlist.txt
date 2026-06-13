@@ -33,9 +33,6 @@ BEGIN
     IF ISNULL(@CompanyId,'') <> ''
         SET @byCompany = 'AND Customers.CompanyId = ''' + @CompanyId + '''';
 
-    IF ISNULL(@Status,'') <> ''
-        SET @byStatus = 'AND OrderHeaders.Status = ''' + @Status + '''';
-
     IF ISNULL(@OrderType,'') <> ''
         SET @byOrderType = 'AND OrderHeaders.OrderType = ''' + @OrderType + '''';
 
@@ -61,7 +58,16 @@ BEGIN
 
         IF ISNULL(@Status,'') <> ''
         BEGIN
-            SET @byStatus = 'AND OrderHeaders.Status = ''' + @Status + '''';
+						IF @Status = 'Unshipment'
+						BEGIN
+								SET @byStatus = 'AND OrderHeaders.Status IN (''In Production'', ''On Hold'')
+								AND OrderHeaders.ProductionDate >= ''2026-02-01''
+								AND OrderHeaders.ProductionDate < DATEADD(DAY, -10, CAST(GETDATE() AS DATE))';
+						END
+						ELSE
+						BEGIN
+								SET @byStatus = 'AND OrderHeaders.Status = ''' + @Status + '''';
+						END
             SET @byOrder = 'ORDER BY OrderHeaders.Id DESC';
         END
     END
@@ -74,7 +80,16 @@ BEGIN
 
         IF ISNULL(@Status,'') <> ''
         BEGIN
-            SET @byStatus = 'AND OrderHeaders.Status = ''' + @Status + '''';
+						IF @Status = 'Unshipment'
+						BEGIN
+								SET @byStatus = 'AND OrderHeaders.Status IN (''In Production'', ''On Hold'')
+								AND OrderHeaders.ProductionDate >= ''2026-02-01''
+								AND OrderHeaders.ProductionDate < DATEADD(DAY, -10, CAST(GETDATE() AS DATE))';
+						END
+						ELSE
+						BEGIN
+								SET @byStatus = 'AND OrderHeaders.Status = ''' + @Status + '''';
+						END
             SET @byOrder = 'ORDER BY OrderHeaders.Id DESC';
         END
     END
@@ -87,7 +102,17 @@ BEGIN
 
         IF ISNULL(@Status,'') <> ''
         BEGIN
-            SET @byStatus = 'AND OrderHeaders.Status = ''' + @Status + '''';
+						IF @Status = 'Unshipment'
+						BEGIN
+								SET @byStatus = '
+								AND OrderHeaders.Status IN (''In Production'', ''On Hold'')
+								AND OrderHeaders.ProductionDate >= ''2026-02-01''
+								AND OrderHeaders.ProductionDate < DATEADD(DAY, -10, CAST(GETDATE() AS DATE))';
+						END
+						ELSE
+						BEGIN
+								SET @byStatus = 'AND OrderHeaders.Status = ''' + @Status + '''';
+						END
             SET @byOrder = 'ORDER BY OrderHeaders.Id DESC';
         END
     END
@@ -96,11 +121,30 @@ BEGIN
     IF @RoleName = 'Data Entry'
     BEGIN
         SET @byRole = '';
-        SET @byStatus = '';
+        SET @byStatus = 'AND (
+            OrderHeaders.Status = ''Unsubmitted'' 
+            OR OrderHeaders.Status = ''Quoted'' 
+            OR OrderHeaders.Status = ''Payment Received'' 
+            OR OrderHeaders.Status = ''New Order'' 
+            OR OrderHeaders.Status = ''In Production'' 
+            OR OrderHeaders.Status = ''On Hold'' 
+            OR OrderHeaders.Status = ''Shipped Out'' 
+            OR OrderHeaders.Status = ''Completed''
+        )';
 
         IF ISNULL(@Status,'') <> ''
         BEGIN
-            SET @byStatus = 'AND OrderHeaders.Status = ''' + @Status + '''';
+						IF @Status = 'Unshipment'
+						BEGIN
+								SET @byStatus = '
+								AND OrderHeaders.Status IN (''In Production'', ''On Hold'')
+								AND OrderHeaders.ProductionDate >= ''2026-02-01''
+								AND OrderHeaders.ProductionDate < DATEADD(DAY, -10, CAST(GETDATE() AS DATE))';
+						END
+						ELSE
+						BEGIN
+								SET @byStatus = 'AND OrderHeaders.Status = ''' + @Status + '''';
+						END
             SET @byOrder = 'ORDER BY OrderHeaders.Id DESC';
         END
     END
@@ -126,7 +170,17 @@ BEGIN
 
         IF ISNULL(@Status,'') <> ''
         BEGIN
-            SET @byStatus = 'AND OrderHeaders.Status = ''' + @Status + '''';
+						IF @Status = 'Unshipment'
+						BEGIN
+								SET @byStatus = '
+								AND OrderHeaders.Status IN (''In Production'', ''On Hold'')
+								AND OrderHeaders.ProductionDate >= ''2026-02-01''
+								AND OrderHeaders.ProductionDate < DATEADD(DAY, -10, CAST(GETDATE() AS DATE))';
+						END
+						ELSE
+						BEGIN
+								SET @byStatus = 'AND OrderHeaders.Status = ''' + @Status + '''';
+						END
             SET @byOrder = 'ORDER BY OrderHeaders.Id DESC';
         END
     END
@@ -178,7 +232,17 @@ BEGIN
 
         IF ISNULL(@Status,'') <> ''
         BEGIN
-            SET @byStatus = 'AND OrderHeaders.Status = ''' + @Status + '''';
+						IF @Status = 'Unshipment'
+						BEGIN
+								SET @byStatus = '
+								AND OrderHeaders.Status IN (''In Production'', ''On Hold'')
+								AND OrderHeaders.ProductionDate >= ''2026-02-01''
+								AND OrderHeaders.ProductionDate < DATEADD(DAY, -10, CAST(GETDATE() AS DATE))';
+						END
+						ELSE
+						BEGIN
+								SET @byStatus = 'AND OrderHeaders.Status = ''' + @Status + '''';
+						END
             SET @byOrder = 'ORDER BY OrderHeaders.Id DESC';
         END
     END
@@ -269,4 +333,107 @@ BEGIN
 
     EXEC sp_executesql @sql;
 
+END
+
+ALTER PROCEDURE [dbo].[sp_GetHeaderOnDetail]
+(
+    @HeaderId INT,
+    @RoleName NVARCHAR(50),
+    @LevelName NVARCHAR(50) = NULL,
+    @CompanyId INT = NULL,
+    @LoginId INT = NULL,
+    @CustomerId INT = NULL,
+    @CustomerLevel NVARCHAR(50) = NULL
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT
+        OH.*,
+        L.FullName AS CreatedFullName,
+        L.RoleId AS CreatedRole,
+        C.DebtorCode,
+        C.Name AS CustomerName,
+        C.CompanyId,
+        C.CompanyDetailId,
+        C.PriceGroupId,
+        CASE
+            WHEN C.OnStop = 1 THEN 'Yes'
+            WHEN C.OnStop = 0 THEN 'No'
+            ELSE 'Error'
+        END AS CustomerOnStop
+    FROM OrderHeaders OH
+    LEFT JOIN Customers C ON OH.CustomerId = C.Id
+    LEFT JOIN Logins L ON OH.CreatedBy = L.Id
+    WHERE
+        OH.Id = @HeaderId
+        AND OH.Active = 1
+        AND
+        (
+            /* DEFAULT */
+            @RoleName NOT IN ('Sales','Account','Customer')
+
+            /* SALES MEMBER */
+            OR (
+                @RoleName = 'Sales'
+                AND @LevelName = 'Member'
+                AND
+                (
+                    OH.CreatedBy = @LoginId
+                    OR EXISTS
+                    (
+                        SELECT 1
+                        FROM STRING_SPLIT(C.Operator, ',') S
+                        WHERE TRY_CAST(S.value AS INT) = @LoginId
+                    )
+                )
+            )
+
+            /* SALES NON MEMBER */
+            OR (
+                @RoleName = 'Sales'
+                AND ISNULL(@LevelName,'') <> 'Member'
+                AND C.CompanyId = @CompanyId
+            )
+
+            /* ACCOUNT */
+            OR (
+                @RoleName = 'Account'
+                AND C.CompanyId = @CompanyId
+            )
+
+            /* INSTALLER */
+            OR (
+                @RoleName = 'Installer'
+                AND OH.OrderType = 'Builder'
+                AND C.CompanyId = @CompanyId
+            )
+
+            /* CUSTOMER SPONSOR LEADER */
+            OR (
+                @RoleName = 'Customer'
+                AND @CustomerLevel = 'Sponsor'
+                AND @LevelName = 'Leader'
+                AND (OH.CustomerId = @CustomerId OR C.SponsorId = @CustomerId)
+            )
+
+            /* CUSTOMER MEMBER */
+            OR (
+                @RoleName = 'Customer'
+                AND @LevelName = 'Member'
+                AND OH.CreatedBy = @LoginId
+            )
+
+            /* CUSTOMER DEFAULT */
+            OR (
+                @RoleName = 'Customer'
+                AND ISNULL(@LevelName,'') <> 'Member'
+                AND NOT (
+                    @CustomerLevel = 'Sponsor'
+                    AND @LevelName = 'Leader'
+                )
+                AND OH.CustomerId = @CustomerId
+            )
+        );
 END

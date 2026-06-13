@@ -17,6 +17,7 @@ Partial Class Setting_Customer_Login_Default
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
+            MessageError_LoginCredentials(False, String.Empty)
             txtSearch.Text = Session("SearchCustomerLogin")
             BindData(txtSearch.Text)
         End If
@@ -131,14 +132,52 @@ Partial Class Setting_Customer_Login_Default
     End Sub
 
     Protected Sub btnLoginCredentials_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
+        MessageError_LoginCredentials(False, String.Empty)
+        Dim thisScript As String = "window.onload = function() { showLoginCredentials(); };"
         Try
-            MessageError(True, "UNDER CONSTRUCTION !")
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            Dim thisId As String = txtIdLoginCredentials.Text
+            Dim thisEmail As String = txtEmailLoginCredentials.Text
+
+            If String.IsNullOrEmpty(thisEmail) Then
+                MessageError_LoginCredentials(True, "EMAIL ADDRESS IS REQUIRED !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showLoginCredentials", thisScript, True)
+                Exit Sub
             End If
+
+            Dim isValidEmail As Boolean = False
+            Try
+                Dim addr As New Net.Mail.MailAddress(thisEmail)
+                isValidEmail = (addr.Address = thisEmail)
+            Catch
+                isValidEmail = False
+            End Try
+
+            If Not isValidEmail Then
+                MessageError_LoginCredentials(True, "PLEASE ENTER A VALID EMAIL ADDRESS !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showLoginCredentials", thisScript, True)
+                Exit Sub
+            End If
+
+            If thisEmail = Session("PersonalEmail") Then
+                MessageError_LoginCredentials(True, "YOU DO NOT HAVE THE AUTHORITY TO HAVE THESE LOGIN CREDENTIALS SENT TO YOUR EMAIL ADDRESS !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showLoginCredentials", thisScript, True)
+                Exit Sub
+            End If
+
+            Dim mailingClass As New MailingClass
+            mailingClass.PersonalLogin(thisId, thisEmail, Session("FullName"))
+
+            dataLog = {"Logins", thisId, Session("LoginId").ToString(), "Personal Login"}
+            settingClass.Logs(dataLog)
+
+            Session("SearchCustomerLogin") = txtSearch.Text
+            Response.Redirect("~/setting/customer/login", False)
+        Catch ex As Exception
+            MessageError_LoginCredentials(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_LoginCredentials(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+            ClientScript.RegisterStartupScript(Me.GetType(), "showLoginCredentials", thisScript, True)
         End Try
     End Sub
 
@@ -232,6 +271,10 @@ Partial Class Setting_Customer_Login_Default
 
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
+    End Sub
+
+    Protected Sub MessageError_LoginCredentials(visible As Boolean, message As String)
+        divErrorLoginCredentials.Visible = visible : msgErrorLoginCredentials.InnerText = message
     End Sub
 
     Protected Function TextActive(active As Boolean) As String

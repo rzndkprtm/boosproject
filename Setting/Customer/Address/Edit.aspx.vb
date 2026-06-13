@@ -38,47 +38,38 @@ Partial Class Setting_Customer_Address_Edit
                 MessageError(True, "CUSTOMER ACCOUNT IS REQURIED !")
                 Exit Sub
             End If
-
             If txtAddress.Text = "" Then
                 MessageError(True, "ADDRESS IS REQUIRED !")
                 Exit Sub
             End If
-
             If txtAddress.Text.Contains(",") OrElse txtAddress.Text.Contains(";") Then
                 MessageError(True, "ADDRESS CANNOT CONTAIN COMMA (,) OR SEMICOLON (;) !")
                 Exit Sub
             End If
-
             If txtSuburb.Text = "" Then
                 MessageError(True, "SUBURB IS REQUIRED !")
                 Exit Sub
             End If
-
             If txtSuburb.Text.Contains(",") OrElse txtAddress.Text.Contains(";") Then
                 MessageError(True, "SUBURB CANNOT CONTAIN COMMA (,) OR SEMICOLON (;) !")
                 Exit Sub
             End If
-
             If txtState.Text = "" Then
                 MessageError(True, "STATE IS REQUIRED !")
                 Exit Sub
             End If
-
             If txtState.Text.Contains(",") OrElse txtAddress.Text.Contains(";") Then
                 MessageError(True, "STATE CANNOT CONTAIN COMMA (,) OR SEMICOLON (;) !")
                 Exit Sub
             End If
-
             If txtPostCode.Text = "" Then
                 MessageError(True, "POST CODE IS REQUIRED !")
                 Exit Sub
             End If
-
             If txtPostCode.Text.Contains(",") OrElse txtAddress.Text.Contains(";") Then
                 MessageError(True, "POST CODE CANNOT CONTAIN COMMA (,) OR SEMICOLON (;) !")
                 Exit Sub
             End If
-
             If msgError.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerAddress SET CustomerId=@CustomerId, Description=@Description, Address=@Address, Suburb=@Suburb, State=@State, PostCode=@PostCode, Note=@Note WHERE Id=@Id", thisConn)
@@ -156,9 +147,7 @@ Partial Class Setting_Customer_Address_Edit
                 End If
             End If
 
-            Dim thisQuery As String = String.Format("SELECT * FROM Customers WHERE Active=1 {0} ORDER BY Name ASC", role)
-
-            ddlCustomer.DataSource = settingClass.GetDataTable(thisQuery)
+            ddlCustomer.DataSource = settingClass.GetDataTable(String.Format("SELECT * FROM Customers WHERE Active=1 {0} ORDER BY Name ASC", role))
             ddlCustomer.DataTextField = "Name"
             ddlCustomer.DataValueField = "Id"
             ddlCustomer.DataBind()

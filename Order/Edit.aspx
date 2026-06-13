@@ -22,90 +22,69 @@
     </div>
     <div class="page-content">
         <section class="row">
-            <div class="col-12 col-sm-12 col-lg-7">
+            <div class="col-12 col-sm-12 col-lg-6">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Edit Form</h4>
+                        <h4 class="card-title">Order Form</h4>
                     </div>
                     <div class="card-content">
                         <div class="card-body">
-                            <div class="form form-horizontal">
+                            <div class="form form-vertical">
                                 <div class="form-body">
-                                    <div class="row" runat="server" id="divCustomer">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Customer Account</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-9 form-group">
+                                    <div class="row mb-2" runat="server" id="divCustomer">
+                                        <div class="col-12 form-group">
+                                            <label class="form-label">Customer Account</label>
                                             <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select"></asp:DropDownList>
                                         </div>
                                     </div>
-                                    <div class="row mb-3" runat="server" id="divCreatedBy">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Created By</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-9 form-group">
+                                    <div class="row mb-2" runat="server" id="divCreatedBy">
+                                        <div class="col-12 form-group">
+                                            <label class="form-label">Created By</label>
                                             <asp:DropDownList runat="server" ID="ddlCreatedBy" CssClass="choices form-select"></asp:DropDownList>
                                         </div>
                                     </div>
-                                    <div class="row mb-3">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Order ID</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-9 form-group">
+                                    <div class="row mb-2">
+                                        <div class="col-12 form-group">
+                                            <label class="form-label">Order ID</label>
                                             <asp:TextBox runat="server" ID="txtOrderId" CssClass="form-control"></asp:TextBox>
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Order Number</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-9 form-group">
-                                            <div class="input-group">
-                                                <asp:TextBox runat="server" ID="txtOrderNumber" CssClass="form-control" placeholder="Order Number ..." autocomplete="off"></asp:TextBox>
-                                                <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Order Number');"> ? </a>
-                                            </div>
+                                        <div class="col-12 form-group">
+                                            <label class="form-label">Order Number</label>
+                                            <asp:TextBox runat="server" ID="txtOrderNumber" CssClass="form-control" placeholder="Order Number ..." autocomplete="off"></asp:TextBox>
                                         </div>
                                     </div>
-                                    <div class="row mb-3">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Order Name</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-9 form-group">
-                                            <div class="input-group">
-                                                <asp:TextBox runat="server" ID="txtOrderName" CssClass="form-control" placeholder="Order Name ...." autocomplete="off"></asp:TextBox>
-                                                <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Order Name');"> ? </a>
-                                            </div>
+                                    <div class="row mb-2">
+                                        <div class="col-12 form-group">
+                                            <label class="form-label">Order Name</label>
+                                            <asp:TextBox runat="server" ID="txtOrderName" CssClass="form-control" placeholder="Order Name ...." autocomplete="off"></asp:TextBox>
                                         </div>
                                     </div>
-                                    <div class="row mb-3">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Order Note</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-9 form-group">
+                                    <div class="row mb-2">
+                                        <div class="col-12 form-group">
+                                            <label class="form-label">Order Note</label>
                                             <asp:TextBox runat="server" TextMode="MultiLine" ID="txtOrderNote" Height="100px" CssClass="form-control" placeholder="Order Note ...." autocomplete="off" style="resize:none;"></asp:TextBox>
                                         </div>
                                     </div>
-                                    <div class="row mb-3" runat="server" id="divOrderType">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Order Type</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                    <div class="row mb-2" runat="server" id="divOrderType">
+                                        <div class="col-12 form-group">
+                                            <label class="form-label">Order Type</label>
                                             <asp:DropDownList runat="server" ID="ddlOrderType" CssClass="form-select">
                                                 <asp:ListItem Value="Regular" Text="Regular"></asp:ListItem>
                                                 <asp:ListItem Value="Builder" Text="Builder"></asp:ListItem>
                                             </asp:DropDownList>
                                         </div>
                                     </div>
-                                    <div class="row mb-3" runat="server" id="divOrderFactory">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Order Factory</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                    <div class="row" runat="server" id="divOrderFactory">
+                                        <div class="col-12 form-group">
+                                            <label class="form-label">Order Factory</label>
                                             <asp:ListBox runat="server" ID="lbOrderFactory" CssClass="choices form-select multiple-remove" SelectionMode="Multiple">
                                                 <asp:ListItem Value="" Text=""></asp:ListItem>
                                                 <asp:ListItem Value="BIG" Text="BIG"></asp:ListItem>
                                                 <asp:ListItem Value="CHINA" Text="CHINA"></asp:ListItem>
                                                 <asp:ListItem Value="TAIWAN" Text="TAIWAN"></asp:ListItem>
+                                                <asp:ListItem Value="AUS" Text="AUS"></asp:ListItem>
                                             </asp:ListBox>
                                         </div>
                                     </div>
@@ -123,6 +102,18 @@
                     <div class="card-footer text-center">
                         <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" OnClick="btnSubmit_Click" />
                         <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Cancel" OnClick="btnCancel_Click" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-12 col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title text-center">Information</h4>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body">
+
+                        </div>
                     </div>
                 </div>
             </div>

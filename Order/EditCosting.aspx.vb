@@ -164,6 +164,25 @@ Partial Class Order_EditCosting
         End Try
     End Sub
 
+    Protected Sub btnNote_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim costingArray As Object() = {lblHeaderId.Text, lblItemId.Text, 0, "Note", txtNote.Text, 0, 0}
+            orderClass.OrderCostings(costingArray)
+            orderClass.FinalCostItem(lblHeaderId.Text, lblItemId.Text)
+
+            dataLog = {"OrderDetails", lblItemId.Text, Session("LoginId"), "Update Price | Add Note"}
+            orderClass.Logs(dataLog)
+
+            Response.Redirect(String.Format("~/order/editcosting?boos={0}", lblId.Text), False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
     Protected Sub BindData(headerId As String, itemId As String)
         Try
             Dim headerData As DataRow = orderClass.GetDataRow("SELECT OrderHeaders.*, Customers.CompanyId FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id='" & headerId & "'")
@@ -174,7 +193,7 @@ Partial Class Order_EditCosting
             lblOrderStatus.Text = headerData("Status").ToString()
             lblCompanyId.Text = headerData("CompanyId").ToString()
 
-            hTitle.InnerText = orderClass.GetItemData("SELECT ISNULL(CONVERT(VARCHAR(200), OrderDetails.Room), '') + ' - ' + ISNULL(CONVERT(VARCHAR(200), Products.Name), '') FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId = Products.Id WHERE OrderDetails.Id = '" & itemId & "'")
+            hTitle.InnerText = orderClass.GetItemData("SELECT ISNULL(CONVERT(VARCHAR(200), OrderDetails.Room), '') + ' - ' + ISNULL(CONVERT(VARCHAR(200), Products.Name), '') FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.Id='" & itemId & "'")
 
             Dim params As New List(Of SqlParameter) From {
                 New SqlParameter("@ItemId", lblItemId.Text),

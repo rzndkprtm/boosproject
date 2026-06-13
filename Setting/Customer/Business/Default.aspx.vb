@@ -4,7 +4,6 @@ Partial Class Setting_Customer_Business_Default
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataLog As Object() = Nothing
 
@@ -68,9 +67,8 @@ Partial Class Setting_Customer_Business_Default
     Protected Sub btnPrimary_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim thisId As String = txtIdPrimary.Text
-
-            Dim customerId As String = settingClass.GetItemData("SELECT CustomerId FROM CustomerBusiness WHERE Id='" & thisId & "'")
+            Dim thisId As String = txtPrimaryId.Text
+            Dim customerId As String = txtPrimaryCustomerId.Text
 
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerBusiness SET [Primary]=0 WHERE CustomerId=@CustomerId; UPDATE CustomerBusiness SET [Primary]=1 WHERE Id=@Id", thisConn)
@@ -98,7 +96,9 @@ Partial Class Setting_Customer_Business_Default
     Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim thisId As String = txtIdDelete.Text
+            Dim thisId As String = txtDeleteId.Text
+            Dim thisCustomer As String = txtDeleteCustomerId.Text
+
             Dim fullBusiness As String = settingClass.GetItemData("SELECT CONCAT('ABN Number: ', ISNULL(ABNNumber, ''), ', ', 'Registered Name: ', ISNULL(RegisteredName, '')) AS FullDescription FROM CustomerBusiness WHERE Id='" & thisId & "'")
 
             Using thisConn As New SqlConnection(myConn)
@@ -111,7 +111,7 @@ Partial Class Setting_Customer_Business_Default
             End Using
 
             Dim stringLog As String = String.Format("Customer Business Deleted | {0}", fullBusiness)
-            dataLog = {"Customers", lblId.Text, Session("LoginId").ToString(), stringLog}
+            dataLog = {"Customers", thisCustomer, Session("LoginId").ToString(), stringLog}
             settingClass.Logs(dataLog)
 
             Session("SearchCustomerBusiness") = txtSearch.Text

@@ -62,11 +62,26 @@ Partial Class Account_Default
         MessageError_Email(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showEmail(); };"
         Try
+            Dim email As String = txtUserEmail.Text.Trim()
+            Dim isValidEmail As Boolean = False
+            Try
+                Dim addr As New Net.Mail.MailAddress(email)
+                isValidEmail = (addr.Address = email)
+            Catch
+                isValidEmail = False
+            End Try
+
+            If Not isValidEmail Then
+                MessageError_Email(True, "PLEASE ENTER A VALID EMAIL ADDRESS !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showEmail", thisScript, True)
+                Exit Sub
+            End If
+
             If msgErrorEmail.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Email=@Email WHERE Id=@Id", thisConn)
+                    Using myCmd As New SqlCommand("UPDATE Logins SET Email=@Email WHERE Id=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", lblLoginId.Text)
-                        myCmd.Parameters.AddWithValue("@Email", txtUserEmail.Text.Trim())
+                        myCmd.Parameters.AddWithValue("@Email", email)
 
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
@@ -87,17 +102,25 @@ Partial Class Account_Default
 
     Protected Sub BindData(loginId As String)
         Try
-            Dim loginData As DataRow = settingClass.GetDataRow("SELECT Logins.*, Customers.Name AS CustomerName FROM Logins LEFT JOIN Customers ON Logins.CustomerId=Customers.Id WHERE Logins.Id='" & loginId & "'")
+            Dim loginData As DataRow = settingClass.GetDataRow("SELECT Logins.*, Customers.Name AS CustomerName, O.OperatorName FROM Logins LEFT JOIN Customers ON Logins.CustomerId = Customers.Id OUTER APPLY (SELECT STRING_AGG(L2.FullName, ', ') AS OperatorName FROM STRING_SPLIT(Customers.Operator, ',') S INNER JOIN Logins L2 ON TRY_CAST(S.value AS INT) = L2.Id) O WHERE Logins.Id = '" & loginId & "'")
 
+            Dim customerId As String = loginData("CustomerId").ToString()
             lblUserName.Text = loginData("UserName").ToString()
             lblFullName.Text = loginData("FullName").ToString()
             txtFullName.Text = loginData("FullName").ToString()
             lblUserEmail.Text = loginData("Email").ToString()
             txtUserEmail.Text = loginData("Email").ToString()
             lblCustomerName.Text = loginData("CustomerName").ToString()
+            lblSales.Text = loginData("OperatorName").ToString()
+
 
             gvContact.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerContacts WHERE CustomerId='" & loginData("CustomerId").ToString() & "' ORDER BY Id ASC")
             gvContact.DataBind()
+
+            divCompany.Visible = False
+            If Session("RoleName") = "Customer" Then
+                divCompany.Visible = True
+            End If
 
             'If String.IsNullOrEmpty(txtUserEmail.Text) Then
             '    Dim thisScript As String = "window.onload = function() { showInfo(); };"

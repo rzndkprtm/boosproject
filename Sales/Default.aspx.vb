@@ -19,18 +19,33 @@ Partial Class Sales_Default
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             BindCompany()
+
+            ddlCompany.SelectedValue = Session("SearchSalesCompany")
             BindData(ddlCompany.SelectedValue)
         End If
     End Sub
 
     Protected Sub ddlCompany_SelectedIndexChanged(sender As Object, e As EventArgs)
+        gvList.PageIndex = 0
+
         MessageError(False, String.Empty)
         BindData(ddlCompany.SelectedValue)
+        Session("SearchSalesCompany") = ddlCompany.SelectedValue
     End Sub
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         BindData(ddlCompany.SelectedValue)
+    End Sub
+
+    Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
+        Try
+            If e.CommandName = "Page" Then
+                gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
+                BindData(ddlCompany.SelectedValue)
+            End If
+        Catch ex As Exception
+        End Try
     End Sub
 
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
@@ -46,29 +61,20 @@ Partial Class Sales_Default
         End Try
     End Sub
 
-    Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
-        If Not String.IsNullOrEmpty(e.CommandArgument) Then
-            Dim dataId As String = e.CommandArgument.ToString()
-            Session("SearchSalesCompany") = ddlCompany.SelectedValue
-            If e.CommandName = "Refresh" Then
-                Dim companyId As String = salesClass.GetItemData("SELECT CompanyId FROM Sales WHERE Id='" & dataId & "'")
-
-                salesClass.RefreshData(companyId)
-                Response.Redirect("~/sales", False)
-            End If
-        End If
+    Protected Sub gvList_DataBound(sender As Object, e As EventArgs)
+        Try
+            BuildPager()
+        Catch ex As Exception
+        End Try
     End Sub
 
     Protected Sub BindData(companyId As String)
-        gvList.DataSource = Nothing
-        gvList.DataBind()
-        Session("SearchSalesCompany") = String.Empty
+        gvList.DataSource = Nothing : gvList.DataBind()
         Try
             If Not String.IsNullOrEmpty(companyId) Then
                 gvList.DataSource = salesClass.GetDataTable("SELECT * FROM Sales WHERE CompanyId='" & companyId & "' ORDER BY SummaryDate DESC")
                 gvList.DataBind()
                 gvList.Columns(1).Visible = LoginAccess("Visible ID")
-                gvList.Columns(8).Visible = LoginAccess("Visible Refresh")
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -76,8 +82,7 @@ Partial Class Sales_Default
     End Sub
 
     Protected Sub BindCompany()
-        ddlCompany.Items.Clear()
-        ddlCompany.Enabled = True
+        ddlCompany.Items.Clear() : ddlCompany.Enabled = True
         Try
             ddlCompany.DataSource = salesClass.GetDataTable("SELECT * FROM Companys WHERE Active=1 ORDER BY Name ASC")
             ddlCompany.DataTextField = "Alias"
@@ -98,6 +103,38 @@ Partial Class Sales_Default
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
         End Try
+    End Sub
+
+    Protected Sub BuildPager()
+        If gvList.PageCount <= 1 Then
+            navPager.Visible = False
+            Return
+        End If
+
+        navPager.Visible = True
+
+        Dim currentPage As Integer = gvList.PageIndex
+        Dim totalPages As Integer = gvList.PageCount
+
+        Dim pages As New List(Of Object)
+
+        If currentPage > 0 Then
+            pages.Add(New With {.Text = "Previous", .PageIndex = currentPage - 1, .CssClass = ""})
+        End If
+
+        Dim startPage As Integer = Math.Max(0, currentPage - 2)
+        Dim endPage As Integer = Math.Min(totalPages - 1, currentPage + 2)
+
+        For i As Integer = startPage To endPage
+            pages.Add(New With {.Text = (i + 1).ToString(), .PageIndex = i, .CssClass = If(i = currentPage, "active", "")})
+        Next
+
+        If currentPage < totalPages - 1 Then
+            pages.Add(New With {.Text = "Next", .PageIndex = currentPage + 1, .CssClass = ""})
+        End If
+
+        rptPager.DataSource = pages
+        rptPager.DataBind()
     End Sub
 
     Protected Function BindPrice(price As Decimal) As String

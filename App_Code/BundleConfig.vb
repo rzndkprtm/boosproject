@@ -1,5 +1,4 @@
-﻿
-Public Module BundleConfig
+﻿Public Module BundleConfig
     ' For more information on Bundling, visit https://go.microsoft.com/fwlink/?LinkID=303951
     Public Sub RegisterBundles(bundles As BundleCollection)
         'bundles.Add(New ScriptBundle("~/bundles/WebFormsJs").Include(

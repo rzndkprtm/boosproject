@@ -242,7 +242,7 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Mounting", "Aluminium Type", "Aluminium Colour", "Sub Type", "Width (mm)", "Drop (mm)", "Control Position", "Tilter Position", "Cord Length", "Wand Length", "Hold Down Clip", "Notes"}
+                        Dim headers As String() = {"", "Location", "Mounting", "Aluminium Type", "Aluminium Colour", "Sub Type", "Width (mm)", "Drop (mm)", "Control Position", "Tilter Position", "Cord Length", "Wand Length", "Hold Down Clip", "Special Information"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
@@ -329,7 +329,7 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Mounting", "Cellular Type", "Control Type", "Width (mm)", "Drop (mm)", "Fabric Type", "Fabric Colour", "Fabric Type (N)", "Fabric Colour (N)", "Remote Type", "Control Position", "Control Length", "Hold Down Clip", "Notes"}
+                        Dim headers As String() = {"", "Location", "Mounting", "Cellular Type", "Control Type", "Width (mm)", "Drop (mm)", "Fabric Type", "Fabric Colour", "Fabric Type (N)", "Fabric Colour (N)", "Remote Type", "Control Position", "Control Length", "Hold Down Clip", "Special Information"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
@@ -416,7 +416,7 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Fitting", "Curtain Type", "Heading", "Fabric Type", "Fabric Colour", "Width (mm)", "Drop (mm)", "Track Type", "Track Colour", "Track Draw", "Stack Position", "Control Colour", "Control Length", "Return Length (L)", "Return Length (R)", "Bottom HEM", "Tie Back Req", "Notes"}
+                        Dim headers As String() = {"", "Location", "Fitting", "Curtain Type", "Heading", "Fabric Type", "Fabric Colour", "Width (mm)", "Drop (mm)", "Track Type", "Track Colour", "Track Draw", "Stack Position", "Control Colour", "Control Length", "Return Length (L)", "Return Length (R)", "Bottom HEM", "Tie Back Req", "Special Information"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
@@ -505,7 +505,7 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Mounting", "Width (mm)", "Drop (mm)", "Fabric Type", "Fabric Colour", "Track Colour", "Stack Position", "Control Position", "Control Type", "Control Colour", "Control Length", "Notes"}
+                        Dim headers As String() = {"", "Location", "Mounting", "Width (mm)", "Drop (mm)", "Fabric Type", "Fabric Colour", "Track Colour", "Stack Position", "Control Position", "Control Type", "Control Colour", "Control Length", "Special Information"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
@@ -585,7 +585,7 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Mounting", "Valance Type", "Valance Colour", "Width (mm)", "Fabric Insert", "Fabric Type", "Fabric Colour", "Bracket Type", "Is Blind In", "Return Position", "Return Length", "Notes"}
+                        Dim headers As String() = {"", "Location", "Mounting", "Valance Type", "Valance Colour", "Width (mm)", "Fabric Insert", "Fabric Type", "Fabric Colour", "Bracket Type", "Is Blind In", "Return Position", "Return Length", "Special Information"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
@@ -676,7 +676,7 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Mounting", "Panel System", "Panel Style", "Track Colour", "Fabric Type", "Fabric Colour", "Width (mm)", "Drop (mm)", "Wand Colour", "Wand Length", "Panel Qty", "Track Type", "Layout Code", "Batten Colour", "Notes"}
+                        Dim headers As String() = {"", "Location", "Mounting", "Panel System", "Panel Style", "Track Colour", "Fabric Type", "Fabric Colour", "Width (mm)", "Drop (mm)", "Wand Colour", "Wand Length", "Panel Qty", "Track Type", "Layout Code", "Batten Colour", "Special Information"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
@@ -753,7 +753,7 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Mounting", "Pelmet Type", "Fabric Type", "Fabric Colour", "Batten Colour", "Pelmet Layout", "Width (mm)", "2nd Width (mm)", "3rd Width (mm)", "Return Position", "Return Length (L)", "Return Length (R)", "Dust Cover", "Notes"}
+                        Dim headers As String() = {"", "Location", "Mounting", "Pelmet Type", "Fabric Type", "Fabric Colour", "Batten Colour", "Pelmet Layout", "Width (mm)", "2nd Width (mm)", "3rd Width (mm)", "Return Position", "Return Length (L)", "Return Length (R)", "Dust Cover", "Special Information"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
@@ -831,7 +831,7 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Mounting", "Privacy Type", "Privacy Colour", "Control Position", "Tilter Position", "Width (mm)", "Drop (mm)", "Cord Length", "Hold Down Clip", "Notes"}
+                        Dim headers As String() = {"", "Location", "Mounting", "Privacy Type", "Privacy Colour", "Control Position", "Tilter Position", "Width (mm)", "Drop (mm)", "Cord Length", "Hold Down Clip", "Special Information"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
@@ -1003,7 +1003,7 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Mounting", "Roller Type", "Tube Type", "Control Type", "Bracket Colour", "Fabric Type", "Fabric Colour", "Roll Direction", "Width (mm)", "Drop (mm)", "Control Position", "Remote Type", "Battery Charger", "Extension Cable", "Neo Box", "Dry Contact", "Chain Type", "Chain Stopper", "Chain Length", "Bottom Type", "Bottom Colour", "Bottom Option", "Bracket Extension", "Spring Assist", "Bracket Size", "Adjusting Spanner", "Top Track", "Fabric Printing", "Notes"}
+                        Dim headers As String() = {"", "Location", "Mounting", "Roller Type", "Tube Type", "Control Type", "Bracket Colour", "Fabric Type", "Fabric Colour", "Roll Direction", "Width (mm)", "Drop (mm)", "Control Position", "Remote Type", "Battery Charger", "Extension Cable", "Neo Box", "Dry Contact", "Chain Type", "Chain Stopper", "Chain Length", "Bottom Type", "Bottom Colour", "Bottom Option", "Bracket Extension", "Spring Assist", "Bracket Size", "Adjusting Spanner", "Top Track", "Fabric Printing", "Special Information"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
@@ -1107,7 +1107,7 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Mounting", "Roller Type", "Tube Type", "Control Type", "Bracket Colour", "Fabric Type", "Fabric Colour", "Roll Direction", "Width (mm)", "Drop (mm)", "Control Position", "Chain Type", "Chain Stopper", "Chain Length", "Bottom Type", "Bottom Colour", "Fabric Printing", "Notes"}
+                        Dim headers As String() = {"", "Location", "Mounting", "Roller Type", "Tube Type", "Control Type", "Bracket Colour", "Fabric Type", "Fabric Colour", "Roll Direction", "Width (mm)", "Drop (mm)", "Control Position", "Chain Type", "Chain Stopper", "Chain Length", "Bottom Type", "Bottom Colour", "Fabric Printing", "Special Information"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
@@ -1209,7 +1209,7 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Mounting", "Fabric Type", "Fabric Colour", "Width (mm)", "Drop (mm)", "Roman Style", "Control Type", "Control Position", "Control Colour", "Control Length", "Remote Type", "Motor Charger", "Extension Cable", "Neo Box", "Valance Option", "Batten Colour", "Notes"}
+                        Dim headers As String() = {"", "Location", "Mounting", "Fabric Type", "Fabric Colour", "Width (mm)", "Drop (mm)", "Roman Style", "Control Type", "Control Position", "Control Colour", "Control Length", "Remote Type", "Motor Charger", "Extension Cable", "Neo Box", "Valance Option", "Batten Colour", "Special Information"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
@@ -1312,7 +1312,7 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Mounting", "Venetian Type", "Venetian Colour", "Sub Type", "Width (mm)", "Drop (mm)", "Tassel Colour", "Control Position", "Tilter Position", "Control Length", "Valance Type", "Valance Size", "Return Position", "Return Length", "Hold Down Clip", "Notes"}
+                        Dim headers As String() = {"", "Location", "Mounting", "Venetian Type", "Venetian Colour", "Sub Type", "Width (mm)", "Drop (mm)", "Tassel Colour", "Control Position", "Tilter Position", "Control Length", "Valance Type", "Valance Size", "Return Position", "Return Length", "Hold Down Clip", "Special Information"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
@@ -1409,7 +1409,7 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Mounting", "Vertical Type", "Slat Type", "Blade Qty", "Fabric Insert", "Fabric Type", "Fabric Colour", "Width (mm)", "Drop (mm)", "Stack Position", "Control Position", "Control Type", "Track Colour", "Control Colour", "Control Length", "Bottom Joining", "Extension Bracket", "Sloping", "Notes"}
+                        Dim headers As String() = {"", "Location", "Mounting", "Vertical Type", "Slat Type", "Blade Qty", "Fabric Insert", "Fabric Type", "Fabric Colour", "Width (mm)", "Drop (mm)", "Stack Position", "Control Position", "Control Type", "Track Colour", "Control Colour", "Control Length", "Bottom Joining", "Extension Bracket", "Sloping", "Special Information"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
@@ -1500,7 +1500,7 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Mounting", "Vertical Type", "Slat Type", "Fabric Type", "Fabric Colour", "Width (mm)", "Drop (mm)", "Track Colour", "Stack Position", "Control Position", "Control Type", "Control Colour", "Control Length", "Extension Bracket", "Notes"}
+                        Dim headers As String() = {"", "Location", "Mounting", "Vertical Type", "Slat Type", "Fabric Type", "Fabric Colour", "Width (mm)", "Drop (mm)", "Track Colour", "Stack Position", "Control Position", "Control Type", "Control Colour", "Control Length", "Extension Bracket", "Special Information"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
@@ -1686,7 +1686,7 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Width (mm)", "Height (mm)", "Mounting", "Colour", "Louvre Size", "Sliding Louvre Position", "Midrail Height (mm)", "Critical Midrail", "Hinge Colour", "Installation Method", "Semi Inside Mount", "Panel Qty", "Custom Header Length (mm)", "Co-joined Panels", "Layout Code", "Frame Type", "Left Frame", "Right Frame", "Top Frame", "Bottom Frame", "Bottom Track", "Buildout", "Buildout Position", "Same Size Panel", "Gap / T-Post (mm)", "Hor T-Post Height (mm)", "Hor T-Post Required", "Tiltrod Type", "Split Tiltrod Rotation", "Split Height (mm)", "Reverse Hinged", "Pelmet Flat Packed", "Extra Fascia", "Hinges Loose", "M2", "Notes"}
+                        Dim headers As String() = {"", "Location", "Width (mm)", "Height (mm)", "Mounting", "Colour", "Louvre Size", "Sliding Louvre Position", "Midrail Height (mm)", "Critical Midrail", "Hinge Colour", "Installation Method", "Semi Inside Mount", "Panel Qty", "Custom Header Length (mm)", "Co-joined Panels", "Layout Code", "Frame Type", "Left Frame", "Right Frame", "Top Frame", "Bottom Frame", "Bottom Track", "Buildout", "Buildout Position", "Same Size Panel", "Gap / T-Post (mm)", "Hor T-Post Height (mm)", "Hor T-Post Required", "Tiltrod Type", "Split Tiltrod Rotation", "Split Height (mm)", "Reverse Hinged", "Pelmet Flat Packed", "Extra Fascia", "Hinges Loose", "M2", "Special Information"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
@@ -1875,7 +1875,7 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Width (mm)", "Height (mm)", "Mounting", "Colour", "Louvre Size", "Sliding Louvre Position", "Midrail Height (mm)", "Critical Midrail", "Hinge Colour", "Installation Method", "Semi Inside Mount", "Panel Qty", "Custom Header Length (mm)", "Co-joined Panels", "Layout Code", "Frame Type", "Left Frame", "Right Frame", "Top Frame", "Bottom Frame", "Bottom Track", "Buildout", "Buildout Position", "Same Size Panel", "Gap / T-Post (mm)", "Hor T-Post Height (mm)", "Hor T-Post Required", "Tiltrod Type", "Split Tiltrod Rotation", "Split Height (mm)", "Reverse Hinged", "Pelmet Flat Packed", "Extra Fascia", "Hinges Loose", "French Door Cut-Out", "Special Shape", "Template Provided", "M2", "Notes"}
+                        Dim headers As String() = {"", "Location", "Width (mm)", "Height (mm)", "Mounting", "Colour", "Louvre Size", "Sliding Louvre Position", "Midrail Height (mm)", "Critical Midrail", "Hinge Colour", "Installation Method", "Semi Inside Mount", "Panel Qty", "Custom Header Length (mm)", "Co-joined Panels", "Layout Code", "Frame Type", "Left Frame", "Right Frame", "Top Frame", "Bottom Frame", "Bottom Track", "Buildout", "Buildout Position", "Same Size Panel", "Gap / T-Post (mm)", "Hor T-Post Height (mm)", "Hor T-Post Required", "Tiltrod Type", "Split Tiltrod Rotation", "Split Height (mm)", "Reverse Hinged", "Pelmet Flat Packed", "Extra Fascia", "Hinges Loose", "French Door Cut-Out", "Special Shape", "Template Provided", "M2", "Special Information"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
@@ -2057,7 +2057,7 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Width (mm)", "Height (mm)", "Mounting", "Colour", "Louvre Size", "Sliding Louvre Position", "Midrail Height (mm)", "Critical Midrail", "Hinge Colour", "Installation Method", "Semi Inside Mount", "Panel Qty", "Custom Header Length (mm)", "Co-joined Panels", "Layout Code", "Frame Type", "Left Frame", "Right Frame", "Top Frame", "Bottom Frame", "Bottom Track", "Buildout", "Same Size Panel", "Gap / T-Post (mm)", "Hor T-Post Height (mm)", "Hor T-Post Required", "Tiltrod Type", "Split Tiltrod Rotation", "Split Height (mm)", "Reverse Hinged", "Pelmet Flat Packed", "Extra Fascia", "Hinges Loose", "M2", "Notes"}
+                        Dim headers As String() = {"", "Location", "Width (mm)", "Height (mm)", "Mounting", "Colour", "Louvre Size", "Sliding Louvre Position", "Midrail Height (mm)", "Critical Midrail", "Hinge Colour", "Installation Method", "Semi Inside Mount", "Panel Qty", "Custom Header Length (mm)", "Co-joined Panels", "Layout Code", "Frame Type", "Left Frame", "Right Frame", "Top Frame", "Bottom Frame", "Bottom Track", "Buildout", "Same Size Panel", "Gap / T-Post (mm)", "Hor T-Post Height (mm)", "Hor T-Post Required", "Tiltrod Type", "Split Tiltrod Rotation", "Split Height (mm)", "Reverse Hinged", "Pelmet Flat Packed", "Extra Fascia", "Hinges Loose", "M2", "Special Information"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
@@ -2150,7 +2150,7 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Mounting", "Width (mm)", "Drop (mm)", "Window Type", "Frame Colour", "Mesh Type", "Brace / Joiner Height", "Angle Type", "Angle Length (mm)", "Angle Qty", "Screen Port Hole", "Plunger Pin", "Swivel Clip Colour", "Swivel Clip (1.6mm)", "Swivel Clip (11mm)", "Spring Clip Qty", "Top Clip Plastic", "Notes"}
+                        Dim headers As String() = {"", "Location", "Mounting", "Width (mm)", "Drop (mm)", "Window Type", "Frame Colour", "Mesh Type", "Brace / Joiner Height", "Angle Type", "Angle Length (mm)", "Angle Qty", "Screen Port Hole", "Plunger Pin", "Swivel Clip Colour", "Swivel Clip (1.6mm)", "Swivel Clip (11mm)", "Spring Clip Qty", "Top Clip Plastic", "Special Information"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
@@ -2266,7 +2266,7 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Mounting", "Width (mm)", "Drop (mm)", "Door Type", "Mechanism", "Frame Colour", "Mesh Type", "Layout Code", "Midrail", "Handle Type", "Handle Height (mm)", "Triple Lock", "Bug Seal", "Pet Door", "Pet Door Position", "Door Closer", "Angle Type", "Angle Length (mm)", "Beading", "Jamb Adaptor", "Jamb Adaptor Position", "Flush Bold", "Interlock", "Top Track", "Top Track Length (mm)", "Bottom Track", "Bottom Track Length (mm)", "Receiver", "Receiver Length (mm)", "Sliding Roller", "Notes"}
+                        Dim headers As String() = {"", "Location", "Mounting", "Width (mm)", "Drop (mm)", "Door Type", "Mechanism", "Frame Colour", "Mesh Type", "Layout Code", "Midrail", "Handle Type", "Handle Height (mm)", "Triple Lock", "Bug Seal", "Pet Door", "Pet Door Position", "Door Closer", "Angle Type", "Angle Length (mm)", "Beading", "Jamb Adaptor", "Jamb Adaptor Position", "Flush Bold", "Interlock", "Top Track", "Top Track Length (mm)", "Bottom Track", "Bottom Track Length (mm)", "Receiver", "Receiver Length (mm)", "Sliding Roller", "Special Information"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
@@ -2332,7 +2332,7 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Type", "Fabric Type", "Fabric Colour", "Notes"}
+                        Dim headers As String() = {"", "Type", "Fabric Type", "Fabric Colour", "Special Information"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
@@ -2414,7 +2414,7 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Mounting", "Type", "Control Type", "Fabric Type", "Fabric Colour", "Width (mm)", "Drop (mm)", "Remote Type", "Control Position", "Control Length", "Notes"}
+                        Dim headers As String() = {"", "Location", "Mounting", "Type", "Control Type", "Fabric Type", "Fabric Colour", "Width (mm)", "Drop (mm)", "Remote Type", "Control Position", "Control Length", "Special Information"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))

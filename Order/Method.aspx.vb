@@ -3225,84 +3225,6 @@ Partial Class Order_Method
     End Function
 
     <WebMethod()>
-    Public Shared Function ServiceProcess(data As ProccessData) As String
-        Dim orderClass As New OrderClass
-
-        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-
-        Dim designName As String = String.Empty
-        Dim blindName As String = String.Empty
-
-        If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
-        If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
-
-        If String.IsNullOrEmpty(data.blindtype) Then Return "TYPE IS REQUIRED !"
-        If String.IsNullOrEmpty(data.colourtype) Then Return "ITEM IS REQUIRED !"
-
-        Dim productName As String = orderClass.GetProductName(data.colourtype)
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(productName, data.designid, data.companydetailid)
-
-        If data.itemaction = "create" OrElse data.itemaction = "copy" Then
-            Dim itemId As String = orderClass.GetNewOrderItemId()
-
-            Using thisConn As SqlConnection = New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails (Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], LinearMetre, SquareMetre, TotalItems, Notes, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, 1, 0, 0, 0, 0, 1, @Notes, 0, 1)", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", itemId)
-                    myCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
-                    myCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
-                    myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
-                    myCmd.Parameters.AddWithValue("@Notes", data.notes)
-
-                    thisConn.Open()
-                    myCmd.ExecuteNonQuery()
-                End Using
-            End Using
-
-            orderClass.ResetPriceDetail(data.headerid, itemId)
-            orderClass.CalculatePrice(data.headerid, itemId)
-
-            orderClass.UpdateServiceItem(data.headerid, itemId, data.buyprice, data.sellprice)
-
-            orderClass.FinalCostItem(data.headerid, itemId)
-
-            Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Added"}
-            orderClass.Logs(dataLog)
-            Return "Success"
-        End If
-
-        If data.itemaction = "edit" OrElse data.itemaction = "view" Then
-            Dim itemId As String = data.itemid
-
-            Using thisConn As New SqlConnection(myConn)
-                Using myCmd As New SqlCommand("UPDATE OrderDetails SET ProductId=@ProductId, PriceProductGroupId=@PriceProductGroupId, Qty=1, Width=0, [Drop]=0, LinearMetre=0, SquareMetre=0, TotalItems=1, Notes=@Notes, MarkUp=0 WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", itemId)
-                    myCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
-                    myCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
-                    myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
-                    myCmd.Parameters.AddWithValue("@Notes", data.notes)
-
-                    thisConn.Open()
-                    myCmd.ExecuteNonQuery()
-                End Using
-            End Using
-
-            orderClass.ResetPriceDetail(data.headerid, itemId)
-            orderClass.CalculatePrice(data.headerid, itemId)
-
-            orderClass.UpdateServiceItem(data.headerid, itemId, data.buyprice, data.sellprice)
-
-            orderClass.FinalCostItem(data.headerid, itemId)
-
-            Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
-            orderClass.Logs(dataLog)
-
-            Return "Success"
-        End If
-
-        Return "PLEASE CONTACT YOUR CUSTOMER SERVICE !"
-    End Function
-
-    <WebMethod()>
     Public Shared Function PrivacyProcess(data As ProccessData) As String
         Dim orderClass As New OrderClass
 
@@ -11355,49 +11277,6 @@ Partial Class Order_Method
             .BlindTypes = ListData(blindReq),
             .ColourTypes = ListData(colourReq),
             .Mountings = ListData(mountingReq)
-        }
-        Return result
-    End Function
-
-    <WebMethod()>
-    Public Shared Function ServiceDetail(itemId As Integer, companyDetailId As String, action As String) As Object
-        Dim orderClass As New OrderClass
-
-        Dim detailData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Products.DesignId AS DesignId, Products.BlindId AS BlindType, Products.TubeType AS TubeType, Products.ControlType AS ControlType FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.Id='" & itemId & "'")
-        If detailData Is Nothing Then Return Nothing
-
-        Dim designId As String = detailData("DesignId").ToString()
-        Dim blindId As String = detailData("BlindType").ToString()
-        Dim tubeId As String = detailData("TubeType").ToString()
-        Dim controlId As String = detailData("ControlType").ToString()
-
-        Dim itemDetail As New Dictionary(Of String, Object)
-        For Each col As DataColumn In detailData.Table.Columns
-            itemDetail(col.ColumnName) = detailData(col.ColumnName)
-        Next
-
-        Dim sellPrice As DataRow = orderClass.GetDataRow("SELECT SellPrice FROM OrderCostings WHERE ItemId='" & itemId & "' AND Type='Base'")
-        If sellPrice IsNot Nothing AndAlso Not IsDBNull(sellPrice("SellPrice")) Then
-            itemDetail("SellPrice") = sellPrice("SellPrice")
-        Else
-            itemDetail("SellPrice") = 0
-        End If
-
-        Dim buyPrice As DataRow = orderClass.GetDataRow("SELECT BuyPrice FROM OrderCostings WHERE ItemId='" & itemId & "' AND Type='Base'")
-        If buyPrice IsNot Nothing AndAlso Not IsDBNull(buyPrice("BuyPrice")) Then
-            itemDetail("BuyPrice") = buyPrice("BuyPrice")
-        Else
-            itemDetail("BuyPrice") = 0
-        End If
-
-        Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetailid = companyDetailId, .action = action}
-
-        Dim colourReq As New JSONList With {.type = "ProductName", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .action = action}
-
-        Dim result = New With {
-            .ItemData = itemDetail,
-            .BlindTypes = ListData(blindReq),
-            .ColourTypes = ListData(colourReq)
         }
         Return result
     End Function

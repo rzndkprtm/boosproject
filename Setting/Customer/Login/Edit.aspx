@@ -59,6 +59,12 @@
                                             <asp:TextBox runat="server" ID="txtFullName" CssClass="form-control" placeholder="Full Name ..." autocomplete="off"></asp:TextBox>
                                         </div>
                                     </div>
+                                    <div class="row mb-2" runat="server" id="divEmail">
+                                        <div class="col-12 form-group">
+                                            <label class="form-label">Email</label>
+                                            <asp:TextBox runat="server" ID="txtEmail" CssClass="form-control" placeholder="Email ..." autocomplete="off"></asp:TextBox>
+                                        </div>
+                                    </div>
                                     <div class="row mb-2">
                                         <div class="col-12 col-sm-12 col-lg-4 form-group">
                                             <label class="form-label">Pricing</label>

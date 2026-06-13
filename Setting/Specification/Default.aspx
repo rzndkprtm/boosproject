@@ -79,5 +79,25 @@
                 </a>
             </div>
         </section>
+        <div runat="server" id="divHr"><hr /></div>
+        <section class="row mt-2" runat="server" id="divAdditional">
+            <div class="dashboard-wrapper">
+                <a href="/setting/specification/tubetype" class="dashboard-card">
+                    <div class="dashboard-number"><%= GetSumData("ProductTubes") %></div>
+                    <div class="dashboard-title">Tube Type</div>
+                    <div class="dashboard-desc">Description</div>
+                </a>
+                <a href="/setting/specification/controltype" class="dashboard-card">
+                    <div class="dashboard-number"><%= GetSumData("ProductControls") %></div>
+                    <div class="dashboard-title">Control Type</div>
+                    <div class="dashboard-desc">Description</div>
+                </a>
+                <a href="/setting/specification/colourtype" class="dashboard-card">
+                    <div class="dashboard-number"><%= GetSumData("ProductColours") %></div>
+                    <div class="dashboard-title">Colour Type</div>
+                    <div class="dashboard-desc">Description</div>
+                </a>
+            </div>
+        </section>
     </div>
 </asp:Content>
