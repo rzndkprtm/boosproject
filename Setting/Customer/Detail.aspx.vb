@@ -207,13 +207,10 @@ Partial Class Setting_Customer_Detail
             lblMinSurcharge.Text = thisData("CustMinSurcharge").ToString()
             lblActive.Text = thisData("CustActive").ToString()
 
-            btnEditCustomer.Visible = LoginAccess("Edit")
             If Session("RoleName") = "Sales" AndAlso Session("CustomerId") = customerId Then
                 btnEditCustomer.Visible = False
             End If
             aDelete.Visible = LoginAccess("Delete")
-            aRecalculate.Visible = LoginAccess("Recalculate Order")
-            aWelcome.Visible = LoginAccess("Welcome Customer")
 
             If customerId = "3" Then aWelcome.Visible = False
 
