@@ -174,6 +174,11 @@ Partial Class Setting_Customer_Detail
                 Exit Sub
             End If
 
+            If Session("RoleName") = "Sales" AndAlso Session("CustomerId") = customerId Then
+                Response.Redirect("~/setting/customer", False)
+                Exit Sub
+            End If
+
             Dim priceGroupId As String = thisData("PriceGroupId").ToString()
             Dim shutterPriceGroupId As String = thisData("ShutterPriceGroupId").ToString()
             Dim doorPriceGroupId As String = thisData("DoorPriceGroupId").ToString()
@@ -207,9 +212,7 @@ Partial Class Setting_Customer_Detail
             lblMinSurcharge.Text = thisData("CustMinSurcharge").ToString()
             lblActive.Text = thisData("CustActive").ToString()
 
-            If Session("RoleName") = "Sales" AndAlso Session("CustomerId") = customerId Then
-                btnEditCustomer.Visible = False
-            End If
+
             aDelete.Visible = LoginAccess("Delete")
 
             If customerId = "3" Then aWelcome.Visible = False
