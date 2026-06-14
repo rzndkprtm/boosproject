@@ -113,8 +113,9 @@ Partial Class Setting_Price_Promo_Detail
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Promos SET Name=@Name, StartDate=@StartDate, EndDate=@EndDate, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Promos SET CompanyDetailId=@CompanyDetailId, Name=@Name, StartDate=@StartDate, EndDate=@EndDate, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                        myCmd.Parameters.AddWithValue("@CompanyDetailId", ddlCompany.SelectedValue)
                         myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                         myCmd.Parameters.AddWithValue("@StartDate", txtStartDate.Text)
                         myCmd.Parameters.AddWithValue("@EndDate", txtEndDate.Text)
@@ -238,12 +239,16 @@ Partial Class Setting_Price_Promo_Detail
 
     Protected Sub BindData(promoId As String)
         Try
-            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM Promos WHERE Id='" & promoId & "'")
+            Dim thisData As DataRow = settingClass.GetDataRow("SELECT Promos.*, CompanyDetails.Name AS CompanyDetailName FROM Promos LEFT JOIN CompanyDetails ON Promos.CompanyDetailId=CompanyDetails.Id WHERE Promos.Id='" & promoId & "'")
             If thisData Is Nothing Then
                 Response.Redirect("~/setting/price/promo", False)
                 Exit Sub
             End If
 
+            BindCompanyDetail()
+
+            lblCompanyDetail.Text = thisData("CompanyDetailName").ToString()
+            ddlCompany.SelectedValue = thisData("CompanyDetailId").ToString()
             lblName.Text = thisData("Name").ToString()
             txtName.Text = thisData("Name").ToString()
             lblStartDate.Text = Convert.ToDateTime(thisData("StartDate")).ToString("dd MMM yyyy")
@@ -270,8 +275,27 @@ Partial Class Setting_Price_Promo_Detail
             aEdit.Visible = LoginAccess("Edit")
         Catch ex As Exception
             MessageError(True, ex.ToString())
-            If Not IsPostBack Then
+            If Not Session("RoleName") = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindCompanyDetail()
+        ddlCompany.Items.Clear()
+        Try
+            ddlCompany.DataSource = settingClass.GetDataTable("SELECT * FROM CompanyDetails ORDER BY Name ASC")
+            ddlCompany.DataTextField = "Name"
+            ddlCompany.DataValueField = "Id"
+            ddlCompany.DataBind()
+
+            If ddlCompany.Items.Count > 1 Then
+                ddlCompany.Items.Insert(0, New ListItem("", ""))
+            End If
+        Catch ex As Exception
+            ddlCompany.Items.Clear()
+            If Session("RoleName") = "Developer" Then
+                MessageError(True, ex.ToString())
             End If
         End Try
     End Sub
