@@ -35,6 +35,12 @@ Partial Class Setting_Customer_Address_Add
                 MessageError(True, "ACCOUNT IS REQURIED !")
                 Exit Sub
             End If
+            If Session("RoleName") = "Sales" OrElse Session("RoleName") = "Account" Then
+                If Session("CompanyId") = ddlCustomer.SelectedValue Then
+                    MessageError(True, "ACCESS DENIED !")
+                    Exit Sub
+                End If
+            End If
             If txtAddress.Text = "" Then
                 MessageError(True, "ADDRESS IS REQUIRED !")
                 Exit Sub
