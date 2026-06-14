@@ -38,6 +38,10 @@
                     </div>
                     <div class="card-body">
                         <dl class="row mb-0">
+                            <dt class="col-5 text-muted">Company Name</dt>
+                            <dd class="col-7 fw-bold">
+                                <asp:Label runat="server" ID="lblCompanyDetail"></asp:Label>
+                            </dd>
                             <dt class="col-5 text-muted">Promo Name</dt>
                             <dd class="col-7 fw-bold">
                                 <asp:Label runat="server" ID="lblName"></asp:Label>
@@ -61,8 +65,9 @@
                         </dl>
                     </div>
                     <div class="card-footer text-center">
-                        <a href="javascript:void(0);" class="btn btn-secondary" onclick="showLog('Promos', '<%= lblId.Text %>')">Log</a>
                         <a href="javascript:void(0);" runat="server" id="aEdit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalProcess">Edit Promo</a>
+                        <a href="javascript:void(0);" class="btn btn-secondary" onclick="showLog('Promos', '<%= lblId.Text %>')">Log</a>
+                        
                     </div>
                 </div>
             </div>
@@ -141,6 +146,12 @@
                     <h4 class="modal-title">Edit Promo</h4>
                 </div>
                 <div class="modal-body">
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Company</label>
+                            <asp:DropDownList runat="server" ID="ddlCompany" CssClass="choices form-select"></asp:DropDownList>
+                        </div>
+                    </div>
                     <div class="row mb-2">
                         <div class="col-12 form-group">
                             <label class="form-label">Name</label>

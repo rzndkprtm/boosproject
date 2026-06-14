@@ -1,14 +1,11 @@
-﻿
-Imports System.Data
-Imports System.Data.SqlClient
-Imports System.Drawing
+﻿Imports System.Data.SqlClient
 
 Partial Class Setting_Customer_Promo_Add
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim url As String = String.Empty
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
@@ -21,11 +18,20 @@ Partial Class Setting_Customer_Promo_Add
             lblCustomerId.Text = Request.QueryString("custid").ToString()
         End If
 
+        If Not String.IsNullOrEmpty(Request.QueryString("returnpage")) Then
+            lblReturnPage.Text = Request.QueryString("returnpage").ToString()
+        End If
+
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             BindCustomer(lblCustomerId.Text)
-            BindPromo()
+            BindPromo(ddlCustomer.SelectedValue)
         End If
+    End Sub
+
+    Protected Sub ddlCustomer_SelectedIndexChanged(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        BindPromo(ddlCustomer.SelectedValue)
     End Sub
 
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
@@ -35,12 +41,10 @@ Partial Class Setting_Customer_Promo_Add
                 MessageError(True, "ACCOUNT IS REQUIRED !")
                 Exit Sub
             End If
-
             If ddlPromo.SelectedValue = "" Then
                 MessageError(True, "PROMO IS REQUIRED !")
                 Exit Sub
             End If
-
             Dim checkData As Integer = settingClass.GetItemData_Integer("SELECT COUNT(*) FROM CustomerPromos WHERE CustomerId='" & ddlCustomer.SelectedValue & "' AND PromoId='" & ddlPromo.SelectedValue & "'")
             If checkData > 0 Then
                 MessageError(True, "THIS PROMO IS ALREADY REGISTERED. PLEASE USE A DIFFERENT PROMO !")
@@ -64,7 +68,10 @@ Partial Class Setting_Customer_Promo_Add
                 Dim dataLog As Object() = {"CustomerPromos", thisId, Session("LoginId").ToString(), "Customer Promo Created"}
                 settingClass.Logs(dataLog)
 
-                Dim url As String = String.Format("~/setting/customer/detail?customerid={0}", ddlCustomer.SelectedValue)
+                url = "~/setting/customer/promo"
+                If lblReturnPage.Text = "detail" Then
+                    url = String.Format("~/setting/customer/detail?customerid={0}", ddlCustomer.SelectedValue)
+                End If
                 Response.Redirect(url, False)
             End If
         Catch ex As Exception
@@ -76,9 +83,9 @@ Partial Class Setting_Customer_Promo_Add
     End Sub
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
-        Dim url As String = String.Format("~/setting/customer/detail?customerid={0}", ddlCustomer.SelectedValue)
-        If ddlCustomer.SelectedValue = "" Then
-            url = "~/setting/customer/promo"
+        url = "~/setting/customer/promo"
+        If lblReturnPage.Text = "detail" Then
+            url = String.Format("~/setting/customer/detail?customerid={0}", ddlCustomer.SelectedValue)
         End If
         Response.Redirect(url, False)
     End Sub
@@ -116,19 +123,25 @@ Partial Class Setting_Customer_Promo_Add
         End Try
     End Sub
 
-    Protected Sub BindPromo()
+    Protected Sub BindPromo(customerId As String)
         ddlPromo.Items.Clear()
         Try
-            ddlPromo.DataSource = settingClass.GetDataTable("SELECT * FROM Promos WHERE Active=1 ORDER BY Name ASC")
-            ddlPromo.DataTextField = "Name"
-            ddlPromo.DataValueField = "Id"
-            ddlPromo.DataBind()
+            If Not String.IsNullOrEmpty(customerId) Then
+                Dim companyDetailId As String = settingClass.GetItemData("SELECT CompanyDetailId FROM Customers WHERE Id='" & customerId & "'")
+                ddlPromo.DataSource = settingClass.GetDataTable("SELECT * FROM Promos WHERE CompanyDetailId='" & companyDetailId & "' AND Active=1 ORDER BY Name ASC")
+                ddlPromo.DataTextField = "Name"
+                ddlPromo.DataValueField = "Id"
+                ddlPromo.DataBind()
 
-            If ddlPromo.Items.Count > 1 Then
-                ddlPromo.Items.Insert(0, New ListItem("", ""))
+                If ddlPromo.Items.Count > 1 Then
+                    ddlPromo.Items.Insert(0, New ListItem("", ""))
+                End If
             End If
         Catch ex As Exception
             ddlPromo.Items.Clear()
+            If Session("RoleName") = "Developer" Then
+                MessageError(True, ex.ToString())
+            End If
         End Try
     End Sub
 

@@ -867,7 +867,7 @@ Partial Class Setting_Customer_Detail
 
     Protected Sub btnAddPromo_Click(sender As Object, e As EventArgs)
         Session("selectedTabCustomer") = "list-promo"
-        url = String.Format("~/setting/customer/promo/add?custid={0}", lblId.Text)
+        url = String.Format("~/setting/customer/promo/add?custid={0}&returnpage=detail", lblId.Text)
         Response.Redirect(url, False)
     End Sub
 
