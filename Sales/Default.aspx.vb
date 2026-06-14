@@ -20,7 +20,9 @@ Partial Class Sales_Default
             MessageError(False, String.Empty)
             BindCompany()
 
-            ddlCompany.SelectedValue = Session("SearchSalesCompany")
+            If Not String.IsNullOrEmpty(Session("SearchSalesCompany")) Then
+                ddlCompany.SelectedValue = Session("SearchSalesCompany")
+            End If
             BindData(ddlCompany.SelectedValue)
         End If
     End Sub
