@@ -33,11 +33,13 @@ Partial Class Setting_Customer_Edit
         End If
 
         If Not IsPostBack Then
+            MessageError(False, String.Empty)
             BindData(lblId.Text)
         End If
     End Sub
 
     Protected Sub ddlCompany_SelectedIndexChanged(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
         BindCompanyDetail(ddlCompany.SelectedValue)
         BindOperator(ddlCompany.SelectedValue)
         BindPriceGroup(ddlCompany.SelectedValue)
@@ -46,71 +48,53 @@ Partial Class Setting_Customer_Edit
     End Sub
 
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
-        BackColor()
+        MessageError(False, String.Empty)
         Try
             If txtName.Text = "" Then
                 MessageError(True, "CUSTOMER NAME IS REQUIRED !")
-                txtName.BackColor = Drawing.Color.Red
-                txtName.Focus()
                 Exit Sub
             End If
 
             If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" Then
                 If ddlLevel.SelectedValue = "" Then
                     MessageError(True, "CUSTOMER LEVEL IS REQUIRED !")
-                    ddlLevel.BackColor = Drawing.Color.Red
-                    ddlLevel.Focus()
                     Exit Sub
                 End If
                 If ddlLevel.SelectedValue = "Referral" AndAlso ddlSponsor.SelectedValue = "" Then
                     MessageError(True, "CUSTOMER SPONSOR IS REQUIRED !")
-                    ddlSponsor.BackColor = Drawing.Color.Red
-                    ddlSponsor.Focus()
                     Exit Sub
                 End If
             End If
 
             If ddlCompany.SelectedValue = "" Then
                 MessageError(True, "COMPANY IS REQUIRED !")
-                ddlCompany.BackColor = Drawing.Color.Red
-                ddlCompany.Focus()
                 Exit Sub
             End If
 
             If ddlCompanyDetail.SelectedValue = "" Then
                 MessageError(True, "SUB COMPANY IS REQUIRED !")
-                ddlCompanyDetail.BackColor = Drawing.Color.Red
-                ddlCompanyDetail.Focus()
                 Exit Sub
             End If
 
             If ddlCompany.SelectedValue = "2" Then
                 If ddlArea.SelectedValue = "" Then
                     MessageError(True, "AREA IS REQUIRED !")
-                    ddlArea.BackColor = Drawing.Color.Red
-                    ddlArea.Focus()
                     Exit Sub
                 End If
             End If
 
             If ddlPriceGroup.SelectedValue = "" Then
                 MessageError(True, "PRICE GROUP IS REQUIRED !")
-                ddlPriceGroup.BackColor = Drawing.Color.Red
-                ddlPriceGroup.Focus()
                 Exit Sub
             End If
 
             If ddlPriceGroupShutter.SelectedValue = "" Then
                 MessageError(True, "SHUTTER PRICE GROUP IS REQUIRED !")
-                ddlPriceGroupShutter.BackColor = Drawing.Color.Red
-                ddlPriceGroupShutter.Focus()
                 Exit Sub
             End If
 
             If ddlPriceGroupDoor.SelectedValue = "" Then
                 MessageError(True, "DOOR PRICE GROUP IS REQUIRED !")
-                ddlPriceGroupDoor.BackColor = Drawing.Color.Red
-                ddlPriceGroupDoor.Focus()
                 Exit Sub
             End If
 
@@ -179,8 +163,7 @@ Partial Class Setting_Customer_Edit
         Response.Redirect(url, False)
     End Sub
 
-    Private Sub BindData(customerId As String)
-        BackColor()
+    Protected Sub BindData(customerId As String)
         Try
             Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Customers WHERE Id='" & customerId & "'")
 
@@ -254,7 +237,7 @@ Partial Class Setting_Customer_Edit
         End Try
     End Sub
 
-    Private Sub BindCompany()
+    Protected Sub BindCompany()
         ddlCompany.Items.Clear()
         Try
             ddlCompany.DataSource = settingClass.GetDataTable("SELECT * FROM Companys ORDER BY Id ASC")
@@ -282,7 +265,7 @@ Partial Class Setting_Customer_Edit
         End Try
     End Sub
 
-    Private Sub BindCompanyDetail(companyId As String)
+    Protected Sub BindCompanyDetail(companyId As String)
         ddlCompanyDetail.Items.Clear()
         Try
             If Not String.IsNullOrEmpty(companyId) Then
@@ -330,7 +313,7 @@ Partial Class Setting_Customer_Edit
         End Try
     End Sub
 
-    Private Sub BindPriceGroup(companyId As String)
+    Protected Sub BindPriceGroup(companyId As String)
         ddlPriceGroup.Items.Clear()
         Try
             If Not String.IsNullOrEmpty(companyId) Then
@@ -351,7 +334,7 @@ Partial Class Setting_Customer_Edit
         End Try
     End Sub
 
-    Private Sub BindPriceGroup_Shutter(companyId As String)
+    Protected Sub BindPriceGroup_Shutter(companyId As String)
         ddlPriceGroupShutter.Items.Clear()
         Try
             If Not String.IsNullOrEmpty(companyId) Then
@@ -393,35 +376,14 @@ Partial Class Setting_Customer_Edit
         End Try
     End Sub
 
-    Private Sub BindComponentForm()
+    Protected Sub BindComponentForm()
         divDebtorCode.Visible = LoginAccess("Visible Debtor Code")
         divLevelSponsor.Visible = LoginAccess("Visible Level Sponsor")
         divCompany.Visible = LoginAccess("Visible Company")
         divAreaOperator.Visible = LoginAccess("Visible Area Operator")
     End Sub
 
-    Private Sub BackColor()
-        MessageError(False, String.Empty)
-
-        txtDebtorCode.BackColor = Drawing.Color.Empty
-        txtName.BackColor = Drawing.Color.Empty
-        ddlLevel.BackColor = Drawing.Color.Empty
-        ddlSponsor.BackColor = Drawing.Color.Empty
-        ddlCompany.BackColor = Drawing.Color.Empty
-        ddlCompanyDetail.BackColor = Drawing.Color.Empty
-        ddlArea.BackColor = Drawing.Color.Empty
-        lbOperator.BackColor = Drawing.Color.Empty
-        ddlOnStop.BackColor = Drawing.Color.Empty
-        ddlCashSale.BackColor = Drawing.Color.Empty
-        ddlPriceGroup.BackColor = Drawing.Color.Empty
-        ddlPriceGroupShutter.BackColor = Drawing.Color.Empty
-        ddlPriceGroupDoor.BackColor = Drawing.Color.Empty
-        ddlNewsletter.BackColor = Drawing.Color.Empty
-        ddlMinSurcharge.BackColor = Drawing.Color.Empty
-        ddlActive.BackColor = Drawing.Color.Empty
-    End Sub
-
-    Private Sub MessageError(visible As Boolean, message As String)
+    Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
     End Sub
 

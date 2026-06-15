@@ -145,6 +145,15 @@ Partial Class Setting_Customer_Detail
             Dim mailingClass As New MailingClass
             mailingClass.LoginCredentials(lblId.Text, Session("LoginId").ToString(), "Welcome Customer")
 
+            Using thisConn As New SqlConnection(myConn)
+                Using myCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerWelcomes VALUES (NEWID(), @CustomerId)", thisConn)
+                    myCmd.Parameters.AddWithValue("@CustomerId", lblId.Text)
+
+                    thisConn.Open()
+                    myCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
             dataLog = {"Customers", lblId.Text, Session("LoginId").ToString(), "Send Welcome Email"}
             settingClass.Logs(dataLog)
 
@@ -212,11 +221,10 @@ Partial Class Setting_Customer_Detail
             lblMinSurcharge.Text = thisData("CustMinSurcharge").ToString()
             lblActive.Text = thisData("CustActive").ToString()
 
-
             aDelete.Visible = LoginAccess("Delete")
-
-            If customerId = "3" Then aWelcome.Visible = False
-
+            aWelcome.Visible = False
+            Dim welcomeStatus As Integer = settingClass.GetItemData_Integer("SELECT COUNT(*) FROM CustomerWelcomes WHERE CustomerId='" & lblId.Text & "'")
+            If welcomeStatus = 0 Then aWelcome.Visible = True
             divLevelSponsor.Visible = LoginAccess("Visible Level Sponsor")
         Catch ex As Exception
             MessageError(True, ex.ToString)
@@ -257,7 +265,7 @@ Partial Class Setting_Customer_Detail
         MessageError_Contact(False, String.Empty)
         Session("selectedTabCustomer") = "list-contact"
         Try
-            Dim thisId As String = txtIdContactDelete.Text
+            Dim thisId As String = txtDeleteContactId.Text
 
             Dim fullContact As String = settingClass.GetItemData("SELECT CONCAT('Contact Name: ', ISNULL(Name, ''), ', ', 'Email: ', ISNULL(Email, ''), ', ', 'Tags: ', ISNULL(Tags, '')) AS ThisContact FROM CustomerContacts WHERE Id='" & thisId & "'")
 
@@ -288,7 +296,7 @@ Partial Class Setting_Customer_Detail
         MessageError_Contact(False, String.Empty)
         Session("selectedTabCustomer") = "list-contact"
         Try
-            Dim thisId As String = txtIdPrimaryContact.Text
+            Dim thisId As String = txtPrimaryContactId.Text
 
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
@@ -322,7 +330,7 @@ Partial Class Setting_Customer_Detail
     Protected Sub BindDataContact(customerId As String)
         MessageError_Contact(False, String.Empty)
         Try
-            gvListContact.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerContacts WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
+            gvListContact.DataSource = settingClass.GetDataTable("SELECT *, CASE WHEN [Primary]=1 THEN 'Yes' WHEN [Primary]=0 THEN 'No' ELSE 'Error' END AS PrimaryData FROM CustomerContacts WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
             gvListContact.DataBind()
 
             Dim primaryContact As String = settingClass.GetItemData("SELECT Email FROM CustomerContacts WHERE CustomerId='" & customerId & "' AND [Primary]=1")
@@ -341,16 +349,6 @@ Partial Class Setting_Customer_Detail
     Protected Sub MessageError_Contact(visible As Boolean, message As String)
         divErrorContact.Visible = visible : msgErrorContact.InnerText = message
     End Sub
-
-    Protected Function VisibleYesPrimaryContact(primary As Boolean) As Boolean
-        If primary = True Then : Return True : End If
-        Return False
-    End Function
-
-    Protected Function VisibleNoPrimaryContact(primary As Boolean) As Boolean
-        If primary = False Then : Return True : End If
-        Return False
-    End Function
 
     Protected Function VisiblePrimaryContact(primary As Boolean) As Boolean
         If primary = False Then Return True
@@ -371,7 +369,7 @@ Partial Class Setting_Customer_Detail
         MessageError_Address(False, String.Empty)
         Session("selectedTabCustomer") = "list-address"
         Try
-            Dim thisId As String = txtIdAddressDelete.Text
+            Dim thisId As String = txtAddressDeleteId.Text
 
             Dim fullDesc As String = settingClass.GetItemData("SELECT CONCAT('Description: ', ISNULL(Description, ''), ', ', 'Address: ', ISNULL(Address, ''), ', ', 'Suburb: ', ISNULL(Suburb, ''), ', ', 'State: ', ISNULL(State, ''), ', ', 'PostCode: ', ISNULL(PostCode, '')) AS FullDescription FROM CustomerAddress WHERE Id='" & thisId & "'")
 
@@ -402,7 +400,7 @@ Partial Class Setting_Customer_Detail
         MessageError_Contact(False, String.Empty)
         Session("selectedTabCustomer") = "list-address"
         Try
-            Dim thisId As String = txtIdPrimaryAddress.Text
+            Dim thisId As String = txtPrimaryAddressId.Text
 
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
@@ -437,7 +435,7 @@ Partial Class Setting_Customer_Detail
         MessageError_Address(False, String.Empty)
         lblIdAddress.Text = String.Empty
         Try
-            gvListAddress.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerAddress WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
+            gvListAddress.DataSource = settingClass.GetDataTable("SELECT *, CASE WHEN [Primary]=1 THEN 'Yes' WHEN [Primary]=0 THEN 'No' ELSE 'Error' END AS PrimaryData FROM CustomerAddress WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
             gvListAddress.DataBind()
         Catch ex As Exception
             MessageError_Address(True, ex.ToString())
@@ -463,16 +461,6 @@ Partial Class Setting_Customer_Detail
         Return result
     End Function
 
-    Protected Function VisibleYesPrimaryAddress(primary As Boolean) As Boolean
-        If primary = True Then : Return True : End If
-        Return False
-    End Function
-
-    Protected Function VisibleNoPrimaryAddress(primary As Boolean) As Boolean
-        If primary = False Then : Return True : End If
-        Return False
-    End Function
-
     Protected Function VisiblePrimaryAddress(primary As Boolean) As Boolean
         If primary = False Then Return True
         Return False
@@ -496,7 +484,7 @@ Partial Class Setting_Customer_Detail
         MessageError_Business(False, String.Empty)
         Session("selectedTabCustomer") = "list-business"
         Try
-            Dim thisId As String = txtIdBusinessDelete.Text
+            Dim thisId As String = txtBusinessDeleteId.Text
 
             Dim fullBusiness As String = settingClass.GetItemData("SELECT CONCAT('ABN Number: ', ISNULL(ABNNumber, ''), ', ', 'Registered Name: ', ISNULL(RegisteredName, '')) AS FullDescription FROM CustomerBusiness WHERE Id='" & thisId & "'")
 
@@ -527,7 +515,7 @@ Partial Class Setting_Customer_Detail
         MessageError_Contact(False, String.Empty)
         Session("selectedTabCustomer") = "list-business"
         Try
-            Dim thisId As String = txtIdPrimaryBusiness.Text
+            Dim thisId As String = txtPrimaryBusinessId.Text
 
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
@@ -562,7 +550,7 @@ Partial Class Setting_Customer_Detail
         MessageError_Business(False, String.Empty)
         lblIdBusiness.Text = String.Empty
         Try
-            gvListBusiness.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerBusiness WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
+            gvListBusiness.DataSource = settingClass.GetDataTable("SELECT *, CASE WHEN [Primary]=1 THEN 'Yes' WHEN [Primary]=0 THEN 'No' ELSE 'Error' END AS PrimaryData FROM CustomerBusiness WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
             gvListBusiness.DataBind()
         Catch ex As Exception
             MessageError_Business(True, ex.ToString())
@@ -575,16 +563,6 @@ Partial Class Setting_Customer_Detail
     Protected Sub MessageError_Business(visible As Boolean, message As String)
         divErrorBusiness.Visible = visible : msgErrorBusiness.InnerText = message
     End Sub
-
-    Protected Function VisibleYesPrimaryBusiness(primary As Boolean) As Boolean
-        If primary = True Then : Return True : End If
-        Return False
-    End Function
-
-    Protected Function VisibleNoPrimaryBusiness(primary As Boolean) As Boolean
-        If primary = False Then : Return True : End If
-        Return False
-    End Function
 
     Protected Function VisiblePrimaryBusiness(primary As Boolean) As Boolean
         If primary = False Then Return True
@@ -605,10 +583,10 @@ Partial Class Setting_Customer_Detail
         MessageError_Login(False, String.Empty)
         Session("selectedTabCustomer") = "list-login"
         Try
-            Dim thisId As String = txtIdActiveLogin.Text
+            Dim thisId As String = txtActiveLoginId.Text
 
             Dim active As Integer = 1
-            If txtActiveLogin.Text = "1" Then : active = 0 : End If
+            If txtActiveLoginStatus.Text = "1" Then : active = 0 : End If
 
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Active=@Active, FailedCount=0 WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
@@ -636,12 +614,62 @@ Partial Class Setting_Customer_Detail
         End Try
     End Sub
 
+    Protected Sub btnSendLogin_Click(sender As Object, e As EventArgs)
+        MessageError_SendLogin(False, String.Empty)
+        Dim thisScript As String = "window.onload = function() { showSendLogin(); };"
+        Try
+            Dim thisId As String = txtSendLoginId.Text
+            Dim thisEmail As String = txtSendLoginEmail.Text
+
+            If String.IsNullOrEmpty(thisEmail) Then
+                MessageError_SendLogin(True, "EMAIL ADDRESS IS REQUIRED !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showSendLogin", thisScript, True)
+                Exit Sub
+            End If
+
+            Dim isValidEmail As Boolean = False
+            Try
+                Dim addr As New Net.Mail.MailAddress(thisEmail)
+                isValidEmail = (addr.Address = thisEmail)
+            Catch
+                isValidEmail = False
+            End Try
+
+            If Not isValidEmail Then
+                MessageError_SendLogin(True, "PLEASE ENTER A VALID EMAIL ADDRESS !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showSendLogin", thisScript, True)
+                Exit Sub
+            End If
+
+            If thisEmail = Session("PersonalEmail") Then
+                MessageError_SendLogin(True, "YOU DO NOT HAVE THE AUTHORITY TO HAVE THESE LOGIN CREDENTIALS SENT TO YOUR EMAIL ADDRESS !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showSendLogin", thisScript, True)
+                Exit Sub
+            End If
+
+            Dim mailingClass As New MailingClass
+            mailingClass.PersonalLogin(thisId, thisEmail, Session("FullName"))
+
+            dataLog = {"Logins", thisId, Session("LoginId").ToString(), "Send Personal Login"}
+            settingClass.Logs(dataLog)
+
+            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError_SendLogin(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_SendLogin(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+            ClientScript.RegisterStartupScript(Me.GetType(), "showSendLogin", thisScript, True)
+        End Try
+    End Sub
+
     Protected Sub btnChangePasswordLogin_Click(sender As Object, e As EventArgs)
         MessageError_Login(False, String.Empty)
         Session("selectedTabCustomer") = "list-login"
         Try
             If Not String.IsNullOrEmpty(txtChangePassword.Text) Then
-                Dim thisId As String = txtIdChangePassword.Text
+                Dim thisId As String = txtChangePasswordLoginId.Text
                 Dim newPassword As String = settingClass.Encrypt(txtChangePassword.Text)
 
                 Using thisConn As New SqlConnection(myConn)
@@ -672,8 +700,8 @@ Partial Class Setting_Customer_Detail
         MessageError_Login(False, String.Empty)
         Session("selectedTabCustomer") = "list-login"
         Try
-            Dim thisId As String = txtIdResetPass.Text
-            Dim newPassword As String = settingClass.Encrypt(txtNewResetPass.Text)
+            Dim thisId As String = txtResetPasswordLoginId.Text
+            Dim newPassword As String = settingClass.Encrypt(txtResetPasswordLoginNew.Text)
 
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Password=@Password, FailedCount=0, ResetLogin=1, Active=1 WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
@@ -727,7 +755,7 @@ Partial Class Setting_Customer_Detail
     Protected Sub BindDataLogin(customerId As String)
         MessageError_Login(False, String.Empty)
         Try
-            Dim thisQuery As String = "SELECT Logins.*, LoginRoles.Name AS RoleName, LoginLevels.Name AS LevelName, CASE WHEN Logins.Pricing=1 THEN 'Yes' WHEN Logins.Pricing=0 THEN 'No' ELSE 'Error' END AS DataPricing, CASE WHEN Logins.Active=1 THEN 'Yes' WHEN Logins.Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Logins LEFT JOIN LoginRoles ON Logins.RoleId=LoginRoles.Id LEFT JOIN LoginLevels ON Logins.LevelId=LoginLevels.Id WHERE Logins.CustomerId='" & customerId & "' ORDER BY Logins.RoleId, Logins.Id ASC"
+            Dim thisQuery As String = "SELECT Logins.*, LoginRoles.Name AS RoleName, LoginLevels.Name AS LevelName, CASE WHEN Logins.Pricing=1 THEN 'Yes' WHEN Logins.Pricing=0 THEN 'No' ELSE 'Error' END AS DataPricing, CASE WHEN Logins.Active=1 THEN 'Enable' WHEN Logins.Active=0 THEN 'Disable' ELSE 'Error' END AS DataActive FROM Logins LEFT JOIN LoginRoles ON Logins.RoleId=LoginRoles.Id LEFT JOIN LoginLevels ON Logins.LevelId=LoginLevels.Id WHERE Logins.CustomerId='" & customerId & "' ORDER BY Logins.RoleId, Logins.Id ASC"
 
             gvListLogin.DataSource = settingClass.GetDataTable(thisQuery)
             gvListLogin.DataBind()
@@ -739,6 +767,11 @@ Partial Class Setting_Customer_Detail
         End Try
     End Sub
 
+    Protected Function VisibleSendLogin(active As Integer) As Boolean
+        If Session("RoleName") = "Developer" AndAlso active = 1 Then Return True
+        Return False
+    End Function
+
     Protected Function TextActive_Login(active As Boolean) As String
         If active = True Then Return "Disable"
         Return "Enable"
@@ -746,6 +779,10 @@ Partial Class Setting_Customer_Detail
 
     Protected Sub MessageError_Login(visible As Boolean, message As String)
         divErrorLogin.Visible = visible : msgErrorLogin.InnerText = message
+    End Sub
+
+    Protected Sub MessageError_SendLogin(visible As Boolean, message As String)
+        divErrorSendLogin.Visible = visible : msgErrorSendLogin.InnerText = message
     End Sub
 
     ' END CUSTOMER LOGIN
@@ -768,7 +805,7 @@ Partial Class Setting_Customer_Detail
         MessageError_Discount(False, String.Empty)
         Session("selectedTabCustomer") = "list-discount"
         Try
-            Dim thisId As String = txtIdDiscountDelete.Text
+            Dim thisId As String = txtDeleteDiscountId.Text
 
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
@@ -875,7 +912,7 @@ Partial Class Setting_Customer_Detail
         MessageError_Promo(False, String.Empty)
         Session("selectedTabCustomer") = "list-promo"
         Try
-            Dim thisId As String = txtIdPromoDelete.Text
+            Dim thisId As String = txtDeletePromoId.Text
 
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerPromos WHERE Id=@Id; DELETE FROM Logs WHERE Type='CustomerPromos' AND DataId=@Id;", thisConn)
@@ -1081,6 +1118,7 @@ Partial Class Setting_Customer_Detail
         MessageError_Address(visible, message)
         MessageError_Business(visible, message)
         MessageError_Login(visible, message)
+        MessageError_SendLogin(visible, message)
         MessageError_Discount(visible, message)
         MessageError_Promo(visible, message)
         MessageError_Product(visible, message)

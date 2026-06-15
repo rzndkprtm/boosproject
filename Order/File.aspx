@@ -38,7 +38,9 @@
                     <div class="card-content">
                         <div class="card-header">
                             <div class="row">
-                                <div class="col-12 col-sm-12 col-lg-5 mb-2"></div>
+                                <div class="col-12 col-sm-12 col-lg-5 mb-2">
+                                    <h5 class="card-title">List Folder File</h5>
+                                </div>
                                 <div class="col-12 col-sm-12 col-lg-7 d-flex justify-content-end">
                                     <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
                                         <div class="input-group">
@@ -55,7 +57,6 @@
                                 <div class="col-12">
                                     <div class="table-responsive">
                                         <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom" OnPageIndexChanging="gvList_PageIndexChanging" OnRowCommand="gvList_RowCommand">
-                                            <RowStyle />
                                             <Columns>
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center">
                                                     <ItemTemplate>

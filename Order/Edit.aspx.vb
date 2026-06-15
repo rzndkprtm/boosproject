@@ -5,7 +5,6 @@ Partial Class Order_Edit
     Inherits Page
 
     Dim orderClass As New OrderClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
     Dim returnPage As String = String.Empty

@@ -5,7 +5,6 @@ Partial Class Setting_Customer_Discount_Add
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -41,22 +40,18 @@ Partial Class Setting_Customer_Discount_Add
                 MessageError(True, "ACCOUNT IS REQUIRED !")
                 Exit Sub
             End If
-
             If ddlType.SelectedValue = "" Then
                 MessageError(True, "ACCOUNT IS REQUIRED !")
                 Exit Sub
             End If
-
             If ddlType.SelectedValue = "productgroup" AndAlso ddlProduct.SelectedValue = "" Then
                 MessageError(True, "ACCOUNT IS REQUIRED !")
                 Exit Sub
             End If
-
             If txtDiscount.Text = "" Then
                 MessageError(True, "ACCOUNT IS REQUIRED !")
                 Exit Sub
             End If
-
             If msgError.InnerText = "" Then
                 Dim typeDisc As String = String.Empty
                 Dim sql As String = String.Empty

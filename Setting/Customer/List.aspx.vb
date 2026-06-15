@@ -95,9 +95,9 @@ Partial Class Setting_Customer_List
     Protected Sub btnCashSale_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim thisId As String = txtIdCashSale.Text
-            Dim newData As String = ddlNewCashSale.SelectedValue
-            Dim oldData As String = txtOldCashSale.Text
+            Dim thisId As String = txtCashSaleId.Text
+            Dim newData As String = ddlCashSaleNew.SelectedValue
+            Dim oldData As String = txtCashSaleOld.Text
 
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE Customers SET CashSale=@CashSale WHERE Id=@Id", thisConn)
@@ -126,9 +126,9 @@ Partial Class Setting_Customer_List
     Protected Sub btnOnStop_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim thisId As String = txtIdOnStop.Text
-            Dim newData As String = ddlNewOnStop.SelectedValue
-            Dim oldData As String = txtOldOnStop.Text
+            Dim thisId As String = txtOnStopId.Text
+            Dim newData As String = ddlOnStopNew.SelectedValue
+            Dim oldData As String = txtOnStopOld.Text
 
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE Customers SET OnStop=@OnStop WHERE Id=@Id", thisConn)
@@ -157,7 +157,7 @@ Partial Class Setting_Customer_List
     Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim dataId As String = txtIdDelete.Text
+            Dim dataId As String = txtDeleteId.Text
 
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE Customers SET Active=0 WHERE Id=@Id UPDATE Logins SET Active=0 WHERE CustomerId=@Id;", thisConn)

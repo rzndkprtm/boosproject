@@ -37,12 +37,14 @@
                             <div class="card-content">
                                 <div class="card-header">
                                     <div class="row">
-                                        <div class="col-12 col-sm-12 col-lg-6 mb-2"></div>
+                                        <div class="col-12 col-sm-12 col-lg-6 mb-2">
+                                            <h5 class="card-title">List Product Access</h5>
+                                        </div>
                                         <div class="col-12 col-sm-12 col-lg-6 mb-2">
                                             <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
                                                 <div class="input-group">
                                                     <span class="input-group-text">Search : </span>
-                                                    <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" placeholoder="" autocomplete="off"></asp:TextBox>
+                                                    <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" autocomplete="off"></asp:TextBox>
                                                     <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />
                                                 </div>
                                             </asp:Panel>
@@ -52,7 +54,6 @@
                                 <div class="card-body">
                                     <div class="table-responsive">
                                         <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Visible="false" OnRowCommand="gvList_RowCommand" OnPageIndexChanging="gvList_PageIndexChanging" OnDataBound="gvList_DataBound">
-                                            <RowStyle />
                                             <Columns>
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center">
                                                     <ItemTemplate>
@@ -74,7 +75,7 @@
                                                                 <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                             </li>
                                                             <li>
-                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalReset" onclick='<%# String.Format("return showReset(`{0}`);", Eval("Id").ToString()) %>'>Reset</a>
+                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalReset" onclick='<%# String.Format("return dataReset(`{0}`);", Eval("Id").ToString()) %>'>Reset</a>
                                                             </li>
                                                             <li>
                                                                 <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('CustomerProductAccess', '<%# Eval("Id") %>')">Log</a>
@@ -114,7 +115,7 @@
                     <h5 class="modal-title white">Reset Product Access</h5>
                 </div>
                 <div class="modal-body text-center py-4">
-                    <asp:TextBox runat="server" ID="txtIdReset" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtResetId" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
@@ -162,57 +163,41 @@
             var loading = document.getElementById("loadingOverlay");
             if (loading) loading.style.display = "none";
         });
-
         function initUpdatePanelLoading() {
             if (typeof Sys === "undefined") return;
             var prm = Sys.WebForms.PageRequestManager.getInstance();
-
             prm.add_beginRequest(function () {
                 var loading = document.getElementById("loadingOverlay");
                 if (loading) loading.style.display = "block";
             });
-
             prm.add_endRequest(function () {
                 var loading = document.getElementById("loadingOverlay");
                 if (loading) loading.style.display = "none";
-
                 bindGridRowClick();
             });
         }
-
         function bindGridRowClick() {
             const gv = document.getElementById('<%= gvList.ClientID %>');
             if (!gv) return;
-
             for (let i = 1; i < gv.rows.length; i++) {
                 const row = gv.rows[i];
-
                 row.style.cursor = "pointer";
-
                 row.onclick = function (e) {
-                    if (
-                        e.target.closest("a") ||
-                        e.target.closest("button") ||
-                        e.target.closest("[data-bs-toggle]")
-                    ) {
+                    if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]")) {
                         return;
                     }
-
                     const btn = this.querySelector("a[id*='linkDetail']");
                     if (btn) btn.click();
                 };
             }
         }
-
         document.addEventListener("DOMContentLoaded", function () {
             initUpdatePanelLoading();
             bindGridRowClick();
         });
-
-        function showReset(id) {
-            document.getElementById("<%=txtIdReset.ClientID %>").value = id;
+        function dataReset(id) {
+            document.getElementById("<%=txtResetId.ClientID %>").value = id;
         }
-
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
             $("#tblLogs tbody").html("");
@@ -226,19 +211,16 @@
                 dataType: "json",
                 success: function (res) {
                     const logs = res.d;
-
                     if (!logs || logs.length === 0) {
                         $("#tblLogs tbody").html(
                             `<tr><td class="text-center">DATA LOG NOT FOUND</td></tr>`
                         );
                         return;
                     }
-
                     let html = "";
                     logs.forEach(r => {
                         html += `<tr><td>${r.TextLog}</td></tr>`;
                     });
-
                     $("#tblLogs tbody").html(html);
                 },
                 error: function (err) {
@@ -246,14 +228,12 @@
                 }
             });
         }
-
         ["modalLog", "modalReset"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
             });
         });
-
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

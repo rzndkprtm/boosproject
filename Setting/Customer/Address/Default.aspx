@@ -117,7 +117,8 @@
                 </div>
             </div>
         </section>
-    </div>   
+    </div>
+    
     <div class="modal modal-blur fade" id="modalPrimary" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -192,7 +193,6 @@
             var loading = document.getElementById("loadingOverlay");
             if (loading) loading.style.display = "none";
         });
-
         function initUpdatePanelLoading() {
             if (typeof Sys === "undefined") return;
             var prm = Sys.WebForms.PageRequestManager.getInstance();
@@ -206,7 +206,6 @@
                 bindGridRowClick();
             });
         }
-
         function bindGridRowClick() {
             const gv = document.getElementById('<%= gvList.ClientID %>');
             if (!gv) return;
@@ -222,22 +221,18 @@
                 };
             }
         }
-
         document.addEventListener("DOMContentLoaded", function () {
             initUpdatePanelLoading();
             bindGridRowClick();
         });
-
         function dataPrimary(addressid, customerid) {
             document.getElementById("<%=txtPrimaryId.ClientID %>").value = addressid;
             document.getElementById("<%=txtPrimaryCustomerId.ClientID %>").value = customerid;
         }
-
         function dataDelete(addressid, customerid) {
             document.getElementById("<%=txtDeleteId.ClientID %>").value = addressid;
             document.getElementById("<%=txtDeleteCustomerId.ClientID %>").value = customerid;
         }
-
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
             $("#tblLogs tbody").html("");
@@ -268,14 +263,12 @@
                 }
             });
         }
-
         ["modalDelete", "modalLog", "modalPrimary"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
             });
         });
-
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

@@ -27,7 +27,7 @@
             <div class="col-12 col-sm-12 col-lg-8">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Add Form</h4>
+                        <h4 class="card-title">Customer Form</h4>
                     </div>
                     <div class="card-content">
                         <div class="card-body">
@@ -50,6 +50,7 @@
                                             <label class="form-label">Level</label>
                                             <asp:DropDownList runat="server" ID="ddlLevel" CssClass="choices form-select">
                                                 <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                <asp:ListItem Value="Main" Text="Main"></asp:ListItem>
                                                 <asp:ListItem Value="Sponsor" Text="Sponsor"></asp:ListItem>
                                                 <asp:ListItem Value="Member" Text="Member"></asp:ListItem>
                                                 <asp:ListItem Value="Referral" Text="Referral"></asp:ListItem>

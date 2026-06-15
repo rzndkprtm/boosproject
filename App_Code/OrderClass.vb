@@ -1676,9 +1676,6 @@ Public Class OrderClass
                     If gridSellMethod = "Square Metre" Then
                         If companyDetailId = "2" OrElse companyDetailId = "3" OrElse companyDetailId = "4" OrElse companyDetailId = "8" Then
                             thisSell = thisSell * squareMetre
-                            If designName = "Window" AndAlso blindName = "Flyscreen" AndAlso squareMetre > 1.5 Then
-                                thisSell = costSell
-                            End If
                         End If
                         If companyDetailId = "5" OrElse companyDetailId = "6" Then
                             If squareMetre < 1 Then thisSell = thisSell * 1

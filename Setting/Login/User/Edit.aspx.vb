@@ -5,7 +5,6 @@ Partial Class Setting_Login_User_Edit
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -32,6 +31,11 @@ Partial Class Setting_Login_User_Edit
         End If
     End Sub
 
+    Protected Sub ddlRole_SelectedIndexChanged(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        BindPage(ddlRole.SelectedValue)
+    End Sub
+
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
@@ -42,30 +46,6 @@ Partial Class Setting_Login_User_Edit
             If ddlLevel.SelectedValue = "" Then
                 MessageError(True, "LEVEL IS REQUIRED !")
                 Exit Sub
-            End If
-
-            If Session("RoleName") = "IT" Then
-                If ddlRole.SelectedValue = "1" Then
-                    MessageError(True, "YOU DO NOT HAVE PERMISSION TO CREATE A LOGIN WITH THIS ROLE !")
-                    Exit Sub
-                End If
-
-                If Session("LevelName") = "Member" AndAlso ddlRole.SelectedValue = "2" Then
-                    MessageError(True, "YOU DO NOT HAVE PERMISSION TO CREATE A LOGIN WITH THIS ROLE !")
-                    Exit Sub
-                End If
-            End If
-
-            If Session("RoleName") = "Factory Office" Then
-                If ddlRole.SelectedValue = "1" OrElse ddlRole.SelectedValue = "2" Then
-                    MessageError(True, "YOU DO NOT HAVE PERMISSION TO CREATE A LOGIN WITH THIS ROLE !")
-                    Exit Sub
-                End If
-
-                If Session("LevelName") = "Member" AndAlso ddlRole.SelectedValue = "3" Then
-                    MessageError(True, "YOU DO NOT HAVE PERMISSION TO CREATE A LOGIN WITH THIS ROLE !")
-                    Exit Sub
-                End If
             End If
 
             If txtEditUserName.Text = "" Then
@@ -120,39 +100,20 @@ Partial Class Setting_Login_User_Edit
 
     Protected Sub BindData(loginId As String)
         Try
-            Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Logins WHERE Id='" & loginId & "'")
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@LoginId", loginId),
+                New SqlParameter("@SessionRoleName", Session("RoleName").ToString()),
+                New SqlParameter("@SessionLevelName", Session("LevelName").ToString())
+            }
+
+            Dim myData As DataRow = settingClass.GetDataRowSP("sp_LoginEdit", params)
             If myData Is Nothing Then
                 Response.Redirect("~/setting/login/user", False)
                 Exit Sub
             End If
 
-            Dim roleId As String = myData("RoleId").ToString()
-            If Session("RoleName") = "IT" Then
-                If roleId = "1" Then
-                    Response.Redirect("~/setting/login/user", False)
-                    Exit Sub
-                End If
-
-                If Session("LevelName") = "Member" AndAlso (roleId = "1" OrElse roleId = "2") Then
-                    Response.Redirect("~/setting/login/user", False)
-                    Exit Sub
-                End If
-            End If
-
-            If Session("RoleName") = "Factory Office" Then
-                If roleId = "1" OrElse roleId = "2" Then
-                    Response.Redirect("~/setting/login/user", False)
-                    Exit Sub
-                End If
-
-                If Session("LevelName") = "Member" AndAlso (roleId = "1" OrElse roleId = "2" OrElse roleId = "3") Then
-                    Response.Redirect("~/setting/login/user", False)
-                    Exit Sub
-                End If
-            End If
-
             BindRole()
-            BindLeve()
+            BindLevel()
             BindCustomer()
 
             ddlRole.SelectedValue = myData("RoleId").ToString()
@@ -163,6 +124,8 @@ Partial Class Setting_Login_User_Edit
             txtFullName.Text = myData("FullName").ToString()
             txtEmail.Text = myData("Email").ToString()
             ddlPricing.SelectedValue = Convert.ToInt32(myData("Pricing"))
+
+            BindPage(ddlRole.SelectedValue)
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -217,7 +180,7 @@ Partial Class Setting_Login_User_Edit
         End Try
     End Sub
 
-    Protected Sub BindLeve()
+    Protected Sub BindLevel()
         ddlLevel.Items.Clear()
         Try
             ddlLevel.DataSource = settingClass.GetDataTable("SELECT * FROM LoginLevels WHERE Active=1 ORDER BY Name ASC")
@@ -252,6 +215,16 @@ Partial Class Setting_Login_User_Edit
             If Session("RoleName") = "Developer" Then
                 MessageError(True, ex.ToString())
             End If
+        End Try
+    End Sub
+
+    Protected Sub BindPage(roleId As String)
+        Try
+            divCustomer.Visible = False
+            If roleId = "4" OrElse roleId = "5" OrElse roleId = "8" OrElse roleId = "10" Then
+                divCustomer.Visible = True
+            End If
+        Catch ex As Exception
         End Try
     End Sub
 

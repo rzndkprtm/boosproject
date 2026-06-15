@@ -396,7 +396,6 @@
                         <div class="border rounded">
                             <div class="table-responsive">
                                 <asp:GridView runat="server" ID="gvListItem" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="100" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom" OnPageIndexChanging="gvListItem_PageIndexChanging" OnRowCommand="gvListItem_RowCommand">
-                                    <RowStyle />
                                     <Columns>
                                         <asp:TemplateField ItemStyle-HorizontalAlign="Center">
                                             <ItemTemplate>
@@ -441,7 +440,7 @@
                                                         <asp:LinkButton runat="server" ID="linkCopy" CssClass="dropdown-item" Text="Copy" CommandName="Copy" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                     </li>
                                                     <li runat="server" visible='<%# VisibleDelete(Eval("ProductId").ToString()) %>'>
-                                                        <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalDeleteItem" onclick='<%# String.Format("return showDeleteItem(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                        <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalDeleteItem" onclick='<%# String.Format("return dataDeleteItem(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                     </li>
                                                     <li runat="server" visible='<%# VisiblePrinting(Eval("Id").ToString()) %>'>
                                                         <hr class="dropdown-divider" />
@@ -637,11 +636,9 @@
                 </div>
                 <div class="modal-body text-center py-4">
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
-
                     <br /><br />
                     <i>* Make sure you have reviewed this order before sending it to the factory.</i>
                     <br /><br />
-
                     <asp:CheckBox runat="server" ID="chkSendEmail" CssClass="form-control" Checked="true" Text="&nbsp;&nbsp;&nbsp;SEND EMAIL CONFIRM" />
                 </div>
                 <div class="modal-footer">
@@ -827,7 +824,6 @@
                         <div class="col-12">
                             <div class="table-responsive">
                                 <asp:GridView runat="server" ID="gvListOrderFile" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" ShowHeaderWhenEmpty="true" OnRowCommand="gvListOrderFile_RowCommand">
-                                    <RowStyle />
                                     <Columns>
                                         <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="70px">
                                             <ItemTemplate>
@@ -882,7 +878,6 @@
                     </div>
                     <div class="table-responsive">
                         <asp:GridView runat="server" ID="gvListItemRework" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" DataKeyNames="Id">
-                            <RowStyle />
                             <Columns>
                                 <asp:TemplateField>
                                     <HeaderTemplate>
@@ -1530,20 +1525,13 @@
         document.addEventListener('DOMContentLoaded', function () {
             const gv = document.getElementById('<%= gvListItem.ClientID %>');
             if (!gv) return;
-
             for (let i = 1; i < gv.rows.length; i++) {
                 const row = gv.rows[i];
                 row.style.cursor = 'pointer';
-
                 row.addEventListener('click', function (e) {
-                    if (
-                        e.target.closest("a") ||
-                        e.target.closest("button") ||
-                        e.target.closest("[data-bs-toggle]")
-                    ) {
+                    if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]")) {
                         return;
                     }
-
                     const btn = this.querySelector("a[id*='linkDetail']");
                     if (btn) btn.click();
                 });
@@ -1573,12 +1561,10 @@
                 cb.checked = source.checked;
             });
         }
-
         function showLogFromElement(el) {
             var id = el.getAttribute("data-id");
             showLog('OrderHeaders', id);
         }
-
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
             $("#tblLogs tbody").html("");
@@ -1612,7 +1598,6 @@
                 }
             });
         }
-
         function loadCostings(itemId, companyId) {
             $("#costingError").addClass("d-none").html("");
             $("#costingHead").html("");
@@ -1640,7 +1625,6 @@
                 }
             });
         }
-
         function renderCostingTable(data, perm) {
             let headHtml = "<tr>";
             if (perm.showType) headHtml += "<th>Type</th>";
@@ -1676,27 +1660,21 @@
 
             $("#costingBody").html(bodyHtml);
         }
-
         function showPreview() {
             $("#modalPreview").modal("show");
         }
-
         function showBuilderDetail() {
             $("#modalBuilderDetail").modal("show");
         }
-
         function showFileOrder() {
             $("#modalFileOrder").modal("show");
         }
-
         function showDetailQuote() {
             $("#modalDetailQuote").modal("show");
         }
-
         function showAddNote() {
             $("#modalAddNote").modal("show");
         }
-
         function showHistoryNote(headerId) {
             $("#historyNoteError").addClass("d-none").html("");
             $("#historyNoteBody").html("");
@@ -1737,44 +1715,34 @@
                 }
             });
         }
-
         function showSendInvoice() {
             $("#modalSendInvoice").modal("show");
         }
-
         function showService() {
             $("#modalAddService").modal("show");
         }
-
         function showInvoiceNumber() {
             $("#modalInvoiceNumber").modal("show");
         }
-
         function showInvoiceData() {
             $("#modalInvoiceData").modal("show");
-        }        
-
+        }
         function showCancelOrder() {
             $("#modalCancelOrder").modal("show");
         }
-
         function showShippedOrder() {
             $("#modalShippedOrder").modal("show");
         }
-
         function showReworkOrder() {
             $("#modalReworkOrder").modal("show");
         }
-
         function showCostingBuy() {
             $("#modalCostingBuy").modal("show");
         }
-
         function showDateOrder() {
             $("#modalDateOrder").modal("show");
         }
-
-        function showDeleteItem(id) {
+        function dataDeleteItem(id) {
             document.getElementById("<%=txtDeleteItemId.ClientID %>").value = id;
         }
 
@@ -1789,7 +1757,6 @@
 
             return true;
         }
-
         function hideWaitingModal() {
             var modalEl = document.getElementById('modalWaiting');
             if (modalEl) {
@@ -1797,7 +1764,6 @@
                 if (modalObj) modalObj.hide();
             }
         }
-
         function showSuccessSwal(orderId) {
             hideWaitingModal();
             Swal.fire({
@@ -1811,7 +1777,6 @@
                 }
             });
         }
-
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>
