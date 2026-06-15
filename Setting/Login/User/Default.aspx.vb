@@ -27,6 +27,11 @@ Partial Class Setting_Login_User_Default
         Response.Redirect("~/setting/login/user/add", False)
     End Sub
 
+    Protected Sub btnInstaller_Click(sender As Object, e As EventArgs)
+        Session("SearchLoginUser") = txtSearch.Text
+        Response.Redirect("~/setting/login/user/installer", False)
+    End Sub
+
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
         gvList.PageIndex = 0
 
