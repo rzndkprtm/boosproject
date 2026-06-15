@@ -42,7 +42,9 @@
                             <div class="card-content">
                                 <div class="card-header">
                                     <div class="row">
-                                        <div class="col-12 col-sm-12 col-lg-6 mb-2"></div>
+                                        <div class="col-12 col-sm-12 col-lg-6 mb-2">
+                                            <h4 class="card-title">List User</h4>
+                                        </div>
                                         <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
                                             <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
                                                 <div class="input-group">
@@ -102,6 +104,9 @@
                                                             </li>
                                                             <li>
                                                                 <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDencryptPassword" onclick='<%# String.Format("return dataDencryptPassword(`{0}`, `{1}`);", Eval("UserName").ToString(), DencryptPassword(Eval("Password").ToString())) %>'>Show Password</a>
+                                                            </li>
+                                                            <li runat="server" visible='<%# VisibleInstaller(Eval("RoleId").ToString()) %>'>
+                                                                <a class="dropdown-item" id="aInstaller" href='<%# Page.ResolveUrl("~/setting/login/user/installer?loginid=" & Eval("Id")) %>'>Installer Access</a>
                                                             </li>
                                                             <li>
                                                                 <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('Logins', '<%# Eval("Id") %>')">Log</a>
