@@ -374,7 +374,7 @@
                                                             <ItemTemplate>
                                                                 <asp:Label ID="lblStatus" runat="server"
                                                                     Text='<%# Eval("DataActive") %>'
-                                                                    ForeColor='<%# If(Eval("DataActive").ToString() = "Disable", Drawing.Color.Red, Nothing) %>'>
+                                                                    ForeColor='<%# If(Eval("DataActive").ToString() = "Disabled", Drawing.Color.Red, Nothing) %>'>
                                                                 </asp:Label>
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
