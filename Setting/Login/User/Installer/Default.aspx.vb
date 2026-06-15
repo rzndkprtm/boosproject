@@ -7,11 +7,11 @@ Partial Class Setting_Login_User_Installer_Default
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        'Dim pageAccess As Boolean = LoginAccess("Load")
-        'If pageAccess = False Then
-        '    Response.Redirect("~/setting/login/user", False)
-        '    Exit Sub
-        'End If
+        Dim pageAccess As Boolean = LoginAccess("Load")
+        If pageAccess = False Then
+            Response.Redirect("~/setting/login/user", False)
+            Exit Sub
+        End If
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
@@ -73,21 +73,18 @@ Partial Class Setting_Login_User_Installer_Default
     End Sub
 
     Protected Sub BindData(searchText As String)
-        'Try
-        '    Dim params As New List(Of SqlParameter) From {
-        '        New SqlParameter("@SearchText", If(String.IsNullOrEmpty(searchText), "", searchText.Trim())),
-        '        New SqlParameter("@RoleName", Session("RoleName").ToString()),
-        '        New SqlParameter("@LevelName", Session("LevelName").ToString()),
-        '        New SqlParameter("@LoginId", Session("LoginId").ToString())
-        '    }
-        '    gvList.DataSource = settingClass.GetDataTableSP("sp_LoginList", params)
-        '    gvList.DataBind()
-        'Catch ex As Exception
-        '    MessageError(True, ex.ToString())
-        '    If Not Session("RoleName") = "Developer" Then
-        '        MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-        '    End If
-        'End Try
+        Try
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@SearchText", If(String.IsNullOrEmpty(searchText), "", searchText.Trim()))
+            }
+            gvList.DataSource = settingClass.GetDataTableSP("sp_LoginInstallerList", params)
+            gvList.DataBind()
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
     End Sub
 
     Protected Sub BuildPager()
