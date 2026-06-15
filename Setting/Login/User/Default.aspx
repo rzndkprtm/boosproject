@@ -105,9 +105,6 @@
                                                             <li>
                                                                 <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDencryptPassword" onclick='<%# String.Format("return dataDencryptPassword(`{0}`, `{1}`);", Eval("UserName").ToString(), DencryptPassword(Eval("Password").ToString())) %>'>Show Password</a>
                                                             </li>
-                                                            <li runat="server" visible='<%# VisibleInstaller(Eval("RoleId").ToString()) %>'>
-                                                                <a class="dropdown-item" id="aInstaller" href='<%# Page.ResolveUrl("~/setting/login/user/installer?loginid=" & Eval("Id")) %>'>Installer Access</a>
-                                                            </li>
                                                             <li>
                                                                 <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('Logins', '<%# Eval("Id") %>')">Log</a>
                                                             </li>

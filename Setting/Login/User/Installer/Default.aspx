@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Installer.aspx.vb" Inherits="Setting_Login_User_Installer" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Default.aspx.vb" Inherits="Setting_Login_User_Installer_Default" %>
 
 <!DOCTYPE html>
 
