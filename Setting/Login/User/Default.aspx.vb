@@ -322,6 +322,11 @@ Partial Class Setting_Login_User_Default
         Return False
     End Function
 
+    Protected Function VisibleInstaller(roleId As String) As Boolean
+        If roleId = "10" Then Return True
+        Return False
+    End Function
+
     Protected Function TextActive(active As Boolean) As String
         Dim result As String = "Enable"
         If active = True Then : Return "Disable" : End If
