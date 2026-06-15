@@ -4,7 +4,6 @@ Partial Class Setting_Login_User_Add
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -20,7 +19,17 @@ Partial Class Setting_Login_User_Add
             BindRole()
             BindLeve()
             BindCustomer()
+
+            BindPage(ddlRole.SelectedValue)
+
+            divEmail.Visible = False
+            If Session("RoleName") = "Developer" Then divEmail.Visible = True
         End If
+    End Sub
+
+    Protected Sub ddlRole_SelectedIndexChanged(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        BindPage(ddlRole.SelectedValue)
     End Sub
 
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
@@ -34,31 +43,12 @@ Partial Class Setting_Login_User_Add
                 MessageError(True, "LEVEL IS REQUIRED !")
                 Exit Sub
             End If
-
-            If Session("RoleName") = "IT" Then
-                If ddlRole.SelectedValue = "1" Then
-                    MessageError(True, "YOU DO NOT HAVE PERMISSION TO CREATE A LOGIN WITH THIS ROLE !")
-                    Exit Sub
-                End If
-
-                If Session("LevelName") = "Member" AndAlso ddlRole.SelectedValue = "2" Then
-                    MessageError(True, "YOU DO NOT HAVE PERMISSION TO CREATE A LOGIN WITH THIS ROLE !")
+            If ddlRole.SelectedValue = "4" OrElse ddlRole.SelectedValue = "5" OrElse ddlRole.SelectedValue = "8" OrElse ddlRole.SelectedValue = "10" Then
+                If ddlCustomer.SelectedValue = "" Then
+                    MessageError(True, "CUSTOMER ACCOUNT IS REQUIRED !")
                     Exit Sub
                 End If
             End If
-
-            If Session("RoleName") = "Factory Office" Then
-                If ddlRole.SelectedValue = "1" OrElse ddlRole.SelectedValue = "2" Then
-                    MessageError(True, "YOU DO NOT HAVE PERMISSION TO CREATE A LOGIN WITH THIS ROLE !")
-                    Exit Sub
-                End If
-
-                If Session("LevelName") = "Member" AndAlso ddlRole.SelectedValue = "3" Then
-                    MessageError(True, "YOU DO NOT HAVE PERMISSION TO CREATE A LOGIN WITH THIS ROLE !")
-                    Exit Sub
-                End If
-            End If
-
             If txtAddUserName.Text = "" Then
                 MessageError(True, "USERNAME IS REQUIRED !")
                 Exit Sub
@@ -73,9 +63,32 @@ Partial Class Setting_Login_User_Add
                 Exit Sub
             End If
 
+            If txtAddPassword.Text = "" Then
+                MessageError(True, "PASSWORD IS REQUIRED !")
+                Exit Sub
+            End If
+
+            Dim isValidEmail As Boolean = False
+            Try
+                Dim addr As New Net.Mail.MailAddress(txtEmail.Text.Trim())
+                isValidEmail = (addr.Address = txtEmail.Text.Trim())
+            Catch
+                isValidEmail = False
+            End Try
+
+            If Not isValidEmail Then
+                MessageError(True, "PLEASE ENTER A VALID EMAIL ADDRESS !")
+                Exit Sub
+            End If
+
             If msgError.InnerText = "" Then
+                If ddlRole.SelectedValue = "1" OrElse ddlRole.SelectedValue = "2" OrElse ddlRole.SelectedValue = "3" OrElse ddlRole.SelectedValue = "7" OrElse ddlRole.SelectedValue = "9" Then
+                    ddlCustomer.SelectedValue = ""
+                End If
                 If txtAddPassword.Text = "" Then txtAddPassword.Text = txtAddUserName.Text
                 Dim password As String = settingClass.Encrypt(txtAddPassword.Text)
+
+                If String.IsNullOrEmpty(txtFullName.Text) Then txtFullName.Text = txtAddUserName.Text
 
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Logins ORDER BY Id DESC")
                 Using thisConn As New SqlConnection(myConn)
@@ -112,6 +125,16 @@ Partial Class Setting_Login_User_Add
         Response.Redirect("~/setting/login/user", False)
     End Sub
 
+    Protected Sub BindPage(roleId As String)
+        Try
+            divCustomer.Visible = False
+            If roleId = "4" OrElse roleId = "5" OrElse roleId = "8" OrElse roleId = "10" Then
+                divCustomer.Visible = True
+            End If
+        Catch ex As Exception
+        End Try
+    End Sub
+
     Protected Sub BindRole()
         ddlRole.Items.Clear()
         Try
@@ -127,10 +150,10 @@ Partial Class Setting_Login_User_Add
                         excludeIds.Add("2")
                     End If
                 Case "Factory Office"
-                    excludeIds.Add("1")
+                    excludeIds.AddRange({"1", "2"})
 
                     If levelName = "Member" Then
-                        excludeIds.AddRange({"2", "3"})
+                        excludeIds.Add("3")
                     End If
                 Case "Developer"
             End Select

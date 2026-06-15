@@ -1486,54 +1486,54 @@ Public Class OrderClass
 
                 Dim totalItems As Integer = thisData("TotalItems")
 
-                Dim linearMetre As Decimal = 0
+                Dim linearMetre As Decimal = 0D
                 If Not IsDBNull(thisData("LinearMetre")) Then
                     linearMetre = Convert.ToDecimal(thisData("LinearMetre"))
                 End If
-                Dim linearMetreB As Decimal = 0
+                Dim linearMetreB As Decimal = 0D
                 If Not IsDBNull(thisData("LinearMetreB")) Then
                     linearMetreB = Convert.ToDecimal(thisData("LinearMetreB"))
                 End If
-                Dim linearMetreC As Decimal = 0
+                Dim linearMetreC As Decimal = 0D
                 If Not IsDBNull(thisData("LinearMetreC")) Then
                     linearMetreC = Convert.ToDecimal(thisData("LinearMetreC"))
                 End If
-                Dim linearMetreD As Decimal = 0
+                Dim linearMetreD As Decimal = 0D
                 If Not IsDBNull(thisData("LinearMetreD")) Then
                     linearMetreD = Convert.ToDecimal(thisData("LinearMetreD"))
                 End If
-                Dim linearMetreE As Decimal = 0
+                Dim linearMetreE As Decimal = 0D
                 If Not IsDBNull(thisData("LinearMetreE")) Then
                     linearMetreE = Convert.ToDecimal(thisData("LinearMetreE"))
                 End If
-                Dim linearMetreF As Decimal = 0
+                Dim linearMetreF As Decimal = 0D
                 If Not IsDBNull(thisData("LinearMetreF")) Then
                     linearMetreF = Convert.ToDecimal(thisData("LinearMetreF"))
                 End If
 
-                Dim squareMetre As Decimal = 0
+                Dim squareMetre As Decimal = 0D
                 If Not IsDBNull(thisData("SquareMetre")) Then
-                    squareMetre = Convert.ToDecimal(thisData("SquareMetre"))
+                    squareMetre = Math.Round(Convert.ToDecimal(thisData("SquareMetre")), 2)
                 End If
-                Dim squareMetreB As Decimal = 0
+                Dim squareMetreB As Decimal = 0D
                 If Not IsDBNull(thisData("SquareMetreB")) Then
-                    squareMetreB = Convert.ToDecimal(thisData("SquareMetreB"))
+                    squareMetreB = Math.Round(Convert.ToDecimal(thisData("SquareMetreB")), 2)
                 End If
-                Dim squareMetreC As Decimal = 0
+                Dim squareMetreC As Decimal = 0D
                 If Not IsDBNull(thisData("SquareMetreC")) Then
-                    squareMetreC = Convert.ToDecimal(thisData("SquareMetreC"))
+                    squareMetreC = Math.Round(Convert.ToDecimal(thisData("SquareMetreC")), 2)
                 End If
-                Dim squareMetreD As Decimal = 0
+                Dim squareMetreD As Decimal = 0D
                 If Not IsDBNull(thisData("SquareMetreD")) Then
-                    squareMetreD = Convert.ToDecimal(thisData("SquareMetreD"))
+                    squareMetreD = Math.Round(Convert.ToDecimal(thisData("SquareMetreD")), 2)
                 End If
-                Dim squareMetreE As Decimal = 0
+                Dim squareMetreE As Decimal = 0D
                 If Not IsDBNull(thisData("SquareMetreE")) Then
-                    squareMetreE = Convert.ToDecimal(thisData("SquareMetreE"))
+                    squareMetreE = Math.Round(Convert.ToDecimal(thisData("SquareMetreE")), 2)
                 End If
-                Dim squareMetreF As Decimal = 0
+                Dim squareMetreF As Decimal = 0D
                 If Not IsDBNull(thisData("SquareMetreF")) Then
-                    squareMetreF = Convert.ToDecimal(thisData("SquareMetreF"))
+                    squareMetreF = Math.Round(Convert.ToDecimal(thisData("SquareMetreF")), 2)
                 End If
 
                 Dim objectArray As Object() = Nothing
@@ -1676,6 +1676,9 @@ Public Class OrderClass
                     If gridSellMethod = "Square Metre" Then
                         If companyDetailId = "2" OrElse companyDetailId = "3" OrElse companyDetailId = "4" OrElse companyDetailId = "8" Then
                             thisSell = thisSell * squareMetre
+                            If designName = "Window" AndAlso blindName = "Flyscreen" AndAlso squareMetre > 1.5 Then
+                                thisSell = costSell
+                            End If
                         End If
                         If companyDetailId = "5" OrElse companyDetailId = "6" Then
                             If squareMetre < 1 Then thisSell = thisSell * 1

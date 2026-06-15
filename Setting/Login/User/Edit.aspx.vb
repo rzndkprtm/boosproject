@@ -186,10 +186,10 @@ Partial Class Setting_Login_User_Edit
                         excludeIds.Add("2")
                     End If
                 Case "Factory Office"
-                    excludeIds.Add("1")
+                    excludeIds.AddRange({"1", "2"})
 
                     If levelName = "Member" Then
-                        excludeIds.AddRange({"2", "3"})
+                        excludeIds.Add("3")
                     End If
                 Case "Developer"
             End Select
