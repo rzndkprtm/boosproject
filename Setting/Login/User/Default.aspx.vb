@@ -224,8 +224,6 @@ Partial Class Setting_Login_User_Default
                 End Using
             End Using
 
-            '
-
             dataLog = {"Logins", thisId, Session("LoginId").ToString(), "Login Reset Password"}
             settingClass.Logs(dataLog)
 
@@ -260,35 +258,51 @@ Partial Class Setting_Login_User_Default
     End Sub
 
     Protected Sub BuildPager()
-        If gvList.PageCount <= 1 Then
+        Try
+            If gvList.PageCount <= 1 Then
+                navPager.Visible = False
+                Return
+            End If
+
+            navPager.Visible = True
+
+            Dim currentPage As Integer = gvList.PageIndex
+            Dim totalPages As Integer = gvList.PageCount
+
+            Dim pages As New List(Of Object)
+
+            If currentPage > 0 Then
+                pages.Add(New With {
+                .Text = "Previous",
+                .PageIndex = currentPage - 1,
+                .CssClass = ""
+            })
+            End If
+
+            Dim startPage As Integer = Math.Max(0, currentPage - 2)
+            Dim endPage As Integer = Math.Min(totalPages - 1, currentPage + 2)
+
+            For i As Integer = startPage To endPage
+                pages.Add(New With {
+                .Text = (i + 1).ToString(),
+                .PageIndex = i,
+                .CssClass = If(i = currentPage, "active", "")
+            })
+            Next
+
+            If currentPage < totalPages - 1 Then
+                pages.Add(New With {
+                .Text = "Next",
+                .PageIndex = currentPage + 1,
+                .CssClass = ""
+            })
+            End If
+
+            rptPager.DataSource = pages
+            rptPager.DataBind()
+        Catch ex As Exception
             navPager.Visible = False
-            Return
-        End If
-
-        navPager.Visible = True
-
-        Dim currentPage As Integer = gvList.PageIndex
-        Dim totalPages As Integer = gvList.PageCount
-
-        Dim pages As New List(Of Object)
-
-        If currentPage > 0 Then
-            pages.Add(New With {.Text = "Previous", .PageIndex = currentPage - 1, .CssClass = ""})
-        End If
-
-        Dim startPage As Integer = Math.Max(0, currentPage - 2)
-        Dim endPage As Integer = Math.Min(totalPages - 1, currentPage + 2)
-
-        For i As Integer = startPage To endPage
-            pages.Add(New With {.Text = (i + 1).ToString(), .PageIndex = i, .CssClass = If(i = currentPage, "active", "")})
-        Next
-
-        If currentPage < totalPages - 1 Then
-            pages.Add(New With {.Text = "Next", .PageIndex = currentPage + 1, .CssClass = ""})
-        End If
-
-        rptPager.DataSource = pages
-        rptPager.DataBind()
+        End Try
     End Sub
 
     Protected Function DencryptPassword(password As String) As String

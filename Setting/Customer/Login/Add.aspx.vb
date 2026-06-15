@@ -43,27 +43,22 @@ Partial Class Setting_Customer_Login_Add
                 MessageError(True, "ACCOUNT IS REQUIRED !")
                 Exit Sub
             End If
-
             If ddlRole.SelectedValue = "" Then
                 MessageError(True, "ROLE MEMBER IS REQUIRED !")
                 Exit Sub
             End If
-
             If ddlLevel.SelectedValue = "" Then
                 MessageError(True, "LEVEL MEMBER IS REQUIRED !")
                 Exit Sub
             End If
-
             If txtFullName.Text = "" Then
                 MessageError(True, "FULL NAME IS REQUIRED !")
                 Exit Sub
             End If
-
             If txtUserName.Text = "" Then
                 MessageError(True, "USERNAME IS REQUIRED !")
                 Exit Sub
             End If
-
             If Not Regex.IsMatch(txtUserName.Text, "^[a-zA-Z0-9._-]+$") Then
                 MessageError(True, "INVALID USERNAME. ONLY LETTERS, NUMBERS, DOT (.), UNDERSCRORE (_) & HYPHEN (-) ARE ALLOWED !")
                 Exit Sub
@@ -73,7 +68,6 @@ Partial Class Setting_Customer_Login_Add
                 MessageError(True, "USERNAME ALREADY EXIST !")
                 Exit Sub
             End If
-
             Dim checkRole As Integer = settingClass.GetItemData_Integer("SELECT COUNT(*) FROM Logins WHERE CustomerId='" & ddlCustomer.SelectedValue & "' AND RoleId='" & ddlRole.SelectedValue & "' AND LevelId='" & ddlLevel.SelectedValue & "'")
             If checkRole > 0 Then
                 MessageError(True, "LEVEL ROLE PADA PELANGGAN INI SUDAH TERDAFTAR. SILAHKAN GUNAKAN LEVEL LAIN !")
