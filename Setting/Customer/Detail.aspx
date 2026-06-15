@@ -189,7 +189,6 @@
                                         <div class="col-12">
                                             <div class="table-responsive">
                                                 <asp:GridView runat="server" ID="gvListContact" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center">
-                                                    <RowStyle />
                                                     <Columns>
                                                         <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="60px">
                                                             <ItemTemplate>
@@ -200,12 +199,7 @@
                                                         <asp:BoundField DataField="Email" HeaderText="Email" />
                                                         <asp:BoundField DataField="Phone" HeaderText="Phone" />
                                                         <asp:BoundField DataField="Tags" HeaderText="Tags" />
-                                                        <asp:TemplateField HeaderText="Primary">
-                                                            <ItemTemplate>
-                                                                <i runat="server" visible='<%# VisibleYesPrimaryContact(Eval("Primary")) %>' class="bi bi-check-circle-fill"></i>
-                                                                <i runat="server" visible='<%# VisibleNoPrimaryContact(Eval("Primary")) %>' class="bi bi-x-circle-fill"></i>
-                                                            </ItemTemplate>
-                                                        </asp:TemplateField>
+                                                        <asp:BoundField DataField="PrimaryData" HeaderText="Primary" />
                                                         <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
                                                             <ItemTemplate>
                                                                 <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
@@ -214,10 +208,10 @@
                                                                         <a class="dropdown-item" id="aDetailContact" href='<%# Page.ResolveUrl("~/setting/customer/contact/edit?contactid=" & Eval("Id") & "&returnpage=detail") %>'>Detail / Edit</a>
                                                                     </li>
                                                                     <li>
-                                                                        <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteContact" onclick='<%# String.Format("return showDeleteContact(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                                        <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteContact" onclick='<%# String.Format("return dataDeleteContact(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                                     </li>
                                                                     <li runat="server" visible='<%# VisiblePrimaryContact(Eval("Primary")) %>'>
-                                                                        <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalPrimaryContact" onclick='<%# String.Format("return showPrimaryContact(`{0}`);", Eval("Id").ToString()) %>'>Set As Primary</a>
+                                                                        <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalPrimaryContact" onclick='<%# String.Format("return dataPrimaryContact(`{0}`);", Eval("Id").ToString()) %>'>Set As Primary</a>
                                                                     </li>
                                                                     <li>
                                                                         <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('CustomerContacts', '<%# Eval("Id") %>')">Log</a>
@@ -250,7 +244,6 @@
                                         <div class="col-12">
                                             <div class="table-responsive">
                                                 <asp:GridView runat="server" ID="gvListAddress" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="ADDRESS NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center">
-                                                    <RowStyle />
                                                     <Columns>
                                                         <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="60px">
                                                             <ItemTemplate>
@@ -264,12 +257,7 @@
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
                                                         <asp:BoundField DataField="Note" HeaderText="Note" />
-                                                        <asp:TemplateField HeaderText="Primary">
-                                                            <ItemTemplate>
-                                                                <i runat="server" visible='<%# VisibleYesPrimaryAddress(Eval("Primary")) %>' class="bi bi-check-circle-fill"></i>
-                                                                <i runat="server" visible='<%# VisibleNoPrimaryAddress(Eval("Primary")) %>' class="bi bi-x-circle-fill"></i>
-                                                            </ItemTemplate>
-                                                        </asp:TemplateField>
+                                                        <asp:BoundField DataField="PrimaryData" HeaderText="Primary" />
                                                         <asp:TemplateField ItemStyle-Width="120px">
                                                             <ItemTemplate>
                                                                 <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
@@ -278,10 +266,10 @@
                                                                         <a class="dropdown-item" id="aDetailAddress" href='<%# Page.ResolveUrl("~/setting/customer/address/edit?addressid=" & Eval("Id") & "&returnpage=detail") %>'>Detail / Edit</a>
                                                                     </li>
                                                                     <li>
-                                                                        <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteAddress" onclick='<%# String.Format("return showDeleteAddress(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                                        <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteAddress" onclick='<%# String.Format("return dataDeleteAddress(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                                     </li>
                                                                     <li runat="server" visible='<%# VisiblePrimaryAddress(Eval("Primary")) %>'>
-                                                                        <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalPrimaryAddress" onclick='<%# String.Format("return showPrimaryAddress(`{0}`);", Eval("Id").ToString()) %>'>Set As Primary</a>
+                                                                        <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalPrimaryAddress" onclick='<%# String.Format("return dataPrimaryAddress(`{0}`);", Eval("Id").ToString()) %>'>Set As Primary</a>
                                                                     </li>
                                                                     <li>
                                                                         <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('CustomerAddress', '<%# Eval("Id") %>')">Log</a>
@@ -309,53 +297,47 @@
                                                  </div>
                                              </div>
                                         </div>
-                                        <div class="row mt-5">
-                                            <div class="col-12">
-                                                <div class="table-responsive">
-                                                    <asp:GridView runat="server" ID="gvListBusiness" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center">
-                                                        <RowStyle />
-                                                        <Columns>
-                                                            <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="60px">
-                                                                <ItemTemplate>
-                                                                    <%# Container.DataItemIndex + 1 %>
-                                                                </ItemTemplate>
-                                                            </asp:TemplateField>
-                                                            <asp:BoundField DataField="ABNNumber" HeaderText="ABN Number" />
-                                                            <asp:BoundField DataField="RegisteredName" HeaderText="Registered Name" />
-                                                            <asp:TemplateField HeaderText="Primary">
-                                                                <ItemTemplate>
-                                                                    <i runat="server" visible='<%# VisibleYesPrimaryBusiness(Eval("Primary")) %>' class="bi bi-check-circle-fill"></i>
-                                                                    <i runat="server" visible='<%# VisibleNoPrimaryBusiness(Eval("Primary")) %>' class="bi bi-x-circle-fill"></i>
-                                                                </ItemTemplate>
-                                                            </asp:TemplateField>
-                                                            <asp:TemplateField ItemStyle-Width="120px">
-                                                                <ItemTemplate>
-                                                                    <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
-                                                                    <ul class="dropdown-menu">
-                                                                        <li>
-                                                                            <a class="dropdown-item" id="aDetailBusiness" href='<%# Page.ResolveUrl("~/setting/customer/business/edit?businessid=" & Eval("Id") & "&returnpage=detail") %>'>Detail / Edit</a>
-                                                                        </li>
-                                                                        <li>
-                                                                            <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteBusiness" onclick='<%# String.Format("return showDeleteBusiness(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
-                                                                        </li>
-                                                                        <li runat="server" visible='<%# VisiblePrimaryBusiness(Eval("Primary")) %>'>
-                                                                            <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalPrimaryBusiness" onclick='<%# String.Format("return showPrimaryBusiness(`{0}`);", Eval("Id").ToString()) %>'>Set As Primary</a>
-                                                                        </li>
-                                                                        <li>
-                                                                            <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('CustomerBusiness', '<%# Eval("Id") %>')">Log</a>
-                                                                        </li>
-                                                                    </ul>
-                                                                </ItemTemplate>
-                                                            </asp:TemplateField>
-                                                        </Columns>
-                                                    </asp:GridView>
-                                                </div>
-                                            </div> 
-                                        </div>
-                                        <div class="row mt-3">
-                                            <div class="col-12">
-                                                <asp:Button runat="server" ID="btnAddBusiness" CssClass="btn btn-primary" Text="Add New" OnClick="btnAddBusiness_Click" />
+                                    </div>
+                                    <div class="row mt-5">
+                                        <div class="col-12">
+                                            <div class="table-responsive">
+                                                <asp:GridView runat="server" ID="gvListBusiness" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center">
+                                                    <Columns>
+                                                        <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="60px">
+                                                            <ItemTemplate>
+                                                                <%# Container.DataItemIndex + 1 %>
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                        <asp:BoundField DataField="ABNNumber" HeaderText="ABN Number" />
+                                                        <asp:BoundField DataField="RegisteredName" HeaderText="Registered Name" />
+                                                        <asp:BoundField DataField="PrimaryData" HeaderText="Primary" />
+                                                        <asp:TemplateField ItemStyle-Width="120px">
+                                                            <ItemTemplate>
+                                                                <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
+                                                                <ul class="dropdown-menu">
+                                                                    <li>
+                                                                        <a class="dropdown-item" id="aDetailBusiness" href='<%# Page.ResolveUrl("~/setting/customer/business/edit?businessid=" & Eval("Id") & "&returnpage=detail") %>'>Detail / Edit</a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteBusiness" onclick='<%# String.Format("return dataDeleteBusiness(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                                    </li>
+                                                                    <li runat="server" visible='<%# VisiblePrimaryBusiness(Eval("Primary")) %>'>
+                                                                        <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalPrimaryBusiness" onclick='<%# String.Format("return dataPrimaryBusiness(`{0}`);", Eval("Id").ToString()) %>'>Set As Primary</a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('CustomerBusiness', '<%# Eval("Id") %>')">Log</a>
+                                                                    </li>
+                                                                </ul>
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                    </Columns>
+                                                </asp:GridView>
                                             </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-5">
+                                        <div class="col-12">
+                                            <asp:Button runat="server" ID="btnAddBusiness" CssClass="btn btn-primary" Text="Add New" OnClick="btnAddBusiness_Click" />
                                         </div>
                                     </div>
                                 </div>
@@ -373,7 +355,6 @@
                                         <div class="col-12">
                                             <div class="table-responsive">
                                                 <asp:GridView runat="server" ID="gvListLogin" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="LOGIN NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center">
-                                                    <RowStyle />
                                                     <Columns>
                                                         <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="60px">
                                                             <ItemTemplate>
@@ -389,7 +370,14 @@
                                                         <asp:BoundField DataField="FullName" HeaderText="Full Name" />
                                                         <asp:BoundField DataField="LastLogin" HeaderText="Last Login" DataFormatString="{0:dd MMM yyyy HH:mm:ss}" />
                                                         <asp:BoundField DataField="DataPricing" HeaderText="Pricing" />
-                                                        <asp:BoundField DataField="DataActive" HeaderText="Active" />
+                                                        <asp:TemplateField HeaderText="Status">
+                                                            <ItemTemplate>
+                                                                <asp:Label ID="lblStatus" runat="server"
+                                                                    Text='<%# Eval("DataActive") %>'
+                                                                    ForeColor='<%# If(Eval("DataActive").ToString() = "Disable", Drawing.Color.Red, Nothing) %>'>
+                                                                </asp:Label>
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
                                                         <asp:TemplateField ItemStyle-Width="120px">
                                                             <ItemTemplate>
                                                                 <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
@@ -398,13 +386,16 @@
                                                                         <a class="dropdown-item" id="aDetailLogin" href='<%# Page.ResolveUrl("~/setting/customer/login/edit?loginid=" & Eval("Id") & "&returnpage=detail") %>'>Detail / Edit</a>
                                                                     </li>
                                                                     <li>
-                                                                        <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalActiveLogin" onclick='<%# String.Format("return showActiveLogin(`{0}`, `{1}`);", Eval("Id").ToString(), Convert.ToInt32(Eval("Active"))) %>'><%# TextActive_Login(Eval("Active")) %></a>
+                                                                        <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalActiveLogin" onclick='<%# String.Format("return dataActiveLogin(`{0}`, `{1}`);", Eval("Id").ToString(), Convert.ToInt32(Eval("Active"))) %>'><%# TextActive_Login(Eval("Active")) %></a>
+                                                                    </li>
+                                                                    <li runat="server" visible='<%# VisibleSendLogin(Convert.ToInt32(Eval("Active"))) %>'>
+                                                                        <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalSendLogin" onclick='<%# String.Format("return dataSendLogin(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("Email").ToString()) %>'>Send Login Credentials</a>
                                                                     </li>
                                                                     <li>
-                                                                        <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangePasswordLogin" onclick='<%# String.Format("return showChangePasswordLogin(`{0}`);", Eval("Id").ToString()) %>'>Change Password</a>
+                                                                        <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangePasswordLogin" onclick='<%# String.Format("return dataChangePasswordLogin(`{0}`);", Eval("Id").ToString()) %>'>Change Password</a>
                                                                     </li>
                                                                     <li>
-                                                                        <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalResetPasswordLogin" onclick='<%# String.Format("return showResetPasswordLogin(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("UserName").ToString()) %>'>Reset Password</a>
+                                                                        <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalResetPasswordLogin" onclick='<%# String.Format("return dataResetPasswordLogin(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("UserName").ToString()) %>'>Reset Password</a>
                                                                     </li>
                                                                     <li>
                                                                         <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('Logins', '<%# Eval("Id") %>')">Log</a>
@@ -438,7 +429,6 @@
                                         <div class="col-12">
                                             <div class="table-responsive">
                                                 <asp:GridView runat="server" ID="gvListDiscount" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center">
-                                                    <RowStyle />
                                                     <Columns>
                                                         <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="60px">
                                                             <ItemTemplate>
@@ -465,7 +455,7 @@
                                                                         <a class="dropdown-item" id="aDetailDiscount" href='<%# Page.ResolveUrl("~/setting/customer/discount/edit?discountid=" & Eval("Id") & "&returnpage=detail") %>'>Detail / Edit</a>
                                                                     </li>
                                                                     <li>
-                                                                        <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteDiscount" onclick='<%# String.Format("return showDeleteDiscount(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                                        <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteDiscount" onclick='<%# String.Format("return dataDeleteDiscount(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                                     </li>
                                                                     <li>
                                                                         <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('CustomerDiscounts', '<%# Eval("Id") %>')">Log</a>
@@ -507,7 +497,6 @@
                                         <div class="col-12">
                                             <div class="table-responsive">
                                                 <asp:GridView runat="server" ID="gvListPromo" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center">
-                                                    <RowStyle />
                                                     <Columns>
                                                         <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="60px">
                                                             <ItemTemplate>
@@ -525,7 +514,7 @@
                                                                         <a href="javascript:void(0);" id="aDetailPromo" class="dropdown-item" onclick="showDetailPromo('<%# Eval("Id") %>');">Detail</a>
                                                                     </li>
                                                                     <li>
-                                                                        <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeletePromo" onclick='<%# String.Format("return showDeletePromo(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                                        <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeletePromo" onclick='<%# String.Format("return dataDeletePromo(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                                     </li>
                                                                     <li>
                                                                         <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('CustomerPromos', '<%# Eval("Id") %>')">Log</a>
@@ -559,7 +548,6 @@
                                         <div class="col-12">
                                             <div class="table-responsive">
                                                 <asp:GridView runat="server" ID="gvListProduct" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center">
-                                                    <RowStyle />
                                                     <Columns>
                                                         <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="60px">
                                                             <ItemTemplate>
@@ -607,7 +595,6 @@
                                         <div class="col-12">
                                             <div class="table-responsive">
                                                 <asp:GridView runat="server" ID="gvListQuote" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" PageSize="50" PagerSettings-Position="TopAndBottom">
-                                                    <RowStyle />
                                                     <Columns>
                                                         <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="60px">
                                                             <ItemTemplate>
@@ -722,9 +709,6 @@
             </div>
         </div>
     </div>
-
-    <%--CUSTOMER CONTACT--%>
-
     <div class="modal modal-blur fade" id="modalDeleteContact" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -732,7 +716,7 @@
                     <h5 class="modal-title white">Delete Customer Contact</h5>
                 </div>
                 <div class="modal-body text-center py-4">
-                    <asp:TextBox runat="server" ID="txtIdContactDelete" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtDeleteContactId" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
@@ -749,7 +733,7 @@
                     <h5 class="modal-title white">Set Primary Contact</h5>
                 </div>
                 <div class="modal-body text-center py-4">
-                    <asp:TextBox runat="server" ID="txtIdPrimaryContact" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtPrimaryContactId" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
@@ -759,9 +743,6 @@
             </div>
         </div>
     </div>
-    
-    <%--CUSTOMER ADDRESS--%>
-
     <div class="modal modal-blur fade" id="modalDeleteAddress" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -769,7 +750,7 @@
                     <h5 class="modal-title white">Delete Customer Address</h5>
                 </div>
                 <div class="modal-body text-center py-4">
-                    <asp:TextBox runat="server" ID="txtIdAddressDelete" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtAddressDeleteId" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
@@ -786,7 +767,7 @@
                     <h5 class="modal-title white">Set Primary Address</h5>
                 </div>
                 <div class="modal-body text-center py-4">
-                    <asp:TextBox runat="server" ID="txtIdPrimaryAddress" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtPrimaryAddressId" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
@@ -796,9 +777,6 @@
             </div>
         </div>
     </div>
-
-    <%--CUSTOMER BUSINESS--%>
-
     <div class="modal modal-blur fade" id="modalDeleteBusiness" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -806,7 +784,7 @@
                     <h5 class="modal-title white">Delete Customer Business</h5>
                 </div>
                 <div class="modal-body text-center py-4">
-                    <asp:TextBox runat="server" ID="txtIdBusinessDelete" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtBusinessDeleteId" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
@@ -823,7 +801,7 @@
                     <h5 class="modal-title white">Set Primary Business</h5>
                 </div>
                 <div class="modal-body text-center py-4">
-                    <asp:TextBox runat="server" ID="txtIdPrimaryBusiness" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtPrimaryBusinessId" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
@@ -833,23 +811,50 @@
             </div>
         </div>
     </div>
-
-    <%--CUSTOMER LOGIN--%>
-
     <div class="modal modal-blur fade" id="modalActiveLogin" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-warning">
+                <div class="modal-header bg-danger">
                     <h5 class="modal-title white" id="titleActiveLogin"></h5>
                 </div>
                 <div class="modal-body text-center py-4">
-                    <asp:TextBox runat="server" ID="txtIdActiveLogin" style="display:none;"></asp:TextBox>
-                    <asp:TextBox runat="server" ID="txtActiveLogin" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtActiveLoginId" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtActiveLoginStatus" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnActiveLogin" CssClass="btn btn-warning" Text="Confirm" OnClick="btnActiveLogin_Click" />
+                    <asp:Button runat="server" ID="btnActiveLogin" CssClass="btn btn-danger" Text="Confirm" OnClick="btnActiveLogin_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal modal-blur fade" id="modalSendLogin" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Send Login Credentials</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <asp:TextBox runat="server" ID="txtSendLoginId" style="display:none;"></asp:TextBox>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Email Address</label>
+                            <asp:TextBox runat="server" ID="txtSendLoginEmail" CssClass="form-control" placeholder="Email Address ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row" runat="server" id="divErrorSendLogin">
+                        <div class="col-12">
+                            <div class="alert alert-danger">
+                                <span runat="server" id="msgErrorSendLogin"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnSendLogin" Text="Submit" CssClass="btn btn-primary" OnClick="btnSendLogin_Click" />
                 </div>
             </div>
         </div>
@@ -862,7 +867,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <asp:TextBox runat="server" ID="txtIdChangePassword" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtChangePasswordLoginId" style="display:none;"></asp:TextBox>
                     <div class="row">
                         <div class="col-12 form-group">
                             <label class="form-label">New Password</label>
@@ -884,9 +889,9 @@
                     <h5 class="modal-title white">Reset Password</h5>
                 </div>
                 <div class="modal-body text-center py-4">
-                    <asp:TextBox runat="server" ID="txtIdResetPass" style="display:none;"></asp:TextBox>
-                    <asp:TextBox runat="server" ID="txtNewResetPass" style="display:none;"></asp:TextBox>
-                    <span id="spanDescResetPass"></span>
+                    <asp:TextBox runat="server" ID="txtResetPasswordLoginId" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtResetPasswordLoginNew" style="display:none;"></asp:TextBox>
+                    <span id="spanResetPasswordLoginDesc"></span>
                 </div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
@@ -915,9 +920,6 @@
             </div>
         </div>
     </div>
-
-    <%--CUSTOMER DISCOUNT--%>
-
     <div class="modal modal-blur fade" id="modalResetDiscount" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -941,7 +943,7 @@
                     <h5 class="modal-title white">Delete Customer Discount</h5>
                 </div>
                 <div class="modal-body text-center py-4">
-                    <asp:TextBox runat="server" ID="txtIdDiscountDelete" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtDeleteDiscountId" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
@@ -951,9 +953,6 @@
             </div>
         </div>
     </div>
-
-    <%--CUSTOMER PROMO--%>
-
     <div class="modal modal-blur fade" id="modalDetailPromo" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -1008,7 +1007,7 @@
                     <h5 class="modal-title white">Delete Customer Promo</h5>
                 </div>
                 <div class="modal-body text-center py-4">
-                    <asp:TextBox runat="server" ID="txtIdPromoDelete" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtDeletePromoId" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
@@ -1018,9 +1017,6 @@
             </div>
         </div>
     </div>
-
-    <%--CUSTOMER PRODUCT ACCESS--%>
-    
     <div class="modal modal-blur fade" id="modalResetProduct" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -1085,7 +1081,6 @@
                 }
             });
         });
-
         $(document).ready(function () {
             var selectedTab = $("#<%=selected_tab.ClientID%>");
             var tabId = selectedTab.val() != "" ? selectedTab.val() : "list-general";
@@ -1122,7 +1117,6 @@
                 updateSessionValue("list-quote");
             });
         });
-
         function updateSessionValue(session) {
             $.ajax({
                 type: "POST",
@@ -1132,7 +1126,6 @@
                 dataType: "json"
             });
         }
-
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
             $("#tblLogs tbody").html("");
@@ -1166,7 +1159,6 @@
                 }
             });
         }
-
         function showWaiting(hideModal = null) {
             $("#modalWaiting").modal("show");
             setTimeout(function () {
@@ -1178,71 +1170,51 @@
 
             return true;
         }
-
-        // START CUSTOMER CONTACT
-
-        function showDeleteContact(id) {
-            document.getElementById("<%=txtIdContactDelete.ClientID %>").value = id;
+        function dataDeleteContact(contactid) {
+            document.getElementById("<%=txtDeleteContactId.ClientID %>").value = contactid;
         }
-
-        function showPrimaryContact(id) {
-            document.getElementById("<%=txtIdPrimaryContact.ClientID %>").value = id;
+        function dataPrimaryContact(contactid) {
+            document.getElementById("<%=txtPrimaryContactId.ClientID %>").value = contactid;
         }
-
-        // END CUSTOMER CONTACT
-
-        // START CUSTOMER ADDRESS
-
-        function showDeleteAddress(id) {
-            document.getElementById("<%=txtIdAddressDelete.ClientID %>").value = id;
+        function dataDeleteAddress(addressid) {
+            document.getElementById("<%=txtAddressDeleteId.ClientID %>").value = addressid;
         }
-
-        function showPrimaryAddress(id) {
-            document.getElementById("<%=txtIdPrimaryAddress.ClientID %>").value = id;
+        function dataPrimaryAddress(addressid) {
+            document.getElementById("<%=txtPrimaryAddressId.ClientID %>").value = addressid;
         }
-
-        // END CUSTOMER ADDRESS
-
-        // START CUSTOMER BUSINESS
-
-        function showDeleteBusiness(id) {
-            document.getElementById("<%=txtIdBusinessDelete.ClientID %>").value = id;
+        function dataDeleteBusiness(businessid) {
+            document.getElementById("<%=txtBusinessDeleteId.ClientID %>").value = businessid;
         }
-
-        function showPrimaryBusiness(id) {
-            document.getElementById("<%=txtIdPrimaryBusiness.ClientID %>").value = id;
+        function dataPrimaryBusiness(businessid) {
+            document.getElementById("<%=txtPrimaryBusinessId.ClientID %>").value = businessid;
         }
-
-        // END CUSTOMER BUSINESS
-
-        // START CUSTOMER LOGIN
-
-        function showActiveLogin(id, active) {
-            document.getElementById("<%=txtIdActiveLogin.ClientID %>").value = id;
-            document.getElementById("<%=txtActiveLogin.ClientID %>").value = active;
+        function dataActiveLogin(loginid, status) {
+            document.getElementById("<%=txtActiveLoginId.ClientID %>").value = loginid;
+            document.getElementById("<%=txtActiveLoginStatus.ClientID %>").value = status;
 
             let title = "";
-            if (active === "1") {
+            if (status === "1") {
                 title = "Disable Customer Login";
             } else {
                 title = "Enable Customer Login";
             }
             document.getElementById("titleActiveLogin").innerHTML = title;
         }
-
-        function showChangePasswordLogin(id, active) {
-            document.getElementById("<%=txtIdChangePassword.ClientID %>").value = id;
+        function dataSendLogin(loginid, email) {
+            document.getElementById("<%=txtSendLoginId.ClientID %>").value = loginid;
+            document.getElementById("<%=txtSendLoginEmail.ClientID %>").value = email;
         }
-
-        function showResetPasswordLogin(id, username) {
+        function dataChangePasswordLogin(loginid) {
+            document.getElementById("<%=txtChangePasswordLoginId.ClientID %>").value = loginid;
+        }
+        function dataResetPasswordLogin(loginid, username) {
             let newPass = generateNewPassword(15);
-            let result = `Hi <b><%: Session("FullName") %></b>,<br />Are you sure you want to reset this account password?<br /><br /><b>USERNAME : ${username.toUpperCase()}</b><br /><b>USER ID : ${id.toUpperCase()}</b><br/><br />NEW PASSWORD : <br/><b>${newPass}</b>`;
+            let result = `Hi <b><%: Session("FullName") %></b>,<br />Are you sure you want to reset this account password?<br /><br /><b>USERNAME : ${username.toUpperCase()}</b><br /><b>USER ID : ${loginid.toUpperCase()}</b><br/><br />NEW PASSWORD : <br/><b>${newPass}</b>`;
 
-            document.getElementById("<%=txtIdResetPass.ClientID %>").value = id;
-            document.getElementById("<%=txtNewResetPass.ClientID %>").value = newPass;
-            document.getElementById("spanDescResetPass").innerHTML = result;
+            document.getElementById("<%=txtResetPasswordLoginId.ClientID %>").value = loginid;
+            document.getElementById("<%=txtResetPasswordLoginNew.ClientID %>").value = newPass;
+            document.getElementById("spanResetPasswordLoginDesc").innerHTML = result;
         }
-
         function generateNewPassword(length) {
             const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
             let result = "";
@@ -1253,19 +1225,12 @@
             }
             return result;
         }
-
-        // END CUSTOMER LOGIN
-
-        // START CUSTOMER DISCOUNT
-
-        function showDeleteDiscount(id) {
-            document.getElementById("<%=txtIdDiscountDelete.ClientID %>").value = id;
+        function showSendLogin() {
+            $("#modalSendLogin").modal("show");
         }
-
-        // END CUSTOMER DISCOUNT
-
-        // START CUSTOMER PROMO
-
+        function dataDeleteDiscount(discountid) {
+            document.getElementById("<%=txtDeleteDiscountId.ClientID %>").value = discountid;
+        }
         function showDetailPromo(id) {
             $.ajax({
                 type: "POST",
@@ -1298,9 +1263,8 @@
                 }
             });
         }
-
-        function showDeletePromo(id) {
-            document.getElementById("<%=txtIdPromoDelete.ClientID %>").value = id;
+        function dataDeletePromo(promoid) {
+            document.getElementById("<%=txtDeletePromoId.ClientID %>").value = promoid;
         }
 
         // END CUSTOMER PROMO

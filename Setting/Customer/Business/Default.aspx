@@ -55,11 +55,9 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="card-body">
                                 <div class="table-responsive">
                                     <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" PagerSettings-Visible="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" OnPageIndexChanging="gvList_PageIndexChanging" OnDataBound="gvList_DataBound">
-                                        <RowStyle />
                                         <Columns>
                                             <asp:TemplateField ItemStyle-HorizontalAlign="Center">
                                                 <ItemTemplate>
@@ -188,7 +186,6 @@
             var loading = document.getElementById("loadingOverlay");
             if (loading) loading.style.display = "none";
         });
-
         function initUpdatePanelLoading() {
             if (typeof Sys === "undefined") return;
             var prm = Sys.WebForms.PageRequestManager.getInstance();
@@ -202,7 +199,6 @@
                 bindGridRowClick();
             });
         }
-
         function bindGridRowClick() {
             const gv = document.getElementById('<%= gvList.ClientID %>');
             if (!gv) return;
@@ -218,12 +214,10 @@
                 };
             }
         }
-
         document.addEventListener("DOMContentLoaded", function () {
             initUpdatePanelLoading();
             bindGridRowClick();
         });
-
         function dataPrimary(businessid, customerid) {
             document.getElementById("<%=txtPrimaryId.ClientID %>").value = businessid;
             document.getElementById("<%=txtPrimaryCustomerId.ClientID %>").value = customerid;

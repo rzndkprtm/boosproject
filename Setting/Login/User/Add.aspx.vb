@@ -17,7 +17,7 @@ Partial Class Setting_Login_User_Add
             MessageError(False, String.Empty)
 
             BindRole()
-            BindLeve()
+            BindLevel()
             BindCustomer()
 
             BindPage(ddlRole.SelectedValue)
@@ -68,17 +68,19 @@ Partial Class Setting_Login_User_Add
                 Exit Sub
             End If
 
-            Dim isValidEmail As Boolean = False
-            Try
-                Dim addr As New Net.Mail.MailAddress(txtEmail.Text.Trim())
-                isValidEmail = (addr.Address = txtEmail.Text.Trim())
-            Catch
-                isValidEmail = False
-            End Try
+            If Not String.IsNullOrEmpty(txtEmail.Text) Then
+                Dim isValidEmail As Boolean = False
+                Try
+                    Dim addr As New Net.Mail.MailAddress(txtEmail.Text.Trim())
+                    isValidEmail = (addr.Address = txtEmail.Text.Trim())
+                Catch
+                    isValidEmail = False
+                End Try
 
-            If Not isValidEmail Then
-                MessageError(True, "PLEASE ENTER A VALID EMAIL ADDRESS !")
-                Exit Sub
+                If Not isValidEmail Then
+                    MessageError(True, "PLEASE ENTER A VALID EMAIL ADDRESS !")
+                    Exit Sub
+                End If
             End If
 
             If msgError.InnerText = "" Then
@@ -181,7 +183,7 @@ Partial Class Setting_Login_User_Add
         End Try
     End Sub
 
-    Protected Sub BindLeve()
+    Protected Sub BindLevel()
         ddlLevel.Items.Clear()
         Try
             ddlLevel.DataSource = settingClass.GetDataTable("SELECT * FROM LoginLevels WHERE Active=1 ORDER BY Name ASC")

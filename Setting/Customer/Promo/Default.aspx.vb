@@ -164,7 +164,7 @@ Partial Class Setting_Customer_Promo_Default
     Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim thisId As String = txtIdDelete.Text
+            Dim thisId As String = txtDeleteId.Text
 
             Dim customerId As String = settingClass.GetItemData("SELECT CustomerId FROM CustomerPromos WHERE Id='" & thisId & "'")
 

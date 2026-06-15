@@ -57,7 +57,6 @@
                                         <asp:UpdatePanel ID="upRefresh" runat="server">
                                             <ContentTemplate>
                                                 <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="100" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom" OnPageIndexChanging="gvList_PageIndexChanging">
-                                                    <RowStyle />
                                                     <Columns>
                                                         <asp:TemplateField ItemStyle-HorizontalAlign="Center">
                                                             <ItemTemplate>

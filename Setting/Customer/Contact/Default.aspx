@@ -59,7 +59,6 @@
                                 <div class="card-body">
                                     <div class="table-responsive">
                                         <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Visible="false" OnPageIndexChanging="gvList_PageIndexChanging" OnDataBound="gvList_DataBound">
-                                            <RowStyle />
                                             <Columns>
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center">
                                                     <ItemTemplate>
@@ -82,10 +81,10 @@
                                                                 <a class="dropdown-item" id="aDetail" href='<%# Page.ResolveUrl("~/setting/customer/contact/edit?contactid=" & Eval("Id")) %>'>Detail / Edit</a>
                                                             </li>
                                                             <li runat="server" visible='<%# VisiblePrimary(Eval("Primary")) %>'>
-                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalPrimary" onclick='<%# String.Format("return showPrimary(`{0}`);", Eval("Id").ToString()) %>'>Set As Primary</a>
+                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalPrimary" onclick='<%# String.Format("return dataPrimary(`{0}`);", Eval("Id").ToString()) %>'>Set As Primary</a>
                                                             </li>
                                                             <li>
-                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return dataDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                             </li>
                                                             <li>
                                                                 <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('CustomerContacts', '<%# Eval("Id") %>')">Log</a>
@@ -128,7 +127,7 @@
                     <h5 class="modal-title white">Set Primary</h5>
                 </div>
                 <div class="modal-body text-center py-4">
-                    <asp:TextBox runat="server" ID="txtIdPrimary" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtPrimaryId" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
@@ -145,7 +144,7 @@
                     <h5 class="modal-title white">Delete Contact</h5>
                 </div>
                 <div class="modal-body text-center py-4">
-                    <asp:TextBox runat="server" ID="txtIdDelete" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtDeleteId" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
@@ -194,7 +193,6 @@
             var loading = document.getElementById("loadingOverlay");
             if (loading) loading.style.display = "none";
         });
-
         function initUpdatePanelLoading() {
             if (typeof Sys === "undefined") return;
             var prm = Sys.WebForms.PageRequestManager.getInstance();
@@ -203,11 +201,9 @@
                 var loading = document.getElementById("loadingOverlay");
                 if (loading) loading.style.display = "block";
             });
-
             prm.add_endRequest(function () {
                 var loading = document.getElementById("loadingOverlay");
                 if (loading) loading.style.display = "none";
-
                 bindGridRowClick();
             });
         }
@@ -215,40 +211,28 @@
         function bindGridRowClick() {
             const gv = document.getElementById('<%= gvList.ClientID %>');
             if (!gv) return;
-
             for (let i = 1; i < gv.rows.length; i++) {
                 const row = gv.rows[i];
-
                 row.style.cursor = "pointer";
-
                 row.onclick = function (e) {
-                    if (
-                        e.target.closest("a") ||
-                        e.target.closest("button") ||
-                        e.target.closest("[data-bs-toggle]")
-                    ) {
+                    if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]")) {
                         return;
                     }
-
                     const btn = this.querySelector("a[id*='aDetail']");
                     if (btn) btn.click();
                 };
             }
         }
-
         document.addEventListener("DOMContentLoaded", function () {
             initUpdatePanelLoading();
             bindGridRowClick();
         });
-
-        function showPrimary(id) {
-            document.getElementById("<%=txtIdPrimary.ClientID %>").value = id;
+        function dataPrimary(id) {
+            document.getElementById("<%=txtPrimaryId.ClientID %>").value = id;
         }
-
-        function showDelete(id) {
-            document.getElementById("<%=txtIdDelete.ClientID %>").value = id;
+        function dataDelete(id) {
+            document.getElementById("<%=txtDeleteId.ClientID %>").value = id;
         }
-
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
             $("#tblLogs tbody").html("");
@@ -282,14 +266,12 @@
                 }
             });
         }
-
         ["modalDelete", "modalLog", "modalPrimary"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
             });
         });
-
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

@@ -5,7 +5,6 @@ Partial Class Setting_Login_Access
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -168,7 +167,7 @@ Partial Class Setting_Login_Access
     Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim thisId As String = txtIdDelete.Text
+            Dim thisId As String = txtDeleteId.Text
 
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("DELETE FROM LoginAccess WHERE Id=@Id", thisConn)

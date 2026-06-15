@@ -5,7 +5,6 @@ Partial Class Order_Printing
     Inherits Page
 
     Dim orderClass As New OrderClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataLog As Object() = Nothing
 

@@ -7,7 +7,6 @@ Partial Class Order_Default
     Inherits Page
 
     Dim orderClass As New OrderClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
     Dim dataLog As Object() = Nothing
@@ -153,9 +152,9 @@ Partial Class Order_Default
     Protected Sub btnStatusOrder_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim thisId As String = txtIdStatusOrder.Text
-            Dim thisStatus As String = txtStatusOrder.Text
-            Dim thisOldStatus As String = txtOldStatusOrder.Text
+            Dim thisId As String = txtStatusOrderId.Text
+            Dim thisStatus As String = txtStatusOrderNew.Text
+            Dim thisOldStatus As String = txtStatusOrderOld.Text
             Dim companyId As String = orderClass.GetCompanyIdByOrder(thisId)
 
             If thisStatus = "Delete Order" Then
@@ -451,48 +450,6 @@ Partial Class Order_Default
         End Try
     End Sub
 
-    Protected Sub btnCancelOrder_Click(sender As Object, e As EventArgs)
-        MessageError_CancelOrder(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showCancelOrder(); };"
-        Try
-            If txtCancelDescription.Text = "" Then
-                MessageError_CancelOrder(True, "DESCRIPTION IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showCancelOrder", thisScript, True)
-                Exit Sub
-            End If
-
-            If msgErrorCancelOrder.InnerText = "" Then
-                Dim thisId As String = txtIdCancelOrder.Text
-                Dim companyId As String = orderClass.GetCompanyIdByOrder(thisId)
-
-                Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Canceled', StatusDescription=@StatusDescription, CanceledDate=GETDATE(), ShipmentNumber=NULL, ShipmentDate=NULL, ContainerNumber=NULL, ContainerETA=NULL, Courier=NULL, InvoiceNumber=NULL, Collector=NULL, InvoiceDate=NULL, DueDate=NULL, Payment=0, PaymentDate=NULL, Amount=0 WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", thisId)
-                        myCmd.Parameters.AddWithValue("@StatusDescription", txtCancelDescription.Text.Trim())
-
-                        thisConn.Open()
-                        myCmd.ExecuteNonQuery()
-                    End Using
-                End Using
-
-                Dim descLog As String = String.Format("Order Canceled. Reason : {0}", txtCancelDescription.Text.Trim())
-                dataLog = {"OrderHeaders", thisId, Session("LoginId"), descLog}
-                orderClass.Logs(dataLog)
-
-                Dim salesClass As New SalesClass
-                salesClass.RefreshData(companyId)
-
-                Response.Redirect("~/order", False)
-            End If
-        Catch ex As Exception
-            MessageError_CancelOrder(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_CancelOrder(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showCancelOrder", thisScript, True)
-        End Try
-    End Sub
-
     Protected Sub btnShipmentOrder_Click(sender As Object, e As EventArgs)
         MessageError_ShipmentOrder(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showShipmentOrder(); };"
@@ -522,7 +479,7 @@ Partial Class Order_Default
             End If
 
             If msgErrorShipmentOrder.InnerText = "" Then
-                Dim thisId As String = txtIdShipmentOrder.Text
+                Dim thisId As String = txtShipmentOrderId.Text
 
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Shipped Out', ShipmentNumber=@ShipmentNumber, ShipmentDate=@ShipmentDate, ContainerNumber=@ContainerNumber, ContainerETA=@ContainerETA, Courier=@Courier WHERE Id=@Id", thisConn)
@@ -549,6 +506,48 @@ Partial Class Order_Default
                 MessageError_ShipmentOrder(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showShipmentOrder", thisScript, True)
+        End Try
+    End Sub
+
+    Protected Sub btnCancelOrder_Click(sender As Object, e As EventArgs)
+        MessageError_CancelOrder(False, String.Empty)
+        Dim thisScript As String = "window.onload = function() { showCancelOrder(); };"
+        Try
+            If txtCancelDescription.Text = "" Then
+                MessageError_CancelOrder(True, "DESCRIPTION IS REQUIRED !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showCancelOrder", thisScript, True)
+                Exit Sub
+            End If
+
+            If msgErrorCancelOrder.InnerText = "" Then
+                Dim thisId As String = txtCancelOrderId.Text
+                Dim companyId As String = orderClass.GetCompanyIdByOrder(thisId)
+
+                Using thisConn As New SqlConnection(myConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Canceled', StatusDescription=@StatusDescription, CanceledDate=GETDATE(), ShipmentNumber=NULL, ShipmentDate=NULL, ContainerNumber=NULL, ContainerETA=NULL, Courier=NULL, InvoiceNumber=NULL, Collector=NULL, InvoiceDate=NULL, DueDate=NULL, Payment=0, PaymentDate=NULL, Amount=0 WHERE Id=@Id", thisConn)
+                        myCmd.Parameters.AddWithValue("@Id", thisId)
+                        myCmd.Parameters.AddWithValue("@StatusDescription", txtCancelDescription.Text.Trim())
+
+                        thisConn.Open()
+                        myCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                Dim descLog As String = String.Format("Order Canceled. Reason : {0}", txtCancelDescription.Text.Trim())
+                dataLog = {"OrderHeaders", thisId, Session("LoginId"), descLog}
+                orderClass.Logs(dataLog)
+
+                Dim salesClass As New SalesClass
+                salesClass.RefreshData(companyId)
+
+                Response.Redirect("~/order", False)
+            End If
+        Catch ex As Exception
+            MessageError_CancelOrder(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_CancelOrder(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+            ClientScript.RegisterStartupScript(Me.GetType(), "showCancelOrder", thisScript, True)
         End Try
     End Sub
 
@@ -777,35 +776,51 @@ Partial Class Order_Default
     End Sub
 
     Protected Sub BuildPager()
-        If gvList.PageCount <= 1 Then
+        Try
+            If gvList.PageCount <= 1 Then
+                navPager.Visible = False
+                Return
+            End If
+
+            navPager.Visible = True
+
+            Dim currentPage As Integer = gvList.PageIndex
+            Dim totalPages As Integer = gvList.PageCount
+
+            Dim pages As New List(Of Object)
+
+            If currentPage > 0 Then
+                pages.Add(New With {
+                    .Text = "Previous",
+                    .PageIndex = currentPage - 1,
+                    .CssClass = ""
+                })
+            End If
+
+            Dim startPage As Integer = Math.Max(0, currentPage - 2)
+            Dim endPage As Integer = Math.Min(totalPages - 1, currentPage + 2)
+
+            For i As Integer = startPage To endPage
+                pages.Add(New With {
+                    .Text = (i + 1).ToString(),
+                    .PageIndex = i,
+                    .CssClass = If(i = currentPage, "active", "")
+                })
+            Next
+
+            If currentPage < totalPages - 1 Then
+                pages.Add(New With {
+                    .Text = "Next",
+                    .PageIndex = currentPage + 1,
+                    .CssClass = ""
+                })
+            End If
+
+            rptPager.DataSource = pages
+            rptPager.DataBind()
+        Catch ex As Exception
             navPager.Visible = False
-            Return
-        End If
-
-        navPager.Visible = True
-
-        Dim currentPage As Integer = gvList.PageIndex
-        Dim totalPages As Integer = gvList.PageCount
-
-        Dim pages As New List(Of Object)
-
-        If currentPage > 0 Then
-            pages.Add(New With {.Text = "Previous", .PageIndex = currentPage - 1, .CssClass = ""})
-        End If
-
-        Dim startPage As Integer = Math.Max(0, currentPage - 2)
-        Dim endPage As Integer = Math.Min(totalPages - 1, currentPage + 2)
-
-        For i As Integer = startPage To endPage
-            pages.Add(New With {.Text = (i + 1).ToString(), .PageIndex = i, .CssClass = If(i = currentPage, "active", "")})
-        Next
-
-        If currentPage < totalPages - 1 Then
-            pages.Add(New With {.Text = "Next", .PageIndex = currentPage + 1, .CssClass = ""})
-        End If
-
-        rptPager.DataSource = pages
-        rptPager.DataBind()
+        End Try
     End Sub
 
     Protected Sub MessageError(visible As Boolean, message As String)

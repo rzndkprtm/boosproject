@@ -4,7 +4,6 @@ Partial Class Setting_General_Mailing_Default
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataLog As Object() = Nothing
 
@@ -23,12 +22,16 @@ Partial Class Setting_General_Mailing_Default
     End Sub
 
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
+        Session("SearchMailing") = txtSearch.Text
         Response.Redirect("~/setting/general/mailing/add", False)
     End Sub
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
+        gvList.PageIndex = 0
+
         MessageError(False, String.Empty)
         BindData(txtSearch.Text)
+        Session("SearchMailing") = txtSearch.Text
     End Sub
 
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
@@ -44,22 +47,27 @@ Partial Class Setting_General_Mailing_Default
         End Try
     End Sub
 
-    Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
-        If Not String.IsNullOrEmpty(e.CommandArgument) Then
-            Session("SearchMailing") = txtSearch.Text
+    Protected Sub gvList_DataBound(sender As Object, e As EventArgs)
+        Try
+            BuildPager()
+        Catch ex As Exception
+        End Try
+    End Sub
 
-            Dim dataId As String = e.CommandArgument.ToString()
-            If e.CommandName = "Ubah" Then
-                Dim url As String = String.Format("~/setting/general/mailing/edit?mailid={0}", dataId)
-                Response.Redirect(url, False)
+    Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
+        Try
+            If e.CommandName = "Page" Then
+                gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
+                BindData(txtSearch.Text)
             End If
-        End If
+        Catch ex As Exception
+        End Try
     End Sub
 
     Protected Sub btnCopy_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim thisId As String = txtIdCopy.Text
+            Dim thisId As String = txtCopyId.Text
 
             Dim newId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Mailings ORDER BY Id DESC")
             Using thisConn As New SqlConnection(myConn)
@@ -88,7 +96,7 @@ Partial Class Setting_General_Mailing_Default
     Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim thisId As String = txtIdDelete.Text
+            Dim thisId As String = txtDeleteId.Text
 
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Mailings WHERE Id=@Id; DELETE FROM Logs WHERE Type='Mailings' AND DataId=@Id;", thisConn)
@@ -128,6 +136,55 @@ Partial Class Setting_General_Mailing_Default
             If Not Session("RoleName") = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
+        End Try
+    End Sub
+
+    Protected Sub BuildPager()
+        Try
+            If gvList.PageCount <= 1 Then
+                navPager.Visible = False
+                Return
+            End If
+
+            navPager.Visible = True
+
+            Dim currentPage As Integer = gvList.PageIndex
+            Dim totalPages As Integer = gvList.PageCount
+
+            Dim pages As New List(Of Object)
+
+            If currentPage > 0 Then
+                pages.Add(New With {
+                .Text = "Previous",
+                .PageIndex = currentPage - 1,
+                .CssClass = ""
+            })
+            End If
+
+            Dim startPage As Integer = Math.Max(0, currentPage - 2)
+            Dim endPage As Integer = Math.Min(totalPages - 1, currentPage + 2)
+
+            For i As Integer = startPage To endPage
+                pages.Add(New With {
+                .Text = (i + 1).ToString(),
+                .PageIndex = i,
+                .CssClass = If(i = currentPage, "active", "")
+            })
+            Next
+
+            If currentPage < totalPages - 1 Then
+                pages.Add(New With {
+                .Text = "Next",
+                .PageIndex = currentPage + 1,
+                .CssClass = ""
+            })
+            End If
+
+            rptPager.DataSource = pages
+            rptPager.DataBind()
+
+        Catch ex As Exception
+            navPager.Visible = False
         End Try
     End Sub
 

@@ -35,7 +35,6 @@ Partial Class Setting_Customer_Contact_Add
                 MessageError(True, "ACCOUNT IS REQURIED !")
                 Exit Sub
             End If
-
             If txtName.Text = "" Then
                 MessageError(True, "NAME IS REQURIED !")
                 Exit Sub

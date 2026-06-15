@@ -7,7 +7,6 @@ Partial Class Order_Add
     Inherits Page
 
     Dim orderClass As New OrderClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
 

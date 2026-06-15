@@ -42,12 +42,14 @@
                             <div class="card-content">
                                 <div class="card-header">
                                     <div class="row">
-                                        <div class="col-12 col-sm-12 col-lg-6 mb-2"></div>
+                                        <div class="col-12 col-sm-12 col-lg-6 mb-2">
+                                            <h5 class="card-title">List Login</h5>
+                                        </div>
                                         <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
                                             <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
                                                 <div class="input-group">
                                                     <span class="input-group-text">Search : </span>
-                                                    <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" placeholoder="" autocomplete="off"></asp:TextBox>
+                                                    <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" autocomplete="off"></asp:TextBox>
                                                     <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />
                                                 </div>
                                             </asp:Panel>
@@ -57,7 +59,6 @@
                                 <div class="card-body">
                                     <div class="table-responsive">
                                         <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Visible="false" OnPageIndexChanging="gvList_PageIndexChanging" OnDataBound="gvList_DataBound">
-                                            <RowStyle />
                                             <Columns>
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center">
                                                     <ItemTemplate>
@@ -75,7 +76,11 @@
                                                 </asp:TemplateField>
                                                 <asp:BoundField DataField="LastLogin" HeaderText="Last Login" DataFormatString="{0:dd MMM yyyy HH:mm:ss}" />
                                                 <asp:BoundField DataField="DataPricing" HeaderText="Pricing" />
-                                                <asp:BoundField DataField="DataActive" HeaderText="Active" />
+                                                <asp:TemplateField HeaderText="Status">
+                                                    <ItemTemplate>
+                                                        <asp:Label ID="lblStatus" runat="server" Text='<%# Eval("DataActive") %>' ForeColor='<%# If(Eval("DataActive").ToString() = "Disable", Drawing.Color.Red, Nothing) %>'></asp:Label>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
                                                 <asp:TemplateField ItemStyle-Width="120px">
                                                     <ItemTemplate>
                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
@@ -84,16 +89,16 @@
                                                                 <a class="dropdown-item" id="aDetail" href='<%# Page.ResolveUrl("~/setting/customer/login/edit?loginid=" & Eval("Id")) %>'>Detail / Edit</a>
                                                             </li>
                                                             <li>
-                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalActive" onclick='<%# String.Format("return showActive(`{0}`, `{1}`);", Eval("Id").ToString(), Convert.ToInt32(Eval("Active"))) %>'><%# TextActive(Eval("Active")) %></a>
+                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalActive" onclick='<%# String.Format("return dataActive(`{0}`, `{1}`);", Eval("Id").ToString(), Convert.ToInt32(Eval("Active"))) %>'><%# TextActive(Eval("Active")) %></a>
+                                                            </li>
+                                                            <li runat="server" visible='<%# VisibleSend(Convert.ToInt32(Eval("Active"))) %>'>
+                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalSend" onclick='<%# String.Format("return dataSend(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("Email").ToString()) %>'>Send Login Credentials</a>
                                                             </li>
                                                             <li>
-                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalLoginCredentials" onclick='<%# String.Format("return dataLoginCredentials(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("Email").ToString()) %>'>Send Login Credentials</a>
+                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangePassword" onclick='<%# String.Format("return dataChangePassword(`{0}`);", Eval("Id").ToString()) %>'>Change Password</a>
                                                             </li>
                                                             <li>
-                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangePassword" onclick='<%# String.Format("return showChangePassword(`{0}`);", Eval("Id").ToString()) %>'>Change Password</a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalResetPass" onclick='<%# String.Format("return showResetPass(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("UserName").ToString()) %>'>Reset Password</a>
+                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalResetPassword" onclick='<%# String.Format("return dataResetPassword(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("UserName").ToString()) %>'>Reset Password</a>
                                                             </li>
                                                             <li>
                                                                 <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('Logins', '<%# Eval("Id") %>')">Log</a>
@@ -133,8 +138,8 @@
                     <h5 class="modal-title white" id="titleActive"></h5>
                 </div>
                 <div class="modal-body text-center py-4">
-                    <asp:TextBox runat="server" ID="txtIdActive" style="display:none;"></asp:TextBox>
-                    <asp:TextBox runat="server" ID="txtActive" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtActiveId" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtActiveStatus" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
@@ -144,7 +149,7 @@
             </div>
         </div>
     </div>
-    <div class="modal modal-blur fade" id="modalLoginCredentials" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal modal-blur fade" id="modalSend" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -152,24 +157,24 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <asp:TextBox runat="server" ID="txtIdLoginCredentials" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtSendId" style="display:none;"></asp:TextBox>
                     <div class="row">
                         <div class="col-12 form-group">
                             <label class="form-label">Email Address</label>
-                            <asp:TextBox runat="server" ID="txtEmailLoginCredentials" CssClass="form-control" placeholder="Email Address ..." autocomplete="off"></asp:TextBox>
+                            <asp:TextBox runat="server" ID="txtSendEmail" CssClass="form-control" placeholder="Email Address ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-                    <div class="row" runat="server" id="divErrorLoginCredentials">
+                    <div class="row" runat="server" id="divErrorSend">
                         <div class="col-12">
                             <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorLoginCredentials"></span>
+                                <span runat="server" id="msgErrorSend"></span>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnLoginCredentials" Text="Submit" CssClass="btn btn-primary" OnClick="btnLoginCredentials_Click" />
+                    <asp:Button runat="server" ID="btnSend" Text="Submit" CssClass="btn btn-primary" OnClick="btnSend_Click" />
                 </div>
             </div>
         </div>
@@ -182,7 +187,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <asp:TextBox runat="server" ID="txtIdChangePassword" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtChangePasswordId" style="display:none;"></asp:TextBox>
                     <div class="row">
                         <div class="col-12 form-group">
                             <label class="form-label">New Password</label>
@@ -197,20 +202,20 @@
             </div>
         </div>
     </div>
-    <div class="modal modal-blur fade" id="modalResetPass" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal modal-blur fade" id="modalResetPassword" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-info">
                     <h5 class="modal-title white">Reset Password</h5>
                 </div>
                 <div class="modal-body text-center py-4">
-                    <asp:TextBox runat="server" ID="txtIdResetPass" style="display:none;"></asp:TextBox>
-                    <asp:TextBox runat="server" ID="txtNewResetPass" style="display:none;"></asp:TextBox>
-                    <span id="spanDescResetPass"></span>
+                    <asp:TextBox runat="server" ID="txtResetPasswordId" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtResetPasswordNew" style="display:none;"></asp:TextBox>
+                    <span id="spanResetPasswordDesc"></span>
                 </div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnResetPass" CssClass="btn btn-info" Text="Confirm" OnClick="btnResetPass_Click" />
+                    <asp:Button runat="server" ID="btnResetPassword" CssClass="btn btn-info" Text="Confirm" OnClick="btnResetPassword_Click" />
                 </div>
             </div>
         </div>
@@ -253,56 +258,41 @@
             var loading = document.getElementById("loadingOverlay");
             if (loading) loading.style.display = "none";
         });
-
         function initUpdatePanelLoading() {
             if (typeof Sys === "undefined") return;
             var prm = Sys.WebForms.PageRequestManager.getInstance();
-
             prm.add_beginRequest(function () {
                 var loading = document.getElementById("loadingOverlay");
                 if (loading) loading.style.display = "block";
             });
-
             prm.add_endRequest(function () {
                 var loading = document.getElementById("loadingOverlay");
                 if (loading) loading.style.display = "none";
-
                 bindGridRowClick();
             });
         }
-
         function bindGridRowClick() {
             const gv = document.getElementById('<%= gvList.ClientID %>');
             if (!gv) return;
-
             for (let i = 1; i < gv.rows.length; i++) {
                 const row = gv.rows[i];
-
                 row.style.cursor = "pointer";
-
                 row.onclick = function (e) {
-                    if (
-                        e.target.closest("a") ||
-                        e.target.closest("button") ||
-                        e.target.closest("[data-bs-toggle]")
-                    ) {
+                    if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]")) {
                         return;
                     }
-
                     const btn = this.querySelector("a[id*='aDetail']");
                     if (btn) btn.click();
                 };
             }
         }
-
         document.addEventListener("DOMContentLoaded", function () {
             initUpdatePanelLoading();
             bindGridRowClick();
         });
-
-        function showActive(id, active) {
-            document.getElementById("<%=txtIdActive.ClientID %>").value = id;
-            document.getElementById("<%=txtActive.ClientID %>").value = active;
+        function dataActive(id, active) {
+            document.getElementById("<%=txtActiveId.ClientID %>").value = id;
+            document.getElementById("<%=txtActiveStatus.ClientID %>").value = active;
 
             let title = "";
             if (active === "1") {
@@ -312,20 +302,34 @@
             }
             document.getElementById("titleActive").innerHTML = title;
         }
-
-        function showChangePassword(id, active) {
-            document.getElementById("<%=txtIdChangePassword.ClientID %>").value = id;
+        function dataSend(id, email) {
+            document.getElementById("<%=txtSendId.ClientID %>").value = id;
+            document.getElementById("<%=txtSendEmail.ClientID %>").value = email;
         }
-
-        function dataLoginCredentials(id, email) {
-            document.getElementById("<%=txtIdLoginCredentials.ClientID %>").value = id;
-            document.getElementById("<%=txtEmailLoginCredentials.ClientID %>").value = email;
+        function showSend() {
+            $("#modalSend").modal("show");
         }
-
-        function showLoginCredentials() {
-            $("#modalLoginCredentials").modal("show");
+        function dataChangePassword(id) {
+            document.getElementById("<%=txtChangePasswordId.ClientID %>").value = id;
         }
+        function dataResetPassword(id, username) {
+            let newPass = generateNewPassword(15);
+            let result = `Hi <b><%: Session("FullName") %></b>,<br />Are you sure you want to reset this account password?<br /><br /><b>USERNAME : ${username.toUpperCase()}</b><br /><b>USER ID : ${id.toUpperCase()}</b><br/><br />NEW PASSWORD : <br/><b>${newPass}</b>`;
 
+            document.getElementById("<%=txtResetPasswordId.ClientID %>").value = id;
+            document.getElementById("<%=txtResetPasswordNew.ClientID %>").value = newPass;
+            document.getElementById("spanResetPasswordDesc").innerHTML = result;
+        }
+        function generateNewPassword(length) {
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            let result = "";
+            const cryptoArray = new Uint8Array(length);
+            window.crypto.getRandomValues(cryptoArray);
+            for (let i = 0; i < length; i++) {
+                result += chars[cryptoArray[i] % chars.length];
+            }
+            return result;
+        }
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
             $("#tblLogs tbody").html("");
@@ -359,34 +363,12 @@
                 }
             });
         }
-
-        function showResetPass(id, username) {
-            let newPass = generateNewPassword(15);
-            let result = `Hi <b><%: Session("FullName") %></b>,<br />Are you sure you want to reset this account password?<br /><br /><b>USERNAME : ${username.toUpperCase()}</b><br /><b>USER ID : ${id.toUpperCase()}</b><br/><br />NEW PASSWORD : <br/><b>${newPass}</b>`;
-
-            document.getElementById("<%=txtIdResetPass.ClientID %>").value = id;
-            document.getElementById("<%=txtNewResetPass.ClientID %>").value = newPass;
-            document.getElementById("spanDescResetPass").innerHTML = result;
-        }
-
-        function generateNewPassword(length) {
-            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            let result = "";
-            const cryptoArray = new Uint8Array(length);
-            window.crypto.getRandomValues(cryptoArray);
-            for (let i = 0; i < length; i++) {
-                result += chars[cryptoArray[i] % chars.length];
-            }
-            return result;
-        }
-
-        ["modalActive", "modalChangePassword", "modalLoginCredentials", "modalResetPass", "modalLog"].forEach(function (id) {
+        ["modalActive", "modalSend", "modalChangePassword","modalResetPassword", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
             });
         });
-
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

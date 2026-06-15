@@ -63,7 +63,6 @@
                                 <div class="card-body">                                    
                                     <div class="table-responsive">
                                         <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" PagerSettings-Visible="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" OnPageIndexChanging="gvList_PageIndexChanging" OnDataBound="gvList_DataBound">
-                                            <RowStyle />
                                             <Columns>
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center">
                                                     <ItemTemplate>
@@ -91,13 +90,13 @@
                                                                 <a class="dropdown-item" href='<%# Page.ResolveUrl("~/setting/customer/edit?customerid=" & Eval("Id")) %>'>Edit</a>
                                                             </li>
                                                             <li runat="server" visible='<%# LoginAccess("Change Cash Sale") %>'>
-                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeCashSale" onclick='<%# String.Format("return showChangeCashSale(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("Name").ToString(), Convert.ToInt32(Eval("CashSale"))) %>'>Change Cash Sale</a>
+                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalCashSale" onclick='<%# String.Format("return dataCashSale(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("Name").ToString(), Convert.ToInt32(Eval("CashSale"))) %>'>Change Cash Sale</a>
                                                             </li>
                                                             <li runat="server" visible='<%# LoginAccess("Change On Stop") %>'>
-                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeOnStop" onclick='<%# String.Format("return showChangeOnStop(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("Name").ToString(), Convert.ToInt32(Eval("OnStop"))) %>'>Change On Stop</a>
+                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalOnStop" onclick='<%# String.Format("return dataOnStop(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("Name").ToString(), Convert.ToInt32(Eval("OnStop"))) %>'>Change On Stop</a>
                                                             </li>
                                                             <li runat="server" visible='<%# LoginAccess("Delete") %>'>
-                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return dataDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                             </li>
                                                             <li>
                                                                 <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('Customers', '<%# Eval("Id") %>')">Log</a>
@@ -114,11 +113,7 @@
                                                 <asp:Repeater ID="rptPager" runat="server" OnItemCommand="rptPager_ItemCommand">
                                                     <ItemTemplate>
                                                         <li class='page-item <%# Eval("CssClass") %>'>
-                                                            <asp:LinkButton runat="server"
-                                                                CssClass="page-link"
-                                                                Text='<%# Eval("Text") %>'
-                                                                CommandName="Page"
-                                                                CommandArgument='<%# Eval("PageIndex") %>' />
+                                                            <asp:LinkButton runat="server" CssClass="page-link" Text='<%# Eval("Text") %>' CommandName="Page" CommandArgument='<%# Eval("PageIndex") %>' />
                                                         </li>
                                                     </ItemTemplate>
                                                 </asp:Repeater>
@@ -144,25 +139,25 @@
         </section>
     </div>
 
-    <div class="modal fade text-left" id="modalChangeCashSale" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal fade text-left" id="modalCashSale" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">Change Cash Sale</h4>
                 </div>
                 <div class="modal-body">
-                    <asp:TextBox runat="server" ID="txtIdCashSale" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtCashSaleId" style="display:none;"></asp:TextBox>
                     <div class="row">
                         <div class="col-12 form-group">
                             <label class="form-label">Customer Name</label>
-                            <asp:TextBox runat="server" ID="txtNameCashSale" CssClass="form-control" ReadOnly="true"></asp:TextBox>
+                            <asp:TextBox runat="server" ID="txtCashSaleName" CssClass="form-control" ReadOnly="true"></asp:TextBox>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-12 form-group">
                             <label class="form-label">Old Data</label>
-                            <asp:TextBox runat="server" ID="txtOldCashSale" style="display:none;"></asp:TextBox>
-                            <asp:DropDownList runat="server" ID="ddlOldCashSale" ClientIDMode="Static" CssClass="form-select" Enabled="false">
+                            <asp:TextBox runat="server" ID="txtCashSaleOld" style="display:none;"></asp:TextBox>
+                            <asp:DropDownList runat="server" ID="ddlCashSaleOld" ClientIDMode="Static" CssClass="form-select" Enabled="false">
                                 <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
                                 <asp:ListItem Value="0" Text="No"></asp:ListItem>
                             </asp:DropDownList>
@@ -171,7 +166,7 @@
                     <div class="row">
                         <div class="col-12 form-group">
                             <label class="form-label">New Data</label>
-                            <asp:DropDownList runat="server" ID="ddlNewCashSale" CssClass="form-select">
+                            <asp:DropDownList runat="server" ID="ddlCashSaleNew" CssClass="form-select">
                                 <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
                                 <asp:ListItem Value="0" Text="No"></asp:ListItem>
                             </asp:DropDownList>
@@ -185,24 +180,24 @@
             </div>
         </div>
     </div>
-    <div class="modal fade text-left" id="modalChangeOnStop" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal fade text-left" id="modalOnStop" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">Change On Stop</h4>
                 </div>
                 <div class="modal-body">
-                    <asp:TextBox runat="server" ID="txtIdOnStop" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtOnStopId" style="display:none;"></asp:TextBox>
                     <div class="row">
                         <div class="col-12 form-group">
                             <label class="form-label">Customer Name</label>
-                            <asp:TextBox runat="server" ID="txtNameOnStop" CssClass="form-control" ReadOnly="true"></asp:TextBox>
+                            <asp:TextBox runat="server" ID="txtOnStopName" CssClass="form-control" ReadOnly="true"></asp:TextBox>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-12 form-group">
                             <label class="form-label">Old Data</label>
-                            <asp:TextBox runat="server" ID="txtOldOnStop" style="display:none;"></asp:TextBox>
+                            <asp:TextBox runat="server" ID="txtOnStopOld" style="display:none;"></asp:TextBox>
                             <asp:DropDownList runat="server" ID="ddlOldOnStop" ClientIDMode="Static" CssClass="form-select" Enabled="false">
                                 <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
                                 <asp:ListItem Value="0" Text="No"></asp:ListItem>
@@ -212,7 +207,7 @@
                     <div class="row">
                         <div class="col-12 form-group">
                             <label class="form-label">New Data</label>
-                            <asp:DropDownList runat="server" ID="ddlNewOnStop" CssClass="form-select">
+                            <asp:DropDownList runat="server" ID="ddlOnStopNew" CssClass="form-select">
                                 <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
                                 <asp:ListItem Value="0" Text="No"></asp:ListItem>
                             </asp:DropDownList>
@@ -233,7 +228,7 @@
                     <h5 class="modal-title white">Delete Customer</h5>
                 </div>
                 <div class="modal-body text-center py-4">
-                    <asp:TextBox runat="server" ID="txtIdDelete" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtDeleteId" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>, Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
@@ -277,66 +272,52 @@
             var loading = document.getElementById("loadingOverlay");
             if (loading) loading.style.display = "none";
         });
-
         function initUpdatePanelLoading() {
             if (typeof Sys === "undefined") return;
-
             var prm = Sys.WebForms.PageRequestManager.getInstance();
-
             prm.add_beginRequest(function () {
                 var loading = document.getElementById("loadingOverlay");
                 if (loading) loading.style.display = "block";
             });
-
             prm.add_endRequest(function () {
                 var loading = document.getElementById("loadingOverlay");
                 if (loading) loading.style.display = "none";
                 bindGridRowClick();
             });
         }
-
         function bindGridRowClick() {
             const gv = document.getElementById('<%= gvList.ClientID %>');
             if (!gv) return;
-
             for (let i = 1; i < gv.rows.length; i++) {
                 const row = gv.rows[i];
                 row.style.cursor = "pointer";
-
                 row.onclick = function (e) {
                     if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]"))
                         return;
-
                     const btn = this.querySelector("a[id*='aDetail']");
                     if (btn) btn.click();
-
                 };
             }
         }
-
         document.addEventListener("DOMContentLoaded", function () {
             initUpdatePanelLoading();
             bindGridRowClick();
         });
-
-        function showChangeCashSale(id, name, status) {
-            document.getElementById("<%=txtIdCashSale.ClientID %>").value = id;
-            document.getElementById("<%=txtNameCashSale.ClientID %>").value = name;
-            document.getElementById("<%=txtOldCashSale.ClientID %>").value = status;
-            document.getElementById("<%=ddlOldCashSale.ClientID %>").value = status;
+        function dataCashSale(id, name, status) {
+            document.getElementById("<%=txtCashSaleId.ClientID %>").value = id;
+            document.getElementById("<%=txtCashSaleName.ClientID %>").value = name;
+            document.getElementById("<%=txtCashSaleOld.ClientID %>").value = status;
+            document.getElementById("<%=ddlCashSaleOld.ClientID %>").value = status;
         }
-
-        function showChangeOnStop(id, name, status) {
-            document.getElementById("<%=txtIdOnStop.ClientID %>").value = id;
-            document.getElementById("<%=txtNameOnStop.ClientID %>").value = name;
-            document.getElementById("<%=txtOldOnStop.ClientID %>").value = status;
+        function dataOnStop(id, name, status) {
+            document.getElementById("<%=txtOnStopId.ClientID %>").value = id;
+            document.getElementById("<%=txtOnStopName.ClientID %>").value = name;
+            document.getElementById("<%=txtOnStopOld.ClientID %>").value = status;
             document.getElementById("<%=ddlOldOnStop.ClientID %>").value = status;
         }
-
-        function showDelete(id) {
-            document.getElementById("<%=txtIdDelete.ClientID %>").value = id;
+        function dataDelete(id) {
+            document.getElementById("<%=txtDeleteId.ClientID %>").value = id;
         }
-
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
             $("#tblLogs tbody").html("");
@@ -357,7 +338,6 @@
                         );
                         return;
                     }
-
                     let html = "";
                     logs.forEach(r => {
                         html += `<tr><td>${r.TextLog}</td></tr>`;
@@ -370,8 +350,7 @@
                 }
             });
         }
-
-        ["modalChangeCashSale", "modalChangeOnStop", "modalDelete", "modalLog"].forEach(function (id) {
+        ["modalCashSale", "modalOnStop", "modalDelete", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

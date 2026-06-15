@@ -4,7 +4,6 @@ Partial Class Setting_General_Company_Default
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
     Dim dataLog As Object() = Nothing

@@ -42,7 +42,9 @@
                             <div class="card-content">
                                 <div class="card-header">
                                     <div class="row">
-                                        <div class="col-12 col-sm-12 col-lg-6 mb-2"></div>
+                                        <div class="col-12 col-sm-12 col-lg-6 mb-2">
+                                            <h5 class="card-title">List Promo</h5>
+                                        </div>
                                         <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
                                             <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
                                                 <div class="input-group">
@@ -57,7 +59,6 @@
                                 <div class="card-body">
                                     <div class="table-responsive">
                                         <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Visible="false" OnPageIndexChanging="gvList_PageIndexChanging" OnDataBound="gvList_DataBound">
-                                            <RowStyle />
                                             <Columns>
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center">
                                                     <ItemTemplate>
@@ -75,7 +76,7 @@
                                                                 <a href="javascript:void(0);" id="aDetail" class="dropdown-item" onclick="showDetail('<%# Eval("Id").ToString() %>');">Detail</a>
                                                             </li>
                                                             <li>
-                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return dataDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                             </li>
                                                             <li>
                                                                 <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('CustomerPromos', '<%# Eval("Id") %>')">Log</a>
@@ -179,7 +180,7 @@
                     <h5 class="modal-title white">Delete Promo</h5>
                 </div>
                 <div class="modal-body text-center py-4">
-                    <asp:TextBox runat="server" ID="txtIdDelete" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtDeleteId" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
@@ -227,7 +228,6 @@
             var loading = document.getElementById("loadingOverlay");
             if (loading) loading.style.display = "none";
         });
-
         function initUpdatePanelLoading() {
             if (typeof Sys === "undefined") return;
             var prm = Sys.WebForms.PageRequestManager.getInstance();
@@ -236,52 +236,40 @@
                 var loading = document.getElementById("loadingOverlay");
                 if (loading) loading.style.display = "block";
             });
-
             prm.add_endRequest(function () {
                 var loading = document.getElementById("loadingOverlay");
                 if (loading) loading.style.display = "none";
-
                 bindGridRowClick();
             });
         }
-
         function bindGridRowClick() {
             const gv = document.getElementById('<%= gvList.ClientID %>');
             if (!gv) return;
-
             for (let i = 1; i < gv.rows.length; i++) {
                 const row = gv.rows[i];
-
                 row.style.cursor = "pointer";
-
                 row.onclick = function (e) {
-                    if (
-                        e.target.closest("a") ||
-                        e.target.closest("button") ||
-                        e.target.closest("[data-bs-toggle]")
-                    ) {
+                    if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]")) {
                         return;
                     }
-
                     const btn = this.querySelector("a[id*='aDetail']");
                     if (btn) btn.click();
                 };
             }
         }
-
         document.addEventListener("DOMContentLoaded", function () {
             initUpdatePanelLoading();
             bindGridRowClick();
         });
-
         function showProcess() {
             $("#modalProcess").modal("show");
         }
-
         function showDetail() {
             $("#modalDetail").modal("show");
         }
-
+        function dataDelete(id) {
+            document.getElementById("<%=txtDeleteId.ClientID %>").value = id;
+        }
         function showDetail(id) {
             $("#divErrorDetail").addClass("d-none");
             $("#msgErrorDetail").html("");
@@ -295,7 +283,6 @@
                 success: function (response) {
                     let data = response.d;
                     let html = "";
-
                     if (data.length === 0) {
                         html = `
                             <tr>
@@ -324,11 +311,6 @@
                 }
             });
         }
-
-        function showDelete(id) {
-            document.getElementById("<%=txtIdDelete.ClientID %>").value = id;
-        }
-
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
             $("#tblLogs tbody").html("");
@@ -369,7 +351,6 @@
                 document.body.focus();
             });
         });
-
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

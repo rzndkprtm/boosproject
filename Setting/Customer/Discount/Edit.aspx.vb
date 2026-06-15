@@ -6,7 +6,6 @@ Partial Class Setting_Customer_Discount_Edit
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim enUS As CultureInfo = New CultureInfo("en-US")
 
@@ -36,22 +35,18 @@ Partial Class Setting_Customer_Discount_Edit
                 MessageError(True, "ACCOUNT IS REQUIRED !")
                 Exit Sub
             End If
-
             If ddlType.SelectedValue = "" Then
                 MessageError(True, "ACCOUNT IS REQUIRED !")
                 Exit Sub
             End If
-
             If ddlType.SelectedValue = "productgroup" AndAlso ddlProduct.SelectedValue = "" Then
                 MessageError(True, "ACCOUNT IS REQUIRED !")
                 Exit Sub
             End If
-
             If txtDiscount.Text = "" Then
                 MessageError(True, "ACCOUNT IS REQUIRED !")
                 Exit Sub
             End If
-
             If msgError.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
                     thisConn.Open()
