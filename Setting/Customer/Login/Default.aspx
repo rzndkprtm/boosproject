@@ -78,7 +78,7 @@
                                                 <asp:BoundField DataField="DataPricing" HeaderText="Pricing" />
                                                 <asp:TemplateField HeaderText="Status">
                                                     <ItemTemplate>
-                                                        <asp:Label ID="lblStatus" runat="server" Text='<%# Eval("DataActive") %>' ForeColor='<%# If(Eval("DataActive").ToString() = "Disable", Drawing.Color.Red, Nothing) %>'></asp:Label>
+                                                        <asp:Label ID="lblStatus" runat="server" Text='<%# Eval("DataActive") %>' ForeColor='<%# If(Eval("DataActive").ToString() = "Disabled", Drawing.Color.Red, Nothing) %>'></asp:Label>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:TemplateField ItemStyle-Width="120px">
