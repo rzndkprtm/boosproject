@@ -1358,8 +1358,8 @@
 
                     writer.WriteAttributeString("FabricID", boeFabricId)
                     writer.WriteAttributeString("FabricID_LinkSys", boeFabricIdB)
-                    writer.WriteAttributeString("FabricType_LSDouble3rd", boeFabricIdC)
-                    writer.WriteAttributeString("FabricType_LSDouble4th", boeFabricIdD)
+                    writer.WriteAttributeString("FabricID_LSDouble3rd", boeFabricIdC)
+                    writer.WriteAttributeString("FabricID_LSDouble4th", boeFabricIdD)
                     writer.WriteAttributeString("IDBottomRail", boeBottomId)
                     writer.WriteAttributeString("IDBottomRail_LinkSys", boeBottomIdB)
                     writer.WriteAttributeString("IDBottomRail_LSDouble3rd", boeBottomIdC)
