@@ -5,7 +5,6 @@ Partial Class Order_Rework_Default
     Inherits Page
 
     Dim orderClass As New OrderClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataLog As Object() = Nothing
     Dim url As String = String.Empty
@@ -24,18 +23,34 @@ Partial Class Order_Rework_Default
     End Sub
 
     Protected Sub ddlStatus_SelectedIndexChanged(sender As Object, e As EventArgs)
+        gvList.PageIndex = 0
+
         MessageError(False, String.Empty)
         BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlActive.SelectedValue)
     End Sub
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
+        gvList.PageIndex = 0
+
         MessageError(False, String.Empty)
         BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlActive.SelectedValue)
     End Sub
 
     Protected Sub ddlActive_SelectedIndexChanged(sender As Object, e As EventArgs)
+        gvList.PageIndex = 0
+
         MessageError(False, String.Empty)
         BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlActive.SelectedValue)
+    End Sub
+
+    Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
+        Try
+            If e.CommandName = "Page" Then
+                gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
+                BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlActive.SelectedValue)
+            End If
+        Catch ex As Exception
+        End Try
     End Sub
 
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
@@ -54,40 +69,11 @@ Partial Class Order_Rework_Default
         End Try
     End Sub
 
-    Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
-        If Not String.IsNullOrEmpty(e.CommandArgument) Then
-            Dim dataId As String = e.CommandArgument.ToString()
-
-            If e.CommandName = "Detail" Then
-                MessageError(False, String.Empty)
-                Try
-                    url = String.Format("~/order/rework/detail?reworkid={0}", dataId)
-                    Response.Redirect(url, False)
-                Catch ex As Exception
-                    MessageError(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError(True, "PLEASE CONTACT IT AT SUPPORT REZA@BIGBLINDS.CO.ID !")
-                        If Session("RoleName") = "Customer" Then
-                            MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
-                        End If
-                    End If
-                End Try
-            ElseIf e.CommandName = "ToOrder" Then
-                MessageError(False, String.Empty)
-                Try
-                    Dim url As String = String.Format("~/order/detail?orderid={0}", dataId)
-                    Response.Redirect(url, False)
-                Catch ex As Exception
-                    MessageError(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError(True, "PLEASE CONTACT IT AT SUPPORT REZA@BIGBLINDS.CO.ID !")
-                        If Session("RoleName") = "Customer" Then
-                            MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
-                        End If
-                    End If
-                End Try
-            End If
-        End If
+    Protected Sub gvList_DataBound(sender As Object, e As EventArgs)
+        Try
+            BuildPager()
+        Catch ex As Exception
+        End Try
     End Sub
 
     Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
@@ -121,8 +107,6 @@ Partial Class Order_Rework_Default
     End Sub
 
     Protected Sub BindDataOrder(search As String, status As String, active As String)
-        Session("reworkId") = String.Empty
-        Session("headerId") = String.Empty
         Try
             Dim params As New List(Of SqlParameter) From {
                 New SqlParameter("@SearchText", search.Trim()),
@@ -150,6 +134,54 @@ Partial Class Order_Rework_Default
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
             End If
+        End Try
+    End Sub
+
+    Protected Sub BuildPager()
+        Try
+            If gvList.PageCount <= 1 Then
+                navPager.Visible = False
+                Return
+            End If
+
+            navPager.Visible = True
+
+            Dim currentPage As Integer = gvList.PageIndex
+            Dim totalPages As Integer = gvList.PageCount
+
+            Dim pages As New List(Of Object)
+
+            If currentPage > 0 Then
+                pages.Add(New With {
+                    .Text = "Previous",
+                    .PageIndex = currentPage - 1,
+                    .CssClass = ""
+                })
+            End If
+
+            Dim startPage As Integer = Math.Max(0, currentPage - 2)
+            Dim endPage As Integer = Math.Min(totalPages - 1, currentPage + 2)
+
+            For i As Integer = startPage To endPage
+                pages.Add(New With {
+                    .Text = (i + 1).ToString(),
+                    .PageIndex = i,
+                    .CssClass = If(i = currentPage, "active", "")
+                })
+            Next
+
+            If currentPage < totalPages - 1 Then
+                pages.Add(New With {
+                    .Text = "Next",
+                    .PageIndex = currentPage + 1,
+                    .CssClass = ""
+                })
+            End If
+
+            rptPager.DataSource = pages
+            rptPager.DataBind()
+        Catch ex As Exception
+            navPager.Visible = False
         End Try
     End Sub
 

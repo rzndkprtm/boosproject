@@ -326,6 +326,75 @@ Partial Class Order_Rework_Detail
         End Try
     End Sub
 
+    Protected Sub btnAddItem_Click(sender As Object, e As EventArgs)
+        MessageError_AddItem(False, String.Empty)
+        Dim thisScript As String = "window.onload = function() { showAddItem(); };"
+        Try
+            Dim selectedItems As New List(Of Tuple(Of String, String, String, String))
+
+            For Each row As GridViewRow In gvListAddItem.Rows
+                Dim chk As CheckBox = CType(row.FindControl("chkSelect"), CheckBox)
+                Dim ddlAddCategory As DropDownList = CType(row.FindControl("ddlAddCategory"), DropDownList)
+                Dim txtAddInstallDate As TextBox = CType(row.FindControl("txtAddInstallDate"), TextBox)
+                Dim txtAddDescription As TextBox = CType(row.FindControl("txtAddDescription"), TextBox)
+
+                If chk IsNot Nothing AndAlso chk.Checked Then
+                    Dim itemId As String = gvListAddItem.DataKeys(row.RowIndex).Value.ToString()
+                    If ddlAddCategory Is Nothing OrElse String.IsNullOrWhiteSpace(ddlAddCategory.SelectedValue) Then
+                        MessageError_AddItem(True, "CATEGORY IS REQUIRED !")
+                        ClientScript.RegisterStartupScript(Me.GetType(), "showAddItem", thisScript, True)
+                        Exit Sub
+                    End If
+                    If txtAddInstallDate Is Nothing OrElse String.IsNullOrWhiteSpace(txtAddInstallDate.Text) Then
+                        MessageError_AddItem(True, "INSTALL DATE IS REQUIRED !")
+                        ClientScript.RegisterStartupScript(Me.GetType(), "showAddItem", thisScript, True)
+                        Exit Sub
+                    End If
+                    If txtAddDescription Is Nothing OrElse String.IsNullOrWhiteSpace(txtAddDescription.Text) Then
+                        MessageError_AddItem(True, "DESCRIPTION IS REQUIRED !")
+                        ClientScript.RegisterStartupScript(Me.GetType(), "showAddItem", thisScript, True)
+                        Exit Sub
+                    End If
+                    selectedItems.Add(New Tuple(Of String, String, String, String)(itemId, ddlAddCategory.SelectedValue, txtAddInstallDate.Text, txtAddDescription.Text))
+                End If
+            Next
+
+            If selectedItems.Count = 0 Then
+                MessageError_AddItem(True, "ITEM IS REQUIRED !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showAddItem", thisScript, True)
+                Exit Sub
+            End If
+
+            For Each item In selectedItems
+                Dim reworkDetailId As String = orderClass.GetNewOrderReworkDetailId()
+
+                Using thisConn As New SqlConnection(myConn)
+                    Using myCmd As New SqlCommand("INSERT INTO OrderReworkDetails(Id, ReworkId, ItemId, Category, InstallDate, Description, Active) VALUES (@Id, @ReworkId, @ItemId, @Category, @InstallDate, @Description, 1)", thisConn)
+                        myCmd.Parameters.AddWithValue("@Id", reworkDetailId)
+                        myCmd.Parameters.AddWithValue("@ReworkId", lblReworkId.Text)
+                        myCmd.Parameters.AddWithValue("@ItemId", item.Item1)
+                        myCmd.Parameters.AddWithValue("@Category", item.Item2)
+                        myCmd.Parameters.AddWithValue("@InstallDate", Convert.ToDateTime(item.Item3))
+                        myCmd.Parameters.AddWithValue("@Description", item.Item4)
+
+                        thisConn.Open()
+                        myCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                Dim directoryOrder As String = Server.MapPath(String.Format("~/File/Rework/{0}/{1}", lblReworkId.Text, reworkDetailId))
+
+                If Not Directory.Exists(directoryOrder) Then
+                    Directory.CreateDirectory(directoryOrder)
+                End If
+            Next
+            url = String.Format("~/order/rework/detail?reworkid={0}", lblReworkId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString)
+        End Try
+    End Sub
+
     Protected Sub rptRework_ItemDataBound(sender As Object, e As RepeaterItemEventArgs)
         Try
             If e.Item.ItemType = ListItemType.Item OrElse e.Item.ItemType = ListItemType.AlternatingItem Then
@@ -522,26 +591,61 @@ Partial Class Order_Rework_Detail
             rptRework.DataSource = orderClass.GetDataTable("SELECT OrderReworkDetails.*, 'Item ID ' + CONVERT(VARCHAR, OrderDetails.Id) + ' - ' + OrderDetails.Room AS TitleItem FROM OrderReworkDetails LEFT JOIN OrderDetails ON OrderReworkDetails.ItemId=OrderDetails.Id WHERE OrderReworkDetails.ReworkId='" & reworkId & "' AND OrderReworkDetails.Active=1 ORDER BY Id ASC")
             rptRework.DataBind()
 
+            BindAddItem(lblHeaderId.Text)
+
             aCancelRework.Visible = False
             aSubmitRework.Visible = False
             aApproveRework.Visible = False
             aRejectRework.Visible = False
+            aAddItem.Visible = False
 
             If lblStatus.Text = "Unsubmitted" Then
-                If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Customer" OrElse Session("RoleName") = "Sales" Then
+                If Session("RoleName") = "Developer" Then
+                    aCancelRework.Visible = True
+                    aSubmitRework.Visible = True
+                    aAddItem.Visible = True
+                    If gvListAddItem.Rows.Count = 0 Then aAddItem.Visible = False
+                End If
+                If Session("RoleName") = "IT" Then
+                    aCancelRework.Visible = True
+                    aSubmitRework.Visible = True
+                End If
+                If Session("RoleName") = "Factory Office" Then
+                    aCancelRework.Visible = True
+                    aSubmitRework.Visible = True
+                End If
+                If Session("RoleName") = "Customer" Then
+                    aCancelRework.Visible = True
+                    aSubmitRework.Visible = True
+                    aAddItem.Visible = True
+                    If gvListAddItem.Rows.Count = 0 Then aAddItem.Visible = False
+                End If
+                If Session("RoleName") = "Sales" Then
                     aCancelRework.Visible = True
                     aSubmitRework.Visible = True
                 End If
             End If
 
             If lblStatus.Text = "Pending Approval" Then
-                If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" Then
+                If Session("RoleName") = "Developer" Then
+                    aApproveRework.Visible = True
+                    aRejectRework.Visible = True
+                End If
+                If Session("RoleName") = "IT" Then
+                    aApproveRework.Visible = True
+                    aRejectRework.Visible = True
+                End If
+                If Session("RoleName") = "Factory Office" Then
                     aApproveRework.Visible = True
                     aRejectRework.Visible = True
                 End If
                 If Session("RoleName") = "Data Entry" Then
                     aApproveRework.Visible = True
                     aRejectRework.Visible = True
+                End If
+                If Session("RoleName") = "Sales" Then
+                    aCancelRework.Visible = True
+                    aSubmitRework.Visible = True
                 End If
             End If
         Catch ex As Exception
@@ -555,13 +659,30 @@ Partial Class Order_Rework_Detail
         End Try
     End Sub
 
+    Protected Sub BindAddItem(headerId As String)
+        If Not String.IsNullOrEmpty(headerId) Then
+            gvListAddItem.DataSource = orderClass.GetDataTable("SELECT OrderDetails.* FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN OrderReworks ON OrderReworks.HeaderId=OrderDetails.HeaderId AND OrderReworks.Status='Unsubmitted' AND OrderReworks.Active=1 LEFT JOIN OrderReworkDetails ON OrderReworkDetails.ItemId=OrderDetails.Id AND OrderReworkDetails.ReworkId=OrderReworks.Id AND OrderReworkDetails.Active=1 WHERE OrderDetails.HeaderId=" & headerId & " AND OrderDetails.Active=1 AND (Designs.Type='Blinds' OR Designs.Type='Shutters' OR Designs.Type='Doors' OR Designs.Type='Samples') AND OrderReworkDetails.ItemId IS NULL ORDER BY OrderDetails.Id ASC")
+            gvListAddItem.DataBind()
+
+            gvListAddItem.Columns(1).Visible = False ' ID
+            If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" Then
+                gvListAddItem.Columns(1).Visible = True ' ID
+            End If
+        End If
+    End Sub
+
     Protected Sub AllMessageError(visible As Boolean, message As String)
         MessageError(visible, message)
+        MessageError_AddItem(visible, message)
     End Sub
 
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
         divErrorB.Visible = visible : msgErrorB.InnerText = message
+    End Sub
+
+    Protected Sub MessageError_AddItem(visible As Boolean, message As String)
+        divErrorAddItem.Visible = visible : msgErrorAddItem.InnerText = message
     End Sub
 
     Protected Function VisibleDetailRework() As Boolean
@@ -572,6 +693,10 @@ Partial Class Order_Rework_Detail
     Protected Function VisibleDownloadZip() As Boolean
         If lblStatus.Text = "Pending Approval" OrElse lblStatus.Text = "Approved" Then Return True
         Return False
+    End Function
+
+    Protected Function BindProductDescription(itemId As String) As String
+        Return orderClass.GetProductDescription(itemId)
     End Function
 
     Protected Function CreateReworkZip(thisId As String) As String

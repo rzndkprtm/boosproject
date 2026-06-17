@@ -14,7 +14,7 @@ Partial Class Setting_Customer_Discount_Default
     <WebMethod()>
     Public Shared Function GetCustomerDiscount(customerId As String) As Object
         Dim settingClass As New SettingClass
-        Dim dt As DataTable = settingClass.GetDataTable("SELECT Type, DataId, Discount FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END, DataId ASC")
+        Dim dt As DataTable = settingClass.GetDataTable("SELECT Id, Type, DataId, Discount FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END, DataId ASC")
 
         Dim result As New List(Of Object)
         For Each r As DataRow In dt.Rows
@@ -23,7 +23,7 @@ Partial Class Setting_Customer_Discount_Default
             Dim discount As Decimal = Convert.ToDecimal(r("Discount"))
             Dim title As String = GetDiscountTitle(typeName, dataId)
             Dim value As String = If(discount > 0, discount.ToString("G29", CultureInfo.GetCultureInfo("en-US")) & "%", "-")
-            result.Add(New With {.Type = typeName, .Product = title, .Discount = value})
+            result.Add(New With {.Id = r("Id").ToString(), .Type = typeName, .Product = title, .Discount = value})
         Next
         Return result
     End Function
@@ -82,6 +82,16 @@ Partial Class Setting_Customer_Discount_Default
             BuildPager()
         Catch ex As Exception
         End Try
+    End Sub
+
+    Protected Sub btnAddDiscountA_Click(sender As Object, e As EventArgs)
+        Dim url As String = String.Format("~/setting/customer/discount/add?custid={0}&type=product", txtCustomerId.Text)
+        Response.Redirect(url, False)
+    End Sub
+
+    Protected Sub btnAddDiscountB_Click(sender As Object, e As EventArgs)
+        Dim url As String = String.Format("~/setting/customer/discount/add?custid={0}&type=productgroup", txtCustomerId.Text)
+        Response.Redirect(Url, False)
     End Sub
 
     Protected Sub BindData(searchText As String)

@@ -20,6 +20,7 @@ Partial Class Order_Default
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
+            MessageError_DuplicateOrder(False, String.Empty)
             MessageError_CancelOrder(False, String.Empty)
             MessageError_ShipmentOrder(False, String.Empty)
 
@@ -180,101 +181,6 @@ Partial Class Order_Default
                 End Using
 
                 Response.Redirect("~/order", False)
-            End If
-
-            If thisStatus = "Copy Order" Then
-                Dim newIdHeader As String = orderClass.GetNewOrderHeaderId()
-
-                Dim customerId As String = orderClass.GetCustomerIdByOrder(thisId)
-                Dim companyAlias As String = orderClass.GetCompanyAliasByCustomer(customerId)
-
-                Dim orderType As String = orderClass.GetItemData("SELECT OrderType FROM OrderHeaders WHERE Id='" & thisId & "'")
-
-                Dim success As Boolean = False
-                Dim retry As Integer = 0
-                Dim maxRetry As Integer = 100
-                Dim orderId As String = String.Empty
-
-                Do While Not success
-                    retry += 1
-                    If retry > maxRetry Then
-                        Throw New Exception("FAILED TO GENERATE UNIQUE ORDER ID")
-                    End If
-
-                    Dim randomCode As String = orderClass.GenerateRandomCode()
-                    orderId = companyAlias & randomCode
-                    Try
-                        Using thisConn As New SqlConnection(myConn)
-                            thisConn.Open()
-
-                            Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderHeaders SELECT @NewID, @OrderId, CustomerId, 'Copy ' + CAST(@NewID AS VARCHAR(20)) + ' - ' + OrderNumber, 'Copy ' + CAST(@NewID AS VARCHAR(20)) + ' - ' + OrderName, NULL, OrderType, OrderFactory, 'Unsubmitted', NULL, @CreatedBy, GETDATE(), NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, 0, 'No', NULL, 1 FROM OrderHeaders WHERE Id=@OldId; INSERT INTO OrderQuotes VALUES(@NewID, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
-                                myCmd.Parameters.AddWithValue("@OldId", thisId)
-                                myCmd.Parameters.AddWithValue("@NewID", newIdHeader)
-                                myCmd.Parameters.AddWithValue("@OrderId", orderId)
-                                myCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
-
-                                myCmd.ExecuteNonQuery()
-                            End Using
-
-                            If orderType = "Builder" Then
-                                Using myCmd As New SqlCommand("INSERT INTO OrderBuilders(Id) VALUES (@Id)", thisConn)
-                                    myCmd.Parameters.AddWithValue("@Id", newIdHeader)
-
-                                    myCmd.ExecuteNonQuery()
-                                End Using
-                            End If
-
-                            thisConn.Close()
-                        End Using
-
-                        success = True
-                    Catch exSql As SqlException
-                        If exSql.Number = 2601 OrElse exSql.Number = 2627 Then
-                            success = False
-                        Else
-                            Throw
-                        End If
-                    End Try
-                Loop
-
-                dataLog = {"OrderHeaders", newIdHeader, Session("LoginId").ToString(), "Order Created | Copy"}
-                orderClass.Logs(dataLog)
-
-                Dim thisHeader As DataTable = orderClass.GetDataTable("SELECT * FROM OrderDetails WHERE HeaderId='" & thisId & "' AND Active=1")
-                If thisHeader.Rows.Count > 0 Then
-                    For i As Integer = 0 To thisHeader.Rows.Count - 1
-                        Dim itemId As String = thisHeader.Rows(i).Item("Id").ToString()
-                        Dim newIdDetail As String = orderClass.GetNewOrderItemId()
-
-                        Using thisConn As New SqlConnection(myConn)
-                            Using myCmd As New SqlCommand("sp_CopyOrderDetails", thisConn)
-                                myCmd.CommandType = CommandType.StoredProcedure
-
-                                myCmd.Parameters.AddWithValue("@ItemIdOld", itemId)
-                                myCmd.Parameters.AddWithValue("@NewId", newIdDetail)
-                                myCmd.Parameters.AddWithValue("@HeaderId", newIdHeader)
-
-                                thisConn.Open()
-                                myCmd.ExecuteNonQuery()
-                            End Using
-                        End Using
-
-                        orderClass.ResetPriceDetail(newIdHeader, newIdDetail)
-                        orderClass.CalculatePrice(newIdHeader, newIdDetail)
-                        orderClass.FinalCostItem(newIdHeader, newIdDetail)
-
-                        dataLog = {"OrderDetails", newIdDetail, Session("LoginId").ToString(), "Order Item Added | Copy"}
-                        orderClass.Logs(dataLog)
-                    Next
-                End If
-
-                Dim directoryOrder As String = Server.MapPath(String.Format("~/File/Order/{0}/", orderId))
-                If Not Directory.Exists(directoryOrder) Then
-                    Directory.CreateDirectory(directoryOrder)
-                End If
-
-                url = String.Format("~/order/detail?orderid={0}", newIdHeader)
-                Response.Redirect(url, False)
             End If
 
             If thisStatus = "Unsubmit Order" Then
@@ -447,6 +353,146 @@ Partial Class Order_Default
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
             End If
+        End Try
+    End Sub
+
+    Protected Sub btnDuplicateOrder_Click(sender As Object, e As EventArgs)
+        MessageError_DuplicateOrder(False, String.Empty)
+        Dim thisScript As String = "window.onload = function() { showDuplicateOrder(); };"
+        Try
+            Dim thisId As String = txtDuplicateOrderId.Text
+            Dim thisCustomerId As String = txtDuplicateOrderCustomerId.Text
+
+            If txtOrderNumberNew.Text = "" Then
+                MessageError_DuplicateOrder(True, "ORDER NUMBER IS REQUIRED !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showDuplicateOrder", thisScript, True)
+                Exit Sub
+            End If
+            If InStr(txtOrderNumberNew.Text, ",") > 0 OrElse InStr(txtOrderNumberNew.Text, "'") > 0 OrElse InStr(txtOrderNumberNew.Text, ";") > 0 Then
+                MessageError_DuplicateOrder(True, "PLEASE DON'T USE [ , ], [ ' ] AND [ ; ] !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showDuplicateOrder", thisScript, True)
+                Exit Sub
+            End If
+            If txtOrderNumberNew.Text = orderClass.IsOrderExist(thisCustomerId, txtOrderNumberNew.Text.Trim()) Then
+                MessageError_DuplicateOrder(True, "ORDER NUMBER ALREADY EXISTS !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showDuplicateOrder", thisScript, True)
+                Exit Sub
+            End If
+            If txtOrderNameNew.Text = "" Then
+                MessageError_DuplicateOrder(True, "ORDER NAME IS REQUIRED !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showDuplicateOrder", thisScript, True)
+                Exit Sub
+            End If
+            If InStr(txtOrderNameNew.Text, ",") > 0 OrElse InStr(txtOrderNameNew.Text, "'") > 0 OrElse InStr(txtOrderNameNew.Text, ";") > 0 OrElse InStr(txtOrderNameNew.Text, ".") > 0 Then
+                MessageError_DuplicateOrder(True, "PLEASE DON'T USE [ , ], [ ' ] AND [ ; ] !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showDuplicateOrder", thisScript, True)
+                Exit Sub
+            End If
+
+            If msgErrorDuplicateOrder.InnerText = "" Then
+                Dim newIdHeader As String = orderClass.GetNewOrderHeaderId()
+                Dim companyAlias As String = orderClass.GetCompanyAliasByCustomer(thisCustomerId)
+
+                Dim orderType As String = orderClass.GetItemData("SELECT OrderType FROM OrderHeaders WHERE Id='" & thisId & "'")
+
+                Dim success As Boolean = False
+                Dim retry As Integer = 0
+                Dim maxRetry As Integer = 100
+                Dim orderId As String = String.Empty
+
+                Do While Not success
+                    retry += 1
+                    If retry > maxRetry Then
+                        Throw New Exception("FAILED TO GENERATE UNIQUE ORDER ID")
+                    End If
+
+                    Dim randomCode As String = orderClass.GenerateRandomCode()
+                    orderId = companyAlias & randomCode
+                    Try
+                        Using thisConn As New SqlConnection(myConn)
+                            thisConn.Open()
+
+                            Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderHeaders SELECT @NewID, @OrderId, CustomerId, @OrderNumber, @OrderName, @OrderNote, OrderType, OrderFactory, 'Unsubmitted', NULL, @CreatedBy, GETDATE(), NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, 0, 'No', NULL, 1 FROM OrderHeaders WHERE Id=@OldId; INSERT INTO OrderQuotes VALUES(@NewID, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
+                                myCmd.Parameters.AddWithValue("@OldId", thisId)
+                                myCmd.Parameters.AddWithValue("@NewID", newIdHeader)
+                                myCmd.Parameters.AddWithValue("@OrderId", orderId)
+                                myCmd.Parameters.AddWithValue("@OrderNumber", txtOrderNumberNew.Text.Trim())
+                                myCmd.Parameters.AddWithValue("@OrderName", txtOrderNameNew.Text.Trim())
+                                myCmd.Parameters.AddWithValue("@OrderNote", txtOrderNoteNew.Text)
+                                myCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
+
+                                myCmd.ExecuteNonQuery()
+                            End Using
+
+                            If orderType = "Builder" Then
+                                Using myCmd As New SqlCommand("INSERT INTO OrderBuilders(Id) VALUES (@Id)", thisConn)
+                                    myCmd.Parameters.AddWithValue("@Id", newIdHeader)
+
+                                    myCmd.ExecuteNonQuery()
+                                End Using
+                            End If
+
+                            thisConn.Close()
+                        End Using
+
+                        success = True
+                    Catch exSql As SqlException
+                        If exSql.Number = 2601 OrElse exSql.Number = 2627 Then
+                            success = False
+                        Else
+                            Throw
+                        End If
+                    End Try
+                Loop
+
+                dataLog = {"OrderHeaders", newIdHeader, Session("LoginId").ToString(), "Order Created | Copy"}
+                orderClass.Logs(dataLog)
+
+                Dim thisHeader As DataTable = orderClass.GetDataTable("SELECT * FROM OrderDetails WHERE HeaderId='" & thisId & "' AND Active=1")
+                If thisHeader.Rows.Count > 0 Then
+                    For i As Integer = 0 To thisHeader.Rows.Count - 1
+                        Dim itemId As String = thisHeader.Rows(i).Item("Id").ToString()
+                        Dim newIdDetail As String = orderClass.GetNewOrderItemId()
+
+                        Using thisConn As New SqlConnection(myConn)
+                            Using myCmd As New SqlCommand("sp_CopyOrderDetails", thisConn)
+                                myCmd.CommandType = CommandType.StoredProcedure
+
+                                myCmd.Parameters.AddWithValue("@ItemIdOld", itemId)
+                                myCmd.Parameters.AddWithValue("@NewId", newIdDetail)
+                                myCmd.Parameters.AddWithValue("@HeaderId", newIdHeader)
+
+                                thisConn.Open()
+                                myCmd.ExecuteNonQuery()
+                            End Using
+                        End Using
+
+                        orderClass.ResetPriceDetail(newIdHeader, newIdDetail)
+                        orderClass.CalculatePrice(newIdHeader, newIdDetail)
+                        orderClass.FinalCostItem(newIdHeader, newIdDetail)
+
+                        dataLog = {"OrderDetails", newIdDetail, Session("LoginId").ToString(), "Order Item Added | Copy"}
+                        orderClass.Logs(dataLog)
+                    Next
+                End If
+
+                Dim directoryOrder As String = Server.MapPath(String.Format("~/File/Order/{0}/", orderId))
+                If Not Directory.Exists(directoryOrder) Then
+                    Directory.CreateDirectory(directoryOrder)
+                End If
+
+                url = String.Format("~/order/detail?orderid={0}", newIdHeader)
+                Response.Redirect(url, False)
+            End If
+        Catch ex As Exception
+            MessageError_DuplicateOrder(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_DuplicateOrder(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                If Session("RoleName") = "Customer" Then
+                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
+                End If
+            End If
+            ClientScript.RegisterStartupScript(Me.GetType(), "showDuplicateOrder", thisScript, True)
         End Try
     End Sub
 
@@ -825,6 +871,9 @@ Partial Class Order_Default
 
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
+    End Sub
+    Protected Sub MessageError_DuplicateOrder(visible As Boolean, message As String)
+        divErrorDuplicateOrder.Visible = visible : msgErrorDuplicateOrder.InnerText = message
     End Sub
 
     Protected Sub MessageError_CancelOrder(visible As Boolean, message As String)

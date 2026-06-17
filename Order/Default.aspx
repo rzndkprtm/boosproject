@@ -124,7 +124,7 @@
                                                                 <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return dataStatusOrder(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), "Delete Order", "") %>'>Delete</a>
                                                             </li>
                                                             <li runat="server" visible='<%# VisibleCopy(Eval("Active").ToString()) %>'>
-                                                                <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return dataStatusOrder(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), "Copy Order", "") %>'>Copy / Duplicate</a>
+                                                                <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalDuplicateOrder" onclick='<%# String.Format("return dataDuplicateOrder(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("CustomerId").ToString()) %>'>Copy / Duplicate</a>
                                                             </li>
                                                             <li runat="server" visible='<%# VisibleUnsubmitOrder(Eval("Status").ToString(), Eval("Active")) %>'>
                                                                 <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return dataStatusOrder(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), "Unsubmit Order", Eval("Status").ToString()) %>'>Unsubmit Order</a>
@@ -272,6 +272,49 @@
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnStatusOrder" CssClass="btn btn-info" Text="Confirm" OnClick="btnStatusOrder_Click" OnClientClick="return showWaiting($(this).closest('.modal').attr('id'));" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade text-left" id="modalDuplicateOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Dulicate Order</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <asp:TextBox runat="server" ID="txtDuplicateOrderId" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtDuplicateOrderCustomerId" style="display:none;"></asp:TextBox>
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Order Number (New)</label>
+                            <asp:TextBox runat="server" ID="txtOrderNumberNew" CssClass="form-control" placeholder="Order Number ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Order Name (New)</label>
+                            <asp:TextBox runat="server" ID="txtOrderNameNew" CssClass="form-control" placeholder="Order Name ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Order Note (New)</label>
+                            <asp:TextBox runat="server" TextMode="MultiLine" ID="txtOrderNoteNew" Height="130px" CssClass="form-control" placeholder="Order Note ...." autocomplete="off" style="resize: none"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row mb-2" runat="server" id="divErrorDuplicateOrder">
+                        <div class="col-12">
+                            <div class="alert alert-danger">
+                                <span runat="server" id="msgErrorDuplicateOrder"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnDuplicateOrder" CssClass="btn btn-primary" Text="Submit" OnClick="btnDuplicateOrder_Click" />
                 </div>
             </div>
         </div>
@@ -453,6 +496,13 @@
             document.getElementById("<%=txtStatusOrderNew.ClientID %>").value = status;
             document.getElementById("<%=txtStatusOrderOld.ClientID %>").value = oldStatus;            
         }
+        function dataDuplicateOrder(id, customerid) {
+            document.getElementById("<%=txtDuplicateOrderId.ClientID %>").value = id;            
+            document.getElementById("<%=txtDuplicateOrderCustomerId.ClientID %>").value = customerid;            
+        }
+        function showDuplicateOrder() {
+            $("#modalDuplicateOrder").modal("show");
+        }
         function dataShipmentOrder(id) {
             document.getElementById("<%=txtShipmentOrderId.ClientID %>").value = id;
         }
@@ -508,7 +558,7 @@
             }, 5000);
             return true;
         }
-        ["modalBOEDownload", "modalShipment", "modalStatusOrder", "modalCancelOrder", "modalShipmentOrder", "modalLog"].forEach(function (id) {
+        ["modalBOEDownload", "modalShipment", "modalStatusOrder", "modalDuplicateOrder", "modalCancelOrder", "modalShipmentOrder", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

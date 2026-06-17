@@ -791,13 +791,13 @@ Partial Class Setting_Customer_Detail
 
     Protected Sub btnAddDiscountA_Click(sender As Object, e As EventArgs)
         Session("selectedTabCustomer") = "list-discount"
-        url = String.Format("~/setting/customer/discount/add?custid={0}&type={1}", lblId.Text, "product")
+        url = String.Format("~/setting/customer/discount/add?custid={0}&type=product&returnpage=detail", lblId.Text)
         Response.Redirect(url, False)
     End Sub
 
     Protected Sub btnAddDiscountB_Click(sender As Object, e As EventArgs)
         Session("selectedTabCustomer") = "list-discount"
-        url = String.Format("~/setting/customer/discount/add?custid={0}&type={1}", lblId.Text, "productgroup")
+        url = String.Format("~/setting/customer/discount/add?custid={0}&type=productgroup&returnpage=detail", lblId.Text)
         Response.Redirect(url, False)
     End Sub
 
