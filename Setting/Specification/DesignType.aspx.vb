@@ -5,7 +5,6 @@ Partial Class Setting_Specification_Design
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataLog As Object() = Nothing
 
@@ -26,7 +25,6 @@ Partial Class Setting_Specification_Design
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
         MessageError_Process(False, String.Empty)
         Session("SearchDesign") = txtSearch.Text
-
         Dim thisScript As String = "window.onload = function() { showProcess(); };"
         Try
             lblAction.Text = "Add"
@@ -76,19 +74,19 @@ Partial Class Setting_Specification_Design
                     lblAction.Text = "Edit"
                     titleProcess.InnerText = "Edit Design Type"
 
-                    Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Designs WHERE Id='" & lblId.Text & "'")
-                    If myData Is Nothing Then Exit Sub
+                    Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM Designs WHERE Id='" & lblId.Text & "'")
+                    If thisData Is Nothing Then Exit Sub
 
                     BindCompany(True)
 
-                    txtName.Text = myData("Name").ToString()
-                    ddlType.SelectedValue = myData("Type").ToString()
-                    txtPage.Text = myData("Page").ToString()
-                    txtDescription.Text = myData("Description").ToString()
-                    ddlActive.SelectedValue = Convert.ToInt32(myData("Active"))
+                    txtName.Text = thisData("Name").ToString()
+                    ddlType.SelectedValue = thisData("Type").ToString()
+                    txtPage.Text = thisData("Page").ToString()
+                    txtDescription.Text = thisData("Description").ToString()
+                    ddlActive.SelectedValue = Convert.ToInt32(thisData("Active"))
 
-                    If Not myData("CompanyId").ToString() = "" Then
-                        Dim companyArray() As String = myData("CompanyId").ToString().Split(",")
+                    If Not thisData("CompanyId").ToString() = "" Then
+                        Dim companyArray() As String = thisData("CompanyId").ToString().Split(",")
                         For Each i In companyArray
                             If Not String.IsNullOrEmpty(i) Then
                                 Dim item = lbCompany.Items.FindByValue(i)
@@ -99,8 +97,8 @@ Partial Class Setting_Specification_Design
                         Next
                     End If
 
-                    If Not myData("AppliesTo").ToString() = "" Then
-                        Dim applyArray() As String = myData("AppliesTo").ToString().Split(",")
+                    If Not thisData("AppliesTo").ToString() = "" Then
+                        Dim applyArray() As String = thisData("AppliesTo").ToString().Split(",")
                         For Each i In applyArray
                             If Not String.IsNullOrEmpty(i) Then
                                 Dim item = lbApplies.Items.FindByValue(i)
@@ -135,20 +133,18 @@ Partial Class Setting_Specification_Design
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
             End If
-
             If ddlType.SelectedValue = "" Then
                 MessageError_Process(True, "TYPE IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
             End If
-
             If msgErrorProcess.InnerText = "" Then
                 Dim company As String = String.Empty
+                Dim applyTo As String = String.Empty
+
                 If Not lbCompany.SelectedValue = "" Then
                     company = String.Join(",", lbCompany.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
                 End If
-
-                Dim applyTo As String = String.Empty
                 If Not lbApplies.SelectedValue = "" Then
                     applyTo = String.Join(",", lbApplies.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
                 End If
@@ -157,8 +153,6 @@ Partial Class Setting_Specification_Design
                 If lblAction.Text = "Add" Then
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Designs ORDER BY Id DESC")
                     Using thisConn As New SqlConnection(myConn)
-                        thisConn.Open()
-
                         Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Designs VALUES (@Id, @Name, @CompanyId, @Type, @Page, @AppliesTo, @Description, @Active)", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", thisId)
                             myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
@@ -169,16 +163,9 @@ Partial Class Setting_Specification_Design
                             myCmd.Parameters.AddWithValue("@Description", descText)
                             myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
 
+                            thisConn.Open()
                             myCmd.ExecuteNonQuery()
                         End Using
-
-                        'Using myCmd As New SqlCommand("DECLARE @Id NVARCHAR(MAX)=@NewId; UPDATE CustomerProductAccess SET DesignId=CASE WHEN DesignId IS NULL OR LTRIM(RTRIM(DesignId))='' THEN @NewId WHEN ',' + DesignId + ',' LIKE '%,' + @NewId + ',%' THEN DesignId ELSE DesignId + ',' + @NewId END;", thisConn)
-                        '    myCmd.Parameters.AddWithValue("@NewId", thisId)
-
-                        '    myCmd.ExecuteNonQuery()
-                        'End Using
-
-                        thisConn.Close()
                     End Using
 
                     dataLog = {"Designs", thisId, Session("LoginId").ToString(), "Created"}

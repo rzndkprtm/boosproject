@@ -45,6 +45,12 @@ Partial Class Setting_Customer_Promo_Add
                 MessageError(True, "PROMO IS REQUIRED !")
                 Exit Sub
             End If
+            If Session("RoleName") = "Sales" OrElse Session("Account") Then
+                If ddlCustomer.SelectedValue = Session("CustomerId") Then
+                    MessageError(True, "ACCESS DENIED !")
+                    Exit Sub
+                End If
+            End If
             Dim checkData As Integer = settingClass.GetItemData_Integer("SELECT COUNT(*) FROM CustomerPromos WHERE CustomerId='" & ddlCustomer.SelectedValue & "' AND PromoId='" & ddlPromo.SelectedValue & "'")
             If checkData > 0 Then
                 MessageError(True, "THIS PROMO IS ALREADY REGISTERED. PLEASE USE A DIFFERENT PROMO !")

@@ -44,7 +44,7 @@
                                 <div class="card-header">
                                     <div class="row">
                                         <div class="col-12 col-sm-12 col-lg-6 mb-2">
-                                            <h4 class="card-title">List Installer</h4>
+                                            <h4 class="card-title">Installer Data</h4>
                                         </div>
                                         <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
                                             <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
@@ -66,7 +66,8 @@
                                                         <%# Container.DataItemIndex + 1 %>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-                                                <asp:BoundField DataField="Id" HeaderText="ID" />
+                                                <asp:BoundField DataField="FullName" HeaderText="Installer Name" ItemStyle-Width="180px" />
+                                                <asp:BoundField DataField="CustomerNames" HeaderText="Customer Name" />
                                                 <asp:TemplateField ItemStyle-Width="120px">
                                                     <ItemTemplate>
                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>

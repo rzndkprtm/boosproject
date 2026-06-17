@@ -97,9 +97,18 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Detail Discount</h5>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><i data-feather="x"></i></button>
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnAddDiscount">Add Discount</button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <asp:Button runat="server" ID="btnAddDiscountA" CssClass="dropdown-item" Text="By Product" OnClick="btnAddDiscountA_Click" />
+                        </li>
+                        <li>
+                            <asp:Button runat="server" ID="btnAddDiscountB" CssClass="dropdown-item" Text="By Product Group" OnClick="btnAddDiscountB_Click" />
+                        </li>
+                    </ul>
                 </div>
                 <div class="modal-body">
+                    <asp:TextBox runat="server" ID="txtCustomerId" style="display:none;"></asp:TextBox>
                     <div class="row">
                         <div class="col-12">
                             <div class="table-responsive">
@@ -110,6 +119,7 @@
                                             <th>Type</th>
                                             <th>Product</th>
                                             <th>Discount</th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody id="discountBody"></tbody>
@@ -178,6 +188,7 @@
             bindGridRowClick();
         });
         function openDiscountModal(customerId) {
+            document.getElementById("<%=txtCustomerId.ClientID %>").value = customerId;
             fetch('Default.aspx/GetCustomerDiscount', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json; charset=utf-8' },
@@ -192,6 +203,7 @@
                         <td>${x.Type}</td>
                         <td>${x.Product}</td>
                         <td>${x.Discount}</td>
+                        <td><a class="btn btn-sm btn-primary" href="/setting/customer/discount/edit?discountid=${x.Id}">Edit</a></td>
                         </tr>
                         `;
                 });

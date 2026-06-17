@@ -156,108 +156,241 @@ Partial Class Order_Detail
     End Sub
 
     Protected Sub btnDuplicateOrder_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
+        MessageError_DuplicateOrder(False, String.Empty)
+        Dim thisScript As String = "window.onload = function() { showDuplicateOrder(); };"
         Try
-            Dim newIdHeader As String = orderClass.GetNewOrderHeaderId()
-            Dim customerId As String = orderClass.GetCustomerIdByOrder(lblHeaderId.Text)
-            Dim companyAlias As String = orderClass.GetCompanyAliasByCustomer(customerId)
+            If txtOrderNumberNew.Text = "" Then
+                MessageError_DuplicateOrder(True, "ORDER NUMBER IS REQUIRED !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showDuplicateOrder", thisScript, True)
+                Exit Sub
+            End If
+            If InStr(txtOrderNumberNew.Text, ",") > 0 OrElse InStr(txtOrderNumberNew.Text, "'") > 0 OrElse InStr(txtOrderNumberNew.Text, ";") > 0 Then
+                MessageError_DuplicateOrder(True, "PLEASE DON'T USE [ , ], [ ' ] AND [ ; ] !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showDuplicateOrder", thisScript, True)
+                Exit Sub
+            End If
+            If txtOrderNumberNew.Text = orderClass.IsOrderExist(lblCustomerId.Text, txtOrderNumberNew.Text.Trim()) Then
+                MessageError_DuplicateOrder(True, "ORDER NUMBER ALREADY EXISTS !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showDuplicateOrder", thisScript, True)
+                Exit Sub
+            End If
+            If txtOrderNameNew.Text = "" Then
+                MessageError_DuplicateOrder(True, "ORDER NAME IS REQUIRED !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showDuplicateOrder", thisScript, True)
+                Exit Sub
+            End If
+            If InStr(txtOrderNameNew.Text, ",") > 0 OrElse InStr(txtOrderNameNew.Text, "'") > 0 OrElse InStr(txtOrderNameNew.Text, ";") > 0 OrElse InStr(txtOrderNameNew.Text, ".") > 0 Then
+                MessageError_DuplicateOrder(True, "PLEASE DON'T USE [ , ], [ ' ] AND [ ; ] !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showDuplicateOrder", thisScript, True)
+                Exit Sub
+            End If
 
-            Dim orderType As String = orderClass.GetItemData("SELECT OrderType FROM OrderHeaders WHERE Id='" & lblHeaderId.Text & "'")
+            If msgErrorDuplicateOrder.InnerText = "" Then
+                Dim newIdHeader As String = orderClass.GetNewOrderHeaderId()
+                Dim companyAlias As String = orderClass.GetCompanyAliasByCustomer(lblCustomerId.Text)
 
-            Dim success As Boolean = False
-            Dim retry As Integer = 0
-            Dim maxRetry As Integer = 100
-            Dim orderId As String = String.Empty
+                Dim success As Boolean = False
+                Dim retry As Integer = 0
+                Dim maxRetry As Integer = 100
+                Dim orderId As String = String.Empty
 
-            Do While Not success
-                retry += 1
-                If retry > maxRetry Then
-                    Throw New Exception("FAILED TO GENERATE UNIQUE ORDER ID")
-                End If
+                Do While Not success
+                    retry += 1
+                    If retry > maxRetry Then
+                        Throw New Exception("FAILED TO GENERATE UNIQUE ORDER ID")
+                    End If
 
-                Dim randomCode As String = orderClass.GenerateRandomCode()
-                orderId = companyAlias & randomCode
-                Try
-                    Using thisConn As New SqlConnection(myConn)
-                        thisConn.Open()
+                    Dim randomCode As String = orderClass.GenerateRandomCode()
+                    orderId = companyAlias & randomCode
+                    Try
+                        Using thisConn As New SqlConnection(myConn)
+                            thisConn.Open()
 
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderHeaders SELECT @NewID, @OrderId, CustomerId, 'Copy ' + CAST(@NewID AS VARCHAR(20)) + ' - ' + OrderNumber, 'Copy ' + CAST(@NewID AS VARCHAR(20)) + ' - ' + OrderName, NULL, OrderType, OrderFactory, 'Unsubmitted', NULL, @CreatedBy, GETDATE(), NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, 0, 'No', NULL, 1 FROM OrderHeaders WHERE Id=@OldId; INSERT INTO OrderQuotes VALUES(@NewID, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
-                            myCmd.Parameters.AddWithValue("@OldId", lblHeaderId.Text)
-                            myCmd.Parameters.AddWithValue("@NewID", newIdHeader)
-                            myCmd.Parameters.AddWithValue("@OrderId", orderId)
-                            myCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
-
-                            myCmd.ExecuteNonQuery()
-                        End Using
-
-                        If orderType = "Builder" Then
-                            Using myCmd As New SqlCommand("INSERT INTO OrderBuilders(Id) VALUES (@Id)", thisConn)
-                                myCmd.Parameters.AddWithValue("@Id", newIdHeader)
+                            Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderHeaders SELECT @NewID, @OrderId, CustomerId, @OrderNumber, @OrderName, @OrderNote, OrderType, OrderFactory, 'Unsubmitted', NULL, @CreatedBy, GETDATE(), NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, 0, 'No', NULL, 1 FROM OrderHeaders WHERE Id=@OldId; INSERT INTO OrderQuotes VALUES(@NewID, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
+                                myCmd.Parameters.AddWithValue("@OldId", lblHeaderId.Text)
+                                myCmd.Parameters.AddWithValue("@NewID", newIdHeader)
+                                myCmd.Parameters.AddWithValue("@OrderId", orderId)
+                                myCmd.Parameters.AddWithValue("@OrderNumber", txtOrderNumberNew.Text.Trim())
+                                myCmd.Parameters.AddWithValue("@OrderName", txtOrderNameNew.Text.Trim())
+                                myCmd.Parameters.AddWithValue("@OrderNote", txtOrderNoteNew.Text)
+                                myCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
 
                                 myCmd.ExecuteNonQuery()
                             End Using
-                        End If
 
-                        thisConn.Close()
-                    End Using
+                            If lblOrderType.Text = "Builder" Then
+                                Using myCmd As New SqlCommand("INSERT INTO OrderBuilders(Id) VALUES (@Id)", thisConn)
+                                    myCmd.Parameters.AddWithValue("@Id", newIdHeader)
 
-                    success = True
-                Catch exSql As SqlException
-                    If exSql.Number = 2601 OrElse exSql.Number = 2627 Then
-                        success = False
-                    Else
-                        Throw
-                    End If
-                End Try
-            Loop
+                                    myCmd.ExecuteNonQuery()
+                                End Using
+                            End If
 
-            dataLog = {"OrderHeaders", newIdHeader, Session("LoginId").ToString(), "Order Created | Copy"}
-            orderClass.Logs(dataLog)
-
-            Dim thisHeader As DataTable = orderClass.GetDataTable("SELECT * FROM OrderDetails WHERE HeaderId='" & lblHeaderId.Text & "' AND Active=1")
-            If thisHeader.Rows.Count > 0 Then
-                For i As Integer = 0 To thisHeader.Rows.Count - 1
-                    Dim itemId As String = thisHeader.Rows(i).Item("Id").ToString()
-                    Dim newIdDetail As String = orderClass.GetNewOrderItemId()
-
-                    Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As New SqlCommand("sp_CopyOrderDetails", thisConn)
-                            myCmd.CommandType = CommandType.StoredProcedure
-
-                            myCmd.Parameters.AddWithValue("@ItemIdOld", itemId)
-                            myCmd.Parameters.AddWithValue("@NewId", newIdDetail)
-                            myCmd.Parameters.AddWithValue("@HeaderId", newIdHeader)
-
-                            thisConn.Open()
-                            myCmd.ExecuteNonQuery()
+                            thisConn.Close()
                         End Using
-                    End Using
 
-                    orderClass.ResetPriceDetail(newIdHeader, newIdDetail)
-                    orderClass.CalculatePrice(newIdHeader, newIdDetail)
-                    orderClass.FinalCostItem(newIdHeader, newIdDetail)
+                        success = True
+                    Catch exSql As SqlException
+                        If exSql.Number = 2601 OrElse exSql.Number = 2627 Then
+                            success = False
+                        Else
+                            Throw
+                        End If
+                    End Try
+                Loop
 
-                    dataLog = {"OrderDetails", newIdDetail, Session("LoginId").ToString(), "Order Item Added | Copy"}
-                    orderClass.Logs(dataLog)
-                Next
+                dataLog = {"OrderHeaders", newIdHeader, Session("LoginId").ToString(), "Order Created | Copy"}
+                orderClass.Logs(dataLog)
+
+                Dim thisHeader As DataTable = orderClass.GetDataTable("SELECT * FROM OrderDetails WHERE HeaderId='" & lblHeaderId.Text & "' AND Active=1")
+                If thisHeader.Rows.Count > 0 Then
+                    For i As Integer = 0 To thisHeader.Rows.Count - 1
+                        Dim itemId As String = thisHeader.Rows(i).Item("Id").ToString()
+                        Dim newIdDetail As String = orderClass.GetNewOrderItemId()
+
+                        Using thisConn As New SqlConnection(myConn)
+                            Using myCmd As New SqlCommand("sp_CopyOrderDetails", thisConn)
+                                myCmd.CommandType = CommandType.StoredProcedure
+
+                                myCmd.Parameters.AddWithValue("@ItemIdOld", itemId)
+                                myCmd.Parameters.AddWithValue("@NewId", newIdDetail)
+                                myCmd.Parameters.AddWithValue("@HeaderId", newIdHeader)
+
+                                thisConn.Open()
+                                myCmd.ExecuteNonQuery()
+                            End Using
+                        End Using
+
+                        orderClass.ResetPriceDetail(newIdHeader, newIdDetail)
+                        orderClass.CalculatePrice(newIdHeader, newIdDetail)
+                        orderClass.FinalCostItem(newIdHeader, newIdDetail)
+
+                        dataLog = {"OrderDetails", newIdDetail, Session("LoginId").ToString(), "Order Item Added | Copy"}
+                        orderClass.Logs(dataLog)
+                    Next
+                End If
+
+                Dim directoryOrder As String = Server.MapPath(String.Format("~/File/Order/{0}/", orderId))
+                If Not IO.Directory.Exists(directoryOrder) Then
+                    IO.Directory.CreateDirectory(directoryOrder)
+                End If
+
+                url = String.Format("~/order/detail?orderid={0}", newIdHeader)
+                Response.Redirect(url, False)
             End If
-
-            Dim directoryOrder As String = Server.MapPath(String.Format("~/File/Order/{0}/", orderId))
-            If Not IO.Directory.Exists(directoryOrder) Then
-                IO.Directory.CreateDirectory(directoryOrder)
-            End If
-
-            url = String.Format("~/order/detail?orderid={0}", newIdHeader)
-            Response.Redirect(url, False)
         Catch ex As Exception
-            MessageError(True, ex.ToString())
+            MessageError_DuplicateOrder(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                MessageError_DuplicateOrder(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
                 If Session("RoleName") = "Customer" Then
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
             End If
+            ClientScript.RegisterStartupScript(Me.GetType(), "showDuplicateOrder", thisScript, True)
         End Try
+
+        'MessageError(False, String.Empty)
+        'Try
+        '    Dim newIdHeader As String = orderClass.GetNewOrderHeaderId()
+        '    Dim customerId As String = orderClass.GetCustomerIdByOrder(lblHeaderId.Text)
+        '    Dim companyAlias As String = orderClass.GetCompanyAliasByCustomer(customerId)
+
+        '    Dim orderType As String = orderClass.GetItemData("SELECT OrderType FROM OrderHeaders WHERE Id='" & lblHeaderId.Text & "'")
+
+        '    Dim success As Boolean = False
+        '    Dim retry As Integer = 0
+        '    Dim maxRetry As Integer = 100
+        '    Dim orderId As String = String.Empty
+
+        '    Do While Not success
+        '        retry += 1
+        '        If retry > maxRetry Then
+        '            Throw New Exception("FAILED TO GENERATE UNIQUE ORDER ID")
+        '        End If
+
+        '        Dim randomCode As String = orderClass.GenerateRandomCode()
+        '        orderId = companyAlias & randomCode
+        '        Try
+        '            Using thisConn As New SqlConnection(myConn)
+        '                thisConn.Open()
+
+        '                Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderHeaders SELECT @NewID, @OrderId, CustomerId, 'Copy ' + CAST(@NewID AS VARCHAR(20)) + ' - ' + OrderNumber, 'Copy ' + CAST(@NewID AS VARCHAR(20)) + ' - ' + OrderName, NULL, OrderType, OrderFactory, 'Unsubmitted', NULL, @CreatedBy, GETDATE(), NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, 0, 'No', NULL, 1 FROM OrderHeaders WHERE Id=@OldId; INSERT INTO OrderQuotes VALUES(@NewID, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
+        '                    myCmd.Parameters.AddWithValue("@OldId", lblHeaderId.Text)
+        '                    myCmd.Parameters.AddWithValue("@NewID", newIdHeader)
+        '                    myCmd.Parameters.AddWithValue("@OrderId", orderId)
+        '                    myCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
+
+        '                    myCmd.ExecuteNonQuery()
+        '                End Using
+
+        '                If orderType = "Builder" Then
+        '                    Using myCmd As New SqlCommand("INSERT INTO OrderBuilders(Id) VALUES (@Id)", thisConn)
+        '                        myCmd.Parameters.AddWithValue("@Id", newIdHeader)
+
+        '                        myCmd.ExecuteNonQuery()
+        '                    End Using
+        '                End If
+
+        '                thisConn.Close()
+        '            End Using
+
+        '            success = True
+        '        Catch exSql As SqlException
+        '            If exSql.Number = 2601 OrElse exSql.Number = 2627 Then
+        '                success = False
+        '            Else
+        '                Throw
+        '            End If
+        '        End Try
+        '    Loop
+
+        '    dataLog = {"OrderHeaders", newIdHeader, Session("LoginId").ToString(), "Order Created | Copy"}
+        '    orderClass.Logs(dataLog)
+
+        '    Dim thisHeader As DataTable = orderClass.GetDataTable("SELECT * FROM OrderDetails WHERE HeaderId='" & lblHeaderId.Text & "' AND Active=1")
+        '    If thisHeader.Rows.Count > 0 Then
+        '        For i As Integer = 0 To thisHeader.Rows.Count - 1
+        '            Dim itemId As String = thisHeader.Rows(i).Item("Id").ToString()
+        '            Dim newIdDetail As String = orderClass.GetNewOrderItemId()
+
+        '            Using thisConn As New SqlConnection(myConn)
+        '                Using myCmd As New SqlCommand("sp_CopyOrderDetails", thisConn)
+        '                    myCmd.CommandType = CommandType.StoredProcedure
+
+        '                    myCmd.Parameters.AddWithValue("@ItemIdOld", itemId)
+        '                    myCmd.Parameters.AddWithValue("@NewId", newIdDetail)
+        '                    myCmd.Parameters.AddWithValue("@HeaderId", newIdHeader)
+
+        '                    thisConn.Open()
+        '                    myCmd.ExecuteNonQuery()
+        '                End Using
+        '            End Using
+
+        '            orderClass.ResetPriceDetail(newIdHeader, newIdDetail)
+        '            orderClass.CalculatePrice(newIdHeader, newIdDetail)
+        '            orderClass.FinalCostItem(newIdHeader, newIdDetail)
+
+        '            dataLog = {"OrderDetails", newIdDetail, Session("LoginId").ToString(), "Order Item Added | Copy"}
+        '            orderClass.Logs(dataLog)
+        '        Next
+        '    End If
+
+        '    Dim directoryOrder As String = Server.MapPath(String.Format("~/File/Order/{0}/", orderId))
+        '    If Not IO.Directory.Exists(directoryOrder) Then
+        '        IO.Directory.CreateDirectory(directoryOrder)
+        '    End If
+
+        '    url = String.Format("~/order/detail?orderid={0}", newIdHeader)
+        '    Response.Redirect(url, False)
+        'Catch ex As Exception
+        '    MessageError(True, ex.ToString())
+        '    If Not Session("RoleName") = "Developer" Then
+        '        MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+        '        If Session("RoleName") = "Customer" Then
+        '            MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
+        '        End If
+        '    End If
+        'End Try
     End Sub
 
     Protected Sub btnQuoteOrder_Click(sender As Object, e As EventArgs)
@@ -716,77 +849,36 @@ Partial Class Order_Detail
     End Sub
 
     Protected Sub btnReworkOrder_Click(sender As Object, e As EventArgs)
-        MessageError_ReworkOrder(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showReworkOrder(); };"
+        MessageError(False, String.Empty)
         Try
-            Dim selectedIds As New List(Of String)()
-            For Each row As GridViewRow In gvListItemRework.Rows
-                Dim chk As CheckBox = TryCast(row.FindControl("chkSelect"), CheckBox)
-                If chk IsNot Nothing AndAlso chk.Checked Then
-                    Dim id As String = gvListItemRework.DataKeys(row.RowIndex).Value.ToString()
-
-                    selectedIds.Add(id)
-                End If
-            Next
-
-            If selectedIds.Count = 0 Then
-                MessageError_ReworkOrder(True, "PLEASE ADD MINIMAL 1 ITEM FOR REWORK !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showReworkOrder", thisScript, True)
-                Exit Sub
-            End If
-
-            Dim action As String = "Add"
             Dim reworkId As String = orderClass.GetNewOrderReworkId()
 
-            If action = "Add" Then
-                Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderReworks VALUES (@Id, @HeaderId, NULL, 'Unsubmitted', @CreatedBy, GETDATE(), NULL, 1)", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", reworkId)
-                        myCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
-                        myCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
+            Using thisConn As New SqlConnection(myConn)
+                Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderReworks VALUES (@Id, @HeaderId, NULL, 'Unsubmitted', @CreatedBy, GETDATE(), NULL, 1)", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", reworkId)
+                    myCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
+                    myCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
 
-                        thisConn.Open()
-                        myCmd.ExecuteNonQuery()
-                    End Using
+                    thisConn.Open()
+                    myCmd.ExecuteNonQuery()
                 End Using
+            End Using
 
-                Dim directory As String = Server.MapPath(String.Format("~/File/Rework/{0}/", reworkId))
-                If Not IO.Directory.Exists(directory) Then
-                    IO.Directory.CreateDirectory(directory)
-                End If
-
-                dataLog = {"OrderReworks", reworkId, Session("LoginId").ToString(), "Order Rework Created"}
-                orderClass.Logs(dataLog)
+            Dim directory As String = Server.MapPath(String.Format("~/File/Rework/{0}/", reworkId))
+            If Not IO.Directory.Exists(directory) Then
+                IO.Directory.CreateDirectory(directory)
             End If
 
-            For Each selectedId As String In selectedIds
-                Dim reworkDetailId As String = orderClass.GetNewOrderReworkDetailId()
+            dataLog = {"OrderReworks", reworkId, Session("LoginId").ToString(), "Order Rework Created"}
+            orderClass.Logs(dataLog)
 
-                Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderReworkDetails VALUES (@Id, @ReworkId, @ItemId, NULL, NULL, NULL, 1)", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", reworkDetailId)
-                        myCmd.Parameters.AddWithValue("@ReworkId", reworkId)
-                        myCmd.Parameters.AddWithValue("@ItemId", selectedId)
-
-                        thisConn.Open()
-                        myCmd.ExecuteNonQuery()
-                    End Using
-                End Using
-
-                Dim directoryOrder As String = Server.MapPath(String.Format("~/File/Rework/{0}/{1}", reworkId, reworkDetailId))
-                If Not IO.Directory.Exists(directoryOrder) Then
-                    IO.Directory.CreateDirectory(directoryOrder)
-                End If
-            Next
-
-            url = String.Format("~/order/rework/detail?reworkid={0}", reworkId)
+            url = String.Format("~/order/rework/detail?reworkid={0}", lblHeaderId.Text)
             Response.Redirect(url, False)
         Catch ex As Exception
-            MessageError_ReworkOrder(True, ex.ToString())
+            MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
-                MessageError_ReworkOrder(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showReworkOrder", thisScript, True)
         End Try
     End Sub
 
@@ -1317,6 +1409,28 @@ Partial Class Order_Detail
         End Try
     End Sub
 
+    Protected Sub btnDownloadBOE_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Download='Yes', DownloadDate=NULL WHERE Id=@Id", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
+
+                    thisConn.Open()
+                    myCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
     Protected Sub gvListOrderFile_RowCommand(sender As Object, e As GridViewCommandEventArgs)
         Try
             Dim fileName As String = e.CommandArgument.ToString()
@@ -1797,12 +1911,7 @@ Partial Class Order_Detail
                 txtCourier.Text = headerData("Courier").ToString()
             End If
 
-            If lblOrderType.Text = "Builder" Then
-                BindDataBuilder()
-            End If
-            If lblOrderStatus.Text = "Shipped Out" OrElse lblOrderStatus.Text = "Completed" Then
-                BindDataRework(headerId)
-            End If
+            If lblOrderType.Text = "Builder" Then BindDataBuilder()
 
             BindCollector()
             BindEmailInvoice()
@@ -2939,18 +3048,6 @@ Partial Class Order_Detail
         End Try
     End Sub
 
-    Protected Sub BindDataRework(headerId As String)
-        If Not String.IsNullOrEmpty(headerId) Then
-            gvListItemRework.DataSource = orderClass.GetDataTable("SELECT OrderDetails.* FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN OrderReworks ON OrderReworks.HeaderId=OrderDetails.HeaderId AND OrderReworks.Status='Unsubmitted' AND OrderReworks.Active=1 LEFT JOIN OrderReworkDetails ON OrderReworkDetails.ItemId=OrderDetails.Id AND OrderReworkDetails.ReworkId=OrderReworks.Id AND OrderReworkDetails.Active=1 WHERE OrderDetails.HeaderId=" & headerId & " AND OrderDetails.Active=1 AND (Designs.Type='Blinds' OR Designs.Type='Shutters' OR Designs.Type='Doors' OR Designs.Type='Samples') AND OrderReworkDetails.ItemId IS NULL ORDER BY OrderDetails.Id ASC")
-            gvListItemRework.DataBind()
-
-            gvListItemRework.Columns(1).Visible = False ' ID
-            If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" Then
-                gvListItemRework.Columns(1).Visible = True ' ID
-            End If
-        End If
-    End Sub
-
     Protected Sub BindEmailInvoice()
         Try
             txtSendInvoiceTo.Text = orderClass.GetCustomerPrimaryEmail(lblCustomerId.Text)
@@ -3004,460 +3101,7 @@ Partial Class Order_Detail
     End Sub
 
     Protected Function BindProductDescription(itemId As String) As String
-        Dim result As String = String.Empty
-
-        Dim param As New List(Of SqlParameter) From {
-            New SqlParameter("@ItemId", Convert.ToInt32(itemId))
-        }
-
-        Dim thisData As DataRow = orderClass.GetDataRowSP("sp_GetOrderDetailForDescription", param)
-        If thisData Is Nothing Then
-            Return "PLEASE CONTACT YOUR CUSTOMER SERVICE !"
-        End If
-
-        Dim productId As String = thisData("ProductId").ToString()
-        Dim productName As String = thisData("ProductName").ToString()
-        Dim designName As String = thisData("DesignName").ToString()
-        Dim blindName As String = thisData("BlindName").ToString()
-
-        Dim subType As String = thisData("SubType").ToString()
-        Dim heading As String = thisData("Heading").ToString()
-        Dim headingB As String = thisData("HeadingB").ToString()
-
-        Dim trackType As String = thisData("TrackType").ToString()
-        Dim trackTypeB As String = thisData("TrackTypeB").ToString()
-
-        Dim fabricColourId As String = thisData("FabricColourId").ToString()
-        Dim fabricColourIdB As String = thisData("FabricColourIdB").ToString()
-        Dim fabricColourIdC As String = thisData("FabricColourIdC").ToString()
-        Dim fabricColourIdD As String = thisData("FabricColourIdD").ToString()
-        Dim fabricColourIdE As String = thisData("FabricColourIdE").ToString()
-        Dim fabricColourIdF As String = thisData("FabricColourIdF").ToString()
-
-        Dim width As String = thisData("Width").ToString()
-        Dim widthB As String = thisData("WidthB").ToString()
-        Dim widthC As String = thisData("WidthC").ToString()
-        Dim widthD As String = thisData("WidthD").ToString()
-        Dim widthE As String = thisData("WidthE").ToString()
-        Dim widthF As String = thisData("WidthF").ToString()
-
-        Dim drop As String = thisData("Drop").ToString()
-        Dim dropB As String = thisData("DropB").ToString()
-        Dim dropC As String = thisData("DropC").ToString()
-        Dim dropD As String = thisData("DropD").ToString()
-        Dim dropE As String = thisData("DropE").ToString()
-        Dim dropF As String = thisData("DropF").ToString()
-
-        Dim printing As String = thisData("Printing").ToString()
-        Dim printingB As String = thisData("PrintingB").ToString()
-        Dim printingC As String = thisData("PrintingC").ToString()
-        Dim printingD As String = thisData("PrintingD").ToString()
-        Dim printingE As String = thisData("PrintingE").ToString()
-        Dim printingF As String = thisData("PrintingF").ToString()
-
-        Dim layoutCode As String = thisData("LayoutCode").ToString()
-        Dim frameColour As String = thisData("FrameColour").ToString()
-
-        Dim itemNote As String = thisData("Notes").ToString()
-
-        Dim size As String = String.Format("({0}x{1})", width, drop)
-        Dim sizeB As String = String.Format("({0}x{1})", widthB, dropB)
-        Dim sizeC As String = String.Format("({0}x{1})", widthC, dropC)
-        Dim sizeD As String = String.Format("({0}x{1})", widthD, dropD)
-        Dim sizeE As String = String.Format("({0}x{1})", widthE, dropE)
-        Dim sizeF As String = String.Format("({0}x{1})", widthF, dropF)
-
-        Dim fabricColourName As String = orderClass.GetFabricColourName(fabricColourId)
-        Dim fabricColourNameB As String = orderClass.GetFabricColourName(fabricColourIdB)
-        Dim fabricColourNameC As String = orderClass.GetFabricColourName(fabricColourIdC)
-        Dim fabricColourNameD As String = orderClass.GetFabricColourName(fabricColourIdD)
-        Dim fabricColourNameE As String = orderClass.GetFabricColourName(fabricColourIdE)
-        Dim fabricColourNameF As String = orderClass.GetFabricColourName(fabricColourIdF)
-
-        Dim squareMetre As Decimal = 0D
-        Dim squareMetreB As Decimal = 0D
-        Dim squareMetreC As Decimal = 0D
-        Dim squareMetreD As Decimal = 0D
-        Dim squareMetreE As Decimal = 0D
-        Dim squareMetreF As Decimal = 0D
-
-        If Not IsDBNull(thisData("SquareMetre")) Then
-            squareMetre = Math.Round(Convert.ToDecimal(thisData("SquareMetre")), 2)
-        End If
-        If Not IsDBNull(thisData("SquareMetreB")) Then
-            squareMetreB = Math.Round(Convert.ToDecimal(thisData("SquareMetreB")), 2)
-        End If
-        If Not IsDBNull(thisData("SquareMetreC")) Then
-            squareMetreC = Math.Round(Convert.ToDecimal(thisData("SquareMetreC")), 2)
-        End If
-        If Not IsDBNull(thisData("SquareMetreD")) Then
-            squareMetreD = Math.Round(Convert.ToDecimal(thisData("SquareMetreD")), 2)
-        End If
-        If Not IsDBNull(thisData("SquareMetreE")) Then
-            squareMetreE = Math.Round(Convert.ToDecimal(thisData("SquareMetreE")), 2)
-        End If
-        If Not IsDBNull(thisData("SquareMetreF")) Then
-            squareMetreF = Math.Round(Convert.ToDecimal(thisData("SquareMetreF")), 2)
-        End If
-
-        Dim squareMetreText As String = String.Format("{0}sqm", squareMetre.ToString("0.##", enUS))
-        Dim squareMetreTextB As String = String.Format("{0}sqm", squareMetreB.ToString("0.##", enUS))
-        Dim squareMetreTextC As String = String.Format("{0}sqm", squareMetreC.ToString("0.##", enUS))
-        Dim squareMetreTextD As String = String.Format("{0}sqm", squareMetreD.ToString("0.##", enUS))
-        Dim squareMetreTextE As String = String.Format("{0}sqm", squareMetreE.ToString("0.##", enUS))
-        Dim squareMetreTextF As String = String.Format("{0}sqm", squareMetreF.ToString("0.##", enUS))
-
-        Dim linearMetre As Decimal = 0D
-        Dim linearMetreB As Decimal = 0D
-        Dim linearMetreC As Decimal = 0D
-
-        If Not IsDBNull(thisData("LinearMetre")) Then
-            linearMetre = Math.Round(Convert.ToDecimal(thisData("LinearMetre")), 2)
-        End If
-        If Not IsDBNull(thisData("LinearMetreB")) Then
-            linearMetreB = Math.Round(Convert.ToDecimal(thisData("LinearMetreB")), 2)
-        End If
-        If Not IsDBNull(thisData("LinearMetreC")) Then
-            linearMetreC = Math.Round(Convert.ToDecimal(thisData("LinearMetreC")), 2)
-        End If
-
-        Dim linearMetreText As String = String.Format("{0}lm", linearMetre.ToString("0.##", enUS))
-        Dim linearMetreTextB As String = String.Format("{0}lm", linearMetreB.ToString("0.##", enUS))
-        Dim linearMetreTextC As String = String.Format("{0}lm", linearMetreC.ToString("0.##", enUS))
-
-        Dim room As String = thisData("Room").ToString()
-        Dim itemDescription As String = String.Format("<b>{0}</b>, {1}", room, productName)
-
-        If designName = "Aluminium Blind" Then
-            result = String.Format("{0} {1} {2}", itemDescription, size, squareMetreText)
-            If subType.Contains("2 on 1") Then
-                result = String.Format("<b>{0}</b>, 2 on 1 Headrail", room)
-                result &= "<br />"
-                result &= String.Format("{0} {1} {2}", productName, size, squareMetreText)
-                result &= "<br />"
-                result &= String.Format("{0} {1} {2}", productName, sizeB, squareMetreTextB)
-            End If
-        End If
-
-        If designName = "Cellular Shades" Then
-            result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
-            If blindName = "Day & Night" Then
-                result = String.Format("{0} {1} {2}", itemDescription, size, squareMetreText)
-                result &= "<br />"
-                result &= fabricColourName
-                result &= "<br />"
-                result &= fabricColourNameB
-            End If
-        End If
-
-        If designName = "Curtain" Then
-            result = itemDescription
-            result &= "<br />"
-            result &= String.Format("{0} {1} {2} | {3} ({4}) {5}", fabricColourName, size, squareMetreText, trackType, width, linearMetreText)
-
-            If blindName = "Complete Set (Double)" Then
-                result = itemDescription
-                result &= "<br />"
-                result &= String.Format("{0} {1} {2} | {3} ({4}) {5}", fabricColourName, size, squareMetreText, trackType, width, linearMetreText)
-                result &= "<br />"
-                result &= String.Format("{0} {1} {2} | {3} ({4}) {5}", fabricColourNameB, sizeB, squareMetreTextB, trackTypeB, widthB, linearMetreTextB)
-            End If
-            If blindName = "Curtain Only" Then
-                result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
-            End If
-            If blindName = "Fabric Only" Then
-                result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
-            End If
-            If blindName = "Track Only" Then
-                result = String.Format("{0} {1} ({2}) {3}", itemDescription, trackType, width, linearMetreText)
-            End If
-        End If
-
-        If designName = "Design Shades" Then
-            result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
-        End If
-
-        If designName = "Linea Valance" Then
-            result = String.Format("{0} ({1}mm) {2}", itemDescription, width, linearMetreText)
-        End If
-
-        If designName = "Panel Glide" Then
-            result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
-            If blindName = "Track Only" Then
-                result = String.Format("{0} ({1}mm) {2}", itemDescription, width, linearMetreText)
-            End If
-        End If
-
-        If designName = "Pelmet" Then
-            result = String.Format("{0} {1} ({2}mm) {3}", itemDescription, fabricColourName, width, linearMetreText)
-            If layoutCode = "B" OrElse layoutCode = "C" Then
-                result = itemDescription
-                result &= "<br />"
-                result &= String.Format("{0} ({1}mm) {2}", fabricColourName, width, linearMetreText)
-                result &= "<br />"
-                result &= String.Format("{0} ({1}mm) {2}", fabricColourName, widthB, linearMetreTextB)
-            End If
-
-            If layoutCode = "D" Then
-                result = itemDescription
-                result &= "<br />"
-                result &= String.Format("{0} ({1}mm) {2}", fabricColourName, width, linearMetreText)
-                result &= "<br />"
-                result &= String.Format("{0} ({1}mm) {2}", fabricColourName, widthB, linearMetreTextB)
-                result &= "<br />"
-                result &= String.Format("{0} ({1}mm) {2}", fabricColourName, widthC, linearMetreTextC)
-            End If
-        End If
-
-        If designName = "Privacy Venetian" Then
-            result = String.Format("{0} {1} {2}", itemDescription, size, squareMetreText)
-        End If
-
-        If designName = "Roller Blind" Then
-            result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
-            If Not String.IsNullOrEmpty(printing) Then
-                result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
-                result &= "<br />"
-                result &= "<b>[Printed Fabric]</b>"
-            End If
-            If blindName = "Dual Blinds" Then
-                result = itemDescription
-                result &= "<br />"
-                result &= String.Format("First Blind : {0} {1} {2}", fabricColourName, size, squareMetreText)
-                If Not String.IsNullOrEmpty(printing) Then
-                    result &= " (<b>[Printed Fabric]</b>)"
-                End If
-                result &= "<br />"
-                result &= String.Format("Second Blind : {0} {1} {2}", fabricColourNameB, sizeB, squareMetreTextB)
-                If Not String.IsNullOrEmpty(printingB) Then
-                    result &= " (<b>[Printed Fabric]</b>)"
-                End If
-            End If
-            If blindName = "Link 2 Blinds Dependent" Then
-                result = itemDescription
-                result &= "<br />"
-                result &= String.Format("First & Control Blind : {0} {1} {2}", fabricColourName, size, squareMetreText)
-                If Not String.IsNullOrEmpty(printing) Then
-                    result &= " (<b>[Printed Fabric]</b>)"
-                End If
-                result &= "<br />"
-                result &= String.Format("Second Blind : {0} {1} {2}", fabricColourNameB, sizeB, squareMetreTextB)
-                If Not String.IsNullOrEmpty(printingB) Then
-                    result &= " (<b>[Printed Fabric]</b>)"
-                End If
-            End If
-            If blindName = "Link 2 Blinds Independent" Then
-                result = itemDescription
-                result &= "<br />"
-                result &= String.Format("Left Blind : {0} {1} {2}", fabricColourName, size, squareMetreText)
-                If Not String.IsNullOrEmpty(printing) Then
-                    result &= " (<b>[Printed Fabric]</b>)"
-                End If
-                result &= "<br />"
-                result &= String.Format("Right Blind : {0} {1} {2}", fabricColourNameB, sizeB, squareMetreTextB)
-                If Not String.IsNullOrEmpty(printingB) Then
-                    result &= " (<b>[Printed Fabric]</b>)"
-                End If
-            End If
-            If blindName = "Link 3 Blinds Dependent" Then
-                result = itemDescription
-                result &= "<br />"
-                result &= String.Format("Control Blind : {0} {1} {2}", fabricColourName, size, squareMetreText)
-                If Not String.IsNullOrEmpty(printing) Then
-                    result &= " (<b>[Printed Fabric]</b>)"
-                End If
-                result &= "<br />"
-                result &= String.Format("Second Blind : {0} {1} {2}", fabricColourNameB, sizeB, squareMetreTextB)
-                If Not String.IsNullOrEmpty(printingB) Then
-                    result &= " (<b>[Printed Fabric]</b>)"
-                End If
-                result &= "<br />"
-                result &= String.Format("Third Blind : {0} {1} {2}", fabricColourNameC, sizeC, squareMetreTextC)
-                If Not String.IsNullOrEmpty(printingC) Then
-                    result &= " (<b>[Printed Fabric]</b>)"
-                End If
-            End If
-
-            If blindName = "Link 3 Blinds Independent with Dependent" Then
-                result = itemDescription
-                result &= "<br />"
-                result &= String.Format("Independent Blind : {0} {1} {2}", fabricColourName, size, squareMetreText)
-                If Not String.IsNullOrEmpty(printing) Then
-                    result &= " (<b>[Printed Fabric]</b>)"
-                End If
-                result &= "<br />"
-                result &= String.Format("Second Blind : {0} {1} {2}", fabricColourNameB, sizeB, squareMetreTextB)
-                If Not String.IsNullOrEmpty(printingB) Then
-                    result &= " (<b>[Printed Fabric]</b>)"
-                End If
-                result &= "<br />"
-                result &= String.Format("Control Blind : {0} {1} {2}", fabricColourNameC, sizeC, squareMetreTextC)
-                If Not String.IsNullOrEmpty(printingC) Then
-                    result &= " (<b>[Printed Fabric]</b>)"
-                End If
-            End If
-
-            If blindName = "Link 4 Blinds Independent with Dependent" Then
-                result = itemDescription
-                result &= "<br />"
-                result &= String.Format("Left Control Blind : {0} {1} {2}", fabricColourName, size, squareMetreText)
-                If Not String.IsNullOrEmpty(printing) Then
-                    result &= " (<b>[Printed Fabric]</b>)"
-                End If
-                result &= "<br />"
-                result &= String.Format("Middle Blind : {0} {1} {2}", fabricColourNameB, sizeB, squareMetreTextB)
-                If Not String.IsNullOrEmpty(printingB) Then
-                    result &= " (<b>[Printed Fabric]</b>)"
-                End If
-                result &= "<br />"
-                result &= String.Format("Middle Blind : {0} {1} {2}", fabricColourNameC, sizeC, squareMetreTextC)
-                If Not String.IsNullOrEmpty(printingC) Then
-                    result &= " (<b>[Printed Fabric]</b>)"
-                End If
-                result &= "<br />"
-                result &= String.Format("Right Control Blind : {0} {1} {2}", fabricColourNameD, sizeD, squareMetreTextD)
-                If Not String.IsNullOrEmpty(printingD) Then
-                    result &= " (<b>[Printed Fabric]</b>)"
-                End If
-            End If
-
-            If blindName = "DB Link 2 Blinds Dependent" OrElse blindName = "DB Link 2 Blinds Independent" Then
-                result = itemDescription
-                result &= "<br />"
-                result &= String.Format("First Blind : {0} {1} {2}", fabricColourName, size, squareMetreText)
-                If Not String.IsNullOrEmpty(printing) Then
-                    result &= " (<b>[Printed Fabric]</b>)"
-                End If
-                result &= "<br />"
-                result &= String.Format("Second Blind : {0} {1} {2}", fabricColourNameB, sizeB, squareMetreTextB)
-                If Not String.IsNullOrEmpty(printingB) Then
-                    result &= " (<b>[Printed Fabric]</b>)"
-                End If
-                result &= "<br />"
-                result &= String.Format("Third Blind : {0} {1} {2}", fabricColourNameC, sizeC, squareMetreTextC)
-                If Not String.IsNullOrEmpty(printingC) Then
-                    result &= " (<b>[Printed Fabric]</b>)"
-                End If
-                result &= "<br />"
-                result &= String.Format("Fourth Blind : {0} {1} {2}", fabricColourNameD, sizeD, squareMetreTextD)
-                If Not String.IsNullOrEmpty(printingD) Then
-                    result &= " (<b>[Printed Fabric]</b>>)"
-                End If
-            End If
-
-            If blindName = "DB Link 3 Blinds Dependent" OrElse blindName = "DB Link 3 Blinds Independent with Dependent" Then
-                result = itemDescription
-                result &= "<br />"
-                result &= String.Format("First Blind : {0} {1} {2}", fabricColourName, size, squareMetreText)
-                If Not String.IsNullOrEmpty(printing) Then
-                    result &= " (<b>[Printed Fabric]</b>)"
-                End If
-                result &= "<br />"
-                result &= String.Format("Second Blind : {0} {1} {2}", fabricColourNameB, sizeB, squareMetreTextB)
-                If Not String.IsNullOrEmpty(printingB) Then
-                    result &= " (<b>[Printed Fabric]</b>)"
-                End If
-                result &= "<br />"
-                result &= String.Format("Third Blind : {0} {1} {2}", fabricColourNameC, sizeC, squareMetreTextC)
-                If Not String.IsNullOrEmpty(printingC) Then
-                    result &= " (<b>[Printed Fabric]</b>)"
-                End If
-                result &= "<br />"
-                result &= String.Format("Fourth Blind : {0} {1} {2}", fabricColourNameD, sizeD, squareMetreTextD)
-                If Not String.IsNullOrEmpty(printingD) Then
-                    result &= " (<b>[Printed Fabric]</b>)"
-                End If
-                result &= "<br />"
-                result &= String.Format("Fifth Blind : {0} {1} {2}", fabricColourNameE, sizeE, squareMetreTextE)
-                If Not String.IsNullOrEmpty(printingE) Then
-                    result &= " (<b>[Printed Fabric]</b>)"
-                End If
-                result &= "<br />"
-                result &= String.Format("Sixth Blind : {0} {1} {2}", fabricColourNameF, sizeF, squareMetreTextF)
-                If Not String.IsNullOrEmpty(printingF) Then
-                    result &= " (<b>[Printed Fabric]</b>)"
-                End If
-            End If
-        End If
-
-        If designName = "Roman Blind" Then
-            result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
-            If Not String.IsNullOrEmpty(printing) Then
-                result &= "<br />"
-                result &= "<b>[Printed Fabric]</b>"
-            End If
-        End If
-
-        If designName = "Sample" Then
-            result = productName
-        End If
-
-        If designName = "Skyline Shutter Express" Then
-            result = String.Format("{0} {1} {2}", itemDescription, size, squareMetreText)
-        End If
-
-        If designName = "Skyline Shutter Ocean" Then
-            result = String.Format("{0} {1} {2}", itemDescription, size, squareMetreText)
-        End If
-
-        If designName = "Evolve Shutter Ocean" Then
-            result = String.Format("{0} {1} {2}", itemDescription, size, squareMetreText)
-        End If
-
-        If designName = "Venetian Blind" Then
-            result = String.Format("{0} {1} {2}", itemDescription, size, squareMetreText)
-            If subType.Contains("2 on 1") Then
-                result = String.Format("<b>{0}</b>, 2 on 1 Headrail", room)
-                result &= "<br />"
-                result &= String.Format("{0} {1} {2}", productName, size, squareMetreText)
-                result &= "<br />"
-                result &= String.Format("{0} {1} {2}", productName, sizeB, squareMetreTextB)
-            End If
-            If subType.Contains("3 on 1") Then
-                result = String.Format("<b>{0}</b>, 3 on 1 Headrail", room)
-                result &= "<br />"
-                result &= String.Format("{0} {1} {2}", productName, size, squareMetreText)
-                result &= "<br />"
-                result &= String.Format("{0} {1} {2}", productName, sizeB, squareMetreTextB)
-                result &= "<br />"
-                result &= String.Format("{0} {1} {2}", productName, sizeC, squareMetreTextC)
-            End If
-        End If
-
-        If designName = "Vertical" Then
-            fabricColourName = fabricColourName.Replace("127mm", "").Replace("89mm", "").Trim()
-            result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
-            If blindName = "Track Only" Then
-                result = String.Format("{0} ({1}mm) {2}", itemDescription, width, linearMetreText)
-            End If
-        End If
-
-        If designName = "Saphora Drape" Then
-            result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
-        End If
-
-        If designName = "Window" OrElse designName = "Door" Then
-            result = String.Format("{0} - {1} {2} {3}", itemDescription, frameColour, size, squareMetreText)
-        End If
-
-        If designName = "Outdoor" Then
-            result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
-        End If
-
-        If designName = "Roller Horizon" Then
-            result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
-        End If
-
-        If designName = "Service" Then
-            result = productName
-        End If
-
-        Dim checkNote As String = orderClass.GetItemData("SELECT Description FROM OrderCostings WHERE ItemId='" & itemId & "' AND Type='Note'")
-        If Not String.IsNullOrEmpty(checkNote) Then
-            result &= "<br />"
-            result &= String.Format("<i>* {0} </i>", checkNote)
-        End If
-        Return result
+        Return orderClass.GetProductDescription(itemId)
     End Function
 
     Protected Function ItemCosting(itemId As String, type As String) As String
@@ -3503,6 +3147,7 @@ Partial Class Order_Detail
 
     Protected Sub AllMessageError(visible As Boolean, message As String)
         MessageError(visible, message)
+        MessageError_DuplicateOrder(visible, message)
         MessageError_Preview(visible, message)
 
         MessageError_BuilderDetail(visible, message)
@@ -3519,12 +3164,15 @@ Partial Class Order_Detail
 
         MessageError_CancelOrder(visible, message)
         MessageError_ShippedOrder(visible, message)
-        MessageError_ReworkOrder(visible, message)
     End Sub
 
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerHtml = message
         divErrorB.Visible = visible : msgErrorB.InnerHtml = message
+    End Sub
+
+    Protected Sub MessageError_DuplicateOrder(visible As Boolean, message As String)
+        divErrorDuplicateOrder.Visible = visible : msgErrorDuplicateOrder.InnerHtml = message
     End Sub
 
     Protected Sub MessageError_BuilderDetail(visible As Boolean, message As String)
@@ -3569,10 +3217,6 @@ Partial Class Order_Detail
 
     Protected Sub MessageError_ShippedOrder(visible As Boolean, message As String)
         divErrorShippedOrder.Visible = visible : msgErrorShippedOrder.InnerText = message
-    End Sub
-
-    Protected Sub MessageError_ReworkOrder(visible As Boolean, message As String)
-        divErrorReworkOrder.Visible = visible : msgErrorReworkOrder.InnerText = message
     End Sub
 
     Protected Function VisibleCopy(productId As String) As Boolean

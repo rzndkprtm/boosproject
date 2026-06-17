@@ -596,14 +596,38 @@
             </div>
         </div>
     </div>
-    <div class="modal fade text-center" id="modalDuplicateOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal fade" id="modalDuplicateOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-warning">
                     <h5 class="modal-title white">Duplicate Order</h5>
                 </div>
-                <div class="modal-body text-center py-4">
-                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                <div class="modal-body">
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Order Number (New)</label>
+                            <asp:TextBox runat="server" ID="txtOrderNumberNew" CssClass="form-control" placeholder="Order Number ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Order Name (New)</label>
+                            <asp:TextBox runat="server" ID="txtOrderNameNew" CssClass="form-control" placeholder="Order Number ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Order Note (New)</label>
+                            <asp:TextBox runat="server" TextMode="MultiLine" ID="txtOrderNoteNew" Height="100px" CssClass="form-control" placeholder="Order Note ..." autocomplete="off" style="resize:none;"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row" runat="server" id="divErrorDuplicateOrder">
+                        <div class="col-12">
+                            <div class="alert alert-danger">
+                                <span runat="server" id="msgErrorDuplicateOrder"></span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
@@ -805,114 +829,22 @@
             </div>
         </div>
     </div>
-    <div class="modal modal-blur fade" id="modalFileOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal fade text-center" id="modalReworkOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Order File</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-header bg-danger">
+                    <h5 class="modal-title white">Rework Order</h5>
                 </div>
-                <div class="modal-body">
-                    <div class="row mb-2" runat="server" id="divErrorFileOrder">
-                        <div class="col-12">
-                            <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorFileOrder"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-12">
-                            <div class="table-responsive">
-                                <asp:GridView runat="server" ID="gvListOrderFile" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" ShowHeaderWhenEmpty="true" OnRowCommand="gvListOrderFile_RowCommand">
-                                    <Columns>
-                                        <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="70px">
-                                            <ItemTemplate>
-                                                <%# Container.DataItemIndex + 1 %>
-                                            </ItemTemplate>
-                                        </asp:TemplateField>
-                                        <asp:BoundField DataField="FileName" HeaderText="File Name" />
-                                        <asp:TemplateField HeaderText="Action" ItemStyle-Width="180px">
-                                            <ItemTemplate>
-                                                <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
-                                                <ul class="dropdown-menu">
-                                                    <li>
-                                                        <a class="dropdown-item" href='<%# ResolveUrl("~/Handler/Download.ashx?folder=" & Eval("FolderName") & "&file=" & Eval("FileName")) %>'>Download</a>
-                                                    </li>
-                                                    <li runat="server" visible='<%# VisibleFileDelete() %>'>
-                                                        <asp:LinkButton ID="btnDelete" runat="server" CssClass="dropdown-item" CommandName="DeleteFile" CommandArgument='<%# Eval("FileName") %>' OnClientClick="return confirm('Are you sure want to delete this file?');">Delete</asp:LinkButton>
-                                                    </li>
-                                                </ul>
-                                            </ItemTemplate>
-                                        </asp:TemplateField>
-                                    </Columns>
-                                </asp:GridView>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row" runat="server" id="divUploadAction">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Upload New File</label>
-                            <asp:FileUpload runat="server" ID="fuOrderFile" CssClass="form-control" />
-                        </div>
-                        <div class="col-12">
-                            <asp:Button runat="server" ID="btnUploadFileOrder" CssClass="btn btn-secondary" Text="Upload" OnClick="btnUploadFileOrder_Click" />
-                        </div>
-                    </div>
+                <div class="modal-body text-center py-4">
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                    <br /><br />
+                    After confirmation, you will be redirected to the <b>Rework Detail</b> page.
+                    <br /><br />
+                    Please add the item(s) that need to be reworked.
                 </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="modalReworkOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Rework Order</h5>
-                </div>
-                <div class="modal-body">
-                    <div class="row mb-2" runat="server" id="divErrorReworkOrder">
-                        <div class="col-12">
-                            <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorReworkOrder"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="table-responsive">
-                        <asp:GridView runat="server" ID="gvListItemRework" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" DataKeyNames="Id">
-                            <Columns>
-                                <asp:TemplateField>
-                                    <HeaderTemplate>
-                                       <asp:CheckBox ID="chkSelectAll" runat="server" CssClass="form-check" onclick="toggleSelectAll(this)" />
-                                    </HeaderTemplate>
-                                    <ItemTemplate>
-                                        <asp:CheckBox ID="chkSelect" runat="server" CssClass="form-check chkSelectItem" />
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                                <asp:BoundField DataField="Id" HeaderText="ID" />
-                                <asp:TemplateField HeaderText="Description">
-                                    <ItemTemplate>
-                                        <%# BindProductDescription(Eval("Id").ToString()) %>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                            </Columns>
-                            <AlternatingRowStyle BackColor="White" />
-                        </asp:GridView>
-                    </div>
-                    <div class="row mt-2" runat="server" id="divReworkNote" visible="false">
-                        <div class="col-12">
-                            <div class="alert alert-primary">
-                                You have previously created a rework request that has not yet been submitted.
-                                <br />
-                                The items shown are those that you have not added yet.
-                                <br />
-                                If you add the items above, they will be included in your existing rework request.
-                                <br />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer ">
+                <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnReworkOrder" CssClass="btn btn-danger" Text="Next" OnClick="btnReworkOrder_Click" OnClientClick="return showWaiting();" />
+                    <asp:Button runat="server" ID="btnReworkOrder" CssClass="btn btn-danger" Text="Confirm" OnClick="btnReworkOrder_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>
@@ -1267,6 +1199,63 @@
             </div>
         </div>
     </div>
+    <div class="modal modal-blur fade" id="modalFileOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Order File</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-2" runat="server" id="divErrorFileOrder">
+                        <div class="col-12">
+                            <div class="alert alert-danger">
+                                <span runat="server" id="msgErrorFileOrder"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <div class="table-responsive">
+                                <asp:GridView runat="server" ID="gvListOrderFile" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" ShowHeaderWhenEmpty="true" OnRowCommand="gvListOrderFile_RowCommand">
+                                    <Columns>
+                                        <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="70px">
+                                            <ItemTemplate>
+                                                <%# Container.DataItemIndex + 1 %>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:BoundField DataField="FileName" HeaderText="File Name" />
+                                        <asp:TemplateField HeaderText="Action" ItemStyle-Width="180px">
+                                            <ItemTemplate>
+                                                <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
+                                                <ul class="dropdown-menu">
+                                                    <li>
+                                                        <a class="dropdown-item" href='<%# ResolveUrl("~/Handler/Download.ashx?folder=" & Eval("FolderName") & "&file=" & Eval("FileName")) %>'>Download</a>
+                                                    </li>
+                                                    <li runat="server" visible='<%# VisibleFileDelete() %>'>
+                                                        <asp:LinkButton ID="btnDelete" runat="server" CssClass="dropdown-item" CommandName="DeleteFile" CommandArgument='<%# Eval("FileName") %>' OnClientClick="return confirm('Are you sure want to delete this file?');">Delete</asp:LinkButton>
+                                                    </li>
+                                                </ul>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                    </Columns>
+                                </asp:GridView>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" runat="server" id="divUploadAction">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Upload New File</label>
+                            <asp:FileUpload runat="server" ID="fuOrderFile" CssClass="form-control" />
+                        </div>
+                        <div class="col-12">
+                            <asp:Button runat="server" ID="btnUploadFileOrder" CssClass="btn btn-secondary" Text="Upload" OnClick="btnUploadFileOrder_Click" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade text-left" id="modalAddNote" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -1491,7 +1480,7 @@
                 </div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnDownloadBOE" CssClass="btn btn-dark" Text="Confirm" OnClientClick="return showWaiting();" />
+                    <asp:Button runat="server" ID="btnDownloadBOE" CssClass="btn btn-dark" Text="Confirm" OnClick="btnDownloadBOE_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>
@@ -1553,14 +1542,6 @@
                 document.body.focus();
             });
         });
-
-        function toggleSelectAll(source) {
-            var gv = document.getElementById("<%= gvListItemRework.ClientID %>");
-            var checkBoxes = gv.querySelectorAll("input[type='checkbox'][id*='chkSelect']");
-            checkBoxes.forEach(function (cb) {
-                cb.checked = source.checked;
-            });
-        }
         function showLogFromElement(el) {
             var id = el.getAttribute("data-id");
             showLog('OrderHeaders', id);
@@ -1578,19 +1559,16 @@
                 dataType: "json",
                 success: function (res) {
                     const logs = res.d;
-
                     if (!logs || logs.length === 0) {
                         $("#tblLogs tbody").html(
                             `<tr><td class="text-center">DATA LOG NOT FOUND</td></tr>`
                         );
                         return;
                     }
-
                     let html = "";
                     logs.forEach(r => {
                         html += `<tr><td>${r.TextLog}</td></tr>`;
                     });
-
                     $("#tblLogs tbody").html(html);
                 },
                 error: function (err) {
@@ -1727,6 +1705,9 @@
         function showInvoiceData() {
             $("#modalInvoiceData").modal("show");
         }
+        function showDuplicateOrder() {
+            $("#modalDuplicateOrder").modal("show");
+        }
         function showCancelOrder() {
             $("#modalCancelOrder").modal("show");
         }
@@ -1745,7 +1726,6 @@
         function dataDeleteItem(id) {
             document.getElementById("<%=txtDeleteItemId.ClientID %>").value = id;
         }
-
         function showWaiting(hideModal = null) {
             $("#modalWaiting").modal("show");
             setTimeout(function () {

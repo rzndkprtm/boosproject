@@ -68,32 +68,26 @@ Partial Class Order_Add
                     MessageError(True, "ORDER NUMBER IS REQUIRED !")
                     Exit Sub
                 End If
-
                 If InStr(txtOrderNumber.Text, ",") > 0 OrElse InStr(txtOrderNumber.Text, "'") > 0 OrElse InStr(txtOrderNumber.Text, ";") > 0 Then
                     MessageError(True, "PLEASE DON'T USE [ , ], [ ' ] AND [ ; ] !")
                     Exit Sub
                 End If
-
                 If Trim(txtOrderNumber.Text).Length > 20 Then
                     MessageError(True, "MAXIMUM 20 CHARACTERS FOR RETAILER ORDER NUMBER !")
                     Exit Sub
                 End If
-
                 If txtOrderName.Text = "" Then
                     MessageError(True, "ORDER NAME IS REQUIRED !")
                     Exit Sub
                 End If
-
                 If InStr(txtOrderName.Text, ",") > 0 OrElse InStr(txtOrderName.Text, "'") > 0 OrElse InStr(txtOrderName.Text, ";") > 0 OrElse InStr(txtOrderName.Text, ".") > 0 Then
                     MessageError(True, "PLEASE DON'T USE [ , ], [ ' ] AND [ ; ] !")
                     Exit Sub
                 End If
-
                 If txtOrderNumber.Text = orderClass.IsOrderExist(ddlCustomer.SelectedValue, txtOrderNumber.Text.Trim()) Then
                     MessageError(True, "ORDER NUMBER ALREADY EXISTS !")
                     Exit Sub
                 End If
-
                 If ddlOrderType.SelectedValue = "Builder" AndAlso Not companyDetailName = "JPMD BP" Then
                     MessageError(True, "ORDER TYPE SHOULD BE REGULAR !")
                     Exit Sub

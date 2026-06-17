@@ -119,7 +119,14 @@
                         <div class="card">
                             <div class="card-content">
                                 <div class="card-header">
-                                    <h3 class="card-title">Your Item</h3>
+                                    <div class="d-flex justify-content-between align-items-center flex-wrap">
+                                        <div>
+                                            <h3 class="card-title">Your Item</h3>
+                                        </div>
+                                        <div>
+                                            <a href="javascript:void(0);" runat="server" id="aAddItem" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddItem">Add Item</a>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="card-body">
                                     <div class="accordion" id="accordionExample">
@@ -289,7 +296,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade" id="modalUpload" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -312,7 +318,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade text-center" id="modalCancelRework" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -329,7 +334,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade text-center" id="modalSubmitRework" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -346,7 +350,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade text-center" id="modalApproveRework" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -363,7 +366,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade text-center" id="modalRejectRework" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -380,7 +382,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade text-center" id="modalDeleteItem" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -394,6 +395,65 @@
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnDeleteItem" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDeleteItem_Click" OnClientClick="return showWaiting();" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modalAddItem" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-full modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Rework Order</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <asp:GridView runat="server" ID="gvListAddItem" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" DataKeyNames="Id">
+                            <Columns>
+                                <asp:TemplateField>
+                                    <HeaderTemplate>
+                                       <asp:CheckBox ID="chkSelectAll" runat="server" CssClass="form-check" onclick="toggleSelectAll(this)" />
+                                    </HeaderTemplate>
+                                    <ItemTemplate>
+                                        <asp:CheckBox ID="chkSelect" runat="server" CssClass="form-check chkSelectItem" />
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:BoundField DataField="Id" HeaderText="ID" />
+                                <asp:TemplateField HeaderText="Description">
+                                    <ItemTemplate>
+                                        <%# BindProductDescription(Eval("Id").ToString()) %>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Category">
+                                    <ItemTemplate>
+                                        <asp:DropDownList ID="ddlAddCategory" runat="server" CssClass="form-select">
+                                            <asp:ListItem Value="" Text=""></asp:ListItem>
+                                            <asp:ListItem Value="Customer Error" Text="Customer Error"></asp:ListItem>
+                                            <asp:ListItem Value="Product Fault" Text="Product Fault"></asp:ListItem>
+                                            <asp:ListItem Value="Warranty Issue" Text="Warranty Issue"></asp:ListItem>
+                                            <asp:ListItem Value="Freight Damage to Customer" Text="Freight Damage to Customer"></asp:ListItem>
+                                        </asp:DropDownList>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Install Date">
+                                    <ItemTemplate>
+                                        <asp:TextBox ID="txtAddInstallDate" runat="server" CssClass="form-control" TextMode="Date"></asp:TextBox>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Description">
+                                    <ItemTemplate>
+                                        <asp:TextBox ID="txtAddDescription" runat="server" CssClass="form-control"></asp:TextBox>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                            </Columns>
+                        </asp:GridView>
+                    </div>
+                    <div class="mt-2 alert alert-danger" runat="server" id="divErrorAddItem">
+                        <span runat="server" id="msgErrorAddItem"></span>
+                    </div>
+                </div>
+                <div class="modal-footer ">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                    <asp:Button runat="server" ID="btnAddItem" CssClass="btn btn-danger" Text="Submit" OnClick="btnAddItem_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>
@@ -417,12 +477,16 @@
     </div>
 
     <script type="text/javascript">
-        ["modalWaiting", "modalUpdateItem", "modalUpload", "modalDeleteItem", "modalCancelRework", "modalSubmitRework", "modalApproveRework", "modalRejectRework"].forEach(id => {
+        ["modalWaiting", "modalUpdateItem", "modalAddItem", "modalUpload", "modalDeleteItem", "modalCancelRework", "modalSubmitRework", "modalApproveRework", "modalRejectRework"].forEach(id => {
             document.getElementById(id).addEventListener("hide.bs.modal", () => {
                 document.activeElement.blur();
                 document.body.focus();
             });
         });
+
+        function showAddItem() {
+            $("#modalAddItem").modal("show");
+        }
 
         function showUpdateItem(id, category, install, description) {
             document.getElementById("<%=txtDetailId.ClientID %>").value = id;

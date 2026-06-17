@@ -222,12 +222,10 @@
             document.getElementById("<%=txtPrimaryId.ClientID %>").value = businessid;
             document.getElementById("<%=txtPrimaryCustomerId.ClientID %>").value = customerid;
         }
-
         function dataDelete(businessid, customerid) {
             document.getElementById("<%=txtDeleteId.ClientID %>").value = id;
             document.getElementById("<%=txtDeleteCustomerId.ClientID %>").value = customerid;
         }
-
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
             $("#tblLogs tbody").html("");
@@ -261,14 +259,12 @@
                 }
             });
         }
-
         ["modalDelete", "modalLog", "modalPrimary"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
             });
         });
-
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

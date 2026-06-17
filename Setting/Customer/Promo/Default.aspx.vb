@@ -165,8 +165,7 @@ Partial Class Setting_Customer_Promo_Default
         MessageError(False, String.Empty)
         Try
             Dim thisId As String = txtDeleteId.Text
-
-            Dim customerId As String = settingClass.GetItemData("SELECT CustomerId FROM CustomerPromos WHERE Id='" & thisId & "'")
+            Dim customerId As String = txtDeleteCustomerId.Text
 
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerPromos WHERE Id=@Id; DELETE FROM Logs WHERE Type='CustomerPromos' AND DataId=@Id;", thisConn)

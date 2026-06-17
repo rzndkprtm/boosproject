@@ -49,7 +49,7 @@
                                             <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
                                                 <div class="input-group">
                                                     <span class="input-group-text">Search : </span>
-                                                    <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" placeholoder="" autocomplete="off"></asp:TextBox>
+                                                    <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" autocomplete="off"></asp:TextBox>
                                                     <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />
                                                 </div>
                                             </asp:Panel>
@@ -76,7 +76,7 @@
                                                                 <a href="javascript:void(0);" id="aDetail" class="dropdown-item" onclick="showDetail('<%# Eval("Id").ToString() %>');">Detail</a>
                                                             </li>
                                                             <li>
-                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return dataDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return dataDelete(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("CustomerId").ToString()) %>'>Delete</a>
                                                             </li>
                                                             <li>
                                                                 <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('CustomerPromos', '<%# Eval("Id") %>')">Log</a>
@@ -159,7 +159,7 @@
                             <thead>
                                 <tr>
                                     <th></th>
-                                    <th>Type</th>
+                                    <th>Product</th>
                                     <th>Discount</th>
                                 </tr>
                             </thead>
@@ -181,6 +181,7 @@
                 </div>
                 <div class="modal-body text-center py-4">
                     <asp:TextBox runat="server" ID="txtDeleteId" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtDeleteCustomerId" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
@@ -267,8 +268,9 @@
         function showDetail() {
             $("#modalDetail").modal("show");
         }
-        function dataDelete(id) {
+        function dataDelete(id, customerid) {
             document.getElementById("<%=txtDeleteId.ClientID %>").value = id;
+            document.getElementById("<%=txtDeleteCustomerId.ClientID %>").value = customerid;
         }
         function showDetail(id) {
             $("#divErrorDetail").addClass("d-none");

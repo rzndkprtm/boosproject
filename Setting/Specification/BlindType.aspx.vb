@@ -5,7 +5,6 @@ Partial Class Setting_Specification_BlindType
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataLog As Object() = Nothing
 
@@ -26,7 +25,6 @@ Partial Class Setting_Specification_BlindType
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
         MessageError_Process(False, String.Empty)
         Session("SearchBlind") = txtSearch.Text
-
         Dim thisScript As String = "window.onload = function() { showProcess(); };"
         Try
             lblAction.Text = "Add"
@@ -77,20 +75,20 @@ Partial Class Setting_Specification_BlindType
                     lblAction.Text = "Edit"
                     titleProcess.InnerText = "Edit Blind Type"
 
-                    Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Blinds WHERE Id='" & lblId.Text & "'")
-                    If myData Is Nothing Then Exit Sub
+                    Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM Blinds WHERE Id='" & lblId.Text & "'")
+                    If thisData Is Nothing Then Exit Sub
 
                     BindDesign()
                     BindCompany(True)
 
-                    ddlDesign.SelectedValue = myData("DesignId").ToString()
-                    txtName.Text = myData("Name").ToString()
-                    txtAlias.Text = myData("Alias").ToString()
-                    txtDescription.Text = myData("Description").ToString()
-                    ddlActive.SelectedValue = Convert.ToInt32(myData("Active"))
+                    ddlDesign.SelectedValue = thisData("DesignId").ToString()
+                    txtName.Text = thisData("Name").ToString()
+                    txtAlias.Text = thisData("Alias").ToString()
+                    txtDescription.Text = thisData("Description").ToString()
+                    ddlActive.SelectedValue = Convert.ToInt32(thisData("Active"))
 
-                    If Not myData("CompanyDetailId").ToString() = "" Then
-                        Dim companyArray() As String = myData("CompanyDetailId").ToString().Split(",")
+                    If Not thisData("CompanyDetailId").ToString() = "" Then
+                        Dim companyArray() As String = thisData("CompanyDetailId").ToString().Split(",")
                         For Each i In companyArray
                             If Not (i.Equals(String.Empty)) Then
                                 lbCompany.Items.FindByValue(i).Selected = True
@@ -122,26 +120,23 @@ Partial Class Setting_Specification_BlindType
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
             End If
-
             If ddlDesign.Text = "" Then
                 MessageError_Process(True, "DESIGN NAME IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
             End If
-
             If lbCompany.SelectedValue = "" Then
                 MessageError_Process(True, "COMPANY IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
             End If
-
             If msgErrorProcess.InnerText = "" Then
                 Dim companyDetail As String = String.Empty
+                Dim aliasName As String = txtAlias.Text.Trim()
+
                 If Not lbCompany.SelectedValue = "" Then
                     companyDetail = String.Join(",", lbCompany.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
                 End If
-
-                Dim aliasName As String = txtAlias.Text.Trim()
                 If String.IsNullOrEmpty(txtAlias.Text) Then
                     aliasName = txtName.Text.Trim()
                 End If

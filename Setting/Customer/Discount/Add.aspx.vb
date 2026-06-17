@@ -6,6 +6,7 @@ Partial Class Setting_Customer_Discount_Add
 
     Dim settingClass As New SettingClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim url As String = String.Empty
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
@@ -22,6 +23,10 @@ Partial Class Setting_Customer_Discount_Add
         If String.IsNullOrEmpty(Request.QueryString("type")) Then
             Response.Redirect("~/setting/customer/discount/", False)
             Exit Sub
+        End If
+
+        If Not String.IsNullOrEmpty(Request.QueryString("returnpage")) Then
+            lblReturnPage.Text = Request.QueryString("returnpage").ToString()
         End If
 
         lblCustomerId.Text = Request.QueryString("custid").ToString()
@@ -75,7 +80,10 @@ Partial Class Setting_Customer_Discount_Add
                     Next
                 End If
 
-                Dim url As String = String.Format("~/setting/customer/detail?customerid={0}", ddlCustomer.SelectedValue)
+                url = "~/setting/customer/discount"
+                If lblReturnPage.Text = "detail" Then
+                    url = String.Format("~/setting/customer/detail?customerid={0}", ddlCustomer.SelectedValue)
+                End If
                 Response.Redirect(url, False)
             End If
         Catch ex As Exception
@@ -87,8 +95,10 @@ Partial Class Setting_Customer_Discount_Add
     End Sub
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
-        Dim url As String = String.Format("~/setting/customer/detail?customerid={0}", ddlCustomer.SelectedValue)
-        If ddlCustomer.SelectedValue = "" Then url = "~/setting/customer/discount"
+        url = "~/setting/customer/discount"
+        If lblReturnPage.Text = "detail" Then
+            url = String.Format("~/setting/customer/detail?customerid={0}", ddlCustomer.SelectedValue)
+        End If
         Response.Redirect(url, False)
     End Sub
 

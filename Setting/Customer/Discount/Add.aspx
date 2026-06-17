@@ -118,6 +118,7 @@
         <asp:Label runat="server" ID="lblCustomerId"></asp:Label>
         <asp:Label runat="server" ID="lblCompanyId"></asp:Label>
         <asp:Label runat="server" ID="lblCompanyDetailId"></asp:Label>
+        <asp:Label runat="server" ID="lblReturnPage"></asp:Label>
     </div>
 
     <script type="text/javascript">

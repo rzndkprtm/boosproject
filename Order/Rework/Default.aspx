@@ -40,38 +40,39 @@
         <section class="row">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-content">
-                        <div class="card-header">
-                            <div class="row">
-                                <div class="col-lg-3 col-md-12 col-sm-12 mb-2">
-                                    <div class="input-group">
-                                        <asp:Label runat="server" CssClass="input-group-text" Text="Status"></asp:Label>
-                                        <asp:DropDownList runat="server" ID="ddlStatus" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlStatus_SelectedIndexChanged">
-                                            <asp:ListItem Value="" Text="All Reworks"></asp:ListItem>
-                                            <asp:ListItem Value="Unsubmitted" Text="Unsubmitted"></asp:ListItem>
-                                            <asp:ListItem Value="Pending Approval" Text="Pending Approval"></asp:ListItem>
-                                            <asp:ListItem Value="Approved" Text="Approved"></asp:ListItem>
-                                            <asp:ListItem Value="Rejected" Text="Rejected"></asp:ListItem>
-                                        </asp:DropDownList>
+                    <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
+                        <ContentTemplate>
+                            <div class="card-content">
+
+                            </div>
+                                <div class="card-header">
+                                    <div class="row">
+                                        <div class="col-lg-3 col-md-12 col-sm-12 mb-2">
+                                            <div class="input-group">
+                                                <asp:Label runat="server" CssClass="input-group-text" Text="Status"></asp:Label>
+                                                <asp:DropDownList runat="server" ID="ddlStatus" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlStatus_SelectedIndexChanged">
+                                                    <asp:ListItem Value="" Text="All Reworks"></asp:ListItem>
+                                                    <asp:ListItem Value="Unsubmitted" Text="Unsubmitted"></asp:ListItem>
+                                                    <asp:ListItem Value="Pending Approval" Text="Pending Approval"></asp:ListItem>
+                                                    <asp:ListItem Value="Approved" Text="Approved"></asp:ListItem>
+                                                    <asp:ListItem Value="Rejected" Text="Rejected"></asp:ListItem>
+                                                </asp:DropDownList>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-9 col-md-12 col-sm-12 d-flex justify-content-end">
+                                            <asp:Panel runat="server" DefaultButton="btnSearch" Width="50%">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">Search</span>
+                                                    <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" placeholoder=""></asp:TextBox>
+                                                    <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />
+                                                </div>
+                                            </asp:Panel>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-9 col-md-12 col-sm-12 d-flex justify-content-end">
-                                    <asp:Panel runat="server" DefaultButton="btnSearch" Width="50%">
-                                        <div class="input-group">
-                                            <span class="input-group-text">Search</span>
-                                            <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" placeholoder=""></asp:TextBox>
-                                            <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />
-                                        </div>
-                                    </asp:Panel>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="row mb-3">
-                                <div class="col-12">
+                                <div class="card-body">
                                     <div class="table-responsive">
-                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom" OnPageIndexChanging="gvList_PageIndexChanging" OnRowCommand="gvList_RowCommand">
-                                            <RowStyle />
+                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Visible="false" OnPageIndexChanging="gvList_PageIndexChanging" OnDataBound="gvList_DataBound">
                                             <Columns>
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center">
                                                     <ItemTemplate>
@@ -81,7 +82,7 @@
                                                 <asp:BoundField DataField="Id" HeaderText="ID" />
                                                 <asp:TemplateField HeaderText="New Order ID">
                                                     <ItemTemplate>
-                                                        <asp:LinkButton runat="server" CommandName="ToOrder" CommandArgument='<%# Eval("HeaderIdNew") %>'><%# GetOrderId(Eval("HeaderIdNew").ToString()) %></asp:LinkButton>
+                                                        <a class="dropdown-item" href='<%# Page.ResolveUrl("~/order/detail?orderid=" & Eval("Id")) %>'><%# GetOrderId(Eval("HeaderIdNew").ToString()) %></a>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:BoundField DataField="CustomerName" HeaderText="Customer Name" ItemStyle-Wrap="true" />
@@ -96,10 +97,10 @@
                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                         <ul class="dropdown-menu">
                                                             <li>
-                                                                <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                                <a class="dropdown-item" id="aDetail" href='<%# Page.ResolveUrl("~/order/rework/detail?reworkid=" & Eval("Id")) %>'>Detail</a>
                                                             </li>
                                                             <li runat="server" visible='<%# VisibleDelete(Eval("Status").ToString()) %>' onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>
-                                                                <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                                <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return dataDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                             </li>
                                                             <li runat="server" visible='<%# VisibleLog() %>'>
                                                                 <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('OrderReworks', '<%# Eval("Id") %>')">Log</a>
@@ -108,25 +109,35 @@
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                             </Columns>
-                                            <PagerStyle BackColor="DodgerBlue" ForeColor="White" HorizontalAlign="Center" />
-                                            <PagerSettings PreviousPageText="Prev" NextPageText="Next" Mode="NumericFirstLast" />
-                                            <AlternatingRowStyle BackColor="White" />
                                         </asp:GridView>
+                                    </div>
+                                    <div class="d-flex justify-content-end mt-3">
+                                        <nav id="navPager" runat="server" visible="false">
+                                            <ul class="pagination pagination mb-0">
+                                                <asp:Repeater ID="rptPager" runat="server" OnItemCommand="rptPager_ItemCommand">
+                                                    <ItemTemplate>
+                                                        <li class='page-item <%# Eval("CssClass") %>'>
+                                                            <asp:LinkButton runat="server" ID="lnkPage" CssClass="page-link" Text='<%# Eval("Text") %>' CommandName="Page" CommandArgument='<%# Eval("PageIndex") %>' />
+                                                        </li>
+                                                    </ItemTemplate>
+                                                </asp:Repeater>
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="row" runat="server" id="divActive">
+                                        <div class="col-lg-2 col-md-12 col-sm-12">
+                                            <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlActive_SelectedIndexChanged">
+                                                <asp:ListItem Value="1" Text="Active"></asp:ListItem>
+                                                <asp:ListItem Value="0" Text="Non Active"></asp:ListItem>
+                                            </asp:DropDownList>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="card-footer">
-                            <div class="row" runat="server" id="divActive">
-                                <div class="col-lg-2 col-md-12 col-sm-12">
-                                    <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlActive_SelectedIndexChanged">
-                                        <asp:ListItem Value="1" Text="Active"></asp:ListItem>
-                                        <asp:ListItem Value="0" Text="Non Active"></asp:ListItem>
-                                    </asp:DropDownList>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                        </ContentTemplate>
+                    </asp:UpdatePanel>
                 </div>
             </div>
         </section>
@@ -150,7 +161,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade text-left" id="modalCreate" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -176,7 +186,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade text-center" id="modalDelete" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -194,42 +203,63 @@
             </div>
         </div>
     </div>
+    <div id="loadingOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,.5); z-index:99999;">
+        <div class="position-absolute top-50 start-50 translate-middle">
+            <div class="card shadow">
+                <div class="card-body text-center">
+                    <div class="spinner-border"></div>
+                    <div class="mt-2">Loading...</div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script type="text/javascript">
-        document.addEventListener('DOMContentLoaded', function () {
+        window.addEventListener("pageshow", function () {
+            var loading = document.getElementById("loadingOverlay");
+            if (loading) loading.style.display = "none";
+        });
+        function initUpdatePanelLoading() {
+            if (typeof Sys === "undefined") return;
+            var prm = Sys.WebForms.PageRequestManager.getInstance();
+            prm.add_beginRequest(function () {
+                var loading = document.getElementById("loadingOverlay");
+                if (loading) loading.style.display = "block";
+            });
+            prm.add_endRequest(function () {
+                var loading = document.getElementById("loadingOverlay");
+                if (loading) loading.style.display = "none";
+                bindGridRowClick();
+            });
+        }
+        function bindGridRowClick() {
             const gv = document.getElementById('<%= gvList.ClientID %>');
             if (!gv) return;
-
             for (let i = 1; i < gv.rows.length; i++) {
                 const row = gv.rows[i];
-                row.style.cursor = 'pointer';
-
-                row.addEventListener('click', function (e) {
-                    if (
-                        e.target.closest("a") ||
-                        e.target.closest("button") ||
-                        e.target.closest("[data-bs-toggle]")
-                    ) {
+                row.style.cursor = "pointer";
+                row.onclick = function (e) {
+                    if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]")) {
                         return;
                     }
-
-                    const btn = this.querySelector("a[id*='linkDetail']");
+                    const btn = this.querySelector("a[id*='aDetail']");
                     if (btn) btn.click();
-                });
+                };
             }
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+            initUpdatePanelLoading();
+            bindGridRowClick();
         });
-
         ["modalLog", "modalCreate", "modalDelete"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
             });
         });
-
-        function showDelete(id) {
+        function dataDelete(id) {
             document.getElementById("<%=txtDeleteId.ClientID %>").value = id;
         }
-
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
             $("#tblLogs tbody").html("");
@@ -263,7 +293,6 @@
                 }
             });
         }
-
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

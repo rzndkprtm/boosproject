@@ -63,7 +63,18 @@ Partial Class Setting_Login_User_Installer_Default
     Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
+            Dim thisId As String = txtDeleteId.Text
 
+            Using thisConn As New SqlConnection(myConn)
+                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM LoginInstallers WHERE Id=@Id; DELETE FROM Logs WHERE Type='LoginInstallers' AND DataId=@Id;", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", thisId)
+
+                    thisConn.Open()
+                    myCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Response.Redirect("~/setting/login/user/installer", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then

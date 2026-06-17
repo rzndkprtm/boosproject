@@ -1,8 +1,11 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
+Imports System.Globalization
 
 Public Class OrderClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim enUS As CultureInfo = New CultureInfo("en-US")
+    Dim idIDR As New CultureInfo("id-ID")
 
     Public Function GetDataRow(thisString As String) As DataRow
         Try
@@ -660,6 +663,467 @@ Public Class OrderClass
         Return result
     End Function
 
+    Public Function GetProductDescription(itemId As String) As String
+        Dim result As String = String.Empty
+        Try
+            Dim param As New List(Of SqlParameter) From {
+                New SqlParameter("@ItemId", Convert.ToInt32(itemId))
+            }
+
+            Dim thisData As DataRow = GetDataRowSP("sp_GetOrderDetailForDescription", param)
+            If thisData Is Nothing Then
+                Return "PLEASE CONTACT YOUR CUSTOMER SERVICE !"
+            End If
+
+            Dim productId As String = thisData("ProductId").ToString()
+            Dim productName As String = thisData("ProductName").ToString()
+            Dim designName As String = thisData("DesignName").ToString()
+            Dim blindName As String = thisData("BlindName").ToString()
+
+            Dim subType As String = thisData("SubType").ToString()
+            Dim heading As String = thisData("Heading").ToString()
+            Dim headingB As String = thisData("HeadingB").ToString()
+
+            Dim trackType As String = thisData("TrackType").ToString()
+            Dim trackTypeB As String = thisData("TrackTypeB").ToString()
+
+            Dim fabricColourId As String = thisData("FabricColourId").ToString()
+            Dim fabricColourIdB As String = thisData("FabricColourIdB").ToString()
+            Dim fabricColourIdC As String = thisData("FabricColourIdC").ToString()
+            Dim fabricColourIdD As String = thisData("FabricColourIdD").ToString()
+            Dim fabricColourIdE As String = thisData("FabricColourIdE").ToString()
+            Dim fabricColourIdF As String = thisData("FabricColourIdF").ToString()
+
+            Dim width As String = thisData("Width").ToString()
+            Dim widthB As String = thisData("WidthB").ToString()
+            Dim widthC As String = thisData("WidthC").ToString()
+            Dim widthD As String = thisData("WidthD").ToString()
+            Dim widthE As String = thisData("WidthE").ToString()
+            Dim widthF As String = thisData("WidthF").ToString()
+
+            Dim drop As String = thisData("Drop").ToString()
+            Dim dropB As String = thisData("DropB").ToString()
+            Dim dropC As String = thisData("DropC").ToString()
+            Dim dropD As String = thisData("DropD").ToString()
+            Dim dropE As String = thisData("DropE").ToString()
+            Dim dropF As String = thisData("DropF").ToString()
+
+            Dim printing As String = thisData("Printing").ToString()
+            Dim printingB As String = thisData("PrintingB").ToString()
+            Dim printingC As String = thisData("PrintingC").ToString()
+            Dim printingD As String = thisData("PrintingD").ToString()
+            Dim printingE As String = thisData("PrintingE").ToString()
+            Dim printingF As String = thisData("PrintingF").ToString()
+
+            Dim layoutCode As String = thisData("LayoutCode").ToString()
+            Dim frameColour As String = thisData("FrameColour").ToString()
+
+            Dim itemNote As String = thisData("Notes").ToString()
+
+            Dim size As String = String.Format("({0}x{1})", width, drop)
+            Dim sizeB As String = String.Format("({0}x{1})", widthB, dropB)
+            Dim sizeC As String = String.Format("({0}x{1})", widthC, dropC)
+            Dim sizeD As String = String.Format("({0}x{1})", widthD, dropD)
+            Dim sizeE As String = String.Format("({0}x{1})", widthE, dropE)
+            Dim sizeF As String = String.Format("({0}x{1})", widthF, dropF)
+
+            Dim fabricColourName As String = GetFabricColourName(fabricColourId)
+            Dim fabricColourNameB As String = GetFabricColourName(fabricColourIdB)
+            Dim fabricColourNameC As String = GetFabricColourName(fabricColourIdC)
+            Dim fabricColourNameD As String = GetFabricColourName(fabricColourIdD)
+            Dim fabricColourNameE As String = GetFabricColourName(fabricColourIdE)
+            Dim fabricColourNameF As String = GetFabricColourName(fabricColourIdF)
+
+            Dim squareMetre As Decimal = 0D
+            Dim squareMetreB As Decimal = 0D
+            Dim squareMetreC As Decimal = 0D
+            Dim squareMetreD As Decimal = 0D
+            Dim squareMetreE As Decimal = 0D
+            Dim squareMetreF As Decimal = 0D
+
+            If Not IsDBNull(thisData("SquareMetre")) Then
+                squareMetre = Math.Round(Convert.ToDecimal(thisData("SquareMetre")), 2)
+            End If
+            If Not IsDBNull(thisData("SquareMetreB")) Then
+                squareMetreB = Math.Round(Convert.ToDecimal(thisData("SquareMetreB")), 2)
+            End If
+            If Not IsDBNull(thisData("SquareMetreC")) Then
+                squareMetreC = Math.Round(Convert.ToDecimal(thisData("SquareMetreC")), 2)
+            End If
+            If Not IsDBNull(thisData("SquareMetreD")) Then
+                squareMetreD = Math.Round(Convert.ToDecimal(thisData("SquareMetreD")), 2)
+            End If
+            If Not IsDBNull(thisData("SquareMetreE")) Then
+                squareMetreE = Math.Round(Convert.ToDecimal(thisData("SquareMetreE")), 2)
+            End If
+            If Not IsDBNull(thisData("SquareMetreF")) Then
+                squareMetreF = Math.Round(Convert.ToDecimal(thisData("SquareMetreF")), 2)
+            End If
+
+            Dim squareMetreText As String = String.Format("{0}sqm", squareMetre.ToString("0.##", enUS))
+            Dim squareMetreTextB As String = String.Format("{0}sqm", squareMetreB.ToString("0.##", enUS))
+            Dim squareMetreTextC As String = String.Format("{0}sqm", squareMetreC.ToString("0.##", enUS))
+            Dim squareMetreTextD As String = String.Format("{0}sqm", squareMetreD.ToString("0.##", enUS))
+            Dim squareMetreTextE As String = String.Format("{0}sqm", squareMetreE.ToString("0.##", enUS))
+            Dim squareMetreTextF As String = String.Format("{0}sqm", squareMetreF.ToString("0.##", enUS))
+
+            Dim linearMetre As Decimal = 0D
+            Dim linearMetreB As Decimal = 0D
+            Dim linearMetreC As Decimal = 0D
+
+            If Not IsDBNull(thisData("LinearMetre")) Then
+                linearMetre = Math.Round(Convert.ToDecimal(thisData("LinearMetre")), 2)
+            End If
+            If Not IsDBNull(thisData("LinearMetreB")) Then
+                linearMetreB = Math.Round(Convert.ToDecimal(thisData("LinearMetreB")), 2)
+            End If
+            If Not IsDBNull(thisData("LinearMetreC")) Then
+                linearMetreC = Math.Round(Convert.ToDecimal(thisData("LinearMetreC")), 2)
+            End If
+
+            Dim linearMetreText As String = String.Format("{0}lm", linearMetre.ToString("0.##", enUS))
+            Dim linearMetreTextB As String = String.Format("{0}lm", linearMetreB.ToString("0.##", enUS))
+            Dim linearMetreTextC As String = String.Format("{0}lm", linearMetreC.ToString("0.##", enUS))
+
+            Dim room As String = thisData("Room").ToString()
+            Dim itemDescription As String = String.Format("<b>{0}</b>, {1}", room, productName)
+
+            If designName = "Aluminium Blind" Then
+                result = String.Format("{0} {1} {2}", itemDescription, size, squareMetreText)
+                If subType.Contains("2 on 1") Then
+                    result = String.Format("<b>{0}</b>, 2 on 1 Headrail", room)
+                    result &= "<br />"
+                    result &= String.Format("{0} {1} {2}", productName, size, squareMetreText)
+                    result &= "<br />"
+                    result &= String.Format("{0} {1} {2}", productName, sizeB, squareMetreTextB)
+                End If
+            End If
+
+            If designName = "Cellular Shades" Then
+                result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
+                If blindName = "Day & Night" Then
+                    result = String.Format("{0} {1} {2}", itemDescription, size, squareMetreText)
+                    result &= "<br />"
+                    result &= fabricColourName
+                    result &= "<br />"
+                    result &= fabricColourNameB
+                End If
+            End If
+
+            If designName = "Curtain" Then
+                result = itemDescription
+                result &= "<br />"
+                result &= String.Format("{0} {1} {2} | {3} ({4}) {5}", fabricColourName, size, squareMetreText, trackType, width, linearMetreText)
+
+                If blindName = "Complete Set (Double)" Then
+                    result = itemDescription
+                    result &= "<br />"
+                    result &= String.Format("{0} {1} {2} | {3} ({4}) {5}", fabricColourName, size, squareMetreText, trackType, width, linearMetreText)
+                    result &= "<br />"
+                    result &= String.Format("{0} {1} {2} | {3} ({4}) {5}", fabricColourNameB, sizeB, squareMetreTextB, trackTypeB, widthB, linearMetreTextB)
+                End If
+                If blindName = "Curtain Only" Then
+                    result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
+                End If
+                If blindName = "Fabric Only" Then
+                    result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
+                End If
+                If blindName = "Track Only" Then
+                    result = String.Format("{0} {1} ({2}) {3}", itemDescription, trackType, width, linearMetreText)
+                End If
+            End If
+
+            If designName = "Design Shades" Then
+                result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
+            End If
+
+            If designName = "Linea Valance" Then
+                result = String.Format("{0} ({1}mm) {2}", itemDescription, width, linearMetreText)
+            End If
+
+            If designName = "Panel Glide" Then
+                result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
+                If blindName = "Track Only" Then
+                    result = String.Format("{0} ({1}mm) {2}", itemDescription, width, linearMetreText)
+                End If
+            End If
+
+            If designName = "Pelmet" Then
+                result = String.Format("{0} {1} ({2}mm) {3}", itemDescription, fabricColourName, width, linearMetreText)
+                If layoutCode = "B" OrElse layoutCode = "C" Then
+                    result = itemDescription
+                    result &= "<br />"
+                    result &= String.Format("{0} ({1}mm) {2}", fabricColourName, width, linearMetreText)
+                    result &= "<br />"
+                    result &= String.Format("{0} ({1}mm) {2}", fabricColourName, widthB, linearMetreTextB)
+                End If
+
+                If layoutCode = "D" Then
+                    result = itemDescription
+                    result &= "<br />"
+                    result &= String.Format("{0} ({1}mm) {2}", fabricColourName, width, linearMetreText)
+                    result &= "<br />"
+                    result &= String.Format("{0} ({1}mm) {2}", fabricColourName, widthB, linearMetreTextB)
+                    result &= "<br />"
+                    result &= String.Format("{0} ({1}mm) {2}", fabricColourName, widthC, linearMetreTextC)
+                End If
+            End If
+
+            If designName = "Privacy Venetian" Then
+                result = String.Format("{0} {1} {2}", itemDescription, size, squareMetreText)
+            End If
+
+            If designName = "Roller Blind" Then
+                result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
+                If Not String.IsNullOrEmpty(printing) Then
+                    result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
+                    result &= "<br />"
+                    result &= "<b>[Printed Fabric]</b>"
+                End If
+                If blindName = "Dual Blinds" Then
+                    result = itemDescription
+                    result &= "<br />"
+                    result &= String.Format("First Blind : {0} {1} {2}", fabricColourName, size, squareMetreText)
+                    If Not String.IsNullOrEmpty(printing) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Second Blind : {0} {1} {2}", fabricColourNameB, sizeB, squareMetreTextB)
+                    If Not String.IsNullOrEmpty(printingB) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                End If
+                If blindName = "Link 2 Blinds Dependent" Then
+                    result = itemDescription
+                    result &= "<br />"
+                    result &= String.Format("First & Control Blind : {0} {1} {2}", fabricColourName, size, squareMetreText)
+                    If Not String.IsNullOrEmpty(printing) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Second Blind : {0} {1} {2}", fabricColourNameB, sizeB, squareMetreTextB)
+                    If Not String.IsNullOrEmpty(printingB) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                End If
+                If blindName = "Link 2 Blinds Independent" Then
+                    result = itemDescription
+                    result &= "<br />"
+                    result &= String.Format("Left Blind : {0} {1} {2}", fabricColourName, size, squareMetreText)
+                    If Not String.IsNullOrEmpty(printing) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Right Blind : {0} {1} {2}", fabricColourNameB, sizeB, squareMetreTextB)
+                    If Not String.IsNullOrEmpty(printingB) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                End If
+                If blindName = "Link 3 Blinds Dependent" Then
+                    result = itemDescription
+                    result &= "<br />"
+                    result &= String.Format("Control Blind : {0} {1} {2}", fabricColourName, size, squareMetreText)
+                    If Not String.IsNullOrEmpty(printing) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Second Blind : {0} {1} {2}", fabricColourNameB, sizeB, squareMetreTextB)
+                    If Not String.IsNullOrEmpty(printingB) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Third Blind : {0} {1} {2}", fabricColourNameC, sizeC, squareMetreTextC)
+                    If Not String.IsNullOrEmpty(printingC) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                End If
+
+                If blindName = "Link 3 Blinds Independent with Dependent" Then
+                    result = itemDescription
+                    result &= "<br />"
+                    result &= String.Format("Independent Blind : {0} {1} {2}", fabricColourName, size, squareMetreText)
+                    If Not String.IsNullOrEmpty(printing) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Second Blind : {0} {1} {2}", fabricColourNameB, sizeB, squareMetreTextB)
+                    If Not String.IsNullOrEmpty(printingB) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Control Blind : {0} {1} {2}", fabricColourNameC, sizeC, squareMetreTextC)
+                    If Not String.IsNullOrEmpty(printingC) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                End If
+
+                If blindName = "Link 4 Blinds Independent with Dependent" Then
+                    result = itemDescription
+                    result &= "<br />"
+                    result &= String.Format("Left Control Blind : {0} {1} {2}", fabricColourName, size, squareMetreText)
+                    If Not String.IsNullOrEmpty(printing) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Middle Blind : {0} {1} {2}", fabricColourNameB, sizeB, squareMetreTextB)
+                    If Not String.IsNullOrEmpty(printingB) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Middle Blind : {0} {1} {2}", fabricColourNameC, sizeC, squareMetreTextC)
+                    If Not String.IsNullOrEmpty(printingC) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Right Control Blind : {0} {1} {2}", fabricColourNameD, sizeD, squareMetreTextD)
+                    If Not String.IsNullOrEmpty(printingD) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                End If
+
+                If blindName = "DB Link 2 Blinds Dependent" OrElse blindName = "DB Link 2 Blinds Independent" Then
+                    result = itemDescription
+                    result &= "<br />"
+                    result &= String.Format("First Blind : {0} {1} {2}", fabricColourName, size, squareMetreText)
+                    If Not String.IsNullOrEmpty(printing) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Second Blind : {0} {1} {2}", fabricColourNameB, sizeB, squareMetreTextB)
+                    If Not String.IsNullOrEmpty(printingB) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Third Blind : {0} {1} {2}", fabricColourNameC, sizeC, squareMetreTextC)
+                    If Not String.IsNullOrEmpty(printingC) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Fourth Blind : {0} {1} {2}", fabricColourNameD, sizeD, squareMetreTextD)
+                    If Not String.IsNullOrEmpty(printingD) Then
+                        result &= " (<b>[Printed Fabric]</b>>)"
+                    End If
+                End If
+
+                If blindName = "DB Link 3 Blinds Dependent" OrElse blindName = "DB Link 3 Blinds Independent with Dependent" Then
+                    result = itemDescription
+                    result &= "<br />"
+                    result &= String.Format("First Blind : {0} {1} {2}", fabricColourName, size, squareMetreText)
+                    If Not String.IsNullOrEmpty(printing) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Second Blind : {0} {1} {2}", fabricColourNameB, sizeB, squareMetreTextB)
+                    If Not String.IsNullOrEmpty(printingB) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Third Blind : {0} {1} {2}", fabricColourNameC, sizeC, squareMetreTextC)
+                    If Not String.IsNullOrEmpty(printingC) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Fourth Blind : {0} {1} {2}", fabricColourNameD, sizeD, squareMetreTextD)
+                    If Not String.IsNullOrEmpty(printingD) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Fifth Blind : {0} {1} {2}", fabricColourNameE, sizeE, squareMetreTextE)
+                    If Not String.IsNullOrEmpty(printingE) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Sixth Blind : {0} {1} {2}", fabricColourNameF, sizeF, squareMetreTextF)
+                    If Not String.IsNullOrEmpty(printingF) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                End If
+            End If
+
+            If designName = "Roman Blind" Then
+                result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
+                If Not String.IsNullOrEmpty(printing) Then
+                    result &= "<br />"
+                    result &= "<b>[Printed Fabric]</b>"
+                End If
+            End If
+
+            If designName = "Sample" Then
+                result = productName
+            End If
+
+            If designName = "Skyline Shutter Express" Then
+                result = String.Format("{0} {1} {2}", itemDescription, size, squareMetreText)
+            End If
+
+            If designName = "Skyline Shutter Ocean" Then
+                result = String.Format("{0} {1} {2}", itemDescription, size, squareMetreText)
+            End If
+
+            If designName = "Evolve Shutter Ocean" Then
+                result = String.Format("{0} {1} {2}", itemDescription, size, squareMetreText)
+            End If
+
+            If designName = "Venetian Blind" Then
+                result = String.Format("{0} {1} {2}", itemDescription, size, squareMetreText)
+                If subType.Contains("2 on 1") Then
+                    result = String.Format("<b>{0}</b>, 2 on 1 Headrail", room)
+                    result &= "<br />"
+                    result &= String.Format("{0} {1} {2}", productName, size, squareMetreText)
+                    result &= "<br />"
+                    result &= String.Format("{0} {1} {2}", productName, sizeB, squareMetreTextB)
+                End If
+                If subType.Contains("3 on 1") Then
+                    result = String.Format("<b>{0}</b>, 3 on 1 Headrail", room)
+                    result &= "<br />"
+                    result &= String.Format("{0} {1} {2}", productName, size, squareMetreText)
+                    result &= "<br />"
+                    result &= String.Format("{0} {1} {2}", productName, sizeB, squareMetreTextB)
+                    result &= "<br />"
+                    result &= String.Format("{0} {1} {2}", productName, sizeC, squareMetreTextC)
+                End If
+            End If
+
+            If designName = "Vertical" Then
+                fabricColourName = fabricColourName.Replace("127mm", "").Replace("89mm", "").Trim()
+                result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
+                If blindName = "Track Only" Then
+                    result = String.Format("{0} ({1}mm) {2}", itemDescription, width, linearMetreText)
+                End If
+            End If
+
+            If designName = "Saphora Drape" Then
+                result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
+            End If
+
+            If designName = "Window" OrElse designName = "Door" Then
+                result = String.Format("{0} - {1} {2} {3}", itemDescription, frameColour, size, squareMetreText)
+            End If
+
+            If designName = "Outdoor" Then
+                result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
+            End If
+
+            If designName = "Roller Horizon" Then
+                result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
+            End If
+
+            If designName = "Service" Then
+                result = productName
+            End If
+
+            Dim checkNote As String = GetItemData("SELECT Description FROM OrderCostings WHERE ItemId='" & itemId & "' AND Type='Note'")
+            If Not String.IsNullOrEmpty(checkNote) Then
+                result &= "<br />"
+                result &= String.Format("<i>* {0} </i>", checkNote)
+            End If
+
+            Return result
+        Catch ex As Exception
+            Return result
+        End Try
+    End Function
+
     Public Function GetTubeName(tubeId As String) As String
         Dim result As String = String.Empty
         Try
@@ -954,13 +1418,11 @@ Public Class OrderClass
         Try
             Dim chars As String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
             Dim rnd As New Random()
-            Dim result As New System.Text.StringBuilder()
-
+            Dim result As New StringBuilder()
             For i As Integer = 1 To 5
                 Dim idx As Integer = rnd.Next(0, chars.Length)
                 result.Append(chars(idx))
             Next
-
             Return result.ToString()
         Catch ex As Exception
             Return String.Empty
@@ -1369,7 +1831,6 @@ Public Class OrderClass
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("DELETE FROM OrderCostings WHERE ItemId=@ItemId AND Type='Final'", thisConn)
                     myCmd.Parameters.AddWithValue("@ItemId", itemId)
-
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
