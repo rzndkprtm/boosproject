@@ -30,34 +30,13 @@ Partial Class Order_Rework_Detail
         End If
     End Sub
 
-    Protected Sub btnCancelRework_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        Try
-            Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderReworks SET Status='Canceled' WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblReworkId.Text)
-
-                    thisConn.Open()
-                    myCmd.ExecuteNonQuery()
-                End Using
-            End Using
-            url = String.Format("~/order/rework/detail?reworkid={0}", lblReworkId.Text)
-            Response.Redirect(url, False)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                If Session("RoleName") = "Customer" Then
-                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
-                End If
-            End If
-        End Try
-    End Sub
-
     Protected Sub btnSubmitRework_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
             Dim itemRework As DataTable = orderClass.GetDataTable("SELECT * FROM OrderReworkDetails WHERE ReworkId='" & lblReworkId.Text & "' AND Active=1 ORDER BY Id ASC")
+            If itemRework.Rows.Count = 0 Then
+                MessageError(True, "PLEASE ADD MINIMAL 1 ITEM PRODUCT ORDER !")
+            End If
             For i As Integer = 0 To itemRework.Rows.Count - 1
                 Dim id As String = itemRework.Rows(i)("Id").ToString()
                 Dim itemId As String = itemRework.Rows(i)("ItemId").ToString()
@@ -102,6 +81,61 @@ Partial Class Order_Rework_Detail
                 url = String.Format("~/order/rework/detail?reworkid={0}", lblReworkId.Text)
                 Response.Redirect(url, False)
             End If
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                If Session("RoleName") = "Customer" Then
+                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
+                End If
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnDeleteRework_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderReworks SET Active='0' WHERE Id=@Id", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", lblReworkId.Text)
+
+                    thisConn.Open()
+                    myCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Dim folderPath As String = Path.Combine(Server.MapPath("~/File/Rework"), lblReworkId.Text)
+
+            If Directory.Exists(folderPath) Then
+                Directory.Delete(folderPath, True)
+            End If
+
+            url = String.Format("~/order/rework/detail?reworkid={0}", lblReworkId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                If Session("RoleName") = "Customer" Then
+                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
+                End If
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnCancelRework_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderReworks SET Status='Canceled' WHERE Id=@Id", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", lblReworkId.Text)
+
+                    thisConn.Open()
+                    myCmd.ExecuteNonQuery()
+                End Using
+            End Using
+            url = String.Format("~/order/rework/detail?reworkid={0}", lblReworkId.Text)
+            Response.Redirect(url, False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -594,35 +628,36 @@ Partial Class Order_Rework_Detail
 
             BindAddItem(lblHeaderId.Text)
 
-            aCancelRework.Visible = False
             aSubmitRework.Visible = False
+            aDeleteRework.Visible = False
+            aCancelRework.Visible = False
             aApproveRework.Visible = False
             aRejectRework.Visible = False
             aAddItem.Visible = False
 
             If lblStatus.Text = "Unsubmitted" Then
                 If Session("RoleName") = "Developer" Then
-                    aCancelRework.Visible = True
+                    aDeleteRework.Visible = True
                     aSubmitRework.Visible = True
                     aAddItem.Visible = True
                     If gvListAddItem.Rows.Count = 0 Then aAddItem.Visible = False
                 End If
                 If Session("RoleName") = "IT" Then
-                    aCancelRework.Visible = True
+                    aDeleteRework.Visible = True
                     aSubmitRework.Visible = True
                 End If
                 If Session("RoleName") = "Factory Office" Then
-                    aCancelRework.Visible = True
+                    aDeleteRework.Visible = True
                     aSubmitRework.Visible = True
                 End If
                 If Session("RoleName") = "Customer" Then
-                    aCancelRework.Visible = True
+                    aDeleteRework.Visible = True
                     aSubmitRework.Visible = True
                     aAddItem.Visible = True
                     If gvListAddItem.Rows.Count = 0 Then aAddItem.Visible = False
                 End If
                 If Session("RoleName") = "Sales" Then
-                    aCancelRework.Visible = True
+                    aDeleteRework.Visible = True
                     aSubmitRework.Visible = True
                     aAddItem.Visible = True
                     If gvListAddItem.Rows.Count = 0 Then aAddItem.Visible = False

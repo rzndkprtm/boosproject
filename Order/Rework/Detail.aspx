@@ -29,6 +29,7 @@
         <section class="row mb-4">
             <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
                 <a href="javascript:void(0);" runat="server" id="aSubmitRework" class="btn btn-success me-1" data-bs-toggle="modal" data-bs-target="#modalSubmitRework">Submit</a>
+                <a href="javascript:void(0);" runat="server" id="aDeleteRework" class="btn btn-danger me-1" data-bs-toggle="modal" data-bs-target="#modalDeleteRework">Delete</a>
                 <a href="javascript:void(0);" runat="server" id="aCancelRework" class="btn btn-danger me-1" data-bs-toggle="modal" data-bs-target="#modalCancelRework">Cancel</a>
                 <a href="javascript:void(0);" runat="server" id="aApproveRework" class="btn btn-success me-1" data-bs-toggle="modal" data-bs-target="#modalApproveRework">Approve</a>
                 <a href="javascript:void(0);" runat="server" id="aRejectRework" class="btn btn-danger me-1" data-bs-toggle="modal" data-bs-target="#modalRejectRework">Reject</a>
@@ -163,39 +164,20 @@
                                                                             <label>Description :</label>
                                                                         </div>
                                                                         <div class="col-12 col-sm-12 col-lg-6">
-                                                                            <asp:Literal runat="server"
-                                                                                Text='<%# Eval("Description").ToString().Replace(vbCrLf, "<br/>").Replace(vbLf, "<br/>") %>'
-                                                                                Mode="PassThrough">
+                                                                            <asp:Literal runat="server" Text='<%# Eval("Description").ToString().Replace(vbCrLf, "<br/>").Replace(vbLf, "<br/>") %>' Mode="PassThrough">
                                                                             </asp:Literal>
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-4 text-end" runat="server" visible='<%# VisibleDetailRework() %>'>
-                                                                    <a href="javascript:void(0);" 
-                                                                       class="btn btn-sm btn-secondary" 
-                                                                       data-bs-toggle="modal" 
-                                                                       data-bs-target="#modalUpdateItem" 
-                                                                       onclick="showUpdateItem('<%# Eval("Id") %>','<%# Eval("Category") %>', '<%# Eval("InstallDate","{0:yyyy-MM-dd}") %>', '<%# HttpUtility.JavaScriptStringEncode(Eval("Description").ToString()) %>')">
-                                                                        Update Item
-                                                                    </a>
-                                                                    <a href="javascript:void(0);" 
-                                                                       class="btn btn-sm btn-danger" 
-                                                                       data-bs-toggle="modal" 
-                                                                       data-bs-target="#modalDeleteItem" 
-                                                                       onclick="showDeleteItem('<%# Eval("Id") %>')">
-                                                                        Delete Item
-                                                                    </a>
+                                                                    <a href="javascript:void(0);" class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#modalUpdateItem" onclick="showUpdateItem('<%# Eval("Id") %>','<%# Eval("Category") %>', '<%# Eval("InstallDate","{0:yyyy-MM-dd}") %>', '<%# HttpUtility.JavaScriptStringEncode(Eval("Description").ToString()) %>')">Update Item</a>
+                                                                    <a href="javascript:void(0);" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#modalDeleteItem" onclick="showDeleteItem('<%# Eval("Id") %>')"> Delete Item</a>
                                                                 </div>
                                                             </div>
                                                             <div class="row mb-3">
                                                                 <div class="col-12">
                                                                     <div class="table-responsive">
-                                                                        <asp:GridView runat="server" ID="gvFiles"
-                                                                            AutoGenerateColumns="false"
-                                                                            ShowHeaderWhenEmpty="true"
-                                                                            CssClass="table table-bordered table-hover mb-0"
-                                                                            OnRowCommand="gvFiles_RowCommand">
-                                                                            <RowStyle />
+                                                                        <asp:GridView runat="server" ID="gvFiles" AutoGenerateColumns="false" ShowHeaderWhenEmpty="True" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" CssClass="table table-bordered table-hover mb-0" OnRowCommand="gvFiles_RowCommand">
                                                                             <Columns>
                                                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="70px">
                                                                                     <ItemTemplate>
@@ -206,13 +188,7 @@
                                                                                 <asp:TemplateField HeaderText="Action" ItemStyle-Width="150px">
                                                                                     <ItemTemplate>
                                                                                         <a runat="server" class="btn btn-sm btn-primary" href='<%# Eval("FilePath") %>' target="_blank">View</a>
-                                                                                        <asp:LinkButton runat="server"
-                                                                                            CssClass="btn btn-sm btn-danger"
-                                                                                            Text="Delete"
-                                                                                            CommandName="DeleteFile"
-                                                                                            CommandArgument='<%# Eval("FilePath") %>'
-                                                                                            Visible='<%# VisibleDetailRework() %>'>
-                                                                                        </asp:LinkButton>
+                                                                                        <asp:LinkButton runat="server" CssClass="btn btn-sm btn-danger" Text="Delete" CommandName="DeleteFile" CommandArgument='<%# Eval("FilePath") %>' Visible='<%# VisibleDetailRework() %>'></asp:LinkButton>
                                                                                     </ItemTemplate>
                                                                                 </asp:TemplateField>
                                                                             </Columns>
@@ -256,64 +232,34 @@
         </section>
     </div>
 
-    <div class="modal fade" id="modalUpdateItem" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal fade text-center" id="modalSubmitRework" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Update Category</h5>
+                <div class="modal-header bg-success">
+                    <h5 class="modal-title white">Submit Rework</h5>
                 </div>
-                <div class="modal-body">
-                    <asp:TextBox runat="server" ID="txtDetailId" style="display:none;"></asp:TextBox>
-                    <div class="row mb-2">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Category</label>
-                            <asp:DropDownList runat="server" ID="ddlCategory" CssClass="form-select">
-                                <asp:ListItem Value="" Text=""></asp:ListItem>
-                                <asp:ListItem Value="Customer Error" Text="Customer Error"></asp:ListItem>
-                                <asp:ListItem Value="Product Fault" Text="Product Fault"></asp:ListItem>
-                                <asp:ListItem Value="Warranty Issue" Text="Warranty Issue"></asp:ListItem>
-                                <asp:ListItem Value="Freight Damage to Customer" Text="Freight Damage to Customer"></asp:ListItem>
-                            </asp:DropDownList>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Install Date</label>
-                            <asp:TextBox runat="server" TextMode="Date" ID="txtInstallDate" CssClass="form-control"></asp:TextBox>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Description</label>
-                            <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
-                        </div>
-                    </div>
+                <div class="modal-body text-center py-4">
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="UpdateItem" CssClass="btn btn-success" Text="Submit" OnClick="UpdateItem_Click" OnClientClick="return showWaiting();" />
+                    <asp:Button runat="server" ID="btnSubmitRework" CssClass="btn btn-success" Text="Confirm" OnClick="btnSubmitRework_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>
     </div>
-    <div class="modal fade" id="modalUpload" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal fade text-center" id="modalDeleteRework" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Update File</h5>
+                <div class="modal-header bg-danger">
+                    <h5 class="modal-title white">Delete Rework</h5>
                 </div>
-                <div class="modal-body">
-                    <asp:TextBox runat="server" ID="txtUploadId" style="display:none;"></asp:TextBox>
-                    <div class="row mb-2">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Choose File</label>
-                            <asp:FileUpload runat="server" ID="fuFile" CssClass="form-control" />
-                        </div>
-                    </div>
+                <div class="modal-body text-center py-4">
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnUpload" CssClass="btn btn-danger" Text="Submit" OnClick="btnUpload_Click" OnClientClick="return showWaiting();" />
+                    <asp:Button runat="server" ID="btnDeleteRework" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDeleteRework_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>
@@ -330,22 +276,6 @@
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnCancelRework" CssClass="btn btn-danger" Text="Confirm" OnClick="btnCancelRework_Click" OnClientClick="return showWaiting();" />
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade text-center" id="modalSubmitRework" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-success">
-                    <h5 class="modal-title white">Submit Rework</h5>
-                </div>
-                <div class="modal-body text-center py-4">
-                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
-                </div>
-                <div class="modal-footer">
-                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnSubmitRework" CssClass="btn btn-success" Text="Confirm" OnClick="btnSubmitRework_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>
@@ -378,23 +308,6 @@
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnRejectRework" CssClass="btn btn-danger" Text="Confirm" OnClick="btnRejectRework_Click" OnClientClick="return showWaiting();" />
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade text-center" id="modalDeleteItem" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-danger">
-                    <h5 class="modal-title white">Delete Item</h5>
-                </div>
-                <div class="modal-body text-center py-4">
-                    <asp:TextBox runat="server" ID="txtIdDeleteItem" style="display:none;"></asp:TextBox>
-                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
-                </div>
-                <div class="modal-footer">
-                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnDeleteItem" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDeleteItem_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>
@@ -458,7 +371,85 @@
             </div>
         </div>
     </div>
-
+    <div class="modal fade" id="modalUpdateItem" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Update Category</h5>
+                </div>
+                <div class="modal-body">
+                    <asp:TextBox runat="server" ID="txtDetailId" style="display:none;"></asp:TextBox>
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Category</label>
+                            <asp:DropDownList runat="server" ID="ddlCategory" CssClass="form-select">
+                                <asp:ListItem Value="" Text=""></asp:ListItem>
+                                <asp:ListItem Value="Customer Error" Text="Customer Error"></asp:ListItem>
+                                <asp:ListItem Value="Product Fault" Text="Product Fault"></asp:ListItem>
+                                <asp:ListItem Value="Warranty Issue" Text="Warranty Issue"></asp:ListItem>
+                                <asp:ListItem Value="Freight Damage to Customer" Text="Freight Damage to Customer"></asp:ListItem>
+                            </asp:DropDownList>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Install Date</label>
+                            <asp:TextBox runat="server" TextMode="Date" ID="txtInstallDate" CssClass="form-control"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Description</label>
+                            <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="UpdateItem" CssClass="btn btn-success" Text="Submit" OnClick="UpdateItem_Click" OnClientClick="return showWaiting();" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade text-center" id="modalDeleteItem" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-danger">
+                    <h5 class="modal-title white">Delete Item</h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <asp:TextBox runat="server" ID="txtIdDeleteItem" style="display:none;"></asp:TextBox>
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnDeleteItem" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDeleteItem_Click" OnClientClick="return showWaiting();" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modalUpload" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Update File</h5>
+                </div>
+                <div class="modal-body">
+                    <asp:TextBox runat="server" ID="txtUploadId" style="display:none;"></asp:TextBox>
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Choose File</label>
+                            <asp:FileUpload runat="server" ID="fuFile" CssClass="form-control" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnUpload" CssClass="btn btn-danger" Text="Submit" OnClick="btnUpload_Click" OnClientClick="return showWaiting();" />
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade text-center" id="modalWaiting" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -477,12 +468,20 @@
     </div>
 
     <script type="text/javascript">
-        ["modalWaiting", "modalUpdateItem", "modalAddItem", "modalUpload", "modalDeleteItem", "modalCancelRework", "modalSubmitRework", "modalApproveRework", "modalRejectRework"].forEach(id => {
+        ["modalSubmitRework", "modalDeleteRework", "modalCancelRework", "modalApproveRework", "modalRejectRework", "modalWaiting", "modalAddItem", "modalUpdateItem", "modalDeleteItem", "modalUpload"].forEach(id => {
             document.getElementById(id).addEventListener("hide.bs.modal", () => {
                 document.activeElement.blur();
                 document.body.focus();
             });
         });
+
+        function toggleSelectAll(source) {
+            var gv = document.getElementById("<%= gvListAddItem.ClientID %>");
+            var checkBoxes = gv.querySelectorAll("input[type='checkbox'][id*='chkSelect']");
+            checkBoxes.forEach(function (cb) {
+                cb.checked = source.checked;
+            });
+        }
 
         function showAddItem() {
             $("#modalAddItem").modal("show");

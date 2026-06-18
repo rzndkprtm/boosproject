@@ -373,7 +373,7 @@
                             </div>
                             <div class="mt-2 mt-lg-0">
                                 <a href="javascript:void(0);" runat="server" id="aAddItem" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#modalAddItem">New Item</a>
-                                <a href="javascript:void(0);" runat="server" id="aAddService" class="btn btn-outline-primary me-2" data-bs-toggle="modal" data-bs-target="#modalAddService">New Service</a>
+                                <a href="javascript:void(0);" runat="server" id="aAddService" class="btn btn-outline-secondary me-2" data-bs-toggle="modal" data-bs-target="#modalAddService">New Service</a>
                             </div>
                         </div>
                     </div>
