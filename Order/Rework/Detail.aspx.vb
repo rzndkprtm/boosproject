@@ -160,8 +160,6 @@ Partial Class Order_Rework_Detail
                 orderId = companyAlias & randomCode
                 Try
                     Using thisConn As New SqlConnection(myConn)
-                        thisConn.Open()
-
                         Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderHeaders SELECT @NewID, @OrderId, CustomerId, CONVERT(VARCHAR(200), OrderNumber) + ' - ' + 'RW', CONVERT(VARCHAR(200), OrderName) + ' - ' + 'RW', NULL, 'Rework', OrderFactory, @Status, NULL, CreatedBy, GETDATE(), NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, @InvoiceNumber, NULL, 0, NULL, 0, 'No', NULL, 1 FROM OrderHeaders WHERE Id=@OldId;", thisConn)
                             myCmd.Parameters.AddWithValue("@OldId", lblHeaderId.Text)
                             myCmd.Parameters.AddWithValue("@NewID", newHeaderId)
@@ -169,11 +167,9 @@ Partial Class Order_Rework_Detail
                             myCmd.Parameters.AddWithValue("@Status", status)
                             myCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
                             myCmd.Parameters.AddWithValue("@InvoiceNumber", orderId)
-
+                            thisConn.Open()
                             myCmd.ExecuteNonQuery()
                         End Using
-
-                        thisConn.Close()
                     End Using
 
                     success = True
