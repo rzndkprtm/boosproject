@@ -738,6 +738,7 @@ Partial Class Order_Default
             ddlType.Items.Add(New ListItem("All", ""))
             ddlType.Items.Add(New ListItem("Regular", "Regular"))
             ddlType.Items.Add(New ListItem("Builder", "Builder"))
+            ddlType.Items.Add(New ListItem("Rework", "Rework"))
 
             If Session("RoleName") = "Installer" Then
                 ddlType.Items.Clear()

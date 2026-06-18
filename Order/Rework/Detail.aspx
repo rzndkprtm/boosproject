@@ -3,8 +3,97 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <style>
-        .accordion-button::after { display: none !important; }
+
+        .accordion-button::after{
+            display:none!important;
+        }
+
+        .card{
+            border:none;
+            border-radius:12px;
+            box-shadow:0 3px 12px rgba(0,0,0,.08);
+        }
+
+        .card-header{
+            background:#fff;
+            border-bottom:1px solid #ececec;
+        }
+
+        .info-row{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:10px 0;
+            border-bottom:1px solid #f1f1f1;
+        }
+
+        .info-row:last-child{
+            border-bottom:none;
+        }
+
+        .info-label{
+            color:#6c757d;
+            font-weight:600;
+        }
+
+        .info-value{
+            font-weight:700;
+            text-align:right;
+        }
+
+        .description-box{
+            background:#fafafa;
+            border-left:4px solid #435ebe;
+            border-radius:8px;
+            padding:12px;
+            white-space:pre-line;
+        }
+
+        .action-bar{
+            position:sticky;
+            top:0;
+            z-index:100;
+            background:#fff;
+            padding:15px;
+            border-radius:10px;
+            box-shadow:0 2px 10px rgba(0,0,0,.08);
+            margin-bottom:20px;
+        }
+
+        .accordion-item{
+            border:none;
+            border-radius:10px;
+            overflow:hidden;
+            margin-bottom:18px;
+            box-shadow:0 2px 8px rgba(0,0,0,.08);
+        }
+
+        .accordion-button{
+            background:#f8f9fa;
+            font-weight:700;
+            padding:18px;
+        }
+
+        .table td{
+            vertical-align:middle;
+        }
+
+        .badge-status{
+            font-size:.9rem;
+            padding:.5rem .8rem;
+        }
+
+        .table thead{
+            background:#435ebe;
+            color:white;
+        }
+
+        .table-hover tbody tr:hover{
+            background:#f7f9ff;
+        }
+
     </style>
+
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
@@ -40,7 +129,7 @@
             <div class="col-12">
                 <div class="row mb-2" runat="server" id="divError">
                     <div class="col-12">
-                        <div class="alert alert-danger">
+                        <div class="alert alert-danger shadow-sm">
                             <span runat="server" id="msgError"></span>
                         </div>
                     </div>
@@ -54,59 +143,50 @@
                         <div class="card">
                             <div class="card-content">
                                 <div class="card-body">
-                                    <div class="form form-vertical">
-                                        <div class="row mb-2">
-                                            <div class="col-12">
-                                                <label>Customer Name</label>
-                                                <br />
-                                                <asp:Label runat="server" ID="lblCustomerName" CssClass="font-bold"></asp:Label>
-                                                <asp:Label runat="server" ID="lblCustomerId" Visible="false"></asp:Label>
-                                                <asp:Label runat="server" ID="lblCompanyId" Visible="false"></asp:Label>
-                                            </div>
-                                        </div>
-                                        <div class="row mb-2">
-                                            <div class="col-12">
-                                                <label>Order #</label>
-                                                <br />
-                                                <asp:Label runat="server" ID="lblOrderId" CssClass="font-bold"></asp:Label>
-                                            </div>
-                                        </div>
-                                        <div class="row mb-2">
-                                            <div class="col-12">
-                                                <label>Order Number</label>
-                                                <br />
-                                                <asp:Label runat="server" ID="lblOrderNumber" CssClass="font-bold"></asp:Label>
-                                            </div>
-                                        </div>
-                                        <div class="row mb-2">
-                                            <div class="col-12">
-                                                <label>Order Name</label>
-                                                <br />
-                                                <asp:Label runat="server" ID="lblOrderName" CssClass="font-bold"></asp:Label>
-                                            </div>
-                                        </div>
-                                        <hr />
-                                        <div class="row mb-2">
-                                            <div class="col-12">
-                                                <label>Created Date</label>
-                                                <br />
-                                                <asp:Label runat="server" ID="lblCreatedDate" CssClass="font-bold"></asp:Label>
-                                            </div>
-                                        </div>
-                                        <div class="row mb-2">
-                                            <div class="col-12">
-                                                <label>Created By</label>
-                                                <br />
-                                                <asp:Label runat="server" ID="lblCreatedBy" CssClass="font-bold"></asp:Label>
-                                            </div>
-                                        </div>
-                                        <div class="row mb-2">
-                                            <div class="col-12">
-                                                <label>Rework Status</label>
-                                                <br />
-                                                <asp:Label runat="server" ID="lblStatus" CssClass="font-bold"></asp:Label>
-                                            </div>
-                                        </div>
+                                    <h5 class="mb-4">Order Information</h5>
+                                    <div class="info-row">
+                                        <span class="info-label">👤 Customer</span>
+                                        <span class="info-value">
+                                            <asp:Label runat="server" ID="lblCustomerName"></asp:Label>
+                                        </span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span class="info-label">📦 Order #</span>
+                                        <span class="info-value">
+                                            <asp:Label runat="server" ID="lblOrderId"></asp:Label>
+                                        </span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span class="info-label">🔖 Order Number</span>
+                                        <span class="info-value">
+                                            <asp:Label runat="server" ID="lblOrderNumber"></asp:Label>
+                                        </span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span class="info-label">📝 Order Name</span>
+                                        <span class="info-value">
+                                            <asp:Label runat="server" ID="lblOrderName"></asp:Label>
+                                        </span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span class="info-label">📅 Created</span>
+                                        <span class="info-value">
+                                            <asp:Label runat="server" ID="lblCreatedDate"></asp:Label>
+                                        </span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span class="info-label">👨 Created By</span>
+                                        <span class="info-value">
+                                            <asp:Label runat="server" ID="lblCreatedBy"></asp:Label>
+                                        </span>
+                                    </div>
+                                    <div class="info-row">
+                                        <span class="info-label">🚦 Status</span>
+                                        <span class="info-value">
+                                            <span class="badge bg-success badge-status">
+                                                <asp:Label runat="server" ID="lblStatus"></asp:Label>
+                                            </span>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -122,7 +202,8 @@
                                 <div class="card-header">
                                     <div class="d-flex justify-content-between align-items-center flex-wrap">
                                         <div>
-                                            <h3 class="card-title">Your Item</h3>
+                                            <h4 class="mb-0">Your Rework Items</h4>
+                                            <small class="text-muted">Manage all rework requests below</small>
                                         </div>
                                         <div>
                                             <a href="javascript:void(0);" runat="server" id="aAddItem" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddItem">Add Item</a>
@@ -134,38 +215,29 @@
                                         <asp:Repeater runat="server" ID="rptRework" OnItemDataBound="rptRework_ItemDataBound">
                                             <ItemTemplate>
                                                 <div class="accordion-item">
-                                                    <h2 class="accordion-header" id="heading<%# Container.ItemIndex %>">
-                                                        <button class="accordion-button" type="button">
-                                                            <%# Eval("TitleItem") %>
-                                                        </button>
-                                                    </h2>
+                                                    <div class="card mb-3 shadow-sm border-0">
+                                                        <div class="card-header bg-light">
+                                                            <div class="d-flex justify-content-between align-items-center">
+                                                                <div>
+                                                                    <h5 class="mb-1"><%# Eval("TitleItem") %></h5>
+                                                                    <small class="text-muted"><%# Eval("Category") %></small>
+                                                                </div>
+                                                                <span class="badge bg-primary">
+                                                                    <%# Eval("InstallDate","{0:dd MMM yyyy}") %>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                     <div class="accordion-collapse show">
                                                         <div class="accordion-body">
                                                             <div class="row">
                                                                 <div class="col-8">
                                                                     <div class="row mb-3">
                                                                         <div class="col-12 col-sm-12 col-lg-3">
-                                                                            <label>Category :</label>
-                                                                        </div>
-                                                                        <div class="col-12 col-sm-12 col-lg-8">
-                                                                            <%# Eval("Category") %>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-12 col-sm-12 col-lg-3">
-                                                                            <label>Install Date :</label>
-                                                                        </div>
-                                                                        <div class="col-12 col-sm-12 col-lg-8">
-                                                                            <%# Eval("InstallDate", "{0:dd MMM yyyy}") %>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="row mb-3">
-                                                                        <div class="col-12 col-sm-12 col-lg-3">
                                                                             <label>Description :</label>
                                                                         </div>
                                                                         <div class="col-12 col-sm-12 col-lg-6">
-                                                                            <asp:Literal runat="server" Text='<%# Eval("Description").ToString().Replace(vbCrLf, "<br/>").Replace(vbLf, "<br/>") %>' Mode="PassThrough">
-                                                                            </asp:Literal>
+                                                                            <asp:Literal runat="server" Text='<%# Eval("Description").ToString().Replace(vbCrLf,"<br/>").Replace(vbLf,"<br/>") %>' Mode="PassThrough"></asp:Literal>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -174,7 +246,7 @@
                                                                     <a href="javascript:void(0);" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#modalDeleteItem" onclick="showDeleteItem('<%# Eval("Id") %>')"> Delete Item</a>
                                                                 </div>
                                                             </div>
-                                                            <div class="row mb-3">
+                                                            <div class="row mt-2 mb-3">
                                                                 <div class="col-12">
                                                                     <div class="table-responsive">
                                                                         <asp:GridView runat="server" ID="gvFiles" AutoGenerateColumns="false" ShowHeaderWhenEmpty="True" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" CssClass="table table-bordered table-hover mb-0" OnRowCommand="gvFiles_RowCommand">
@@ -260,22 +332,6 @@
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnDeleteRework" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDeleteRework_Click" OnClientClick="return showWaiting();" />
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade text-center" id="modalCancelRework" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-danger">
-                    <h5 class="modal-title white">Cancel Rework</h5>
-                </div>
-                <div class="modal-body text-center py-4">
-                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
-                </div>
-                <div class="modal-footer">
-                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnCancelRework" CssClass="btn btn-danger" Text="Confirm" OnClick="btnCancelRework_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>
@@ -465,10 +521,12 @@
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblReworkId"></asp:Label>
         <asp:Label runat="server" ID="lblHeaderId"></asp:Label>
+        <asp:Label runat="server" ID="lblCustomerId"></asp:Label>
+        <asp:Label runat="server" ID="lblCompanyId"></asp:Label>
     </div>
 
     <script type="text/javascript">
-        ["modalSubmitRework", "modalDeleteRework", "modalCancelRework", "modalApproveRework", "modalRejectRework", "modalWaiting", "modalAddItem", "modalUpdateItem", "modalDeleteItem", "modalUpload"].forEach(id => {
+        ["modalSubmitRework", "modalDeleteRework", "modalApproveRework", "modalRejectRework", "modalWaiting", "modalAddItem", "modalUpdateItem", "modalDeleteItem", "modalUpload"].forEach(id => {
             document.getElementById(id).addEventListener("hide.bs.modal", () => {
                 document.activeElement.blur();
                 document.body.focus();
