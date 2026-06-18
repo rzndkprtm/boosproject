@@ -390,7 +390,9 @@ Partial Class Order_Rework_Detail
             url = String.Format("~/order/rework/detail?reworkid={0}", lblReworkId.Text)
             Response.Redirect(url, False)
         Catch ex As Exception
-            MessageError(True, ex.ToString)
+            MessageError_AddItem(True, ex.ToString)
+            ClientScript.RegisterStartupScript(Me.GetType(), "showAddItem", thisScript, True)
+            Exit Sub
         End Try
     End Sub
 
