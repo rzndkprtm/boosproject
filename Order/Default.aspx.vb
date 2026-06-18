@@ -610,6 +610,8 @@ Partial Class Order_Default
                          End Function)
 
             End If
+
+            MessageError(True, checkOcean)
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
