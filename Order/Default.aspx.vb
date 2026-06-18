@@ -604,7 +604,6 @@ Partial Class Order_Default
 
             Dim checkOcean As Integer = orderClass.GetItemData_Integer("SELECT COUNT(OrderDetails.Id) FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.HeaderId='" & thisId & "' AND OrderDetails.Active=1 AND Products.DesignId='15'")
             If checkOcean > 0 Then
-                MessageError(True, checkOcean)
                 Task.Run(Async Function()
                              Dim svc As New ShutterOceanService()
                              Await svc.SendOrderAsync(thisId)
