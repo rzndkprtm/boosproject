@@ -105,35 +105,10 @@ Partial Class Order_Rework_Detail
             End Using
 
             Dim folderPath As String = Path.Combine(Server.MapPath("~/File/Rework"), lblReworkId.Text)
-
             If Directory.Exists(folderPath) Then
                 Directory.Delete(folderPath, True)
             End If
 
-            url = String.Format("~/order/rework/detail?reworkid={0}", lblReworkId.Text)
-            Response.Redirect(url, False)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                If Session("RoleName") = "Customer" Then
-                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
-                End If
-            End If
-        End Try
-    End Sub
-
-    Protected Sub btnCancelRework_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        Try
-            Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderReworks SET Status='Canceled' WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblReworkId.Text)
-
-                    thisConn.Open()
-                    myCmd.ExecuteNonQuery()
-                End Using
-            End Using
             url = String.Format("~/order/rework/detail?reworkid={0}", lblReworkId.Text)
             Response.Redirect(url, False)
         Catch ex As Exception
@@ -168,8 +143,6 @@ Partial Class Order_Rework_Detail
                 End Using
             End Using
 
-            Dim orderType As String = orderClass.GetItemData("SELECT OrderType FROM OrderHeaders WHERE Id='" & lblHeaderId.Text & "'")
-
             Dim companyAlias As String = orderClass.GetCompanyAliasByCustomer(lblCustomerId.Text)
 
             Dim success As Boolean = False
@@ -189,7 +162,7 @@ Partial Class Order_Rework_Detail
                     Using thisConn As New SqlConnection(myConn)
                         thisConn.Open()
 
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderHeaders SELECT @NewID, @OrderId, CustomerId, CONVERT(VARCHAR(200), OrderNumber) + ' - ' + 'RW', CONVERT(VARCHAR(200), OrderName) + ' - ' + 'RW', NULL, OrderType, OrderFactory, @Status, NULL, CreatedBy, GETDATE(), NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, @InvoiceNumber, NULL, 0, NULL, 0, 'No', NULL, 1 FROM OrderHeaders WHERE Id=@OldId;", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderHeaders SELECT @NewID, @OrderId, CustomerId, CONVERT(VARCHAR(200), OrderNumber) + ' - ' + 'RW', CONVERT(VARCHAR(200), OrderName) + ' - ' + 'RW', NULL, 'Rework', OrderFactory, @Status, NULL, CreatedBy, GETDATE(), NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, @InvoiceNumber, NULL, 0, NULL, 0, 'No', NULL, 1 FROM OrderHeaders WHERE Id=@OldId;", thisConn)
                             myCmd.Parameters.AddWithValue("@OldId", lblHeaderId.Text)
                             myCmd.Parameters.AddWithValue("@NewID", newHeaderId)
                             myCmd.Parameters.AddWithValue("@OrderId", orderId)
@@ -214,22 +187,11 @@ Partial Class Order_Rework_Detail
             Loop
 
             Using thisConn As New SqlConnection(myConn)
-                thisConn.Open()
-
                 Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderQuotes VALUES(@NewID, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00)", thisConn)
                     myCmd.Parameters.AddWithValue("@NewID", newHeaderId)
+                    thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
-
-                If orderType = "Builder" Then
-                    Using myCmd As New SqlCommand("INSERT INTO OrderBuilders(Id) VALUES (@Id)", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", newHeaderId)
-
-                        myCmd.ExecuteNonQuery()
-                    End Using
-                End If
-
-                thisConn.Close()
             End Using
 
             dataLog = {"OrderHeaders", newHeaderId, Session("LoginId").ToString(), "Order Created | Rework Approved"}
@@ -261,7 +223,7 @@ Partial Class Order_Rework_Detail
                 orderClass.Logs(dataLog)
             Next
 
-            If lblCompanyId.Text = "2" AndAlso orderType = "Regular" Then
+            If lblCompanyId.Text = "2" Then
                 Dim thisId As String = orderClass.GetNewOrderItemId()
                 Dim productId As String = orderClass.GetItemData("SELECT Id FROM Products WHERE Name='Fuel Surcharge' AND (Status='In Stock' OR Status='Limited Stock')")
                 Dim productGroupId As String = orderClass.GetItemData("SELECT Id FROM PriceProductGroups WHERE Name='Fuel Surcharge' AND Active=1")
@@ -430,6 +392,124 @@ Partial Class Order_Rework_Detail
         End Try
     End Sub
 
+    Protected Sub UpdateItem_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim thisId As String = txtDetailId.Text
+
+            Using thisConn As New SqlConnection(myConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderReworkDetails SET Category=@Category, InstallDate=@InstallDate, Description=@Description WHERE Id=@Id", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", thisId)
+                    myCmd.Parameters.AddWithValue("@Category", ddlCategory.SelectedValue)
+                    myCmd.Parameters.AddWithValue("@InstallDate", If(String.IsNullOrEmpty(txtInstallDate.Text), CType(DBNull.Value, Object), txtInstallDate.Text))
+                    myCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
+
+                    thisConn.Open()
+                    myCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            url = String.Format("~/order/rework/detail?reworkid={0}", lblReworkId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                If Session("RoleName") = "Customer" Then
+                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
+                End If
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnDeleteItem_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim thisId As String = txtIdDeleteItem.Text
+
+            Using thisConn As New SqlConnection(myConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderReworkDetails SET Active=0 WHERE Id=@Id", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", thisId)
+
+                    thisConn.Open()
+                    myCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Dim folderPath As String = Server.MapPath(String.Format("~/File/Rework/{0}/{1}", lblReworkId.Text, thisId))
+            If Directory.Exists(folderPath) Then
+                Directory.Delete(folderPath, True)
+            End If
+
+            url = String.Format("~/order/rework/detail?reworkid={0}", lblReworkId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                If Session("RoleName") = "Customer" Then
+                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
+                End If
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnUpload_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim thisId As String = txtUploadId.Text
+
+            Dim folderPath As String = Server.MapPath(String.Format("~/File/Rework/{0}/{1}", lblReworkId.Text, thisId))
+
+            If Not Directory.Exists(folderPath) Then
+                Directory.CreateDirectory(folderPath)
+            End If
+
+            Dim fileName As String = Path.GetFileName(fuFile.FileName)
+            fuFile.SaveAs(Path.Combine(folderPath, fileName))
+
+            url = String.Format("~/order/rework/detail?reworkid={0}", lblReworkId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                If Session("RoleName") = "Customer" Then
+                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
+                End If
+            End If
+        End Try
+    End Sub
+
+    Protected Sub DownloadZip_Command(sender As Object, e As CommandEventArgs)
+        Try
+            Dim itemId As String = e.CommandArgument.ToString()
+
+            Dim stringPath As String = String.Format("~/File/Rework/{0}/{1}", lblReworkId.Text, itemId)
+            Dim folderPath As String = Server.MapPath(stringPath)
+
+            If Not Directory.Exists(folderPath) Then
+                Exit Sub
+            End If
+
+            Dim zipName As String = "ReworkFiles_" & itemId & ".zip"
+            Dim tempZip As String = Path.Combine(Path.GetTempPath(), zipName)
+
+            If File.Exists(tempZip) Then
+                File.Delete(tempZip)
+            End If
+
+            ZipFile.CreateFromDirectory(folderPath, tempZip)
+
+            Response.Clear()
+            Response.ContentType = "application/zip"
+            Response.AddHeader("content-disposition", "attachment; filename=" & zipName)
+            Response.TransmitFile(tempZip)
+            Response.End()
+        Catch ex As Exception
+        End Try
+    End Sub
+
     Protected Sub rptRework_ItemDataBound(sender As Object, e As RepeaterItemEventArgs)
         Try
             If e.Item.ItemType = ListItemType.Item OrElse e.Item.ItemType = ListItemType.AlternatingItem Then
@@ -482,124 +562,6 @@ Partial Class Order_Rework_Detail
         End Try
     End Sub
 
-    Protected Sub DownloadZip_Command(sender As Object, e As CommandEventArgs)
-        Try
-            Dim itemId As String = e.CommandArgument.ToString()
-
-            Dim stringPath As String = String.Format("~/File/Rework/{0}/{1}", lblReworkId.Text, itemId)
-            Dim folderPath As String = Server.MapPath(stringPath)
-
-            If Not Directory.Exists(folderPath) Then
-                Exit Sub
-            End If
-
-            Dim zipName As String = "ReworkFiles_" & itemId & ".zip"
-            Dim tempZip As String = Path.Combine(Path.GetTempPath(), zipName)
-
-            If File.Exists(tempZip) Then
-                File.Delete(tempZip)
-            End If
-
-            ZipFile.CreateFromDirectory(folderPath, tempZip)
-
-            Response.Clear()
-            Response.ContentType = "application/zip"
-            Response.AddHeader("content-disposition", "attachment; filename=" & zipName)
-            Response.TransmitFile(tempZip)
-            Response.End()
-        Catch ex As Exception
-        End Try
-    End Sub
-
-    Protected Sub UpdateItem_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        Try
-            Dim thisId As String = txtDetailId.Text
-
-            Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderReworkDetails SET Category=@Category, InstallDate=@InstallDate, Description=@Description WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.Parameters.AddWithValue("@Category", ddlCategory.SelectedValue)
-                    myCmd.Parameters.AddWithValue("@InstallDate", If(String.IsNullOrEmpty(txtInstallDate.Text), CType(DBNull.Value, Object), txtInstallDate.Text))
-                    myCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
-
-                    thisConn.Open()
-                    myCmd.ExecuteNonQuery()
-                End Using
-            End Using
-
-            url = String.Format("~/order/rework/detail?reworkid={0}", lblReworkId.Text)
-            Response.Redirect(url, False)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                If Session("RoleName") = "Customer" Then
-                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
-                End If
-            End If
-        End Try
-    End Sub
-
-    Protected Sub btnUpload_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        Try
-            Dim thisId As String = txtUploadId.Text
-
-            Dim folderPath As String = Server.MapPath(String.Format("~/File/Rework/{0}/{1}", lblReworkId.Text, thisId))
-
-            If Not Directory.Exists(folderPath) Then
-                Directory.CreateDirectory(folderPath)
-            End If
-
-            Dim fileName As String = Path.GetFileName(fuFile.FileName)
-            fuFile.SaveAs(Path.Combine(folderPath, fileName))
-
-            url = String.Format("~/order/rework/detail?reworkid={0}", lblReworkId.Text)
-            Response.Redirect(url, False)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                If Session("RoleName") = "Customer" Then
-                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
-                End If
-            End If
-        End Try
-    End Sub
-
-    Protected Sub btnDeleteItem_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        Try
-            Dim thisId As String = txtIdDeleteItem.Text
-
-            Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderReworkDetails SET Active=0 WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-
-                    thisConn.Open()
-                    myCmd.ExecuteNonQuery()
-                End Using
-            End Using
-
-            Dim folderPath As String = Server.MapPath("~/File/Rework/" & thisId)
-            If Directory.Exists(folderPath) Then
-                Directory.Delete(folderPath, True)
-            End If
-
-            url = String.Format("~/order/rework/detail?reworkid={0}", lblReworkId.Text)
-            Response.Redirect(url, False)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                If Session("RoleName") = "Customer" Then
-                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
-                End If
-            End If
-        End Try
-    End Sub
-
     Protected Sub BindDataRework(reworkId As String)
         Try
             Dim reworkData As DataRow = orderClass.GetDataRow("SELECT OrderReworks.*, Logins.FullName AS CreatedFullName, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, OrderHeaders.OrderNumber AS OrderNumber, OrderHeaders.OrderName AS OrderName, OrderHeaders.CustomerId AS CustomerId, OrderHeaders.OrderId FROM OrderReworks LEFT JOIN OrderHeaders ON OrderReworks.HeaderId=OrderHeaders.Id LEFT JOIN Logins ON OrderReworks.CreatedBy=Logins.Id LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderReworks.Id='" & reworkId & "'")
@@ -623,7 +585,7 @@ Partial Class Order_Rework_Detail
             End If
             lblCreatedBy.Text = reworkData("CreatedFullName").ToString()
 
-            rptRework.DataSource = orderClass.GetDataTable("SELECT OrderReworkDetails.*, 'Item ID ' + CONVERT(VARCHAR, OrderDetails.Id) + ' - ' + OrderDetails.Room AS TitleItem FROM OrderReworkDetails LEFT JOIN OrderDetails ON OrderReworkDetails.ItemId=OrderDetails.Id WHERE OrderReworkDetails.ReworkId='" & reworkId & "' AND OrderReworkDetails.Active=1 ORDER BY Id ASC")
+            rptRework.DataSource = orderClass.GetDataTable("SELECT OrderReworkDetails.*, 'Item : ' + OrderDetails.Room AS TitleItem FROM OrderReworkDetails LEFT JOIN OrderDetails ON OrderReworkDetails.ItemId=OrderDetails.Id WHERE OrderReworkDetails.ReworkId='" & reworkId & "' AND OrderReworkDetails.Active=1 ORDER BY Id ASC")
             rptRework.DataBind()
 
             BindAddItem(lblHeaderId.Text)
