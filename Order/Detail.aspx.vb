@@ -2545,6 +2545,9 @@ Partial Class Order_Detail
                 End If
                 If lblOrderStatus.Text = "Shipped Out" Then
                     btnInvoice.Visible = True
+                    If isReworkOrder = False AndAlso customerOnStop = "No" Then
+                        aReworkOrder.Visible = True
+                    End If
                 End If
                 If lblOrderStatus.Text = "Completed" Then
                     btnInvoice.Visible = True
