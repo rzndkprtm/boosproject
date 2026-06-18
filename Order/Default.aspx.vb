@@ -597,6 +597,29 @@ Partial Class Order_Default
         End Try
     End Sub
 
+    Protected Sub btnOcean_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim thisId As String = txtOceanId.Text
+
+            Dim checkOcean As Integer = orderClass.GetItemData_Integer("SELECT COUNT(OrderDetails.Id) FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.HeaderId='" & thisId & "' AND OrderDetails.Active=1 AND Products.DesignId='15'")
+            If checkOcean > 0 Then
+                Task.Run(Async Function()
+                             Dim svc As New ShutterOceanService()
+                             Await svc.SendOrderAsync(thisId)
+                         End Function)
+
+            End If
+
+            Response.Redirect("~/order", False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
     Protected Sub BindStatusOrder()
         ddlStatus.Items.Clear()
         Try
@@ -1057,6 +1080,16 @@ Partial Class Order_Default
             If Session("RoleName") = "IT" Then Return True
             If Session("RoleName") = "Factory Office" AndAlso (status = "In Production" OrElse status = "Shipped Out") Then Return True
             If Session("RoleName") = "Export" AndAlso (status = "In Production" OrElse status = "Shipped Out") Then Return True
+            Return False
+        End If
+        Return False
+    End Function
+
+    Protected Function VisibleChina(active As Boolean, status As String, factory As String) As Boolean
+        If active = True Then
+            If Session("RoleName") = "Developer" AndAlso factory.Contains("CHINA") AndAlso (status = "New Order" OrElse status = "In Production" OrElse status = "On Hold") Then
+                Return True
+            End If
             Return False
         End If
         Return False
