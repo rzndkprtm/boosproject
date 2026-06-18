@@ -610,8 +610,6 @@ Partial Class Order_Default
                          End Function)
 
             End If
-
-            Response.Redirect("~/order", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
