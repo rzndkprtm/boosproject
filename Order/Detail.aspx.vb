@@ -2298,7 +2298,7 @@ Partial Class Order_Detail
                         aSendInvoice.Visible = True
                     End If
 
-                    If isReworkOrder = False Then
+                    If isReworkOrder = False AndAlso lblOrderType.Text = "Regular" Then
                         aReworkOrder.Visible = True
                     End If
                 End If
@@ -2444,7 +2444,7 @@ Partial Class Order_Detail
                     liDividerInvoice.Visible = True
                     liUpdateInvoiceData.Visible = True
 
-                    If isReworkOrder = False Then aReworkOrder.Visible = True
+                    If isReworkOrder = False AndAlso lblOrderType.Text = "Regular" Then aReworkOrder.Visible = True
                 End If
                 If lblOrderStatus.Text = "Completed" Then
                     If isReworkOrder = False Then aReworkOrder.Visible = True
@@ -2545,7 +2545,7 @@ Partial Class Order_Detail
                 End If
                 If lblOrderStatus.Text = "Shipped Out" Then
                     btnInvoice.Visible = True
-                    If isReworkOrder = False AndAlso customerOnStop = "No" Then
+                    If isReworkOrder = False AndAlso lblOrderType.Text = "Regular" AndAlso customerOnStop = "No" Then
                         aReworkOrder.Visible = True
                     End If
                 End If
@@ -2718,7 +2718,7 @@ Partial Class Order_Detail
                     aCancelOrder.Visible = True
                 End If
                 If lblOrderStatus.Text = "Shipped Out" Then
-                    If isReworkOrder = False Then
+                    If isReworkOrder = False AndAlso lblOrderType.Text = "Regular" Then
                         aReworkOrder.Visible = True
                     End If
                 End If
@@ -2772,7 +2772,7 @@ Partial Class Order_Detail
                     End If
                 End If
                 If lblOrderStatus.Text = "Completed" Then
-                    If isReworkOrder = False AndAlso customerOnStop = "No" Then
+                    If isReworkOrder = False AndAlso customerOnStop = "No" AndAlso lblOrderType.Text = "Regular" Then
                         aReworkOrder.Visible = True
                     End If
                 End If
