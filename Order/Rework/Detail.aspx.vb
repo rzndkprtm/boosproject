@@ -7,7 +7,6 @@ Partial Class Order_Rework_Detail
     Inherits Page
 
     Dim orderClass As New OrderClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataLog As Object() = Nothing
     Dim url As String = String.Empty
@@ -623,6 +622,8 @@ Partial Class Order_Rework_Detail
                 If Session("RoleName") = "Sales" Then
                     aCancelRework.Visible = True
                     aSubmitRework.Visible = True
+                    aAddItem.Visible = True
+                    If gvListAddItem.Rows.Count = 0 Then aAddItem.Visible = False
                 End If
             End If
 
