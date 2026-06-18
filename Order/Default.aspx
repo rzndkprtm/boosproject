@@ -156,6 +156,9 @@
                                                             <li runat="server" visible='<%# VisibleDownloadBOE(Eval("Status").ToString(), Eval("Download").ToString(), Eval("Active")) %>'>
                                                                 <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return dataStatusOrder(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), "Download BOE", "") %>'>Download BOE</a>
                                                             </li>
+                                                            <li runat="server" visible='<%# VisibleChina(Eval("Active"), Eval("Status").ToString(), Eval("OrderFactory")) %>'>
+                                                                <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalOcean" onclick='<%# String.Format("return dataOcean(`{0}`);", Eval("Id").ToString()) %>'>Shutter Ocean</a>
+                                                            </li>
                                                             <li runat="server" visible='<%# VisibleLog() %>'>
                                                                 <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('OrderHeaders', '<%# Eval("Id") %>')">Log</a>
                                                             </li>
@@ -402,6 +405,23 @@
             </div>
         </div>
     </div>
+    <div class="modal fade text-center" id="modalOcean" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <h5 class="modal-title white">Shutter Ocean</h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <asp:TextBox runat="server" ID="txtOceanId" style="display:none;"></asp:TextBox>
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnOcean" CssClass="btn btn-info" Text="Confirm" OnClick="btnOcean_Click" OnClientClick="return showWaiting($(this).closest('.modal').attr('id'));" />
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal modal-blur fade" id="modalLog" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -515,6 +535,9 @@
         function showCancelOrder() {
             $("#modalCancelOrder").modal("show");
         }
+        function dataOcean(id) {
+            document.getElementById("<%=txtOceanId.ClientID %>").value = id;
+        }
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
             $("#tblLogs tbody").html("");
@@ -558,7 +581,7 @@
             }, 5000);
             return true;
         }
-        ["modalBOEDownload", "modalShipment", "modalStatusOrder", "modalDuplicateOrder", "modalCancelOrder", "modalShipmentOrder", "modalLog"].forEach(function (id) {
+        ["modalBOEDownload", "modalShipment", "modalStatusOrder", "modalDuplicateOrder", "modalCancelOrder", "modalShipmentOrder", "modalOcean", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
