@@ -928,7 +928,7 @@ Public Class MailingClass
             If orderFactory.Contains("CHINA") Then
                 myMail.CC.Add("no-reply@ordersblindonline.com")
             End If
-            Dim checkTeguh As Integer = GetItemData_Integer("SELECT COUNT(OrderDetails.*) FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND Products.DesignId='21'")
+            Dim checkTeguh As Integer = GetItemData_Integer("SELECT COUNT(OrderDetails.Id) FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND Products.DesignId='21'")
             If checkTeguh > 0 Then
                 myMail.CC.Add("teguh@rimbabr.com")
             End If
