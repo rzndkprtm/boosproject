@@ -267,9 +267,9 @@
                     <h5 class="modal-title white" id="titleStatus"></h5>
                 </div>
                 <div class="modal-body text-center py-4">
-                    <asp:TextBox runat="server" ID="txtStatusOrderId"></asp:TextBox>
-                    <asp:TextBox runat="server" ID="txtStatusOrderNew"></asp:TextBox>
-                    <asp:TextBox runat="server" ID="txtStatusOrderOld"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtStatusOrderId" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtStatusOrderNew" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtStatusOrderOld" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
