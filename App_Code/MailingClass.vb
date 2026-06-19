@@ -85,6 +85,26 @@ Public Class MailingClass
         Return result
     End Function
 
+    Public Function GetItemData_Integer(thisString As String) As Integer
+        Dim result As Integer = 0
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                thisConn.Open()
+                Using myCmd As New SqlCommand(thisString, thisConn)
+                    Using rdResult = myCmd.ExecuteReader
+                        While rdResult.Read
+                            result = rdResult.Item(0)
+                        End While
+                    End Using
+                End Using
+                thisConn.Close()
+            End Using
+        Catch ex As Exception
+            result = 0
+        End Try
+        Return result
+    End Function
+
     Public Function Decrypt(cipherText As String) As String
         Dim EncryptionKey As String = "BUM11ND4H9L084L"
         Dim cipherBytes As Byte() = Convert.FromBase64String(cipherText)
@@ -694,6 +714,7 @@ Public Class MailingClass
             Dim orderName As String = orderData("OrderName").ToString()
             Dim orderNote As String = orderData("OrderNote").ToString()
             Dim orderCreated As String = orderData("CreatedBy").ToString()
+            Dim orderFactory As String = orderData("OrderFactory").ToString()
 
             Dim safeNote As String = HttpUtility.HtmlEncode(orderNote)
             safeNote = safeNote.Replace(vbCrLf, "<br>").Replace(vbLf, "<br>")
@@ -777,13 +798,9 @@ Public Class MailingClass
                 End If
             Next
 
-            If Not String.IsNullOrWhiteSpace(mailBcc) Then
-                For Each thisMail As String In mailBcc.Split(";"c)
-                    If Not String.IsNullOrWhiteSpace(thisMail) Then
-                        myMail.Bcc.Add(thisMail.Trim())
-                    End If
-                Next
-            End If
+            'If orderFactory.Contains("CHINA") Then
+            '    myMail.CC.Add("no-reply@ordersblindonline.com")
+            'End If
 
             myMail.Body = mailBody
             myMail.IsBodyHtml = True
@@ -826,6 +843,7 @@ Public Class MailingClass
             Dim orderNumber As String = orderData("OrderNumber").ToString()
             Dim orderName As String = orderData("OrderName").ToString()
             Dim orderNote As String = orderData("OrderNote").ToString()
+            Dim orderFactory As String = orderData("OrderFactory").ToString()
 
             Dim safeNote As String = HttpUtility.HtmlEncode(orderNote)
             safeNote = safeNote.Replace(vbCrLf, "<br>").Replace(vbLf, "<br>")
@@ -904,6 +922,22 @@ Public Class MailingClass
                 Dim thisMail As String = String.Empty
                 For Each thisMail In thisArray
                     myMail.CC.Add(thisMail)
+                Next
+            End If
+
+            If orderFactory.Contains("CHINA") Then
+                myMail.CC.Add("no-reply@ordersblindonline.com")
+            End If
+            'Dim checkTeguh As Integer = GetItemData_Integer("SELECT COUNT(OrderDetails.*) FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND Products.DesignId='21'")
+            'If checkTeguh > 0 Then
+            '    myMail.CC.Add("teguh@rimbabr.com")
+            'End If
+
+            If Not String.IsNullOrWhiteSpace(mailBcc) Then
+                For Each thisMail As String In mailBcc.Split(";"c)
+                    If Not String.IsNullOrWhiteSpace(thisMail) Then
+                        myMail.Bcc.Add(thisMail.Trim())
+                    End If
                 Next
             End If
 
