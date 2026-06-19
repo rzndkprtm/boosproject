@@ -542,6 +542,57 @@
                 writer.WriteEndElement()
             End If
 
+            If designName = "Soft Roman" Then
+                Dim kitId As String = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "'")
+                Dim webFabricId As String = thisData("FabricColourId").ToString()
+                Dim boeFabricId As String = GetItemData("SELECT BoeId FROM FabricColours WHERE Id='" & webFabricId & "'")
+
+                Dim chainId As String = thisData("ChainId").ToString()
+                Dim boeChainId As String = String.Empty
+                Dim mechanismeOption As String = String.Empty
+                Dim controlColour As String = GetItemData("SELECT Name FROM Chains WHERE Id='" & chainId & "'")
+                If controlName = "Chain" Then
+                    boeChainId = GetItemData("SELECT BoeId FROM Chains WHERE Id='" & chainId & "'")
+                    mechanismeOption = "Covered"
+                End If
+
+                If String.IsNullOrEmpty(kitId) Then Continue While
+                If String.IsNullOrEmpty(boeFabricId) Then Continue While
+
+                Dim valanceOption As String = thisData("ValanceOption").ToString()
+                If valanceOption = "Cover Valance and Cord at Front" Then valanceOption = "Cover Valance"
+                If valanceOption = "No Cover Valance and Cord at Back" Then valanceOption = "No Cover Valance"
+
+                writer.WriteStartElement("OrderDetails")
+                writer.WriteAttributeString("OrddID", thisData("Id").ToString())
+                writer.WriteAttributeString("FKOrdID", thisData("HeaderId").ToString())
+                writer.WriteAttributeString("Qty", thisData("Qty").ToString())
+                writer.WriteAttributeString("Room", thisData("Room").ToString())
+                writer.WriteAttributeString("Mounting", thisData("Mounting").ToString())
+
+                writer.WriteAttributeString("BlindType", "Roman")
+                writer.WriteAttributeString("OrderType", blindName)
+                writer.WriteAttributeString("TubeName", tubeName)
+                writer.WriteAttributeString("IDHK", kitId)
+                writer.WriteAttributeString("FabricID", boeFabricId)
+                writer.WriteAttributeString("IDChain", boeChainId)
+                writer.WriteAttributeString("Width", thisData("Width").ToString())
+                writer.WriteAttributeString("Drop", thisData("Drop").ToString())
+                writer.WriteAttributeString("Baton", thisData("Batten").ToString())
+                writer.WriteAttributeString("RomanHR", "Timber")
+                writer.WriteAttributeString("ControlPosition", thisData("ControlPosition").ToString())
+                writer.WriteAttributeString("RomanMechanismType", controlName)
+                writer.WriteAttributeString("RomanChainColour", controlColour)
+                writer.WriteAttributeString("RomanChainOption", mechanismeOption)
+                writer.WriteAttributeString("RomanChainLength", thisData("ControlLengthValue").ToString())
+                writer.WriteAttributeString("RomanValanceOption", valanceOption)
+
+                writer.WriteAttributeString("TotalItems", thisData("TotalItems").ToString())
+                writer.WriteAttributeString("MarkUp", thisData("MarkUp").ToString())
+                writer.WriteAttributeString("Notes", thisData("Notes").ToString())
+                writer.WriteEndElement()
+            End If
+
             If designName = "Privacy Venetian" Then
                 Dim venId As String = GetItemData("SELECT VenId FROM ProductKits WHERE ProductId='" & productId & "'")
 

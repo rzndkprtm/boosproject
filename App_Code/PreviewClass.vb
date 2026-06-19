@@ -1244,6 +1244,108 @@ Public Class PreviewClass
             End Try
             ' END ROMAN BLIND
 
+            ' START SOFT ROMAN
+            Try
+                Dim params As New List(Of SqlParameter) From {
+                    New SqlParameter("@HeaderId", headerId)
+                }
+                Dim romanData As DataTable = GetDataTableSP("sp_GetSoftRomanData", params)
+
+                If romanData.Rows.Count > 0 Then
+                    pageEvent.PageTitle = "Soft"
+                    pageEvent.PageTitle2 = "Roman"
+                    Dim table As New PdfPTable(7)
+                    table.WidthPercentage = 100
+
+                    Dim items(19, romanData.Rows.Count - 1) As String
+
+                    For i As Integer = 0 To romanData.Rows.Count - 1
+                        Dim number As Integer = i + 1
+
+                        Dim controlName As String = romanData.Rows(i)("ControlName").ToString()
+
+                        Dim chainName As String = GetItemData("SELECT Name FROM Chains WHERE Id='" & romanData.Rows(i)("ChainId").ToString() & "'")
+
+                        Dim controlColour As String = String.Empty
+                        Dim remoteType As String = String.Empty
+
+                        If controlName = "Chain" Then controlColour = chainName
+                        If controlName = "Reg Cord Lock" OrElse controlName = "Cord Lock" Then
+                            controlColour = romanData.Rows(i)("ControlColour").ToString()
+                        End If
+                        If controlName.Contains("Alpha DC Motor") OrElse controlName.Contains("Somfy") OrElse controlName = "Motorised" Then
+                            remoteType = chainName
+                        End If
+
+                        Dim controlLength As String = romanData.Rows(i)("ControlLength").ToString()
+                        Dim controlLengthValue As String = romanData.Rows(i)("ControlLengthValue").ToString()
+                        Dim controlLengthText As String = controlLength
+                        If controlLength = "Custom" Then
+                            controlLengthText = String.Format("{0} : {1}mm", controlLength, controlLengthValue)
+                        End If
+
+                        items(0, i) = "Item : " & number
+                        items(1, i) = romanData.Rows(i)("Room").ToString()
+                        items(2, i) = romanData.Rows(i)("Mounting").ToString()
+                        items(3, i) = romanData.Rows(i)("FabricName").ToString()
+                        items(4, i) = romanData.Rows(i)("FabricColour").ToString()
+                        items(5, i) = romanData.Rows(i)("Width").ToString()
+                        items(6, i) = romanData.Rows(i)("Drop").ToString()
+                        items(7, i) = romanData.Rows(i)("TubeName").ToString()
+                        items(8, i) = romanData.Rows(i)("ControlName").ToString()
+                        items(9, i) = romanData.Rows(i)("ControlPosition").ToString()
+                        items(10, i) = controlColour
+                        items(11, i) = controlLengthText
+                        items(12, i) = remoteType
+                        items(13, i) = romanData.Rows(i)("Charger").ToString()
+                        items(14, i) = romanData.Rows(i)("ExtensionCable").ToString()
+                        items(15, i) = romanData.Rows(i)("Supply").ToString()
+                        items(16, i) = romanData.Rows(i)("ValanceOption").ToString()
+                        items(17, i) = romanData.Rows(i)("Batten").ToString()
+                        items(18, i) = romanData.Rows(i)("Notes").ToString()
+                    Next
+
+                    For i As Integer = 0 To items.GetLength(1) - 1 Step 6
+                        If i > 0 Then doc.NewPage()
+
+                        Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
+                        Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
+
+                        Dim headers As String() = {"", "Location", "Mounting", "Fabric Type", "Fabric Colour", "Width (mm)", "Drop (mm)", "Roman Style", "Control Type", "Control Position", "Control Colour", "Control Length", "Remote Type", "Motor Charger", "Extension Cable", "Neo Box", "Valance Option", "Batten Colour", "Special Information"}
+
+                        For row As Integer = 0 To headers.Length - 1
+                            Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
+                            cellHeader.HorizontalAlignment = Element.ALIGN_RIGHT
+                            cellHeader.VerticalAlignment = Element.ALIGN_MIDDLE
+                            cellHeader.BackgroundColor = New BaseColor(200, 200, 200)
+                            cellHeader.MinimumHeight = 26
+                            table.AddCell(cellHeader)
+
+                            For col As Integer = i To Math.Min(i + 5, items.GetLength(1) - 1)
+                                Dim cellContent As New PdfPCell(New Phrase(items(row, col), fontContent))
+                                cellContent.HorizontalAlignment = Element.ALIGN_CENTER
+                                cellContent.VerticalAlignment = Element.ALIGN_MIDDLE
+                                cellContent.MinimumHeight = 26
+                                table.AddCell(cellContent)
+                            Next
+
+                            For col As Integer = items.GetLength(1) To i + 5
+                                Dim emptyCell As New PdfPCell(New Phrase("", fontContent))
+                                emptyCell.HorizontalAlignment = Element.ALIGN_CENTER
+                                emptyCell.VerticalAlignment = Element.ALIGN_MIDDLE
+                                emptyCell.MinimumHeight = 26
+                                table.AddCell(emptyCell)
+                            Next
+                        Next
+                        doc.Add(table)
+                        table.DeleteBodyRows()
+                        doc.NewPage()
+                    Next
+                End If
+            Catch ex As Exception
+            End Try
+            ' END SOFT ROMAN
+
             ' START VENETIAN BLIND
             Try
                 Dim params As New List(Of SqlParameter) From {
