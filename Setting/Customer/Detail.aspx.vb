@@ -11,7 +11,6 @@ Partial Class Setting_Customer_Detail
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim enUS As CultureInfo = New CultureInfo("en-US")
     Dim url As String = String.Empty
-
     Dim dataLog As Object() = Nothing
 
     <WebMethod(EnableSession:=True)>
@@ -24,11 +23,8 @@ Partial Class Setting_Customer_Detail
         Dim settingClass As New SettingClass()
 
         Dim promoId As String = settingClass.GetItemData("SELECT PromoId FROM CustomerPromos WHERE Id='" & id & "'")
-
         Dim dt As DataTable = settingClass.GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
-
         Dim result As New List(Of Object)
-
         For Each dr As DataRow In dt.Rows
             Dim title As String = String.Empty
             If dr("Type").ToString() = "FrameColours" Then
@@ -53,11 +49,11 @@ Partial Class Setting_Customer_Detail
             Exit Sub
         End If
 
-        lblId.Text = Request.QueryString("customerid").ToString()
-
         If Not Session("selectedTabCustomer") = "" Then
             selected_tab.Value = Session("selectedTabCustomer").ToString()
         End If
+
+        lblId.Text = Request.QueryString("customerid").ToString()
 
         If Not IsPostBack Then
             AllMessageError(False, String.Empty)
@@ -84,38 +80,12 @@ Partial Class Setting_Customer_Detail
         Response.Redirect(url, False)
     End Sub
 
-    Protected Sub btnRecalculate_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        Try
-            Dim dataOrder As DataTable = settingClass.GetDataTable("SELECT * FROM OrderHeaders WHERE CustomerId='" & lblId.Text & "' AND Active=1 AND (Status = 'Unsubmitted' OR Status='Waiting Proforma')")
-            If Not dataOrder.Rows.Count = 0 Then
-                Dim orderClass As New OrderClass
-                For i As Integer = 0 To dataOrder.Rows.Count - 1
-                    Dim orderId As String = dataOrder.Rows(i)("Id").ToString()
-                    orderClass.CalculatePriceByOrder(orderId)
-                Next
-
-                dataLog = {"Customers", lblId.Text, Session("LoginId").ToString(), "Customer Re-Calculate Price Order"}
-                settingClass.Logs(dataLog)
-            End If
-
-            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
-            Response.Redirect(url, False)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
     Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE Customers SET Active=0 WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", lblId.Text)
-
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
@@ -143,12 +113,11 @@ Partial Class Setting_Customer_Detail
             End If
 
             Dim mailingClass As New MailingClass
-            mailingClass.LoginCredentials(lblId.Text, Session("LoginId").ToString(), "Welcome Customer")
+            mailingClass.CustomerWelcome(lblId.Text, Session("LoginId").ToString())
 
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerWelcomes VALUES (NEWID(), @CustomerId)", thisConn)
                     myCmd.Parameters.AddWithValue("@CustomerId", lblId.Text)
-
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
@@ -156,6 +125,79 @@ Partial Class Setting_Customer_Detail
 
             dataLog = {"Customers", lblId.Text, Session("LoginId").ToString(), "Send Welcome Email"}
             settingClass.Logs(dataLog)
+
+            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnSendLogin_Click(sender As Object, e As EventArgs)
+        MessageError_SendLogin(False, String.Empty)
+        Dim thisScript As String = "window.onload = function() { showSendLogin(); };"
+        Try
+            Dim thisEmail As String = txtSendLoginEmail.Text
+
+            If String.IsNullOrEmpty(thisEmail) Then
+                MessageError_SendLogin(True, "EMAIL ADDRESS IS REQUIRED !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showSendLogin", thisScript, True)
+                Exit Sub
+            End If
+
+            Dim isValidEmail As Boolean = False
+            Try
+                Dim addr As New Net.Mail.MailAddress(thisEmail)
+                isValidEmail = (addr.Address = thisEmail)
+            Catch
+                isValidEmail = False
+            End Try
+            If Not isValidEmail Then
+                MessageError_SendLogin(True, "PLEASE ENTER A VALID EMAIL ADDRESS !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showSendLogin", thisScript, True)
+                Exit Sub
+            End If
+
+            If thisEmail = Session("PersonalEmail") Then
+                MessageError_SendLogin(True, "YOU DO NOT HAVE THE AUTHORITY TO HAVE THESE LOGIN CREDENTIALS SENT TO YOUR EMAIL ADDRESS !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showSendLogin", thisScript, True)
+                Exit Sub
+            End If
+
+            Dim mailingClass As New MailingClass
+            mailingClass.CustomerLogin(lblId.Text, thisEmail, Session("LoginId"))
+
+            dataLog = {"Customers", lblId.Text, Session("LoginId").ToString(), "Send Login"}
+            settingClass.Logs(dataLog)
+
+            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError_SendLogin(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_SendLogin(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+            ClientScript.RegisterStartupScript(Me.GetType(), "showSendLogin", thisScript, True)
+        End Try
+    End Sub
+
+    Protected Sub btnRecalculate_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim dataOrder As DataTable = settingClass.GetDataTable("SELECT * FROM OrderHeaders WHERE CustomerId='" & lblId.Text & "' AND Active=1 AND (Status = 'Unsubmitted' OR Status='Waiting Proforma')")
+            If Not dataOrder.Rows.Count = 0 Then
+                Dim orderClass As New OrderClass
+                For i As Integer = 0 To dataOrder.Rows.Count - 1
+                    Dim orderId As String = dataOrder.Rows(i)("Id").ToString()
+                    orderClass.CalculatePriceByOrder(orderId)
+                Next
+
+                dataLog = {"Customers", lblId.Text, Session("LoginId").ToString(), "Customer Re-Calculate Price Order"}
+                settingClass.Logs(dataLog)
+            End If
 
             url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
             Response.Redirect(url, False)
@@ -182,18 +224,18 @@ Partial Class Setting_Customer_Detail
                 Response.Redirect("~/setting/customer", False)
                 Exit Sub
             End If
-
             If Session("RoleName") = "Sales" AndAlso Session("CustomerId") = customerId Then
                 Response.Redirect("~/setting/customer", False)
                 Exit Sub
             End If
 
             Dim priceGroupId As String = thisData("PriceGroupId").ToString()
-            Dim shutterPriceGroupId As String = thisData("ShutterPriceGroupId").ToString()
-            Dim doorPriceGroupId As String = thisData("DoorPriceGroupId").ToString()
-
             Dim priceGroupName As String = settingClass.GetItemData("SELECT Name FROM PriceGroups WHERE Id='" & priceGroupId & "'")
+
+            Dim shutterPriceGroupId As String = thisData("ShutterPriceGroupId").ToString()
             Dim shutterPriceGroupName As String = settingClass.GetItemData("SELECT Name FROM PriceGroups WHERE Id='" & shutterPriceGroupId & "'")
+
+            Dim doorPriceGroupId As String = thisData("DoorPriceGroupId").ToString()
             Dim doorPriceGroupName As String = settingClass.GetItemData("SELECT Name FROM PriceGroups WHERE Id='" & doorPriceGroupId & "'")
 
             Dim sponsorId As String = thisData("SponsorId").ToString()
@@ -238,6 +280,10 @@ Partial Class Setting_Customer_Detail
         divError.Visible = visible : msgError.InnerText = message
     End Sub
 
+    Protected Sub MessageError_SendLogin(visible As Boolean, message As String)
+        divErrorSendLogin.Visible = visible : msgErrorSendLogin.InnerText = message
+    End Sub
+
     Protected Function LoginAccess(action As String) As Boolean
         Try
             Dim roleId As String = Session("RoleId").ToString()
@@ -265,14 +311,13 @@ Partial Class Setting_Customer_Detail
         MessageError_Contact(False, String.Empty)
         Session("selectedTabCustomer") = "list-contact"
         Try
-            Dim thisId As String = txtDeleteContactId.Text
+            Dim contactId As String = txtDeleteContactId.Text
 
-            Dim fullContact As String = settingClass.GetItemData("SELECT CONCAT('Contact Name: ', ISNULL(Name, ''), ', ', 'Email: ', ISNULL(Email, ''), ', ', 'Tags: ', ISNULL(Tags, '')) AS ThisContact FROM CustomerContacts WHERE Id='" & thisId & "'")
+            Dim fullContact As String = settingClass.GetItemData("SELECT CONCAT('Contact Name: ', ISNULL(Name, ''), ', ', 'Email: ', ISNULL(Email, ''), ', ', 'Tags: ', ISNULL(Tags, '')) AS ThisContact FROM CustomerContacts WHERE Id='" & contactId & "'")
 
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerContacts WHERE Id=@Id; DELETE FROM Logs WHERE Type='CustomerContacts' AND DataId=@Id;", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-
+                    myCmd.Parameters.AddWithValue("@Id", contactId)
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
@@ -296,25 +341,18 @@ Partial Class Setting_Customer_Detail
         MessageError_Contact(False, String.Empty)
         Session("selectedTabCustomer") = "list-contact"
         Try
-            Dim thisId As String = txtPrimaryContactId.Text
+            Dim contactId As String = txtPrimaryContactId.Text
 
             Using thisConn As New SqlConnection(myConn)
-                thisConn.Open()
-
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerContacts SET [Primary]=0 WHERE CustomerId=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerContacts SET [Primary]=0 WHERE CustomerId=@CustomerId; UPDATE CustomerContacts SET Tags='Confirming,Invoicing,Quoting,Newsletter', [Primary]=1 WHERE Id=@ContactId", thisConn)
+                    myCmd.Parameters.AddWithValue("@CustomerId", lblId.Text)
+                    myCmd.Parameters.AddWithValue("@ContactId", contactId)
+                    thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
-
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerContacts SET Tags='Confirming,Invoicing,Quoting,Newsletter', [Primary]=1 WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                thisConn.Close()
             End Using
 
-            dataLog = {"CustomerContacts", thisId, Session("LoginId"), "Set As Primary Contact"}
+            dataLog = {"CustomerContacts", contactId, Session("LoginId"), "Set As Primary Contact"}
             settingClass.Logs(dataLog)
 
             url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
@@ -334,14 +372,11 @@ Partial Class Setting_Customer_Detail
             gvListContact.DataBind()
 
             Dim primaryContact As String = settingClass.GetItemData("SELECT Email FROM CustomerContacts WHERE CustomerId='" & customerId & "' AND [Primary]=1")
-            loginContactPrimary.InnerText = primaryContact
-            If String.IsNullOrEmpty(primaryContact) Then
-                loginContactPrimary.InnerText = "PLEASE ADD THE CONTACT DATA FIRST BEFORE PROCEEDING."
-            End If
+            txtSendLoginEmail.Text = primaryContact
         Catch ex As Exception
             MessageError_Contact(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                MessageError_Contact(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
         End Try
     End Sub
@@ -369,14 +404,13 @@ Partial Class Setting_Customer_Detail
         MessageError_Address(False, String.Empty)
         Session("selectedTabCustomer") = "list-address"
         Try
-            Dim thisId As String = txtAddressDeleteId.Text
+            Dim addressId As String = txtAddressDeleteId.Text
 
-            Dim fullDesc As String = settingClass.GetItemData("SELECT CONCAT('Description: ', ISNULL(Description, ''), ', ', 'Address: ', ISNULL(Address, ''), ', ', 'Suburb: ', ISNULL(Suburb, ''), ', ', 'State: ', ISNULL(State, ''), ', ', 'PostCode: ', ISNULL(PostCode, '')) AS FullDescription FROM CustomerAddress WHERE Id='" & thisId & "'")
+            Dim fullDesc As String = settingClass.GetItemData("SELECT CONCAT('Description: ', ISNULL(Description, ''), ', ', 'Address: ', ISNULL(Address, ''), ', ', 'Suburb: ', ISNULL(Suburb, ''), ', ', 'State: ', ISNULL(State, ''), ', ', 'PostCode: ', ISNULL(PostCode, '')) AS FullDescription FROM CustomerAddress WHERE Id='" & addressId & "'")
 
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerAddress WHERE Id=@Id; DELETE FROM Logs WHERE Type='CustomerAddress' AND DataId=@Id;", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-
+                    myCmd.Parameters.AddWithValue("@Id", addressId)
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
@@ -397,36 +431,29 @@ Partial Class Setting_Customer_Detail
     End Sub
 
     Protected Sub btnPrimaryAddress_Click(sender As Object, e As EventArgs)
-        MessageError_Contact(False, String.Empty)
+        MessageError_Address(False, String.Empty)
         Session("selectedTabCustomer") = "list-address"
         Try
-            Dim thisId As String = txtPrimaryAddressId.Text
+            Dim addressId As String = txtPrimaryAddressId.Text
 
             Using thisConn As New SqlConnection(myConn)
-                thisConn.Open()
-
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerAddress SET [Primary]=0 WHERE CustomerId=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerAddress SET [Primary]=0 WHERE CustomerId=@CustomerId; UPDATE CustomerAddress SET [Primary]=1 WHERE Id=@AddressId;", thisConn)
+                    myCmd.Parameters.AddWithValue("@CustomerId", lblId.Text)
+                    myCmd.Parameters.AddWithValue("@AddressId", addressId)
+                    thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
-
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerAddress SET [Primary]=1 WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                thisConn.Close()
             End Using
 
-            dataLog = {"CustomerAddress", thisId, Session("LoginId"), "Set As Primary Address"}
+            dataLog = {"CustomerAddress", addressId, Session("LoginId"), "Set As Primary Address"}
             settingClass.Logs(dataLog)
 
             url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
             Response.Redirect(url, False)
         Catch ex As Exception
-            MessageError_Contact(True, ex.ToString())
+            MessageError_Address(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
-                MessageError_Contact(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                MessageError_Address(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
         End Try
     End Sub
@@ -484,14 +511,13 @@ Partial Class Setting_Customer_Detail
         MessageError_Business(False, String.Empty)
         Session("selectedTabCustomer") = "list-business"
         Try
-            Dim thisId As String = txtBusinessDeleteId.Text
+            Dim businessId As String = txtBusinessDeleteId.Text
 
-            Dim fullBusiness As String = settingClass.GetItemData("SELECT CONCAT('ABN Number: ', ISNULL(ABNNumber, ''), ', ', 'Registered Name: ', ISNULL(RegisteredName, '')) AS FullDescription FROM CustomerBusiness WHERE Id='" & thisId & "'")
+            Dim fullBusiness As String = settingClass.GetItemData("SELECT CONCAT('ABN Number: ', ISNULL(ABNNumber, ''), ', ', 'Registered Name: ', ISNULL(RegisteredName, '')) AS FullDescription FROM CustomerBusiness WHERE Id='" & businessId & "'")
 
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerBusiness WHERE Id=@Id; DELETE FROM Logs WHERE Type='CustomerBusiness' AND DataId=@Id;", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-
+                    myCmd.Parameters.AddWithValue("@Id", businessId)
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
@@ -512,36 +538,29 @@ Partial Class Setting_Customer_Detail
     End Sub
 
     Protected Sub btnPrimaryBusiness_Click(sender As Object, e As EventArgs)
-        MessageError_Contact(False, String.Empty)
+        MessageError_Business(False, String.Empty)
         Session("selectedTabCustomer") = "list-business"
         Try
-            Dim thisId As String = txtPrimaryBusinessId.Text
+            Dim businessId As String = txtPrimaryBusinessId.Text
 
             Using thisConn As New SqlConnection(myConn)
-                thisConn.Open()
-
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerBusiness SET [Primary]=0 WHERE CustomerId=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerBusiness SET [Primary]=0 WHERE CustomerId=@CustomerId", thisConn)
+                    myCmd.Parameters.AddWithValue("@CustomerId", lblId.Text)
+                    myCmd.Parameters.AddWithValue("@BusinessId", businessId)
+                    thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
-
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerBusiness SET [Primary]=1 WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                thisConn.Close()
             End Using
 
-            dataLog = {"CustomerBusiness", thisId, Session("LoginId"), "Set As Primary Business"}
+            dataLog = {"CustomerBusiness", businessId, Session("LoginId"), "Set As Primary Business"}
             settingClass.Logs(dataLog)
 
             url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
             Response.Redirect(url, False)
         Catch ex As Exception
-            MessageError_Contact(True, ex.ToString())
+            MessageError_Business(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
-                MessageError_Contact(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                MessageError_Business(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
         End Try
     End Sub
@@ -583,16 +602,15 @@ Partial Class Setting_Customer_Detail
         MessageError_Login(False, String.Empty)
         Session("selectedTabCustomer") = "list-login"
         Try
-            Dim thisId As String = txtActiveLoginId.Text
+            Dim loginId As String = txtActiveLoginId.Text
 
             Dim active As Integer = 1
             If txtActiveLoginStatus.Text = "1" Then : active = 0 : End If
 
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Active=@Active, FailedCount=0 WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
+                    myCmd.Parameters.AddWithValue("@Id", loginId)
                     myCmd.Parameters.AddWithValue("@Active", active)
-
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
@@ -601,7 +619,7 @@ Partial Class Setting_Customer_Detail
             Dim activeDesc As String = "Login Has Been Activated"
             If active = 0 Then activeDesc = "Login Has Been Deactivated"
 
-            dataLog = {"Logins", thisId, Session("LoginId").ToString(), activeDesc}
+            dataLog = {"Logins", loginId, Session("LoginId").ToString(), activeDesc}
             settingClass.Logs(dataLog)
 
             url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
@@ -614,16 +632,16 @@ Partial Class Setting_Customer_Detail
         End Try
     End Sub
 
-    Protected Sub btnSendLogin_Click(sender As Object, e As EventArgs)
-        MessageError_SendLogin(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showSendLogin(); };"
+    Protected Sub btnSendPersonalLogin_Click(sender As Object, e As EventArgs)
+        MessageError_SendPersonalLogin(False, String.Empty)
+        Dim thisScript As String = "window.onload = function() { showSendPersonalLogin(); };"
         Try
-            Dim thisId As String = txtSendLoginId.Text
-            Dim thisEmail As String = txtSendLoginEmail.Text
+            Dim thisId As String = txtSendPersonalLoginId.Text
+            Dim thisEmail As String = txtSendPersonalLoginEmail.Text
 
             If String.IsNullOrEmpty(thisEmail) Then
-                MessageError_SendLogin(True, "EMAIL ADDRESS IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showSendLogin", thisScript, True)
+                MessageError_SendPersonalLogin(True, "EMAIL ADDRESS IS REQUIRED !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showSendPersonalLogin", thisScript, True)
                 Exit Sub
             End If
 
@@ -634,21 +652,20 @@ Partial Class Setting_Customer_Detail
             Catch
                 isValidEmail = False
             End Try
-
             If Not isValidEmail Then
-                MessageError_SendLogin(True, "PLEASE ENTER A VALID EMAIL ADDRESS !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showSendLogin", thisScript, True)
+                MessageError_SendPersonalLogin(True, "PLEASE ENTER A VALID EMAIL ADDRESS !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showSendPersonalLogin", thisScript, True)
                 Exit Sub
             End If
 
             If thisEmail = Session("PersonalEmail") Then
-                MessageError_SendLogin(True, "YOU DO NOT HAVE THE AUTHORITY TO HAVE THESE LOGIN CREDENTIALS SENT TO YOUR EMAIL ADDRESS !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showSendLogin", thisScript, True)
+                MessageError_SendPersonalLogin(True, "YOU DO NOT HAVE THE AUTHORITY TO HAVE THESE LOGIN CREDENTIALS SENT TO YOUR EMAIL ADDRESS !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showSendPersonalLogin", thisScript, True)
                 Exit Sub
             End If
 
             Dim mailingClass As New MailingClass
-            mailingClass.PersonalLogin(thisId, thisEmail, Session("FullName"))
+            mailingClass.PersonalLogin(thisId, thisEmail, Session("LoginId").ToString())
 
             dataLog = {"Logins", thisId, Session("LoginId").ToString(), "Send Personal Login"}
             settingClass.Logs(dataLog)
@@ -656,11 +673,11 @@ Partial Class Setting_Customer_Detail
             url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
             Response.Redirect(url, False)
         Catch ex As Exception
-            MessageError_SendLogin(True, ex.ToString())
+            MessageError_SendPersonalLogin(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
-                MessageError_SendLogin(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                MessageError_SendPersonalLogin(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showSendLogin", thisScript, True)
+            ClientScript.RegisterStartupScript(Me.GetType(), "showSendPersonalLogin", thisScript, True)
         End Try
     End Sub
 
@@ -726,38 +743,10 @@ Partial Class Setting_Customer_Detail
         End Try
     End Sub
 
-    Protected Sub btnLoginCredentials_Click(sender As Object, e As EventArgs)
-        MessageError_Login(False, String.Empty)
-        Session("selectedTabCustomer") = "list-login"
-        Try
-            Dim checkPrimary As Integer = settingClass.GetItemData_Integer("SELECT COUNT(*) FROM CustomerContacts WHERE CustomerId='" & lblId.Text & "' AND [Primary]=1")
-            If checkPrimary = 0 Then
-                MessageError_Login(True, "PRIMARY CONTACT EMAIL IS REQUIRED !")
-                Exit Sub
-            End If
-
-            Dim mailingClass As New MailingClass
-            mailingClass.LoginCredentials(lblId.Text, Session("LoginId").ToString(), "Login Credentials")
-
-            dataLog = {"Customers", lblId.Text, Session("LoginId").ToString(), "Sent Login Credentials"}
-            settingClass.Logs(dataLog)
-
-            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
-            Response.Redirect(url, False)
-        Catch ex As Exception
-            MessageError_Login(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Login(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
     Protected Sub BindDataLogin(customerId As String)
         MessageError_Login(False, String.Empty)
         Try
-            Dim thisQuery As String = "SELECT Logins.*, LoginRoles.Name AS RoleName, LoginLevels.Name AS LevelName, CASE WHEN Logins.Pricing=1 THEN 'Yes' WHEN Logins.Pricing=0 THEN 'No' ELSE 'Error' END AS DataPricing, CASE WHEN Logins.Active=1 THEN 'Enabled' WHEN Logins.Active=0 THEN 'Disabled' ELSE 'Error' END AS DataActive FROM Logins LEFT JOIN LoginRoles ON Logins.RoleId=LoginRoles.Id LEFT JOIN LoginLevels ON Logins.LevelId=LoginLevels.Id WHERE Logins.CustomerId='" & customerId & "' ORDER BY Logins.RoleId, Logins.Id ASC"
-
-            gvListLogin.DataSource = settingClass.GetDataTable(thisQuery)
+            gvListLogin.DataSource = settingClass.GetDataTable("SELECT Logins.*, LoginRoles.Name AS RoleName, LoginLevels.Name AS LevelName, CASE WHEN Logins.Pricing=1 THEN 'Yes' WHEN Logins.Pricing=0 THEN 'No' ELSE 'Error' END AS DataPricing, CASE WHEN Logins.Active=1 THEN 'Enabled' WHEN Logins.Active=0 THEN 'Disabled' ELSE 'Error' END AS DataActive FROM Logins LEFT JOIN LoginRoles ON Logins.RoleId=LoginRoles.Id LEFT JOIN LoginLevels ON Logins.LevelId=LoginLevels.Id WHERE Logins.CustomerId='" & customerId & "' ORDER BY Logins.RoleId, Logins.Id ASC")
             gvListLogin.DataBind()
         Catch ex As Exception
             MessageError_Login(True, ex.ToString())
@@ -767,8 +756,8 @@ Partial Class Setting_Customer_Detail
         End Try
     End Sub
 
-    Protected Function VisibleSendLogin(active As Integer) As Boolean
-        If Session("RoleName") = "Developer" AndAlso active = 1 Then Return True
+    Protected Function VisibleSendPersonalLogin(active As Integer) As Boolean
+        If active = 1 Then Return True
         Return False
     End Function
 
@@ -781,8 +770,8 @@ Partial Class Setting_Customer_Detail
         divErrorLogin.Visible = visible : msgErrorLogin.InnerText = message
     End Sub
 
-    Protected Sub MessageError_SendLogin(visible As Boolean, message As String)
-        divErrorSendLogin.Visible = visible : msgErrorSendLogin.InnerText = message
+    Protected Sub MessageError_SendPersonalLogin(visible As Boolean, message As String)
+        divErrorSendPersonalLogin.Visible = visible : msgErrorSendPersonalLogin.InnerText = message
     End Sub
 
     ' END CUSTOMER LOGIN
@@ -828,7 +817,7 @@ Partial Class Setting_Customer_Detail
         Catch ex As Exception
             MessageError_Discount(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                MessageError_Discount(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
         End Try
     End Sub
@@ -928,7 +917,7 @@ Partial Class Setting_Customer_Detail
         Catch ex As Exception
             MessageError_Promo(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                MessageError_Promo(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
         End Try
     End Sub
@@ -1114,11 +1103,12 @@ Partial Class Setting_Customer_Detail
 
     Protected Sub AllMessageError(visible As Boolean, message As String)
         MessageError(visible, message)
+        MessageError_SendLogin(visible, message)
         MessageError_Contact(visible, message)
         MessageError_Address(visible, message)
         MessageError_Business(visible, message)
         MessageError_Login(visible, message)
-        MessageError_SendLogin(visible, message)
+        MessageError_SendPersonalLogin(visible, message)
         MessageError_Discount(visible, message)
         MessageError_Promo(visible, message)
         MessageError_Product(visible, message)

@@ -600,16 +600,14 @@ Partial Class Order_Default
     Protected Sub btnOcean_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim thisId As String = txtOceanId.Text
+            'Dim thisId As String = txtOceanId.Text
 
-            Dim checkOcean As Integer = orderClass.GetItemData_Integer("SELECT COUNT(OrderDetails.Id) FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.HeaderId='" & thisId & "' AND OrderDetails.Active=1 AND Products.DesignId='15'")
-            If checkOcean > 0 Then
-                Task.Run(Async Function()
-                             Dim svc As New ShutterOceanService()
-                             Await svc.SendOrderAsync(thisId)
-                         End Function)
-
-            End If
+            'Dim checkOcean As Integer = orderClass.GetItemData_Integer("SELECT COUNT(OrderDetails.Id) FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.HeaderId='" & thisId & "' AND OrderDetails.Active=1 AND Products.DesignId='15'")
+            'If checkOcean > 0 Then
+            '    Dim svc As New ShutterOceanService()
+            '    txtJson.Text = svc.PreviewJsonAsync(thisId).Result
+            'End If
+            Response.Redirect("~/order", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then

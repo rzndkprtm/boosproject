@@ -82,7 +82,6 @@ Partial Class Setting_Login_User_Default
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Active=@Active WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", thisId)
                     myCmd.Parameters.AddWithValue("@Active", active)
-
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
@@ -165,7 +164,7 @@ Partial Class Setting_Login_User_Default
             End If
 
             Dim mailingClass As New MailingClass
-            mailingClass.PersonalLogin(thisId, thisEmail, Session("FullName"))
+            mailingClass.PersonalLogin(thisId, thisEmail, Session("LoginId").ToString())
 
             dataLog = {"Logins", thisId, Session("LoginId").ToString(), "Personal Login"}
             settingClass.Logs(dataLog)
