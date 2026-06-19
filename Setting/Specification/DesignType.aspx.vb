@@ -80,6 +80,7 @@ Partial Class Setting_Specification_Design
                     BindCompany(True)
 
                     txtName.Text = thisData("Name").ToString()
+                    txtAlias.Text = thisData("Alias").ToString()
                     ddlType.SelectedValue = thisData("Type").ToString()
                     txtPage.Text = thisData("Page").ToString()
                     txtDescription.Text = thisData("Description").ToString()
@@ -153,9 +154,10 @@ Partial Class Setting_Specification_Design
                 If lblAction.Text = "Add" Then
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Designs ORDER BY Id DESC")
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Designs VALUES (@Id, @Name, @CompanyId, @Type, @Page, @AppliesTo, @Description, @Active)", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Designs VALUES (@Id, @Name, @Alias, @CompanyId, @Type, @Page, @AppliesTo, @Description, @Active)", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", thisId)
                             myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
+                            myCmd.Parameters.AddWithValue("@Alias", txtAlias.Text.Trim())
                             myCmd.Parameters.AddWithValue("@CompanyId", company)
                             myCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
                             myCmd.Parameters.AddWithValue("@Page", txtPage.Text.Trim())
@@ -177,9 +179,10 @@ Partial Class Setting_Specification_Design
 
                 If lblAction.Text = "Edit" Then
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE Designs SET Name=@Name, CompanyId=@CompanyId, Type=@Type, Page=@Page, AppliesTo=@AppliesTo, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
+                        Using myCmd As SqlCommand = New SqlCommand("UPDATE Designs SET Name=@Name, Alias=@Alias, CompanyId=@CompanyId, Type=@Type, Page=@Page, AppliesTo=@AppliesTo, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", lblId.Text)
                             myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
+                            myCmd.Parameters.AddWithValue("@Alias", txtAlias.Text.Trim())
                             myCmd.Parameters.AddWithValue("@CompanyId", company)
                             myCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
                             myCmd.Parameters.AddWithValue("@Page", txtPage.Text.Trim())
@@ -213,7 +216,7 @@ Partial Class Setting_Specification_Design
         Try
             Dim search As String = String.Empty
             If Not searchText = "" Then
-                search = "WHERE Id LIKE '%" & searchText.Trim() & "%' OR Name LIKE '%" & searchText.Trim() & "%' OR Page LIKE '%" & searchText.Trim() & "%' OR AppliesTo LIKE '%" & searchText.Trim() & "%' OR Description LIKE '%" & searchText.Trim() & "%'"
+                search = "WHERE Id LIKE '%" & searchText.Trim() & "%' OR Name LIKE '%" & searchText.Trim() & "%' OR Alias LIKE '%" & searchText.Trim() & "%' OR Page LIKE '%" & searchText.Trim() & "%' OR AppliesTo LIKE '%" & searchText.Trim() & "%' OR Description LIKE '%" & searchText.Trim() & "%'"
             End If
             Dim thisString As String = String.Format("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Designs {0} ORDER BY Name ASC", search)
 
