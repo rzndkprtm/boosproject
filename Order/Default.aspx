@@ -156,7 +156,7 @@
                                                             <li runat="server" visible='<%# VisibleDownloadBOE(Eval("Status").ToString(), Eval("Download").ToString(), Eval("Active")) %>'>
                                                                 <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return dataStatusOrder(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), "Download BOE", "") %>'>Download BOE</a>
                                                             </li>
-                                                            <li runat="server" visible='<%# VisibleChina(Eval("Active"), Eval("Status").ToString(), Eval("OrderFactory")) %>'>
+                                                            <li runat="server" visible='<%# VisibleChina(Eval("Active"), Eval("Status").ToString(), Eval("OrderFactory").ToString()) %>'>
                                                                 <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalOcean" onclick='<%# String.Format("return dataOcean(`{0}`);", Eval("Id").ToString()) %>'>Shutter Ocean</a>
                                                             </li>
                                                             <li runat="server" visible='<%# VisibleLog() %>'>
@@ -267,9 +267,9 @@
                     <h5 class="modal-title white" id="titleStatus"></h5>
                 </div>
                 <div class="modal-body text-center py-4">
-                    <asp:TextBox runat="server" ID="txtStatusOrderId" style="display:none;"></asp:TextBox>
-                    <asp:TextBox runat="server" ID="txtStatusOrderNew" style="display:none;"></asp:TextBox>
-                    <asp:TextBox runat="server" ID="txtStatusOrderOld" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtStatusOrderId"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtStatusOrderNew"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtStatusOrderOld"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
