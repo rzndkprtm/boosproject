@@ -485,7 +485,7 @@ Public Class QuoteClass
                     itemDescription = String.Format("{0} {1} {2}", invoiceName, size, squareMetreText)
                 End If
 
-                If designName = "Design Shades" OrElse designName = "Roller Blind" OrElse designName = "Roman Blind" Then
+                If designName = "Design Shades" OrElse designName = "Roller Blind" OrElse designName = "Roman Blind" OrElse designName = "Soft Roman" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)
                     itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, fabricColourName, size, squareMetreText)
                 End If
@@ -1145,6 +1145,12 @@ Public Class QuoteClass
                     itemDescription = String.Format("{0} {1}", productName, fabricColourName)
                 End If
 
+                If designName = "Soft Roman" Then
+                    Dim fabricColourName As String = GetFabricColourName(fabricColourId)
+
+                    itemDescription = String.Format("{0} {1}", productName, fabricColourName)
+                End If
+
                 If designName = "Venetian Blind" Then
                     itemDescription = productName
                     If totalItem = 2 Then
@@ -1745,6 +1751,12 @@ Public Class QuoteClass
                 End If
 
                 If designName = "Roman Blind" Then
+                    Dim fabricColourName As String = GetFabricColourName(fabricColourId)
+
+                    itemDescription = String.Format("{0} {1}", productName, fabricColourName)
+                End If
+
+                If designName = "Soft Roman" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)
 
                     itemDescription = String.Format("{0} {1}", productName, fabricColourName)
