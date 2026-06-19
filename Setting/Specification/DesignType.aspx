@@ -114,9 +114,13 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-12 form-group">
+                        <div class="col-12 col-sm-12 col-lg-6 form-group">
                             <label class="form-label">Name</label>
                             <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                            <label class="form-label">Alias</label>
+                            <asp:TextBox runat="server" ID="txtAlias" CssClass="form-control" placeholder="Alias ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
                     <div class="row">
