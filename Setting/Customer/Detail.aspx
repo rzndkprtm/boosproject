@@ -39,8 +39,9 @@
             <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
                 <asp:Button runat="server" ID="btnEditCustomer" CssClass="btn btn-primary" Text="Edit" OnClick="btnEditCustomer_Click" />
                 <a href="javascript:void(0);" runat="server" id="aDelete" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalDelete">Delete</a>
-                <a href="javascript:void(0);" runat="server" id="aRecalculate" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalRecalculate">Recalculate Price</a>
                 <a href="javascript:void(0);" runat="server" id="aWelcome" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalWelcome">Welcome</a>
+                <a href="javascript:void(0);" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#modalSendLogin">Send Login</a>
+                <a href="javascript:void(0);" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#modalRecalculate">Re-Price Order</a>
                 <a href="javascript:void(0);" class="btn btn-secondary" onclick="showLog('Customers', '<%= lblId.Text %>')">Log</a>
             </div>
         </section>
@@ -388,8 +389,8 @@
                                                                     <li>
                                                                         <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalActiveLogin" onclick='<%# String.Format("return dataActiveLogin(`{0}`, `{1}`);", Eval("Id").ToString(), Convert.ToInt32(Eval("Active"))) %>'><%# TextActive_Login(Eval("Active")) %></a>
                                                                     </li>
-                                                                    <li runat="server" visible='<%# VisibleSendLogin(Convert.ToInt32(Eval("Active"))) %>'>
-                                                                        <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalSendLogin" onclick='<%# String.Format("return dataSendLogin(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("Email").ToString()) %>'>Send Login Credentials</a>
+                                                                    <li runat="server" visible='<%# VisibleSendPersonalLogin(Convert.ToInt32(Eval("Active"))) %>'>
+                                                                        <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalSendPersonalLogin" onclick='<%# String.Format("return dataSendPersonalLogin(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("Email").ToString()) %>'>Send Personal Login</a>
                                                                     </li>
                                                                     <li>
                                                                         <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangePasswordLogin" onclick='<%# String.Format("return dataChangePasswordLogin(`{0}`);", Eval("Id").ToString()) %>'>Change Password</a>
@@ -411,7 +412,6 @@
                                     <div class="row mt-3">
                                         <div class="col-12">
                                             <asp:Button runat="server" ID="btnAddLogin" CssClass="btn btn-primary" Text="Add New" OnClick="btnAddLogin_Click" />
-                                            <a href="javascript:void(0);" runat="server" id="aCredentialsLogin" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalLoginCredentials">Send Login Credentials</a>
                                         </div>
                                     </div>
                                 </div>
@@ -642,7 +642,7 @@
                 </div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnRecalculate" CssClass="btn btn-warning" OnClick="btnRecalculate_Click" Text="Confirm" OnClientClick="return showWaiting();" />
+                    <asp:Button runat="server" ID="btnRecalculate" CssClass="btn btn-dark" OnClick="btnRecalculate_Click" Text="Confirm" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>
@@ -659,6 +659,35 @@
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnWelcome" CssClass="btn btn-success" Text="Confirm" OnClick="btnWelcome_Click" OnClientClick="return showWaiting();" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal modal-blur fade" id="modalSendLogin" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Send Login</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Email Address</label>
+                            <asp:TextBox runat="server" ID="txtSendLoginEmail" CssClass="form-control" placeholder="Email Address ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row" runat="server" id="divErrorSendLogin">
+                        <div class="col-12">
+                            <div class="alert alert-danger">
+                                <span runat="server" id="msgErrorSendLogin"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnSendLogin" Text="Submit" CssClass="btn btn-info" OnClick="btnSendLogin_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>
@@ -829,32 +858,32 @@
             </div>
         </div>
     </div>
-    <div class="modal modal-blur fade" id="modalSendLogin" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal modal-blur fade" id="modalSendPersonalLogin" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Send Login Credentials</h5>
+                    <h5 class="modal-title">Send Personal Login</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <asp:TextBox runat="server" ID="txtSendLoginId" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtSendPersonalLoginId" style="display:none;"></asp:TextBox>
                     <div class="row">
                         <div class="col-12 form-group">
                             <label class="form-label">Email Address</label>
-                            <asp:TextBox runat="server" ID="txtSendLoginEmail" CssClass="form-control" placeholder="Email Address ..." autocomplete="off"></asp:TextBox>
+                            <asp:TextBox runat="server" ID="txtSendPersonalLoginEmail" CssClass="form-control" placeholder="Email Address ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-                    <div class="row" runat="server" id="divErrorSendLogin">
+                    <div class="row" runat="server" id="divErrorSendPersonalLogin">
                         <div class="col-12">
                             <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorSendLogin"></span>
+                                <span runat="server" id="msgErrorSendPersonalLogin"></span>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnSendLogin" Text="Submit" CssClass="btn btn-primary" OnClick="btnSendLogin_Click" />
+                    <asp:Button runat="server" ID="btnSendPersonalLogin" Text="Submit" CssClass="btn btn-primary" OnClick="btnSendPersonalLogin_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>
@@ -896,26 +925,6 @@
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnResetPasswordLogin" CssClass="btn btn-info" Text="Confirm" OnClick="btnResetPasswordLogin_Click" />
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal modal-blur fade" id="modalLoginCredentials" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-danger">
-                    <h5 class="modal-title white">Send Login Credentials</h5>
-                </div>
-                <div class="modal-body text-center py-4">
-                    Hi <b><%: Session("FullName") %></b>,<br />All login details will be sent to the primary contact email address.
-                    <br /><br />
-                    <span runat="server" id="loginContactPrimary" class="font-bold"></span>
-                    <br /><br />
-                    Are you sure you would like to do this?
-                </div>
-                <div class="modal-footer">
-                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnLoginCredentials" CssClass="btn btn-danger" Text="Confirm" OnClick="btnLoginCredentials_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>
@@ -1061,20 +1070,13 @@
             gridConfigs.forEach(cfg => {
                 const gv = document.getElementById(cfg.id);
                 if (!gv) return;
-
                 for (let i = 1; i < gv.rows.length; i++) {
                     const row = gv.rows[i];
                     row.style.cursor = 'pointer';
-
                     row.addEventListener('click', function (e) {
-                        if (
-                            e.target.closest("a") ||
-                            e.target.closest("button") ||
-                            e.target.closest("[data-bs-toggle]")
-                        ) {
+                        if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]")) {
                             return;
                         }
-
                         const btn = this.querySelector(`a[id*='${cfg.link}']`);
                         if (btn) btn.click();
                     });
@@ -1088,7 +1090,6 @@
             $("#dvTab a").click(function () {
                 selectedTab.val($(this).attr("href").substring(1));
             });
-
             $("#listGeneral").on("click", function () {
                 updateSessionValue("list-general");
             });
@@ -1125,6 +1126,9 @@
                 contentType: "application/json; charset=utf-8",
                 dataType: "json"
             });
+        }
+        function showSendLogin() {
+            $("#modalSendLogin").modal("show");
         }
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
@@ -1200,9 +1204,12 @@
             }
             document.getElementById("titleActiveLogin").innerHTML = title;
         }
-        function dataSendLogin(loginid, email) {
-            document.getElementById("<%=txtSendLoginId.ClientID %>").value = loginid;
-            document.getElementById("<%=txtSendLoginEmail.ClientID %>").value = email;
+        function dataSendPersonalLogin(loginid, email) {
+            document.getElementById("<%=txtSendPersonalLoginId.ClientID %>").value = loginid;
+            document.getElementById("<%=txtSendPersonalLoginEmail.ClientID %>").value = email;
+        }
+        function showSendPersonalLogin() {
+            $("#modalSendPersonalLogin").modal("show");
         }
         function dataChangePasswordLogin(loginid) {
             document.getElementById("<%=txtChangePasswordLoginId.ClientID %>").value = loginid;
@@ -1224,10 +1231,7 @@
                 result += chars[cryptoArray[i] % chars.length];
             }
             return result;
-        }
-        function showSendLogin() {
-            $("#modalSendLogin").modal("show");
-        }
+        }        
         function dataDeleteDiscount(discountid) {
             document.getElementById("<%=txtDeleteDiscountId.ClientID %>").value = discountid;
         }
@@ -1270,11 +1274,11 @@
         // END CUSTOMER PROMO
 
         [
-            "modalDelete", "modalRecalculate", "modalLog", "modalWelcome", "modalWaiting",
+            "modalDelete", "modalRecalculate", "modalLog", "modalWelcome", "modalSendLogin", "modalWaiting",
             "modalDeleteContact", "modalPrimaryContact",
             "modalDeleteAddress", "modalPrimaryAddress",
             "modalDeleteBusiness", "modalPrimaryBusiness",
-            "modalActiveLogin", "modalResetPasswordLogin", "modalLoginCredentials", "modalChangePasswordLogin",
+            "modalActiveLogin", "modalSendPersonalLogin", "modalChangePasswordLogin", "modalResetPasswordLogin",
             "modalResetDiscount", "modalDeleteDiscount",
             "modalDetailPromo", "modalResetPromo", "modalDeletePromo",
             "modalResetProduct"

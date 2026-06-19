@@ -133,7 +133,7 @@ Partial Class Setting_Customer_Login_Default
             End If
 
             Dim mailingClass As New MailingClass
-            mailingClass.PersonalLogin(thisId, thisEmail, Session("FullName"))
+            mailingClass.PersonalLogin(thisId, thisEmail, Session("LoginId").ToString())
 
             dataLog = {"Logins", thisId, Session("LoginId").ToString(), "Send Personal Login"}
             settingClass.Logs(dataLog)

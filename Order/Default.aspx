@@ -38,6 +38,7 @@
                 <asp:Button runat="server" ID="btnFile" CssClass="btn btn-secondary" Text="File" OnClick="btnFile_Click" />
             </div>
         </section>
+        <asp:TextBox runat="server" ID="txtJson" CssClass="form-control"></asp:TextBox>
         <section class="row">
             <div class="col-12">
                 <div class="card">
