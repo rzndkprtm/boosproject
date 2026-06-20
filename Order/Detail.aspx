@@ -92,6 +92,7 @@
                     <li><a href="javascript:void(0);" runat="server" id="aQuoteCustomer" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDetailQuote">Quote Details</a></li>
                     <li><a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDownloadQuote">Download Quote</a></li>
                     <li><asp:Button runat="server" ID="btnPreviewQuote" CssClass="dropdown-item" Text="Preview Quote" /></li>
+                    <li><a href="javascript:void(0);" runat="server" id="aSendQuote" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalSendQuote">Send Quote</a></li>
                 </ul>
                 <button class="btn btn-primary dropdown-toggle me-1" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnInvoice">invoice</button>
                 <ul class="dropdown-menu">
@@ -508,26 +509,6 @@
             </div>
         </div>
     </div>
-    <div class="modal modal-blur fade" id="modalPreview" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-full modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Preview Order</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row" runat="server" id="divErrorPreview">
-                        <div class="col-12">
-                            <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorPreview"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <iframe id="framePreview" runat="server" width="100%" height="600px" style="border: none;"></iframe>
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="modal fade text-left" id="modalDateOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -576,6 +557,74 @@
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnDateOrder" CssClass="btn btn-primary" Text="Submit" OnClick="btnDateOrder_Click" OnClientClick="return showWaiting();" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modalCostingBuy" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header ">
+                    <h5 class="modal-title">JPMD Buy</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover mb-0">
+                             <thead>
+                                 <tr>
+                                     <th>Total Excl. GST</th>
+                                     <th>GST 10%</th>
+                                     <th>Total Incl. GST</th>
+                                 </tr>
+                             </thead>
+                             <tbody>
+                                 <tr>
+                                     <td><span runat="server" id="spanOrderBuy"></span></td>
+                                     <td><span runat="server" id="spanGstBuy"></span></td>
+                                     <td><span runat="server" id="spanTotalBuy"></span></td>
+                                 </tr>
+                             </tbody>
+                         </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal modal-blur fade" id="modalRePrice" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <h5 class="modal-title white">Re-Price Order</h5>
+                </div>
+                <div class="modal-body py-4">
+                    Hi <b><%: Session("FullName") %></b>,<br /><br />
+                    <b>The price will be recalculated using the latest pricing version.</b><br /><br />
+                    If the issue persists, please contact the IT team.<br />
+                    This issue is caused by a product group that is not registered in the system.
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnRecalculate" CssClass="btn btn-info" Text="Confirm" OnClick="btnRecalculate_Click" OnClientClick="return showWaiting();" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal modal-blur fade" id="modalDownloadBOE" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-dark">
+                    <h5 class="modal-title white">Download BOE</h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    Hi <b><%: Session("FullName") %></b>,<br />
+                    Teks
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnDownloadBOE" CssClass="btn btn-dark" Text="Confirm" OnClick="btnDownloadBOE_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>
@@ -958,6 +1007,49 @@
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnDownloadQuote" CssClass="btn btn-info" Text="Confirm" OnClick="btnDownloadQuote_Click" OnClientClick="return showWaiting($(this).closest('.modal').attr('id'));" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade text-left" id="modalSendQuote" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Send Quote</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">To</label>
+                            <asp:TextBox runat="server" ID="txtSendQuoteTo" CssClass="form-control" placeholder="Customer Email ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">CC Customer</label>
+                            <asp:TextBox runat="server" ID="txtSendQuoteCCCustomer" TextMode="MultiLine" CssClass="form-control" Height="135px" placeholder="CC Customer ..." autocomplete="off" style="resize:none;"></asp:TextBox>
+                            <p><small class="text-muted">* Please enter the required email address in a new line.</small></p>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">CC Staff</label>
+                            <asp:TextBox runat="server" ID="txtSendQuoteCCStaff" TextMode="MultiLine" CssClass="form-control"  Height="135px" placeholder="CC ..." autocomplete="off" style="resize:none;"></asp:TextBox>
+                            <p><small class="text-muted">* Please enter the required email address in a new line.</small></p>
+                        </div>
+                    </div>
+                    <div class="row mb-2" runat="server" id="divErrorSendQuote">
+                        <div class="col-12">
+                            <div class="alert alert-danger">
+                                <span runat="server" id="msgErrorSendQuote"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnSendQuote" CssClass="btn btn-primary" Text="Submit" OnClick="btnSendQuote_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>
@@ -1396,39 +1488,7 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="modal fade" id="modalCostingBuy" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header ">
-                    <h5 class="modal-title">JPMD Buy</h5>
-                </div>
-                <div class="modal-body">
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-hover mb-0">
-                             <thead>
-                                 <tr>
-                                     <th>Total Excl. GST</th>
-                                     <th>GST 10%</th>
-                                     <th>Total Incl. GST</th>
-                                 </tr>
-                             </thead>
-                             <tbody>
-                                 <tr>
-                                     <td><span runat="server" id="spanOrderBuy"></span></td>
-                                     <td><span runat="server" id="spanGstBuy"></span></td>
-                                     <td><span runat="server" id="spanTotalBuy"></span></td>
-                                 </tr>
-                             </tbody>
-                         </table>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
-                </div>
-            </div>
-        </div>
-    </div>
+    </div>    
     <div class="modal modal-blur fade" id="modalCosting" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -1445,42 +1505,6 @@
                          </table>
                     </div>
                     <div class="modal-footer"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal modal-blur fade" id="modalRePrice" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-info">
-                    <h5 class="modal-title white">Re-Price Order</h5>
-                </div>
-                <div class="modal-body py-4">
-                    Hi <b><%: Session("FullName") %></b>,<br /><br />
-                    <b>The price will be recalculated using the latest pricing version.</b><br /><br />
-                    If the issue persists, please contact the IT team.<br />
-                    This issue is caused by a product group that is not registered in the system.
-                </div>
-                <div class="modal-footer">
-                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnRecalculate" CssClass="btn btn-info" Text="Confirm" OnClick="btnRecalculate_Click" OnClientClick="return showWaiting();" />
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal modal-blur fade" id="modalDownloadBOE" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-dark">
-                    <h5 class="modal-title white">Download BOE</h5>
-                </div>
-                <div class="modal-body text-center py-4">
-                    Hi <b><%: Session("FullName") %></b>,<br />
-                    Teks
-                </div>
-                <div class="modal-footer">
-                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnDownloadBOE" CssClass="btn btn-dark" Text="Confirm" OnClick="btnDownloadBOE_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>
@@ -1528,14 +1552,13 @@
         });
 
         [
-            "modalLog", "modalPreview", "modalWaiting", "modalBuilderDetail", "modalFileOrder",
+            "modalLog", "modalWaiting", "modalBuilderDetail", "modalFileOrder", "modalCostingBuy", "modalDateOrder", "modalDuplicateOrder", "modalAddNote", "modalHistoryNote", "modalRePrice", "modalDownloadBOE",
             "modalDeleteOrder", "modalQuoteOrder", "modalSubmitOrder", "modalUnsubmitOrder", "modalCancelOrder", "modalProductionOrder", "modalHoldOrder", "modalShippedOrder", "modalCompleteOrder",
             "modalReworkOrder",
             "modalSendInvoice", "modalReceivePayment", "modalDownloadInvoice", "modalDownloadInvoiceCSV", "modalInvoiceNumber", "modalInvoiceData",
-            "modalDetailQuote", "modalDownloadQuote",
-            "modalAddNote", "modalHistoryNote", "modalRePrice", "modalDownloadBOE",
-            "modalAddItem", "modalAddService", "modalDeleteItem", "modalCosting", "modalCostingBuy",
-            "modalDateOrder", "modalDuplicateOrder"
+            "modalDetailQuote", "modalDownloadQuote", "modalSendQuote",
+            "modalAddItem", "modalAddService", "modalDeleteItem", "modalCosting", 
+            
         ].forEach(id => {
             document.getElementById(id).addEventListener("hide.bs.modal", () => {
                 document.activeElement.blur();
@@ -1638,17 +1661,11 @@
 
             $("#costingBody").html(bodyHtml);
         }
-        function showPreview() {
-            $("#modalPreview").modal("show");
-        }
         function showBuilderDetail() {
             $("#modalBuilderDetail").modal("show");
         }
         function showFileOrder() {
             $("#modalFileOrder").modal("show");
-        }
-        function showDetailQuote() {
-            $("#modalDetailQuote").modal("show");
         }
         function showAddNote() {
             $("#modalAddNote").modal("show");
@@ -1693,11 +1710,17 @@
                 }
             });
         }
-        function showSendInvoice() {
-            $("#modalSendInvoice").modal("show");
-        }
         function showService() {
             $("#modalAddService").modal("show");
+        }
+        function showDetailQuote() {
+            $("#modalDetailQuote").modal("show");
+        }
+        function showSendQuote() {
+            $("#modalSendQuote").modal("show");
+        }
+        function showSendInvoice() {
+            $("#modalSendInvoice").modal("show");
         }
         function showInvoiceNumber() {
             $("#modalInvoiceNumber").modal("show");

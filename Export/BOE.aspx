@@ -570,7 +570,7 @@
                 writer.WriteAttributeString("Room", thisData("Room").ToString())
                 writer.WriteAttributeString("Mounting", thisData("Mounting").ToString())
 
-                writer.WriteAttributeString("BlindType", "Roman")
+                writer.WriteAttributeString("BlindType", "Soft Roman")
                 writer.WriteAttributeString("OrderType", blindName)
                 writer.WriteAttributeString("TubeName", tubeName)
                 writer.WriteAttributeString("IDHK", kitId)

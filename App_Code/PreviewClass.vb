@@ -1168,7 +1168,7 @@ Public Class PreviewClass
                         Dim remoteType As String = String.Empty
 
                         If controlName = "Chain" Then controlColour = chainName
-                        If controlName = "Reg Cord Lock" OrElse controlName = "Cord Lock" Then
+                        If controlName = "Reg Cord Lock" Then
                             controlColour = romanData.Rows(i)("ControlColour").ToString()
                         End If
                         If controlName.Contains("Alpha DC Motor") OrElse controlName.Contains("Somfy") OrElse controlName = "Motorised" Then
@@ -1249,60 +1249,59 @@ Public Class PreviewClass
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
-                Dim romanData As DataTable = GetDataTableSP("sp_GetSoftRomanData", params)
+                Dim thisData As DataTable = GetDataTableSP("sp_GetSoftRomanData", params)
 
-                If romanData.Rows.Count > 0 Then
+                If thisData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Soft"
                     pageEvent.PageTitle2 = "Roman"
                     Dim table As New PdfPTable(7)
                     table.WidthPercentage = 100
 
-                    Dim items(19, romanData.Rows.Count - 1) As String
+                    Dim items(18, thisData.Rows.Count - 1) As String
 
-                    For i As Integer = 0 To romanData.Rows.Count - 1
+                    For i As Integer = 0 To thisData.Rows.Count - 1
                         Dim number As Integer = i + 1
 
-                        Dim controlName As String = romanData.Rows(i)("ControlName").ToString()
+                        Dim controlName As String = thisData.Rows(i)("ControlName").ToString()
 
-                        Dim chainName As String = GetItemData("SELECT Name FROM Chains WHERE Id='" & romanData.Rows(i)("ChainId").ToString() & "'")
+                        Dim chainName As String = GetItemData("SELECT Name FROM Chains WHERE Id='" & thisData.Rows(i)("ChainId").ToString() & "'")
 
                         Dim controlColour As String = String.Empty
                         Dim remoteType As String = String.Empty
 
                         If controlName = "Chain" Then controlColour = chainName
-                        If controlName = "Reg Cord Lock" OrElse controlName = "Cord Lock" Then
-                            controlColour = romanData.Rows(i)("ControlColour").ToString()
+                        If controlName = "Reg Cord Lock" Then
+                            controlColour = thisData.Rows(i)("ControlColour").ToString()
                         End If
                         If controlName.Contains("Alpha DC Motor") OrElse controlName.Contains("Somfy") OrElse controlName = "Motorised" Then
                             remoteType = chainName
                         End If
 
-                        Dim controlLength As String = romanData.Rows(i)("ControlLength").ToString()
-                        Dim controlLengthValue As String = romanData.Rows(i)("ControlLengthValue").ToString()
+                        Dim controlLength As String = thisData.Rows(i)("ControlLength").ToString()
+                        Dim controlLengthValue As String = thisData.Rows(i)("ControlLengthValue").ToString()
                         Dim controlLengthText As String = controlLength
                         If controlLength = "Custom" Then
                             controlLengthText = String.Format("{0} : {1}mm", controlLength, controlLengthValue)
                         End If
 
                         items(0, i) = "Item : " & number
-                        items(1, i) = romanData.Rows(i)("Room").ToString()
-                        items(2, i) = romanData.Rows(i)("Mounting").ToString()
-                        items(3, i) = romanData.Rows(i)("FabricName").ToString()
-                        items(4, i) = romanData.Rows(i)("FabricColour").ToString()
-                        items(5, i) = romanData.Rows(i)("Width").ToString()
-                        items(6, i) = romanData.Rows(i)("Drop").ToString()
-                        items(7, i) = romanData.Rows(i)("TubeName").ToString()
-                        items(8, i) = romanData.Rows(i)("ControlName").ToString()
-                        items(9, i) = romanData.Rows(i)("ControlPosition").ToString()
+                        items(1, i) = thisData.Rows(i)("Room").ToString()
+                        items(2, i) = thisData.Rows(i)("Mounting").ToString()
+                        items(3, i) = thisData.Rows(i)("FabricName").ToString()
+                        items(4, i) = thisData.Rows(i)("FabricColour").ToString()
+                        items(5, i) = thisData.Rows(i)("Width").ToString()
+                        items(6, i) = thisData.Rows(i)("Drop").ToString()
+                        items(7, i) = thisData.Rows(i)("TubeName").ToString()
+                        items(8, i) = thisData.Rows(i)("ControlName").ToString()
+                        items(9, i) = thisData.Rows(i)("ControlPosition").ToString()
                         items(10, i) = controlColour
                         items(11, i) = controlLengthText
                         items(12, i) = remoteType
-                        items(13, i) = romanData.Rows(i)("Charger").ToString()
-                        items(14, i) = romanData.Rows(i)("ExtensionCable").ToString()
-                        items(15, i) = romanData.Rows(i)("Supply").ToString()
-                        items(16, i) = romanData.Rows(i)("ValanceOption").ToString()
-                        items(17, i) = romanData.Rows(i)("Batten").ToString()
-                        items(18, i) = romanData.Rows(i)("Notes").ToString()
+                        items(13, i) = thisData.Rows(i)("Charger").ToString()
+                        items(14, i) = thisData.Rows(i)("ExtensionCable").ToString()
+                        items(15, i) = thisData.Rows(i)("Supply").ToString()
+                        items(16, i) = thisData.Rows(i)("ValanceOption").ToString()
+                        items(17, i) = thisData.Rows(i)("Notes").ToString()
                     Next
 
                     For i As Integer = 0 To items.GetLength(1) - 1 Step 6
@@ -1311,7 +1310,7 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Mounting", "Fabric Type", "Fabric Colour", "Width (mm)", "Drop (mm)", "Roman Style", "Control Type", "Control Position", "Control Colour", "Control Length", "Remote Type", "Motor Charger", "Extension Cable", "Neo Box", "Valance Option", "Batten Colour", "Special Information"}
+                        Dim headers As String() = {"", "Location", "Mounting", "Fabric Type", "Fabric Colour", "Width (mm)", "Drop (mm)", "Roman Style", "Control Type", "Control Position", "Control Colour", "Control Length", "Remote Type", "Motor Charger", "Extension Cable", "Neo Box", "Valance Option", "Special Information"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
