@@ -1032,6 +1032,68 @@ Partial Class Order_Detail
         End Try
     End Sub
 
+    Protected Sub btnSendQuote_Click(sender As Object, e As EventArgs)
+        MessageError_SendQuote(False, String.Empty)
+        Dim thisScript As String = "window.onload = function() { showSendQuote(); };"
+        Try
+            If String.IsNullOrEmpty(txtSendQuoteTo.Text) Then
+                MessageError_SendQuote(True, "CUSTOMER EMAIL TO IS REQUIRED !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showSendQuote", thisScript, True)
+                Exit Sub
+            End If
+
+            Dim isValidEmail As Boolean = orderClass.IsValidEmail(txtSendQuoteTo.Text)
+            If IsValid = False Then
+                MessageError_SendQuote(True, "PLEASE CHECK YOUR CUSTOMER EMAIL TO !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showSendQuote", thisScript, True)
+                Exit Sub
+            End If
+
+            Dim ccCustomer As String = String.Empty
+            If Not String.IsNullOrEmpty(txtSendQuoteCCCustomer.Text) Then
+                Dim raw As String = txtSendQuoteCCCustomer.Text
+                Dim lines As String() = raw.Split(New String() {vbCrLf, vbLf}, StringSplitOptions.RemoveEmptyEntries)
+
+                Dim cleanedEmails As New List(Of String)
+                For Each line As String In lines
+                    Dim email As String = line.Trim()
+                    If email <> "" Then cleanedEmails.Add(email)
+                Next
+                ccCustomer = String.Join(";", cleanedEmails)
+            End If
+
+            Dim ccStaff As String = String.Empty
+            If Not String.IsNullOrEmpty(txtSendQuoteCCStaff.Text) Then
+                Dim raw As String = txtSendQuoteCCStaff.Text
+                Dim lines As String() = raw.Split(New String() {vbCrLf, vbLf}, StringSplitOptions.RemoveEmptyEntries)
+
+                Dim cleanedEmails As New List(Of String)
+                For Each line As String In lines
+                    Dim email As String = line.Trim()
+                    If email <> "" Then cleanedEmails.Add(email)
+                Next
+                ccStaff = String.Join(";", cleanedEmails)
+            End If
+
+            If msgErrorSendQuote.InnerText = "" Then
+                Dim mailingClass As New MailingClass
+                mailingClass.SentQuote(lblHeaderId.Text, Session("LoginId").ToString(), txtSendQuoteTo.Text, ccCustomer, ccStaff)
+
+                dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), "Send Quote"}
+                orderClass.Logs(dataLog)
+
+                url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+                Response.Redirect(url, False)
+            End If
+        Catch ex As Exception
+            MessageError_SendQuote(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_SendQuote(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+            ClientScript.RegisterStartupScript(Me.GetType(), "showSendQuote", thisScript, True)
+        End Try
+    End Sub
+
     Protected Sub btnSendInvoice_Click(sender As Object, e As EventArgs)
         MessageError_SendInvoice(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showSendInvoice(); };"
@@ -1914,6 +1976,7 @@ Partial Class Order_Detail
             If lblOrderType.Text = "Builder" Then BindDataBuilder()
 
             BindCollector()
+            BindEmailQuote()
             BindEmailInvoice()
             BindDataFile(lblOrderId.Text)
 
@@ -1936,6 +1999,7 @@ Partial Class Order_Detail
 
             btnQuoteAction.Visible = False
             aQuoteCustomer.Visible = False
+            aSendQuote.Visible = False
 
             btnInvoice.Visible = False
             aSendInvoice.Visible = False
@@ -1979,6 +2043,7 @@ Partial Class Order_Detail
                     If lblOrderType.Text = "Builder" Then aQuoteOrder.Visible = True
 
                     btnQuoteAction.Visible = True
+                    aSendQuote.Visible = True
 
                     aAddItem.Visible = True
                     aAddService.Visible = True
@@ -1994,6 +2059,7 @@ Partial Class Order_Detail
                     aSubmitOrder.Visible = True : chkSendEmail.Visible = True
 
                     btnQuoteAction.Visible = True
+                    aSendQuote.Visible = True
 
                     aAddItem.Visible = True
                     aAddService.Visible = True
@@ -2166,6 +2232,7 @@ Partial Class Order_Detail
                     aRePrice.Visible = True
 
                     btnQuoteAction.Visible = True
+                    aSendQuote.Visible = True
 
                     If lblOrderType.Text = "Builder" Then aQuoteOrder.Visible = True
 
@@ -2178,6 +2245,7 @@ Partial Class Order_Detail
                     aRePrice.Visible = True
 
                     btnQuoteAction.Visible = True
+                    aSendQuote.Visible = True
 
                     aAddItem.Visible = True
                     aAddService.Visible = True
@@ -2328,7 +2396,9 @@ Partial Class Order_Detail
                     btnEditOrder.Visible = True
                     aDeleteOrder.Visible = True
                     aRePrice.Visible = True
+
                     btnQuoteAction.Visible = True
+                    aSendQuote.Visible = True
 
                     aAddItem.Visible = True
                     aAddService.Visible = True
@@ -2339,6 +2409,7 @@ Partial Class Order_Detail
                     aRePrice.Visible = True
 
                     btnQuoteAction.Visible = True
+                    aSendQuote.Visible = True
 
                     aAddItem.Visible = True
                     aAddService.Visible = True
@@ -2464,6 +2535,7 @@ Partial Class Order_Detail
                     btnEditOrder.Visible = True
 
                     btnQuoteAction.Visible = True
+                    aSendQuote.Visible = True
                     If lblOrderType.Text = "Regular" Then
                         If Session("LoginId") = lblCreatedBy.Text Then aDeleteOrder.Visible = True
                         aSubmitOrder.Visible = True
@@ -2480,6 +2552,7 @@ Partial Class Order_Detail
                     aSubmitOrder.Visible = True
 
                     btnQuoteAction.Visible = True
+                    aSendQuote.Visible = True
 
                     aAddItem.Visible = True
                     aAddService.Visible = True
@@ -2564,14 +2637,18 @@ Partial Class Order_Detail
                 If lblOrderStatus.Text = "Unsubmitted" Then
                     btnEditOrder.Visible = True
                     aRePrice.Visible = True
+
                     btnQuoteAction.Visible = True
+                    aSendQuote.Visible = True
 
                     aAddItem.Visible = True
                     aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "Quoted" Then
                     aRePrice.Visible = True
+
                     btnQuoteAction.Visible = True
+                    aSendQuote.Visible = True
                 End If
                 If lblOrderStatus.Text = "Waiting Proforma" Then
                     btnEditOrder.Visible = True
@@ -3051,6 +3128,58 @@ Partial Class Order_Detail
         End Try
     End Sub
 
+    Protected Sub BindEmailQuote()
+        Try
+            txtSendQuoteTo.Text = orderClass.GetCustomerPrimaryEmail(lblCustomerId.Text)
+
+            Dim dataEmailCustomer As DataTable = orderClass.GetDataTable("SELECT Email FROM CustomerContacts CROSS APPLY STRING_SPLIT(Tags, ',') AS thisArray WHERE CustomerId='" & lblCustomerId.Text & "' AND LTRIM(RTRIM(Email)) <> '' AND Email IS NOT NULL AND thisArray.VALUE='Invoicing' AND [Primary]=0")
+            If dataEmailCustomer.Rows.Count > 0 Then
+                Dim listEmail As New List(Of String)
+
+                For Each row As DataRow In dataEmailCustomer.Rows
+                    listEmail.Add(row("Email").ToString())
+                Next
+
+                txtSendQuoteCCCustomer.Text = String.Join(vbCrLf, listEmail)
+            End If
+
+            Dim dataCCMailing As DataTable = orderClass.GetDataTable("SELECT * FROM Mailings WHERE CompanyId='" & lblCompanyId.Text & "' AND Name='Send Quote' AND Active=1")
+            If dataCCMailing.Rows.Count > 0 Then
+                Dim listEmail As New List(Of String)
+
+                For Each row As DataRow In dataCCMailing.Rows
+                    Dim emails As String() = row("Cc").ToString().Split(";"c)
+
+                    For Each email As String In emails
+                        If Not String.IsNullOrWhiteSpace(email) Then
+                            listEmail.Add(email.Trim())
+                        End If
+                    Next
+                Next
+
+                txtSendQuoteCCStaff.Text = String.Join(vbCrLf, listEmail)
+            End If
+
+            Dim operatorEmail As String = orderClass.GetItemData("SELECT ISNULL(STRING_AGG(Logins.Email, ';'), '') FROM Customers OUTER APPLY STRING_SPLIT(Customers.Operator, ',') operatorArray LEFT JOIN Logins ON Logins.Id = TRY_CAST(operatorArray.value AS INT) WHERE Customers.Id='" & lblCustomerId.Text & "';")
+            If Not String.IsNullOrEmpty(operatorEmail) Then
+                Dim listEmail As New List(Of String)
+                If Not String.IsNullOrWhiteSpace(txtSendQuoteCCStaff.Text) Then
+                    listEmail.AddRange(txtSendQuoteCCStaff.Text.Split({vbCrLf}, StringSplitOptions.RemoveEmptyEntries))
+                End If
+                Dim operatorEmails = operatorEmail.Split(";"c)
+                For Each email As String In operatorEmails
+                    If Not String.IsNullOrWhiteSpace(email) Then
+                        listEmail.Add(email.Trim())
+                    End If
+                Next
+                listEmail = listEmail.Distinct().ToList()
+                txtSendQuoteCCStaff.Text = String.Join(vbCrLf, listEmail)
+            End If
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+        End Try
+    End Sub
+
     Protected Sub BindEmailInvoice()
         Try
             txtSendInvoiceTo.Text = orderClass.GetCustomerPrimaryEmail(lblCustomerId.Text)
@@ -3151,12 +3280,12 @@ Partial Class Order_Detail
     Protected Sub AllMessageError(visible As Boolean, message As String)
         MessageError(visible, message)
         MessageError_DuplicateOrder(visible, message)
-        MessageError_Preview(visible, message)
 
         MessageError_BuilderDetail(visible, message)
         MessageError_FileOrder(visible, message)
 
         MessageError_DetailQuote(visible, message)
+        MessageError_SendQuote(visible, message)
 
         MessageError_AddService(visible, message)
         MessageError_AddNote(visible, message)
@@ -3186,12 +3315,12 @@ Partial Class Order_Detail
         divErrorFileOrder.Visible = visible : msgErrorFileOrder.InnerText = message
     End Sub
 
-    Protected Sub MessageError_Preview(visible As Boolean, message As String)
-        divErrorPreview.Visible = visible : msgErrorPreview.InnerText = message
-    End Sub
-
     Protected Sub MessageError_DetailQuote(visible As Boolean, message As String)
         divErrorDetailQuote.Visible = visible : msgErrorDetailQuote.InnerText = message
+    End Sub
+
+    Protected Sub MessageError_SendQuote(visible As Boolean, message As String)
+        divErrorSendQuote.Visible = visible : msgErrorSendQuote.InnerText = message
     End Sub
 
     Protected Sub MessageError_AddService(visible As Boolean, message As String)

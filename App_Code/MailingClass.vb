@@ -1119,9 +1119,6 @@ Public Class MailingClass
             Dim previewClass As New PreviewClass
             Dim quoteClass As New QuoteClass
 
-            Dim pdfOrder As Byte() = previewClass.BindContent(headerId)
-            Dim pdfQuote As Byte() = quoteClass.BindContent(headerId)
-
             Dim orderData As DataRow = GetDataRow("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, Customers.Operator AS Operator, OrderHeaders.InvoiceNumber AS InvoiceNumber FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id='" & headerId & "'")
             If orderData Is Nothing Then Exit Sub
 
@@ -1129,6 +1126,7 @@ Public Class MailingClass
             Dim orderId As String = orderData("OrderId").ToString()
             Dim orderNumber As String = orderData("OrderNumber").ToString()
             Dim orderName As String = orderData("OrderName").ToString()
+            Dim orderType As String = orderData("OrderType").ToString()
 
             Dim customerName As String = orderData("CustomerName").ToString()
 
@@ -1208,6 +1206,12 @@ Public Class MailingClass
 
             myMail.IsBodyHtml = True
             myMail.Body = mailBody
+
+            Dim pdfOrder As Byte() = previewClass.BindContent(headerId)
+            Dim pdfQuote As Byte() = quoteClass.BindContent(headerId)
+            If orderType = "Builder" Then
+                pdfQuote = quoteClass.BindContentBuilder(headerId)
+            End If
 
             myMail.Attachments.Add(New Attachment(New MemoryStream(pdfOrder), "ORDER-" & orderId & ".pdf", "application/pdf"))
             myMail.Attachments.Add(New Attachment(New MemoryStream(pdfQuote), "QUOTE-" & orderId & ".pdf", "application/pdf"))
