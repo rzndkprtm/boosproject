@@ -5,7 +5,6 @@ Partial Class Setting_Specification_Product_Default
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
     Dim dataLog As Object() = Nothing
@@ -84,52 +83,132 @@ Partial Class Setting_Specification_Product_Default
 
     Protected Sub ddlDesignSort_SelectedIndexChanged(sender As Object, e As EventArgs)
         gvList.PageIndex = 0
+
         MessageError(False, String.Empty)
         BindBlindSort(ddlDesignSort.SelectedValue)
 
         BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlTubeSort.SelectedValue, ddlControlSort.SelectedValue, ddlColourSort.SelectedValue, ddlStatusSort.SelectedValue, txtSearch.Text)
+
+        Session("DesignProduct") = ddlDesignSort.SelectedValue
+        Session("BlindProduct") = ddlBlindSort.SelectedValue
+        Session("CompanyDetailProduct") = ddlCompanyDetailSort.SelectedValue
+        Session("TubeProduct") = ddlTubeSort.SelectedValue
+        Session("ControlProduct") = ddlControlSort.SelectedValue
+        Session("ColourProduct") = ddlColourSort.SelectedValue
+        Session("ActiveProduct") = ddlStatusSort.SelectedValue
+        Session("SearchProduct") = txtSearch.Text
     End Sub
 
     Protected Sub ddlBlindSort_SelectedIndexChanged(sender As Object, e As EventArgs)
         gvList.PageIndex = 0
+
         MessageError(False, String.Empty)
         BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlTubeSort.SelectedValue, ddlControlSort.SelectedValue, ddlColourSort.SelectedValue, ddlStatusSort.SelectedValue, txtSearch.Text)
+
+        Session("DesignProduct") = ddlDesignSort.SelectedValue
+        Session("BlindProduct") = ddlBlindSort.SelectedValue
+        Session("CompanyDetailProduct") = ddlCompanyDetailSort.SelectedValue
+        Session("TubeProduct") = ddlTubeSort.SelectedValue
+        Session("ControlProduct") = ddlControlSort.SelectedValue
+        Session("ColourProduct") = ddlColourSort.SelectedValue
+        Session("ActiveProduct") = ddlStatusSort.SelectedValue
+        Session("SearchProduct") = txtSearch.Text
     End Sub
 
     Protected Sub ddlCompanyDetailSort_SelectedIndexChanged(sender As Object, e As EventArgs)
         gvList.PageIndex = 0
+
         MessageError(False, String.Empty)
         BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlTubeSort.SelectedValue, ddlControlSort.SelectedValue, ddlColourSort.SelectedValue, ddlStatusSort.SelectedValue, txtSearch.Text)
+
+        Session("DesignProduct") = ddlDesignSort.SelectedValue
+        Session("BlindProduct") = ddlBlindSort.SelectedValue
+        Session("CompanyDetailProduct") = ddlCompanyDetailSort.SelectedValue
+        Session("TubeProduct") = ddlTubeSort.SelectedValue
+        Session("ControlProduct") = ddlControlSort.SelectedValue
+        Session("ColourProduct") = ddlColourSort.SelectedValue
+        Session("ActiveProduct") = ddlStatusSort.SelectedValue
+        Session("SearchProduct") = txtSearch.Text
     End Sub
 
     Protected Sub ddlTubeSort_SelectedIndexChanged(sender As Object, e As EventArgs)
         gvList.PageIndex = 0
+
         MessageError(False, String.Empty)
         BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlTubeSort.SelectedValue, ddlControlSort.SelectedValue, ddlColourSort.SelectedValue, ddlStatusSort.SelectedValue, txtSearch.Text)
+
+        Session("DesignProduct") = ddlDesignSort.SelectedValue
+        Session("BlindProduct") = ddlBlindSort.SelectedValue
+        Session("CompanyDetailProduct") = ddlCompanyDetailSort.SelectedValue
+        Session("TubeProduct") = ddlTubeSort.SelectedValue
+        Session("ControlProduct") = ddlControlSort.SelectedValue
+        Session("ColourProduct") = ddlColourSort.SelectedValue
+        Session("ActiveProduct") = ddlStatusSort.SelectedValue
+        Session("SearchProduct") = txtSearch.Text
     End Sub
 
     Protected Sub ddlControlSort_SelectedIndexChanged(sender As Object, e As EventArgs)
         gvList.PageIndex = 0
+
         MessageError(False, String.Empty)
         BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlTubeSort.SelectedValue, ddlControlSort.SelectedValue, ddlColourSort.SelectedValue, ddlStatusSort.SelectedValue, txtSearch.Text)
+
+        Session("DesignProduct") = ddlDesignSort.SelectedValue
+        Session("BlindProduct") = ddlBlindSort.SelectedValue
+        Session("CompanyDetailProduct") = ddlCompanyDetailSort.SelectedValue
+        Session("TubeProduct") = ddlTubeSort.SelectedValue
+        Session("ControlProduct") = ddlControlSort.SelectedValue
+        Session("ColourProduct") = ddlColourSort.SelectedValue
+        Session("ActiveProduct") = ddlStatusSort.SelectedValue
+        Session("SearchProduct") = txtSearch.Text
     End Sub
 
     Protected Sub ddlColourSort_SelectedIndexChanged(sender As Object, e As EventArgs)
         gvList.PageIndex = 0
+
         MessageError(False, String.Empty)
         BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlTubeSort.SelectedValue, ddlControlSort.SelectedValue, ddlColourSort.SelectedValue, ddlStatusSort.SelectedValue, txtSearch.Text)
+
+        Session("DesignProduct") = ddlDesignSort.SelectedValue
+        Session("BlindProduct") = ddlBlindSort.SelectedValue
+        Session("CompanyDetailProduct") = ddlCompanyDetailSort.SelectedValue
+        Session("TubeProduct") = ddlTubeSort.SelectedValue
+        Session("ControlProduct") = ddlControlSort.SelectedValue
+        Session("ColourProduct") = ddlColourSort.SelectedValue
+        Session("ActiveProduct") = ddlStatusSort.SelectedValue
+        Session("SearchProduct") = txtSearch.Text
     End Sub
 
     Protected Sub ddlStatusSort_SelectedIndexChanged(sender As Object, e As EventArgs)
         gvList.PageIndex = 0
+
         MessageError(False, String.Empty)
         BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlTubeSort.SelectedValue, ddlControlSort.SelectedValue, ddlColourSort.SelectedValue, ddlStatusSort.SelectedValue, txtSearch.Text)
+
+        Session("DesignProduct") = ddlDesignSort.SelectedValue
+        Session("BlindProduct") = ddlBlindSort.SelectedValue
+        Session("CompanyDetailProduct") = ddlCompanyDetailSort.SelectedValue
+        Session("TubeProduct") = ddlTubeSort.SelectedValue
+        Session("ControlProduct") = ddlControlSort.SelectedValue
+        Session("ColourProduct") = ddlColourSort.SelectedValue
+        Session("ActiveProduct") = ddlStatusSort.SelectedValue
+        Session("SearchProduct") = txtSearch.Text
     End Sub
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
         gvList.PageIndex = 0
+
         MessageError(False, String.Empty)
         BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlTubeSort.SelectedValue, ddlControlSort.SelectedValue, ddlColourSort.SelectedValue, ddlStatusSort.SelectedValue, txtSearch.Text)
+
+        Session("DesignProduct") = ddlDesignSort.SelectedValue
+        Session("BlindProduct") = ddlBlindSort.SelectedValue
+        Session("CompanyDetailProduct") = ddlCompanyDetailSort.SelectedValue
+        Session("TubeProduct") = ddlTubeSort.SelectedValue
+        Session("ControlProduct") = ddlControlSort.SelectedValue
+        Session("ColourProduct") = ddlColourSort.SelectedValue
+        Session("ActiveProduct") = ddlStatusSort.SelectedValue
+        Session("SearchProduct") = txtSearch.Text
     End Sub
 
     Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
@@ -153,54 +232,6 @@ Partial Class Setting_Specification_Product_Default
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
         End Try
-    End Sub
-
-    Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
-        If Not String.IsNullOrEmpty(e.CommandArgument) Then
-            Dim dataId As String = e.CommandArgument.ToString()
-            If e.CommandName = "Detail" Then
-                MessageError(False, String.Empty)
-                Try
-                    Session("DesignProduct") = ddlDesignSort.SelectedValue
-                    Session("BlindProduct") = ddlBlindSort.SelectedValue
-                    Session("CompanyDetailProduct") = ddlCompanyDetailSort.SelectedValue
-                    Session("TubeProduct") = ddlTubeSort.SelectedValue
-                    Session("ControlProduct") = ddlControlSort.SelectedValue
-                    Session("ColourProduct") = ddlColourSort.SelectedValue
-                    Session("ActiveProduct") = ddlStatusSort.SelectedValue
-                    Session("SearchProduct") = txtSearch.Text
-
-                    url = String.Format("~/setting/specification/product/detail?productid={0}", dataId)
-                    Response.Redirect(url, False)
-                Catch ex As Exception
-                    MessageError(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                    End If
-                End Try
-            End If
-            If e.CommandName = "Ubah" Then
-                MessageError(False, String.Empty)
-                Try
-                    Session("DesignProduct") = ddlDesignSort.SelectedValue
-                    Session("BlindProduct") = ddlBlindSort.SelectedValue
-                    Session("CompanyDetailProduct") = ddlCompanyDetailSort.SelectedValue
-                    Session("TubeProduct") = ddlTubeSort.SelectedValue
-                    Session("ControlProduct") = ddlControlSort.SelectedValue
-                    Session("ColourProduct") = ddlColourSort.SelectedValue
-                    Session("ActiveProduct") = ddlStatusSort.SelectedValue
-                    Session("SearchProduct") = txtSearch.Text
-
-                    url = String.Format("~/setting/specification/product/edit?id={0}", dataId)
-                    Response.Redirect(url, False)
-                Catch ex As Exception
-                    MessageError(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                    End If
-                End Try
-            End If
-        End If
     End Sub
 
     Protected Sub gvList_DataBound(sender As Object, e As EventArgs)
@@ -278,7 +309,6 @@ Partial Class Setting_Specification_Product_Default
                 Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Products SELECT @NewId, DesignId, BlindId, CompanyDetailId, Name + ' - Copy', InvoiceName, TubeType, ControlType, ColourType, Description, NULL FROM Products WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@NewId", newId)
                     myCmd.Parameters.AddWithValue("@Id", thisId)
-
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
@@ -355,7 +385,7 @@ Partial Class Setting_Specification_Product_Default
         End Try
     End Sub
 
-    Private Sub BindData(designText As String, blindText As String, companyText As String, tubeText As String, controlText As String, colourText As String, status As String, searchText As String)
+    Protected Sub BindData(designText As String, blindText As String, companyText As String, tubeText As String, controlText As String, colourText As String, status As String, searchText As String)
         Try
             Dim params As New List(Of SqlParameter) From {
                 New SqlParameter("@Status", If(String.IsNullOrEmpty(status), CType(DBNull.Value, Object), status)),

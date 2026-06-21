@@ -5,7 +5,6 @@ Partial Class Setting_General_Mailing_Edit
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataLog As Object() = Nothing
 
@@ -53,7 +52,6 @@ Partial Class Setting_General_Mailing_Edit
                         myCmd.Parameters.AddWithValue("@Bcc", txtBcc.Text.Trim())
                         myCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
                         myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
-
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
                     End Using

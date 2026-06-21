@@ -5,9 +5,7 @@ Public Partial Class SiteMaster
     Inherits MasterPage
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-
 
     Protected Sub Page_Init(sender As Object, e As EventArgs)
         AddHandler Page.PreLoad, AddressOf master_Page_PreLoad
@@ -129,7 +127,6 @@ Public Partial Class SiteMaster
                     Using myCmd As New SqlCommand("sp_UpdateCustomerLastLogin", thisConn)
                         myCmd.CommandType = CommandType.StoredProcedure
                         myCmd.Parameters.Add("@Id", SqlDbType.Int).Value = loginId
-
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
                     End Using
@@ -163,11 +160,7 @@ Public Partial Class SiteMaster
 
                         thisMsg = "Hi " & fullName & ",<br><br>" & thisMsg
 
-                        Dim obj = New With {
-                            .title = row("Title").ToString(),
-                            .message = thisMsg,
-                            .popupId = notificationId
-                        }
+                        Dim obj = New With {.title = row("Title").ToString(), .message = thisMsg, .popupId = notificationId}
 
                         Dim json As String = serializer.Serialize(obj)
                         scriptBuilder.Append("popupQueue.push(" & json & ");")
@@ -244,6 +237,7 @@ Public Partial Class SiteMaster
                 liLogin.Visible = True
                 liCustomer.Visible = True
                 liSpecification.Visible = True
+                liJob.Visible = True
                 liPrice.Visible = True
                 liDatabase.Visible = True
                 liXero.Visible = True
@@ -263,6 +257,7 @@ Public Partial Class SiteMaster
                 liLogin.Visible = True
                 liCustomer.Visible = True
                 liSpecification.Visible = True
+                liJob.Visible = True
                 liPrice.Visible = True
                 liDatabase.Visible = True
                 liXero.Visible = True

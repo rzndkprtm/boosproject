@@ -5,7 +5,6 @@ Partial Class Setting_General_Company_Detail
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
     Dim dataLog As Object() = Nothing
@@ -25,7 +24,6 @@ Partial Class Setting_General_Company_Detail
         lblId.Text = Request.QueryString("cid").ToString()
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-
             BindData(lblId.Text)
         End If
     End Sub
@@ -36,7 +34,6 @@ Partial Class Setting_General_Company_Detail
         Try
             lblAction.Text = "Add"
             titleProcessDetail.InnerText = "Add Detail"
-
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcessDetail", thisScript, True)
         Catch ex As Exception
             MessageError_ProcessDetail(True, ex.ToString())
@@ -111,7 +108,6 @@ Partial Class Setting_General_Company_Detail
                         myCmd.Parameters.AddWithValue("@Alias", txtAlias.Text.Trim())
                         myCmd.Parameters.AddWithValue("@Description", descText)
                         myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
-
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
                     End Using
@@ -147,7 +143,6 @@ Partial Class Setting_General_Company_Detail
 
                 If lblAction.Text = "Add" Then
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CompanyDetails ORDER BY Id DESC")
-
                     Using thisConn As New SqlConnection(myConn)
                         Using myCmd As SqlCommand = New SqlCommand("INSERT INTO CompanyDetails VALUES(@Id, @Name, @CompanyId, @Description, @Active)", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", thisId)
@@ -155,7 +150,6 @@ Partial Class Setting_General_Company_Detail
                             myCmd.Parameters.AddWithValue("@CompanyId", lblId.Text)
                             myCmd.Parameters.AddWithValue("@Description", descText)
                             myCmd.Parameters.AddWithValue("@Active", ddlActiveDetail.SelectedValue)
-
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
                         End Using
@@ -175,7 +169,6 @@ Partial Class Setting_General_Company_Detail
                             myCmd.Parameters.AddWithValue("@Name", txtNameDetail.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Description", descText)
                             myCmd.Parameters.AddWithValue("@Active", ddlActiveDetail.SelectedValue)
-
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
                         End Using

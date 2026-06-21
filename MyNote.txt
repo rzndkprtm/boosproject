@@ -18,6 +18,8 @@ https://swh17.conetix.com.au:8443/
 User : onlineor
 Password : 2%R0yy47g
 
+<add name="DefaultConnection" connectionString="Server=.\MSSQLSERVER2019;Database=sunlight_order;Uid=sunlight;Password=Sfbr49*36;" 
+
 no-reply@ordersblindonline.com
 fq95P~38o
 

@@ -72,7 +72,6 @@ Partial Class Setting_Login_Online
                         myCmd.Parameters.AddWithValue("@LoginId", loginId)
                         myCmd.Parameters.AddWithValue("@Title", txtTitle.Text.Trim())
                         myCmd.Parameters.AddWithValue("@Message", htmlContent)
-
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
                     End Using

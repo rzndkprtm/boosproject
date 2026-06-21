@@ -1,5 +1,4 @@
-﻿
-Partial Class Setting_Job_Default
+﻿Partial Class Setting_Job_Default
     Inherits Page
 
     Dim settingClass As New SettingClass
@@ -9,7 +8,7 @@ Partial Class Setting_Job_Default
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
-            Response.Redirect("~/setting/login", False)
+            Response.Redirect("~/setting", False)
             Exit Sub
         End If
     End Sub

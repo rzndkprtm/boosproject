@@ -36,7 +36,7 @@
                                     <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
                                         <div class="input-group">
                                             <span class="input-group-text">Search : </span>
-                                            <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" placeholoder="Name" autocomplete="off"></asp:TextBox>
+                                            <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" autocomplete="off"></asp:TextBox>
                                             <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />
                                         </div>
                                     </asp:Panel>
@@ -161,8 +161,7 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $('#summernote').summernote({
-                tabsize: 2,
-                height: 350,
+                tabsize: 2, height: 350,
 
                 callbacks: {
                     onChange: function (contents) {
@@ -173,29 +172,24 @@
 
             $('#summernote').summernote('code', $('#<%= hfMessage.ClientID %>').val());
         });
-
         function setSummernoteContent() {
             var content = $('#summernote').summernote('code');
             $('#<%= fieldMessage.ClientID %>').val(content);
             return true;
         }
-
         function showSendNotif() {
             $("#modalSendNotif").modal("show");
         }
-
         function idSendNotif(loginId, roleId) {
             document.getElementById("<%=txtLoginId.ClientID %>").value = loginId;
             document.getElementById("<%=txtRoleId.ClientID %>").value = roleId;
         }
-
         ["modalSendNotif"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
             });
         });
-
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>
