@@ -76,10 +76,10 @@
                                                                 <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                                 <ul class="dropdown-menu">
                                                                     <li>
-                                                                        <a class="dropdown-item" id="aEdit" href='<%# Page.ResolveUrl("~/setting/job/sheet/detail/?sheetid=" & Eval("Id")) %>'>Detail</a>
+                                                                        <a class="dropdown-item" id="aDetail" href='<%# Page.ResolveUrl("~/setting/job/sheet/detail/?sheetid=" & Eval("Id")) %>'>Detail</a>
                                                                     </li>
                                                                     <li runat="server" visible='<%# LoginAccess("Edit") %>'>
-                                                                        <a class="dropdown-item" id="aDetail" href='<%# Page.ResolveUrl("~/setting/job/sheet/edit?sheetid=" & Eval("Id")) %>'>Edit</a>
+                                                                        <a class="dropdown-item" id="aEdit" href='<%# Page.ResolveUrl("~/setting/job/sheet/edit?sheetid=" & Eval("Id")) %>'>Edit</a>
                                                                     </li>
                                                                     <li>
                                                                         <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('JobSheets', '<%# Eval("Id") %>')">Log</a>
@@ -193,7 +193,7 @@
                     if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]")) {
                         return;
                     }
-                    const btn = this.querySelector("a[id*='linkDetail']");
+                    const btn = this.querySelector("a[id*='aDetail']");
                     if (btn) btn.click();
                 };
             }

@@ -7,7 +7,6 @@ Partial Class Setting_Customer_Detail
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim enUS As CultureInfo = New CultureInfo("en-US")
     Dim url As String = String.Empty

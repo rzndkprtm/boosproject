@@ -33,7 +33,6 @@ Partial Class Setting_Job_Sheet_Add
                         myCmd.Parameters.AddWithValue("@Alias", txtAlias.Text.Trim())
                         myCmd.Parameters.AddWithValue("@Description", descText)
                         myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
-
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
                     End Using
@@ -42,7 +41,7 @@ Partial Class Setting_Job_Sheet_Add
                 Dim dataLog As Object() = {"JobSheets", thisId, Session("LoginId").ToString(), "Job Sheets Created"}
                 settingClass.Logs(dataLog)
 
-                url = String.Format("~/setting/specification/job/sheet/detail/?sheetid={0}", thisId)
+                url = String.Format("~/setting/job/sheet/detail/?sheetid={0}", thisId)
                 Response.Redirect(url, False)
             End If
         Catch ex As Exception
