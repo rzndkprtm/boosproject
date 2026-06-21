@@ -136,14 +136,14 @@ Partial Class Setting_Job_Sheet_Detail_Edit
             BindJobSheet(jobSheetId)
             BindViewJob()
 
-            Dim type As String = myData("Type").ToString()
+            Dim type As String = myData("Type1").ToString()
             Dim type2 As String = myData("Type2").ToString()
             Dim type3 As String = myData("Type3").ToString()
             Dim type4 As String = myData("Type4").ToString()
             Dim type5 As String = myData("Type5").ToString()
             Dim type6 As String = myData("Type6").ToString()
 
-            Dim formula As String = myData("Formula").ToString()
+            Dim formula As String = myData("Formula1").ToString()
             Dim formula2 As String = myData("Formula2").ToString()
             Dim formula3 As String = myData("Formula3").ToString()
             Dim formula4 As String = myData("Formula4").ToString()
@@ -151,13 +151,20 @@ Partial Class Setting_Job_Sheet_Detail_Edit
             Dim formula6 As String = myData("Formula6").ToString()
 
             If type = "Field" Then
-                ddlFormula.SelectedValue = myData("Formula6").ToString()
+                ddlFormula.SelectedValue = myData("Formula1").ToString()
                 txtFormula.Text = String.Empty
             End If
             If type = "Custom" Then
                 ddlFormula.SelectedValue = ""
-                txtFormula.Text = myData("Formula6").ToString()
+                txtFormula.Text = myData("Formula1").ToString()
             End If
+
+            ddlType.SelectedValue = type
+            ddlType2.SelectedValue = type2
+            ddlType3.SelectedValue = type3
+            ddlType4.SelectedValue = type4
+            ddlType5.SelectedValue = type5
+            ddlType6.SelectedValue = type6
 
             VisibleFormula("1", type)
             VisibleFormula("2", type2)
