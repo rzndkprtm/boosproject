@@ -78,7 +78,7 @@
                                                                     <li>
                                                                         <a class="dropdown-item" id="aEdit" href='<%# Page.ResolveUrl("~/setting/job/sheet/detail/?sheetid=" & Eval("Id")) %>'>Detail</a>
                                                                     </li>
-                                                                    <li>
+                                                                    <li runat="server" visible='<%# LoginAccess("Edit") %>'>
                                                                         <a class="dropdown-item" id="aDetail" href='<%# Page.ResolveUrl("~/setting/job/sheet/edit?sheetid=" & Eval("Id")) %>'>Edit</a>
                                                                     </li>
                                                                     <li>
