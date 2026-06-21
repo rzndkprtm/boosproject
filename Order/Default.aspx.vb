@@ -1092,7 +1092,7 @@ Partial Class Order_Default
     End Function
 
     Protected Function VisibleLog() As Boolean
-        If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" Then Return True
+        If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" Then Return True
         Return False
     End Function
 
