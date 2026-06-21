@@ -74,7 +74,7 @@ Partial Class Setting_Log
         Try
             If gvList.PageCount <= 1 Then
                 navPager.Visible = False
-                Exit Sub
+                Return
             End If
 
             navPager.Visible = True
@@ -102,6 +102,7 @@ Partial Class Setting_Log
             rptPager.DataSource = pages
             rptPager.DataBind()
         Catch ex As Exception
+            navPager.Visible = False
         End Try
     End Sub
 

@@ -5,17 +5,16 @@ Partial Class Setting_Job_Sheet_Default
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
     Dim dataLog As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        'Dim pageAccess As Boolean = LoginAccess("Load")
-        'If pageAccess = False Then
-        '    Response.Redirect("~/setting/job", False)
-        '    Exit Sub
-        'End If
+        Dim pageAccess As Boolean = LoginAccess("Load")
+        If pageAccess = False Then
+            Response.Redirect("~/setting/job", False)
+            Exit Sub
+        End If
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
@@ -76,6 +75,8 @@ Partial Class Setting_Job_Sheet_Default
 
             gvList.DataSource = thisData
             gvList.DataBind()
+
+            btnAdd.Visible = LoginAccess("Add")
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -85,35 +86,39 @@ Partial Class Setting_Job_Sheet_Default
     End Sub
 
     Protected Sub BuildPager()
-        If gvList.PageCount <= 1 Then
+        Try
+            If gvList.PageCount <= 1 Then
+                navPager.Visible = False
+                Return
+            End If
+
+            navPager.Visible = True
+
+            Dim currentPage As Integer = gvList.PageIndex
+            Dim totalPages As Integer = gvList.PageCount
+
+            Dim pages As New List(Of Object)
+
+            If currentPage > 0 Then
+                pages.Add(New With {.Text = "Previous", .PageIndex = currentPage - 1, .CssClass = ""})
+            End If
+
+            Dim startPage As Integer = Math.Max(0, currentPage - 2)
+            Dim endPage As Integer = Math.Min(totalPages - 1, currentPage + 2)
+
+            For i As Integer = startPage To endPage
+                pages.Add(New With {.Text = (i + 1).ToString(), .PageIndex = i, .CssClass = If(i = currentPage, "active", "")})
+            Next
+
+            If currentPage < totalPages - 1 Then
+                pages.Add(New With {.Text = "Next", .PageIndex = currentPage + 1, .CssClass = ""})
+            End If
+
+            rptPager.DataSource = pages
+            rptPager.DataBind()
+        Catch ex As Exception
             navPager.Visible = False
-            Return
-        End If
-
-        navPager.Visible = True
-
-        Dim currentPage As Integer = gvList.PageIndex
-        Dim totalPages As Integer = gvList.PageCount
-
-        Dim pages As New List(Of Object)
-
-        If currentPage > 0 Then
-            pages.Add(New With {.Text = "Previous", .PageIndex = currentPage - 1, .CssClass = ""})
-        End If
-
-        Dim startPage As Integer = Math.Max(0, currentPage - 2)
-        Dim endPage As Integer = Math.Min(totalPages - 1, currentPage + 2)
-
-        For i As Integer = startPage To endPage
-            pages.Add(New With {.Text = (i + 1).ToString(), .PageIndex = i, .CssClass = If(i = currentPage, "active", "")})
-        Next
-
-        If currentPage < totalPages - 1 Then
-            pages.Add(New With {.Text = "Next", .PageIndex = currentPage + 1, .CssClass = ""})
-        End If
-
-        rptPager.DataSource = pages
-        rptPager.DataBind()
+        End Try
     End Sub
 
     Protected Sub MessageError(visible As Boolean, message As String)
