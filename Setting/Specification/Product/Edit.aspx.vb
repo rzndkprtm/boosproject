@@ -5,11 +5,9 @@ Partial Class Setting_Specification_Product_Edit
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
     Dim dataLog As Object() = Nothing
-    Dim returnPage As String = String.Empty
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
@@ -18,16 +16,16 @@ Partial Class Setting_Specification_Product_Edit
             Exit Sub
         End If
 
-        If String.IsNullOrEmpty(Request.QueryString("id")) Then
+        If String.IsNullOrEmpty(Request.QueryString("productid")) Then
             Response.Redirect("~/setting/specification/product", False)
             Exit Sub
         End If
 
         If Not String.IsNullOrEmpty(Request.QueryString("returnpage")) Then
-            returnPage = Request.QueryString("returnpage").ToString()
+            lblReturnPage.Text = Request.QueryString("returnpage").ToString()
         End If
 
-        lblId.Text = Request.QueryString("id").ToString()
+        lblId.Text = Request.QueryString("productid").ToString()
         If Not IsPostBack Then
             BackColor()
             BindData(lblId.Text)
@@ -45,7 +43,6 @@ Partial Class Setting_Specification_Product_Edit
         Try
             txtTubeName.Text = String.Empty
             txtTubeDescription.Text = String.Empty
-
             ClientScript.RegisterStartupScript(Me.GetType(), "showTube", thisScript, True)
         Catch ex As Exception
             MessageError_Tube(True, ex.ToString())
@@ -59,7 +56,6 @@ Partial Class Setting_Specification_Product_Edit
         Try
             txtControlName.Text = String.Empty
             txtControlDescription.Text = String.Empty
-
             ClientScript.RegisterStartupScript(Me.GetType(), "showControl", thisScript, True)
         Catch ex As Exception
             MessageError_Control(True, ex.ToString())
@@ -73,7 +69,6 @@ Partial Class Setting_Specification_Product_Edit
         Try
             txtColourName.Text = String.Empty
             txtColourDescription.Text = String.Empty
-
             ClientScript.RegisterStartupScript(Me.GetType(), "showColour", thisScript, True)
         Catch ex As Exception
             MessageError_Colour(True, ex.ToString())
@@ -93,7 +88,6 @@ Partial Class Setting_Specification_Product_Edit
                         myCmd.Parameters.AddWithValue("@Id", thisId)
                         myCmd.Parameters.AddWithValue("@Name", txtTubeName.Text.Trim())
                         myCmd.Parameters.AddWithValue("@Description", descText)
-
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
                     End Using
@@ -103,6 +97,9 @@ Partial Class Setting_Specification_Product_Edit
                 settingClass.Logs(dataLog)
 
                 url = String.Format("~/setting/specification/product/edit?id={0}", lblId.Text)
+                If lblReturnPage.Text = "detail" Then
+                    url = String.Format("~/setting/specification/product/edit?id={0}&returnpage=detail", lblId.Text)
+                End If
                 Response.Redirect(url, False)
             End If
         Catch ex As Exception
@@ -122,7 +119,6 @@ Partial Class Setting_Specification_Product_Edit
                         myCmd.Parameters.AddWithValue("@Id", thisId)
                         myCmd.Parameters.AddWithValue("@Name", txtControlName.Text.Trim())
                         myCmd.Parameters.AddWithValue("@Description", descText)
-
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
                     End Using
@@ -132,6 +128,9 @@ Partial Class Setting_Specification_Product_Edit
                 settingClass.Logs(dataLog)
 
                 url = String.Format("~/setting/specification/product/edit?id={0}", lblId.Text)
+                If lblReturnPage.Text = "detail" Then
+                    url = String.Format("~/setting/specification/product/edit?id={0}&returnpage=detail", lblId.Text)
+                End If
                 Response.Redirect(url, False)
             End If
         Catch ex As Exception
@@ -151,7 +150,6 @@ Partial Class Setting_Specification_Product_Edit
                         myCmd.Parameters.AddWithValue("@Id", thisId)
                         myCmd.Parameters.AddWithValue("@Name", txtColourName.Text.Trim())
                         myCmd.Parameters.AddWithValue("@Description", descText)
-
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
                     End Using
@@ -161,6 +159,9 @@ Partial Class Setting_Specification_Product_Edit
                 settingClass.Logs(dataLog)
 
                 url = String.Format("~/setting/specification/product/edit?id={0}", lblId.Text)
+                If lblReturnPage.Text = "detail" Then
+                    url = String.Format("~/setting/specification/product/edit?id={0}&returnpage=detail", lblId.Text)
+                End If
                 Response.Redirect(url, False)
             End If
         Catch ex As Exception
@@ -231,7 +232,6 @@ Partial Class Setting_Specification_Product_Edit
                         myCmd.Parameters.AddWithValue("@ColourType", ddlColour.SelectedValue)
                         myCmd.Parameters.AddWithValue("@Description", descText)
                         myCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
-
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
                     End Using
@@ -241,7 +241,7 @@ Partial Class Setting_Specification_Product_Edit
                 settingClass.Logs(dataLog)
 
                 url = "~/setting/specification/product/"
-                If returnPage = "detail" Then
+                If lblReturnPage.Text = "detail" Then
                     url = String.Format("~/setting/specification/product/detail?productid={0}", lblId.Text)
                 End If
                 Response.Redirect(url, False)
@@ -253,7 +253,7 @@ Partial Class Setting_Specification_Product_Edit
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
         url = "~/setting/specification/product/"
-        If returnPage = "detail" Then
+        If lblReturnPage.Text = "detail" Then
             url = String.Format("~/setting/specification/product/detail?productid={0}", lblId.Text)
         End If
         Response.Redirect(url, False)
@@ -318,7 +318,6 @@ Partial Class Setting_Specification_Product_Edit
                 ddlDesign.Items.Insert(0, New ListItem("", ""))
             End If
         Catch ex As Exception
-            ddlDesign.Items.Clear()
             MessageError(True, ex.ToString())
         End Try
     End Sub

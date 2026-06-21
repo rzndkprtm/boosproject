@@ -34,6 +34,7 @@
                             <div class="form form-vertical">
                                 <div class="form-body">
                                     <asp:Label runat="server" ID="lblId" Visible="false"></asp:Label>
+                                    <asp:Label runat="server" ID="lblReturnPage" Visible="false"></asp:Label>
                                     <div class="row mb-2" runat="server" id="divDebtorCode">
                                         <div class="col-12 col-sm-12 col-lg-5 form-group">
                                             <label class="form-label">Debtor Code</label>

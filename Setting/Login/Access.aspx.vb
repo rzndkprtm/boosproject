@@ -98,25 +98,21 @@ Partial Class Setting_Login_Access
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
             End If
-
             If ddlLevelId.SelectedValue = "" Then
                 MessageError_Process(True, "LEVEL ACCESS IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
             End If
-
             If txtPage.Text = "" Then
                 MessageError_Process(True, "PAGE IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
             End If
-
             If txtAction.Text = "" Then
                 MessageError_Process(True, "ACTION IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
             End If
-
             If msgErrorProcess.InnerText = "" Then
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
                 If lblAction.Text = "Add" Then
@@ -128,7 +124,6 @@ Partial Class Setting_Login_Access
                             myCmd.Parameters.AddWithValue("@Action", txtAction.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Description", descText)
                             myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
-
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
                         End Using
@@ -148,7 +143,6 @@ Partial Class Setting_Login_Access
                             myCmd.Parameters.AddWithValue("@Action", txtAction.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Description", descText)
                             myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
-
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
                         End Using
@@ -172,7 +166,6 @@ Partial Class Setting_Login_Access
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("DELETE FROM LoginAccess WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", thisId)
-
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using

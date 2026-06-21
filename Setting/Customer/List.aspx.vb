@@ -5,7 +5,6 @@ Partial Class Setting_Customer_List
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
     Dim dataLog As Object() = Nothing
@@ -103,7 +102,6 @@ Partial Class Setting_Customer_List
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE Customers SET CashSale=@CashSale WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", thisId)
                     myCmd.Parameters.AddWithValue("@CashSale", newData)
-
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
@@ -134,7 +132,6 @@ Partial Class Setting_Customer_List
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE Customers SET OnStop=@OnStop WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", thisId)
                     myCmd.Parameters.AddWithValue("@OnStop", newData)
-
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
@@ -162,7 +159,6 @@ Partial Class Setting_Customer_List
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE Customers SET Active=0 WHERE Id=@Id UPDATE Logins SET Active=0 WHERE CustomerId=@Id;", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", dataId)
-
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using

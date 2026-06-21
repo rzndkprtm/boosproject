@@ -255,7 +255,10 @@
                                                     <a href="javascript:void(0);" class='submenu-link'>Job</a>
                                                     <ul class="subsubmenu">
                                                         <li class="subsubmenu-item">
-                                                            <a runat="server" href="~/setting/job/" class="subsubmenu-link">XXXX</a>
+                                                            <a runat="server" href="~/setting/job/sheet" class="subsubmenu-link">Job Sheet</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/job/order" class="subsubmenu-link">Job Order</a>
                                                         </li>
                                                     </ul>
                                                 </li>

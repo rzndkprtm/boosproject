@@ -38,7 +38,16 @@
     <div class="page-content">
         <section class="row">
             <div class="dashboard-wrapper">
-
+                <a href="/setting/job/sheet" class="dashboard-card">
+                    <div class="dashboard-number"><%= GetSumData("JobSheets") %></div>
+                    <div class="dashboard-title">Job Sheet</div>
+                    <div class="dashboard-desc">Description</div>
+                </a>
+                <a href="/setting/job/order" class="dashboard-card">
+                    <div class="dashboard-number"><%= GetSumData("Companys") %></div>
+                    <div class="dashboard-title">Job Order</div>
+                    <div class="dashboard-desc">Description</div>
+                </a>
             </div>
         </section>
     </div>

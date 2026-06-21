@@ -30,7 +30,6 @@ Partial Class Setting_General_Company_Default
         Try
             lblAction.Text = "Add"
             titleProcess.InnerText = "Add Company"
-
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         Catch ex As Exception
             MessageError_Process(True, ex.ToString())
@@ -62,7 +61,6 @@ Partial Class Setting_General_Company_Default
     Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
         If Not String.IsNullOrEmpty(e.CommandArgument) Then
             Session("SearchCompany") = txtSearch.Text
-
             Dim dataId As String = e.CommandArgument.ToString()
             If e.CommandName = "Detail" Then
                 url = String.Format("~/setting/general/company/detail?cid={0}", dataId)
@@ -80,19 +78,16 @@ Partial Class Setting_General_Company_Default
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
             End If
-
             If txtAlias.Text = "" Then
                 MessageError_Process(True, "COMPANY ALIAS IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
             End If
-
             If msgErrorProcess.InnerText = "" Then
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 
                 If lblAction.Text = "Add" Then
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Companys ORDER BY Id DESC")
-
                     Using thisConn As New SqlConnection(myConn)
                         Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Companys VALUES (@Id, @Name, @Alias, NULL, @Description, @Active)", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", thisId)
@@ -100,7 +95,6 @@ Partial Class Setting_General_Company_Default
                             myCmd.Parameters.AddWithValue("@Alias", txtAlias.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Description", descText)
                             myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
-
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
                         End Using
@@ -110,7 +104,6 @@ Partial Class Setting_General_Company_Default
                     settingClass.Logs(dataLog)
 
                     Session("SearchCompany") = txtSearch.Text
-
                     url = String.Format("~/setting/general/company/detail?companyid={0}", thisId)
                     Response.Redirect(url, False)
                 End If
@@ -123,7 +116,6 @@ Partial Class Setting_General_Company_Default
                             myCmd.Parameters.AddWithValue("@Alias", txtAlias.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Description", descText)
                             myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
-
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
                         End Using

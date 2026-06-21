@@ -5,7 +5,6 @@ Partial Class Setting_Xero
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataLog As Object() = Nothing
 
@@ -31,7 +30,6 @@ Partial Class Setting_Xero
             lblAction.Text = "Add"
             titleProcess.InnerText = "Add Xero"
             txtName.Enabled = True
-
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         Catch ex As Exception
             MessageError_Process(True, ex.ToString())
@@ -106,19 +104,16 @@ Partial Class Setting_Xero
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
             End If
-
             If txtItemCode.Text = "" Then
                 MessageError_Process(True, "ITEM CODE IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
             End If
-
             If txtAccountCode.Text = "" Then
                 MessageError_Process(True, "ACCOUNT CODE IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
             End If
-
             If msgErrorProcess.InnerText = "" Then
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 
@@ -132,7 +127,6 @@ Partial Class Setting_Xero
                             myCmd.Parameters.AddWithValue("@AccountCode", txtAccountCode.Text)
                             myCmd.Parameters.AddWithValue("@Description", descText)
                             myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
-
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
                         End Using
@@ -154,7 +148,6 @@ Partial Class Setting_Xero
                             myCmd.Parameters.AddWithValue("@AccountCode", txtAccountCode.Text)
                             myCmd.Parameters.AddWithValue("@Description", descText)
                             myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
-
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
                         End Using
@@ -180,11 +173,9 @@ Partial Class Setting_Xero
         MessageError(False, String.Empty)
         Try
             Dim thisId As String = txtIdDelete.Text
-
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Xeros WHERE Id=@Id; DELETE FROM Logs WHERE Type='Xeros' AND DataId=@Id;", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", thisId)
-
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
