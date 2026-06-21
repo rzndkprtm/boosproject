@@ -33,35 +33,27 @@
                         <div class="card-body">
                             <div class="form form-horizontal">
                                 <div class="form-body">
-                                    <div class="row mb-2">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Name</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                    <div class="row">
+                                        <div class="col-12 form-group">
+                                            <label class="form-label">Name</label>
                                             <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
                                         </div>
                                     </div>
-                                    <div class="row mb-2">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Alias</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                    <div class="row">
+                                        <div class="col-12 form-group">
+                                            <label class="form-label">Alias</label>
                                             <asp:TextBox runat="server" ID="txtAlias" CssClass="form-control" placeholder="Alias ..." autocomplete="off"></asp:TextBox>
                                         </div>
                                     </div>                                    
-                                    <div class="row mb-2">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Description</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-8 form-group">
+                                    <div class="row">
+                                        <div class="col-12 form-group">
+                                            <label class="form-label">Description</label>
                                             <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
                                         </div>
                                     </div>
-                                    <div class="row mb-2">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Active</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                    <div class="row">
+                                        <div class="col-12 form-group">
+                                            <label class="form-label">Active</label>
                                             <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select">
                                                 <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
                                                 <asp:ListItem Value="0" Text="No"></asp:ListItem>
@@ -85,7 +77,16 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-sm-12 col-lg-5"></div>
+            <div class="col-12 col-sm-12 col-lg-5">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title text-center">Information</h4>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body"></div>
+                    </div>
+                </div>
+            </div>
         </section>
     </div>
 
@@ -93,4 +94,8 @@
         <asp:Label runat="server" ID="lblId"></asp:Label>
         <asp:Label runat="server" ID="lblReturnPage"></asp:Label>
     </div>
+
+    <script type="text/javascript">
+        window.history.replaceState(null, null, window.location.href);
+    </script>
 </asp:Content>
