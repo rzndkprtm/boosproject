@@ -2386,6 +2386,7 @@ Partial Class Order_Detail
             If Session("RoleName") = "Factory Office" Then
                 aDuplicateOrder.Visible = True
                 aFile.Visible = True
+                aLog.Visible = True
                 If lblCompanyId.Text = "3" Then btnSuratJalan.Visible = True
                 If lblOrderType.Text = "Builder" Then aBuilderData.Visible = True
 
@@ -3536,7 +3537,7 @@ Partial Class Order_Detail
     End Function
 
     Protected Function VisibleLog() As Boolean
-        If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" Then
+        If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" Then
             Return True
         End If
         Return False
