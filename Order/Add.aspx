@@ -138,30 +138,6 @@
     </div>
 
     <script type="text/javascript">
-        document.addEventListener("DOMContentLoaded", function () {
-
-            const ddlMethod = document.getElementById("ddlMethod");
-            const divManual = document.getElementById("divManual");
-            const divUpload = document.getElementById("divUpload");
-
-            function toggleMethod() {
-
-                if (ddlMethod.value === "Manual") {
-                    divManual.style.display = "";
-                    divUpload.style.display = "none";
-                }
-                else {
-                    divManual.style.display = "none";
-                    divUpload.style.display = "";
-                }
-
-            }
-
-            ddlMethod.addEventListener("change", toggleMethod);
-
-            toggleMethod();
-
-        });
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>
