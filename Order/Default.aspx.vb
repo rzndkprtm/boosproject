@@ -174,7 +174,6 @@ Partial Class Order_Default
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Active=0, Download='No' WHERE Id=@Id; UPDATE OrderDetails SET Active=0 WHERE HeaderId=@Id;", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
-
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
                     End Using
@@ -187,7 +186,6 @@ Partial Class Order_Default
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET SubmittedDate=NULL, ProductionDate=NULL, OnHoldDate=NULL, Status='Unsubmitted', Download='No', DownloadDate=NULL, ShipmentDate=NULL, ShipmentNumber=NULL, ContainerNumber=NULL, ContainerETA=NULL, Courier=NULL, InvoiceNumber=NULL, Collector=NULL, InvoiceDate=NULL, DueDate=NULL, Payment=0, PaymentDate=NULL, Amount=0 WHERE Id=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
-
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
                     End Using
@@ -206,11 +204,20 @@ Partial Class Order_Default
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='New Order' WHERE Id=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
-
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
                     End Using
                 End Using
+
+                If thisOldStatus = "Waiting Proforma" Then
+                    Dim checkOcean As Integer = orderClass.GetItemData_Integer("SELECT COUNT(OrderDetails.Id) FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.HeaderId='" & thisId & "' AND OrderDetails.Active=1 AND Products.DesignId='15'")
+                    If checkOcean > 0 Then
+                        Task.Run(Async Function()
+                                     Dim svc As New ShutterOceanService()
+                                     Await svc.SendOrderAsync(thisId)
+                                 End Function)
+                    End If
+                End If
 
                 dataLog = {"OrderHeaders", thisId, Session("LoginId"), "New Order"}
                 orderClass.Logs(dataLog)
@@ -233,7 +240,6 @@ Partial Class Order_Default
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As SqlCommand = New SqlCommand(stringQuery, thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
-
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
                     End Using
@@ -252,7 +258,6 @@ Partial Class Order_Default
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='On Hold', OnHoldDate=GETDATE() WHERE Id=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
-
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
                     End Using
@@ -305,7 +310,6 @@ Partial Class Order_Default
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Completed', CompletedDate=GETDATE() WHERE Id=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
-
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
                     End Using
@@ -321,7 +325,6 @@ Partial Class Order_Default
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Download='Yes', DownloadDate=NULL WHERE Id=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
-
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
                     End Using
@@ -335,7 +338,6 @@ Partial Class Order_Default
                 Dim pdfBytes As Byte() = suratClass.BindContent(thisId)
 
                 Dim orderId As String = orderClass.GetItemData("SELECT OrderId FROM OrderHeaders WHERE Id='" & thisId & "'")
-
                 Dim fileName As String = String.Format("SURAT JALAN {0}.pdf", orderId)
 
                 Response.Clear()
@@ -410,8 +412,6 @@ Partial Class Order_Default
                     orderId = companyAlias & randomCode
                     Try
                         Using thisConn As New SqlConnection(myConn)
-                            thisConn.Open()
-
                             Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderHeaders SELECT @NewID, @OrderId, CustomerId, @OrderNumber, @OrderName, @OrderNote, OrderType, OrderFactory, 'Unsubmitted', NULL, @CreatedBy, GETDATE(), NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, 0, 'No', NULL, 1 FROM OrderHeaders WHERE Id=@OldId; INSERT INTO OrderQuotes VALUES(@NewID, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
                                 myCmd.Parameters.AddWithValue("@OldId", thisId)
                                 myCmd.Parameters.AddWithValue("@NewID", newIdHeader)
@@ -420,21 +420,10 @@ Partial Class Order_Default
                                 myCmd.Parameters.AddWithValue("@OrderName", txtOrderNameNew.Text.Trim())
                                 myCmd.Parameters.AddWithValue("@OrderNote", txtOrderNoteNew.Text)
                                 myCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
-
+                                thisConn.Open()
                                 myCmd.ExecuteNonQuery()
                             End Using
-
-                            If orderType = "Builder" Then
-                                Using myCmd As New SqlCommand("INSERT INTO OrderBuilders(Id) VALUES (@Id)", thisConn)
-                                    myCmd.Parameters.AddWithValue("@Id", newIdHeader)
-
-                                    myCmd.ExecuteNonQuery()
-                                End Using
-                            End If
-
-                            thisConn.Close()
                         End Using
-
                         success = True
                     Catch exSql As SqlException
                         If exSql.Number = 2601 OrElse exSql.Number = 2627 Then
@@ -444,6 +433,15 @@ Partial Class Order_Default
                         End If
                     End Try
                 Loop
+
+                If orderType = "Builder" Then
+                    Using thisConn As New SqlConnection(myConn)
+                        Using myCmd As New SqlCommand("INSERT INTO OrderBuilders(Id) VALUES (@Id)", thisConn)
+                            myCmd.Parameters.AddWithValue("@Id", newIdHeader)
+                            myCmd.ExecuteNonQuery()
+                        End Using
+                    End Using
+                End If
 
                 dataLog = {"OrderHeaders", newIdHeader, Session("LoginId").ToString(), "Order Created | Copy"}
                 orderClass.Logs(dataLog)
@@ -457,11 +455,9 @@ Partial Class Order_Default
                         Using thisConn As New SqlConnection(myConn)
                             Using myCmd As New SqlCommand("sp_CopyOrderDetails", thisConn)
                                 myCmd.CommandType = CommandType.StoredProcedure
-
                                 myCmd.Parameters.AddWithValue("@ItemIdOld", itemId)
                                 myCmd.Parameters.AddWithValue("@NewId", newIdDetail)
                                 myCmd.Parameters.AddWithValue("@HeaderId", newIdHeader)
-
                                 thisConn.Open()
                                 myCmd.ExecuteNonQuery()
                             End Using
@@ -505,25 +501,21 @@ Partial Class Order_Default
                 ClientScript.RegisterStartupScript(Me.GetType(), "showShipmentOrder", thisScript, True)
                 Exit Sub
             End If
-
             If txtShipmentDate.Text = "" Then
                 MessageError_ShipmentOrder(True, "SHIPMENT DATE IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showShipmentOrder", thisScript, True)
                 Exit Sub
             End If
-
             If txtContainerNumber.Text = "" Then
                 MessageError_ShipmentOrder(True, "CONTAINER NUMBER IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showShipmentOrder", thisScript, True)
                 Exit Sub
             End If
-
             If txtCourier.Text = "" Then
                 MessageError_ShipmentOrder(True, "COURIER IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showShipmentOrder", thisScript, True)
                 Exit Sub
             End If
-
             If msgErrorShipmentOrder.InnerText = "" Then
                 Dim thisId As String = txtShipmentOrderId.Text
 
@@ -535,7 +527,6 @@ Partial Class Order_Default
                         myCmd.Parameters.AddWithValue("@ContainerNumber", txtContainerNumber.Text.Trim())
                         myCmd.Parameters.AddWithValue("@ContainerETA", If(String.IsNullOrEmpty(txtContainerEta.Text), CType(DBNull.Value, Object), txtContainerEta.Text))
                         myCmd.Parameters.AddWithValue("@Courier", txtCourier.Text.Trim())
-
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
                     End Using
@@ -564,7 +555,6 @@ Partial Class Order_Default
                 ClientScript.RegisterStartupScript(Me.GetType(), "showCancelOrder", thisScript, True)
                 Exit Sub
             End If
-
             If msgErrorCancelOrder.InnerText = "" Then
                 Dim thisId As String = txtCancelOrderId.Text
                 Dim companyId As String = orderClass.GetCompanyIdByOrder(thisId)
@@ -573,7 +563,6 @@ Partial Class Order_Default
                     Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Canceled', StatusDescription=@StatusDescription, CanceledDate=GETDATE(), ShipmentNumber=NULL, ShipmentDate=NULL, ContainerNumber=NULL, ContainerETA=NULL, Courier=NULL, InvoiceNumber=NULL, Collector=NULL, InvoiceDate=NULL, DueDate=NULL, Payment=0, PaymentDate=NULL, Amount=0 WHERE Id=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
                         myCmd.Parameters.AddWithValue("@StatusDescription", txtCancelDescription.Text.Trim())
-
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
                     End Using
