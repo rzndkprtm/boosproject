@@ -2061,7 +2061,7 @@ Partial Class Order_Detail
             liUpdateInvoiceData.Visible = False
 
             aBuilderData.Visible = False
-            'btnJob.Visible = False
+            btnJob.Visible = False
             aFile.Visible = False
             aMoreDownloadBOE.Visible = False
             btnSuratJalan.Visible = False
@@ -2185,6 +2185,8 @@ Partial Class Order_Detail
                     If lblOrderPaid.Text = "" Then aSendInvoice.Visible = True
                     liDividerInvoice.Visible = True
                     liUpdateInvoiceData.Visible = True
+
+                    btnJob.Visible = True
 
                     aAddItem.Visible = True
                     aAddService.Visible = True
