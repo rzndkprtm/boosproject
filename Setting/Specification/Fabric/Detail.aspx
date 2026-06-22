@@ -129,7 +129,6 @@
                                         <div class="col-12">
                                             <div class="table-responsive">
                                                 <asp:GridView runat="server" ID="gvListColour" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" EmptyDataText="DATA NOT FOUND :)" PageSize="100" EmptyDataRowStyle-HorizontalAlign="Center" OnRowCommand="gvListColour_RowCommand">
-                                                    <RowStyle />
                                                     <Columns>
                                                         <asp:TemplateField ItemStyle-HorizontalAlign="Center">
                                                             <ItemTemplate>

@@ -35,7 +35,7 @@
                                     <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
                                         <div class="input-group">
                                             <span class="input-group-text">Search : </span>
-                                            <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" placeholoder="" autocomplete="off"></asp:TextBox>
+                                            <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" autocomplete="off"></asp:TextBox>
                                             <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />
                                         </div>
                                     </asp:Panel>
@@ -54,7 +54,6 @@
                                 <div class="col-12">
                                     <div class="table-responsive">
                                         <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom" OnPageIndexChanging="gvList_PageIndexChanging" OnRowCommand="gvList_RowCommand">
-                                            <RowStyle />
                                             <Columns>
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center">
                                                     <ItemTemplate>
@@ -75,7 +74,7 @@
                                                                 <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                             </li>
                                                             <li runat="server" visible='<%# LoginAccess("Change Status") %>'>
-                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeStatus" onclick='<%# String.Format("return showChangeStatus(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("Name").ToString(), Eval("Status").ToString()) %>'>Change Status</a>
+                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeStatus" onclick='<%# String.Format("return dataChangeStatus(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("Name").ToString(), Eval("Status").ToString()) %>'>Change Status</a>
                                                             </li>
                                                             <li>
                                                                 <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('Chains', '<%# Eval("Id") %>')">Log</a>
@@ -251,37 +250,27 @@
         document.addEventListener('DOMContentLoaded', function () {
             const gv = document.getElementById('<%= gvList.ClientID %>');
             if (!gv) return;
-
             for (let i = 1; i < gv.rows.length; i++) {
                 const row = gv.rows[i];
                 row.style.cursor = 'pointer';
-
                 row.addEventListener('click', function (e) {
-                    if (
-                        e.target.closest("a") ||
-                        e.target.closest("button") ||
-                        e.target.closest("[data-bs-toggle]")
-                    ) {
+                    if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]")) {
                         return;
                     }
-
                     const btn = this.querySelector("a[id*='linkDetail']");
                     if (btn) btn.click();
                 });
             }
         });
-
         function showProcess() {
             $("#modalProcess").modal("show");
         }
-
-        function showChangeStatus(id, name, status) {
+        function dataChangeStatus(id, name, status) {
             document.getElementById("<%=txtIdStatus.ClientID %>").value = id;
             document.getElementById("<%=txtNameStatus.ClientID %>").value = name;
             document.getElementById("<%=txtOldStatus.ClientID %>").value = status;
             document.getElementById("<%=ddlOldStatus.ClientID %>").value = status;
         }
-
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
             $("#tblLogs tbody").html("");
@@ -315,14 +304,12 @@
                 }
             });
         }
-
         ["modalProcess", "modalChangeStatus", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
             });
         });
-
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

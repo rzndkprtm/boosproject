@@ -272,21 +272,6 @@
             initUpdatePanelLoading();
             bindGridRowClick();
         });
-        document.addEventListener('DOMContentLoaded', function () {
-            const gv = document.getElementById('<%= gvList.ClientID %>');
-            if (!gv) return;
-            for (let i = 1; i < gv.rows.length; i++) {
-                const row = gv.rows[i];
-                row.style.cursor = 'pointer';
-                row.addEventListener('click', function (e) {
-                    if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]")) {
-                        return;
-                    }
-                    const btn = this.querySelector("a[id*='aDetail']");
-                    if (btn) btn.click();
-                });
-            }
-        });
         function dataDetail(company, name, alias, subject, to, cc, bcc) {
             document.getElementById("spanCompany").innerText = company;
             document.getElementById("spanName").innerText = name;

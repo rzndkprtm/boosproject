@@ -4,7 +4,6 @@ Partial Class Setting_General_Newsletter_Add
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -33,22 +32,18 @@ Partial Class Setting_General_Newsletter_Add
                 MessageError(True, "NEWSLETTER NAME IS REQUIRED !")
                 Exit Sub
             End If
-
             If ddlCompany.SelectedValue = "" Then
                 MessageError(True, "COMPANY IS REQUIRED !")
                 Exit Sub
             End If
-
             If ddlType.SelectedValue = "" Then
                 MessageError(True, "NEWSLETTER TYPE IS REQUIRED !")
                 Exit Sub
             End If
-
             If ddlType.SelectedValue = "Upload" AndAlso Not fuFile.HasFile Then
                 MessageError(True, "PLEASE UPLOAD YOUR IMAGE !")
                 Exit Sub
             End If
-
             If ddlType.SelectedValue = "Link" AndAlso txtLink.Text = "" Then
                 MessageError(True, "NEWSLETTER LINK IS REQUIRED !")
                 Exit Sub
@@ -69,16 +64,15 @@ Partial Class Setting_General_Newsletter_Add
                 End If
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Newsletters VALUES (@Id, @CompanyId, @Name, @Type, @Link, @Description, 0);", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", thisId)
-                        myCmd.Parameters.AddWithValue("@CompanyId", ddlCompany.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@Link", link)
-                        myCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
-
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Newsletters VALUES (@Id, @CompanyId, @Name, @Type, @Link, @Description, 0);", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", thisId)
+                        thisCmd.Parameters.AddWithValue("@CompanyId", ddlCompany.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Link", link)
+                        thisCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 

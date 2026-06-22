@@ -22,7 +22,7 @@ Partial Class Setting_Job_Sheet_Detail_Add
         lblId.Text = Request.QueryString("sheetid").ToString()
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-            BindJobSheet(lblId.Text)
+            BindJobSheet()
             BindViewJob()
             VisibleFormula("1", ddlType.SelectedValue)
             VisibleFormula("2", ddlType2.SelectedValue)
@@ -114,6 +114,9 @@ Partial Class Setting_Job_Sheet_Detail_Add
                     End Using
                 End Using
 
+                Dim dataLog As Object() = {"JobSheetDetails", thisId, Session("LoginId").ToString(), "Job Sheet Detail Created"}
+                settingClass.Logs(dataLog)
+
                 url = String.Format("~/setting/job/sheet/detail/?sheetid={0}", lblId.Text)
                 Response.Redirect(url, False)
             End If
@@ -130,84 +133,18 @@ Partial Class Setting_Job_Sheet_Detail_Add
         Response.Redirect(url, False)
     End Sub
 
-    Protected Sub VisibleFormula(number As String, type As String)
+    Protected Sub BindJobSheet()
+        ddlJobSheet.Items.Clear()
         Try
-            If number = "1" Then
-                divFormulaField.Visible = False : divFormulaCustom.Visible = False
-                If type = "Field" Then
-                    divFormulaField.Visible = True : divFormulaCustom.Visible = False
-                End If
-                If type = "Custom" Then
-                    divFormulaField.Visible = False : divFormulaCustom.Visible = True
-                End If
-            End If
-            If number = "2" Then
-                divFormulaField2.Visible = False : divFormulaCustom2.Visible = False
-                If type = "Field" Then
-                    divFormulaField2.Visible = True : divFormulaCustom2.Visible = False
-                End If
-                If type = "Custom" Then
-                    divFormulaField2.Visible = False : divFormulaCustom2.Visible = True
-                End If
-            End If
-            If number = "3" Then
-                divFormulaField3.Visible = False : divFormulaCustom3.Visible = False
-                If type = "Field" Then
-                    divFormulaField3.Visible = True : divFormulaCustom3.Visible = False
-                End If
-                If type = "Custom" Then
-                    divFormulaField3.Visible = False : divFormulaCustom3.Visible = True
-                End If
-            End If
-            If number = "4" Then
-                divFormulaField4.Visible = False : divFormulaCustom4.Visible = False
-                If type = "Field" Then
-                    divFormulaField4.Visible = True : divFormulaCustom4.Visible = False
-                End If
-                If type = "Custom" Then
-                    divFormulaField4.Visible = False : divFormulaCustom4.Visible = True
-                End If
-            End If
-            If number = "5" Then
-                divFormulaField5.Visible = False : divFormulaCustom5.Visible = False
-                If type = "Field" Then
-                    divFormulaField5.Visible = True : divFormulaCustom5.Visible = False
-                End If
-                If type = "Custom" Then
-                    divFormulaField5.Visible = False : divFormulaCustom5.Visible = True
-                End If
-            End If
-            If number = "6" Then
-                divFormulaField6.Visible = False : divFormulaCustom6.Visible = False
-                If type = "Field" Then
-                    divFormulaField6.Visible = True : divFormulaCustom6.Visible = False
-                End If
-                If type = "Custom" Then
-                    divFormulaField6.Visible = False : divFormulaCustom6.Visible = True
-                End If
-            End If
+            ddlJobSheet.DataSource = settingClass.GetDataTable("SELECT * FROM JobSheets ORDER BY Name ASC")
+            ddlJobSheet.DataTextField = "Name"
+            ddlJobSheet.DataValueField = "Id"
+            ddlJobSheet.DataBind()
+
+            ddlJobSheet.SelectedValue = lblId.Text
+            ddlJobSheet.Enabled = False
         Catch ex As Exception
-        End Try
-    End Sub
-
-    Protected Sub BindJobSheet(sheetId As String)
-        ddlJobSheetSheet.Items.Clear()
-        Try
-            If Not String.IsNullOrEmpty(sheetId) Then
-                ddlJobSheetSheet.DataSource = settingClass.GetDataTable("SELECT * FROM JobSheets WHERE Id='" & sheetId & "' ORDER BY Name ASC")
-                ddlJobSheetSheet.DataTextField = "Name"
-                ddlJobSheetSheet.DataValueField = "Id"
-                ddlJobSheetSheet.DataBind()
-
-                ddlJobSheetSheet.Enabled = False
-            End If
-
-            If ddlJobSheetSheet.Items.Count = 0 Then
-                Response.Redirect("~/setting/job/sheet", False)
-                Exit Sub
-            End If
-        Catch ex As Exception
-            ddlJobSheetSheet.Items.Clear()
+            ddlJobSheet.Items.Clear()
             If Session("RoleName") = "Developer" Then
                 MessageError(True, ex.ToString())
             End If
@@ -272,6 +209,66 @@ Partial Class Setting_Job_Sheet_Detail_Add
             If Session("RoleName") = "Developer" Then
                 MessageError(True, ex.ToString())
             End If
+        End Try
+    End Sub
+
+    Protected Sub VisibleFormula(number As String, type As String)
+        Try
+            If number = "1" Then
+                divFormulaField.Visible = False : divFormulaCustom.Visible = False
+                If type = "Field" Then
+                    divFormulaField.Visible = True : divFormulaCustom.Visible = False
+                End If
+                If type = "Custom" Then
+                    divFormulaField.Visible = False : divFormulaCustom.Visible = True
+                End If
+            End If
+            If number = "2" Then
+                divFormulaField2.Visible = False : divFormulaCustom2.Visible = False
+                If type = "Field" Then
+                    divFormulaField2.Visible = True : divFormulaCustom2.Visible = False
+                End If
+                If type = "Custom" Then
+                    divFormulaField2.Visible = False : divFormulaCustom2.Visible = True
+                End If
+            End If
+            If number = "3" Then
+                divFormulaField3.Visible = False : divFormulaCustom3.Visible = False
+                If type = "Field" Then
+                    divFormulaField3.Visible = True : divFormulaCustom3.Visible = False
+                End If
+                If type = "Custom" Then
+                    divFormulaField3.Visible = False : divFormulaCustom3.Visible = True
+                End If
+            End If
+            If number = "4" Then
+                divFormulaField4.Visible = False : divFormulaCustom4.Visible = False
+                If type = "Field" Then
+                    divFormulaField4.Visible = True : divFormulaCustom4.Visible = False
+                End If
+                If type = "Custom" Then
+                    divFormulaField4.Visible = False : divFormulaCustom4.Visible = True
+                End If
+            End If
+            If number = "5" Then
+                divFormulaField5.Visible = False : divFormulaCustom5.Visible = False
+                If type = "Field" Then
+                    divFormulaField5.Visible = True : divFormulaCustom5.Visible = False
+                End If
+                If type = "Custom" Then
+                    divFormulaField5.Visible = False : divFormulaCustom5.Visible = True
+                End If
+            End If
+            If number = "6" Then
+                divFormulaField6.Visible = False : divFormulaCustom6.Visible = False
+                If type = "Field" Then
+                    divFormulaField6.Visible = True : divFormulaCustom6.Visible = False
+                End If
+                If type = "Custom" Then
+                    divFormulaField6.Visible = False : divFormulaCustom6.Visible = True
+                End If
+            End If
+        Catch ex As Exception
         End Try
     End Sub
 

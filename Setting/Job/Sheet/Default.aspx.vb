@@ -61,18 +61,12 @@ Partial Class Setting_Job_Sheet_Default
         End Try
     End Sub
 
-    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
-
-    End Sub
-
     Protected Sub BindData(searchText As String)
         Try
             Dim params As New List(Of SqlParameter) From {
                 New SqlParameter("@SearchText", If(String.IsNullOrEmpty(searchText), CType(DBNull.Value, Object), searchText))
             }
-
             Dim thisData As DataTable = settingClass.GetDataTableSP("sp_JobSheetList", params)
-
             gvList.DataSource = thisData
             gvList.DataBind()
 

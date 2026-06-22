@@ -57,12 +57,10 @@ Partial Class Order_Add
                 MessageError(True, "CUSTOMER NAME IS REQUIRED !")
                 Exit Sub
             End If
-
             If ddlMethod.SelectedValue = "" Then
                 MessageError(True, "ORDER METHOD IS REQUIRED !")
                 Exit Sub
             End If
-
             If ddlMethod.SelectedValue = "Manual" Then
                 If txtOrderNumber.Text = "" Then
                     MessageError(True, "ORDER NUMBER IS REQUIRED !")
@@ -120,12 +118,10 @@ Partial Class Order_Add
                                     myCmd.Parameters.AddWithValue("@OrderNote", txtOrderNote.Text.Trim())
                                     myCmd.Parameters.AddWithValue("@OrderType", ddlOrderType.SelectedValue)
                                     myCmd.Parameters.AddWithValue("@CreatedBy", ddlCreatedBy.SelectedValue)
-
                                     thisConn.Open()
                                     myCmd.ExecuteNonQuery()
                                 End Using
                             End Using
-
                             success = True
                         Catch exSql As SqlException
                             If exSql.Number = 2601 OrElse exSql.Number = 2627 Then
@@ -140,7 +136,6 @@ Partial Class Order_Add
                         Using thisConn As New SqlConnection(myConn)
                             Using myCmd As New SqlCommand("INSERT INTO OrderBuilders(Id) VALUES (@Id)", thisConn)
                                 myCmd.Parameters.AddWithValue("@Id", thisId)
-
                                 thisConn.Open()
                                 myCmd.ExecuteNonQuery()
                             End Using

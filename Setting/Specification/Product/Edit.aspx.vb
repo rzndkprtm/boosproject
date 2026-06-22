@@ -82,7 +82,6 @@ Partial Class Setting_Specification_Product_Edit
             If msgErrorProcessTube.InnerText = "" Then
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM ProductTubes ORDER BY Id DESC")
                 Dim descText As String = txtTubeDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
-
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As SqlCommand = New SqlCommand("INSERT INTO ProductTubes VALUES (@Id, @Name, @Description)", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
@@ -113,7 +112,6 @@ Partial Class Setting_Specification_Product_Edit
             If msgErrorProcessControl.InnerText = "" Then
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM ProductControls ORDER BY Id DESC")
                 Dim descText As String = txtControlDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
-
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As SqlCommand = New SqlCommand("INSERT INTO ProductControls VALUES (@Id, @Name, @Description, NULL)", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
@@ -144,7 +142,6 @@ Partial Class Setting_Specification_Product_Edit
             If msgErrorProcessColour.InnerText = "" Then
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM ProductColours ORDER BY Id DESC")
                 Dim descText As String = txtColourDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
-
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As SqlCommand = New SqlCommand("INSERT INTO ProductColours VALUES (@Id, @Name, @Description)", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
@@ -176,12 +173,10 @@ Partial Class Setting_Specification_Product_Edit
                 MessageError(True, "DESIGN TYPE IS REQUIRED !")
                 Exit Sub
             End If
-
             If ddlBlind.SelectedValue = "" Then
                 MessageError(True, "BLIND TYPE IS REQUIRED !")
                 Exit Sub
             End If
-
             Dim company As String = String.Empty
             For Each item As ListItem In lbCompanyDetail.Items
                 If item.Selected Then
@@ -192,39 +187,37 @@ Partial Class Setting_Specification_Product_Edit
                 MessageError(True, "COMPANY IS REQUIRED !")
                 Exit Sub
             End If
-
+            'If ddlJobSheet.SelectedValue = "" Then
+            '    MessageError(True, "JOB SHEET NAME IS REQUIRED !")
+            '    Exit Sub
+            'End If
             If txtName.Text = "" Then
                 MessageError(True, "NAME IS REQUIRED !")
                 Exit Sub
             End If
-
             If ddlControl.SelectedValue = "" Then
                 MessageError(True, "CONTROL TYPE IS REQUIRED !")
                 Exit Sub
             End If
-
             If ddlTube.SelectedValue = "" Then
                 MessageError(True, "TUBE TYPE IS REQUIRED !")
                 Exit Sub
             End If
-
             If ddlColour.SelectedValue = "" Then
                 MessageError(True, "COLOUR TYPE IS REQUIRED !")
                 Exit Sub
             End If
-
             If msgError.InnerText = "" Then
                 Dim companyDetailId As String = company.Remove(company.Length - 1).ToString()
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
-
                 If String.IsNullOrEmpty(txtInvoiceName.Text) Then txtInvoiceName.Text = txtName.Text
-
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Products SET DesignId=@DesignId, BlindId=@BlindId, CompanyDetailId=@CompanyDetailId, Name=@Name, InvoiceName=@InvoiceName, TubeType=@TubeType, ControlType=@ControlType, ColourType=@ColourType, Description=@Description, Status=@Status WHERE Id=@Id", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Products SET DesignId=@DesignId, BlindId=@BlindId, CompanyDetailId=@CompanyDetailId, JobSheetId=@JobSheetId, Name=@Name, InvoiceName=@InvoiceName, TubeType=@TubeType, ControlType=@ControlType, ColourType=@ColourType, Description=@Description, Status=@Status WHERE Id=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         myCmd.Parameters.AddWithValue("@DesignId", ddlDesign.SelectedValue)
                         myCmd.Parameters.AddWithValue("@BlindId", ddlBlind.SelectedValue)
                         myCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetailId)
+                        myCmd.Parameters.AddWithValue("@JobSheetId", If(String.IsNullOrEmpty(ddlJobSheet.SelectedValue), CType(DBNull.Value, Object), ddlJobSheet.SelectedValue))
                         myCmd.Parameters.AddWithValue("@Name", txtName.Text)
                         myCmd.Parameters.AddWithValue("@InvoiceName", txtInvoiceName.Text)
                         myCmd.Parameters.AddWithValue("@TubeType", ddlTube.SelectedValue)
@@ -263,7 +256,6 @@ Partial Class Setting_Specification_Product_Edit
         BackColor()
         Try
             Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Products WHERE Id='" & productId & "'")
-
             If myData Is Nothing Then
                 Response.Redirect("~/setting/specification/product/", False)
                 Exit Sub
@@ -275,12 +267,14 @@ Partial Class Setting_Specification_Product_Edit
             BindDesign()
             BindBlind(designId)
             BindCompanyDetail(blindId)
+            BindJobSheet()
             BindControl()
             BindTube()
             BindColour()
 
             ddlDesign.SelectedValue = myData("DesignId").ToString()
             ddlBlind.SelectedValue = myData("BlindId").ToString()
+            ddlJobSheet.SelectedValue = myData("JobSheetId").ToString()
             txtName.Text = myData("Name").ToString()
             txtInvoiceName.Text = myData("InvoiceName").ToString()
             ddlControl.SelectedValue = myData("ControlType").ToString()
@@ -354,6 +348,23 @@ Partial Class Setting_Specification_Product_Edit
                 End If
             End If
         Catch ex As Exception
+            MessageError(True, ex.ToString())
+        End Try
+    End Sub
+
+    Protected Sub BindJobSheet()
+        ddlJobSheet.Items.Clear()
+        Try
+            ddlJobSheet.DataSource = settingClass.GetDataTable("SELECT * FROM JobSheets ORDER BY Name ASC")
+            ddlJobSheet.DataTextField = "Name"
+            ddlJobSheet.DataValueField = "Id"
+            ddlJobSheet.DataBind()
+
+            If ddlJobSheet.Items.Count > 0 Then
+                ddlJobSheet.Items.Insert(0, New ListItem("", ""))
+            End If
+        Catch ex As Exception
+            ddlJobSheet.Items.Clear()
             MessageError(True, ex.ToString())
         End Try
     End Sub

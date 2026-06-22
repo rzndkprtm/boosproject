@@ -7,7 +7,6 @@ Partial Class Order_Detail
     Inherits Page
 
     Dim orderClass As New OrderClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataLog As Object() = Nothing
     Dim url As String = String.Empty
@@ -44,6 +43,106 @@ Partial Class Order_Detail
             End If
             btnPreviewQuote.OnClientClick = quoteString
         End If
+    End Sub
+
+    Protected Sub btnUploadFileOrder_Click(sender As Object, e As EventArgs)
+        MessageError_FileOrder(False, String.Empty)
+        Dim thisScript As String = "window.onload = function() { showFileOrder(); };"
+        Try
+            If Not fuOrderFile.HasFile Then
+                MessageError_FileOrder(True, "FILE IS REQUIRED !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showFileOrder", thisScript, True)
+                Exit Sub
+            End If
+
+            Dim folderPath As String = Server.MapPath(String.Format("~/File/Order/{0}", lblOrderId.Text))
+            If Not IO.Directory.Exists(folderPath) Then
+                IO.Directory.CreateDirectory(folderPath)
+            End If
+
+            Dim fileName As String = IO.Path.GetFileName(fuOrderFile.FileName)
+            fuOrderFile.SaveAs(IO.Path.Combine(folderPath, fileName))
+
+            url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError_FileOrder(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_FileOrder(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+            ClientScript.RegisterStartupScript(Me.GetType(), "showFileOrder", thisScript, True)
+        End Try
+    End Sub
+
+    Protected Sub btnRecalculate_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            orderClass.CalculatePriceByOrder(lblHeaderId.Text)
+
+            url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnAddNote_Click(sender As Object, e As EventArgs)
+        MessageError_AddNote(False, String.Empty)
+        Dim thisScript As String = "window.onload = function() { showAddNote(); };"
+        Try
+            If txtAddNote.Text = "" Then
+                MessageError_AddNote(True, "YOUR NOTE IS REQUIRED !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showAddNote", thisScript, True)
+                Exit Sub
+            End If
+
+            If msgErrorAddNote.InnerText = "" Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderInternalNotes VALUES (NEWID(), @HeaderId, GETDATE(), @CreatedBy, @Note)", thisConn)
+                        myCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
+                        myCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
+                        myCmd.Parameters.AddWithValue("@Note", txtAddNote.Text.Trim())
+
+                        thisConn.Open()
+                        myCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+                Response.Redirect(url, False)
+            End If
+        Catch ex As Exception
+            MessageError_AddNote(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_AddNote(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+            ClientScript.RegisterStartupScript(Me.GetType(), "showAddNote", thisScript, True)
+        End Try
+    End Sub
+
+    Protected Sub btnDownloadBOE_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Download='Yes', DownloadDate=NULL WHERE Id=@Id", thisConn)
+                    myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
+
+                    thisConn.Open()
+                    myCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
     End Sub
 
     Protected Sub btnDateOrder_Click(sender As Object, e As EventArgs)
@@ -606,7 +705,6 @@ Partial Class Order_Detail
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='New Order' WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
-
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
@@ -1296,12 +1394,10 @@ Partial Class Order_Detail
                 ClientScript.RegisterStartupScript(Me.GetType(), "showInvoiceNumber", thisScript, True)
                 Exit Sub
             End If
-
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET InvoiceNumber=@InvoiceNumber WHERE Id=@Id;", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
                     myCmd.Parameters.AddWithValue("@InvoiceNumber", txtUpdateInvoiceNumber.Text.Trim())
-
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
@@ -1393,42 +1489,42 @@ Partial Class Order_Detail
         End Try
     End Sub
 
-    Protected Sub btnUploadFileOrder_Click(sender As Object, e As EventArgs)
-        MessageError_FileOrder(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showFileOrder(); };"
-        Try
-            If Not fuOrderFile.HasFile Then
-                MessageError_FileOrder(True, "FILE IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showFileOrder", thisScript, True)
-                Exit Sub
-            End If
-
-            Dim folderPath As String = Server.MapPath(String.Format("~/File/Order/{0}", lblOrderId.Text))
-            If Not IO.Directory.Exists(folderPath) Then
-                IO.Directory.CreateDirectory(folderPath)
-            End If
-
-            Dim fileName As String = IO.Path.GetFileName(fuOrderFile.FileName)
-            fuOrderFile.SaveAs(IO.Path.Combine(folderPath, fileName))
-
-            url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
-            Response.Redirect(url, False)
-        Catch ex As Exception
-            MessageError_FileOrder(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_FileOrder(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showFileOrder", thisScript, True)
-        End Try
-    End Sub
-
-    Protected Sub btnRecalculate_Click(sender As Object, e As EventArgs)
+    Protected Sub btnConvertOrder_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            orderClass.CalculatePriceByOrder(lblHeaderId.Text)
+            'Using thisConn As New SqlConnection(myConn)
+            '    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status=@Status, ProductionDate=GETDATE() WHERE Id=@Id;", thisConn)
+            '        myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
+            '        thisConn.Open()
+            '        myCmd.ExecuteNonQuery()
+            '    End Using
+            'End Using
 
-            url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
-            Response.Redirect(url, False)
+            Dim detailData As DataTable = orderClass.GetDataTable("SELECT OrderDetails.Id, OrderDetails.TotalItems, Products.JobSheetId FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.HeaderId='" & lblHeaderId.Text & "'")
+            If detailData.Rows.Count > 0 Then
+                For i As Integer = 0 To detailData.Rows.Count - 1
+                    Dim itemId As String = detailData.Rows(i).Item("Id").ToString()
+                    Dim totalItems As Integer = CInt(detailData.Rows(i).Item("TotalItems"))
+                    Dim jobSheetId As String = detailData.Rows(i).Item("JobSheetId").ToString()
+
+                    If String.IsNullOrEmpty(jobSheetId) Then
+                        Continue For
+                    End If
+
+                    For j As Integer = 1 To totalItems
+                        Dim formulaColumn As String = "Formula1"
+                        If j = 2 Then formulaColumn = "Formula2"
+                        Dim params As New List(Of SqlParameter) From {
+                            New SqlParameter("@JobSheetId", jobSheetId),
+                            New SqlParameter("@JobNumber", "Reza"),
+                            New SqlParameter("@ItemId", itemId),
+                            New SqlParameter("@ItemNumber", j),
+                            New SqlParameter("@FormulaColumn", formulaColumn)
+                        }
+                        orderClass.ExecuteSP("sp_InsertJobOrders", params)
+                    Next
+                Next
+            End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -1437,54 +1533,10 @@ Partial Class Order_Detail
         End Try
     End Sub
 
-    Protected Sub btnAddNote_Click(sender As Object, e As EventArgs)
-        MessageError_AddNote(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showAddNote(); };"
-        Try
-            If txtAddNote.Text = "" Then
-                MessageError_AddNote(True, "YOUR NOTE IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showAddNote", thisScript, True)
-                Exit Sub
-            End If
-
-            If msgErrorAddNote.InnerText = "" Then
-                Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderInternalNotes VALUES (NEWID(), @HeaderId, GETDATE(), @CreatedBy, @Note)", thisConn)
-                        myCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
-                        myCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
-                        myCmd.Parameters.AddWithValue("@Note", txtAddNote.Text.Trim())
-
-                        thisConn.Open()
-                        myCmd.ExecuteNonQuery()
-                    End Using
-                End Using
-
-                url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
-                Response.Redirect(url, False)
-            End If
-        Catch ex As Exception
-            MessageError_AddNote(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_AddNote(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showAddNote", thisScript, True)
-        End Try
-    End Sub
-
-    Protected Sub btnDownloadBOE_Click(sender As Object, e As EventArgs)
+    Protected Sub btnReConvertOrder_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Download='Yes', DownloadDate=NULL WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
 
-                    thisConn.Open()
-                    myCmd.ExecuteNonQuery()
-                End Using
-            End Using
-
-            url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
-            Response.Redirect(url, False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -2009,6 +2061,7 @@ Partial Class Order_Detail
             liUpdateInvoiceData.Visible = False
 
             aBuilderData.Visible = False
+            'btnJob.Visible = False
             aFile.Visible = False
             aMoreDownloadBOE.Visible = False
             btnSuratJalan.Visible = False

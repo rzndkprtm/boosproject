@@ -6,7 +6,6 @@ Partial Class Setting_Specification_Product_Detail
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataLog As Object() = Nothing
     Dim url As String = String.Empty
@@ -247,13 +246,14 @@ Partial Class Setting_Specification_Product_Detail
 
     Protected Sub BindData(productId As String)
         Try
-            Dim thisData As DataRow = settingClass.GetDataRow("SELECT Products.*, Designs.Name AS DesignName, Blinds.Name AS BlindName, ProductTubes.Name AS TubeName, ProductControls.Name AS ControlName, ProductColours.Name AS ColourName FROM Products LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductTubes ON Products.TubeType=ProductTubes.Id LEFT JOIN ProductControls ON Products.ControlType=ProductControls.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE Products.Id='" & productId & "'")
+            Dim thisData As DataRow = settingClass.GetDataRow("SELECT Products.*, Designs.Name AS DesignName, Blinds.Name AS BlindName, JobSheets.Name AS JobSheetName, ProductTubes.Name AS TubeName, ProductControls.Name AS ControlName, ProductColours.Name AS ColourName FROM Products LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN JobSheets ON Products.JobSheetId=JobSheets.Id LEFT JOIN ProductTubes ON Products.TubeType=ProductTubes.Id LEFT JOIN ProductControls ON Products.ControlType=ProductControls.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE Products.Id='" & productId & "'")
             If thisData Is Nothing Then
                 Response.Redirect("~/setting/specification/product/", False)
                 Exit Sub
             End If
 
             lblName.Text = thisData("Name").ToString()
+            lblJobSheetName.Text = thisData("JobSheetName").ToString()
             lblInvoiceName.Text = thisData("InvoiceName").ToString()
             txtNameKit.Text = thisData("Name").ToString()
             lblDesignName.Text = thisData("DesignName").ToString()

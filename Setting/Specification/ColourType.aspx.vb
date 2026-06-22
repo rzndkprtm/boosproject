@@ -5,7 +5,6 @@ Partial Class Setting_Specification_ColourType
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -110,7 +109,6 @@ Partial Class Setting_Specification_ColourType
                             myCmd.Parameters.AddWithValue("@Id", thisId)
                             myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Description", descText)
-
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
                         End Using
@@ -129,7 +127,6 @@ Partial Class Setting_Specification_ColourType
                             myCmd.Parameters.AddWithValue("@Id", lblId.Text)
                             myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Description", descText)
-
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
                         End Using

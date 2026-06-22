@@ -68,15 +68,14 @@ Partial Class Setting_General_Mailing_Default
         MessageError(False, String.Empty)
         Try
             Dim thisId As String = txtCopyId.Text
-
             Dim newId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Mailings ORDER BY Id DESC")
-            Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Mailings SELECT @NewId, CompanyId, Name + ' - Copy', Server, Host, Port, NetworkCredentials, DefaultCredentials, EnableSSL, Account, Password, Alias, Subject, [To], Cc, Bcc, Description, Active FROM Mailings WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@NewId", newId)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
 
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Mailings SELECT @NewId, CompanyId, Name + ' - Copy', Server, Host, Port, NetworkCredentials, DefaultCredentials, EnableSSL, Account, Password, Alias, Subject, [To], Cc, Bcc, Description, Active FROM Mailings WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@NewId", newId)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -97,11 +96,12 @@ Partial Class Setting_General_Mailing_Default
         MessageError(False, String.Empty)
         Try
             Dim thisId As String = txtDeleteId.Text
+
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Mailings WHERE Id=@Id; DELETE FROM Logs WHERE Type='Mailings' AND DataId=@Id;", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM Mailings WHERE Id=@Id; DELETE FROM Logs WHERE Type='Mailings' AND DataId=@Id;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 

@@ -8,11 +8,11 @@ Partial Class Setting_Login_User_Installer_Edit
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        'Dim pageAccess As Boolean = LoginAccess("Load")
-        'If pageAccess = False Then
-        '    Response.Redirect("~/setting/login/user/installer", False)
-        '    Exit Sub
-        'End If
+        Dim pageAccess As Boolean = LoginAccess("Load")
+        If pageAccess = False Then
+            Response.Redirect("~/setting/login/user/installer", False)
+            Exit Sub
+        End If
 
         If String.IsNullOrEmpty(Request.QueryString("loginid")) Then
             Response.Redirect("~/setting/login/user/installer", False)
@@ -51,12 +51,11 @@ Partial Class Setting_Login_User_Installer_Edit
             End If
             If msgError.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE LoginInstallers SET CustomerId=@CustomerId WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", ddlLogin.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@CustomerId", customerId)
-
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE LoginInstallers SET CustomerId=@CustomerId WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", ddlLogin.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@CustomerId", customerId)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 

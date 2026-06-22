@@ -63,10 +63,16 @@
                                                     <asp:Label runat="server" ID="lblInvoiceName"></asp:Label>
                                                 </div>
                                             </div>
-                                            <div class="row mb-4">
+                                            <div class="row mb-2">
                                                 <div class="col-4 text-muted">Company Detail</div>
                                                 <div class="col-8 fw-semibold">
                                                     <asp:Label runat="server" ID="lblCompanyName"></asp:Label>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-4">
+                                                <div class="col-4 text-muted">Job Sheet Name</div>
+                                                <div class="col-8 fw-semibold">
+                                                    <asp:Label runat="server" ID="lblJobSheetName"></asp:Label>
                                                 </div>
                                             </div>
                                         </div>
@@ -172,7 +178,7 @@
     </div>
 
     <div class="modal fade text-left" id="modalChangeStatus" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">Change Status</h4>
@@ -181,7 +187,7 @@
                     <div class="row">
                         <div class="col-12 form-group">
                             <label class="form-label">New Status</label>
-                            <asp:DropDownList runat="server" ID="ddlNewStatus" CssClass="form-select">
+                            <asp:DropDownList runat="server" ID="ddlNewStatus" CssClass="choices form-select">
                                 <asp:ListItem Value="" Text=""></asp:ListItem>
                                 <asp:ListItem Value="In Stock" Text="In Stock"></asp:ListItem>
                                 <asp:ListItem Value="Limited Stock" Text="Limited Stock"></asp:ListItem>
@@ -194,6 +200,27 @@
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnChangeStatus" CssClass="btn btn-primary" Text="Submit" OnClick="btnChangeStatus_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade text-left" id="modalChangeJobSheet" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Change Job Sheet</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">New Status</label>
+                            <asp:DropDownList runat="server" ID="ddlChangeJobSheet" CssClass="choices form-select"></asp:DropDownList>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnChangeJobSheet" CssClass="btn btn-primary" Text="Submit" />
                 </div>
             </div>
         </div>
@@ -388,7 +415,7 @@
             });
         }
 
-        ["modalChangeStatus", "modalProcessKit", "modalDeleteKit", "modalLog"].forEach(function (id) {
+        ["modalChangeStatus", "modalChangeJobSheet", "modalProcessKit", "modalDeleteKit", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

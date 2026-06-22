@@ -5,7 +5,6 @@ Partial Class Setting_Specification_Bottom_Detail
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataLog As Object() = Nothing
     Dim url As String = String.Empty

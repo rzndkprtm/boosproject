@@ -79,36 +79,32 @@ Partial Class Setting_Job_Sheet_Detail_Edit
                 Dim formula6 As String = ddlFormula6.SelectedValue
                 If ddlType6.SelectedValue = "Custom" Then formula6 = txtFormula6.Text
 
-                Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM JobSheetDetails ORDER BY Id DESC")
-                Dim sortOrder As String = settingClass.CreateId("SELECT TOP 1 SortOrder FROM JobSheetDetails WHERE JobSheetId='" & lblId.Text & "' ORDER BY Id DESC")
-
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO JobSheetDetails VALUES (@Id, @JobSheetId, @Name, @Type1, @Formula1, @Type2, @Formula2, @Type3, @Formula3, @Type4, @Formula4, @Type5, @Formula5, @Type6, @Formula6, NULL, NULL, NULL, NULL, @SortOrder, NULL, 1)", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", thisId)
-                        myCmd.Parameters.AddWithValue("@JobSheetId", lblId.Text)
+                    Using myCmd As SqlCommand = New SqlCommand("UPDATE JobSheetDetails SET JobSheetId=@JobSheetId, Name=@Name, Type1=@Type1, Formula1=@Formula1, Type2=@Type2, Formula2=@Formula2, Type3=@Type3, Formula3=@Formula3, Type4=@Type4, Formula4=@Formula4, Type5=@Type5, Formula5=@Formula5, Type6=@Type6, Formula6=@Formula6 WHERE Id=@Id", thisConn)
+                        myCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                        myCmd.Parameters.AddWithValue("@JobSheetId", ddlJobSheet.SelectedValue)
                         myCmd.Parameters.AddWithValue("@Name", txtName.Text)
-
                         myCmd.Parameters.AddWithValue("@Type1", ddlType.SelectedValue)
                         myCmd.Parameters.AddWithValue("@Type2", ddlType2.SelectedValue)
                         myCmd.Parameters.AddWithValue("@Type3", ddlType3.SelectedValue)
                         myCmd.Parameters.AddWithValue("@Type4", ddlType4.SelectedValue)
                         myCmd.Parameters.AddWithValue("@Type5", ddlType5.SelectedValue)
                         myCmd.Parameters.AddWithValue("@Type6", ddlType6.SelectedValue)
-
                         myCmd.Parameters.AddWithValue("@Formula1", formula)
                         myCmd.Parameters.AddWithValue("@Formula2", formula2)
                         myCmd.Parameters.AddWithValue("@Formula3", formula3)
                         myCmd.Parameters.AddWithValue("@Formula4", formula4)
                         myCmd.Parameters.AddWithValue("@Formula5", formula5)
                         myCmd.Parameters.AddWithValue("@Formula6", formula6)
-                        myCmd.Parameters.AddWithValue("@SortOrder", sortOrder)
-
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
                     End Using
                 End Using
 
-                url = String.Format("~/setting/job/sheet/detail/?sheetid={0}", lblId.Text)
+                Dim dataLog As Object() = {"JobSheetDetails", lblId.Text, Session("LoginId").ToString(), "Job Sheet Detail Updated"}
+                settingClass.Logs(dataLog)
+
+                url = String.Format("~/setting/job/sheet/detail/?sheetid={0}", ddlJobSheet.SelectedValue)
                 Response.Redirect(url, False)
             End If
         Catch ex As Exception
@@ -120,7 +116,7 @@ Partial Class Setting_Job_Sheet_Detail_Edit
     End Sub
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
-        url = String.Format("~/setting/job/sheet/detail/?sheetid={0}", lblId.Text)
+        url = String.Format("~/setting/job/sheet/detail/?sheetid={0}", ddlJobSheet.SelectedValue)
         Response.Redirect(url, False)
     End Sub
 
@@ -132,8 +128,7 @@ Partial Class Setting_Job_Sheet_Detail_Edit
                 Exit Sub
             End If
 
-            Dim jobSheetId As String = myData("JobSheetId").ToString()
-            BindJobSheet(jobSheetId)
+            BindJobSheet()
             BindViewJob()
 
             Dim type As String = myData("Type1").ToString()
@@ -150,6 +145,15 @@ Partial Class Setting_Job_Sheet_Detail_Edit
             Dim formula5 As String = myData("Formula5").ToString()
             Dim formula6 As String = myData("Formula6").ToString()
 
+            ddlJobSheet.SelectedValue = myData("JobSheetId").ToString()
+            txtName.Text = myData("Name").ToString()
+            ddlType.SelectedValue = type
+            ddlType2.SelectedValue = type2
+            ddlType3.SelectedValue = type3
+            ddlType4.SelectedValue = type4
+            ddlType5.SelectedValue = type5
+            ddlType6.SelectedValue = type6
+
             If type = "Field" Then
                 ddlFormula.SelectedValue = myData("Formula1").ToString()
                 txtFormula.Text = String.Empty
@@ -159,12 +163,50 @@ Partial Class Setting_Job_Sheet_Detail_Edit
                 txtFormula.Text = myData("Formula1").ToString()
             End If
 
-            ddlType.SelectedValue = type
-            ddlType2.SelectedValue = type2
-            ddlType3.SelectedValue = type3
-            ddlType4.SelectedValue = type4
-            ddlType5.SelectedValue = type5
-            ddlType6.SelectedValue = type6
+            If type = "Field" Then
+                ddlFormula2.SelectedValue = myData("Formula2").ToString()
+                txtFormula2.Text = String.Empty
+            End If
+            If type = "Custom" Then
+                ddlFormula2.SelectedValue = ""
+                txtFormula2.Text = myData("Formula2").ToString()
+            End If
+
+            If type = "Field" Then
+                ddlFormula3.SelectedValue = myData("Formula3").ToString()
+                txtFormula3.Text = String.Empty
+            End If
+            If type = "Custom" Then
+                ddlFormula3.SelectedValue = ""
+                txtFormula3.Text = myData("Formula3").ToString()
+            End If
+
+            If type = "Field" Then
+                ddlFormula4.SelectedValue = myData("Formula4").ToString()
+                txtFormula4.Text = String.Empty
+            End If
+            If type = "Custom" Then
+                ddlFormula4.SelectedValue = ""
+                txtFormula4.Text = myData("Formula4").ToString()
+            End If
+
+            If type = "Field" Then
+                ddlFormula5.SelectedValue = myData("Formula5").ToString()
+                txtFormula5.Text = String.Empty
+            End If
+            If type = "Custom" Then
+                ddlFormula5.SelectedValue = ""
+                txtFormula5.Text = myData("Formula5").ToString()
+            End If
+
+            If type = "Field" Then
+                ddlFormula6.SelectedValue = myData("Formula6").ToString()
+                txtFormula6.Text = String.Empty
+            End If
+            If type = "Custom" Then
+                ddlFormula6.SelectedValue = ""
+                txtFormula6.Text = myData("Formula6").ToString()
+            End If
 
             VisibleFormula("1", type)
             VisibleFormula("2", type2)
@@ -180,84 +222,17 @@ Partial Class Setting_Job_Sheet_Detail_Edit
         End Try
     End Sub
 
-    Protected Sub VisibleFormula(number As String, type As String)
+    Protected Sub BindJobSheet()
+        ddlJobSheet.Items.Clear()
         Try
-            If number = "1" Then
-                divFormulaField.Visible = False : divFormulaCustom.Visible = False
-                If type = "Field" Then
-                    divFormulaField.Visible = True : divFormulaCustom.Visible = False
-                End If
-                If type = "Custom" Then
-                    divFormulaField.Visible = False : divFormulaCustom.Visible = True
-                End If
-            End If
-            If number = "2" Then
-                divFormulaField2.Visible = False : divFormulaCustom2.Visible = False
-                If type = "Field" Then
-                    divFormulaField2.Visible = True : divFormulaCustom2.Visible = False
-                End If
-                If type = "Custom" Then
-                    divFormulaField2.Visible = False : divFormulaCustom2.Visible = True
-                End If
-            End If
-            If number = "3" Then
-                divFormulaField3.Visible = False : divFormulaCustom3.Visible = False
-                If type = "Field" Then
-                    divFormulaField3.Visible = True : divFormulaCustom3.Visible = False
-                End If
-                If type = "Custom" Then
-                    divFormulaField3.Visible = False : divFormulaCustom3.Visible = True
-                End If
-            End If
-            If number = "4" Then
-                divFormulaField4.Visible = False : divFormulaCustom4.Visible = False
-                If type = "Field" Then
-                    divFormulaField4.Visible = True : divFormulaCustom4.Visible = False
-                End If
-                If type = "Custom" Then
-                    divFormulaField4.Visible = False : divFormulaCustom4.Visible = True
-                End If
-            End If
-            If number = "5" Then
-                divFormulaField5.Visible = False : divFormulaCustom5.Visible = False
-                If type = "Field" Then
-                    divFormulaField5.Visible = True : divFormulaCustom5.Visible = False
-                End If
-                If type = "Custom" Then
-                    divFormulaField5.Visible = False : divFormulaCustom5.Visible = True
-                End If
-            End If
-            If number = "6" Then
-                divFormulaField6.Visible = False : divFormulaCustom6.Visible = False
-                If type = "Field" Then
-                    divFormulaField6.Visible = True : divFormulaCustom6.Visible = False
-                End If
-                If type = "Custom" Then
-                    divFormulaField6.Visible = False : divFormulaCustom6.Visible = True
-                End If
-            End If
+            ddlJobSheet.DataSource = settingClass.GetDataTable("SELECT * FROM JobSheets ORDER BY Name ASC")
+            ddlJobSheet.DataTextField = "Name"
+            ddlJobSheet.DataValueField = "Id"
+            ddlJobSheet.DataBind()
+
+            ddlJobSheet.Enabled = False
         Catch ex As Exception
-        End Try
-    End Sub
-
-    Protected Sub BindJobSheet(sheetId As String)
-        ddlJobSheetSheet.Items.Clear()
-        Try
-            If Not String.IsNullOrEmpty(sheetId) Then
-                ddlJobSheetSheet.DataSource = settingClass.GetDataTable("SELECT * FROM JobSheets WHERE Id='" & sheetId & "' ORDER BY Name ASC")
-                ddlJobSheetSheet.DataTextField = "Name"
-                ddlJobSheetSheet.DataValueField = "Id"
-                ddlJobSheetSheet.DataBind()
-
-                ddlJobSheetSheet.Enabled = False
-            End If
-
-            If ddlJobSheetSheet.Items.Count = 0 Then
-                Response.Redirect("~/setting/job/sheet", False)
-                Exit Sub
-            End If
-        Catch ex As Exception
-            ddlJobSheetSheet.Items.Clear()
+            ddlJobSheet.Items.Clear()
             If Session("RoleName") = "Developer" Then
                 MessageError(True, ex.ToString())
             End If
@@ -322,6 +297,66 @@ Partial Class Setting_Job_Sheet_Detail_Edit
             If Session("RoleName") = "Developer" Then
                 MessageError(True, ex.ToString())
             End If
+        End Try
+    End Sub
+
+    Protected Sub VisibleFormula(number As String, type As String)
+        Try
+            If number = "1" Then
+                divFormulaField.Visible = False : divFormulaCustom.Visible = False
+                If type = "Field" Then
+                    divFormulaField.Visible = True : divFormulaCustom.Visible = False
+                End If
+                If type = "Custom" Then
+                    divFormulaField.Visible = False : divFormulaCustom.Visible = True
+                End If
+            End If
+            If number = "2" Then
+                divFormulaField2.Visible = False : divFormulaCustom2.Visible = False
+                If type = "Field" Then
+                    divFormulaField2.Visible = True : divFormulaCustom2.Visible = False
+                End If
+                If type = "Custom" Then
+                    divFormulaField2.Visible = False : divFormulaCustom2.Visible = True
+                End If
+            End If
+            If number = "3" Then
+                divFormulaField3.Visible = False : divFormulaCustom3.Visible = False
+                If type = "Field" Then
+                    divFormulaField3.Visible = True : divFormulaCustom3.Visible = False
+                End If
+                If type = "Custom" Then
+                    divFormulaField3.Visible = False : divFormulaCustom3.Visible = True
+                End If
+            End If
+            If number = "4" Then
+                divFormulaField4.Visible = False : divFormulaCustom4.Visible = False
+                If type = "Field" Then
+                    divFormulaField4.Visible = True : divFormulaCustom4.Visible = False
+                End If
+                If type = "Custom" Then
+                    divFormulaField4.Visible = False : divFormulaCustom4.Visible = True
+                End If
+            End If
+            If number = "5" Then
+                divFormulaField5.Visible = False : divFormulaCustom5.Visible = False
+                If type = "Field" Then
+                    divFormulaField5.Visible = True : divFormulaCustom5.Visible = False
+                End If
+                If type = "Custom" Then
+                    divFormulaField5.Visible = False : divFormulaCustom5.Visible = True
+                End If
+            End If
+            If number = "6" Then
+                divFormulaField6.Visible = False : divFormulaCustom6.Visible = False
+                If type = "Field" Then
+                    divFormulaField6.Visible = True : divFormulaCustom6.Visible = False
+                End If
+                If type = "Custom" Then
+                    divFormulaField6.Visible = False : divFormulaCustom6.Visible = True
+                End If
+            End If
+        Catch ex As Exception
         End Try
     End Sub
 

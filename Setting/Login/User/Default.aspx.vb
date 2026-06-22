@@ -79,11 +79,11 @@ Partial Class Setting_Login_User_Default
             If txtActiveStatus.Text = "1" Then : active = 0 : End If
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Active=@Active WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.Parameters.AddWithValue("@Active", active)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Active=@Active WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisCmd.Parameters.AddWithValue("@Active", active)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -109,11 +109,10 @@ Partial Class Setting_Login_User_Default
             Dim thisId As String = txtDeleteId.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Logins WHERE Id=@Id; UPDATE Logs SET ActionBy=NULL WHERE ActionBy=@Id; UPDATE OrderHeaders SET CreatedBy=NULL WHERE CreatedBy=@Id; DELETE FROM Sessions WHERE LoginId=@Id; UPDATE Notifications SET LoginId = LTRIM(RTRIM(REPLACE(',' + LoginId + ',', ',' + @Id + ',', ',' ))) WHERE ',' + LoginId + ',' LIKE '%,' + @Id + ',%'; DELETE FROM NotificationLogs WHERE LoginId=@Id;", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM Logins WHERE Id=@Id; UPDATE Logs SET ActionBy=NULL WHERE ActionBy=@Id; UPDATE OrderHeaders SET CreatedBy=NULL WHERE CreatedBy=@Id; DELETE FROM Sessions WHERE LoginId=@Id; UPDATE Notifications SET LoginId = LTRIM(RTRIM(REPLACE(',' + LoginId + ',', ',' + @Id + ',', ',' ))) WHERE ',' + LoginId + ',' LIKE '%,' + @Id + ',%'; DELETE FROM NotificationLogs WHERE LoginId=@Id;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -142,7 +141,6 @@ Partial Class Setting_Login_User_Default
                 ClientScript.RegisterStartupScript(Me.GetType(), "showSend", thisScript, True)
                 Exit Sub
             End If
-
             Dim isValidEmail As Boolean = False
             Try
                 Dim addr As New Net.Mail.MailAddress(thisEmail)
@@ -150,13 +148,11 @@ Partial Class Setting_Login_User_Default
             Catch
                 isValidEmail = False
             End Try
-
             If Not isValidEmail Then
                 MessageError_Send(True, "PLEASE ENTER A VALID EMAIL ADDRESS !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showSend", thisScript, True)
                 Exit Sub
             End If
-
             If thisEmail = Session("PersonalEmail") Then
                 MessageError_Send(True, "YOU DO NOT HAVE THE AUTHORITY TO HAVE THESE LOGIN CREDENTIALS SENT TO YOUR EMAIL ADDRESS !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showSend", thisScript, True)
@@ -188,12 +184,11 @@ Partial Class Setting_Login_User_Default
                 Dim newPassword As String = settingClass.Encrypt(txtChangePasswordNew.Text)
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Password=@Password WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", thisId)
-                        myCmd.Parameters.AddWithValue("@Password", newPassword)
-
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Password=@Password WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", thisId)
+                        thisCmd.Parameters.AddWithValue("@Password", newPassword)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 
@@ -218,12 +213,11 @@ Partial Class Setting_Login_User_Default
             Dim newPassword As String = settingClass.Encrypt(txtResetPasswordNew.Text)
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Password=@Password, ResetLogin=1 WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.Parameters.AddWithValue("@Password", newPassword)
-
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Password=@Password, ResetLogin=1 WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisCmd.Parameters.AddWithValue("@Password", newPassword)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -275,30 +269,18 @@ Partial Class Setting_Login_User_Default
             Dim pages As New List(Of Object)
 
             If currentPage > 0 Then
-                pages.Add(New With {
-                    .Text = "Previous",
-                    .PageIndex = currentPage - 1,
-                    .CssClass = ""
-                })
+                pages.Add(New With {.Text = "Previous", .PageIndex = currentPage - 1, .CssClass = ""})
             End If
 
             Dim startPage As Integer = Math.Max(0, currentPage - 2)
             Dim endPage As Integer = Math.Min(totalPages - 1, currentPage + 2)
 
             For i As Integer = startPage To endPage
-                pages.Add(New With {
-                    .Text = (i + 1).ToString(),
-                    .PageIndex = i,
-                    .CssClass = If(i = currentPage, "active", "")
-                })
+                pages.Add(New With {.Text = (i + 1).ToString(), .PageIndex = i, .CssClass = If(i = currentPage, "active", "")})
             Next
 
             If currentPage < totalPages - 1 Then
-                pages.Add(New With {
-                    .Text = "Next",
-                    .PageIndex = currentPage + 1,
-                    .CssClass = ""
-                })
+                pages.Add(New With {.Text = "Next", .PageIndex = currentPage + 1, .CssClass = ""})
             End If
 
             rptPager.DataSource = pages
