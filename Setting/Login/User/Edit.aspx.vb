@@ -47,7 +47,6 @@ Partial Class Setting_Login_User_Edit
                 MessageError(True, "LEVEL IS REQUIRED !")
                 Exit Sub
             End If
-
             If txtEditUserName.Text = "" Then
                 MessageError(True, "USERNAME IS REQUIRED !")
                 Exit Sub
@@ -66,18 +65,17 @@ Partial Class Setting_Login_User_Edit
 
             If msgError.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Logins SET CustomerId=@CustomerId, RoleId=@RoleId, LevelId=@LevelId, UserName=@UserName, FullName=@FullName, Email=@Email WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                        myCmd.Parameters.AddWithValue("@CustomerId", If(String.IsNullOrEmpty(ddlCustomer.SelectedValue), CType(DBNull.Value, Object), ddlCustomer.SelectedValue))
-                        myCmd.Parameters.AddWithValue("@RoleId", ddlRole.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@LevelId", ddlLevel.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@UserName", txtEditUserName.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@FullName", txtFullName.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Email", txtEmail.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Pricing", ddlPricing.SelectedValue)
-
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Logins SET CustomerId=@CustomerId, RoleId=@RoleId, LevelId=@LevelId, UserName=@UserName, FullName=@FullName, Email=@Email WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                        thisCmd.Parameters.AddWithValue("@CustomerId", If(String.IsNullOrEmpty(ddlCustomer.SelectedValue), CType(DBNull.Value, Object), ddlCustomer.SelectedValue))
+                        thisCmd.Parameters.AddWithValue("@RoleId", ddlRole.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@LevelId", ddlLevel.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@UserName", txtEditUserName.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@FullName", txtFullName.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Email", txtEmail.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Pricing", ddlPricing.SelectedValue)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 

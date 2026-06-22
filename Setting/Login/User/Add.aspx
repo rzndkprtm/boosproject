@@ -128,7 +128,6 @@
             var loading = document.getElementById("loadingOverlay");
             if (loading) loading.style.display = "none";
         });
-
         function initUpdatePanelLoading() {
             if (typeof Sys === "undefined") return;
             var prm = Sys.WebForms.PageRequestManager.getInstance();
@@ -142,13 +141,11 @@
                 initChoices();
             });
         }
-
         function initChoices() {
             document.querySelectorAll("select.choices").forEach(function (el) {
                 if (el.choices) {
                     el.choices.destroy();
                 }
-
                 el.choices = new Choices(el, {
                     searchEnabled: true,
                     itemSelectText: '',
@@ -156,7 +153,6 @@
                 });
             });
         }
-
         document.addEventListener("DOMContentLoaded", function () {
             initUpdatePanelLoading();
             initChoices();

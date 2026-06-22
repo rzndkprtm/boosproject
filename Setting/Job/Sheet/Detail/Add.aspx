@@ -37,7 +37,7 @@
                                     <div class="row">
                                         <div class="col-12 form-group">
                                             <label class="form-label">Job Sheet</label>
-                                            <asp:DropDownList runat="server" ID="ddlJobSheetSheet" CssClass="choices form-select"></asp:DropDownList>
+                                            <asp:DropDownList runat="server" ID="ddlJobSheet" CssClass="choices form-select"></asp:DropDownList>
                                         </div>
                                     </div>
                                     <div class="row">

@@ -4,7 +4,6 @@ Partial Class Setting_Specification_Product_Add
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataLog As Object() = Nothing
 
@@ -20,6 +19,7 @@ Partial Class Setting_Specification_Product_Add
             BindDesign()
             BindBlind(ddlDesign.SelectedValue)
             BindCompanyDetail(ddlBlind.SelectedValue)
+            BindJobSheet()
             BindControl()
             BindTube()
             BindColour()
@@ -80,13 +80,11 @@ Partial Class Setting_Specification_Product_Add
             If msgErrorProcessTube.InnerText = "" Then
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM ProductTubes ORDER BY Id DESC")
                 Dim descText As String = txtTubeDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
-
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As SqlCommand = New SqlCommand("INSERT INTO ProductTubes VALUES (@Id, @Name, @Description)", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
                         myCmd.Parameters.AddWithValue("@Name", txtTubeName.Text.Trim())
                         myCmd.Parameters.AddWithValue("@Description", descText)
-
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
                     End Using
@@ -108,7 +106,6 @@ Partial Class Setting_Specification_Product_Add
             If msgErrorProcessControl.InnerText = "" Then
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM ProductControls ORDER BY Id DESC")
                 Dim descText As String = txtControlDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
-
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As SqlCommand = New SqlCommand("INSERT INTO ProductControls VALUES (@Id, @Type, @Name, @Alias @Description)", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
@@ -116,7 +113,6 @@ Partial Class Setting_Specification_Product_Add
                         myCmd.Parameters.AddWithValue("@Name", txtControlName.Text.Trim())
                         myCmd.Parameters.AddWithValue("@Alias", txtControlAlias.Text.Trim())
                         myCmd.Parameters.AddWithValue("@Description", descText)
-
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
                     End Using
@@ -138,13 +134,11 @@ Partial Class Setting_Specification_Product_Add
             If msgErrorProcessColour.InnerText = "" Then
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM ProductColours ORDER BY Id DESC")
                 Dim descText As String = txtColourDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
-
                 Using thisConn As New SqlConnection(myConn)
                     Using myCmd As SqlCommand = New SqlCommand("INSERT INTO ProductColours VALUES (@Id, @Name, @Description)", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
                         myCmd.Parameters.AddWithValue("@Name", txtColourName.Text.Trim())
                         myCmd.Parameters.AddWithValue("@Description", descText)
-
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
                     End Using
@@ -167,12 +161,10 @@ Partial Class Setting_Specification_Product_Add
                 MessageError(True, "DESIGN TYPE IS REQUIRED !")
                 Exit Sub
             End If
-
             If ddlBlind.SelectedValue = "" Then
                 MessageError(True, "BLIND TYPE IS REQUIRED !")
                 Exit Sub
             End If
-
             Dim company As String = String.Empty
             For Each item As ListItem In lbCompanyDetail.Items
                 If item.Selected Then
@@ -183,40 +175,38 @@ Partial Class Setting_Specification_Product_Add
                 MessageError(True, "SUB COMPANY IS REQUIRED !")
                 Exit Sub
             End If
-
+            'If ddlJobSheet.SelectedValue = "" Then
+            '    MessageError(True, "JOB SHEET NAME IS REQUIRED !")
+            '    Exit Sub
+            'End If
             If txtName.Text = "" Then
                 MessageError(True, "NAME IS REQUIRED !")
                 Exit Sub
             End If
-
             If ddlControl.SelectedValue = "" Then
                 MessageError(True, "CONTROL TYPE IS REQUIRED !")
                 Exit Sub
             End If
-
             If ddlTube.SelectedValue = "" Then
                 MessageError(True, "TUBE TYPE IS REQUIRED !")
                 Exit Sub
             End If
-
             If ddlColour.SelectedValue = "" Then
                 MessageError(True, "COLOUR TYPE IS REQUIRED !")
                 Exit Sub
             End If
-
             If msgError.InnerText = "" Then
+                Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Products ORDER BY Id DESC")
                 Dim companyDetailId As String = company.Remove(company.Length - 1).ToString()
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
-
                 If String.IsNullOrEmpty(txtInvoiceName.Text) Then txtInvoiceName.Text = txtName.Text
-
-                Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Products ORDER BY Id DESC")
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Products VALUES (@Id, @DesignId, @BlindId, @CompanyDetailId, @Name, @InvoiceName, @TubeType, @ControlType, @ColourType, @Description, @Status)", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Products VALUES (@Id, @DesignId, @BlindId, @CompanyDetailId, @JobSheetId, @Name, @InvoiceName, @TubeType, @ControlType, @ColourType, @Description, @Status)", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", thisId)
                         myCmd.Parameters.AddWithValue("@DesignId", ddlDesign.SelectedValue)
                         myCmd.Parameters.AddWithValue("@BlindId", ddlBlind.SelectedValue)
                         myCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetailId)
+                        myCmd.Parameters.AddWithValue("@JobSheetId", If(String.IsNullOrEmpty(ddlJobSheet.SelectedValue), CType(DBNull.Value, Object), ddlJobSheet.SelectedValue))
                         myCmd.Parameters.AddWithValue("@Name", txtName.Text)
                         myCmd.Parameters.AddWithValue("@InvoiceName", txtInvoiceName.Text)
                         myCmd.Parameters.AddWithValue("@TubeType", ddlTube.SelectedValue)
@@ -224,7 +214,6 @@ Partial Class Setting_Specification_Product_Add
                         myCmd.Parameters.AddWithValue("@ColourType", ddlColour.SelectedValue)
                         myCmd.Parameters.AddWithValue("@Description", descText)
                         myCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
-
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
                     End Using
@@ -296,6 +285,23 @@ Partial Class Setting_Specification_Product_Add
             End If
         Catch ex As Exception
             lbCompanyDetail.Items.Clear()
+            MessageError(True, ex.ToString())
+        End Try
+    End Sub
+
+    Protected Sub BindJobSheet()
+        ddlJobSheet.Items.Clear()
+        Try
+            ddlJobSheet.DataSource = settingClass.GetDataTable("SELECT * FROM JobSheets ORDER BY Name ASC")
+            ddlJobSheet.DataTextField = "Name"
+            ddlJobSheet.DataValueField = "Id"
+            ddlJobSheet.DataBind()
+
+            If ddlJobSheet.Items.Count > 0 Then
+                ddlJobSheet.Items.Insert(0, New ListItem("", ""))
+            End If
+        Catch ex As Exception
+            ddlJobSheet.Items.Clear()
             MessageError(True, ex.ToString())
         End Try
     End Sub

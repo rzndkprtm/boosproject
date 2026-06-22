@@ -4,7 +4,6 @@ Partial Class Setting_General_Newsletter_Default
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataLog As Object()
 
@@ -28,8 +27,29 @@ Partial Class Setting_General_Newsletter_Default
     End Sub
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
+        gvList.PageIndex = 0
+
         MessageError(False, String.Empty)
         BindData(txtSearch.Text)
+
+        Session("SearchNewsletter") = txtSearch.Text
+    End Sub
+
+    Protected Sub gvList_DataBound(sender As Object, e As EventArgs)
+        Try
+            BuildPager()
+        Catch ex As Exception
+        End Try
+    End Sub
+
+    Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
+        Try
+            If e.CommandName = "Page" Then
+                gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
+                BindData(txtSearch.Text)
+            End If
+        Catch ex As Exception
+        End Try
     End Sub
 
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
@@ -45,17 +65,6 @@ Partial Class Setting_General_Newsletter_Default
         End Try
     End Sub
 
-    Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
-        If Not String.IsNullOrEmpty(e.CommandArgument) Then
-            Dim dataId As String = e.CommandArgument.ToString()
-            If e.CommandName = "Preview" Then
-                Dim url As String = String.Format("~/setting/general/newsletter/preview?id={0}", dataId)
-                Dim script As String = "window.open('" & ResolveUrl(url) & "', '_blank');"
-                ClientScript.RegisterStartupScript(Me.GetType(), "previewTab", script, True)
-            End If
-        End If
-    End Sub
-
     Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
@@ -64,19 +73,11 @@ Partial Class Setting_General_Newsletter_Default
             Dim link As String = txtLinkDelete.Text
 
             Using thisConn As New SqlConnection(myConn)
-                thisConn.Open()
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Newsletters WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM Newsletters WHERE Id=@Id; DELETE FROM Logs WHERE Type='Newsletters' AND DataId=@Id;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
                 End Using
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Logs WHERE Type='Newsletters' AND DataId=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                thisConn.Close()
             End Using
 
             If type = "Image" Then
@@ -100,7 +101,6 @@ Partial Class Setting_General_Newsletter_Default
         MessageError(False, String.Empty)
         Try
             Dim thisId As String = txtIdActive.Text
-
             Dim thisCompany As String = settingClass.GetItemData("SELECT CompanyId FROM Newsletters WHERE Id='" & thisId & "'")
 
             Dim active As Integer = 1
@@ -112,13 +112,12 @@ Partial Class Setting_General_Newsletter_Default
             End If
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand(thisString, thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.Parameters.AddWithValue("@CompanyId", thisCompany)
-                    myCmd.Parameters.AddWithValue("@Active", active)
-
+                Using thisCmd As SqlCommand = New SqlCommand(thisString, thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisCmd.Parameters.AddWithValue("@CompanyId", thisCompany)
+                    thisCmd.Parameters.AddWithValue("@Active", active)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -157,6 +156,42 @@ Partial Class Setting_General_Newsletter_Default
             If Not Session("RoleName") = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
+        End Try
+    End Sub
+
+    Protected Sub BuildPager()
+        Try
+            If gvList.PageCount <= 1 Then
+                navPager.Visible = False
+                Return
+            End If
+
+            navPager.Visible = True
+
+            Dim currentPage As Integer = gvList.PageIndex
+            Dim totalPages As Integer = gvList.PageCount
+
+            Dim pages As New List(Of Object)
+
+            If currentPage > 0 Then
+                pages.Add(New With {.Text = "Previous", .PageIndex = currentPage - 1, .CssClass = ""})
+            End If
+
+            Dim startPage As Integer = Math.Max(0, currentPage - 2)
+            Dim endPage As Integer = Math.Min(totalPages - 1, currentPage + 2)
+
+            For i As Integer = startPage To endPage
+                pages.Add(New With {.Text = (i + 1).ToString(), .PageIndex = i, .CssClass = If(i = currentPage, "active", "")})
+            Next
+
+            If currentPage < totalPages - 1 Then
+                pages.Add(New With {.Text = "Next", .PageIndex = currentPage + 1, .CssClass = ""})
+            End If
+
+            rptPager.DataSource = pages
+            rptPager.DataBind()
+        Catch ex As Exception
+            navPager.Visible = False
         End Try
     End Sub
 

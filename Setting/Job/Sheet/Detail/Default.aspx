@@ -98,7 +98,8 @@
                                     <h3 class="card-title">List Formula</h3>
                                 </div>
                                 <div class="col-6 d-flex justify-content-end">
-                                    <asp:Button runat="server" ID="btnAddDetail" CssClass="btn btn-primary" Text="Add New" OnClick="btnAddDetail_Click" />
+                                    <asp:Button runat="server" ID="btnAddDetail" CssClass="btn btn-primary me-1" Text="Add New" OnClick="btnAddDetail_Click" />
+                                    <a class="btn btn-dark" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalSortOrder"'>Change Sort Order</a>
                                 </div>
                             </div>
                         </div>
@@ -120,7 +121,7 @@
                                                 <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                 <ul class="dropdown-menu">
                                                     <li>
-                                                        <a class="dropdown-item" runat="server" id="aFormulaDetail" href="javascript:void(0);">Formulas</a>
+                                                        <a class="dropdown-item" runat="server" id="aFormulaDetail" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalFormula" onclick='<%# String.Format("return dataFormula(`{0}`, `{1}`, `{2}`, `{3}`, `{4}`, `{5}`, `{6}`, `{7}`);", Eval("Formula1").ToString(), Eval("Formula2"), Eval("Formula3").ToString(), Eval("Formula4"), Eval("Formula5").ToString(), Eval("Formula6").ToString(), Eval("Formula7").ToString(), Eval("Formula8").ToString()) %>'>All Formula</a>
                                                     </li>
                                                     <li>
                                                         <a class="dropdown-item" runat="server" id="aEditDetail" href='<%# Page.ResolveUrl("~/setting/job/sheet/detail/edit?detailid=" & Eval("Id")) %>'>Edit</a>
@@ -144,6 +145,80 @@
         </section>
     </div>
 
+    <div class="modal fade text-center" id="modalSortOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Sort Order</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <asp:GridView runat="server" ID="gvListSortOrder" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" ShowHeaderWhenEmpty="true" DataKeyNames="Id">
+                            <Columns>
+                                <asp:BoundField DataField="Name" HeaderText="Name" />
+                                <asp:BoundField DataField="SortOrder" HeaderText="Sort Order (Current)" />
+                                <asp:TemplateField HeaderText="Sort Order (New)">
+                                    <ItemTemplate>
+                                        <asp:TextBox runat="server" ID="txtSortOrder" CssClass="form-control" Text='<%# Eval("SortOrder").ToString() %>'></asp:TextBox>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                            </Columns>
+                        </asp:GridView>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                    <asp:Button runat="server" ID="btnSortOrder" CssClass="btn btn-dark" Text="Submit" OnClick="btnSortOrder_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade text-center" id="modalFormula" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-full modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">All Formula</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <tr>
+                                <th>Formula 1</th>
+                                <th>Formula 2</th>
+                                <th>Formula 3</th>
+                                <th>Formula 4</th>
+                            </tr>
+                            <tr>
+                                <td><span id="spanFormula1"></span></td>
+                                <td><span id="spanFormula2"></span></td>
+                                <td><span id="spanFormula3"></span></td>
+                                <td><span id="spanFormula4"></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <tr>
+                                <th>Formula 5</th>
+                                <th>Formula 6</th>
+                                <th>Formula 7</th>
+                                <th>Formula 8</th>
+                            </tr>
+                            <tr>
+                                <td><span id="spanFormula5"></span></td>
+                                <td><span id="spanFormula6"></span></td>
+                                <td><span id="spanFormula7"></span></td>
+                                <td><span id="spanFormula8"></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade text-center" id="modalDeleteDetail" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -188,11 +263,9 @@
         document.addEventListener('DOMContentLoaded', function () {
             const gv = document.getElementById('<%= gvListDetail.ClientID %>');
             if (!gv) return;
-
             for (let i = 1; i < gv.rows.length; i++) {
                 const row = gv.rows[i];
                 row.style.cursor = 'pointer';
-
                 row.addEventListener('click', function (e) {
                     if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]")) {
                         return;
@@ -202,6 +275,16 @@
                 });
             }
         });
+        function dataFormula(formula1, formula2, formula3, formula4, formula5, formula6, formula7, formula8) {
+            document.getElementById("spanFormula1").innerText = formula1;
+            document.getElementById("spanFormula2").innerText = formula2;
+            document.getElementById("spanFormula3").innerText = formula3;
+            document.getElementById("spanFormula4").innerText = formula4;
+            document.getElementById("spanFormula5").innerText = formula5;
+            document.getElementById("spanFormula6").innerText = formula6;
+            document.getElementById("spanFormula7").innerText = formula7;
+            document.getElementById("spanFormula8").innerText = formula8;
+        }
         function dataDeleteDetail(id) {
             document.getElementById("<%=txtDeleteDetailId.ClientID %>").value = id;
         }
@@ -238,14 +321,12 @@
                 }
             });
         }
-
-        ["modalDeleteDetail", "modalLog"].forEach(function (id) {
+        ["modalSortOrder", "modalFormula", "modalDeleteDetail", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
             });
         });
-
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

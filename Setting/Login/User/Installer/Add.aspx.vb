@@ -7,11 +7,11 @@ Partial Class Setting_Login_User_Installer_Add
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        'Dim pageAccess As Boolean = LoginAccess("Load")
-        'If pageAccess = False Then
-        '    Response.Redirect("~/setting/login/user/installer", False)
-        '    Exit Sub
-        'End If
+        Dim pageAccess As Boolean = LoginAccess("Load")
+        If pageAccess = False Then
+            Response.Redirect("~/setting/login/user/installer", False)
+            Exit Sub
+        End If
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
@@ -27,7 +27,6 @@ Partial Class Setting_Login_User_Installer_Add
                 MessageError(True, "INSTALLER IS REQUIRED !")
                 Exit Sub
             End If
-
             Dim customerId As String = String.Empty
             If Not lbCustomer.SelectedValue = "" Then
                 Dim design As String = String.Empty
@@ -38,7 +37,6 @@ Partial Class Setting_Login_User_Installer_Add
                 Next
                 customerId = design.Remove(design.Length - 1).ToString()
             End If
-
             If String.IsNullOrEmpty(customerId) Then
                 MessageError(True, "CUSTOMER ACCOUNT IS REQUIRED !")
                 Exit Sub

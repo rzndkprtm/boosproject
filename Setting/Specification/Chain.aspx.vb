@@ -5,7 +5,6 @@ Partial Class Setting_Specification_Chain
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataLog As Object() = Nothing
 
@@ -127,25 +126,21 @@ Partial Class Setting_Specification_Chain
                     Exit Sub
                 End If
             End If
-
             If txtName.Text = "" Then
                 MessageError_Process(True, "CHAIN / REMOTE NAME IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
             End If
-
             If lbDesign.SelectedValue = "" Then
                 MessageError_Process(True, "DESIGN TYPE IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
             End If
-
             If lbCompany.SelectedValue = "" Then
                 MessageError_Process(True, "COMPANY IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
             End If
-
             If msgErrorProcess.InnerText = "" Then
                 Dim selectedDesign As String = String.Empty
                 For Each item As ListItem In lbDesign.Items
@@ -181,7 +176,6 @@ Partial Class Setting_Specification_Chain
                                 myCmd.Parameters.AddWithValue("@ChainLength", ddlChainLength.SelectedValue)
                                 myCmd.Parameters.AddWithValue("@Description", descText)
                                 myCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
-
                                 thisConn.Open()
                                 myCmd.ExecuteNonQuery()
                             End Using
@@ -205,7 +199,6 @@ Partial Class Setting_Specification_Chain
                                 myCmd.Parameters.AddWithValue("@ChainType", ddlChainType.SelectedValue)
                                 myCmd.Parameters.AddWithValue("@ChainLength", ddlChainLength.SelectedValue)
                                 myCmd.Parameters.AddWithValue("@Description", descText)
-
                                 thisConn.Open()
                                 myCmd.ExecuteNonQuery()
                             End Using
@@ -238,7 +231,6 @@ Partial Class Setting_Specification_Chain
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE Chains SET Status=@Status WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", thisId)
                     myCmd.Parameters.AddWithValue("@Status", newStatus)
-
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using

@@ -5,7 +5,6 @@ Partial Class Setting_Specification_ControlType
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataLog As Object() = Nothing
 
@@ -120,7 +119,6 @@ Partial Class Setting_Specification_ControlType
                             myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Alias", aliasName)
                             myCmd.Parameters.AddWithValue("@Description", descText)
-
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
                         End Using
@@ -141,7 +139,6 @@ Partial Class Setting_Specification_ControlType
                             myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Alias", aliasName)
                             myCmd.Parameters.AddWithValue("@Description", descText)
-
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
                         End Using
@@ -160,38 +157,6 @@ Partial Class Setting_Specification_ControlType
                 MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-        End Try
-    End Sub
-
-    Protected Sub btnChangeStatus_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        Try
-            Dim thisId As String = txtIdStatus.Text
-            Dim newStatus As String = ddlNewStatus.SelectedValue
-            Dim oldStatus As String = txtOldStatus.Text
-
-            Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE Chains SET Status=@Status WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.Parameters.AddWithValue("@Status", newStatus)
-
-                    thisConn.Open()
-                    myCmd.ExecuteNonQuery()
-                End Using
-            End Using
-
-            Dim changeDesc As String = String.Format("Change Status Product Control : {0}", newStatus)
-
-            dataLog = {"ProductControls", thisId, Session("LoginId").ToString(), changeDesc}
-            settingClass.Logs(dataLog)
-
-            Session("SearchControl") = txtSearch.Text
-            Response.Redirect("~/setting/specification/controltype", False)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
         End Try
     End Sub
 

@@ -62,12 +62,10 @@ Partial Class Setting_Login_User_Add
                 MessageError(True, "USERNAME ALREADY EXIST !")
                 Exit Sub
             End If
-
             If txtAddPassword.Text = "" Then
                 MessageError(True, "PASSWORD IS REQUIRED !")
                 Exit Sub
             End If
-
             If Not String.IsNullOrEmpty(txtEmail.Text) Then
                 Dim isValidEmail As Boolean = False
                 Try
@@ -94,19 +92,19 @@ Partial Class Setting_Login_User_Add
 
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Logins ORDER BY Id DESC")
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Logins VALUES (@Id, @CustomerId, @RoleId, @LevelId, @UserName, @Password, @FullName, @Email, 0, NULL, 1, @Pricing, 1)", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", thisId)
-                        myCmd.Parameters.AddWithValue("@CustomerId", If(String.IsNullOrEmpty(ddlCustomer.SelectedValue), CType(DBNull.Value, Object), ddlCustomer.SelectedValue))
-                        myCmd.Parameters.AddWithValue("@RoleId", ddlRole.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@LevelId", ddlLevel.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@UserName", txtAddUserName.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Password", password)
-                        myCmd.Parameters.AddWithValue("@FullName", txtFullName.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Email", txtEmail.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Pricing", ddlPricing.SelectedValue)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Logins VALUES (@Id, @CustomerId, @RoleId, @LevelId, @UserName, @Password, @FullName, @Email, 0, NULL, 1, @Pricing, 1)", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", thisId)
+                        thisCmd.Parameters.AddWithValue("@CustomerId", If(String.IsNullOrEmpty(ddlCustomer.SelectedValue), CType(DBNull.Value, Object), ddlCustomer.SelectedValue))
+                        thisCmd.Parameters.AddWithValue("@RoleId", ddlRole.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@LevelId", ddlLevel.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@UserName", txtAddUserName.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Password", password)
+                        thisCmd.Parameters.AddWithValue("@FullName", txtFullName.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Email", txtEmail.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Pricing", ddlPricing.SelectedValue)
 
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 

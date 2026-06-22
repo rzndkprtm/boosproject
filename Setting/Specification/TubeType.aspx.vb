@@ -5,7 +5,6 @@ Partial Class Setting_Specification_TubeType
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -137,7 +136,6 @@ Partial Class Setting_Specification_TubeType
                             myCmd.Parameters.AddWithValue("@Alias", aliasName)
                             myCmd.Parameters.AddWithValue("@AppliesTo", applyTo)
                             myCmd.Parameters.AddWithValue("@Description", descText)
-
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
                         End Using
@@ -158,7 +156,6 @@ Partial Class Setting_Specification_TubeType
                             myCmd.Parameters.AddWithValue("@Alias", aliasName)
                             myCmd.Parameters.AddWithValue("@AppliesTo", applyTo)
                             myCmd.Parameters.AddWithValue("@Description", descText)
-
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
                         End Using

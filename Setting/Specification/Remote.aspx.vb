@@ -5,7 +5,6 @@ Partial Class Setting_Specification_Remote
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataLog As Object() = Nothing
 
@@ -139,19 +138,16 @@ Partial Class Setting_Specification_Remote
                     Exit Sub
                 End If
             End If
-
             If txtName.Text = "" Then
                 MessageError_Process(True, "REMOTE NAME IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
             End If
-
             If lbDesign.SelectedValue = "" Then
                 MessageError_Process(True, "DESIGN TYPE IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
             End If
-
             If lbControl.SelectedValue = "" Then
                 MessageError_Process(True, "CONTROL TYPE IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
@@ -163,7 +159,6 @@ Partial Class Setting_Specification_Remote
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
             End If
-
             If msgErrorProcess.InnerText = "" Then
                 Dim selectedDesign As String = String.Empty
                 For Each item As ListItem In lbDesign.Items
@@ -205,7 +200,6 @@ Partial Class Setting_Specification_Remote
                             myCmd.Parameters.AddWithValue("@ControlTypeId", controlType)
                             myCmd.Parameters.AddWithValue("@Description", descText)
                             myCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
-
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
                         End Using
@@ -228,7 +222,6 @@ Partial Class Setting_Specification_Remote
                             myCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetail)
                             myCmd.Parameters.AddWithValue("@ControlTypeId", controlType)
                             myCmd.Parameters.AddWithValue("@Description", descText)
-
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
                         End Using
@@ -260,7 +253,6 @@ Partial Class Setting_Specification_Remote
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE Chains SET Status=@Status WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", thisId)
                     myCmd.Parameters.AddWithValue("@Status", newStatus)
-
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using

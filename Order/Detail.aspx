@@ -111,6 +111,12 @@
                 </ul>
                 <a href="javascript:void(0);" runat="server" id="aBuilderData" class="btn btn-primary me-1" data-bs-toggle="modal" data-bs-target="#modalBuilderDetail">Builder Data</a>
                 <a href="javascript:void(0);" runat="server" id="aFile" class="btn btn-dark me-1" data-bs-toggle="modal" data-bs-target="#modalFileOrder">Files</a>
+                <button class="btn btn-primary dropdown-toggle me-1" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnJob">Job</button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalConvertOrder">Convert</a>
+                    </li>
+                </ul>
                 <a href="javascript:void(0);" runat="server" id="aLog" class="btn btn-secondary me-1" onclick="showLogFromElement(this)">Log</a>
             </div>
         </section>
@@ -626,6 +632,62 @@
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnDownloadBOE" CssClass="btn btn-dark" Text="Confirm" OnClick="btnDownloadBOE_Click" OnClientClick="return showWaiting();" />
                 </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade text-left" id="modalAddNote" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Add Internal Note</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Note</label>
+                            <asp:TextBox runat="server" TextMode="MultiLine" ID="txtAddNote" CssClass="form-control" Height="130px" placeholder="Note ..." autocomplete="off" style="resize:none;"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row mb-2" runat="server" id="divErrorAddNote">
+                        <div class="col-12">
+                            <div class="alert alert-danger">
+                                <span runat="server" id="msgErrorAddNote"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnAddNote" CssClass="btn btn-dark" Text="Submit" OnClick="btnAddNote_Click" OnClientClick="return showWaiting();" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal modal-blur fade" id="modalHistoryNote" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">History Internal Note</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger d-none" id="historyNoteError"></div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width:50px"></th>
+                                    <th>Created By</th>
+                                    <th>Created Date</th>
+                                    <th>Note</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyNoteBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer"></div>
             </div>
         </div>
     </div>
@@ -1348,59 +1410,35 @@
             </div>
         </div>
     </div>
-    <div class="modal fade text-left" id="modalAddNote" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal fade text-center" id="modalConvertOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Add Internal Note</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-header bg-info">
+                    <h5 class="modal-title white">Convert Order</h5>
                 </div>
-                <div class="modal-body">
-                    <div class="row mb-2">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Note</label>
-                            <asp:TextBox runat="server" TextMode="MultiLine" ID="txtAddNote" CssClass="form-control" Height="130px" placeholder="Note ..." autocomplete="off" style="resize:none;"></asp:TextBox>
-                        </div>
-                    </div>
-                    <div class="row mb-2" runat="server" id="divErrorAddNote">
-                        <div class="col-12">
-                            <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorAddNote"></span>
-                            </div>
-                        </div>
-                    </div>
+                <div class="modal-body text-center py-4">
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnAddNote" CssClass="btn btn-dark" Text="Submit" OnClick="btnAddNote_Click" OnClientClick="return showWaiting();" />
+                    <asp:Button runat="server" ID="btnConvertOrder" CssClass="btn btn-info" Text="Confirm" OnClick="btnConvertOrder_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>
     </div>
-    <div class="modal modal-blur fade" id="modalHistoryNote" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal fade text-center" id="modalReConvertOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">History Internal Note</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-header bg-info">
+                    <h5 class="modal-title white">Re-Convert Order</h5>
                 </div>
-                <div class="modal-body">
-                    <div class="alert alert-danger d-none" id="historyNoteError"></div>
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-hover mb-0">
-                            <thead>
-                                <tr>
-                                    <th style="width:50px"></th>
-                                    <th>Created By</th>
-                                    <th>Created Date</th>
-                                    <th>Note</th>
-                                </tr>
-                            </thead>
-                            <tbody id="historyNoteBody"></tbody>
-                        </table>
-                    </div>
+                <div class="modal-body text-center py-4">
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
-                <div class="modal-footer"></div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnReConvertOrder" CssClass="btn btn-info" Text="Confirm" OnClick="btnReConvertOrder_Click" OnClientClick="return showWaiting();" />
+                </div>
             </div>
         </div>
     </div>
@@ -1557,6 +1595,7 @@
             "modalReworkOrder",
             "modalSendInvoice", "modalReceivePayment", "modalDownloadInvoice", "modalDownloadInvoiceCSV", "modalInvoiceNumber", "modalInvoiceData",
             "modalDetailQuote", "modalDownloadQuote", "modalSendQuote",
+            "modalConvertOrder", "modalReConvertOrder",
             "modalAddItem", "modalAddService", "modalDeleteItem", "modalCosting", 
             
         ].forEach(id => {

@@ -45,7 +45,6 @@ Partial Class Setting_Job_Sheet_Edit
                         myCmd.Parameters.AddWithValue("@Alias", txtAlias.Text.Trim())
                         myCmd.Parameters.AddWithValue("@Description", descText)
                         myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
-
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
                     End Using
@@ -78,17 +77,16 @@ Partial Class Setting_Job_Sheet_Edit
 
     Protected Sub BindData(sheetId As String)
         Try
-            Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM JobSheets WHERE Id='" & sheetId & "'")
-
-            If myData Is Nothing Then
+            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM JobSheets WHERE Id='" & sheetId & "'")
+            If thisData Is Nothing Then
                 Response.Redirect("~/setting/job/sheet", False)
                 Exit Sub
             End If
 
-            txtName.Text = myData("Name").ToString()
-            txtAlias.Text = myData("Alias").ToString()
-            txtDescription.Text = myData("Description").ToString()
-            ddlActive.SelectedValue = Convert.ToInt32(myData("Active"))
+            txtName.Text = thisData("Name").ToString()
+            txtAlias.Text = thisData("Alias").ToString()
+            txtDescription.Text = thisData("Description").ToString()
+            ddlActive.SelectedValue = Convert.ToInt32(thisData("Active"))
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then

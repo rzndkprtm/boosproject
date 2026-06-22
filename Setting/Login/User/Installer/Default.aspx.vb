@@ -66,11 +66,10 @@ Partial Class Setting_Login_User_Installer_Default
             Dim thisId As String = txtDeleteId.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM LoginInstallers WHERE Id=@Id; DELETE FROM Logs WHERE Type='LoginInstallers' AND DataId=@Id;", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM LoginInstallers WHERE Id=@Id; DELETE FROM Logs WHERE Type='LoginInstallers' AND DataId=@Id;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -113,30 +112,18 @@ Partial Class Setting_Login_User_Installer_Default
             Dim pages As New List(Of Object)
 
             If currentPage > 0 Then
-                pages.Add(New With {
-                    .Text = "Previous",
-                    .PageIndex = currentPage - 1,
-                    .CssClass = ""
-                })
+                pages.Add(New With {.Text = "Previous", .PageIndex = currentPage - 1, .CssClass = ""})
             End If
 
             Dim startPage As Integer = Math.Max(0, currentPage - 2)
             Dim endPage As Integer = Math.Min(totalPages - 1, currentPage + 2)
 
             For i As Integer = startPage To endPage
-                pages.Add(New With {
-                    .Text = (i + 1).ToString(),
-                    .PageIndex = i,
-                    .CssClass = If(i = currentPage, "active", "")
-                })
+                pages.Add(New With {.Text = (i + 1).ToString(), .PageIndex = i, .CssClass = If(i = currentPage, "active", "")})
             Next
 
             If currentPage < totalPages - 1 Then
-                pages.Add(New With {
-                    .Text = "Next",
-                    .PageIndex = currentPage + 1,
-                    .CssClass = ""
-                })
+                pages.Add(New With {.Text = "Next", .PageIndex = currentPage + 1, .CssClass = ""})
             End If
 
             rptPager.DataSource = pages

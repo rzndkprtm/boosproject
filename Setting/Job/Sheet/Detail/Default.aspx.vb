@@ -1,4 +1,5 @@
 ﻿Imports System.Data
+Imports System.Data.SqlClient
 
 Partial Class Setting_Job_Sheet_Detail_Default
     Inherits Page
@@ -38,8 +39,44 @@ Partial Class Setting_Job_Sheet_Detail_Default
         Response.Redirect(url, False)
     End Sub
 
-    Protected Sub btnDeleteDetail_Click(sender As Object, e As EventArgs)
+    Protected Sub btnSortOrder_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            For Each row As GridViewRow In gvListSortOrder.Rows
+                If row.RowType = DataControlRowType.DataRow Then
+                    Dim thisId As String = gvListSortOrder.DataKeys(row.RowIndex).Values("Id").ToString()
 
+                    Dim txtSortOrder As TextBox = CType(row.FindControl("txtSortOrder"), TextBox)
+                    Dim sortOrder As String = txtSortOrder.Text
+
+                    Using thisConn As New SqlConnection(myConn)
+                        Using cmd As New SqlCommand("UPDATE JobSheetDetails SET SortOrder=@SortOrder WHERE Id=@Id", thisConn)
+                            cmd.Parameters.AddWithValue("@Id", thisId)
+                            cmd.Parameters.AddWithValue("@SortOrder", sortOrder)
+                            thisConn.Open()
+                            cmd.ExecuteNonQuery()
+                        End Using
+                    End Using
+                End If
+            Next
+
+            url = String.Format("~/setting/job/sheet/detail/?sheetid={0}", lblId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnDeleteDetail_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+
+        Catch ex As Exception
+
+        End Try
     End Sub
 
     Protected Sub BindData(sheetId As String)
@@ -65,8 +102,13 @@ Partial Class Setting_Job_Sheet_Detail_Default
 
     Protected Sub BindDataDetail(sheetId As String)
         Try
-            gvListDetail.DataSource = settingClass.GetDataTable("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM JobSheetDetails WHERE JobSheetId='" & sheetId & "'")
+            Dim thisString As String = "SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM JobSheetDetails WHERE JobSheetId='" & sheetId & "' ORDER BY SortOrder ASC"
+
+            gvListDetail.DataSource = settingClass.GetDataTable(thisString)
             gvListDetail.DataBind()
+
+            gvListSortOrder.DataSource = settingClass.GetDataTable(thisString)
+            gvListSortOrder.DataBind()
         Catch ex As Exception
             MessageError(True, ex.ToString)
             If Not Session("RoleName") = "Developer" Then
@@ -92,8 +134,4 @@ Partial Class Setting_Job_Sheet_Detail_Default
             Return False
         End Try
     End Function
-
-
-
-
 End Class

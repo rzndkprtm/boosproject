@@ -27,7 +27,7 @@
             <div class="col-lg-8 col-md-12 col-sm-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Add Form</h4>
+                        <h4 class="card-title">Product Form</h4>
                     </div>
                     <div class="card-content">
                         <div class="card-body">
@@ -52,6 +52,14 @@
                                             <div class="form-group">
                                                 <label class="form-label">Company Detail</label>
                                                 <asp:ListBox runat="server" ID="lbCompanyDetail" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label class="form-label">Job Sheet Name</label>
+                                                <asp:DropDownList runat="server" ID="ddlJobSheet" CssClass="choices form-select"></asp:DropDownList>
                                             </div>
                                         </div>
                                     </div>

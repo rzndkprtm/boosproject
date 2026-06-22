@@ -5,7 +5,6 @@ Imports System.Globalization
 Public Class OrderClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim enUS As CultureInfo = New CultureInfo("en-US")
-    Dim idIDR As New CultureInfo("id-ID")
 
     Public Function GetDataRow(thisString As String) As DataRow
         Try
@@ -30,12 +29,12 @@ Public Class OrderClass
 
     Public Function GetDataRowSP(spName As String, params As List(Of SqlParameter)) As DataRow
         Try
-            Using conn As New SqlConnection(myConn)
-                Using cmd As New SqlCommand(spName, conn)
-                    cmd.CommandType = CommandType.StoredProcedure
-                    cmd.Parameters.AddRange(params.ToArray())
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand(spName, thisConn)
+                    thisCmd.CommandType = CommandType.StoredProcedure
+                    thisCmd.Parameters.AddRange(params.ToArray())
 
-                    Using da As New SqlDataAdapter(cmd)
+                    Using da As New SqlDataAdapter(thisCmd)
                         Dim dt As New DataTable()
                         da.Fill(dt)
 
@@ -69,15 +68,15 @@ Public Class OrderClass
     Public Function GetDataTableSP(spName As String, params As List(Of SqlParameter)) As DataTable
         Dim dt As New DataTable()
         Try
-            Using conn As New SqlConnection(myConn)
-                Using cmd As New SqlCommand(spName, conn)
-                    cmd.CommandType = CommandType.StoredProcedure
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand(spName, thisConn)
+                    thisCmd.CommandType = CommandType.StoredProcedure
 
                     If params IsNot Nothing AndAlso params.Count > 0 Then
-                        cmd.Parameters.AddRange(params.ToArray())
+                        thisCmd.Parameters.AddRange(params.ToArray())
                     End If
 
-                    Using da As New SqlDataAdapter(cmd)
+                    Using da As New SqlDataAdapter(thisCmd)
                         da.Fill(dt)
                     End Using
                 End Using
@@ -88,13 +87,31 @@ Public Class OrderClass
         Return dt
     End Function
 
+    Public Sub ExecuteSP(spName As String, params As List(Of SqlParameter))
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand(spName, thisConn)
+                    thisCmd.CommandType = CommandType.StoredProcedure
+
+                    If params IsNot Nothing AndAlso params.Count > 0 Then
+                        thisCmd.Parameters.AddRange(params.ToArray())
+                    End If
+
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+        Catch ex As Exception
+        End Try
+    End Sub
+
     Public Function GetItemData(thisString As String) As String
         Dim result As String = String.Empty
         Try
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
-                Using myCmd As New SqlCommand(thisString, thisConn)
-                    Using rdResult = myCmd.ExecuteReader
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using rdResult = thisCmd.ExecuteReader
                         While rdResult.Read
                             result = rdResult.Item(0).ToString()
                         End While

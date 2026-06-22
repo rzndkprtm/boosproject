@@ -35,7 +35,7 @@
                                     <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
                                         <div class="input-group">
                                             <span class="input-group-text">Search : </span>
-                                            <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" placeholoder="" autocomplete="off"></asp:TextBox>
+                                            <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" autocomplete="off"></asp:TextBox>
                                             <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />
                                         </div>
                                     </asp:Panel>
@@ -54,7 +54,6 @@
                                 <div class="col-12">
                                     <div class="table-responsive">
                                         <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="True" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom" OnPageIndexChanging="gvList_PageIndexChanging" OnRowCommand="gvList_RowCommand">
-                                            <RowStyle />
                                             <Columns>
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center">
                                                     <ItemTemplate>
@@ -144,53 +143,6 @@
             </div>
         </div>
     </div>
-    <div class="modal fade text-left" id="modalChangeStatus" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Change Status</h4>
-                </div>
-                <div class="modal-body">
-                    <asp:TextBox runat="server" ID="txtIdStatus" style="display:none;"></asp:TextBox>
-                    <div class="row">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Name</label>
-                            <asp:TextBox runat="server" ID="txtNameStatus" CssClass="form-control" ReadOnly="true"></asp:TextBox>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Old Status</label>
-                            <asp:TextBox runat="server" ID="txtOldStatus" style="display:none;"></asp:TextBox>
-                            <asp:DropDownList runat="server" ID="ddlOldStatus" ClientIDMode="Static" CssClass="form-select" Enabled="false">
-                                <asp:ListItem Value="" Text=""></asp:ListItem>
-                                <asp:ListItem Value="In Stock" Text="In Stock"></asp:ListItem>
-                                <asp:ListItem Value="Limited Stock" Text="Limited Stock"></asp:ListItem>
-                                <asp:ListItem Value="Out of Stock" Text="Out of Stock"></asp:ListItem>
-                                <asp:ListItem Value="Discontinued" Text="Discontinued"></asp:ListItem>
-                            </asp:DropDownList>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 form-group">
-                            <label class="form-label">New Status</label>
-                            <asp:DropDownList runat="server" ID="ddlNewStatus" CssClass="form-select">
-                                <asp:ListItem Value="" Text=""></asp:ListItem>
-                                <asp:ListItem Value="In Stock" Text="In Stock"></asp:ListItem>
-                                <asp:ListItem Value="Limited Stock" Text="Limited Stock"></asp:ListItem>
-                                <asp:ListItem Value="Out of Stock" Text="Out of Stock"></asp:ListItem>
-                                <asp:ListItem Value="Discontinued" Text="Discontinued"></asp:ListItem>
-                            </asp:DropDownList>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnChangeStatus" CssClass="btn btn-primary" Text="Submit" OnClick="btnChangeStatus_Click" />
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="modal modal-blur fade" id="modalLog" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -219,37 +171,21 @@
         document.addEventListener('DOMContentLoaded', function () {
             const gv = document.getElementById('<%= gvList.ClientID %>');
             if (!gv) return;
-
             for (let i = 1; i < gv.rows.length; i++) {
                 const row = gv.rows[i];
                 row.style.cursor = 'pointer';
-
                 row.addEventListener('click', function (e) {
-                    if (
-                        e.target.closest("a") ||
-                        e.target.closest("button") ||
-                        e.target.closest("[data-bs-toggle]")
-                    ) {
+                    if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]")) {
                         return;
                     }
-
                     const btn = this.querySelector("a[id*='linkDetail']");
                     if (btn) btn.click();
                 });
             }
         });
-
         function showProcess() {
             $("#modalProcess").modal("show");
         }
-
-        function showChangeStatus(id, name, status) {
-            document.getElementById("<%=txtIdStatus.ClientID %>").value = id;
-            document.getElementById("<%=txtNameStatus.ClientID %>").value = name;
-            document.getElementById("<%=txtOldStatus.ClientID %>").value = status;
-            document.getElementById("<%=ddlOldStatus.ClientID %>").value = status;
-        }
-
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
             $("#tblLogs tbody").html("");
@@ -283,14 +219,12 @@
                 }
             });
         }
-
-        ["modalProcess", "modalChangeStatus", "modalLog"].forEach(function (id) {
+        ["modalProcess", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
             });
         });
-
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

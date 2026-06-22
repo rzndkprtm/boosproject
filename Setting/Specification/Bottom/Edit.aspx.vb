@@ -5,7 +5,6 @@ Partial Class Setting_Specification_Bottom_Edit
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
     Dim returnPage As String = String.Empty
