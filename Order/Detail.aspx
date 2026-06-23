@@ -1395,18 +1395,43 @@
             </div>
         </div>
     </div>
-    <div class="modal fade text-center" id="modalConvertOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal fade" id="modalConvertOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-info">
-                    <h5 class="modal-title white">Convert Order</h5>
+                <div class="modal-header">
+                    <h5 class="modal-title">Convert Order</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body text-center py-4">
-                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Job Number</label>
+                            <asp:TextBox runat="server" ID="txtJobNumber" CssClass="form-control" placeholder="Job Number ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">WO Number</label>
+                            <asp:TextBox runat="server" ID="txtWorkOrder" CssClass="form-control" placeholder="WO Number ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Note</label>
+                            <asp:TextBox runat="server" ID="txtJobNote" CssClass="form-control" placeholder="Note ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row" runat="server" id="divErrorConvertOrder">
+                        <div class="col-12">
+                            <div class="alert alert-danger">
+                                <span runat="server" id="msgErrorConvertOrder"></span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnConvertOrder" CssClass="btn btn-info" Text="Confirm" OnClick="btnConvertOrder_Click" OnClientClick="return showWaiting();" />
+                    <asp:Button runat="server" ID="btnConvertOrder" CssClass="btn btn-primary" Text="Confirm" OnClick="btnConvertOrder_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>
@@ -1573,7 +1598,6 @@
                 });
             }
         });
-
         [
             "modalLog", "modalWaiting", "modalBuilderDetail", "modalFileOrder", "modalCostingBuy", "modalDateOrder", "modalDuplicateOrder", "modalAddNote", "modalHistoryNote", "modalRePrice", "modalDownloadBOE",
             "modalDeleteOrder", "modalQuoteOrder", "modalSubmitOrder", "modalUnsubmitOrder", "modalCancelOrder", "modalProductionOrder", "modalHoldOrder", "modalShippedOrder", "modalCompleteOrder",
@@ -1766,6 +1790,9 @@
         }
         function showCostingBuy() {
             $("#modalCostingBuy").modal("show");
+        }
+        function showConvertOrder() {
+            $("#modalConvertOrder").modal("show");
         }
         function showDateOrder() {
             $("#modalDateOrder").modal("show");

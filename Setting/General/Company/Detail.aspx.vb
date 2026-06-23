@@ -136,7 +136,6 @@ Partial Class Setting_General_Company_Detail
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcessDetail", thisScript, True)
                 Exit Sub
             End If
-
             If msgErrorProcessDetail.InnerText = "" Then
                 Dim descText As String = txtDescriptionDetail.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 

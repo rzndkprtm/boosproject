@@ -34,15 +34,9 @@
                 <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Add New" OnClick="btnAdd_Click" />
                 <button class="btn btn-info dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Another</button>
                 <ul class="dropdown-menu">
-                    <li>
-                        <asp:Button runat="server" ID="btnListColour" CssClass="dropdown-item" Text="List Fabric + Colour" OnClick="btnListColour_Click" />
-                    </li>
-                    <li>
-                         <asp:Button runat="server" ID="btnAlias" CssClass="dropdown-item" Text="List Fabric Alias" OnClick="btnAlias_Click" />
-                    </li>
-                    <li>
-                        <asp:Button runat="server" ID="btnGroupLocal" CssClass="dropdown-item" Text="List Group JKT" OnClick="btnGroupLocal_Click" />
-                    </li>
+                    <li><asp:Button runat="server" ID="btnListColour" CssClass="dropdown-item" Text="List Fabric + Colour" OnClick="btnListColour_Click" /></li>
+                    <li><asp:Button runat="server" ID="btnAlias" CssClass="dropdown-item" Text="List Fabric Alias" OnClick="btnAlias_Click" /></li>
+                    <li><asp:Button runat="server" ID="btnGroupLocal" CssClass="dropdown-item" Text="List Group JKT" OnClick="btnGroupLocal_Click" /></li>
                 </ul>
             </div>
         </section>

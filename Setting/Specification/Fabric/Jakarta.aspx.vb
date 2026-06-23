@@ -5,7 +5,6 @@ Partial Class Setting_Specification_Fabric_Jakarta
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataLog As Object() = Nothing
 
@@ -18,9 +17,7 @@ Partial Class Setting_Specification_Fabric_Jakarta
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-
             txtSearch.Text = Session("SearchFabricJakarta")
-
             BindData(txtSearch.Text)
         End If
     End Sub
@@ -33,10 +30,9 @@ Partial Class Setting_Specification_Fabric_Jakarta
         Try
             lblAction.Text = "Add"
             titleProcess.InnerText = "Add Fabric Group (JKT)"
+            ddlFabric.Enabled = True
 
             BindFabric()
-
-            ddlFabric.Enabled = True
 
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         Catch ex As Exception
@@ -117,7 +113,6 @@ Partial Class Setting_Specification_Fabric_Jakarta
                             myCmd.Parameters.AddWithValue("@Roller", txtRoller.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Roman", txtRoman.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Curtain", txtCurtain.Text.Trim())
-
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
                         End Using
@@ -138,7 +133,6 @@ Partial Class Setting_Specification_Fabric_Jakarta
                             myCmd.Parameters.AddWithValue("@Roller", txtRoller.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Roman", txtRoman.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Curtain", txtCurtain.Text.Trim())
-
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
                         End Using
@@ -165,7 +159,6 @@ Partial Class Setting_Specification_Fabric_Jakarta
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("DELETE FROM FabricGroupLocals WHERE Id=@Id UPDATE Logins SET Active=0 WHERE CustomerId=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", dataId)
-
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using

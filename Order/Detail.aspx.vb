@@ -1472,7 +1472,6 @@ Partial Class Order_Detail
                     thisCmd.Parameters.AddWithValue("@CheckMeasureDue", If(String.IsNullOrEmpty(txtCheckMeasureDue.Text), CType(DBNull.Value, Object), txtCheckMeasureDue.Text))
                     thisCmd.Parameters.AddWithValue("@ToBeInstalled", If(String.IsNullOrEmpty(txtToBeInstalled.Text), CType(DBNull.Value, Object), txtToBeInstalled.Text))
                     thisCmd.Parameters.AddWithValue("@Installed", If(String.IsNullOrEmpty(txtInstalled.Text), CType(DBNull.Value, Object), txtInstalled.Text))
-
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
@@ -1499,6 +1498,22 @@ Partial Class Order_Detail
             '        myCmd.ExecuteNonQuery()
             '    End Using
             'End Using
+
+            'Using thisConn As New SqlConnection(myConn)
+            '    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderJobs VALUES (@Id, @JobNumber, @WorkOrder, @HeaderId, @CreatedBy, @JobNote)", thisConn)
+            '        myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
+            '        myCmd.Parameters.AddWithValue("@JobNumber", txtJobNumber.Text)
+            '        myCmd.Parameters.AddWithValue("@WorkOrder", txtWorkOrder.Text)
+            '        myCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
+            '        myCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
+            '        myCmd.Parameters.AddWithValue("@JobNote", txtJobNote.Text)
+            '        thisConn.Open()
+            '        myCmd.ExecuteNonQuery()
+            '    End Using
+            'End Using
+
+            url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+            Response.Redirect(url, False)
 
             Dim detailData As DataTable = orderClass.GetDataTable("SELECT OrderDetails.Id, OrderDetails.TotalItems, Products.JobSheetId FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.HeaderId='" & lblHeaderId.Text & "'")
             If detailData.Rows.Count > 0 Then
@@ -2061,7 +2076,7 @@ Partial Class Order_Detail
             aUpdateInvoiceData.Visible = False
 
             aBuilderData.Visible = False
-            btnJob.Visible = False
+            'btnJob.Visible = False
             aFile.Visible = False
             aMoreDownloadBOE.Visible = False
             btnSuratJalan.Visible = False
@@ -3336,6 +3351,7 @@ Partial Class Order_Detail
     Protected Sub AllMessageError(visible As Boolean, message As String)
         MessageError(visible, message)
         MessageError_DuplicateOrder(visible, message)
+        MessageError_ConvertOrder(visible, message)
 
         MessageError_BuilderDetail(visible, message)
         MessageError_FileOrder(visible, message)
@@ -3361,6 +3377,10 @@ Partial Class Order_Detail
 
     Protected Sub MessageError_DuplicateOrder(visible As Boolean, message As String)
         divErrorDuplicateOrder.Visible = visible : msgErrorDuplicateOrder.InnerHtml = message
+    End Sub
+
+    Protected Sub MessageError_ConvertOrder(visible As Boolean, message As String)
+        divErrorConvertOrder.Visible = visible : msgErrorConvertOrder.InnerHtml = message
     End Sub
 
     Protected Sub MessageError_BuilderDetail(visible As Boolean, message As String)

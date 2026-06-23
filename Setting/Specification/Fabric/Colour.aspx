@@ -72,7 +72,7 @@
                                                                 <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                                 <ul class="dropdown-menu">
                                                                     <li runat="server" visible='<%# LoginAccess("Change Status") %>'>
-                                                                        <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeStatus" onclick='<%# String.Format("return showChangeStatus(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("Name").ToString(), Eval("Status").ToString()) %>'>Change Status</a>
+                                                                        <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeStatus" onclick='<%# String.Format("return dataChangeStatus(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("Name").ToString(), Eval("Status").ToString()) %>'>Change Status</a>
                                                                     </li>
                                                                     <li><a href="javascript:void(0);" class="dropdown-item" onclick="showLog('FabricColours', '<%# Eval("Id") %>')">Log</a></li>
                                                                 </ul>
@@ -186,57 +186,27 @@
             var loading = document.getElementById("loadingOverlay");
             if (loading) loading.style.display = "none";
         });
-
         function initUpdatePanelLoading() {
             if (typeof Sys === "undefined") return;
             var prm = Sys.WebForms.PageRequestManager.getInstance();
-
             prm.add_beginRequest(function () {
                 var loading = document.getElementById("loadingOverlay");
                 if (loading) loading.style.display = "block";
             });
-
             prm.add_endRequest(function () {
                 var loading = document.getElementById("loadingOverlay");
                 if (loading) loading.style.display = "none";
             });
         }
-
-        function bindGridRowClick() {
-            const gv = document.getElementById('<%= gvList.ClientID %>');
-            if (!gv) return;
-
-            for (let i = 1; i < gv.rows.length; i++) {
-                const row = gv.rows[i];
-
-                row.style.cursor = "pointer";
-
-                row.onclick = function (e) {
-                    if (
-                        e.target.closest("a") ||
-                        e.target.closest("button") ||
-                        e.target.closest("[data-bs-toggle]")
-                    ) {
-                        return;
-                    }
-
-                    const btn = this.querySelector("a[id*='aDetail']");
-                    if (btn) btn.click();
-                };
-            }
-        }
-
         document.addEventListener("DOMContentLoaded", function () {
             initUpdatePanelLoading();
         });
-
-        function showChangeStatus(id, name, status) {
+        function dataChangeStatus(id, name, status) {
             document.getElementById("<%=txtIdStatus.ClientID %>").value = id;
             document.getElementById("<%=txtName.ClientID %>").value = name;
             document.getElementById("<%=txtOldStatus.ClientID %>").value = status;
             document.getElementById("<%=ddlOldStatus.ClientID %>").value = status;
         }
-
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
             $("#tblLogs tbody").html("");
@@ -270,14 +240,12 @@
                 }
             });
         }
-
         ["modalChangeStatus", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
             });
         });
-
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

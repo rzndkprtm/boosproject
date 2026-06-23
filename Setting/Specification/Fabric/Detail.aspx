@@ -150,7 +150,7 @@
                                                                         <asp:LinkButton runat="server" ID="linkDetailColour" CssClass="dropdown-item" Text="Detail" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                                     </li>
                                                                     <li runat="server" visible='<%# LoginAccess("Change Status Colour") %>'>
-                                                                        <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeStatusColour" onclick='<%# String.Format("return showChangeStatusColour(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("Name").ToString(), Eval("Status").ToString()) %>'>Change Status</a>
+                                                                        <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeStatusColour" onclick='<%# String.Format("return dataChangeStatusColour(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("Name").ToString(), Eval("Status").ToString()) %>'>Change Status</a>
                                                                     </li>
                                                                     <li>
                                                                         <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('FabricColours', '<%# Eval("Id") %>')">Log</a>
@@ -159,7 +159,6 @@
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
                                                     </Columns>
-                                                    <AlternatingRowStyle BackColor="White" />
                                                 </asp:GridView>
                                             </div>
                                         </div>
@@ -346,50 +345,29 @@
                 updateSessionValue("list-colour");
             });
         });
-
         document.addEventListener('DOMContentLoaded', function () {
             const gv = document.getElementById('<%= gvListColour.ClientID %>');
             if (!gv) return;
-
             for (let i = 1; i < gv.rows.length; i++) {
                 const row = gv.rows[i];
                 row.style.cursor = 'pointer';
-
                 row.addEventListener('click', function (e) {
-                    if (
-                        e.target.closest("a") ||
-                        e.target.closest("button") ||
-                        e.target.closest("[data-bs-toggle]")
-                    ) {
+                    if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]")) {
                         return;
                     }
-
                     const btn = this.querySelector("a[id*='linkDetailColour']");
                     if (btn) btn.click();
                 });
             }
         });
-
         function showProcessColour() {
             $("#modalProcessColour").modal("show");
         }
-
-        function showChangeStatusColour(id, name, status) {
+        function dataChangeStatusColour(id, name, status) {
             document.getElementById("<%=txtIdStatusColour.ClientID %>").value = id;
             document.getElementById("<%=txtChangeName.ClientID %>").value = name;
             document.getElementById("<%=ddlOldStatusColour.ClientID %>").value = status;
-        }
-
-        function updateSessionValue(session) {
-            $.ajax({
-                type: "POST",
-                url: "Detail.aspx/UpdateSession",
-                data: JSON.stringify({ value: session }),
-                contentType: "application/json; charset=utf-8",
-                dataType: "json"
-            });
-        }
-
+        }        
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
             $("#tblLogs tbody").html("");
@@ -423,14 +401,21 @@
                 }
             });
         }
-
+        function updateSessionValue(session) {
+            $.ajax({
+                type: "POST",
+                url: "Detail.aspx/UpdateSession",
+                data: JSON.stringify({ value: session }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json"
+            });
+        }
         ["modalChangeStatus", "modalProcessColour", "modalChangeStatusColour", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
             });
         });
-
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

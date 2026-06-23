@@ -30,21 +30,15 @@
                     </div>
                     <div class="card-content">
                         <div class="card-body">
-                            <div class="form form-horizontal">
+                            <div class="form form-vertical">
                                 <div class="form-body">
                                     <div class="row">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Name</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                        <div class="col-12 col-sm-12 col-lg-7 form-group">
+                                            <label class="form-label">Name</label>
                                             <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
                                         </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Type</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                        <div class="col-12 col-sm-12 col-lg-5 form-group">
+                                            <label class="form-label">Type</label>
                                             <asp:DropDownList runat="server" ID="ddlType" CssClass="form-select">
                                                 <asp:ListItem Value="" Text=""></asp:ListItem>
                                                 <asp:ListItem Value="Blockout" Text="Blockout"></asp:ListItem>
@@ -56,34 +50,29 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Design Type</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-9 form-group">
-                                            <asp:ListBox runat="server" ID="lbDesign" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Tube Type</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-9 form-group">
-                                            <asp:ListBox runat="server" ID="lbTube" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Company Detail</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-9 form-group">
+                                        <div class="col-12 form-group">
+                                            <label class="form-label">Company Detail</label>
                                             <asp:ListBox runat="server" ID="lbCompany" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
                                         </div>
                                     </div>
-                                    <div class="row mt-3">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Group</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-4 form-group">
+
+                                    <asp:UpdatePanel runat="server" ID="upDesignTube" UpdateMode="Conditional">
+                                        <ContentTemplate>
+                                            <div class="row">
+                                                <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                                    <label class="form-label">Design Type</label>
+                                                    <asp:ListBox runat="server" ID="lbDesign" CssClass="choices form-select multiple-remove" SelectionMode="Multiple" AutoPostBack="true" OnSelectedIndexChanged="lbDesign_SelectedIndexChanged"></asp:ListBox>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                                    <label class="form-label">Tube Type</label>
+                                                    <asp:ListBox runat="server" ID="lbTube" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
+                                                </div>
+                                            </div>
+                                        </ContentTemplate>
+                                    </asp:UpdatePanel>
+                                    <div class="row">
+                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                            <label class="form-label">Group</label>
                                             <asp:DropDownList runat="server" ID="ddlGroup" CssClass="form-select">
                                                 <asp:ListItem Value="" Text=""></asp:ListItem>
                                                 <asp:ListItem Value="Group 1" Text="Group 1"></asp:ListItem>
@@ -96,12 +85,8 @@
                                                 <asp:ListItem Value="Semi Opaque" Text="Semi Opaque"></asp:ListItem>
                                             </asp:DropDownList>
                                         </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>No Rail Road</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                            <label class="form-label">No Rail Road</label>
                                             <asp:DropDownList runat="server" ID="ddlNoRailRoad" CssClass="form-select">
                                                 <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
                                                 <asp:ListItem Value="0" Text="No"></asp:ListItem>
@@ -132,4 +117,54 @@
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblId"></asp:Label>
     </div>
+
+    <script type="text/javascript">
+        window.addEventListener("pageshow", function () {
+            var loading = document.getElementById("loadingOverlay");
+            if (loading) {
+                loading.style.display = "none";
+            }
+        });
+        function initChoices() {
+            document.querySelectorAll("select.choices").forEach(function (el) {
+                if (el.choices) {
+                    try {
+                        el.choices.destroy();
+                    } catch (e) { }
+                    el.choices = null;
+                }
+                el.choices = new Choices(el, {
+                    searchEnabled: true,
+                    itemSelectText: '',
+                    shouldSort: false
+                });
+            });
+        }
+        function initUpdatePanelLoading() {
+            if (typeof (Sys) === "undefined") return;
+            var prm = Sys.WebForms.PageRequestManager.getInstance();
+            prm.add_beginRequest(function () {
+                var loading = document.getElementById("loadingOverlay");
+                if (loading) {
+                    loading.style.display = "block";
+                }
+            });
+            prm.add_endRequest(function () {
+                var loading = document.getElementById("loadingOverlay");
+                if (loading) {
+                    loading.style.display = "none";
+                }
+            });
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+            initUpdatePanelLoading();
+            initChoices();
+
+        });
+        if (typeof (Sys) !== "undefined") {
+            Sys.Application.add_load(function () {
+                initChoices();
+            });
+        }
+    </script>
 </asp:Content>

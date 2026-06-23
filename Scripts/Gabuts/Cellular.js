@@ -650,7 +650,7 @@ function bindFabricType(designType, tubeType) {
             return;
         }
 
-        const listData = { type: "FabricType", designtype: designType, companydetailid: companyDetailId, tubetype: tubeType, action: itemAction };
+        const listData = { type: "FabricTypeByDesign", designtype: designType, companydetailid: companyDetailId, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -711,7 +711,7 @@ function bindFabricTypeB(designType, tubeType) {
             return;
         }
 
-        const listData = { type: "FabricType", designtype: designType, companydetailid: companyDetailId, tubetype: tubeType, action: itemAction };
+        const listData = { type: "FabricTypeByDesign", designtype: designType, companydetailid: companyDetailId, action: itemAction };
 
         $.ajax({
             type: "POST",

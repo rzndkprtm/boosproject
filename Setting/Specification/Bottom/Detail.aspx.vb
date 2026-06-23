@@ -60,7 +60,6 @@ Partial Class Setting_Specification_Bottom_Detail
                         Using myCmd As SqlCommand = New SqlCommand("UPDATE BottomColours SET Status=@Status WHERE Id=@Id", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", detailId)
                             myCmd.Parameters.AddWithValue("@Status", newStatus)
-
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
                         End Using
@@ -182,7 +181,6 @@ Partial Class Setting_Specification_Bottom_Detail
                             myCmd.Parameters.AddWithValue("@Colour", txtColour.Text)
                             myCmd.Parameters.AddWithValue("@Description", descText)
                             myCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
-
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
                         End Using
@@ -204,7 +202,6 @@ Partial Class Setting_Specification_Bottom_Detail
                             myCmd.Parameters.AddWithValue("@Name", name)
                             myCmd.Parameters.AddWithValue("@Colour", txtColour.Text)
                             myCmd.Parameters.AddWithValue("@Description", descText)
-
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
                         End Using
@@ -237,7 +234,6 @@ Partial Class Setting_Specification_Bottom_Detail
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE BottomColours SET Status=@Status WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", thisId)
                     myCmd.Parameters.AddWithValue("@Status", newStatus)
-
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
@@ -269,7 +265,6 @@ Partial Class Setting_Specification_Bottom_Detail
             lblId.Visible = LoginAccess("Visible ID")
             lblName.Text = thisData("Name").ToString()
             lblDescription.Text = thisData("Description").ToString()
-
             lblStatus.Text = thisData("Status").ToString()
 
             If Not String.IsNullOrEmpty(bottomId) Then

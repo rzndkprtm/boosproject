@@ -70,7 +70,6 @@ Partial Class Setting_Specification_Bottom_Add
                         myCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetail)
                         myCmd.Parameters.AddWithValue("@Description", descText)
                         myCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
-
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
                     End Using

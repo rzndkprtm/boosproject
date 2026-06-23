@@ -84,19 +84,19 @@ Partial Class Setting_General_Notification_Edit
                 End If
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Notifications SET RoleId=@RoleId, CompanyId=@CompanyId, LoginId=@LoginId, Title=@Title, Message=@Message, StartDate=@StartDate, EndDate=@EndDate, Active=@Active WHERE Id=@Id; DELETE FROM NotificationLogs WHERE NotificationId=@Id;", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                        myCmd.Parameters.AddWithValue("@RoleId", ddlLoginRole.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@CompanyId", If(String.IsNullOrEmpty(ddlCompany.SelectedValue), CType(DBNull.Value, Object), ddlCompany.SelectedValue))
-                        myCmd.Parameters.AddWithValue("@LoginId", loginId)
-                        myCmd.Parameters.AddWithValue("@Title", txtTitle.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Message", htmlContent)
-                        myCmd.Parameters.AddWithValue("@StartDate", txtStartDate.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@EndDate", txtEndDate.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Notifications SET RoleId=@RoleId, CompanyId=@CompanyId, LoginId=@LoginId, Title=@Title, Message=@Message, StartDate=@StartDate, EndDate=@EndDate, Active=@Active WHERE Id=@Id; DELETE FROM NotificationLogs WHERE NotificationId=@Id;", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                        thisCmd.Parameters.AddWithValue("@RoleId", ddlLoginRole.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@CompanyId", If(String.IsNullOrEmpty(ddlCompany.SelectedValue), CType(DBNull.Value, Object), ddlCompany.SelectedValue))
+                        thisCmd.Parameters.AddWithValue("@LoginId", loginId)
+                        thisCmd.Parameters.AddWithValue("@Title", txtTitle.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Message", htmlContent)
+                        thisCmd.Parameters.AddWithValue("@StartDate", txtStartDate.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@EndDate", txtEndDate.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
 
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 

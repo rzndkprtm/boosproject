@@ -415,11 +415,12 @@
                     body: JSON.stringify({ popupId: popupId })
                 });
             }
-
-            function refreshSession() {
-                $.ajax({url: '/Setting/UpdateSession.aspx', type: 'GET'});
-            }
-            setInterval(refreshSession, 240000);
+            setInterval(() => {
+                fetch('/Setting/UpdateSession.ashx', {
+                    credentials: 'same-origin',
+                    cache: 'no-store'
+                }).catch(() => { });
+            }, 240000);
 
             Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
                 var newTitle = '<%= String.Format("{0}{1}", Page.Title, If(String.IsNullOrEmpty(TryCast(Session("CompanyName"), String)), "", " - " & Session("CompanyName"))) %>';

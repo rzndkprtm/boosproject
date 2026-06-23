@@ -4,7 +4,6 @@ Partial Class Setting_Specification_Fabric_Add
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
 
@@ -44,11 +43,6 @@ Partial Class Setting_Specification_Fabric_Add
         Try
             If txtName.Text = "" Then
                 MessageError(True, "FABRIC NAME IS REQUIRED !")
-                Exit Sub
-            End If
-
-            If ddlStatus.SelectedValue = "" Then
-                MessageError(True, "STATUS FABRIC IS REQUIRED !")
                 Exit Sub
             End If
 
@@ -153,11 +147,9 @@ Partial Class Setting_Specification_Fabric_Add
                 If InStr(designName, "Roman", CompareMethod.Text) > 0 Then
                     conditions.Add("Alias LIKE '%(Roman)%'")
                 End If
-
                 If InStr(designName, "Panel Glide", CompareMethod.Text) > 0 Then
                     conditions.Add("Alias LIKE '%(PG)%'")
                 End If
-
             Next
 
             If conditions.Count = 0 Then Exit Sub
