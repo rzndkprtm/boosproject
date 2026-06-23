@@ -135,24 +135,19 @@
             var loading = document.getElementById("loadingOverlay");
             if (loading) loading.style.display = "none";
         });
-
         function initUpdatePanelLoading() {
             if (typeof Sys === "undefined") return;
             var prm = Sys.WebForms.PageRequestManager.getInstance();
-
             prm.add_beginRequest(function () {
                 var loading = document.getElementById("loadingOverlay");
                 if (loading) loading.style.display = "block";
             });
-
             prm.add_endRequest(function () {
                 var loading = document.getElementById("loadingOverlay");
                 if (loading) loading.style.display = "none";
-
                 initChoices();
             });
         }
-
         function initChoices() {
             document.querySelectorAll("select.choices").forEach(function (el) {
                 if (el.choices) {
@@ -166,16 +161,13 @@
                 });
             });
         }
-
         document.addEventListener("DOMContentLoaded", function () {
             initUpdatePanelLoading();
             initChoices();
         });
-
         $(document).ready(function () {
             $('#summernote').summernote({
-                tabsize: 2,
-                height: 350,
+                tabsize: 2, height: 350,
 
                 callbacks: {
                     onChange: function (contents) {
@@ -186,7 +178,6 @@
 
             $('#summernote').summernote('code', $('#<%= hfMessage.ClientID %>').val());
         });
-
         function setSummernoteContent() {
             var content = $('#summernote').summernote('code');
             $('#<%= fieldMessage.ClientID %>').val(content);

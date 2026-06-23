@@ -6,7 +6,6 @@ Partial Class Setting_General_Notification_Default
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataLog As Object() = Nothing
 
@@ -28,11 +27,7 @@ Partial Class Setting_General_Notification_Default
                 thisMsg = thisMsg.Replace("[FullName]", fullName)
                 thisMsg = "Hi " & fullName & ",<br><br>" & thisMsg
 
-                result.Add(New With {
-                    .title = row("Title").ToString(),
-                    .message = thisMsg,
-                    .popupId = row("Id").ToString()
-                })
+                result.Add(New With {.title = row("Title").ToString(), .message = thisMsg, .popupId = row("Id").ToString()})
             Next
         Catch ex As Exception
         End Try
@@ -48,9 +43,9 @@ Partial Class Setting_General_Notification_Default
         Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
         Using thisConn As SqlConnection = New SqlConnection(myConn)
-            Using myCmd As SqlCommand = New SqlCommand(query, thisConn)
+            Using thisCmd As SqlCommand = New SqlCommand(query, thisConn)
                 thisConn.Open()
-                myCmd.ExecuteNonQuery()
+                thisCmd.ExecuteNonQuery()
             End Using
         End Using
     End Sub
@@ -114,11 +109,10 @@ Partial Class Setting_General_Notification_Default
             Dim thisId As String = txtIdDelete.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Notifications WHERE Id=@Id; DELETE FROM NotificationLogs WHERE NotificationId=@Id;", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM Notifications WHERE Id=@Id; DELETE FROM NotificationLogs WHERE NotificationId=@Id;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 

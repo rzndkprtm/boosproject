@@ -6,7 +6,6 @@ Partial Class Setting_Specification_Fabric_Detail
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataLog As Object() = Nothing
     Dim url As String = String.Empty
@@ -63,7 +62,6 @@ Partial Class Setting_Specification_Fabric_Detail
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE Fabrics SET Status=@Status WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", lblId.Text)
                     myCmd.Parameters.AddWithValue("@Status", newStatus)
-
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
@@ -82,7 +80,6 @@ Partial Class Setting_Specification_Fabric_Detail
                         Using myCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET Status=@Status WHERE Id=@Id", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", detailId)
                             myCmd.Parameters.AddWithValue("@Status", newStatus)
-
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
                         End Using
@@ -103,7 +100,6 @@ Partial Class Setting_Specification_Fabric_Detail
                     Using myCmd As SqlCommand = New SqlCommand("UPDATE Fabrics SET Status=@Status WHERE Id=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", aliasId)
                         myCmd.Parameters.AddWithValue("@Status", newStatus)
-
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
                     End Using
@@ -122,7 +118,6 @@ Partial Class Setting_Specification_Fabric_Detail
                             Using myCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET Status=@Status WHERE Id=@Id", thisConn)
                                 myCmd.Parameters.AddWithValue("@Id", detailId)
                                 myCmd.Parameters.AddWithValue("@Status", newStatus)
-
                                 thisConn.Open()
                                 myCmd.ExecuteNonQuery()
                             End Using
@@ -232,7 +227,6 @@ Partial Class Setting_Specification_Fabric_Detail
                             myCmd.Parameters.AddWithValue("@Colour", txtNameColour.Text)
                             myCmd.Parameters.AddWithValue("@Width", txtWidthColour.Text)
                             myCmd.Parameters.AddWithValue("@Status", ddlStatusColour.SelectedValue)
-
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
                         End Using
@@ -255,7 +249,6 @@ Partial Class Setting_Specification_Fabric_Detail
                             myCmd.Parameters.AddWithValue("@Name", fabricColourName)
                             myCmd.Parameters.AddWithValue("@Colour", txtNameColour.Text)
                             myCmd.Parameters.AddWithValue("@Width", txtWidthColour.Text)
-
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
                         End Using
@@ -289,7 +282,6 @@ Partial Class Setting_Specification_Fabric_Detail
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET Status=@Status WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", thisId)
                     myCmd.Parameters.AddWithValue("@Status", newStatus)
-
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
@@ -307,7 +299,6 @@ Partial Class Setting_Specification_Fabric_Detail
                     Using myCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET Status=@Status WHERE Id=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", aliasId)
                         myCmd.Parameters.AddWithValue("@Status", newStatus)
-
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
                     End Using
@@ -366,7 +357,7 @@ Partial Class Setting_Specification_Fabric_Detail
 
                 Dim tubeName As String = String.Empty
                 For Each i In tubeArray
-                    Dim thisName As String = settingClass.GetItemData("SELECT Name FROM ProductTubes WHERE Id='" & i & "'")
+                    Dim thisName As String = settingClass.GetItemData("SELECT Alias FROM ProductTubes WHERE Id='" & i & "'")
                     tubeName &= thisName & ", "
                 Next
 

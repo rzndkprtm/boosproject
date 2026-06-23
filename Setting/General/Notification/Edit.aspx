@@ -109,8 +109,7 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $('#summernote').summernote({
-                tabsize: 2,
-                height: 350,
+                tabsize: 2, height: 350,
 
                 callbacks: {
                     onChange: function (contents) {
@@ -118,10 +117,8 @@
                     }
                 }
             });
-
             $('#summernote').summernote('code', $('#<%= hfMessage.ClientID %>').val());
         });
-
         function setSummernoteContent() {
             var content = $('#summernote').summernote('code');
             $('#<%= fieldMessage.ClientID %>').val(content);

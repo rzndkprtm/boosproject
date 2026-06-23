@@ -17,9 +17,7 @@ Partial Class Setting_Specification_Fabric_Alias
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-
             txtSearch.Text = Session("SearchFabricAlias")
-
             BindData(txtSearch.Text)
         End If
     End Sub
@@ -127,7 +125,6 @@ Partial Class Setting_Specification_Fabric_Alias
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
             End If
-
             If ddlSecondId.SelectedValue = "" Then
                 MessageError_Process(True, "NAME IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
@@ -144,7 +141,6 @@ Partial Class Setting_Specification_Fabric_Alias
                             myCmd.Parameters.AddWithValue("@Type", lblType.Text)
                             myCmd.Parameters.AddWithValue("@FirstId", ddlFirstId.SelectedValue)
                             myCmd.Parameters.AddWithValue("@SecondId", ddlSecondId.SelectedValue)
-
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
                         End Using
@@ -164,7 +160,6 @@ Partial Class Setting_Specification_Fabric_Alias
                             myCmd.Parameters.AddWithValue("@Id", lblId.Text)
                             myCmd.Parameters.AddWithValue("@FirstId", ddlFirstId.SelectedValue)
                             myCmd.Parameters.AddWithValue("@SecondId", ddlSecondId.SelectedValue)
-
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
                         End Using
@@ -192,19 +187,11 @@ Partial Class Setting_Specification_Fabric_Alias
             Dim thisId As String = txtIdDelete.Text
 
             Using thisConn As New SqlConnection(myConn)
-                thisConn.Open()
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM FabricAlias WHERE Id=@Id", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM FabricAlias WHERE Id=@Id; DELETE FROM Logs WHERE Type='FabricAlias' AND DataId=@Id;", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Logs WHERE Type='FabricAlias' AND DataId=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                thisConn.Close()
             End Using
 
             Session("SearchFabricAlias") = txtSearch.Text

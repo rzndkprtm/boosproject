@@ -78,7 +78,6 @@ Partial Class Setting_Specification_Bottom_Edit
                         myCmd.Parameters.AddWithValue("@DesignId", designType)
                         myCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetail)
                         myCmd.Parameters.AddWithValue("@Description", descText)
-
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
                     End Using

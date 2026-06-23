@@ -134,19 +134,64 @@
         </section>
     </div>
 
-    <script>
-        function rebindChoices() {
-            document.querySelectorAll("select.choices").forEach(function (el) {
-                if (el.dataset.choice === "active") return;
+    <div id="loadingOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,.5); z-index:99999;">
+        <div class="position-absolute top-50 start-50 translate-middle">
+            <div class="card shadow">
+                <div class="card-body text-center">
+                    <div class="spinner-border"></div>
+                    <div class="mt-2">Loading...</div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                new Choices(el, {
-                    removeItemButton: true
+    <script type="text/javascript">
+        window.addEventListener("pageshow", function () {
+            var loading = document.getElementById("loadingOverlay");
+            if (loading) {
+                loading.style.display = "none";
+            }
+        });
+        function initChoices() {
+            document.querySelectorAll("select.choices").forEach(function (el) {
+                if (el.choices) {
+                    try {
+                        el.choices.destroy();
+                    } catch (e) { }
+                    el.choices = null;
+                }
+                el.choices = new Choices(el, {
+                    searchEnabled: true,
+                    itemSelectText: '',
+                    shouldSort: false
                 });
             });
         }
+        function initUpdatePanelLoading() {
+            if (typeof (Sys) === "undefined") return;
+            var prm = Sys.WebForms.PageRequestManager.getInstance();
+            prm.add_beginRequest(function () {
+                var loading = document.getElementById("loadingOverlay");
+                if (loading) {
+                    loading.style.display = "block";
+                }
+            });
+            prm.add_endRequest(function () {
+                var loading = document.getElementById("loadingOverlay");
+                if (loading) {
+                    loading.style.display = "none";
+                }
+            });
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+            initUpdatePanelLoading();
+            initChoices();
 
-        Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
-            rebindChoices();
         });
+        if (typeof (Sys) !== "undefined") {
+            Sys.Application.add_load(function () {
+                initChoices();
+            });
+        }
     </script>
 </asp:Content>

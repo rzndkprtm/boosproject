@@ -31,6 +31,7 @@ Partial Class Setting_General_Mailing_Default
 
         MessageError(False, String.Empty)
         BindData(txtSearch.Text)
+
         Session("SearchMailing") = txtSearch.Text
     End Sub
 

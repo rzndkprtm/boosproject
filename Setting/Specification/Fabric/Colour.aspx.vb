@@ -5,7 +5,6 @@ Partial Class Setting_Specification_Fabric_Colour
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataLog As Object() = Nothing
     Dim url As String = String.Empty
@@ -73,7 +72,6 @@ Partial Class Setting_Specification_Fabric_Colour
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET Status=@Status WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", thisId)
                     myCmd.Parameters.AddWithValue("@Status", newStatus)
-
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
@@ -91,7 +89,6 @@ Partial Class Setting_Specification_Fabric_Colour
                     Using myCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET Status=@Status WHERE Id=@Id", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", aliasId)
                         myCmd.Parameters.AddWithValue("@Status", newStatus)
-
                         thisConn.Open()
                         myCmd.ExecuteNonQuery()
                     End Using
@@ -135,35 +132,39 @@ Partial Class Setting_Specification_Fabric_Colour
     End Sub
 
     Protected Sub BuildPager()
-        If gvList.PageCount <= 1 Then
+        Try
+            If gvList.PageCount <= 1 Then
+                navPager.Visible = False
+                Return
+            End If
+
+            navPager.Visible = True
+
+            Dim currentPage As Integer = gvList.PageIndex
+            Dim totalPages As Integer = gvList.PageCount
+
+            Dim pages As New List(Of Object)
+
+            If currentPage > 0 Then
+                pages.Add(New With {.Text = "Previous", .PageIndex = currentPage - 1, .CssClass = ""})
+            End If
+
+            Dim startPage As Integer = Math.Max(0, currentPage - 2)
+            Dim endPage As Integer = Math.Min(totalPages - 1, currentPage + 2)
+
+            For i As Integer = startPage To endPage
+                pages.Add(New With {.Text = (i + 1).ToString(), .PageIndex = i, .CssClass = If(i = currentPage, "active", "")})
+            Next
+
+            If currentPage < totalPages - 1 Then
+                pages.Add(New With {.Text = "Next", .PageIndex = currentPage + 1, .CssClass = ""})
+            End If
+
+            rptPager.DataSource = pages
+            rptPager.DataBind()
+        Catch ex As Exception
             navPager.Visible = False
-            Return
-        End If
-
-        navPager.Visible = True
-
-        Dim currentPage As Integer = gvList.PageIndex
-        Dim totalPages As Integer = gvList.PageCount
-
-        Dim pages As New List(Of Object)
-
-        If currentPage > 0 Then
-            pages.Add(New With {.Text = "Previous", .PageIndex = currentPage - 1, .CssClass = ""})
-        End If
-
-        Dim startPage As Integer = Math.Max(0, currentPage - 2)
-        Dim endPage As Integer = Math.Min(totalPages - 1, currentPage + 2)
-
-        For i As Integer = startPage To endPage
-            pages.Add(New With {.Text = (i + 1).ToString(), .PageIndex = i, .CssClass = If(i = currentPage, "active", "")})
-        Next
-
-        If currentPage < totalPages - 1 Then
-            pages.Add(New With {.Text = "Next", .PageIndex = currentPage + 1, .CssClass = ""})
-        End If
-
-        rptPager.DataSource = pages
-        rptPager.DataBind()
+        End Try
     End Sub
 
     Protected Function LoginAccess(action As String) As Boolean

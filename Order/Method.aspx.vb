@@ -1856,7 +1856,7 @@ Partial Class Order_Method
             returnLengthValueC = 0 : returnLengthValueD = 0
 
             linearmetre = width / 1000
-            squaremetre = Math.Ceiling(width * drop / 1000000)
+            squaremetre = width * drop / 1000000
         End If
 
         If blindName = "Complete Set (Double)" Then
@@ -1867,8 +1867,8 @@ Partial Class Order_Method
 
             linearmetre = width / 1000
             linearmetreB = widthb / 1000
-            squaremetre = Math.Ceiling(width * drop / 1000000)
-            squaremetreB = Math.Ceiling(widthb * dropb / 1000000)
+            squaremetre = width * drop / 1000000
+            squaremetreB = widthb * dropb / 1000000
         End If
 
         If blindName = "Fabric Only" Then
@@ -1882,7 +1882,7 @@ Partial Class Order_Method
             returnLengthValueB = 0
 
             linearmetre = width / 1000
-            squaremetre = Math.Ceiling(width * drop / 1000000)
+            squaremetre = width * drop / 1000000
 
             widthb = 0 : dropb = 0
             data.headingb = String.Empty
@@ -1910,7 +1910,7 @@ Partial Class Order_Method
             returnLengthValueC = 0 : returnLengthValueD = 0
 
             linearmetre = width / 1000
-            squaremetre = Math.Ceiling(width * drop / 1000000)
+            squaremetre = width * drop / 1000000
         End If
 
         If blindName = "Track Only" Then

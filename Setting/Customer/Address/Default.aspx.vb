@@ -44,6 +44,7 @@ Partial Class Setting_Customer_Address_Default
     End Sub
 
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        MessageError(False, String.Empty)
         gvList.PageIndex = e.NewPageIndex
         BindData(txtSearch.Text)
     End Sub
