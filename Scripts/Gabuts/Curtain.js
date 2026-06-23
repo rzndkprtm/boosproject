@@ -1422,7 +1422,7 @@ function showGallery(type) {
         let urlImage = "https://ordersblindonline.com/Assets/images/products/curtain/commercialtrack.jpg";
         info = `<img src="${urlImage}" style="max-width:100%;height:auto;">`;
     } else if (type === "Express") {
-        //let urlImage = "https://ordersblindonline.com/Assets/images/products/curtain/commercialtrack.jpg";
+        let urlImage = "https://ordersblindonline.com/Assets/images/products/curtain/expresstrack.jpg";
         info = `<img src="${urlImage}" style="max-width:100%;height:auto;">`;
     }
     document.getElementById("spanInfoGallery").innerHTML = info;

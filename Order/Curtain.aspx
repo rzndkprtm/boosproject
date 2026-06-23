@@ -519,7 +519,7 @@
                                     <li class="mt-3">
                                         Express Track
                                         <br />
-                                        <a class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalGallery" onclick="return showGallery('');">Detail Gallery</a>
+                                        <a class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalGallery" onclick="return showGallery('Express');">Detail Gallery</a>
                                     </li>
                                 </ol>
                             </div>
@@ -586,5 +586,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/Gabuts/Curtain.js?v=2.0.0"></script>
+    <script src="/Scripts/Gabuts/Curtain.js?v=2.0.1"></script>
 </asp:Content>
