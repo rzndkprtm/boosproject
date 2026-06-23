@@ -47,8 +47,8 @@ Public Class SalesClass
         Try
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
-                Using myCmd As New SqlCommand(thisString, thisConn)
-                    Using rdResult = myCmd.ExecuteReader
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using rdResult = thisCmd.ExecuteReader
                         While rdResult.Read
                             result = rdResult.Item(0).ToString()
                         End While
@@ -67,8 +67,8 @@ Public Class SalesClass
         Try
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
-                Using myCmd As New SqlCommand(thisString, thisConn)
-                    Using rdResult = myCmd.ExecuteReader
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using rdResult = thisCmd.ExecuteReader
                         While rdResult.Read
                             result = rdResult.Item(0)
                         End While
@@ -87,8 +87,8 @@ Public Class SalesClass
         Try
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
-                Using myCmd As New SqlCommand(thisString, thisConn)
-                    Using rdResult = myCmd.ExecuteReader()
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using rdResult = thisCmd.ExecuteReader()
                         If rdResult.Read() Then
                             Dim value As Object = rdResult.Item(0)
 
@@ -110,8 +110,8 @@ Public Class SalesClass
         Try
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
-                Using myCmd As New SqlCommand(thisString, thisConn)
-                    Using rdResult = myCmd.ExecuteReader
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using rdResult = thisCmd.ExecuteReader
                         While rdResult.Read
                             result = rdResult.Item(0)
                         End While
@@ -130,8 +130,8 @@ Public Class SalesClass
         Try
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
-                Using myCmd As New SqlCommand(thisString, thisConn)
-                    Using rdResult = myCmd.ExecuteReader()
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using rdResult = thisCmd.ExecuteReader()
                         While rdResult.Read()
                             If Not IsDBNull(rdResult.Item(0)) Then
                                 result = Convert.ToDateTime(rdResult.Item(0))
@@ -147,11 +147,11 @@ Public Class SalesClass
         Return result
     End Function
 
-    Public Function GetProductSales(myCmd As SqlCommand) As DataSet
+    Public Function GetProductSales(thisCmd As SqlCommand) As DataSet
         Using thisConn As New SqlConnection(myConn)
             Using thisAdapter As New SqlDataAdapter()
-                myCmd.Connection = thisConn
-                thisAdapter.SelectCommand = myCmd
+                thisCmd.Connection = thisConn
+                thisAdapter.SelectCommand = thisCmd
 
                 Dim thisDataSet As New DataSet()
                 thisAdapter.Fill(thisDataSet)
@@ -166,8 +166,8 @@ Public Class SalesClass
             Dim id As Integer = 0
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
-                Using myCmd As New SqlCommand(thisString, thisConn)
-                    Using rdResult As SqlDataReader = myCmd.ExecuteReader()
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using rdResult As SqlDataReader = thisCmd.ExecuteReader()
                         If rdResult.Read() Then
                             Integer.TryParse(rdResult(0).ToString(), id)
                         End If
@@ -185,13 +185,13 @@ Public Class SalesClass
     Public Sub RefreshData(companyId As String)
         Try
             If Not String.IsNullOrEmpty(companyId) Then
-                Using conn As New SqlConnection(myConn)
-                    Using cmd As New SqlCommand("sp_RefreshSalesData", conn)
-                        cmd.CommandType = CommandType.StoredProcedure
-                        cmd.Parameters.AddWithValue("@CompanyId", companyId)
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("sp_RefreshSalesData", thisConn)
+                        thisCmd.CommandType = CommandType.StoredProcedure
+                        thisCmd.Parameters.AddWithValue("@CompanyId", companyId)
 
-                        conn.Open()
-                        cmd.ExecuteNonQuery()
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
             End If

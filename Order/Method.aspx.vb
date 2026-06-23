@@ -1487,18 +1487,34 @@ Partial Class Order_Method
         End If
 
         Dim fabricGroup As String = orderClass.GetFabricGroup(data.fabrictype)
+        Dim fabricGroupB As String = orderClass.GetFabricGroup(data.fabrictypeb)
 
         Dim controlNameGroup As String = controlName
         If controlName = "DC Motor" Then controlNameGroup = "Corded"
 
-        Dim groupName As String = String.Format("{0} - {1} - {2} - {3}", blindName, controlNameGroup, fabricGroup, factory)
+        Dim priceProductGroup As String = String.Empty
+        Dim priceProductGroupB As String = String.Empty
 
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
-
-        If blindName = "Day & Night" Then
-            groupName = String.Format("{0} - {1} - {2}", blindName, controlNameGroup, factory)
-
+        If data.companyid = "2" Then
+            Dim groupName As String = String.Format("{0} - {1} - {2} - {3}", blindName, controlNameGroup, fabricGroup, factory)
             priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
+            priceProductGroupB = String.Empty
+
+            If blindName = "Day & Night" Then
+                groupName = String.Format("{0} - {1} - {2}", blindName, controlNameGroup, factory)
+                priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
+            End If
+        End If
+
+        If data.companyid = "3" Then
+            Dim groupName As String = String.Format("Standard - {0} - {1} - {2}", controlNameGroup, fabricGroup, factory)
+            priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
+            priceProductGroupB = String.Empty
+
+            If blindName = "Day & Night" Then
+                Dim groupNameB As String = String.Format("Standard - {0} - {1} - {2}", controlNameGroup, fabricGroupB, factoryB)
+                priceProductGroupB = orderClass.GetPriceProductGroupId(groupNameB, data.designid, data.companydetailid)
+            End If
         End If
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
@@ -1506,11 +1522,12 @@ Partial Class Order_Method
                 Dim itemId As String = orderClass.GetNewOrderItemId()
 
                 Using thisConn As SqlConnection = New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricIdB, FabricColourId, FabricColourIdB, ChainId, PriceProductGroupId, Qty, Room, Mounting, Width, WidthB, [Drop], DropB, ControlPosition, ControlLength, ControlLengthValue, Supply, LinearMetre, LinearMetreB, SquareMetre, SquareMetreB, TotalItems, Notes, MarkUp, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricIdB, @FabricColourId, @FabricColourIdB, @ChainId, @PriceProductGroupId, @Qty, @Room, @Mounting, @Width, @WidthB, @Drop, @DropB, @ControlPosition, @ControlLength, @ControlLengthValue, @Supply, @LinearMetre, @LinearMetreB, @SquareMetre, @SquareMetreB, @TotalItems, @Notes, @MarkUp, 1)", thisConn)
+                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricIdB, FabricColourId, FabricColourIdB, ChainId, PriceProductGroupId, PriceProductGroupIdB, Qty, Room, Mounting, Width, WidthB, [Drop], DropB, ControlPosition, ControlLength, ControlLengthValue, Supply, LinearMetre, LinearMetreB, SquareMetre, SquareMetreB, TotalItems, Notes, MarkUp, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricIdB, @FabricColourId, @FabricColourIdB, @ChainId, @PriceProductGroupId, @PriceProductGroupIdB, @Qty, @Room, @Mounting, @Width, @WidthB, @Drop, @DropB, @ControlPosition, @ControlLength, @ControlLengthValue, @Supply, @LinearMetre, @LinearMetreB, @SquareMetre, @SquareMetreB, @TotalItems, @Notes, @MarkUp, 1)", thisConn)
                         myCmd.Parameters.AddWithValue("@Id", itemId)
                         myCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                         myCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                         myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
+                        myCmd.Parameters.AddWithValue("@PriceProductGroupIdB", If(String.IsNullOrEmpty(priceProductGroupB), CType(DBNull.Value, Object), priceProductGroupB))
                         myCmd.Parameters.AddWithValue("@Qty", "1")
                         myCmd.Parameters.AddWithValue("@Room", data.room)
                         myCmd.Parameters.AddWithValue("@FabricId", data.fabrictype)
@@ -1555,11 +1572,12 @@ Partial Class Order_Method
         If data.itemaction = "edit" OrElse data.itemaction = "view" Then
             Dim itemId As String = data.itemid
             Using thisConn As SqlConnection = New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET ProductId=@ProductId, FabricId=@FabricId, FabricIdB=@FabricIdB, FabricColourId=@FabricColourId, FabricColourIdB=@FabricColourIdB, ChainId=@ChainId,  PriceProductGroupId=@PriceProductGroupId, PriceProductGroupIdB=NULL, Qty=@Qty, Room=@Room, Mounting=@Mounting, Width=@Width, WidthB=@WidthB, [Drop]=@Drop, DropB=@DropB, ControlPosition=@ControlPosition, ControlLength=@ControlLength, ControlLengthValue=@ControlLengthValue, Supply=@Supply, LinearMetre=@LinearMetre, LinearMetreB=@LinearMetreB, SquareMetre=@SquareMetre, SquareMetreB=@SquareMetreB, TotalItems=@TotalItems, Notes=@Notes, MarkUp=@MarkUp, Active=1 WHERE Id=@Id", thisConn)
+                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET ProductId=@ProductId, FabricId=@FabricId, FabricIdB=@FabricIdB, FabricColourId=@FabricColourId, FabricColourIdB=@FabricColourIdB, ChainId=@ChainId,  PriceProductGroupId=@PriceProductGroupId, PriceProductGroupIdB=@PriceProductGroupIdB, Qty=@Qty, Room=@Room, Mounting=@Mounting, Width=@Width, WidthB=@WidthB, [Drop]=@Drop, DropB=@DropB, ControlPosition=@ControlPosition, ControlLength=@ControlLength, ControlLengthValue=@ControlLengthValue, Supply=@Supply, LinearMetre=@LinearMetre, LinearMetreB=@LinearMetreB, SquareMetre=@SquareMetre, SquareMetreB=@SquareMetreB, TotalItems=@TotalItems, Notes=@Notes, MarkUp=@MarkUp, Active=1 WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", itemId)
                     myCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                     myCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                     myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
+                    myCmd.Parameters.AddWithValue("@PriceProductGroupIdB", If(String.IsNullOrEmpty(priceProductGroupB), CType(DBNull.Value, Object), priceProductGroupB))
                     myCmd.Parameters.AddWithValue("@Qty", "1")
                     myCmd.Parameters.AddWithValue("@Room", data.room)
                     myCmd.Parameters.AddWithValue("@FabricId", data.fabrictype)
@@ -11684,8 +11702,7 @@ Partial Class Order_Method
     Private Shared Function BuildSql(cmd As SqlCommand) As String
         Dim query As String = cmd.CommandText
 
-        Dim parameters = cmd.Parameters.Cast(Of SqlParameter)() _
-        .OrderByDescending(Function(p) p.ParameterName.Length)
+        Dim parameters = cmd.Parameters.Cast(Of SqlParameter)().OrderByDescending(Function(p) p.ParameterName.Length)
 
         For Each p In parameters
             Dim value As String

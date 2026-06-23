@@ -10,15 +10,15 @@ Public Class AccessClass
            String.IsNullOrEmpty(page) OrElse String.IsNullOrEmpty(action) Then Return False
         Try
             Using thisConn As New SqlConnection(myConn)
-                Using cmd As New SqlCommand("sp_GetLoginAccess", thisConn)
-                    cmd.CommandType = CommandType.StoredProcedure
-                    cmd.Parameters.AddWithValue("@RoleId", roleId)
-                    cmd.Parameters.AddWithValue("@LevelId", levelId)
-                    cmd.Parameters.AddWithValue("@Page", page)
-                    cmd.Parameters.AddWithValue("@Action", action)
+                Using thisCmd As New SqlCommand("sp_GetLoginAccess", thisConn)
+                    thisCmd.CommandType = CommandType.StoredProcedure
+                    thisCmd.Parameters.AddWithValue("@RoleId", roleId)
+                    thisCmd.Parameters.AddWithValue("@LevelId", levelId)
+                    thisCmd.Parameters.AddWithValue("@Page", page)
+                    thisCmd.Parameters.AddWithValue("@Action", action)
 
                     thisConn.Open()
-                    Return Convert.ToInt32(cmd.ExecuteScalar()) = 1
+                    Return Convert.ToInt32(thisCmd.ExecuteScalar()) = 1
                 End Using
             End Using
         Catch

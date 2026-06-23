@@ -5,7 +5,6 @@ Partial Class Setting_Price_ProductGroup
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataLog As Object() = Nothing
 
@@ -31,11 +30,10 @@ Partial Class Setting_Price_ProductGroup
         Try
             lblAction.Text = "Add"
             titleProcess.InnerText = "Add Product Group"
+            txtName.Enabled = True
 
             BindDesignType()
             BindCompanyDetail()
-
-            txtName.Enabled = True
 
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         Catch ex As Exception
@@ -151,7 +149,6 @@ Partial Class Setting_Price_ProductGroup
                             myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Description", descText)
                             myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
-
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
                         End Using
@@ -173,7 +170,6 @@ Partial Class Setting_Price_ProductGroup
                             myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                             myCmd.Parameters.AddWithValue("@Description", descText)
                             myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
-
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
                         End Using

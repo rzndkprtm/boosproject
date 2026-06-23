@@ -48,13 +48,13 @@ Public Class PreviewClass
     Public Function GetDataTableSP(spName As String, params As List(Of SqlParameter)) As DataTable
         Dim dt As New DataTable()
         Try
-            Using conn As New SqlConnection(myConn)
-                Using cmd As New SqlCommand(spName, conn)
-                    cmd.CommandType = CommandType.StoredProcedure
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand(spName, thisConn)
+                    thisCmd.CommandType = CommandType.StoredProcedure
                     If params IsNot Nothing AndAlso params.Count > 0 Then
-                        cmd.Parameters.AddRange(params.ToArray())
+                        thisCmd.Parameters.AddRange(params.ToArray())
                     End If
-                    Using da As New SqlDataAdapter(cmd)
+                    Using da As New SqlDataAdapter(thisCmd)
                         da.Fill(dt)
                     End Using
                 End Using
@@ -70,8 +70,8 @@ Public Class PreviewClass
         Try
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
-                Using myCmd As New SqlCommand(thisString, thisConn)
-                    Using rdResult = myCmd.ExecuteReader
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using rdResult = thisCmd.ExecuteReader
                         While rdResult.Read
                             result = rdResult.Item(0).ToString()
                         End While
@@ -90,8 +90,8 @@ Public Class PreviewClass
         Try
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
-                Using myCmd As New SqlCommand(thisString, thisConn)
-                    Using rdResult = myCmd.ExecuteReader
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using rdResult = thisCmd.ExecuteReader
                         While rdResult.Read
                             result = rdResult.Item(0)
                         End While
@@ -110,11 +110,11 @@ Public Class PreviewClass
         Try
             If Not String.IsNullOrEmpty(fabricId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT Name FROM Fabrics WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", fabricId)
+                    Using thisCmd As New SqlCommand("SELECT Name FROM Fabrics WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", fabricId)
 
                         thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj.ToString()
                         End If
@@ -132,11 +132,11 @@ Public Class PreviewClass
         Try
             If Not String.IsNullOrEmpty(fabricColourId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT Colour FROM FabricColours WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", fabricColourId)
+                    Using thisCmd As New SqlCommand("SELECT Colour FROM FabricColours WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", fabricColourId)
 
                         thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj.ToString()
                         End If
