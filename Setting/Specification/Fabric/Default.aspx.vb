@@ -53,6 +53,8 @@ Partial Class Setting_Specification_Fabric_Default
         gvList.PageIndex = 0
         MessageError(False, String.Empty)
         BindData(txtSearch.Text, ddlCompanyDetail.SelectedValue)
+        Session("SearchFabric") = txtSearch.Text
+        Session("CompanyFabric") = ddlCompanyDetail.SelectedValue
     End Sub
 
     Protected Sub ddlCompanyDetail_SelectedIndexChanged(sender As Object, e As EventArgs)
