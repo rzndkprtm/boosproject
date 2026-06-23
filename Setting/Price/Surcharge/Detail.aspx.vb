@@ -4,9 +4,8 @@ Imports System.Data.SqlClient
 Partial Class Setting_Price_Surcharge_Detail
     Inherits Page
 
-    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-
     Dim settingClass As New SettingClass
+    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")

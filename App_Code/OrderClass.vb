@@ -2461,6 +2461,9 @@ Public Class OrderClass
                     End If
 
                     Dim costingDescription As String = String.Format("#2 {0}", priceProductGroupNameB)
+                    If designName = "Cellular Shades" Then
+                        costingDescription = priceProductGroupNameB
+                    End If
 
                     objectArray = {headerId, itemId, itemNumber, "Base", costingDescription, thisBuy, thisSell}
                     OrderCostings(objectArray)

@@ -35,41 +35,74 @@
             </div>
         </section>
         <section class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-content">
-                        <div class="card-header">
-                            <div class="row">
-                                <div class="col-12 col-sm-12 col-lg-3 mb-2">
-                                    <div class="input-group">
-                                        <span class="input-group-text">Designs : </span>
-                                        <asp:DropDownList runat="server" ID="ddlDesign" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlDesign_SelectedIndexChanged"></asp:DropDownList>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-sm-12 col-lg-4 mb-2">
-                                    <div class="input-group">
-                                        <span class="input-group-text">Blinds : </span>
-                                        <asp:DropDownList runat="server" ID="ddlBlind" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlBlind_SelectedIndexChanged"></asp:DropDownList>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-sm-12 col-lg-5 d-flex justify-content-end">
-                                    <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
-                                        <div class="input-group">
-                                            <span class="input-group-text">Search : </span>
-                                            <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" placeholoder="" autocomplete="off"></asp:TextBox>
-                                            <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />
+            <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
+                <ContentTemplate>
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">Filter Form</h4>
+                            </div>
+                            <div class="card-content">
+                                <div class="card-body">
+                                    <div class="form form-vertical">
+                                        <div class="form-body">
+                                            <div class="row mb-2">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <div class="form-group">
+                                                        <label class="form-label">Design Type</label>
+                                                        <asp:DropDownList runat="server" ID="ddlDesign" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlDesign_SelectedIndexChanged"></asp:DropDownList>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-4">
+                                                    <div class="form-group">
+                                                        <label class="form-label">Blind Type</label>
+                                                        <asp:DropDownList runat="server" ID="ddlBlind" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlBlind_SelectedIndexChanged"></asp:DropDownList>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <div class="form-group">
+                                                        <label class="form-label">Price Group</label>
+                                                        <asp:DropDownList runat="server" ID="ddlPriceGroup" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlPriceGroup_SelectedIndexChanged"></asp:DropDownList>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-2">
+                                                    <div class="form-group">
+                                                        <label class="form-label">Active</label>
+                                                        <asp:DropDownList runat="server" ID="ddlActive" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlActive_SelectedIndexChanged">
+                                                            <asp:ListItem Value="1" Text="Active"></asp:ListItem>
+                                                            <asp:ListItem Value="0" Text="Non Active"></asp:ListItem>
+                                                        </asp:DropDownList>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </asp:Panel>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="card-body">
-                            
-                            <div class="row mb-3">
-                                <div class="col-12">
+                    </div>
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-content">
+                                <div class="card-header">
+                                    <div class="row">
+                                        <div class="col-12 col-sm-12 col-lg-6 mb-2">
+                                             <h4 class="card-title">List Surcharge</h4>
+                                        </div>
+                                        <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
+                                            <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">Search : </span>
+                                                    <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" autocomplete="off"></asp:TextBox>
+                                                    <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />
+                                                </div>
+                                            </asp:Panel>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
                                     <div class="table-responsive">
-                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom" OnPageIndexChanging="gvList_PageIndexChanging" OnRowCommand="gvList_RowCommand">
-                                            <RowStyle />
+                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" agerSettings-Visible="false" OnPageIndexChanging="gvList_PageIndexChanging" OnDataBound="gvList_DataBound">
                                             <Columns>
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center">
                                                     <ItemTemplate>
@@ -89,13 +122,13 @@
                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                         <ul class="dropdown-menu">
                                                             <li runat="server" visible='<%# LoginAccess("Detail") %>'>
-                                                                <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                                <a class="dropdown-item" runat="server" id="aDetail" href='<%# Page.ResolveUrl("~/setting/price/surcharge/detail?surchargeid=" & Eval("Id")) %>'>Detail / Edit</a>
                                                             </li>
                                                             <li runat="server" visible='<%# LoginAccess("Copy") %>'>
-                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalCopy" onclick='<%# String.Format("return showCopy(`{0}`);", Eval("Id").ToString()) %>'>Copy</a>
+                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalCopy" onclick='<%# String.Format("return dataCopy(`{0}`);", Eval("Id").ToString()) %>'>Copy</a>
                                                             </li>
                                                             <li runat="server" visible='<%# LoginAccess("Delete") %>'>
-                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return dataDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                             </li>
                                                             <li>
                                                                 <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('PriceSurcharges', '<%# Eval("Id") %>')">Log</a>
@@ -104,32 +137,28 @@
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                             </Columns>
-                                            <PagerStyle BackColor="DodgerBlue" ForeColor="White" HorizontalAlign="Center" />
-                                            <PagerSettings PreviousPageText="Prev" NextPageText="Next" Mode="NumericFirstLast" />
-                                            <AlternatingRowStyle BackColor="White" />
                                         </asp:GridView>
+                                    </div>
+                                    <div class="d-flex justify-content-end mt-3">
+                                        <nav id="navPager" runat="server" visible="false">
+                                            <ul class="pagination pagination mb-0">
+                                                <asp:Repeater ID="rptPager" runat="server" OnItemCommand="rptPager_ItemCommand">
+                                                    <ItemTemplate>
+                                                        <li class='page-item <%# Eval("CssClass") %>'>
+                                                            <asp:LinkButton runat="server" ID="lnkPage" CssClass="page-link" Text='<%# Eval("Text") %>' CommandName="Page" CommandArgument='<%# Eval("PageIndex") %>' />
+                                                        </li>
+                                                    </ItemTemplate>
+                                                </asp:Repeater>
+                                            </ul>
+                                        </nav>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="card-footer">
-                        <div class="d-flex">
-                            <div class="ms-auto">
-                                <div class="ms-2 d-inline-block">
-                                    <asp:DropDownList runat="server" ID="ddlPriceGroup" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlPriceGroup_SelectedIndexChanged"></asp:DropDownList>
-                                </div>
-                                <div class="ms-2 d-inline-block">
-                                    <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlActive_SelectedIndexChanged">
-                                        <asp:ListItem Value="1" Text="Active"></asp:ListItem>
-                                        <asp:ListItem Value="0" Text="Non Active"></asp:ListItem>
-                                    </asp:DropDownList>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                </ContentTemplate>
+            </asp:UpdatePanel>
+            
         </section>
     </div>
 
@@ -185,39 +214,74 @@
             </div>
         </div>
     </div>
+    <div id="loadingOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,.5); z-index:99999;">
+        <div class="position-absolute top-50 start-50 translate-middle">
+            <div class="card shadow">
+                <div class="card-body text-center">
+                    <div class="spinner-border"></div>
+                    <div class="mt-2">Loading...</div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script type="text/javascript">
-        document.addEventListener('DOMContentLoaded', function () {
+        window.addEventListener("pageshow", function () {
+            var loading = document.getElementById("loadingOverlay");
+            if (loading) loading.style.display = "none";
+        });
+        function initUpdatePanelLoading() {
+            if (typeof Sys === "undefined") return;
+            var prm = Sys.WebForms.PageRequestManager.getInstance();
+            prm.add_beginRequest(function () {
+                var loading = document.getElementById("loadingOverlay");
+                if (loading) loading.style.display = "block";
+            });
+            prm.add_endRequest(function () {
+                var loading = document.getElementById("loadingOverlay");
+                if (loading) loading.style.display = "none";
+                initChoices();
+                bindGridRowClick();
+            });
+        }
+        function bindGridRowClick() {
             const gv = document.getElementById('<%= gvList.ClientID %>');
             if (!gv) return;
-
             for (let i = 1; i < gv.rows.length; i++) {
                 const row = gv.rows[i];
-                row.style.cursor = 'pointer';
-
-                row.addEventListener('click', function (e) {
-                    if (
-                        e.target.closest("a") ||
-                        e.target.closest("button") ||
-                        e.target.closest("[data-bs-toggle]")
-                    ) {
+                row.style.cursor = "pointer";
+                row.onclick = function (e) {
+                    if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]")) {
                         return;
                     }
-
-                    const btn = this.querySelector("a[id*='linkDetail']");
+                    const btn = this.querySelector("a[id*='aDetail']");
                     if (btn) btn.click();
-                });
+                };
             }
+        }
+        function initChoices() {
+            document.querySelectorAll("select.choices").forEach(function (el) {
+                if (el.choices) {
+                    el.choices.destroy();
+                }
+                el.choices = new Choices(el, {
+                    searchEnabled: true,
+                    itemSelectText: '',
+                    shouldSort: false
+                });
+            });
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+            initUpdatePanelLoading();
+            initChoices();
+            bindGridRowClick();
         });
-
-        function showDelete(id) {
+        function dataDelete(id) {
             document.getElementById("<%=txtIdDelete.ClientID %>").value = id;
         }
-
-        function showCopy(id) {
+        function dataCopy(id) {
             document.getElementById("<%=txtIdCopy.ClientID %>").value = id;
         }
-
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
             $("#tblLogs tbody").html("");
@@ -251,14 +315,12 @@
                 }
             });
         }
-
         ["modalDelete", "modalCopy", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
             });
         });
-
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

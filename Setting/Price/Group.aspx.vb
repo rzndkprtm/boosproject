@@ -29,7 +29,6 @@ Partial Class Setting_Price_Group
         Try
             lblAction.Text = "Add"
             titleProcess.InnerText = "Add Price Group"
-
             txtName.Enabled = True
 
             BindCompany()
@@ -127,6 +126,7 @@ Partial Class Setting_Price_Group
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
                 If lblAction.Text = "Add" Then
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM PriceGroups ORDER BY Id DESC")
+
                     Using thisConn As New SqlConnection(myConn)
                         Using myCmd As SqlCommand = New SqlCommand("INSERT INTO PriceGroups VALUES (@Id, @Name, @CompanyId, @Type, @Description, @Active)", thisConn)
                             myCmd.Parameters.AddWithValue("@Id", thisId)
@@ -135,7 +135,6 @@ Partial Class Setting_Price_Group
                             myCmd.Parameters.AddWithValue("@CompanyId", ddlCompany.SelectedValue)
                             myCmd.Parameters.AddWithValue("@Description", descText)
                             myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
-
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
                         End Using
@@ -157,7 +156,6 @@ Partial Class Setting_Price_Group
                             myCmd.Parameters.AddWithValue("@CompanyId", ddlCompany.SelectedValue)
                             myCmd.Parameters.AddWithValue("@Description", descText)
                             myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
-
                             thisConn.Open()
                             myCmd.ExecuteNonQuery()
                         End Using

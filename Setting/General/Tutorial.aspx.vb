@@ -4,9 +4,8 @@ Imports System.Data.SqlClient
 Partial Class Setting_General_Tutorial
     Inherits Page
 
-    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-
     Dim settingClass As New SettingClass
+    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
@@ -125,7 +124,6 @@ Partial Class Setting_General_Tutorial
                 ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
                 Exit Sub
             End If
-
             If msgErrorProcess.InnerText = "" Then
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 
@@ -133,17 +131,16 @@ Partial Class Setting_General_Tutorial
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Tutorials ORDER BY Id DESC")
 
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Tutorials VALUES (@Id, @CompanyId, @Title, @Description, @File, @Video, @Active)", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", thisId)
-                            myCmd.Parameters.AddWithValue("@CompanyId", ddlCompanyId.SelectedValue)
-                            myCmd.Parameters.AddWithValue("@Title", txtTitle.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
-                            myCmd.Parameters.AddWithValue("@File", txtFile.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Video", txtVideo.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
-
+                        Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Tutorials VALUES (@Id, @CompanyId, @Title, @Description, @File, @Video, @Active)", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", thisId)
+                            thisCmd.Parameters.AddWithValue("@CompanyId", ddlCompanyId.SelectedValue)
+                            thisCmd.Parameters.AddWithValue("@Title", txtTitle.Text.Trim())
+                            thisCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
+                            thisCmd.Parameters.AddWithValue("@File", txtFile.Text.Trim())
+                            thisCmd.Parameters.AddWithValue("@Video", txtVideo.Text.Trim())
+                            thisCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
                             thisConn.Open()
-                            myCmd.ExecuteNonQuery()
+                            thisCmd.ExecuteNonQuery()
                         End Using
                     End Using
 
@@ -156,17 +153,16 @@ Partial Class Setting_General_Tutorial
 
                 If lblAction.Text = "Edit" Then
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE Tutorials SET CompanyId=@CompanyId, Title=@Title, Description=@Description, File=@File, Video=@Video, Active=@Active WHERE Id=@Id", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                            myCmd.Parameters.AddWithValue("@CompanyId", ddlCompanyId.SelectedValue)
-                            myCmd.Parameters.AddWithValue("@Title", txtTitle.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
-                            myCmd.Parameters.AddWithValue("@File", txtFile.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Video", txtVideo.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
-
+                        Using thisCmd As SqlCommand = New SqlCommand("UPDATE Tutorials SET CompanyId=@CompanyId, Title=@Title, Description=@Description, File=@File, Video=@Video, Active=@Active WHERE Id=@Id", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                            thisCmd.Parameters.AddWithValue("@CompanyId", ddlCompanyId.SelectedValue)
+                            thisCmd.Parameters.AddWithValue("@Title", txtTitle.Text.Trim())
+                            thisCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
+                            thisCmd.Parameters.AddWithValue("@File", txtFile.Text.Trim())
+                            thisCmd.Parameters.AddWithValue("@Video", txtVideo.Text.Trim())
+                            thisCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
                             thisConn.Open()
-                            myCmd.ExecuteNonQuery()
+                            thisCmd.ExecuteNonQuery()
                         End Using
                     End Using
 
@@ -192,19 +188,11 @@ Partial Class Setting_General_Tutorial
             Dim thisId As String = txtIdDelete.Text
 
             Using thisConn As New SqlConnection(myConn)
-                thisConn.Open()
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Tutorials WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM Tutorials WHERE Id=@Id;DELETE FROM Logs WHERE Type='Tutorials' AND DataId=@Id;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
                 End Using
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Logs WHERE Type='Tutorials' AND DataId=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                thisConn.Close()
             End Using
 
             Session("SearchTutorial") = txtSearch.Text

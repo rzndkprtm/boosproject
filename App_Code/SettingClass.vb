@@ -30,12 +30,12 @@ Public Class SettingClass
 
     Public Function GetDataRowSP(spName As String, params As List(Of SqlParameter)) As DataRow
         Try
-            Using conn As New SqlConnection(myConn)
-                Using cmd As New SqlCommand(spName, conn)
-                    cmd.CommandType = CommandType.StoredProcedure
-                    cmd.Parameters.AddRange(params.ToArray())
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand(spName, thisConn)
+                    thisCmd.CommandType = CommandType.StoredProcedure
+                    thisCmd.Parameters.AddRange(params.ToArray())
 
-                    Using da As New SqlDataAdapter(cmd)
+                    Using da As New SqlDataAdapter(thisCmd)
                         Dim dt As New DataTable()
                         da.Fill(dt)
 
@@ -69,15 +69,15 @@ Public Class SettingClass
     Public Function GetDataTableSP(spName As String, params As List(Of SqlParameter)) As DataTable
         Dim dt As New DataTable()
         Try
-            Using conn As New SqlConnection(myConn)
-                Using cmd As New SqlCommand(spName, conn)
-                    cmd.CommandType = CommandType.StoredProcedure
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand(spName, thisConn)
+                    thisCmd.CommandType = CommandType.StoredProcedure
 
                     If params IsNot Nothing AndAlso params.Count > 0 Then
-                        cmd.Parameters.AddRange(params.ToArray())
+                        thisCmd.Parameters.AddRange(params.ToArray())
                     End If
 
-                    Using da As New SqlDataAdapter(cmd)
+                    Using da As New SqlDataAdapter(thisCmd)
                         da.Fill(dt)
                     End Using
                 End Using
@@ -93,8 +93,8 @@ Public Class SettingClass
         Try
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
-                Using myCmd As New SqlCommand(thisString, thisConn)
-                    Using rdResult = myCmd.ExecuteReader
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using rdResult = thisCmd.ExecuteReader
                         While rdResult.Read
                             result = rdResult.Item(0).ToString()
                         End While
@@ -113,8 +113,8 @@ Public Class SettingClass
         Try
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
-                Using myCmd As New SqlCommand(thisString, thisConn)
-                    Using rdResult = myCmd.ExecuteReader
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using rdResult = thisCmd.ExecuteReader
                         While rdResult.Read
                             result = rdResult.Item(0)
                         End While
@@ -133,8 +133,8 @@ Public Class SettingClass
         Try
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
-                Using myCmd As New SqlCommand(thisString, thisConn)
-                    Using rdResult = myCmd.ExecuteReader
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using rdResult = thisCmd.ExecuteReader
                         While rdResult.Read
                             result = rdResult.Item(0)
                         End While
@@ -153,8 +153,8 @@ Public Class SettingClass
         Try
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
-                Using myCmd As New SqlCommand(thisString, thisConn)
-                    Using rdResult = myCmd.ExecuteReader
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using rdResult = thisCmd.ExecuteReader
                         While rdResult.Read
                             result = rdResult.Item(0)
                         End While
@@ -211,11 +211,11 @@ Public Class SettingClass
         Dim result As String = String.Empty
         Try
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As New SqlCommand("SELECT '<b>' + Logins.FullName + '</b> on ' + FORMAT(Logs.ActionDate, 'dd MMM yyyy HH:mm') + '. Action : ' + Logs.Description AS FinalLog FROM Logs LEFT JOIN Logins ON Logs.ActionBy=Logins.Id WHERE Logs.Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", logId)
+                Using thisCmd As New SqlCommand("SELECT '<b>' + Logins.FullName + '</b> on ' + FORMAT(Logs.ActionDate, 'dd MMM yyyy HH:mm') + '. Action : ' + Logs.Description AS FinalLog FROM Logs LEFT JOIN Logins ON Logs.ActionBy=Logins.Id WHERE Logs.Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", logId)
 
                     thisConn.Open()
-                    Dim obj = myCmd.ExecuteScalar()
+                    Dim obj = thisCmd.ExecuteScalar()
                     If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                         result = obj.ToString()
                     End If
@@ -246,10 +246,10 @@ Public Class SettingClass
         Dim result As String = String.Empty
         Try
             Using thisConn As SqlConnection = New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("DECLARE @RawId NVARCHAR(50) = NEWID(); DECLARE @FinalId NVARCHAR(100) = 'RAP23-' + @RawId; INSERT INTO Sessions (Id, LoginId) VALUES (@FinalId, NULL); SELECT @FinalId;", thisConn)
+                Using thisCmd As SqlCommand = New SqlCommand("DECLARE @RawId NVARCHAR(50) = NEWID(); DECLARE @FinalId NVARCHAR(100) = 'RAP23-' + @RawId; INSERT INTO Sessions (Id, LoginId) VALUES (@FinalId, NULL); SELECT @FinalId;", thisConn)
                     thisConn.Open()
 
-                    Dim newId As Object = myCmd.ExecuteScalar()
+                    Dim newId As Object = thisCmd.ExecuteScalar()
                     If newId IsNot Nothing Then
                         result = newId.ToString()
                     End If
@@ -263,11 +263,10 @@ Public Class SettingClass
     Public Sub UpdateFailedCount(loginId As String)
         Try
             Using thisConn As SqlConnection = New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE Logins SET FailedCount=0 WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", loginId)
-
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Logins SET FailedCount=0 WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", loginId)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
         Catch ex As Exception
@@ -277,12 +276,11 @@ Public Class SettingClass
     Public Sub UpdateSession(id As String, loginId As String)
         Try
             Using thisConn As SqlConnection = New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE Sessions SET LoginId=@LoginId WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", UCase(id).ToString())
-                    myCmd.Parameters.AddWithValue("@LoginId", loginId)
-
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Sessions SET LoginId=@LoginId WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", UCase(id).ToString())
+                    thisCmd.Parameters.AddWithValue("@LoginId", loginId)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
         Catch ex As Exception
@@ -292,11 +290,10 @@ Public Class SettingClass
     Public Sub DeleteSession(sessId As String)
         Try
             Using thisConn As SqlConnection = New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Sessions WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", UCase(sessId).ToString())
-
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM Sessions WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", UCase(sessId).ToString())
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
         Catch ex As Exception
@@ -414,8 +411,8 @@ Public Class SettingClass
             Dim id As Integer = 0
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
-                Using myCmd As New SqlCommand(thisString, thisConn)
-                    Using rdResult As SqlDataReader = myCmd.ExecuteReader()
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using rdResult As SqlDataReader = thisCmd.ExecuteReader()
                         If rdResult.Read() Then
                             Integer.TryParse(rdResult(0).ToString(), id)
                         End If
@@ -499,10 +496,10 @@ Public Class SettingClass
     Public Function IsUsernameExists(username As String) As Boolean
         Using thisConn As New SqlConnection(myConn)
             thisConn.Open()
-            Using myCmd As New SqlCommand("SELECT COUNT(1) FROM Logins WHERE LOWER(UserName) = @UserName", thisConn)
-                myCmd.Parameters.AddWithValue("@UserName", username.ToLower())
+            Using thisCmd As New SqlCommand("SELECT COUNT(1) FROM Logins WHERE LOWER(UserName) = @UserName", thisConn)
+                thisCmd.Parameters.AddWithValue("@UserName", username.ToLower())
 
-                Dim count As Integer = Convert.ToInt32(myCmd.ExecuteScalar())
+                Dim count As Integer = Convert.ToInt32(thisCmd.ExecuteScalar())
                 Return count > 0
             End Using
         End Using
@@ -517,14 +514,13 @@ Public Class SettingClass
                 Dim description As String = Convert.ToString(data(3))
 
                 Using thisConn As SqlConnection = New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Logs VALUES (NEWID(), @Type, @DataId, @ActionBy, GETDATE(), @Description)", thisConn)
-                        myCmd.Parameters.AddWithValue("@Type", type)
-                        myCmd.Parameters.AddWithValue("@DataId", If(String.IsNullOrEmpty(dataId), CType(DBNull.Value, Object), dataId))
-                        myCmd.Parameters.AddWithValue("@ActionBy", loginId)
-                        myCmd.Parameters.AddWithValue("@Description", description)
-
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Logs VALUES (NEWID(), @Type, @DataId, @ActionBy, GETDATE(), @Description)", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Type", type)
+                        thisCmd.Parameters.AddWithValue("@DataId", If(String.IsNullOrEmpty(dataId), CType(DBNull.Value, Object), dataId))
+                        thisCmd.Parameters.AddWithValue("@ActionBy", loginId)
+                        thisCmd.Parameters.AddWithValue("@Description", description)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
             End If

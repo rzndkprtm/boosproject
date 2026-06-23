@@ -7,7 +7,6 @@ Imports iTextSharp.text.pdf
 
 Public Class InvoiceClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-
     Dim enUS As CultureInfo = New CultureInfo("en-US")
     Dim idIDR As New CultureInfo("id-ID")
 
@@ -50,12 +49,12 @@ Public Class InvoiceClass
 
     Public Function GetDataTableSP(spName As String, params As List(Of SqlParameter)) As DataTable
         Dim dt As New DataTable()
-        Using conn As New SqlConnection(myConn)
-            Using cmd As New SqlCommand(spName, conn)
-                cmd.CommandType = CommandType.StoredProcedure
-                cmd.Parameters.AddRange(params.ToArray())
+        Using thisConn As New SqlConnection(myConn)
+            Using thisCmd As New SqlCommand(spName, thisConn)
+                thisCmd.CommandType = CommandType.StoredProcedure
+                thisCmd.Parameters.AddRange(params.ToArray())
 
-                Using da As New SqlDataAdapter(cmd)
+                Using da As New SqlDataAdapter(thisCmd)
                     da.Fill(dt)
                 End Using
             End Using
@@ -68,8 +67,8 @@ Public Class InvoiceClass
         Try
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
-                Using myCmd As New SqlCommand(thisString, thisConn)
-                    Using rdResult = myCmd.ExecuteReader
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using rdResult = thisCmd.ExecuteReader
                         While rdResult.Read
                             result = rdResult.Item(0).ToString()
                         End While
@@ -88,8 +87,8 @@ Public Class InvoiceClass
         Try
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
-                Using myCmd As New SqlCommand(thisString, thisConn)
-                    Using rdResult = myCmd.ExecuteReader
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using rdResult = thisCmd.ExecuteReader
                         While rdResult.Read
                             result = rdResult.Item(0)
                         End While
@@ -108,11 +107,11 @@ Public Class InvoiceClass
         Try
             If Not String.IsNullOrEmpty(fabricColourId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT Name FROM FabricColours WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", fabricColourId)
+                    Using thisCmd As New SqlCommand("SELECT Name FROM FabricColours WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", fabricColourId)
 
                         thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj.ToString()
                         End If

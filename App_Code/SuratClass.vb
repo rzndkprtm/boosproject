@@ -52,8 +52,8 @@ Public Class SuratClass
         Try
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
-                Using myCmd As New SqlCommand(thisString, thisConn)
-                    Using rdResult = myCmd.ExecuteReader
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using rdResult = thisCmd.ExecuteReader
                         While rdResult.Read
                             result = rdResult.Item(0).ToString()
                         End While
@@ -72,8 +72,8 @@ Public Class SuratClass
         Try
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
-                Using myCmd As New SqlCommand(thisString, thisConn)
-                    Using rdResult = myCmd.ExecuteReader
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using rdResult = thisCmd.ExecuteReader
                         While rdResult.Read
                             result = rdResult.Item(0)
                         End While
@@ -127,11 +127,11 @@ Public Class SuratClass
         Try
             If Not String.IsNullOrEmpty(fabricColourId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT Name FROM FabricColours WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", fabricColourId)
+                    Using thisCmd As New SqlCommand("SELECT Name FROM FabricColours WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", fabricColourId)
 
                         thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj.ToString()
                         End If

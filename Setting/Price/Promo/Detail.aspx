@@ -89,7 +89,6 @@
                                 <div class="col-12">
                                     <div class="table-responsive">
                                         <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowCommand="gvList_RowCommand">
-                                            <RowStyle />
                                             <Columns>
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center">
                                                     <ItemTemplate>
@@ -328,19 +327,15 @@
         $(document).ready(function () {
             visiblePromoType();
         });
-
         function showProcess() {
             $("#modalProcess").modal("show");
         }
-
         function showProcessDetail() {
             $("#modalProcessDetail").modal("show");
         }
-
         function showDeleteDetail(id) {
             document.getElementById("<%=txtIdDeleteDetail.ClientID %>").value = id;
         }
-
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
             $("#tblLogs tbody").html("");
@@ -374,7 +369,6 @@
                 }
             });
         }
-
         function visiblePromoType() {
             const type = document.getElementById("ddlPromoType").value;
 
@@ -442,28 +436,20 @@
                 if (framecolour) framecolour.style.display = "none";
             }
         }
-
         ["modalProcess", "modalProcessDetail", "modalDeleteDetail", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
             });
         });
-
         document.addEventListener('DOMContentLoaded', function () {
             const gv = document.getElementById('<%= gvList.ClientID %>');
             if (!gv) return;
-
             for (let i = 1; i < gv.rows.length; i++) {
                 const row = gv.rows[i];
                 row.style.cursor = 'pointer';
-
                 row.addEventListener('click', function (e) {
-                    if (
-                        e.target.closest("a") ||
-                        e.target.closest("button") ||
-                        e.target.closest("[data-bs-toggle]")
-                    ) {
+                    if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]")) {
                         return;
                     }
                     const btn = this.querySelector("a[id*='linkDetailPromo']");
@@ -471,7 +457,6 @@
                 });
             }
         });
-
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

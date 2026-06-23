@@ -5,7 +5,6 @@ Partial Class Setting_Specification_Fabric_Default
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataLog As Object() = Nothing
     Dim url As String = String.Empty
@@ -92,39 +91,6 @@ Partial Class Setting_Specification_Fabric_Default
         End Try
     End Sub
 
-    Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
-        If Not String.IsNullOrEmpty(e.CommandArgument) Then
-            Session("SearchFabric") = txtSearch.Text
-            Session("CompanyFabric") = ddlCompanyDetail.SelectedValue
-
-            Dim dataId As String = e.CommandArgument.ToString()
-            If e.CommandName = "Detail" Then
-                MessageError(False, String.Empty)
-                Try
-                    url = String.Format("~/setting/specification/fabric/detail?fabricid={0}", dataId)
-                    Response.Redirect(url, False)
-                Catch ex As Exception
-                    MessageError(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                    End If
-                End Try
-            End If
-            If e.CommandName = "Ubah" Then
-                MessageError(False, String.Empty)
-                Try
-                    url = String.Format("~/setting/specification/fabric/edit?fabricid={0}", dataId)
-                    Response.Redirect(url, False)
-                Catch ex As Exception
-                    MessageError(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                    End If
-                End Try
-            End If
-        End If
-    End Sub
-
     Protected Sub btnChangeStatus_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
@@ -136,7 +102,6 @@ Partial Class Setting_Specification_Fabric_Default
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE Fabrics SET Status=@Status WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", thisId)
                     myCmd.Parameters.AddWithValue("@Status", newStatus)
-
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
