@@ -1,5 +1,4 @@
-﻿Imports System.Data
-Imports System.Data.SqlClient
+﻿Imports System.Data.SqlClient
 
 Partial Class Setting_Price_Base_Default
     Inherits Page
@@ -21,47 +20,62 @@ Partial Class Setting_Price_Base_Default
 
             btnEditable.Visible = LoginAccess("Editable")
 
-            gvList.DataSource = Nothing
-            gvList.DataBind()
+            BindData(ddlCategory.SelectedValue, ddlMethod.SelectedValue, ddlProductGroup.SelectedValue, ddlPriceGroup.SelectedValue)
         End If
+    End Sub
+
+    Protected Sub ddlCategory_SelectedIndexChanged(sender As Object, e As EventArgs)
+        gvList.PageIndex = 0
+        MessageError(False, String.Empty)
+        BindData(ddlCategory.SelectedValue, ddlMethod.SelectedValue, ddlProductGroup.SelectedValue, ddlPriceGroup.SelectedValue)
+    End Sub
+
+    Protected Sub ddlProductGroup_SelectedIndexChanged(sender As Object, e As EventArgs)
+        gvList.PageIndex = 0
+        MessageError(False, String.Empty)
+        BindData(ddlCategory.SelectedValue, ddlMethod.SelectedValue, ddlProductGroup.SelectedValue, ddlPriceGroup.SelectedValue)
+    End Sub
+
+    Protected Sub ddlMethod_SelectedIndexChanged(sender As Object, e As EventArgs)
+        gvList.PageIndex = 0
+        MessageError(False, String.Empty)
+        BindData(ddlCategory.SelectedValue, ddlMethod.SelectedValue, ddlProductGroup.SelectedValue, ddlPriceGroup.SelectedValue)
+    End Sub
+
+    Protected Sub ddlPriceGroup_SelectedIndexChanged(sender As Object, e As EventArgs)
+        gvList.PageIndex = 0
+        MessageError(False, String.Empty)
+        BindData(ddlCategory.SelectedValue, ddlMethod.SelectedValue, ddlProductGroup.SelectedValue, ddlPriceGroup.SelectedValue)
     End Sub
 
     Protected Sub btnEditable_Click(sender As Object, e As EventArgs)
         Response.Redirect("~/setting/price/base/editable", False)
     End Sub
 
-    Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
+    Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
+        gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
+        BindData(ddlCategory.SelectedValue, ddlMethod.SelectedValue, ddlProductGroup.SelectedValue, ddlPriceGroup.SelectedValue)
+    End Sub
+
+    Protected Sub gvList_DataBound(sender As Object, e As EventArgs)
+        BuildPager()
+    End Sub
+
+    Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
         MessageError(False, String.Empty)
-        gvList.DataSource = Nothing
-        gvList.DataBind()
+        gvList.PageIndex = e.NewPageIndex
+        BindData(ddlCategory.SelectedValue, ddlMethod.SelectedValue, ddlProductGroup.SelectedValue, ddlPriceGroup.SelectedValue)
+    End Sub
+
+    Protected Sub BindData(category As String, method As String, productgroup As String, pricegroup As String)
         Try
-            If ddlCategory.SelectedValue = "" Then
-                Exit Sub
-            End If
-            If ddlMethod.SelectedValue = "" Then
-                Exit Sub
-            End If
-            If ddlProductGroup.SelectedValue = "" Then
-                Exit Sub
-            End If
-            If ddlPriceGroup.SelectedValue = "" Then
-                Exit Sub
-            End If
-
-            If String.IsNullOrEmpty(txtDiscount.Text) Then
-                txtDiscount.Text = "0"
-            End If
-
             Dim params As New List(Of SqlParameter) From {
-                New SqlParameter("@Category", If(String.IsNullOrEmpty(ddlCategory.SelectedValue), CType(DBNull.Value, Object), ddlCategory.SelectedValue)),
-                New SqlParameter("@Method", If(String.IsNullOrEmpty(ddlMethod.SelectedValue), CType(DBNull.Value, Object), ddlMethod.SelectedValue)),
-                New SqlParameter("@ProductGroupId", If(String.IsNullOrEmpty(ddlProductGroup.SelectedValue), CType(DBNull.Value, Object), ddlProductGroup.SelectedValue)),
-                New SqlParameter("@PriceGroupId", If(String.IsNullOrEmpty(ddlPriceGroup.SelectedValue), CType(DBNull.Value, Object), ddlPriceGroup.SelectedValue)),
-                New SqlParameter("@Discount", If(String.IsNullOrEmpty(txtDiscount.Text), CType(DBNull.Value, Object), txtDiscount.Text))
+                New SqlParameter("@Category", If(String.IsNullOrEmpty(category), CType(DBNull.Value, Object), category)),
+                New SqlParameter("@Method", If(String.IsNullOrEmpty(method), CType(DBNull.Value, Object), method)),
+                New SqlParameter("@ProductGroup", If(String.IsNullOrEmpty(productgroup), CType(DBNull.Value, Object), productgroup)),
+                New SqlParameter("@PriceGroup", If(String.IsNullOrEmpty(pricegroup), CType(DBNull.Value, Object), pricegroup))
             }
-
-            Dim thisData As DataTable = settingClass.GetDataTableSP("sp_GetPriceListPivot", params)
-            gvList.DataSource = thisData
+            gvList.DataSource = settingClass.GetDataTableSP("sp_GetPriceBases", params)
             gvList.DataBind()
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -109,6 +123,42 @@ Partial Class Setting_Price_Base_Default
             End If
         Catch ex As Exception
             ddlPriceGroup.Items.Clear()
+        End Try
+    End Sub
+
+    Protected Sub BuildPager()
+        Try
+            If gvList.PageCount <= 1 Then
+                navPager.Visible = False
+                Return
+            End If
+
+            navPager.Visible = True
+
+            Dim currentPage As Integer = gvList.PageIndex
+            Dim totalPages As Integer = gvList.PageCount
+
+            Dim pages As New List(Of Object)
+
+            If currentPage > 0 Then
+                pages.Add(New With {.Text = "Previous", .PageIndex = currentPage - 1, .CssClass = ""})
+            End If
+
+            Dim startPage As Integer = Math.Max(0, currentPage - 2)
+            Dim endPage As Integer = Math.Min(totalPages - 1, currentPage + 2)
+
+            For i As Integer = startPage To endPage
+                pages.Add(New With {.Text = (i + 1).ToString(), .PageIndex = i, .CssClass = If(i = currentPage, "active", "")})
+            Next
+
+            If currentPage < totalPages - 1 Then
+                pages.Add(New With {.Text = "Next", .PageIndex = currentPage + 1, .CssClass = ""})
+            End If
+
+            rptPager.DataSource = pages
+            rptPager.DataBind()
+        Catch ex As Exception
+            navPager.Visible = False
         End Try
     End Sub
 
