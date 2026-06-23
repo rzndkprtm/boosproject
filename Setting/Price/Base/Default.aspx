@@ -31,7 +31,7 @@
         </section>
         <section class="row">
             <div class="col-12 d-flex justify-content-end flex-wrap gap-2">
-                <asp:Button runat="server" ID="btnEditable" CssClass="btn btn-primary" Text="Editable Page" OnClick="btnEditable_Click" />
+                <%--<asp:Button runat="server" ID="btnEditable" CssClass="btn btn-primary" Text="Editable Page" />--%>
             </div>
         </section>
         <section class="row">
@@ -163,7 +163,7 @@
                 </div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnDelete" CssClass="btn btn-danger" Text="Confirm" />
+                    <asp:Button runat="server" ID="btnDelete" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDelete_Click" />
                 </div>
             </div>
         </div>

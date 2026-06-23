@@ -14,12 +14,8 @@ Partial Class Setting_Price_Base_Default
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-
             BindProductGroup()
             BindPriceGroup()
-
-            btnEditable.Visible = LoginAccess("Editable")
-
             BindData(ddlCategory.SelectedValue, ddlMethod.SelectedValue, ddlProductGroup.SelectedValue, ddlPriceGroup.SelectedValue)
         End If
     End Sub
@@ -65,6 +61,18 @@ Partial Class Setting_Price_Base_Default
         MessageError(False, String.Empty)
         gvList.PageIndex = e.NewPageIndex
         BindData(ddlCategory.SelectedValue, ddlMethod.SelectedValue, ddlProductGroup.SelectedValue, ddlPriceGroup.SelectedValue)
+    End Sub
+
+    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
     End Sub
 
     Protected Sub BindData(category As String, method As String, productgroup As String, pricegroup As String)
