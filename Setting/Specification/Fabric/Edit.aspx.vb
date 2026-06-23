@@ -157,30 +157,40 @@ Partial Class Setting_Specification_Fabric_Edit
             ddlGroup.SelectedValue = thisData("Group").ToString()
             ddlNoRailRoad.SelectedValue = Convert.ToInt32(thisData("NoRailRoad"))
 
-            If Not thisData("DesignId").ToString() = "" Then
-                Dim designArray() As String = thisData("DesignId").ToString().Split(",")
-                For Each i In designArray
-                    If Not (i.Equals(String.Empty)) Then
-                        lbDesign.Items.FindByValue(i).Selected = True
+            If Not String.IsNullOrWhiteSpace(thisData("DesignId").ToString()) Then
+                For Each i As String In thisData("DesignId").ToString().Split(","c)
+                    Dim value As String = i.Trim()
+
+                    If value <> "" Then
+                        Dim item As ListItem = lbDesign.Items.FindByValue(value)
+                        If item IsNot Nothing Then
+                            item.Selected = True
+                        End If
                     End If
                 Next
             End If
 
-            If Not thisData("TubeId").ToString() = "" Then
-                Dim tubeArray() As String = thisData("TubeId").ToString().Split(",")
-                For Each i In tubeArray
-                    If Not (i.Equals(String.Empty)) Then
-                        lbTube.Items.FindByValue(i).Selected = True
+            If Not String.IsNullOrWhiteSpace(thisData("TubeId").ToString()) Then
+                For Each i As String In thisData("TubeId").ToString().Split(","c)
+                    Dim value As String = i.Trim()
+
+                    If value <> "" Then
+                        Dim item As ListItem = lbTube.Items.FindByValue(value)
+                        If item IsNot Nothing Then
+                            item.Selected = True
+                        End If
                     End If
                 Next
             End If
+            If Not String.IsNullOrWhiteSpace(thisData("CompanyDetailId").ToString()) Then
+                For Each i As String In thisData("CompanyDetailId").ToString().Split(","c)
+                    Dim value As String = i.Trim()
 
-            If Not thisData("CompanyDetailId").ToString() = "" Then
-                Dim companyArray() As String = thisData("CompanyDetailId").ToString().Split(",")
-
-                For Each i In companyArray
-                    If Not (i.Equals(String.Empty)) Then
-                        lbCompany.Items.FindByValue(i).Selected = True
+                    If value <> "" Then
+                        Dim item As ListItem = lbCompany.Items.FindByValue(value)
+                        If item IsNot Nothing Then
+                            item.Selected = True
+                        End If
                     End If
                 Next
             End If
