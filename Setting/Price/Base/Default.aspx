@@ -29,7 +29,7 @@
                 </div>
             </div>
         </section>
-        <section class="row">
+        <section class="row mb-2">
             <div class="col-12 d-flex justify-content-end flex-wrap gap-2">
                 <%--<asp:Button runat="server" ID="btnEditable" CssClass="btn btn-primary" Text="Editable Page" />--%>
             </div>
