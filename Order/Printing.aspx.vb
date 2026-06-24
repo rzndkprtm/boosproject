@@ -58,7 +58,6 @@ Partial Class Order_Printing
                 Using thisCmd As New SqlCommand("UPDATE OrderDetails SET Printing=@Printing WHERE Id=@Id", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", lblItemId.Text)
                     thisCmd.Parameters.AddWithValue("@Printing", printing)
-
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
@@ -104,7 +103,6 @@ Partial Class Order_Printing
                 Using thisCmd As New SqlCommand("UPDATE OrderDetails SET PrintingB=@PrintingB WHERE Id=@Id", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", lblItemId.Text)
                     thisCmd.Parameters.AddWithValue("@PrintingB", printing)
-
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
@@ -150,7 +148,6 @@ Partial Class Order_Printing
                 Using thisCmd As New SqlCommand("UPDATE OrderDetails SET PrintingC=@PrintingC WHERE Id=@Id", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", lblItemId.Text)
                     thisCmd.Parameters.AddWithValue("@PrintingC", printing)
-
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
@@ -196,7 +193,6 @@ Partial Class Order_Printing
                 Using thisCmd As New SqlCommand("UPDATE OrderDetails SET PrintingD=@PrintingD WHERE Id=@Id", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", lblItemId.Text)
                     thisCmd.Parameters.AddWithValue("@PrintingD", printing)
-
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
@@ -223,7 +219,6 @@ Partial Class Order_Printing
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET Printing=NULL WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", lblItemId.Text)
-
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
@@ -250,7 +245,6 @@ Partial Class Order_Printing
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET PrintingB=NULL WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", lblItemId.Text)
-
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
@@ -277,7 +271,6 @@ Partial Class Order_Printing
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET PrintingC=NULL WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", lblItemId.Text)
-
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using
@@ -304,7 +297,6 @@ Partial Class Order_Printing
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET PrintingD=NULL WHERE Id=@Id", thisConn)
                     myCmd.Parameters.AddWithValue("@Id", lblItemId.Text)
-
                     thisConn.Open()
                     myCmd.ExecuteNonQuery()
                 End Using

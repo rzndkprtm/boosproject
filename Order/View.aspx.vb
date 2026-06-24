@@ -26,7 +26,6 @@ Partial Class Order_View
 
             Dim orderId As String = previewClass.GetItemData("SELECT OrderId FROM OrderHeaders WHERE Id='" & headerId & "'")
             Dim customerName As String = previewClass.GetItemData("SELECT Customers.Name FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id='" & headerId & "'")
-
             Dim fileName As String = String.Format("ORDER {0} {1}.pdf", orderId, customerName.ToUpper())
 
             Response.Clear()
@@ -45,7 +44,6 @@ Partial Class Order_View
             Dim pdfBytes As Byte() = invoiceClass.BindContent(headerId)
 
             Dim invoiceNumber As String = invoiceClass.GetItemData("SELECT InvoiceNumber FROM OrderHeaders WHERE Id='" & headerId & "'")
-
             Dim fileName As String = String.Format("INVOICE {0}.pdf", invoiceNumber)
 
             Response.Clear()
@@ -64,15 +62,12 @@ Partial Class Order_View
             Dim pdfBytes As Byte() = quoteClass.BindContent(headerId)
 
             Dim orderData As DataRow = quoteClass.GetDataRow("SELECT * FROM OrderHeaders WHERE Id='" & headerId & "'")
-
             Dim orderNumber As String = String.Empty
             Dim orderName As String = String.Empty
-
             If Not orderData Is Nothing Then
                 orderNumber = orderData("OrderNumber")
                 orderName = orderData("OrderName")
             End If
-
             Dim fileName As String = String.Format("QUOTE-{0}-{1}.pdf", orderNumber, orderName)
 
             Response.Clear()
@@ -91,15 +86,12 @@ Partial Class Order_View
             Dim pdfBytes As Byte() = quoteClass.BindContentBuilder(headerId)
 
             Dim orderData As DataRow = quoteClass.GetDataRow("SELECT * FROM OrderHeaders WHERE Id='" & headerId & "'")
-
             Dim orderNumber As String = String.Empty
             Dim orderName As String = String.Empty
-
             If Not orderData Is Nothing Then
                 orderNumber = orderData("OrderNumber")
                 orderName = orderData("OrderName")
             End If
-
             Dim fileName As String = String.Format("QUOTE-{0}-{1}.pdf", orderNumber, orderName)
 
             Response.Clear()
@@ -118,7 +110,6 @@ Partial Class Order_View
             Dim pdfBytes As Byte() = suratClass.BindContent(headerId)
 
             Dim orderId As String = suratClass.GetItemData("SELECT OrderId FROM OrderHeaders WHERE Id='" & headerId & "'")
-
             Dim fileName As String = String.Format("SURAT JALAN {0}.pdf", orderId)
 
             Response.Clear()
@@ -137,15 +128,12 @@ Partial Class Order_View
             Dim pdfBytes As Byte() = quoteClass.BindContentCustomer(headerId)
 
             Dim orderData As DataRow = quoteClass.GetDataRow("SELECT * FROM OrderHeaders WHERE Id='" & headerId & "'")
-
             Dim orderNumber As String = String.Empty
             Dim orderName As String = String.Empty
-
             If Not orderData Is Nothing Then
                 orderNumber = orderData("OrderNumber")
                 orderName = orderData("OrderName")
             End If
-
             Dim fileName As String = String.Format("QUOTE-{0}-{1}.pdf", orderNumber, orderName)
 
             Response.Clear()

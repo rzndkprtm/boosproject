@@ -4,7 +4,6 @@ Partial Class Account_Password
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -41,12 +40,11 @@ Partial Class Account_Password
                 Dim loginId As String = Session("LoginId").ToString()
                 Dim newPassword As String = settingClass.Encrypt(txtPassword.Text)
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Password=@Password, ResetLogin=0 WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", loginId)
-                        myCmd.Parameters.AddWithValue("@Password", newPassword)
-
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Password=@Password, ResetLogin=0 WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", loginId)
+                        thisCmd.Parameters.AddWithValue("@Password", newPassword)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 

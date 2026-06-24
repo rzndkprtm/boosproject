@@ -19,7 +19,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row">
             <div class="col-lg-7 col-md-12 col-sm-12">
@@ -96,7 +95,6 @@
             var password = document.getElementById('<%= txtPassword.ClientID %>');
             var confirm = document.getElementById('<%= txtConfirmPassword.ClientID %>');
             var checkBox = document.getElementById('chkShowPass');
-
             if (checkBox.checked) {
                 password.type = "text";
                 confirm.type = "text";
@@ -105,22 +103,17 @@
                 confirm.type = "password";
             }
         }
-
         document.getElementById("modalSuccess").addEventListener("hide.bs.modal", function () {
             document.activeElement.blur();
             document.body.focus();
         });
-
         function showSuccess() {
             $('#modalSuccess').modal('show');
         }
-
         $(document).on('hidden.bs.modal', '#modalSuccess', function () {
             window.location.href = "/";
         });
-
         $("#vieworder").on("click", () => window.location.href = "/");
-
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

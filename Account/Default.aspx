@@ -232,22 +232,18 @@
         function showInfo() {
             $("#modalInfo").modal("show");
         }
-
         function showName() {
             $("#modalName").modal("show");
         }
-
         function showEmail() {
             $("#modalEmail").modal("show");
         }
-
         ["modalInfo", "modalName", "modalEmail"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
             });
         });
-
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>
