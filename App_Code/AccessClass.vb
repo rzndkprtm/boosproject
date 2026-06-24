@@ -16,7 +16,6 @@ Public Class AccessClass
                     thisCmd.Parameters.AddWithValue("@LevelId", levelId)
                     thisCmd.Parameters.AddWithValue("@Page", page)
                     thisCmd.Parameters.AddWithValue("@Action", action)
-
                     thisConn.Open()
                     Return Convert.ToInt32(thisCmd.ExecuteScalar()) = 1
                 End Using
