@@ -96,10 +96,22 @@
                 <button class="btn btn-primary dropdown-toggle me-1" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnJob">Job</button>
                 <ul class="dropdown-menu">
                     <li>
-                        <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalConvertOrder">Convert</a>
+                        <a href="javascript:void(0);" runat="server" id="aDataJob" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDataJob">Data Job</a>
                     </li>
                     <li>
-                        <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalConvertOrder">Convert</a>
+                        <a href="javascript:void(0);" runat="server" id="aConvertJob" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalConvertJob">Convert</a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);" runat="server" id="aReConvertJob" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalReConvertOrder">Re-Convert</a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);" runat="server" id="aUpdateJob" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalReConvertOrder">Update Job Data</a>
+                    </li>
+                    <li>
+                        <asp:Button runat="server" ID="btnPreviewJob" CssClass="dropdown-item" Text="Preview" />
+                    </li>
+                    <li>
+                        <asp:Button runat="server" ID="btnDownloadJob" CssClass="dropdown-item" Text="Download" />
                     </li>
                 </ul>
                 <a href="javascript:void(0);" runat="server" id="aLog" class="btn btn-secondary me-1" onclick="showLogFromElement(this)">Log</a>
@@ -1395,7 +1407,43 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="modalConvertOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal fade" id="modalDataJob" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header ">
+                    <h5 class="modal-title">Data Job</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover mb-0">
+                             <thead>
+                                 <tr>
+                                     <th>Job Number</th>
+                                     <th>Work Number</th>
+                                     <th>Job Note</th>
+                                     <th>Converted By</th>
+                                     <th>Converted Date</th>
+                                 </tr>
+                             </thead>
+                             <tbody>
+                                 <tr>
+                                     <td><span runat="server" id="spanJobNumber"></span></td>
+                                     <td><span runat="server" id="spanWorkOrder"></span></td>
+                                     <td><span runat="server" id="spanJobNote"></span></td>
+                                     <td><span runat="server" id="spanJobCreatedBy"></span></td>
+                                     <td><span runat="server" id="spanJobCreatedDate"></span></td>
+                                 </tr>
+                             </tbody>
+                         </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modalConvertJob" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -1421,17 +1469,17 @@
                             <asp:TextBox runat="server" ID="txtJobNote" CssClass="form-control" placeholder="Note ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-                    <div class="row" runat="server" id="divErrorConvertOrder">
+                    <div class="row" runat="server" id="divErrorConvertJob">
                         <div class="col-12">
                             <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorConvertOrder"></span>
+                                <span runat="server" id="msgErrorConvertJob"></span>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnConvertOrder" CssClass="btn btn-primary" Text="Confirm" OnClick="btnConvertOrder_Click" OnClientClick="return showWaiting();" />
+                    <asp:Button runat="server" ID="btnConvertJob" CssClass="btn btn-primary" Text="Confirm" OnClick="btnConvertJob_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>
@@ -1604,7 +1652,7 @@
             "modalReworkOrder",
             "modalSendInvoice", "modalReceivePayment", "modalDownloadInvoice", "modalDownloadInvoiceCSV", "modalInvoiceNumber", "modalInvoiceData",
             "modalDetailQuote", "modalDownloadQuote", "modalSendQuote",
-            "modalConvertOrder", "modalReConvertOrder",
+            "modalDataJob", "modalConvertJob", "modalReConvertOrder",
             "modalAddItem", "modalAddService", "modalDeleteItem", "modalCosting", 
             
         ].forEach(id => {
@@ -1791,8 +1839,8 @@
         function showCostingBuy() {
             $("#modalCostingBuy").modal("show");
         }
-        function showConvertOrder() {
-            $("#modalConvertOrder").modal("show");
+        function showConvertJob() {
+            $("#modalConvertJob").modal("show");
         }
         function showDateOrder() {
             $("#modalDateOrder").modal("show");

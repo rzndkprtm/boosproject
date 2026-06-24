@@ -144,7 +144,7 @@ Partial Class Order_Edit
                 New SqlParameter("@CustomerId", If(Session("CustomerId"), DBNull.Value)),
                 New SqlParameter("@CustomerLevel", If(Session("CustomerLevel"), DBNull.Value))
             }
-            Dim headerData As DataRow = orderClass.GetDataRowSP("sp_GetHeaderOnDetail", params)
+            Dim headerData As DataRow = orderClass.GetDataRowSP("sp_GetOrderHeaderById", params)
             If headerData Is Nothing Then
                 url = "~/order/"
                 If returnPage = "detail" Then

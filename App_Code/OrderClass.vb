@@ -687,7 +687,7 @@ Public Class OrderClass
                 New SqlParameter("@ItemId", Convert.ToInt32(itemId))
             }
 
-            Dim thisData As DataRow = GetDataRowSP("sp_GetOrderDetailForDescription", param)
+            Dim thisData As DataRow = GetDataRowSP("sp_GetOrderDetailById", param)
             If thisData Is Nothing Then
                 Return "PLEASE CONTACT YOUR CUSTOMER SERVICE !"
             End If
@@ -1522,6 +1522,27 @@ Public Class OrderClass
         Try
             Using thisConn As New SqlConnection(myConn)
                 Using myCmd As New SqlCommand("SELECT TOP 1 Id FROM OrderReworkDetails ORDER BY Id DESC", thisConn)
+                    thisConn.Open()
+
+                    Dim lastId As Object = myCmd.ExecuteScalar()
+                    If lastId IsNot Nothing AndAlso Not IsDBNull(lastId) Then
+                        result = (CInt(lastId) + 1).ToString()
+                    Else
+                        result = "1"
+                    End If
+                End Using
+            End Using
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function CreateOrderJobId() As String
+        Dim result As String = String.Empty
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using myCmd As New SqlCommand("SELECT TOP 1 Id FROM OrderJobs ORDER BY Id DESC", thisConn)
                     thisConn.Open()
 
                     Dim lastId As Object = myCmd.ExecuteScalar()
@@ -3235,7 +3256,7 @@ Public Class OrderClass
         Try
             If data.Length = 4 Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("sp_InsertLogs", thisConn)
+                    Using myCmd As New SqlCommand("sp_LogInsert", thisConn)
                         myCmd.CommandType = CommandType.StoredProcedure
 
                         myCmd.Parameters.AddWithValue("@Type", Convert.ToString(data(0)))

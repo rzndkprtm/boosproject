@@ -17,7 +17,6 @@ Public Class InvoiceClass
                     Using thisAdapter As New SqlDataAdapter(thisCmd)
                         Dim dt As New DataTable()
                         thisAdapter.Fill(dt)
-
                         If dt.Rows.Count > 0 Then
                             Return dt.Rows(0)
                         Else
@@ -48,18 +47,17 @@ Public Class InvoiceClass
     End Function
 
     Public Function GetDataTableSP(spName As String, params As List(Of SqlParameter)) As DataTable
-        Dim dt As New DataTable()
+        Dim thisTable As New DataTable()
         Using thisConn As New SqlConnection(myConn)
             Using thisCmd As New SqlCommand(spName, thisConn)
                 thisCmd.CommandType = CommandType.StoredProcedure
                 thisCmd.Parameters.AddRange(params.ToArray())
-
-                Using da As New SqlDataAdapter(thisCmd)
-                    da.Fill(dt)
+                Using thisAdapter As New SqlDataAdapter(thisCmd)
+                    thisAdapter.Fill(thisTable)
                 End Using
             End Using
         End Using
-        Return dt
+        Return thisTable
     End Function
 
     Public Function GetItemData(thisString As String) As String
@@ -109,7 +107,6 @@ Public Class InvoiceClass
                 Using thisConn As New SqlConnection(myConn)
                     Using thisCmd As New SqlCommand("SELECT Name FROM FabricColours WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", fabricColourId)
-
                         thisConn.Open()
                         Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then

@@ -305,7 +305,7 @@ Partial Class Order_Detail
                         Using thisConn As New SqlConnection(myConn)
                             thisConn.Open()
 
-                            Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderHeaders SELECT @NewID, @OrderId, CustomerId, @OrderNumber, @OrderName, @OrderNote, OrderType, OrderFactory, 'Unsubmitted', NULL, @CreatedBy, GETDATE(), NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, 0, 'No', NULL, 1 FROM OrderHeaders WHERE Id=@OldId; INSERT INTO OrderQuotes VALUES(@NewID, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
+                            Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderHeaders SELECT @NewID, @OrderId, CustomerId, NULL, @OrderNumber, @OrderName, @OrderNote, OrderType, OrderFactory, 'Unsubmitted', NULL, @CreatedBy, GETDATE(), NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, 0, 'No', NULL, 1 FROM OrderHeaders WHERE Id=@OldId; INSERT INTO OrderQuotes VALUES(@NewID, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
                                 myCmd.Parameters.AddWithValue("@OldId", lblHeaderId.Text)
                                 myCmd.Parameters.AddWithValue("@NewID", newIdHeader)
                                 myCmd.Parameters.AddWithValue("@OrderId", orderId)
@@ -387,109 +387,6 @@ Partial Class Order_Detail
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showDuplicateOrder", thisScript, True)
         End Try
-
-        'MessageError(False, String.Empty)
-        'Try
-        '    Dim newIdHeader As String = orderClass.GetNewOrderHeaderId()
-        '    Dim customerId As String = orderClass.GetCustomerIdByOrder(lblHeaderId.Text)
-        '    Dim companyAlias As String = orderClass.GetCompanyAliasByCustomer(customerId)
-
-        '    Dim orderType As String = orderClass.GetItemData("SELECT OrderType FROM OrderHeaders WHERE Id='" & lblHeaderId.Text & "'")
-
-        '    Dim success As Boolean = False
-        '    Dim retry As Integer = 0
-        '    Dim maxRetry As Integer = 100
-        '    Dim orderId As String = String.Empty
-
-        '    Do While Not success
-        '        retry += 1
-        '        If retry > maxRetry Then
-        '            Throw New Exception("FAILED TO GENERATE UNIQUE ORDER ID")
-        '        End If
-
-        '        Dim randomCode As String = orderClass.GenerateRandomCode()
-        '        orderId = companyAlias & randomCode
-        '        Try
-        '            Using thisConn As New SqlConnection(myConn)
-        '                thisConn.Open()
-
-        '                Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderHeaders SELECT @NewID, @OrderId, CustomerId, 'Copy ' + CAST(@NewID AS VARCHAR(20)) + ' - ' + OrderNumber, 'Copy ' + CAST(@NewID AS VARCHAR(20)) + ' - ' + OrderName, NULL, OrderType, OrderFactory, 'Unsubmitted', NULL, @CreatedBy, GETDATE(), NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, 0, 'No', NULL, 1 FROM OrderHeaders WHERE Id=@OldId; INSERT INTO OrderQuotes VALUES(@NewID, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
-        '                    myCmd.Parameters.AddWithValue("@OldId", lblHeaderId.Text)
-        '                    myCmd.Parameters.AddWithValue("@NewID", newIdHeader)
-        '                    myCmd.Parameters.AddWithValue("@OrderId", orderId)
-        '                    myCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
-
-        '                    myCmd.ExecuteNonQuery()
-        '                End Using
-
-        '                If orderType = "Builder" Then
-        '                    Using myCmd As New SqlCommand("INSERT INTO OrderBuilders(Id) VALUES (@Id)", thisConn)
-        '                        myCmd.Parameters.AddWithValue("@Id", newIdHeader)
-
-        '                        myCmd.ExecuteNonQuery()
-        '                    End Using
-        '                End If
-
-        '                thisConn.Close()
-        '            End Using
-
-        '            success = True
-        '        Catch exSql As SqlException
-        '            If exSql.Number = 2601 OrElse exSql.Number = 2627 Then
-        '                success = False
-        '            Else
-        '                Throw
-        '            End If
-        '        End Try
-        '    Loop
-
-        '    dataLog = {"OrderHeaders", newIdHeader, Session("LoginId").ToString(), "Order Created | Copy"}
-        '    orderClass.Logs(dataLog)
-
-        '    Dim thisHeader As DataTable = orderClass.GetDataTable("SELECT * FROM OrderDetails WHERE HeaderId='" & lblHeaderId.Text & "' AND Active=1")
-        '    If thisHeader.Rows.Count > 0 Then
-        '        For i As Integer = 0 To thisHeader.Rows.Count - 1
-        '            Dim itemId As String = thisHeader.Rows(i).Item("Id").ToString()
-        '            Dim newIdDetail As String = orderClass.GetNewOrderItemId()
-
-        '            Using thisConn As New SqlConnection(myConn)
-        '                Using myCmd As New SqlCommand("sp_CopyOrderDetails", thisConn)
-        '                    myCmd.CommandType = CommandType.StoredProcedure
-
-        '                    myCmd.Parameters.AddWithValue("@ItemIdOld", itemId)
-        '                    myCmd.Parameters.AddWithValue("@NewId", newIdDetail)
-        '                    myCmd.Parameters.AddWithValue("@HeaderId", newIdHeader)
-
-        '                    thisConn.Open()
-        '                    myCmd.ExecuteNonQuery()
-        '                End Using
-        '            End Using
-
-        '            orderClass.ResetPriceDetail(newIdHeader, newIdDetail)
-        '            orderClass.CalculatePrice(newIdHeader, newIdDetail)
-        '            orderClass.FinalCostItem(newIdHeader, newIdDetail)
-
-        '            dataLog = {"OrderDetails", newIdDetail, Session("LoginId").ToString(), "Order Item Added | Copy"}
-        '            orderClass.Logs(dataLog)
-        '        Next
-        '    End If
-
-        '    Dim directoryOrder As String = Server.MapPath(String.Format("~/File/Order/{0}/", orderId))
-        '    If Not IO.Directory.Exists(directoryOrder) Then
-        '        IO.Directory.CreateDirectory(directoryOrder)
-        '    End If
-
-        '    url = String.Format("~/order/detail?orderid={0}", newIdHeader)
-        '    Response.Redirect(url, False)
-        'Catch ex As Exception
-        '    MessageError(True, ex.ToString())
-        '    If Not Session("RoleName") = "Developer" Then
-        '        MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-        '        If Session("RoleName") = "Customer" Then
-        '            MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
-        '        End If
-        '    End If
-        'End Try
     End Sub
 
     Protected Sub btnQuoteOrder_Click(sender As Object, e As EventArgs)
@@ -1460,7 +1357,7 @@ Partial Class Order_Detail
 
     Protected Sub btnBuilderDetail_Click(sender As Object, e As EventArgs)
         MessageError_BuilderDetail(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showBuilderDetail(); };"
+        Dim thisScript As String = "window.onload = function() { showConvertJob(); };"
         Try
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand("UPDATE OrderBuilders SET Estimator=@Estimator, Supervisor=@Supervisor, Address=@Address, CallForCheckMeasure=@CallForCheckMeasure, CheckMeasureDue=@CheckMeasureDue, ToBeInstalled=@ToBeInstalled, Installed=@Installed WHERE Id=@Id", thisConn)
@@ -1488,32 +1385,28 @@ Partial Class Order_Detail
         End Try
     End Sub
 
-    Protected Sub btnConvertOrder_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
+    Protected Sub btnConvertJob_Click(sender As Object, e As EventArgs)
+        MessageError_ConvertJob(False, String.Empty)
+        Dim thisScript As String = "window.onload = function() { showConvertJob(); };"
         Try
-            'Using thisConn As New SqlConnection(myConn)
-            '    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status=@Status, ProductionDate=GETDATE() WHERE Id=@Id;", thisConn)
-            '        myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
-            '        thisConn.Open()
-            '        myCmd.ExecuteNonQuery()
-            '    End Using
-            'End Using
-
-            'Using thisConn As New SqlConnection(myConn)
-            '    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderJobs VALUES (@Id, @JobNumber, @WorkOrder, @HeaderId, @CreatedBy, @JobNote)", thisConn)
-            '        myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
-            '        myCmd.Parameters.AddWithValue("@JobNumber", txtJobNumber.Text)
-            '        myCmd.Parameters.AddWithValue("@WorkOrder", txtWorkOrder.Text)
-            '        myCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
-            '        myCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
-            '        myCmd.Parameters.AddWithValue("@JobNote", txtJobNote.Text)
-            '        thisConn.Open()
-            '        myCmd.ExecuteNonQuery()
-            '    End Using
-            'End Using
-
-            url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
-            Response.Redirect(url, False)
+            If txtJobNumber.Text = "" Then
+                MessageError_ConvertJob(True, "JOB NUMBER IS REQUIRED !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showConvertJob", thisScript, True)
+                Exit Sub
+            End If
+            Dim orderJobId As String = orderClass.CreateOrderJobId()
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderJobs VALUES (@OrderJobId, @JobNumber, @WorkOrder, @JobNote, @HeaderId, @CreatedBy, GETDATE()); UPDATE OrderHeaders SET OrderJobId=@OrderJobId WHERE Id=@HeaderId", thisConn)
+                    thisCmd.Parameters.AddWithValue("@OrderJobId", orderJobId)
+                    thisCmd.Parameters.AddWithValue("@JobNumber", txtJobNumber.Text)
+                    thisCmd.Parameters.AddWithValue("@WorkOrder", txtWorkOrder.Text)
+                    thisCmd.Parameters.AddWithValue("@JobNote", txtJobNote.Text)
+                    thisCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
+                    thisCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
 
             Dim detailData As DataTable = orderClass.GetDataTable("SELECT OrderDetails.Id, OrderDetails.TotalItems, Products.JobSheetId FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.HeaderId='" & lblHeaderId.Text & "'")
             If detailData.Rows.Count > 0 Then
@@ -1522,36 +1415,71 @@ Partial Class Order_Detail
                     Dim totalItems As Integer = CInt(detailData.Rows(i).Item("TotalItems"))
                     Dim jobSheetId As String = detailData.Rows(i).Item("JobSheetId").ToString()
 
-                    If String.IsNullOrEmpty(jobSheetId) Then
-                        Continue For
-                    End If
+                    If String.IsNullOrEmpty(jobSheetId) Then Continue For
 
                     For j As Integer = 1 To totalItems
                         Dim formulaColumn As String = "Formula1"
                         If j = 2 Then formulaColumn = "Formula2"
                         Dim params As New List(Of SqlParameter) From {
-                            New SqlParameter("@JobSheetId", jobSheetId),
-                            New SqlParameter("@JobNumber", "Reza"),
+                            New SqlParameter("@OrderJobId", orderJobId),
                             New SqlParameter("@ItemId", itemId),
                             New SqlParameter("@ItemNumber", j),
+                            New SqlParameter("@JobSheetId", jobSheetId),
                             New SqlParameter("@FormulaColumn", formulaColumn)
                         }
-                        orderClass.ExecuteSP("sp_InsertJobOrders", params)
+                        orderClass.ExecuteSP("sp_InsertOrderJobDetails", params)
                     Next
                 Next
             End If
         Catch ex As Exception
-            MessageError(True, ex.ToString())
+            MessageError_ConvertJob(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                MessageError_ConvertJob(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
+            ClientScript.RegisterStartupScript(Me.GetType(), "showConvertJob", thisScript, True)
         End Try
     End Sub
 
     Protected Sub btnReConvertOrder_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
+            Dim orderJobId As String = orderClass.CreateOrderJobId()
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderJobs VALUES (@OrderJobId, @JobNumber, @WorkOrder, @JobNote, @HeaderId, @CreatedBy, GETDATE()); UPDATE OrderHeaders SET OrderJobId=@OrderJobId WHERE Id=@HeaderId", thisConn)
+                    thisCmd.Parameters.AddWithValue("@OrderJobId", orderJobId)
+                    thisCmd.Parameters.AddWithValue("@JobNumber", txtJobNumber.Text)
+                    thisCmd.Parameters.AddWithValue("@WorkOrder", txtWorkOrder.Text)
+                    thisCmd.Parameters.AddWithValue("@JobNote", txtJobNote.Text)
+                    thisCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
+                    thisCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
 
+            Dim detailData As DataTable = orderClass.GetDataTable("SELECT OrderDetails.Id, OrderDetails.TotalItems, Products.JobSheetId FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.HeaderId='" & lblHeaderId.Text & "'")
+            If detailData.Rows.Count > 0 Then
+                For i As Integer = 0 To detailData.Rows.Count - 1
+                    Dim itemId As String = detailData.Rows(i).Item("Id").ToString()
+                    Dim totalItems As Integer = CInt(detailData.Rows(i).Item("TotalItems"))
+                    Dim jobSheetId As String = detailData.Rows(i).Item("JobSheetId").ToString()
+
+                    If String.IsNullOrEmpty(jobSheetId) Then Continue For
+
+                    For j As Integer = 1 To totalItems
+                        Dim formulaColumn As String = "Formula1"
+                        If j = 2 Then formulaColumn = "Formula2"
+                        Dim params As New List(Of SqlParameter) From {
+                            New SqlParameter("@OrderJobId", orderJobId),
+                            New SqlParameter("@ItemId", itemId),
+                            New SqlParameter("@ItemNumber", j),
+                            New SqlParameter("@JobSheetId", jobSheetId),
+                            New SqlParameter("@FormulaColumn", formulaColumn)
+                        }
+                        orderClass.ExecuteSP("sp_InsertOrderJobDetails", params)
+                    Next
+                Next
+            End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -1895,7 +1823,7 @@ Partial Class Order_Detail
                 New SqlParameter("@CustomerLevel", If(Session("CustomerLevel"), DBNull.Value))
             }
 
-            Dim headerData As DataRow = orderClass.GetDataRowSP("sp_GetHeaderOnDetail", params)
+            Dim headerData As DataRow = orderClass.GetDataRowSP("sp_GetOrderHeaderById", params)
             If headerData Is Nothing Then
                 Response.Redirect("~/order", False)
                 Exit Sub
@@ -2042,6 +1970,16 @@ Partial Class Order_Detail
 
             If lblOrderType.Text = "Builder" Then BindDataBuilder()
 
+            ' BIND ORDER JOB
+            Dim convertedStatus As String = headerData("Converted").ToString()
+            spanJobNumber.InnerText = headerData("JobNumber").ToString()
+            spanWorkOrder.InnerText = headerData("WorkOrder").ToString()
+            spanJobNote.InnerText = headerData("JobNote").ToString()
+            spanJobCreatedBy.InnerText = headerData("JobBy").ToString()
+            If Not String.IsNullOrEmpty(headerData("JobDate").ToString()) Then
+                spanJobCreatedDate.InnerText = Convert.ToDateTime(headerData("JobDate")).ToString("dd MMM yyyy")
+            End If
+
             BindCollector()
             BindEmailQuote()
             BindEmailInvoice()
@@ -2075,8 +2013,15 @@ Partial Class Order_Detail
             aUpdateInvoiceNumber.Visible = False
             aUpdateInvoiceData.Visible = False
 
-            aBuilderData.Visible = False
             btnJob.Visible = False
+            aDataJob.Visible = False
+            aConvertJob.Visible = False
+            aReConvertJob.Visible = False
+            aUpdateJob.Visible = False
+            btnPreviewJob.Visible = False
+            btnDownloadJob.Visible = False
+
+            aBuilderData.Visible = False
             aFile.Visible = False
             aMoreDownloadBOE.Visible = False
             btnSuratJalan.Visible = False
@@ -2112,7 +2057,6 @@ Partial Class Order_Detail
 
                     btnQuoteAction.Visible = True
                     aSendQuote.Visible = True
-                    btnJob.Visible = True
 
                     aAddItem.Visible = True
                     aAddService.Visible = True
@@ -2203,6 +2147,16 @@ Partial Class Order_Detail
                     aUpdateInvoiceData.Visible = True
 
                     btnJob.Visible = True
+                    If convertedStatus = "Yes" Then
+                        aDataJob.Visible = True
+                        aReConvertJob.Visible = True
+                        aUpdateJob.Visible = True
+                        btnPreviewJob.Visible = True
+                        btnDownloadJob.Visible = True
+                    End If
+                    If convertedStatus = "No" Then
+                        aConvertJob.Visible = True
+                    End If
 
                     aAddItem.Visible = True
                     aAddService.Visible = True
@@ -2221,6 +2175,18 @@ Partial Class Order_Detail
                     If lblOrderPaid.Text = "" Then aSendInvoice.Visible = True
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceData.Visible = True
+
+                    btnJob.Visible = True
+                    If convertedStatus = "Yes" Then
+                        aDataJob.Visible = True
+                        aReConvertJob.Visible = True
+                        aUpdateJob.Visible = True
+                        btnPreviewJob.Visible = True
+                        btnDownloadJob.Visible = True
+                    End If
+                    If convertedStatus = "No" Then
+                        aConvertJob.Visible = True
+                    End If
 
                     aAddItem.Visible = True
                     aAddService.Visible = True
@@ -2242,6 +2208,18 @@ Partial Class Order_Detail
                     If lblOrderPaid.Text = "" Then aSendInvoice.Visible = True
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceData.Visible = True
+
+                    btnJob.Visible = True
+                    If convertedStatus = "Yes" Then
+                        aDataJob.Visible = True
+                        aReConvertJob.Visible = True
+                        aUpdateJob.Visible = True
+                        btnPreviewJob.Visible = True
+                        btnDownloadJob.Visible = True
+                    End If
+                    If convertedStatus = "No" Then
+                        aConvertJob.Visible = True
+                    End If
 
                     aAddItem.Visible = True
                     aAddService.Visible = True
@@ -3352,7 +3330,7 @@ Partial Class Order_Detail
     Protected Sub AllMessageError(visible As Boolean, message As String)
         MessageError(visible, message)
         MessageError_DuplicateOrder(visible, message)
-        MessageError_ConvertOrder(visible, message)
+        MessageError_ConvertJob(visible, message)
 
         MessageError_BuilderDetail(visible, message)
         MessageError_FileOrder(visible, message)
@@ -3380,8 +3358,8 @@ Partial Class Order_Detail
         divErrorDuplicateOrder.Visible = visible : msgErrorDuplicateOrder.InnerHtml = message
     End Sub
 
-    Protected Sub MessageError_ConvertOrder(visible As Boolean, message As String)
-        divErrorConvertOrder.Visible = visible : msgErrorConvertOrder.InnerHtml = message
+    Protected Sub MessageError_ConvertJob(visible As Boolean, message As String)
+        divErrorConvertJob.Visible = visible : msgErrorConvertJob.InnerHtml = message
     End Sub
 
     Protected Sub MessageError_BuilderDetail(visible As Boolean, message As String)
