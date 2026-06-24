@@ -5,7 +5,6 @@ Partial Class Account_Default
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -37,12 +36,11 @@ Partial Class Account_Default
         Try
             If msgErrorName.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Logins SET FullName=@FullName WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", lblLoginId.Text)
-                        myCmd.Parameters.AddWithValue("@FullName", txtFullName.Text.Trim())
-
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Logins SET FullName=@FullName WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblLoginId.Text)
+                        thisCmd.Parameters.AddWithValue("@FullName", txtFullName.Text.Trim())
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 
@@ -79,12 +77,11 @@ Partial Class Account_Default
 
             If msgErrorEmail.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("UPDATE Logins SET Email=@Email WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", lblLoginId.Text)
-                        myCmd.Parameters.AddWithValue("@Email", email)
-
+                    Using thisCmd As New SqlCommand("UPDATE Logins SET Email=@Email WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblLoginId.Text)
+                        thisCmd.Parameters.AddWithValue("@Email", email)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 
@@ -113,7 +110,6 @@ Partial Class Account_Default
             lblCustomerName.Text = loginData("CustomerName").ToString()
             lblSales.Text = loginData("OperatorName").ToString()
 
-
             gvContact.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerContacts WHERE CustomerId='" & loginData("CustomerId").ToString() & "' ORDER BY Id ASC")
             gvContact.DataBind()
 
@@ -124,7 +120,7 @@ Partial Class Account_Default
 
             'If String.IsNullOrEmpty(txtUserEmail.Text) Then
             '    Dim thisScript As String = "window.onload = function() { showInfo(); };"
-            '    ClientScript.RegisterStartupScript(Me.GetType(), "showName", thisScript, True)
+            '    ClientScript.RegisterStartupScript(Me.GetType(), "showEmail", thisScript, True)
             'End If
         Catch ex As Exception
             MessageError(True, ex.ToString())

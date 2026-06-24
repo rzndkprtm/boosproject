@@ -5,7 +5,6 @@ Partial Class Account_Login
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -77,22 +76,20 @@ Partial Class Account_Login
 
     Protected Sub UpdateFailedLogin(loginId As String)
         Using thisConn As New SqlConnection(myConn)
-            Using myCmd As SqlCommand = New SqlCommand("UPDATE Logins SET FailedCount=FailedCount+1 WHERE Id=@Id", thisConn)
-                myCmd.Parameters.AddWithValue("@Id", loginId)
-
+            Using thisCmd As SqlCommand = New SqlCommand("UPDATE Logins SET FailedCount=FailedCount+1 WHERE Id=@Id", thisConn)
+                thisCmd.Parameters.AddWithValue("@Id", loginId)
                 thisConn.Open()
-                myCmd.ExecuteNonQuery()
+                thisCmd.ExecuteNonQuery()
             End Using
         End Using
 
         Dim failedCount As String = settingClass.GetItemData("SELECT FailedCount FROM Logins WHERE Id='" & loginId & "'")
         If failedCount = "5" Then
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Active=0 WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", loginId)
-
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Active=0 WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", loginId)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
         End If

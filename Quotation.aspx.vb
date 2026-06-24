@@ -7,7 +7,6 @@ Partial Class Quotation
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
 
@@ -94,12 +93,11 @@ Partial Class Quotation
             End Using
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerQuotes SET Logo=@Logo WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblCustomerId.Text)
-                    myCmd.Parameters.AddWithValue("@Logo", newLogo)
-
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE CustomerQuotes SET Logo=@Logo WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", lblCustomerId.Text)
+                    thisCmd.Parameters.AddWithValue("@Logo", newLogo)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -120,15 +118,14 @@ Partial Class Quotation
         Try
             If msgErrorAddress.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerQuotes SET Address=@Address, Suburb=@Suburb, State=@State, PostCode=@PostCode WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", lblCustomerId.Text)
-                        myCmd.Parameters.AddWithValue("@Address", txtAddress.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Suburb", txtSuburb.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@State", txtState.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@PostCode", txtPostCode.Text.Trim())
-
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE CustomerQuotes SET Address=@Address, Suburb=@Suburb, State=@State, PostCode=@PostCode WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblCustomerId.Text)
+                        thisCmd.Parameters.AddWithValue("@Address", txtAddress.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Suburb", txtSuburb.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@State", txtState.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@PostCode", txtPostCode.Text.Trim())
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 
@@ -150,13 +147,12 @@ Partial Class Quotation
         Try
             If msgErrorContact.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerQuotes SET Email=@Email, Phone=@Phone WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", lblCustomerId.Text)
-                        myCmd.Parameters.AddWithValue("@Email", txtEmail.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Phone", txtPhone.Text.Trim())
-
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE CustomerQuotes SET Email=@Email, Phone=@Phone WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblCustomerId.Text)
+                        thisCmd.Parameters.AddWithValue("@Email", txtEmail.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Phone", txtPhone.Text.Trim())
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 
@@ -180,12 +176,11 @@ Partial Class Quotation
                 Dim terms As String = txtTerms.Text.Trim()
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerQuotes SET Terms=@Terms WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", lblCustomerId.Text)
-                        myCmd.Parameters.AddWithValue("@Terms", txtTerms.Text)
-
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE CustomerQuotes SET Terms=@Terms WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblCustomerId.Text)
+                        thisCmd.Parameters.AddWithValue("@Terms", txtTerms.Text)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 

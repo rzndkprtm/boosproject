@@ -140,7 +140,6 @@
                         <div class="col-6 form-group">
                             <label class="form-label">Suburb</label>
                             <asp:TextBox runat="server" ID="txtSuburb" CssClass="form-control" placeholder="Suburb ..." autocomplete="off"></asp:TextBox>
-                            
                         </div>
                         <div class="col-6 form-group">
                             <label class="form-label">State</label>
@@ -258,26 +257,21 @@
         function showLogo() {
             $("#modalLogo").modal("show");
         }
-
         function showAddress() {
             $("#modalAddress").modal("show");
         }
-
         function showContact() {
             $("#modalContact").modal("show");
         }
-
         function showTerms() {
             $("#modalTerms").modal("show");
         }
-
         ["modalLogo", "modalAddress", "modalContact", "modalTerms", "modalImage"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
             });
         });
-
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

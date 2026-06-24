@@ -205,11 +205,9 @@
                 document.body.focus();
             });
         });
-
         function showDelete(id) {
             document.getElementById("<%=txtDeleteId.ClientID %>").value = id;
         }
-
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

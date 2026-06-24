@@ -6,7 +6,6 @@ Partial Class Order_EditCosting
     Inherits Page
 
     Dim orderClass As New OrderClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
     Dim dataLog As Object() = Nothing
@@ -143,11 +142,10 @@ Partial Class Order_EditCosting
             Dim thisId As String = txtDeleteId.Text
 
             Using thisConn As SqlConnection = New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM OrderCostings WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM OrderCostings WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
             orderClass.FinalCostItem(lblHeaderId.Text, lblItemId.Text)

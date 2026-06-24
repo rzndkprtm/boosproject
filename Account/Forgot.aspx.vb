@@ -6,7 +6,6 @@ Partial Class Account_Forgot
 
     Dim settingClass As New SettingClass
     Dim mailingClass As New MailingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -46,12 +45,11 @@ Partial Class Account_Forgot
             Dim encryptPassword As String = settingClass.Encrypt(newPassword)
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Password=@Password, ResetLogin=1, FailedCount=0, Active=1 WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", loginId)
-                    myCmd.Parameters.AddWithValue("@Password", encryptPassword)
-
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Password=@Password, ResetLogin=1, FailedCount=0, Active=1 WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", loginId)
+                    thisCmd.Parameters.AddWithValue("@Password", encryptPassword)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
