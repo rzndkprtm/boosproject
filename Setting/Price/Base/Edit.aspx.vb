@@ -1,11 +1,14 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
+Imports System.Globalization
 
 Partial Class Setting_Price_Base_Edit
     Inherits Page
 
     Dim settingClass As New SettingClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim enUS As CultureInfo = New CultureInfo("en-US")
+    Dim idIDR As New CultureInfo("id-ID")
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
@@ -104,7 +107,10 @@ Partial Class Setting_Price_Base_Edit
             ddlProductGroup.SelectedValue = myData("ProductGroupId").ToString()
             txtHeight.Text = myData("Height").ToString()
             txtWidth.Text = myData("Width").ToString()
-            txtPrice.Text = myData("Price").ToString()
+            txtPrice.Text = Convert.ToDecimal(myData("Price")).ToString("G29", enUS)
+            If ddlPriceGroup.SelectedValue = "2" OrElse ddlPriceGroup.SelectedValue = "3" OrElse ddlPriceGroup.SelectedValue = "4" OrElse ddlPriceGroup.SelectedValue = "5" OrElse ddlPriceGroup.SelectedValue = "10" Then
+                txtPrice.Text = Convert.ToDecimal(myData("Price")).ToString("G29", idIDR)
+            End If
             txtConditional.Text = myData("Conditional").ToString()
         Catch ex As Exception
             MessageError(True, ex.ToString())

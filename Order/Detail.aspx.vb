@@ -2076,7 +2076,7 @@ Partial Class Order_Detail
             aUpdateInvoiceData.Visible = False
 
             aBuilderData.Visible = False
-            'btnJob.Visible = False
+            btnJob.Visible = False
             aFile.Visible = False
             aMoreDownloadBOE.Visible = False
             btnSuratJalan.Visible = False
@@ -2112,6 +2112,7 @@ Partial Class Order_Detail
 
                     btnQuoteAction.Visible = True
                     aSendQuote.Visible = True
+                    btnJob.Visible = True
 
                     aAddItem.Visible = True
                     aAddService.Visible = True
