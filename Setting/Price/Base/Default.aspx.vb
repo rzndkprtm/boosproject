@@ -4,6 +4,7 @@ Partial Class Setting_Price_Base_Default
     Inherits Page
 
     Dim settingClass As New SettingClass
+    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
@@ -18,6 +19,14 @@ Partial Class Setting_Price_Base_Default
             BindPriceGroup()
             BindData(ddlCategory.SelectedValue, ddlMethod.SelectedValue, ddlProductGroup.SelectedValue, ddlPriceGroup.SelectedValue)
         End If
+    End Sub
+
+    Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
+        Response.Redirect("~/setting/price/base/add", False)
+    End Sub
+
+    Protected Sub btnImport_Click(sender As Object, e As EventArgs)
+        Response.Redirect("~/setting/price/base/import", False)
     End Sub
 
     Protected Sub ddlCategory_SelectedIndexChanged(sender As Object, e As EventArgs)
@@ -66,7 +75,17 @@ Partial Class Setting_Price_Base_Default
     Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
+            Dim thisId As String = txtDeleteId.Text
 
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM PriceBases WHERE Id=@Id; DELETE FROM Logs WHERE Type='PriceBases' AND DataId=@Id;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Response.Redirect("~/setting/price/base", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -85,6 +104,9 @@ Partial Class Setting_Price_Base_Default
             }
             gvList.DataSource = settingClass.GetDataTableSP("sp_GetPriceBases", params)
             gvList.DataBind()
+
+            btnAdd.Visible = LoginAccess("Add")
+            btnImport.Visible = LoginAccess("Import")
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
