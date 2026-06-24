@@ -38,7 +38,7 @@
         <section class="row">
             <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
                 <ContentTemplate>
-                    <div class="col-12">
+                    <div class="col-12 col-sm-12 col-lg-8 mb-2">
                         <div class="card">
                             <div class="card-header">
                                 <h4 class="card-title">Filter Form</h4>
@@ -48,23 +48,21 @@
                                     <div class="form form-vertical">
                                         <div class="form-body">
                                             <div class="row mb-2">
-                                                <div class="col-12 col-sm-12 col-lg-2">
-                                                    <div class="form-group">
-                                                         <label class="form-label">Category</label>
-                                                        <asp:DropDownList runat="server" ID="ddlCategory" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCategory_SelectedIndexChanged">
-                                                            <asp:ListItem Value="" Text=""></asp:ListItem>
-                                                            <asp:ListItem Value="Sell" Text="Sell Price"></asp:ListItem>
-                                                            <asp:ListItem Value="Buy" Text="Buy Price"></asp:ListItem>
-                                                        </asp:DropDownList>
-                                                    </div>
-                                                </div>
                                                 <div class="col-12 col-sm-12 col-lg-4">
-                                                    <div class="form-group">
-                                                        <label class="form-label">Product Group</label>
-                                                        <asp:DropDownList runat="server" ID="ddlProductGroup" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlProductGroup_SelectedIndexChanged"></asp:DropDownList>
-                                                    </div>
+                                                    <label class="form-label">Category</label>
+                                                    <asp:DropDownList runat="server" ID="ddlCategory" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCategory_SelectedIndexChanged">
+                                                        <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                        <asp:ListItem Value="Sell" Text="Sell Price"></asp:ListItem>
+                                                        <asp:ListItem Value="Buy" Text="Buy Price"></asp:ListItem>
+                                                    </asp:DropDownList>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                <div class="col-12 col-sm-12 col-lg-8">
+                                                    <label class="form-label">Product Group</label>
+                                                    <asp:DropDownList runat="server" ID="ddlProductGroup" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlProductGroup_SelectedIndexChanged"></asp:DropDownList>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-2">
+                                                <div class="col-12 col-sm-12 col-lg-4">
                                                     <div class="form-group">
                                                         <label class="form-label">Method</label>
                                                         <asp:DropDownList runat="server" ID="ddlMethod" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlMethod_SelectedIndexChanged">
@@ -75,7 +73,7 @@
                                                         </asp:DropDownList>
                                                     </div>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                <div class="col-12 col-sm-12 col-lg-8">
                                                     <div class="form-group">
                                                         <label class="form-label">Price Group</label>
                                                         <asp:DropDownList runat="server" ID="ddlPriceGroup" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlPriceGroup_SelectedIndexChanged"></asp:DropDownList>
@@ -110,7 +108,11 @@
                                                 <asp:BoundField DataField="PriceGroupName" HeaderText="Price Group" />
                                                 <asp:BoundField DataField="Height" HeaderText="Height" />
                                                 <asp:BoundField DataField="Width" HeaderText="Width" />
-                                                <asp:BoundField DataField="Price" HeaderText="Price" />
+                                                <asp:TemplateField HeaderText="Price">
+                                                    <ItemTemplate>
+                                                        <%# BindCost(Eval("Price"), Eval("PriceGroupId").ToString()) %>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
                                                 <asp:TemplateField ItemStyle-Width="120px">
                                                     <ItemTemplate>
                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
@@ -214,7 +216,7 @@
                 var loading = document.getElementById("loadingOverlay");
                 if (loading) loading.style.display = "none";
                 initChoices();
-                //bindGridRowClick();
+                bindGridRowClick();
             });
         }
         function bindGridRowClick() {
@@ -227,7 +229,7 @@
                     if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]")) {
                         return;
                     }
-                    const btn = this.querySelector("a[id*='aDetail']");
+                    const btn = this.querySelector("a[id*='aEdit']");
                     if (btn) btn.click();
                 };
             }
@@ -247,7 +249,7 @@
         document.addEventListener("DOMContentLoaded", function () {
             initUpdatePanelLoading();
             initChoices();
-            //bindGridRowClick();
+            bindGridRowClick();
         });
         function dataDelete(id) {
             document.getElementById("<%=txtDeleteId.ClientID %>").value = id;

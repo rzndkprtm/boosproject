@@ -1,10 +1,13 @@
 ﻿Imports System.Data.SqlClient
+Imports System.Globalization
 
 Partial Class Setting_Price_Base_Default
     Inherits Page
 
     Dim settingClass As New SettingClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim enUS As CultureInfo = New CultureInfo("en-US")
+    Dim idIDR As New CultureInfo("id-ID")
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
@@ -191,6 +194,20 @@ Partial Class Setting_Price_Base_Default
             navPager.Visible = False
         End Try
     End Sub
+
+    Protected Function BindCost(cost As Decimal, priceGroupId As String) As String
+        Try
+            If cost > 0 Then
+                If priceGroupId = "2" OrElse priceGroupId = "3" OrElse priceGroupId = "4" OrElse priceGroupId = "5" OrElse priceGroupId = "10" OrElse priceGroupId = "17" OrElse priceGroupId = "19" Then
+                    Return cost.ToString("N2", idIDR)
+                End If
+                Return cost.ToString("N2", enUS)
+            End If
+        Catch ex As Exception
+            Return String.Empty
+        End Try
+        Return String.Empty
+    End Function
 
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
