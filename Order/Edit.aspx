@@ -111,9 +111,7 @@
                         <h4 class="card-title text-center">Information</h4>
                     </div>
                     <div class="card-content">
-                        <div class="card-body">
-
-                        </div>
+                        <div class="card-body"></div>
                     </div>
                 </div>
             </div>
@@ -125,39 +123,7 @@
         <asp:Label runat="server" ID="lblOrderNo"></asp:Label>
     </div>
 
-    <div class="modal modal-blur fade" id="modalInfo" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-info">
-                    <h5 class="modal-title white">Information</h5>
-                </div>
-                <div class="modal-body">
-                    <span id="spanInfo"></span>
-                </div>
-                <div class="modal-footer">
-                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script type="text/javascript">
-        function showInfo(type) {
-            let info;
-
-            if (type === "Order Number") {
-                info = "<b>Order Number</b>";
-                info += "<br /><br />";
-            } else if (type === "Order Name") {
-                info = "<b>Order Name</b>";
-                info += "<br /><br />";
-            } else {
-                info = "";
-            }
-
-            document.getElementById("spanInfo").innerHTML = info;
-        }
-
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

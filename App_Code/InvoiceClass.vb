@@ -419,7 +419,6 @@ Public Class InvoiceClass
             }
 
             Dim detailData As DataTable = GetDataTableSP("sp_GetOrderDetailData_Invoice", params)
-
             For i As Integer = 0 To detailData.Rows.Count - 1
                 Dim itemId As String = detailData.Rows(i)("Id").ToString()
                 Dim itemNumber As Integer = detailData.Rows(i)("Item").ToString()
@@ -861,7 +860,6 @@ Public Class InvoiceEvents
         headerTable.SetWidths(New Single() {0.6F, 0.4F})
 
         Dim imagePath As String = HttpContext.Current.Server.MapPath("~/assets/images/logo/general.jpg")
-
         If companyId = "2" Then
             imagePath = HttpContext.Current.Server.MapPath("~/assets/images/logo/jpmdirect.jpg")
         End If

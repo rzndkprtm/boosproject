@@ -27,13 +27,13 @@ Partial Class Order_Edit
 
         lblHeaderId.Text = Request.QueryString("orderid").ToString()
         If Not IsPostBack Then
-            BackColor()
+            MessageError(False, String.Empty)
             BindDataHeader(lblHeaderId.Text)
         End If
     End Sub
 
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
-        BackColor()
+        MessageError(False, String.Empty)
         Try
             If ddlCustomer.SelectedValue = "" Then
                 MessageError(True, "CUSTOMER NAME IS REQUIRED !")
@@ -41,38 +41,32 @@ Partial Class Order_Edit
                 ddlCustomer.Focus()
                 Exit Sub
             End If
-
             If txtOrderNumber.Text = "" Then
                 MessageError(True, "ORDER NUMBER IS REQUIRED !")
                 txtOrderNumber.BackColor = Drawing.Color.Red
                 txtOrderNumber.Focus()
                 Exit Sub
             End If
-
             If InStr(txtOrderNumber.Text, ",") > 0 OrElse InStr(txtOrderNumber.Text, "'") > 0 OrElse InStr(txtOrderNumber.Text, ";") > 0 Then
                 MessageError(True, "PLEASE DON'T USE [ , ], [ ' ] AND [ ; ] !")
                 Exit Sub
             End If
-
             If Trim(txtOrderNumber.Text).Length > 20 Then
                 MessageError(True, "MAXIMUM 20 CHARACTERS FOR RETAILER ORDER NUMBER !")
                 txtOrderNumber.BackColor = Drawing.Color.Red
                 txtOrderNumber.Focus()
                 Exit Sub
             End If
-
             If txtOrderName.Text = "" Then
                 MessageError(True, "ORDER NAME IS REQUIRED !")
                 txtOrderName.BackColor = Drawing.Color.Red
                 txtOrderName.Focus()
                 Exit Sub
             End If
-
             If InStr(txtOrderName.Text, ",") > 0 OrElse InStr(txtOrderName.Text, "'") > 0 OrElse InStr(txtOrderName.Text, ";") > 0 Then
                 MessageError(True, "PLEASE DON'T USE [ , ], [ ' ] AND [ ; ] !")
                 Exit Sub
             End If
-
             If txtOrderNumber.Text <> lblOrderNo.Text Then
                 If txtOrderNumber.Text = orderClass.IsOrderExist(ddlCustomer.SelectedValue, txtOrderNumber.Text.Trim()) Then
                     MessageError(True, "ORDER NUMBER ALREADY EXISTS !")
@@ -89,19 +83,18 @@ Partial Class Order_Edit
                 End If
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET OrderId=@OrderId, CustomerId=@CustomerId, OrderNumber=@OrderNumber, OrderName=@OrderName, OrderNote=@OrderNote, OrderType=@OrderType, OrderFactory=@OrderFactory, CreatedBy=@CreatedBy WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
-                        myCmd.Parameters.AddWithValue("@OrderId", txtOrderId.Text)
-                        myCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@OrderNumber", txtOrderNumber.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@OrderName", txtOrderName.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@OrderNote", txtOrderNote.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@OrderType", ddlOrderType.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@OrderFactory", orderFactory)
-                        myCmd.Parameters.AddWithValue("@CreatedBy", ddlCreatedBy.SelectedValue)
-
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET OrderId=@OrderId, CustomerId=@CustomerId, OrderNumber=@OrderNumber, OrderName=@OrderName, OrderNote=@OrderNote, OrderType=@OrderType, OrderFactory=@OrderFactory, CreatedBy=@CreatedBy WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
+                        thisCmd.Parameters.AddWithValue("@OrderId", txtOrderId.Text)
+                        thisCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@OrderNumber", txtOrderNumber.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@OrderName", txtOrderName.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@OrderNote", txtOrderNote.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@OrderType", ddlOrderType.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@OrderFactory", orderFactory)
+                        thisCmd.Parameters.AddWithValue("@CreatedBy", ddlCreatedBy.SelectedValue)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 
@@ -335,16 +328,6 @@ Partial Class Order_Edit
                 MessageError(True, ex.ToString())
             End If
         End Try
-    End Sub
-
-    Protected Sub BackColor()
-        MessageError(False, String.Empty)
-
-        ddlCustomer.BackColor = Drawing.Color.Empty
-        txtOrderNumber.BackColor = Drawing.Color.Empty
-        txtOrderName.BackColor = Drawing.Color.Empty
-        txtOrderNote.BackColor = Drawing.Color.Empty
-        ddlOrderType.BackColor = Drawing.Color.Empty
     End Sub
 
     Protected Sub MessageError(visible As Boolean, message As String)
