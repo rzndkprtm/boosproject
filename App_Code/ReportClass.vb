@@ -15,11 +15,10 @@ Public Class ReportClass
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand(thisString, thisConn)
                     Using thisAdapter As New SqlDataAdapter(thisCmd)
-                        Dim dt As New DataTable()
-                        thisAdapter.Fill(dt)
-
-                        If dt.Rows.Count > 0 Then
-                            Return dt.Rows(0)
+                        Dim thisTable As New DataTable()
+                        thisAdapter.Fill(thisTable)
+                        If thisTable.Rows.Count > 0 Then
+                            Return thisTable.Rows(0)
                         Else
                             Return Nothing
                         End If
@@ -35,10 +34,10 @@ Public Class ReportClass
         Try
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand(thisString, thisConn)
-                    Using da As New SqlDataAdapter(thisCmd)
-                        Dim dt As New DataTable()
-                        da.Fill(dt)
-                        Return dt
+                    Using thisAdapter As New SqlDataAdapter(thisCmd)
+                        Dim thisTable As New DataTable()
+                        thisAdapter.Fill(thisTable)
+                        Return thisTable
                     End Using
                 End Using
             End Using
@@ -48,7 +47,7 @@ Public Class ReportClass
     End Function
 
     Public Function GetDataTableSP(spName As String, params As List(Of SqlParameter)) As DataTable
-        Dim dt As New DataTable()
+        Dim thisTable As New DataTable()
         Try
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand(spName, thisConn)
@@ -56,15 +55,15 @@ Public Class ReportClass
                     If params IsNot Nothing AndAlso params.Count > 0 Then
                         thisCmd.Parameters.AddRange(params.ToArray())
                     End If
-                    Using da As New SqlDataAdapter(thisCmd)
-                        da.Fill(dt)
+                    Using thisAdapter As New SqlDataAdapter(thisCmd)
+                        thisAdapter.Fill(thisTable)
                     End Using
                 End Using
             End Using
         Catch ex As Exception
-            dt = New DataTable()
+            thisTable = New DataTable()
         End Try
-        Return dt
+        Return thisTable
     End Function
 
     Protected Function GetItemData(thisString As String) As String

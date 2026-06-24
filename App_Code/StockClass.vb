@@ -11,7 +11,6 @@ Public Class StockClass
                     Using thisAdapter As New SqlDataAdapter(thisCmd)
                         Dim dt As New DataTable()
                         thisAdapter.Fill(dt)
-
                         If dt.Rows.Count > 0 Then
                             Return dt.Rows(0)
                         Else
@@ -47,11 +46,9 @@ Public Class StockClass
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand(spName, thisConn)
                     thisCmd.CommandType = CommandType.StoredProcedure
-
                     If params IsNot Nothing AndAlso params.Count > 0 Then
                         thisCmd.Parameters.AddRange(params.ToArray())
                     End If
-
                     Using da As New SqlDataAdapter(thisCmd)
                         da.Fill(dt)
                     End Using
@@ -69,10 +66,8 @@ Public Class StockClass
             If String.IsNullOrWhiteSpace(thisString) Then
                 Return String.Empty
             End If
-
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
-
                 Using thisCmd As New SqlCommand(thisString, thisConn)
                     Using rdResult = thisCmd.ExecuteReader()
                         If rdResult.Read() Then

@@ -30,42 +30,25 @@ Partial Class Sales_Default
 
         MessageError(False, String.Empty)
         BindData(ddlCompany.SelectedValue)
+
         Session("SearchSalesCompany") = ddlCompany.SelectedValue
     End Sub
 
-    Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
+    Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
+        If e.CommandName = "Page" Then
+            gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
+            BindData(ddlCompany.SelectedValue)
+        End If
+    End Sub
+
+    Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        gvList.PageIndex = e.NewPageIndex
         MessageError(False, String.Empty)
         BindData(ddlCompany.SelectedValue)
     End Sub
 
-    Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
-        Try
-            If e.CommandName = "Page" Then
-                gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
-                BindData(ddlCompany.SelectedValue)
-            End If
-        Catch ex As Exception
-        End Try
-    End Sub
-
-    Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
-        MessageError(False, String.Empty)
-        Try
-            gvList.PageIndex = e.NewPageIndex
-            BindData(ddlCompany.SelectedValue)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
     Protected Sub gvList_DataBound(sender As Object, e As EventArgs)
-        Try
-            BuildPager()
-        Catch ex As Exception
-        End Try
+        BuildPager()
     End Sub
 
     Protected Sub BindData(companyId As String)
@@ -78,6 +61,9 @@ Partial Class Sales_Default
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 

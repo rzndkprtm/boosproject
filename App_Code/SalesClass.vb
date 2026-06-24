@@ -10,11 +10,10 @@ Public Class SalesClass
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand(thisString, thisConn)
                     Using thisAdapter As New SqlDataAdapter(thisCmd)
-                        Dim dt As New DataTable()
-                        thisAdapter.Fill(dt)
-
-                        If dt.Rows.Count > 0 Then
-                            Return dt.Rows(0)
+                        Dim thisTable As New DataTable()
+                        thisAdapter.Fill(thisTable)
+                        If thisTable.Rows.Count > 0 Then
+                            Return thisTable.Rows(0)
                         Else
                             Return Nothing
                         End If
@@ -30,10 +29,10 @@ Public Class SalesClass
         Try
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand(thisString, thisConn)
-                    Using da As New SqlDataAdapter(thisCmd)
-                        Dim dt As New DataTable()
-                        da.Fill(dt)
-                        Return dt
+                    Using thisAdapter As New SqlDataAdapter(thisCmd)
+                        Dim thisTable As New DataTable()
+                        thisAdapter.Fill(thisTable)
+                        Return thisTable
                     End Using
                 End Using
             End Using
@@ -91,7 +90,6 @@ Public Class SalesClass
                     Using rdResult = thisCmd.ExecuteReader()
                         If rdResult.Read() Then
                             Dim value As Object = rdResult.Item(0)
-
                             If Not IsDBNull(value) Then
                                 result = Convert.ToDecimal(value.ToString(), CultureInfo.InvariantCulture)
                             End If
@@ -152,7 +150,6 @@ Public Class SalesClass
             Using thisAdapter As New SqlDataAdapter()
                 thisCmd.Connection = thisConn
                 thisAdapter.SelectCommand = thisCmd
-
                 Dim thisDataSet As New DataSet()
                 thisAdapter.Fill(thisDataSet)
                 Return thisDataSet
@@ -174,7 +171,6 @@ Public Class SalesClass
                     End Using
                 End Using
             End Using
-
             result = (id + 1).ToString()
         Catch ex As Exception
             result = String.Empty
@@ -189,7 +185,6 @@ Public Class SalesClass
                     Using thisCmd As New SqlCommand("sp_RefreshSalesData", thisConn)
                         thisCmd.CommandType = CommandType.StoredProcedure
                         thisCmd.Parameters.AddWithValue("@CompanyId", companyId)
-
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
