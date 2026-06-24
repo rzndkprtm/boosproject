@@ -30,8 +30,9 @@
             </div>
         </section>
         <section class="row mb-2">
-            <div class="col-12 d-flex justify-content-end flex-wrap gap-2">
-                <%--<asp:Button runat="server" ID="btnEditable" CssClass="btn btn-primary" Text="Editable Page" />--%>
+            <div class="col-12 d-flex justify-content-end flex-wrap gap-1">
+                <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Add" OnClick="btnAdd_Click" />
+                <asp:Button runat="server" ID="btnImport" CssClass="btn btn-secondary" Text="Import" OnClick="btnImport_Click" />
             </div>
         </section>
         <section class="row">
@@ -114,10 +115,10 @@
                                                     <ItemTemplate>
                                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                         <ul class="dropdown-menu">
-                                                            <li>
+                                                            <li runat="server" visible='<%# LoginAccess("Edit") %>'>
                                                                 <a class="dropdown-item" id="aEdit" href='<%# Page.ResolveUrl("~/setting/price/base/edit?priceid=" & Eval("Id")) %>'>Edit</a>
                                                             </li>
-                                                            <li>
+                                                            <li runat="server" visible='<%# LoginAccess("Delete") %>'>
                                                                 <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return dataDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                             </li>
                                                             <li>
