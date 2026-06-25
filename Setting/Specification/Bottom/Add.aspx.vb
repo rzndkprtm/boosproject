@@ -63,15 +63,15 @@ Partial Class Setting_Specification_Bottom_Add
 
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Bottoms ORDER BY Id DESC")
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Bottoms VALUES (@Id, @Name, @DesignId, @CompanyDetailId, @Description, @Status)", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", thisId)
-                        myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@DesignId", designType)
-                        myCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetail)
-                        myCmd.Parameters.AddWithValue("@Description", descText)
-                        myCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Bottoms VALUES (@Id, @Name, @DesignId, @CompanyDetailId, @Description, @Status)", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", thisId)
+                        thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@DesignId", designType)
+                        thisCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetail)
+                        thisCmd.Parameters.AddWithValue("@Description", descText)
+                        thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 

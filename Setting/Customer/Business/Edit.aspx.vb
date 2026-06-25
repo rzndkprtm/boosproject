@@ -48,14 +48,13 @@ Partial Class Setting_Customer_Business_Edit
             End If
             If msgError.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerBusiness SET  CustomerId=@CustomerId, ABNNumber=@ABNNumber, RegisteredName=@RegisteredName WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                        myCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@ABNNumber", txtNumber.Text)
-                        myCmd.Parameters.AddWithValue("@RegisteredName", txtName.Text)
-
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE CustomerBusiness SET  CustomerId=@CustomerId, ABNNumber=@ABNNumber, RegisteredName=@RegisteredName WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                        thisCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@ABNNumber", txtNumber.Text)
+                        thisCmd.Parameters.AddWithValue("@RegisteredName", txtName.Text)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 

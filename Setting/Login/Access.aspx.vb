@@ -45,13 +45,9 @@ Partial Class Setting_Login_Access
     End Sub
 
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        gvList.PageIndex = e.NewPageIndex
         MessageError(False, String.Empty)
-        Try
-            gvList.PageIndex = e.NewPageIndex
-            BindData(txtSearch.Text)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-        End Try
+        BindData(txtSearch.Text)
     End Sub
 
     Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)

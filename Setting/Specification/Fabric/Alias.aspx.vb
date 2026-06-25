@@ -16,8 +16,9 @@ Partial Class Setting_Specification_Fabric_Alias
         End If
 
         If Not IsPostBack Then
-            MessageError(False, String.Empty)
             txtSearch.Text = Session("SearchFabricAlias")
+
+            MessageError(False, String.Empty)
             BindData(txtSearch.Text)
         End If
     End Sub
@@ -70,16 +71,10 @@ Partial Class Setting_Specification_Fabric_Alias
     End Sub
 
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        gvList.PageIndex = e.NewPageIndex
+
         MessageError(False, String.Empty)
-        Try
-            gvList.PageIndex = e.NewPageIndex
-            BindData(txtSearch.Text)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
+        BindData(txtSearch.Text)
     End Sub
 
     Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
@@ -136,13 +131,13 @@ Partial Class Setting_Specification_Fabric_Alias
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM FabricAlias ORDER BY Id DESC")
 
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO FabricAlias VALUES (@Id, @Type, @FirstId, @SecondId)", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", thisId)
-                            myCmd.Parameters.AddWithValue("@Type", lblType.Text)
-                            myCmd.Parameters.AddWithValue("@FirstId", ddlFirstId.SelectedValue)
-                            myCmd.Parameters.AddWithValue("@SecondId", ddlSecondId.SelectedValue)
+                        Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO FabricAlias VALUES (@Id, @Type, @FirstId, @SecondId)", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", thisId)
+                            thisCmd.Parameters.AddWithValue("@Type", lblType.Text)
+                            thisCmd.Parameters.AddWithValue("@FirstId", ddlFirstId.SelectedValue)
+                            thisCmd.Parameters.AddWithValue("@SecondId", ddlSecondId.SelectedValue)
                             thisConn.Open()
-                            myCmd.ExecuteNonQuery()
+                            thisCmd.ExecuteNonQuery()
                         End Using
                     End Using
 
@@ -156,12 +151,12 @@ Partial Class Setting_Specification_Fabric_Alias
                 If lblAction.Text = "Edit" Then
                     Dim stringUpdate As String = String.Format("UPDATE FabricAlias SET FirstId=@FirstId, SecondId=@SecondId WHERE Id=@Id", lblType.Text)
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand(stringUpdate, thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                            myCmd.Parameters.AddWithValue("@FirstId", ddlFirstId.SelectedValue)
-                            myCmd.Parameters.AddWithValue("@SecondId", ddlSecondId.SelectedValue)
+                        Using thisCmd As SqlCommand = New SqlCommand(stringUpdate, thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                            thisCmd.Parameters.AddWithValue("@FirstId", ddlFirstId.SelectedValue)
+                            thisCmd.Parameters.AddWithValue("@SecondId", ddlSecondId.SelectedValue)
                             thisConn.Open()
-                            myCmd.ExecuteNonQuery()
+                            thisCmd.ExecuteNonQuery()
                         End Using
                     End Using
 
@@ -187,10 +182,10 @@ Partial Class Setting_Specification_Fabric_Alias
             Dim thisId As String = txtIdDelete.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM FabricAlias WHERE Id=@Id; DELETE FROM Logs WHERE Type='FabricAlias' AND DataId=@Id;", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM FabricAlias WHERE Id=@Id; DELETE FROM Logs WHERE Type='FabricAlias' AND DataId=@Id;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -250,7 +245,6 @@ Partial Class Setting_Specification_Fabric_Alias
                     ddlSecondId.Items.Insert(0, New ListItem("", ""))
                 End If
             End If
-
         Catch ex As Exception
             MessageError_Process(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then

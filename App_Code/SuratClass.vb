@@ -7,7 +7,6 @@ Imports iTextSharp.text.pdf
 
 Public Class SuratClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-
     Dim enUS As CultureInfo = New CultureInfo("en-US")
 
     Public Function GetDataRow(thisString As String) As DataRow
@@ -15,11 +14,10 @@ Public Class SuratClass
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand(thisString, thisConn)
                     Using thisAdapter As New SqlDataAdapter(thisCmd)
-                        Dim dt As New DataTable()
-                        thisAdapter.Fill(dt)
-
-                        If dt.Rows.Count > 0 Then
-                            Return dt.Rows(0)
+                        Dim thisTable As New DataTable()
+                        thisAdapter.Fill(thisTable)
+                        If thisTable.Rows.Count > 0 Then
+                            Return thisTable.Rows(0)
                         Else
                             Return Nothing
                         End If
@@ -35,10 +33,10 @@ Public Class SuratClass
         Try
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand(thisString, thisConn)
-                    Using da As New SqlDataAdapter(thisCmd)
-                        Dim dt As New DataTable()
-                        da.Fill(dt)
-                        Return dt
+                    Using thisAdapter As New SqlDataAdapter(thisCmd)
+                        Dim thisTable As New DataTable()
+                        thisAdapter.Fill(thisTable)
+                        Return thisTable
                     End Using
                 End Using
             End Using
@@ -88,38 +86,56 @@ Public Class SuratClass
     End Function
 
     Private Function CreateCell(text As String, Optional isBold As Boolean = False, Optional alignV As Integer = Element.ALIGN_MIDDLE, Optional alignH As Integer = Element.ALIGN_LEFT, Optional colspan As Integer = 1) As PdfPCell
-        Dim style As Integer = If(isBold, Font.BOLD, Font.NORMAL)
-        Dim thisFont As New Font(Font.FontFamily.TIMES_ROMAN, 10, style)
-        Dim lines As Integer = text.Split({vbLf, vbCrLf}, StringSplitOptions.None).Length
-        Dim lineHeight As Single = 13
-        Dim calculatedHeight As Single = lines * lineHeight
+        Try
+            Dim style As Integer = If(isBold, Font.BOLD, Font.NORMAL)
+            Dim thisFont As New Font(Font.FontFamily.TIMES_ROMAN, 10, style)
 
-        Dim cell As New PdfPCell(New Phrase(text, thisFont))
-        cell.Border = 0
-        cell.HorizontalAlignment = alignH
-        cell.VerticalAlignment = alignV
-        cell.MinimumHeight = calculatedHeight
-        cell.PaddingBottom = 6
-        cell.Colspan = colspan
+            Dim lines As Integer = text.Split({vbLf, vbCrLf}, StringSplitOptions.None).Length
+            Dim lineHeight As Single = 13
+            Dim calculatedHeight As Single = lines * lineHeight
 
-        Return cell
+            Dim cell As New PdfPCell(New Phrase(text, thisFont))
+            cell.Border = 0
+            cell.HorizontalAlignment = alignH
+            cell.VerticalAlignment = alignV
+            cell.MinimumHeight = calculatedHeight
+            cell.PaddingBottom = 6
+            cell.Colspan = colspan
+
+            Return cell
+        Catch ex As Exception
+            Dim cell As New PdfPCell(New Phrase(String.Empty))
+            cell.Border = 0
+            Return cell
+        End Try
     End Function
 
     Private Function CreateCellDetail(text As String, Optional isBold As Boolean = False, Optional alignH As Integer = Element.ALIGN_LEFT) As PdfPCell
-        Dim style As Integer = If(isBold, Font.BOLD, Font.NORMAL)
-        Dim thisFont As New Font(Font.FontFamily.TIMES_ROMAN, 10, style)
-        Dim lines As Integer = text.Split({vbLf, vbCrLf}, StringSplitOptions.None).Length
-        Dim lineHeight As Single = 16
-        Dim calculatedHeight As Single = lines * lineHeight
+        Try
+            text = If(text, String.Empty)
 
-        Dim cell As New PdfPCell(New Phrase(text, thisFont))
-        cell.Border = Rectangle.BOTTOM_BORDER
-        cell.BorderWidthBottom = 0.5F
-        cell.HorizontalAlignment = alignH
-        cell.VerticalAlignment = Element.ALIGN_MIDDLE
-        cell.MinimumHeight = calculatedHeight
-        cell.PaddingBottom = 6
-        Return cell
+            Dim style As Integer = If(isBold, Font.BOLD, Font.NORMAL)
+            Dim thisFont As New Font(Font.FontFamily.TIMES_ROMAN, 10, style)
+
+            Dim lines As Integer = text.Split({vbLf, vbCrLf}, StringSplitOptions.None).Length
+            Dim lineHeight As Single = 16
+            Dim calculatedHeight As Single = lines * lineHeight
+
+            Dim cell As New PdfPCell(New Phrase(text, thisFont))
+            cell.Border = Rectangle.BOTTOM_BORDER
+            cell.BorderWidthBottom = 0.5F
+            cell.HorizontalAlignment = alignH
+            cell.VerticalAlignment = Element.ALIGN_MIDDLE
+            cell.MinimumHeight = calculatedHeight
+            cell.PaddingBottom = 6
+
+            Return cell
+        Catch ex As Exception
+            Dim cell As New PdfPCell(New Phrase(String.Empty))
+            cell.Border = Rectangle.BOTTOM_BORDER
+            cell.BorderWidthBottom = 0.5F
+            Return cell
+        End Try
     End Function
 
     Public Function GetFabricColourName(fabricColourId As String) As String
@@ -129,7 +145,6 @@ Public Class SuratClass
                 Using thisConn As New SqlConnection(myConn)
                     Using thisCmd As New SqlCommand("SELECT Name FROM FabricColours WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", fabricColourId)
-
                         thisConn.Open()
                         Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then

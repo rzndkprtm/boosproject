@@ -91,17 +91,17 @@ Partial Class Setting_Specification_Fabric_Edit
                 End If
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Fabrics SET DesignId=@DesignId, TubeId=@TubeId, CompanyDetailId=@CompanyDetailId, Name=@Name, Type=@Type, [Group]=@Group, NoRailRoad=@NoRailRoad WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                        myCmd.Parameters.AddWithValue("@DesignId", designType)
-                        myCmd.Parameters.AddWithValue("@TubeId", tubeType)
-                        myCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetail)
-                        myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@Group", ddlGroup.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@NoRailRoad", ddlNoRailRoad.SelectedValue)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Fabrics SET DesignId=@DesignId, TubeId=@TubeId, CompanyDetailId=@CompanyDetailId, Name=@Name, Type=@Type, [Group]=@Group, NoRailRoad=@NoRailRoad WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                        thisCmd.Parameters.AddWithValue("@DesignId", designType)
+                        thisCmd.Parameters.AddWithValue("@TubeId", tubeType)
+                        thisCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetail)
+                        thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Group", ddlGroup.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@NoRailRoad", ddlNoRailRoad.SelectedValue)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 

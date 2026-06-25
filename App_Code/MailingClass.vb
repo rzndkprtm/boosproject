@@ -13,10 +13,10 @@ Public Class MailingClass
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand(thisString, thisConn)
                     Using thisAdapter As New SqlDataAdapter(thisCmd)
-                        Dim dt As New DataTable()
-                        thisAdapter.Fill(dt)
-                        If dt.Rows.Count > 0 Then
-                            Return dt.Rows(0)
+                        Dim thisTable As New DataTable()
+                        thisAdapter.Fill(thisTable)
+                        If thisTable.Rows.Count > 0 Then
+                            Return thisTable.Rows(0)
                         Else
                             Return Nothing
                         End If
@@ -32,10 +32,10 @@ Public Class MailingClass
         Try
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand(thisString, thisConn)
-                    Using da As New SqlDataAdapter(thisCmd)
-                        Dim dt As New DataTable()
-                        da.Fill(dt)
-                        Return dt
+                    Using thisAdapter As New SqlDataAdapter(thisCmd)
+                        Dim thisTable As New DataTable()
+                        thisAdapter.Fill(thisTable)
+                        Return thisTable
                     End Using
                 End Using
             End Using

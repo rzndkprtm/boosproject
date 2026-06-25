@@ -9,11 +9,11 @@ Partial Class Setting_Job_Sheet_Detail_Edit
     Dim url As String = String.Empty
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        'Dim pageAccess As Boolean = LoginAccess("Load")
-        'If pageAccess = False Then
-        '    Response.Redirect("~/setting/job/sheet/", False)
-        '    Exit Sub
-        'End If
+        Dim pageAccess As Boolean = LoginAccess("Load")
+        If pageAccess = False Then
+            Response.Redirect("~/setting/job/sheet/", False)
+            Exit Sub
+        End If
 
         If String.IsNullOrEmpty(Request.QueryString("detailid")) Then
             Response.Redirect("~/setting/job/sheet", False)
@@ -80,24 +80,24 @@ Partial Class Setting_Job_Sheet_Detail_Edit
                 If ddlType6.SelectedValue = "Custom" Then formula6 = txtFormula6.Text
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE JobSheetDetails SET JobSheetId=@JobSheetId, Name=@Name, Type1=@Type1, Formula1=@Formula1, Type2=@Type2, Formula2=@Formula2, Type3=@Type3, Formula3=@Formula3, Type4=@Type4, Formula4=@Formula4, Type5=@Type5, Formula5=@Formula5, Type6=@Type6, Formula6=@Formula6 WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                        myCmd.Parameters.AddWithValue("@JobSheetId", ddlJobSheet.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@Name", txtName.Text)
-                        myCmd.Parameters.AddWithValue("@Type1", ddlType.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@Type2", ddlType2.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@Type3", ddlType3.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@Type4", ddlType4.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@Type5", ddlType5.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@Type6", ddlType6.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@Formula1", formula)
-                        myCmd.Parameters.AddWithValue("@Formula2", formula2)
-                        myCmd.Parameters.AddWithValue("@Formula3", formula3)
-                        myCmd.Parameters.AddWithValue("@Formula4", formula4)
-                        myCmd.Parameters.AddWithValue("@Formula5", formula5)
-                        myCmd.Parameters.AddWithValue("@Formula6", formula6)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE JobSheetDetails SET JobSheetId=@JobSheetId, Name=@Name, Type1=@Type1, Formula1=@Formula1, Type2=@Type2, Formula2=@Formula2, Type3=@Type3, Formula3=@Formula3, Type4=@Type4, Formula4=@Formula4, Type5=@Type5, Formula5=@Formula5, Type6=@Type6, Formula6=@Formula6 WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                        thisCmd.Parameters.AddWithValue("@JobSheetId", ddlJobSheet.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Name", txtName.Text)
+                        thisCmd.Parameters.AddWithValue("@Type1", ddlType.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Type2", ddlType2.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Type3", ddlType3.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Type4", ddlType4.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Type5", ddlType5.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Type6", ddlType6.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Formula1", formula)
+                        thisCmd.Parameters.AddWithValue("@Formula2", formula2)
+                        thisCmd.Parameters.AddWithValue("@Formula3", formula3)
+                        thisCmd.Parameters.AddWithValue("@Formula4", formula4)
+                        thisCmd.Parameters.AddWithValue("@Formula5", formula5)
+                        thisCmd.Parameters.AddWithValue("@Formula6", formula6)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 

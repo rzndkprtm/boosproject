@@ -51,16 +51,10 @@ Partial Class Setting_Price_ProductGroup
     End Sub
 
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        gvList.PageIndex = e.NewPageIndex
+
         MessageError(False, String.Empty)
-        Try
-            gvList.PageIndex = e.NewPageIndex
-            BindData(txtSearch.Text)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
+        BindData(txtSearch.Text)
     End Sub
 
     Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
@@ -142,15 +136,15 @@ Partial Class Setting_Price_ProductGroup
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM PriceProductGroups ORDER BY Id DESC")
 
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO PriceProductGroups VALUES (@Id, @Name, @DesignId, @CompanyDetailId, @Description, @Active)", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", thisId)
-                            myCmd.Parameters.AddWithValue("@DesignId", ddlDesign.SelectedValue)
-                            myCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetail)
-                            myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Description", descText)
-                            myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
+                        Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO PriceProductGroups VALUES (@Id, @Name, @DesignId, @CompanyDetailId, @Description, @Active)", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", thisId)
+                            thisCmd.Parameters.AddWithValue("@DesignId", ddlDesign.SelectedValue)
+                            thisCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetail)
+                            thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
+                            thisCmd.Parameters.AddWithValue("@Description", descText)
+                            thisCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
                             thisConn.Open()
-                            myCmd.ExecuteNonQuery()
+                            thisCmd.ExecuteNonQuery()
                         End Using
                     End Using
 
@@ -163,15 +157,15 @@ Partial Class Setting_Price_ProductGroup
 
                 If lblAction.Text = "Edit" Then
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE PriceProductGroups SET Name=@Name, DesignId=@DesignId, CompanyDetailId=@CompanyDetailId, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                            myCmd.Parameters.AddWithValue("@DesignId", ddlDesign.SelectedValue)
-                            myCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetail)
-                            myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Description", descText)
-                            myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
+                        Using thisCmd As SqlCommand = New SqlCommand("UPDATE PriceProductGroups SET Name=@Name, DesignId=@DesignId, CompanyDetailId=@CompanyDetailId, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                            thisCmd.Parameters.AddWithValue("@DesignId", ddlDesign.SelectedValue)
+                            thisCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetail)
+                            thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
+                            thisCmd.Parameters.AddWithValue("@Description", descText)
+                            thisCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
                             thisConn.Open()
-                            myCmd.ExecuteNonQuery()
+                            thisCmd.ExecuteNonQuery()
                         End Using
                     End Using
 

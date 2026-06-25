@@ -72,14 +72,14 @@ Partial Class Setting_Specification_Bottom_Edit
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Bottoms SET Name=@Name, DesignId=@DesignId, CompanyDetailId=@CompanyDetailId, Description=@Description WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                        myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@DesignId", designType)
-                        myCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetail)
-                        myCmd.Parameters.AddWithValue("@Description", descText)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Bottoms SET Name=@Name, DesignId=@DesignId, CompanyDetailId=@CompanyDetailId, Description=@Description WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                        thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@DesignId", designType)
+                        thisCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetail)
+                        thisCmd.Parameters.AddWithValue("@Description", descText)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 

@@ -27,14 +27,14 @@ Partial Class Setting_Job_Sheet_Add
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO JobSheets VALUES (@Id, @Name, @Alias, @Description, @Active)", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", thisId)
-                        myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Alias", txtAlias.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Description", descText)
-                        myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO JobSheets VALUES (@Id, @Name, @Alias, @Description, @Active)", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", thisId)
+                        thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Alias", txtAlias.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Description", descText)
+                        thisCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 

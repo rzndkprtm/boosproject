@@ -1,5 +1,4 @@
-﻿
-Partial Class Faq
+﻿Partial Class Faq
     Inherits Page
 
 End Class

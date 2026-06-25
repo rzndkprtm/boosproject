@@ -34,10 +34,10 @@ Public Class InvoiceClass
         Try
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand(thisString, thisConn)
-                    Using da As New SqlDataAdapter(thisCmd)
-                        Dim dt As New DataTable()
-                        da.Fill(dt)
-                        Return dt
+                    Using thisAdapter As New SqlDataAdapter(thisCmd)
+                        Dim thisTable As New DataTable()
+                        thisAdapter.Fill(thisTable)
+                        Return thisTable
                     End Using
                 End Using
             End Using

@@ -38,12 +38,11 @@ Partial Class Setting_Specification_Bottom_Detail
             Dim newStatus As String = ddlNewStatus.SelectedValue
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE Bottoms SET Status=@Status WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                    myCmd.Parameters.AddWithValue("@Status", newStatus)
-
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Bottoms SET Status=@Status WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                    thisCmd.Parameters.AddWithValue("@Status", newStatus)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -57,11 +56,11 @@ Partial Class Setting_Specification_Bottom_Detail
                     Dim detailId As String = detailData.Rows(i)("Id").ToString()
 
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE BottomColours SET Status=@Status WHERE Id=@Id", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", detailId)
-                            myCmd.Parameters.AddWithValue("@Status", newStatus)
+                        Using thisCmd As SqlCommand = New SqlCommand("UPDATE BottomColours SET Status=@Status WHERE Id=@Id", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", detailId)
+                            thisCmd.Parameters.AddWithValue("@Status", newStatus)
                             thisConn.Open()
-                            myCmd.ExecuteNonQuery()
+                            thisCmd.ExecuteNonQuery()
                         End Using
                     End Using
 
@@ -173,16 +172,16 @@ Partial Class Setting_Specification_Bottom_Detail
                 If lblAction.Text = "Add" Then
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM BottomColours ORDER BY Id DESC")
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO BottomColours VALUES (@Id, @BottomId, @BoeId, @Name, @Colour, @Description, @Status)", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", thisId)
-                            myCmd.Parameters.AddWithValue("@BottomId", lblId.Text)
-                            myCmd.Parameters.AddWithValue("@BoeId", If(String.IsNullOrEmpty(txtBoeId.Text), CType(DBNull.Value, Object), txtBoeId.Text))
-                            myCmd.Parameters.AddWithValue("@Name", name)
-                            myCmd.Parameters.AddWithValue("@Colour", txtColour.Text)
-                            myCmd.Parameters.AddWithValue("@Description", descText)
-                            myCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
+                        Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO BottomColours VALUES (@Id, @BottomId, @BoeId, @Name, @Colour, @Description, @Status)", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", thisId)
+                            thisCmd.Parameters.AddWithValue("@BottomId", lblId.Text)
+                            thisCmd.Parameters.AddWithValue("@BoeId", If(String.IsNullOrEmpty(txtBoeId.Text), CType(DBNull.Value, Object), txtBoeId.Text))
+                            thisCmd.Parameters.AddWithValue("@Name", name)
+                            thisCmd.Parameters.AddWithValue("@Colour", txtColour.Text)
+                            thisCmd.Parameters.AddWithValue("@Description", descText)
+                            thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
                             thisConn.Open()
-                            myCmd.ExecuteNonQuery()
+                            thisCmd.ExecuteNonQuery()
                         End Using
                     End Using
 
@@ -195,15 +194,15 @@ Partial Class Setting_Specification_Bottom_Detail
 
                 If lblAction.Text = "Edit" Then
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE BottomColours SET BottomId=@BottomId, BoeId=@BoeId, Name=@Name, Colour=@Colour, Description=@Description WHERE Id=@Id", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", lblIdColour.Text)
-                            myCmd.Parameters.AddWithValue("@BottomId", lblId.Text)
-                            myCmd.Parameters.AddWithValue("@BoeId", If(String.IsNullOrEmpty(txtBoeId.Text), CType(DBNull.Value, Object), txtBoeId.Text))
-                            myCmd.Parameters.AddWithValue("@Name", name)
-                            myCmd.Parameters.AddWithValue("@Colour", txtColour.Text)
-                            myCmd.Parameters.AddWithValue("@Description", descText)
+                        Using thisCmd As SqlCommand = New SqlCommand("UPDATE BottomColours SET BottomId=@BottomId, BoeId=@BoeId, Name=@Name, Colour=@Colour, Description=@Description WHERE Id=@Id", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", lblIdColour.Text)
+                            thisCmd.Parameters.AddWithValue("@BottomId", lblId.Text)
+                            thisCmd.Parameters.AddWithValue("@BoeId", If(String.IsNullOrEmpty(txtBoeId.Text), CType(DBNull.Value, Object), txtBoeId.Text))
+                            thisCmd.Parameters.AddWithValue("@Name", name)
+                            thisCmd.Parameters.AddWithValue("@Colour", txtColour.Text)
+                            thisCmd.Parameters.AddWithValue("@Description", descText)
                             thisConn.Open()
-                            myCmd.ExecuteNonQuery()
+                            thisCmd.ExecuteNonQuery()
                         End Using
                     End Using
 
@@ -231,11 +230,11 @@ Partial Class Setting_Specification_Bottom_Detail
             Dim oldStatus As String = ddlOldStatusColour.SelectedValue
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE BottomColours SET Status=@Status WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.Parameters.AddWithValue("@Status", newStatus)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE BottomColours SET Status=@Status WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisCmd.Parameters.AddWithValue("@Status", newStatus)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 

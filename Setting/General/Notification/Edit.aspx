@@ -110,7 +110,6 @@
         $(document).ready(function () {
             $('#summernote').summernote({
                 tabsize: 2, height: 350,
-
                 callbacks: {
                     onChange: function (contents) {
                         $('#<%= hfMessage.ClientID %>').val(contents);

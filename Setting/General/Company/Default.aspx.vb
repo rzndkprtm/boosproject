@@ -46,27 +46,9 @@ Partial Class Setting_General_Company_Default
     End Sub
 
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        gvList.PageIndex = e.NewPageIndex
         MessageError(False, String.Empty)
-        Try
-            gvList.PageIndex = e.NewPageIndex
-            BindData(txtSearch.Text)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
-    Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
-        If Not String.IsNullOrEmpty(e.CommandArgument) Then
-            Session("SearchCompany") = txtSearch.Text
-            Dim dataId As String = e.CommandArgument.ToString()
-            If e.CommandName = "Detail" Then
-                url = String.Format("~/setting/general/company/detail?cid={0}", dataId)
-                Response.Redirect(url, False)
-            End If
-        End If
+        BindData(txtSearch.Text)
     End Sub
 
     Protected Sub btnProcess_Click(sender As Object, e As EventArgs)

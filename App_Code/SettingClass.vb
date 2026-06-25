@@ -12,11 +12,10 @@ Public Class SettingClass
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand(thisString, thisConn)
                     Using thisAdapter As New SqlDataAdapter(thisCmd)
-                        Dim dt As New DataTable()
-                        thisAdapter.Fill(dt)
-
-                        If dt.Rows.Count > 0 Then
-                            Return dt.Rows(0)
+                        Dim thisTable As New DataTable()
+                        thisAdapter.Fill(thisTable)
+                        If thisTable.Rows.Count > 0 Then
+                            Return thisTable.Rows(0)
                         Else
                             Return Nothing
                         End If
@@ -34,13 +33,11 @@ Public Class SettingClass
                 Using thisCmd As New SqlCommand(spName, thisConn)
                     thisCmd.CommandType = CommandType.StoredProcedure
                     thisCmd.Parameters.AddRange(params.ToArray())
-
-                    Using da As New SqlDataAdapter(thisCmd)
-                        Dim dt As New DataTable()
-                        da.Fill(dt)
-
-                        If dt.Rows.Count > 0 Then
-                            Return dt.Rows(0)
+                    Using thisAdapter As New SqlDataAdapter(thisCmd)
+                        Dim thisTable As New DataTable()
+                        thisAdapter.Fill(thisTable)
+                        If thisTable.Rows.Count > 0 Then
+                            Return thisTable.Rows(0)
                         End If
                     End Using
                 End Using
@@ -54,10 +51,10 @@ Public Class SettingClass
         Try
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand(thisString, thisConn)
-                    Using da As New SqlDataAdapter(thisCmd)
-                        Dim dt As New DataTable()
-                        da.Fill(dt)
-                        Return dt
+                    Using thisAdapter As New SqlDataAdapter(thisCmd)
+                        Dim thisTable As New DataTable()
+                        thisAdapter.Fill(thisTable)
+                        Return thisTable
                     End Using
                 End Using
             End Using
@@ -67,25 +64,23 @@ Public Class SettingClass
     End Function
 
     Public Function GetDataTableSP(spName As String, params As List(Of SqlParameter)) As DataTable
-        Dim dt As New DataTable()
+        Dim thisTable As New DataTable()
         Try
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand(spName, thisConn)
                     thisCmd.CommandType = CommandType.StoredProcedure
-
                     If params IsNot Nothing AndAlso params.Count > 0 Then
                         thisCmd.Parameters.AddRange(params.ToArray())
                     End If
-
-                    Using da As New SqlDataAdapter(thisCmd)
-                        da.Fill(dt)
+                    Using thisAdapter As New SqlDataAdapter(thisCmd)
+                        thisAdapter.Fill(thisTable)
                     End Using
                 End Using
             End Using
         Catch ex As Exception
-            dt = New DataTable()
+            thisTable = New DataTable()
         End Try
-        Return dt
+        Return thisTable
     End Function
 
     Public Function GetItemData(thisString As String) As String
@@ -181,13 +176,10 @@ Public Class SettingClass
                 Try
                     If d Is Nothing Then
                         discValue = 0D
-
                     ElseIf TypeOf d Is Decimal OrElse TypeOf d Is Double OrElse TypeOf d Is Integer Then
                         discValue = Convert.ToDecimal(d)
-
                     ElseIf TypeOf d Is String Then
                         Dim s As String = d.ToString().Trim().ToUpper()
-
                         If s = "D" Then
                             discValue = 0D
                         ElseIf IsNumeric(s) Then
@@ -197,7 +189,6 @@ Public Class SettingClass
                 Catch
                     discValue = 0D
                 End Try
-
                 result *= (1D - (discValue / 100D))
             Next
 
@@ -213,7 +204,6 @@ Public Class SettingClass
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand("SELECT '<b>' + Logins.FullName + '</b> on ' + FORMAT(Logs.ActionDate, 'dd MMM yyyy HH:mm') + '. Action : ' + Logs.Description AS FinalLog FROM Logs LEFT JOIN Logins ON Logs.ActionBy=Logins.Id WHERE Logs.Id=@Id", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", logId)
-
                     thisConn.Open()
                     Dim obj = thisCmd.ExecuteScalar()
                     If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
@@ -248,7 +238,6 @@ Public Class SettingClass
             Using thisConn As SqlConnection = New SqlConnection(myConn)
                 Using thisCmd As SqlCommand = New SqlCommand("DECLARE @RawId NVARCHAR(50) = NEWID(); DECLARE @FinalId NVARCHAR(100) = 'RAP23-' + @RawId; INSERT INTO Sessions (Id, LoginId) VALUES (@FinalId, NULL); SELECT @FinalId;", thisConn)
                     thisConn.Open()
-
                     Dim newId As Object = thisCmd.ExecuteScalar()
                     If newId IsNot Nothing Then
                         result = newId.ToString()
@@ -328,7 +317,6 @@ Public Class SettingClass
                         hasil += id.ToString() & ","
                     Next
                 End If
-
                 result = hasil.Remove(hasil.Length - 1).ToString()
             End If
         Catch ex As Exception
@@ -419,7 +407,6 @@ Public Class SettingClass
                     End Using
                 End Using
             End Using
-
             result = (id + 1).ToString()
         Catch ex As Exception
             result = String.Empty

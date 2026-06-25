@@ -8,11 +8,11 @@ Partial Class Setting_Job_Sheet_Detail_Add
     Dim url As String = String.Empty
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        'Dim pageAccess As Boolean = LoginAccess("Load")
-        'If pageAccess = False Then
-        '    Response.Redirect("~/setting/job/sheet/", False)
-        '    Exit Sub
-        'End If
+        Dim pageAccess As Boolean = LoginAccess("Load")
+        If pageAccess = False Then
+            Response.Redirect("~/setting/job/sheet/", False)
+            Exit Sub
+        End If
 
         If String.IsNullOrEmpty(Request.QueryString("sheetid")) Then
             Response.Redirect("~/setting/job/sheet", False)
@@ -89,28 +89,25 @@ Partial Class Setting_Job_Sheet_Detail_Add
                 Dim sortOrder As String = settingClass.CreateId("SELECT TOP 1 SortOrder FROM JobSheetDetails WHERE JobSheetId='" & lblId.Text & "' ORDER BY Id DESC")
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO JobSheetDetails VALUES (@Id, @JobSheetId, @Name, @Type1, @Formula1, @Type2, @Formula2, @Type3, @Formula3, @Type4, @Formula4, @Type5, @Formula5, @Type6, @Formula6, NULL, NULL, NULL, NULL, @SortOrder, NULL, 1)", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", thisId)
-                        myCmd.Parameters.AddWithValue("@JobSheetId", lblId.Text)
-                        myCmd.Parameters.AddWithValue("@Name", txtName.Text)
-
-                        myCmd.Parameters.AddWithValue("@Type1", ddlType.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@Type2", ddlType2.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@Type3", ddlType3.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@Type4", ddlType4.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@Type5", ddlType5.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@Type6", ddlType6.SelectedValue)
-
-                        myCmd.Parameters.AddWithValue("@Formula1", formula)
-                        myCmd.Parameters.AddWithValue("@Formula2", formula2)
-                        myCmd.Parameters.AddWithValue("@Formula3", formula3)
-                        myCmd.Parameters.AddWithValue("@Formula4", formula4)
-                        myCmd.Parameters.AddWithValue("@Formula5", formula5)
-                        myCmd.Parameters.AddWithValue("@Formula6", formula6)
-                        myCmd.Parameters.AddWithValue("@SortOrder", sortOrder)
-
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO JobSheetDetails VALUES (@Id, @JobSheetId, @Name, @Type1, @Formula1, @Type2, @Formula2, @Type3, @Formula3, @Type4, @Formula4, @Type5, @Formula5, @Type6, @Formula6, NULL, NULL, NULL, NULL, @SortOrder, NULL, 1)", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", thisId)
+                        thisCmd.Parameters.AddWithValue("@JobSheetId", lblId.Text)
+                        thisCmd.Parameters.AddWithValue("@Name", txtName.Text)
+                        thisCmd.Parameters.AddWithValue("@Type1", ddlType.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Type2", ddlType2.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Type3", ddlType3.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Type4", ddlType4.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Type5", ddlType5.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Type6", ddlType6.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Formula1", formula)
+                        thisCmd.Parameters.AddWithValue("@Formula2", formula2)
+                        thisCmd.Parameters.AddWithValue("@Formula3", formula3)
+                        thisCmd.Parameters.AddWithValue("@Formula4", formula4)
+                        thisCmd.Parameters.AddWithValue("@Formula5", formula5)
+                        thisCmd.Parameters.AddWithValue("@Formula6", formula6)
+                        thisCmd.Parameters.AddWithValue("@SortOrder", sortOrder)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 

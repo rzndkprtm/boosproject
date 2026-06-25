@@ -80,18 +80,17 @@ Partial Class Setting_Customer_Login_Add
 
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Logins ORDER BY Id DESC")
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Logins VALUES (@Id, @CustomerId, @RoleId, @LevelId, @UserName, @Password, @FullName, NULL, 0, NULL, 1, @Pricing, 1)", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", thisId)
-                        myCmd.Parameters.AddWithValue("@CustomerId", If(String.IsNullOrEmpty(ddlCustomer.SelectedValue), CType(DBNull.Value, Object), ddlCustomer.SelectedValue))
-                        myCmd.Parameters.AddWithValue("@RoleId", ddlRole.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@LevelId", ddlLevel.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@UserName", txtUserName.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Password", password)
-                        myCmd.Parameters.AddWithValue("@FullName", txtFullName.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Pricing", ddlPricing.SelectedValue)
-
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Logins VALUES (@Id, @CustomerId, @RoleId, @LevelId, @UserName, @Password, @FullName, NULL, 0, NULL, 1, @Pricing, 1)", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", thisId)
+                        thisCmd.Parameters.AddWithValue("@CustomerId", If(String.IsNullOrEmpty(ddlCustomer.SelectedValue), CType(DBNull.Value, Object), ddlCustomer.SelectedValue))
+                        thisCmd.Parameters.AddWithValue("@RoleId", ddlRole.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@LevelId", ddlLevel.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@UserName", txtUserName.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Password", password)
+                        thisCmd.Parameters.AddWithValue("@FullName", txtFullName.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Pricing", ddlPricing.SelectedValue)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 

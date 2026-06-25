@@ -5,7 +5,6 @@ Partial Class Setting_Specification_Product_Change
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataLog As Object() = Nothing
 
@@ -63,12 +62,11 @@ Partial Class Setting_Specification_Product_Change
                         Dim productId As String = thisData.Rows(i)("Id").ToString()
 
                         Using thisConn As New SqlConnection(myConn)
-                            Using myCmd As SqlCommand = New SqlCommand("UPDATE Products SET Status=@Status WHERE Id=@Id", thisConn)
-                                myCmd.Parameters.AddWithValue("@Id", productId)
-                                myCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
-
+                            Using thisCmd As SqlCommand = New SqlCommand("UPDATE Products SET Status=@Status WHERE Id=@Id", thisConn)
+                                thisCmd.Parameters.AddWithValue("@Id", productId)
+                                thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
                                 thisConn.Open()
-                                myCmd.ExecuteNonQuery()
+                                thisCmd.ExecuteNonQuery()
                             End Using
                         End Using
 
@@ -81,12 +79,11 @@ Partial Class Setting_Specification_Product_Change
                             Dim aliasId As String = aliasData(0).ToString()
 
                             Using thisConn As New SqlConnection(myConn)
-                                Using myCmd As SqlCommand = New SqlCommand("UPDATE Products SET Status=@Status WHERE Id=@Id", thisConn)
-                                    myCmd.Parameters.AddWithValue("@Id", aliasId)
-                                    myCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
-
+                                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Products SET Status=@Status WHERE Id=@Id", thisConn)
+                                    thisCmd.Parameters.AddWithValue("@Id", aliasId)
+                                    thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
                                     thisConn.Open()
-                                    myCmd.ExecuteNonQuery()
+                                    thisCmd.ExecuteNonQuery()
                                 End Using
                             End Using
 

@@ -39,14 +39,14 @@ Partial Class Setting_Job_Sheet_Edit
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE JobSheets SET Name=@Name, Alias=@Alias, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                        myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Alias", txtAlias.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Description", descText)
-                        myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE JobSheets SET Name=@Name, Alias=@Alias, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                        thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Alias", txtAlias.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Description", descText)
+                        thisCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 

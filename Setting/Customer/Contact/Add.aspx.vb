@@ -63,18 +63,17 @@ Partial Class Setting_Customer_Contact_Add
                 End If
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerContacts VALUES (@Id, @CustomerId, @Name, @Email, @Phone, @Tags, @Note, @Primary)", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", thisId)
-                        myCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Email", txtEmail.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Phone", txtPhone.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Tags", thisTags)
-                        myCmd.Parameters.AddWithValue("@Note", txtNote.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Primary", primaryData)
-
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerContacts VALUES (@Id, @CustomerId, @Name, @Email, @Phone, @Tags, @Note, @Primary)", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", thisId)
+                        thisCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Email", txtEmail.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Phone", txtPhone.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Tags", thisTags)
+                        thisCmd.Parameters.AddWithValue("@Note", txtNote.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Primary", primaryData)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 

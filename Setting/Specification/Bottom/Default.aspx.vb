@@ -17,8 +17,9 @@ Partial Class Setting_Specification_Bottom_Default
         End If
 
         If Not IsPostBack Then
-            MessageError(False, String.Empty)
             txtSearch.Text = Session("SearchBottom")
+
+            MessageError(False, String.Empty)
             BindData(txtSearch.Text)
         End If
     End Sub
@@ -30,6 +31,7 @@ Partial Class Setting_Specification_Bottom_Default
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
         gvList.PageIndex = 0
+
         MessageError(False, String.Empty)
         BindData(txtSearch.Text)
     End Sub
@@ -78,11 +80,11 @@ Partial Class Setting_Specification_Bottom_Default
                     Dim detailId As String = detailData.Rows(i)("Id").ToString()
 
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE BottomColours SET Status=@Status WHERE Id=@Id", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", detailId)
-                            myCmd.Parameters.AddWithValue("@Status", newStatus)
+                        Using thisCmd As SqlCommand = New SqlCommand("UPDATE BottomColours SET Status=@Status WHERE Id=@Id", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", detailId)
+                            thisCmd.Parameters.AddWithValue("@Status", newStatus)
                             thisConn.Open()
-                            myCmd.ExecuteNonQuery()
+                            thisCmd.ExecuteNonQuery()
                         End Using
                     End Using
 

@@ -59,11 +59,11 @@ Partial Class Setting_Specification_Fabric_Detail
             End If
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE Fabrics SET Status=@Status WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                    myCmd.Parameters.AddWithValue("@Status", newStatus)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Fabrics SET Status=@Status WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                    thisCmd.Parameters.AddWithValue("@Status", newStatus)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -77,11 +77,11 @@ Partial Class Setting_Specification_Fabric_Detail
                     Dim detailId As String = detailData.Rows(i)("Id").ToString()
 
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET Status=@Status WHERE Id=@Id", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", detailId)
-                            myCmd.Parameters.AddWithValue("@Status", newStatus)
+                        Using thisCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET Status=@Status WHERE Id=@Id", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", detailId)
+                            thisCmd.Parameters.AddWithValue("@Status", newStatus)
                             thisConn.Open()
-                            myCmd.ExecuteNonQuery()
+                            thisCmd.ExecuteNonQuery()
                         End Using
                     End Using
 
@@ -97,11 +97,11 @@ Partial Class Setting_Specification_Fabric_Detail
                 Dim aliasId As String = aliasData(0).ToString()
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Fabrics SET Status=@Status WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", aliasId)
-                        myCmd.Parameters.AddWithValue("@Status", newStatus)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Fabrics SET Status=@Status WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", aliasId)
+                        thisCmd.Parameters.AddWithValue("@Status", newStatus)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 
@@ -115,11 +115,11 @@ Partial Class Setting_Specification_Fabric_Detail
                         Dim detailId As String = detailAliasData.Rows(i)("Id").ToString()
 
                         Using thisConn As New SqlConnection(myConn)
-                            Using myCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET Status=@Status WHERE Id=@Id", thisConn)
-                                myCmd.Parameters.AddWithValue("@Id", detailId)
-                                myCmd.Parameters.AddWithValue("@Status", newStatus)
+                            Using thisCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET Status=@Status WHERE Id=@Id", thisConn)
+                                thisCmd.Parameters.AddWithValue("@Id", detailId)
+                                thisCmd.Parameters.AddWithValue("@Status", newStatus)
                                 thisConn.Open()
-                                myCmd.ExecuteNonQuery()
+                                thisCmd.ExecuteNonQuery()
                             End Using
                         End Using
 
@@ -218,17 +218,17 @@ Partial Class Setting_Specification_Fabric_Detail
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM FabricColours ORDER BY Id DESC")
 
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO FabricColours VALUES (@Id, @FabricId, @BoeId, @Factory, @Name, @Colour, @Width, @Status)", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", thisId)
-                            myCmd.Parameters.AddWithValue("@FabricId", lblId.Text)
-                            myCmd.Parameters.AddWithValue("@BoeId", If(String.IsNullOrEmpty(txtBoeId.Text), CType(DBNull.Value, Object), txtBoeId.Text))
-                            myCmd.Parameters.AddWithValue("@Factory", ddlFactoryColour.SelectedValue)
-                            myCmd.Parameters.AddWithValue("@Name", fabricColourName)
-                            myCmd.Parameters.AddWithValue("@Colour", txtNameColour.Text)
-                            myCmd.Parameters.AddWithValue("@Width", txtWidthColour.Text)
-                            myCmd.Parameters.AddWithValue("@Status", ddlStatusColour.SelectedValue)
+                        Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO FabricColours VALUES (@Id, @FabricId, @BoeId, @Factory, @Name, @Colour, @Width, @Status)", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", thisId)
+                            thisCmd.Parameters.AddWithValue("@FabricId", lblId.Text)
+                            thisCmd.Parameters.AddWithValue("@BoeId", If(String.IsNullOrEmpty(txtBoeId.Text), CType(DBNull.Value, Object), txtBoeId.Text))
+                            thisCmd.Parameters.AddWithValue("@Factory", ddlFactoryColour.SelectedValue)
+                            thisCmd.Parameters.AddWithValue("@Name", fabricColourName)
+                            thisCmd.Parameters.AddWithValue("@Colour", txtNameColour.Text)
+                            thisCmd.Parameters.AddWithValue("@Width", txtWidthColour.Text)
+                            thisCmd.Parameters.AddWithValue("@Status", ddlStatusColour.SelectedValue)
                             thisConn.Open()
-                            myCmd.ExecuteNonQuery()
+                            thisCmd.ExecuteNonQuery()
                         End Using
                     End Using
 
@@ -241,16 +241,16 @@ Partial Class Setting_Specification_Fabric_Detail
 
                 If lblAction.Text = "Edit" Then
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE FabricColours Set BoeId=@BoeId, Factory=@Factory, Name=@Name, Colour=@Colour, Width=@Width WHERE Id=@Id", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", lblIdColour.Text)
-                            myCmd.Parameters.AddWithValue("@FabricId", lblId.Text)
-                            myCmd.Parameters.AddWithValue("@BoeId", If(String.IsNullOrEmpty(txtBoeId.Text), CType(DBNull.Value, Object), txtBoeId.Text))
-                            myCmd.Parameters.AddWithValue("@Factory", ddlFactoryColour.SelectedValue)
-                            myCmd.Parameters.AddWithValue("@Name", fabricColourName)
-                            myCmd.Parameters.AddWithValue("@Colour", txtNameColour.Text)
-                            myCmd.Parameters.AddWithValue("@Width", txtWidthColour.Text)
+                        Using thisCmd As SqlCommand = New SqlCommand("UPDATE FabricColours Set BoeId=@BoeId, Factory=@Factory, Name=@Name, Colour=@Colour, Width=@Width WHERE Id=@Id", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", lblIdColour.Text)
+                            thisCmd.Parameters.AddWithValue("@FabricId", lblId.Text)
+                            thisCmd.Parameters.AddWithValue("@BoeId", If(String.IsNullOrEmpty(txtBoeId.Text), CType(DBNull.Value, Object), txtBoeId.Text))
+                            thisCmd.Parameters.AddWithValue("@Factory", ddlFactoryColour.SelectedValue)
+                            thisCmd.Parameters.AddWithValue("@Name", fabricColourName)
+                            thisCmd.Parameters.AddWithValue("@Colour", txtNameColour.Text)
+                            thisCmd.Parameters.AddWithValue("@Width", txtWidthColour.Text)
                             thisConn.Open()
-                            myCmd.ExecuteNonQuery()
+                            thisCmd.ExecuteNonQuery()
                         End Using
                     End Using
 
@@ -279,11 +279,11 @@ Partial Class Setting_Specification_Fabric_Detail
             Dim oldStatus As String = ddlOldStatusColour.SelectedValue
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET Status=@Status WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.Parameters.AddWithValue("@Status", newStatus)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET Status=@Status WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisCmd.Parameters.AddWithValue("@Status", newStatus)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -296,11 +296,11 @@ Partial Class Setting_Specification_Fabric_Detail
                 Dim aliasId As String = aliasData(0).ToString()
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET Status=@Status WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", aliasId)
-                        myCmd.Parameters.AddWithValue("@Status", newStatus)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET Status=@Status WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", aliasId)
+                        thisCmd.Parameters.AddWithValue("@Status", newStatus)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 

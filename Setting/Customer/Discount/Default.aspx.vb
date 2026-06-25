@@ -49,39 +49,27 @@ Partial Class Setting_Customer_Discount_Default
     End Sub
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
         gvList.PageIndex = 0
+
+        MessageError(False, String.Empty)
         BindData(txtSearch.Text)
     End Sub
 
     Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
-        Try
-            If e.CommandName = "Page" Then
-                gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
-                BindData(txtSearch.Text)
-            End If
-        Catch ex As Exception
-        End Try
+        If e.CommandName = "Page" Then
+            gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
+            BindData(txtSearch.Text)
+        End If
     End Sub
 
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        gvList.PageIndex = e.NewPageIndex
         MessageError(False, String.Empty)
-        Try
-            gvList.PageIndex = e.NewPageIndex
-            BindData(txtSearch.Text)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
+        BindData(txtSearch.Text)
     End Sub
 
     Protected Sub gvList_DataBound(sender As Object, e As EventArgs)
-        Try
-            BuildPager()
-        Catch ex As Exception
-        End Try
+        BuildPager()
     End Sub
 
     Protected Sub btnAddDiscountA_Click(sender As Object, e As EventArgs)
@@ -130,30 +118,18 @@ Partial Class Setting_Customer_Discount_Default
             Dim pages As New List(Of Object)
 
             If currentPage > 0 Then
-                pages.Add(New With {
-                    .Text = "Previous",
-                    .PageIndex = currentPage - 1,
-                    .CssClass = ""
-                })
+                pages.Add(New With {.Text = "Previous", .PageIndex = currentPage - 1, .CssClass = ""})
             End If
 
             Dim startPage As Integer = Math.Max(0, currentPage - 2)
             Dim endPage As Integer = Math.Min(totalPages - 1, currentPage + 2)
 
             For i As Integer = startPage To endPage
-                pages.Add(New With {
-                    .Text = (i + 1).ToString(),
-                    .PageIndex = i,
-                    .CssClass = If(i = currentPage, "active", "")
-                })
+                pages.Add(New With {.Text = (i + 1).ToString(), .PageIndex = i, .CssClass = If(i = currentPage, "active", "")})
             Next
 
             If currentPage < totalPages - 1 Then
-                pages.Add(New With {
-                    .Text = "Next",
-                    .PageIndex = currentPage + 1,
-                    .CssClass = ""
-                })
+                pages.Add(New With {.Text = "Next", .PageIndex = currentPage + 1, .CssClass = ""})
             End If
 
             rptPager.DataSource = pages

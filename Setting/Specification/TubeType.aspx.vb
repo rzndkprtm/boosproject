@@ -15,9 +15,9 @@ Partial Class Setting_Specification_TubeType
         End If
 
         If Not IsPostBack Then
-            MessageError(False, String.Empty)
             txtSearch.Text = Session("SearchTube")
 
+            MessageError(False, String.Empty)
             BindData(txtSearch.Text)
         End If
     End Sub
@@ -47,16 +47,10 @@ Partial Class Setting_Specification_TubeType
     End Sub
 
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        gvList.PageIndex = e.NewPageIndex
+
         MessageError(False, String.Empty)
-        Try
-            gvList.PageIndex = e.NewPageIndex
-            BindData(txtSearch.Text)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
+        BindData(txtSearch.Text)
     End Sub
 
     Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
@@ -130,14 +124,14 @@ Partial Class Setting_Specification_TubeType
                 If lblAction.Text = "Add" Then
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM ProductTubes ORDER BY Id DESC")
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO ProductTubes VALUES (@Id, @Name, @Alias, @AppliesTo, @Description)", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", thisId)
-                            myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Alias", aliasName)
-                            myCmd.Parameters.AddWithValue("@AppliesTo", applyTo)
-                            myCmd.Parameters.AddWithValue("@Description", descText)
+                        Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO ProductTubes VALUES (@Id, @Name, @Alias, @AppliesTo, @Description)", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", thisId)
+                            thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
+                            thisCmd.Parameters.AddWithValue("@Alias", aliasName)
+                            thisCmd.Parameters.AddWithValue("@AppliesTo", applyTo)
+                            thisCmd.Parameters.AddWithValue("@Description", descText)
                             thisConn.Open()
-                            myCmd.ExecuteNonQuery()
+                            thisCmd.ExecuteNonQuery()
                         End Using
                     End Using
 
@@ -150,14 +144,14 @@ Partial Class Setting_Specification_TubeType
 
                 If lblAction.Text = "Edit" Then
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE ProductTubes SET Name=@Name, Alias=@Alias, AppliesTo=@AppliesTo, Description=@Description WHERE Id=@Id", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                            myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Alias", aliasName)
-                            myCmd.Parameters.AddWithValue("@AppliesTo", applyTo)
-                            myCmd.Parameters.AddWithValue("@Description", descText)
+                        Using thisCmd As SqlCommand = New SqlCommand("UPDATE ProductTubes SET Name=@Name, Alias=@Alias, AppliesTo=@AppliesTo, Description=@Description WHERE Id=@Id", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                            thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
+                            thisCmd.Parameters.AddWithValue("@Alias", aliasName)
+                            thisCmd.Parameters.AddWithValue("@AppliesTo", applyTo)
+                            thisCmd.Parameters.AddWithValue("@Description", descText)
                             thisConn.Open()
-                            myCmd.ExecuteNonQuery()
+                            thisCmd.ExecuteNonQuery()
                         End Using
                     End Using
 

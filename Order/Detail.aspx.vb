@@ -101,13 +101,12 @@ Partial Class Order_Detail
 
             If msgErrorAddNote.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderInternalNotes VALUES (NEWID(), @HeaderId, GETDATE(), @CreatedBy, @Note)", thisConn)
-                        myCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
-                        myCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
-                        myCmd.Parameters.AddWithValue("@Note", txtAddNote.Text.Trim())
-
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderInternalNotes VALUES (NEWID(), @HeaderId, GETDATE(), @CreatedBy, @Note)", thisConn)
+                        thisCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
+                        thisCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
+                        thisCmd.Parameters.AddWithValue("@Note", txtAddNote.Text.Trim())
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 
@@ -127,11 +126,10 @@ Partial Class Order_Detail
         MessageError(False, String.Empty)
         Try
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Download='Yes', DownloadDate=NULL WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
-
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Download='Yes', DownloadDate=NULL WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -149,17 +147,16 @@ Partial Class Order_Detail
         MessageError(False, String.Empty)
         Try
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET CreatedDate=@CreatedDate, SubmittedDate=@SubmittedDate, ProductionDate=@ProductionDate, OnHoldDate=@OnHoldDate, CanceledDate=@CanceledDate, CompletedDate=@CompletedDate WHERE Id=@Id;", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
-                    myCmd.Parameters.AddWithValue("@CreatedDate", If(String.IsNullOrEmpty(txtCreatedDate.Text), CType(DBNull.Value, Object), txtCreatedDate.Text))
-                    myCmd.Parameters.AddWithValue("@SubmittedDate", If(String.IsNullOrEmpty(txtSubmittedDate.Text), CType(DBNull.Value, Object), txtSubmittedDate.Text))
-                    myCmd.Parameters.AddWithValue("@ProductionDate", If(String.IsNullOrEmpty(txtProductionDate.Text), CType(DBNull.Value, Object), txtProductionDate.Text))
-                    myCmd.Parameters.AddWithValue("@OnHoldDate", If(String.IsNullOrEmpty(txtHoldDate.Text), CType(DBNull.Value, Object), txtHoldDate.Text))
-                    myCmd.Parameters.AddWithValue("@CanceledDate", If(String.IsNullOrEmpty(txtCanceledDate.Text), CType(DBNull.Value, Object), txtCanceledDate.Text))
-                    myCmd.Parameters.AddWithValue("@CompletedDate", If(String.IsNullOrEmpty(txtCompletedDate.Text), CType(DBNull.Value, Object), txtCompletedDate.Text))
-
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET CreatedDate=@CreatedDate, SubmittedDate=@SubmittedDate, ProductionDate=@ProductionDate, OnHoldDate=@OnHoldDate, CanceledDate=@CanceledDate, CompletedDate=@CompletedDate WHERE Id=@Id;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
+                    thisCmd.Parameters.AddWithValue("@CreatedDate", If(String.IsNullOrEmpty(txtCreatedDate.Text), CType(DBNull.Value, Object), txtCreatedDate.Text))
+                    thisCmd.Parameters.AddWithValue("@SubmittedDate", If(String.IsNullOrEmpty(txtSubmittedDate.Text), CType(DBNull.Value, Object), txtSubmittedDate.Text))
+                    thisCmd.Parameters.AddWithValue("@ProductionDate", If(String.IsNullOrEmpty(txtProductionDate.Text), CType(DBNull.Value, Object), txtProductionDate.Text))
+                    thisCmd.Parameters.AddWithValue("@OnHoldDate", If(String.IsNullOrEmpty(txtHoldDate.Text), CType(DBNull.Value, Object), txtHoldDate.Text))
+                    thisCmd.Parameters.AddWithValue("@CanceledDate", If(String.IsNullOrEmpty(txtCanceledDate.Text), CType(DBNull.Value, Object), txtCanceledDate.Text))
+                    thisCmd.Parameters.AddWithValue("@CompletedDate", If(String.IsNullOrEmpty(txtCompletedDate.Text), CType(DBNull.Value, Object), txtCompletedDate.Text))
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -232,11 +229,10 @@ Partial Class Order_Detail
             End If
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Active=0, Download='No' WHERE Id=@Id; UPDATE OrderDetails SET Active=0 WHERE HeaderId=@Id;", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Active=0, Download='No' WHERE Id=@Id; UPDATE OrderDetails SET Active=0 WHERE HeaderId=@Id;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
                 thisConn.Close()
             End Using
@@ -305,23 +301,21 @@ Partial Class Order_Detail
                         Using thisConn As New SqlConnection(myConn)
                             thisConn.Open()
 
-                            Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderHeaders SELECT @NewID, @OrderId, CustomerId, NULL, @OrderNumber, @OrderName, @OrderNote, OrderType, OrderFactory, 'Unsubmitted', NULL, @CreatedBy, GETDATE(), NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, 0, 'No', NULL, 1 FROM OrderHeaders WHERE Id=@OldId; INSERT INTO OrderQuotes VALUES(@NewID, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
-                                myCmd.Parameters.AddWithValue("@OldId", lblHeaderId.Text)
-                                myCmd.Parameters.AddWithValue("@NewID", newIdHeader)
-                                myCmd.Parameters.AddWithValue("@OrderId", orderId)
-                                myCmd.Parameters.AddWithValue("@OrderNumber", txtOrderNumberNew.Text.Trim())
-                                myCmd.Parameters.AddWithValue("@OrderName", txtOrderNameNew.Text.Trim())
-                                myCmd.Parameters.AddWithValue("@OrderNote", txtOrderNoteNew.Text)
-                                myCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
-
-                                myCmd.ExecuteNonQuery()
+                            Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderHeaders SELECT @NewID, @OrderId, CustomerId, NULL, @OrderNumber, @OrderName, @OrderNote, OrderType, OrderFactory, 'Unsubmitted', NULL, @CreatedBy, GETDATE(), NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, 0, 'No', NULL, 1 FROM OrderHeaders WHERE Id=@OldId; INSERT INTO OrderQuotes VALUES(@NewID, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
+                                thisCmd.Parameters.AddWithValue("@OldId", lblHeaderId.Text)
+                                thisCmd.Parameters.AddWithValue("@NewID", newIdHeader)
+                                thisCmd.Parameters.AddWithValue("@OrderId", orderId)
+                                thisCmd.Parameters.AddWithValue("@OrderNumber", txtOrderNumberNew.Text.Trim())
+                                thisCmd.Parameters.AddWithValue("@OrderName", txtOrderNameNew.Text.Trim())
+                                thisCmd.Parameters.AddWithValue("@OrderNote", txtOrderNoteNew.Text)
+                                thisCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
+                                thisCmd.ExecuteNonQuery()
                             End Using
 
                             If lblOrderType.Text = "Builder" Then
-                                Using myCmd As New SqlCommand("INSERT INTO OrderBuilders(Id) VALUES (@Id)", thisConn)
-                                    myCmd.Parameters.AddWithValue("@Id", newIdHeader)
-
-                                    myCmd.ExecuteNonQuery()
+                                Using thisCmd As New SqlCommand("INSERT INTO OrderBuilders(Id) VALUES (@Id)", thisConn)
+                                    thisCmd.Parameters.AddWithValue("@Id", newIdHeader)
+                                    thisCmd.ExecuteNonQuery()
                                 End Using
                             End If
 
@@ -348,15 +342,13 @@ Partial Class Order_Detail
                         Dim newIdDetail As String = orderClass.GetNewOrderItemId()
 
                         Using thisConn As New SqlConnection(myConn)
-                            Using myCmd As New SqlCommand("sp_CopyOrderDetails", thisConn)
-                                myCmd.CommandType = CommandType.StoredProcedure
-
-                                myCmd.Parameters.AddWithValue("@ItemIdOld", itemId)
-                                myCmd.Parameters.AddWithValue("@NewId", newIdDetail)
-                                myCmd.Parameters.AddWithValue("@HeaderId", newIdHeader)
-
+                            Using thisCmd As New SqlCommand("sp_CopyOrderDetails", thisConn)
+                                thisCmd.CommandType = CommandType.StoredProcedure
+                                thisCmd.Parameters.AddWithValue("@ItemIdOld", itemId)
+                                thisCmd.Parameters.AddWithValue("@NewId", newIdDetail)
+                                thisCmd.Parameters.AddWithValue("@HeaderId", newIdHeader)
                                 thisConn.Open()
-                                myCmd.ExecuteNonQuery()
+                                thisCmd.ExecuteNonQuery()
                             End Using
                         End Using
 
@@ -419,11 +411,10 @@ Partial Class Order_Detail
                 End If
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET QuotedDate=GETDATE(), Status='Quoted' WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
-
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET QuotedDate=GETDATE(), Status='Quoted' WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 
@@ -492,14 +483,13 @@ Partial Class Order_Detail
             Dim invoiceNumber As String = lblOrderId.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET SubmittedDate=GETDATE(), Status=@Status, InvoiceNumber=@InvoiceNumber, Payment=0, Amount=0 WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
-                    myCmd.Parameters.AddWithValue("@Status", orderStatus)
-                    myCmd.Parameters.AddWithValue("@InvoiceNumber", invoiceNumber)
-                    myCmd.Parameters.AddWithValue("@Payment", False)
-
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET SubmittedDate=GETDATE(), Status=@Status, InvoiceNumber=@InvoiceNumber, Payment=0, Amount=0 WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
+                    thisCmd.Parameters.AddWithValue("@Status", orderStatus)
+                    thisCmd.Parameters.AddWithValue("@InvoiceNumber", invoiceNumber)
+                    thisCmd.Parameters.AddWithValue("@Payment", False)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -510,14 +500,13 @@ Partial Class Order_Detail
                 Dim productGroupId As String = orderClass.GetItemData("SELECT Id FROM PriceProductGroups WHERE Name='Fuel Surcharge' AND Active=1")
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, 1, 0, 0, 1, 0, 1)", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", thisId)
-                        myCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
-                        myCmd.Parameters.AddWithValue("@ProductId", If(String.IsNullOrEmpty(productId), CType(DBNull.Value, Object), productId))
-                        myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(productGroupId), CType(DBNull.Value, Object), productGroupId))
-
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, 1, 0, 0, 1, 0, 1)", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", thisId)
+                        thisCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
+                        thisCmd.Parameters.AddWithValue("@ProductId", If(String.IsNullOrEmpty(productId), CType(DBNull.Value, Object), productId))
+                        thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(productGroupId), CType(DBNull.Value, Object), productGroupId))
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 
@@ -535,14 +524,13 @@ Partial Class Order_Detail
                     productGroupId = orderClass.GetItemData("SELECT Id FROM PriceProductGroups WHERE Name='Minimum Order Surcharge' AND Active=1")
 
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, 1, 0, 0, 1, 0, 1)", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", thisId)
-                            myCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
-                            myCmd.Parameters.AddWithValue("@ProductId", If(String.IsNullOrEmpty(productId), CType(DBNull.Value, Object), productId))
-                            myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(productGroupId), CType(DBNull.Value, Object), productGroupId))
-
+                        Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, 1, 0, 0, 1, 0, 1)", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", thisId)
+                            thisCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
+                            thisCmd.Parameters.AddWithValue("@ProductId", If(String.IsNullOrEmpty(productId), CType(DBNull.Value, Object), productId))
+                            thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(productGroupId), CType(DBNull.Value, Object), productGroupId))
                             thisConn.Open()
-                            myCmd.ExecuteNonQuery()
+                            thisCmd.ExecuteNonQuery()
                         End Using
                     End Using
 
@@ -600,10 +588,10 @@ Partial Class Order_Detail
         MessageError(False, String.Empty)
         Try
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='New Order' WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='New Order' WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -632,10 +620,9 @@ Partial Class Order_Detail
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
 
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET SubmittedDate=NULL, ProductionDate=NULL, OnHoldDate=NULL, Status='Unsubmitted', Download='No', DownloadDate=NULL, ShipmentDate=NULL, ShipmentNumber=NULL, ContainerNumber=NULL, ContainerETA=NULL, Courier=NULL, InvoiceNumber=NULL, Collector=NULL, InvoiceDate=NULL, DueDate=NULL, Payment=0, PaymentDate=NULL, Amount=0 WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
-
-                    myCmd.ExecuteNonQuery()
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET SubmittedDate=NULL, ProductionDate=NULL, OnHoldDate=NULL, Status='Unsubmitted', Download='No', DownloadDate=NULL, ShipmentDate=NULL, ShipmentNumber=NULL, ContainerNumber=NULL, ContainerETA=NULL, Courier=NULL, InvoiceNumber=NULL, Collector=NULL, InvoiceDate=NULL, DueDate=NULL, Payment=0, PaymentDate=NULL, Amount=0 WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
+                    thisCmd.ExecuteNonQuery()
                 End Using
 
                 Dim serviceData As DataTable = orderClass.GetDataTable("SELECT OrderDetails.* FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.HeaderId='" & lblHeaderId.Text & "' AND Products.DesignId='16'")
@@ -643,11 +630,10 @@ Partial Class Order_Detail
                     For i As Integer = 0 To serviceData.Rows.Count - 1
                         Dim serviceId As String = serviceData.Rows(i).Item("Id").ToString()
 
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET Active=0 WHERE Id=@ItemId; DELETE FROM OrderCostings WHERE HeaderId=@HeaderId AND ItemId=@ItemId", thisConn)
-                            myCmd.Parameters.AddWithValue("@ItemId", serviceId)
-                            myCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
-
-                            myCmd.ExecuteNonQuery()
+                        Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET Active=0 WHERE Id=@ItemId; DELETE FROM OrderCostings WHERE HeaderId=@HeaderId AND ItemId=@ItemId", thisConn)
+                            thisCmd.Parameters.AddWithValue("@ItemId", serviceId)
+                            thisCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
+                            thisCmd.ExecuteNonQuery()
                         End Using
                     Next
                 End If
@@ -685,11 +671,10 @@ Partial Class Order_Detail
             End If
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand(stringQuery, thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
-
+                Using thisCmd As SqlCommand = New SqlCommand(stringQuery, thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -716,11 +701,10 @@ Partial Class Order_Detail
         MessageError(False, String.Empty)
         Try
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='On Hold', OnHoldDate=GETDATE() WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
-
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='On Hold', OnHoldDate=GETDATE() WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -746,16 +730,15 @@ Partial Class Order_Detail
         Try
             If msgErrorShippedOrder.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Shipped Out', ShipmentNumber=@ShipmentNumber, ShipmentDate=@ShipmentDate, ContainerNumber=@ContainerNumber, ContainerETA=@ContainerETA, Courier=@Courier WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
-                        myCmd.Parameters.AddWithValue("@ShipmentNumber", txtShipmentNumber.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@ShipmentDate", If(String.IsNullOrEmpty(txtShipmentDate.Text), CType(DBNull.Value, Object), txtShipmentDate.Text))
-                        myCmd.Parameters.AddWithValue("@ContainerNumber", txtContainerNumber.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@ContainerETA", If(String.IsNullOrEmpty(txtContainerEta.Text), CType(DBNull.Value, Object), txtContainerEta.Text))
-                        myCmd.Parameters.AddWithValue("@Courier", txtCourier.Text.Trim())
-
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Shipped Out', ShipmentNumber=@ShipmentNumber, ShipmentDate=@ShipmentDate, ContainerNumber=@ContainerNumber, ContainerETA=@ContainerETA, Courier=@Courier WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
+                        thisCmd.Parameters.AddWithValue("@ShipmentNumber", txtShipmentNumber.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@ShipmentDate", If(String.IsNullOrEmpty(txtShipmentDate.Text), CType(DBNull.Value, Object), txtShipmentDate.Text))
+                        thisCmd.Parameters.AddWithValue("@ContainerNumber", txtContainerNumber.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@ContainerETA", If(String.IsNullOrEmpty(txtContainerEta.Text), CType(DBNull.Value, Object), txtContainerEta.Text))
+                        thisCmd.Parameters.AddWithValue("@Courier", txtCourier.Text.Trim())
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 
@@ -778,11 +761,10 @@ Partial Class Order_Detail
         MessageError(False, String.Empty)
         Try
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Completed', CompletedDate=GETDATE() WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
-
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Completed', CompletedDate=GETDATE() WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -814,12 +796,11 @@ Partial Class Order_Detail
 
             If msgErrorCancelOrder.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Canceled', CanceledDate=GETDATE(), ShipmentNumber=NULL, ShipmentDate=NULL, ContainerNumber=NULL, ContainerETA=NULL, Courier=NULL, InvoiceNumber=NULL, Collector=NULL, InvoiceDate=NULL, DueDate=NULL, Payment=0, PaymentDate=NULL, Amount=0, Download='No' WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
-                        myCmd.Parameters.AddWithValue("@StatusDescription", txtCancelDescription.Text.Trim())
-
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Canceled', CanceledDate=GETDATE(), ShipmentNumber=NULL, ShipmentDate=NULL, ContainerNumber=NULL, ContainerETA=NULL, Courier=NULL, InvoiceNumber=NULL, Collector=NULL, InvoiceDate=NULL, DueDate=NULL, Payment=0, PaymentDate=NULL, Amount=0, Download='No' WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
+                        thisCmd.Parameters.AddWithValue("@StatusDescription", txtCancelDescription.Text.Trim())
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 
@@ -849,13 +830,12 @@ Partial Class Order_Detail
             Dim reworkId As String = orderClass.GetNewOrderReworkId()
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderReworks VALUES (@Id, @HeaderId, NULL, 'Unsubmitted', @CreatedBy, GETDATE(), NULL, 1)", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", reworkId)
-                    myCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
-                    myCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
-
+                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderReworks VALUES (@Id, @HeaderId, NULL, 'Unsubmitted', @CreatedBy, GETDATE(), NULL, 1)", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", reworkId)
+                    thisCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
+                    thisCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -954,22 +934,21 @@ Partial Class Order_Detail
                 txtQuoteFreight.Text.Replace(".", ",")
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderQuotes SET Email=@Email, Phone=@Phone, Address=@Address, Suburb=@Suburb, City=@City, State=@State, PostCode=@PostCode, Discount=@Discount, Installation=@Installation, CheckMeasure=@CheckMeasure, Freight=@Freight WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
-                        myCmd.Parameters.AddWithValue("@Email", txtQuoteEmail.Text)
-                        myCmd.Parameters.AddWithValue("@Phone", txtQuotePhone.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Address", address)
-                        myCmd.Parameters.AddWithValue("@Suburb", txtQuoteSuburb.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@City", txtQuoteCity.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@State", txtQuoteState.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@PostCode", txtQuotePostCode.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Discount", txtQuoteDiscount.Text)
-                        myCmd.Parameters.AddWithValue("@CheckMeasure", txtQuoteCheckMeasure.Text)
-                        myCmd.Parameters.AddWithValue("@Installation", txtQuoteInstallation.Text)
-                        myCmd.Parameters.AddWithValue("@Freight", txtQuoteFreight.Text)
-
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderQuotes SET Email=@Email, Phone=@Phone, Address=@Address, Suburb=@Suburb, City=@City, State=@State, PostCode=@PostCode, Discount=@Discount, Installation=@Installation, CheckMeasure=@CheckMeasure, Freight=@Freight WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
+                        thisCmd.Parameters.AddWithValue("@Email", txtQuoteEmail.Text)
+                        thisCmd.Parameters.AddWithValue("@Phone", txtQuotePhone.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Address", address)
+                        thisCmd.Parameters.AddWithValue("@Suburb", txtQuoteSuburb.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@City", txtQuoteCity.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@State", txtQuoteState.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@PostCode", txtQuotePostCode.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Discount", txtQuoteDiscount.Text)
+                        thisCmd.Parameters.AddWithValue("@CheckMeasure", txtQuoteCheckMeasure.Text)
+                        thisCmd.Parameters.AddWithValue("@Installation", txtQuoteInstallation.Text)
+                        thisCmd.Parameters.AddWithValue("@Freight", txtQuoteFreight.Text)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 
@@ -1135,12 +1114,11 @@ Partial Class Order_Detail
             If msgErrorSendInvoice.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
                     If lblOrderStatus.Text = "Waiting Proforma" Then
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Proforma Sent', Collector=@Collector, InvoiceDate=GETDATE(), DueDate=DATEADD(DAY, 14, GETDATE()) WHERE Id=@Id;", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
-                            myCmd.Parameters.AddWithValue("@Collector", Session("LoginId").ToString())
-
+                        Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Proforma Sent', Collector=@Collector, InvoiceDate=GETDATE(), DueDate=DATEADD(DAY, 14, GETDATE()) WHERE Id=@Id;", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
+                            thisCmd.Parameters.AddWithValue("@Collector", Session("LoginId").ToString())
                             thisConn.Open()
-                            myCmd.ExecuteNonQuery()
+                            thisCmd.ExecuteNonQuery()
                         End Using
                     End If
                 End Using
@@ -1170,9 +1148,9 @@ Partial Class Order_Detail
                 thisConn.Open()
 
                 If lblOrderStatus.Text = "Proforma Sent" Then
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Payment Received' WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
-                        myCmd.ExecuteNonQuery()
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Payment Received' WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End If
 
@@ -1181,10 +1159,10 @@ Partial Class Order_Detail
                     amount = orderClass.GetItemData_Decimal("SELECT (SUM(SellPrice) * 1.11) AS SumPrice FROM OrderCostings WHERE HeaderId='" & lblHeaderId.Text & "' AND Type='Final'")
                 End If
 
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET PaymentDate=GETDATE(), DueDate=NULL, Payment=1, Amount=@Amount WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
-                    myCmd.Parameters.AddWithValue("@Amount", amount)
-                    myCmd.ExecuteNonQuery()
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET PaymentDate=GETDATE(), DueDate=NULL, Payment=1, Amount=@Amount WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
+                    thisCmd.Parameters.AddWithValue("@Amount", amount)
+                    thisCmd.ExecuteNonQuery()
                 End Using
 
                 thisConn.Close()
@@ -1251,9 +1229,7 @@ Partial Class Order_Detail
         MessageError(False, String.Empty)
         Try
             Dim invoiceClass As New InvoiceClass
-
             Dim data As String = invoiceClass.BindXero(lblHeaderId.Text)
-
             Dim fileName As String = String.Format("{0}.csv", lblInvoiceNumber.Text)
 
             Response.Clear()
@@ -1292,11 +1268,11 @@ Partial Class Order_Detail
                 Exit Sub
             End If
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET InvoiceNumber=@InvoiceNumber WHERE Id=@Id;", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
-                    myCmd.Parameters.AddWithValue("@InvoiceNumber", txtUpdateInvoiceNumber.Text.Trim())
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET InvoiceNumber=@InvoiceNumber WHERE Id=@Id;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
+                    thisCmd.Parameters.AddWithValue("@InvoiceNumber", txtUpdateInvoiceNumber.Text.Trim())
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -1323,18 +1299,17 @@ Partial Class Order_Detail
                 amount = orderClass.GetItemData_Decimal("SELECT (SUM(SellPrice) * 1.10) AS SumPrice FROM OrderCostings WHERE HeaderId='" & lblHeaderId.Text & "' AND Type='Final'")
             End If
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET InvoiceNumber=@InvoiceNumber, Collector=@Collector, InvoiceDate=@InvoiceDate, PaymentDate=@PaymentDate, DueDate=@DueDate, Payment=@Payment, Amount=@Amount WHERE Id=@Id;", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
-                    myCmd.Parameters.AddWithValue("@InvoiceNumber", txtInvoiceNumber.Text.Trim())
-                    myCmd.Parameters.AddWithValue("@Collector", If(String.IsNullOrEmpty(ddlCollector.SelectedValue), CType(DBNull.Value, Object), ddlCollector.SelectedValue))
-                    myCmd.Parameters.AddWithValue("@InvoiceDate", If(String.IsNullOrEmpty(txtInvoiceDate.Text), CType(DBNull.Value, Object), txtInvoiceDate.Text))
-                    myCmd.Parameters.AddWithValue("@PaymentDate", If(String.IsNullOrEmpty(txtPaymentDate.Text), CType(DBNull.Value, Object), txtPaymentDate.Text))
-                    myCmd.Parameters.AddWithValue("@DueDate", If(String.IsNullOrEmpty(txtDueDate.Text), CType(DBNull.Value, Object), txtDueDate.Text))
-                    myCmd.Parameters.AddWithValue("@Payment", ddlPayment.SelectedValue)
-                    myCmd.Parameters.AddWithValue("@Amount", amount)
-
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET InvoiceNumber=@InvoiceNumber, Collector=@Collector, InvoiceDate=@InvoiceDate, PaymentDate=@PaymentDate, DueDate=@DueDate, Payment=@Payment, Amount=@Amount WHERE Id=@Id;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
+                    thisCmd.Parameters.AddWithValue("@InvoiceNumber", txtInvoiceNumber.Text.Trim())
+                    thisCmd.Parameters.AddWithValue("@Collector", If(String.IsNullOrEmpty(ddlCollector.SelectedValue), CType(DBNull.Value, Object), ddlCollector.SelectedValue))
+                    thisCmd.Parameters.AddWithValue("@InvoiceDate", If(String.IsNullOrEmpty(txtInvoiceDate.Text), CType(DBNull.Value, Object), txtInvoiceDate.Text))
+                    thisCmd.Parameters.AddWithValue("@PaymentDate", If(String.IsNullOrEmpty(txtPaymentDate.Text), CType(DBNull.Value, Object), txtPaymentDate.Text))
+                    thisCmd.Parameters.AddWithValue("@DueDate", If(String.IsNullOrEmpty(txtDueDate.Text), CType(DBNull.Value, Object), txtDueDate.Text))
+                    thisCmd.Parameters.AddWithValue("@Payment", ddlPayment.SelectedValue)
+                    thisCmd.Parameters.AddWithValue("@Amount", amount)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -1394,6 +1369,7 @@ Partial Class Order_Detail
                 ClientScript.RegisterStartupScript(Me.GetType(), "showConvertJob", thisScript, True)
                 Exit Sub
             End If
+
             Dim orderJobId As String = orderClass.CreateOrderJobId()
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderJobs VALUES (@OrderJobId, @JobNumber, @WorkOrder, @JobNote, @HeaderId, @CreatedBy, GETDATE()); UPDATE OrderHeaders SET OrderJobId=@OrderJobId WHERE Id=@HeaderId", thisConn)
@@ -1431,6 +1407,12 @@ Partial Class Order_Detail
                     Next
                 Next
             End If
+
+            dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), "Convert Order"}
+            orderClass.Logs(dataLog)
+
+            url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+            Response.Redirect(url, False)
         Catch ex As Exception
             MessageError_ConvertJob(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -1480,6 +1462,12 @@ Partial Class Order_Detail
                     Next
                 Next
             End If
+
+            dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), "Re Convert Order"}
+            orderClass.Logs(dataLog)
+
+            url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+            Response.Redirect(url, False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -1518,19 +1506,10 @@ Partial Class Order_Detail
     End Sub
 
     Protected Sub gvListItem_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        gvListItem.PageIndex = e.NewPageIndex
+
         MessageError(False, String.Empty)
-        Try
-            gvListItem.PageIndex = e.NewPageIndex
-            BindDataItem(lblOrderStatus.Text)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                If Session("RoleName") = "Customer" Then
-                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
-                End If
-            End If
-        End Try
+        BindDataItem(lblOrderStatus.Text)
     End Sub
 
     Protected Sub gvListItem_RowCommand(sender As Object, e As GridViewCommandEventArgs)
@@ -1723,14 +1702,13 @@ Partial Class Order_Detail
                 Dim itemId As String = orderClass.GetNewOrderItemId()
 
                 Using thisConn As SqlConnection = New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails (Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], LinearMetre, SquareMetre, TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, 1, 0, 0, 0, 0, 1, 0, 1)", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", itemId)
-                        myCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
-                        myCmd.Parameters.AddWithValue("@ProductId", ddlAddService.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
-
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails (Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], LinearMetre, SquareMetre, TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, 1, 0, 0, 0, 0, 1, 0, 1)", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", itemId)
+                        thisCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
+                        thisCmd.Parameters.AddWithValue("@ProductId", ddlAddService.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 
@@ -1767,20 +1745,12 @@ Partial Class Order_Detail
             Dim thisId As String = txtDeleteItemId.Text
 
             Using thisConn As New SqlConnection(myConn)
-                thisConn.Open()
-
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET Active=0 WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET Active=0 WHERE Id=@ItemId; DELETE FROM OrderCostings WHERE HeaderId=@HeaderId AND ItemId=@ItemId;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
+                    thisCmd.Parameters.AddWithValue("@ItemId", thisId)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
                 End Using
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM OrderCostings WHERE HeaderId=@HeaderId AND ItemId=@ItemId", thisConn)
-                    myCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
-                    myCmd.Parameters.AddWithValue("@ItemId", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                thisConn.Close()
             End Using
 
             Dim folderPath As String = Server.MapPath("~/File/Printing/" & thisId)
@@ -2039,13 +2009,17 @@ Partial Class Order_Detail
             Dim isReworkOrder As Boolean = orderClass.IsReworkOrder(headerId)
 
             If Session("RoleName") = "Developer" Then
+                divInternalNote.Visible = True
+                divOrderType.Visible = True
+                divOrderFactory.Visible = True
+
                 aDuplicateOrder.Visible = True
 
                 aFile.Visible = True
                 aLog.Visible = True
                 aRePrice.Visible = True
-                If lblCompanyId.Text = "3" Then btnSuratJalan.Visible = True
 
+                If lblCompanyId.Text = "3" Then btnSuratJalan.Visible = True
                 If lblOrderType.Text = "Builder" Then aBuilderData.Visible = True
 
                 If lblOrderStatus.Text = "Unsubmitted" Then
@@ -2253,10 +2227,6 @@ Partial Class Order_Detail
                     If isReworkOrder = False Then aReworkOrder.Visible = True
                 End If
 
-                divInternalNote.Visible = True
-                divOrderType.Visible = True
-                divOrderFactory.Visible = True
-
                 divDateAction.Attributes.Add("onclick", "showDateOrder()")
                 divDateAction.Style.Add("cursor", "pointer")
 
@@ -2358,6 +2328,18 @@ Partial Class Order_Detail
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceData.Visible = True
 
+                    btnJob.Visible = True
+                    If convertedStatus = "Yes" Then
+                        aDataJob.Visible = True
+                        aReConvertJob.Visible = True
+                        aUpdateJob.Visible = True
+                        btnPreviewJob.Visible = True
+                        btnDownloadJob.Visible = True
+                    End If
+                    If convertedStatus = "No" Then
+                        aConvertJob.Visible = True
+                    End If
+
                     If lblOrderPaid.Text = "" Then
                         aSendInvoice.Visible = True
                         aRePrice.Visible = True
@@ -2377,6 +2359,18 @@ Partial Class Order_Detail
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceData.Visible = True
 
+                    btnJob.Visible = True
+                    If convertedStatus = "Yes" Then
+                        aDataJob.Visible = True
+                        aReConvertJob.Visible = True
+                        aUpdateJob.Visible = True
+                        btnPreviewJob.Visible = True
+                        btnDownloadJob.Visible = True
+                    End If
+                    If convertedStatus = "No" Then
+                        aConvertJob.Visible = True
+                    End If
+
                     If lblOrderPaid.Text = "" Then
                         aSendInvoice.Visible = True
                         aRePrice.Visible = True
@@ -2394,6 +2388,18 @@ Partial Class Order_Detail
                     btnInvoice.Visible = True
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceData.Visible = True
+
+                    btnJob.Visible = True
+                    If convertedStatus = "Yes" Then
+                        aDataJob.Visible = True
+                        aReConvertJob.Visible = True
+                        aUpdateJob.Visible = True
+                        btnPreviewJob.Visible = True
+                        btnDownloadJob.Visible = True
+                    End If
+                    If convertedStatus = "No" Then
+                        aConvertJob.Visible = True
+                    End If
 
                     If lblOrderPaid.Text = "" Then
                         aRePrice.Visible = True
@@ -2514,6 +2520,18 @@ Partial Class Order_Detail
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceData.Visible = True
 
+                    btnJob.Visible = True
+                    If convertedStatus = "Yes" Then
+                        aDataJob.Visible = True
+                        aReConvertJob.Visible = True
+                        aUpdateJob.Visible = True
+                        btnPreviewJob.Visible = True
+                        btnDownloadJob.Visible = True
+                    End If
+                    If convertedStatus = "No" Then
+                        aConvertJob.Visible = True
+                    End If
+
                     If lblOrderPaid.Text = "" Then
                         aSendInvoice.Visible = True
                         aRePrice.Visible = True
@@ -2531,6 +2549,18 @@ Partial Class Order_Detail
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceData.Visible = True
 
+                    btnJob.Visible = True
+                    If convertedStatus = "Yes" Then
+                        aDataJob.Visible = True
+                        aReConvertJob.Visible = True
+                        aUpdateJob.Visible = True
+                        btnPreviewJob.Visible = True
+                        btnDownloadJob.Visible = True
+                    End If
+                    If convertedStatus = "No" Then
+                        aConvertJob.Visible = True
+                    End If
+
                     If lblOrderPaid.Text = "" Then
                         aSendInvoice.Visible = True
                         aRePrice.Visible = True
@@ -2546,6 +2576,18 @@ Partial Class Order_Detail
                     btnInvoice.Visible = True
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceData.Visible = True
+
+                    btnJob.Visible = True
+                    If convertedStatus = "Yes" Then
+                        aDataJob.Visible = True
+                        aReConvertJob.Visible = True
+                        aUpdateJob.Visible = True
+                        btnPreviewJob.Visible = True
+                        btnDownloadJob.Visible = True
+                    End If
+                    If convertedStatus = "No" Then
+                        aConvertJob.Visible = True
+                    End If
 
                     If lblOrderPaid.Text = "" Then
                         aSendInvoice.Visible = True
@@ -2822,27 +2864,63 @@ Partial Class Order_Detail
                     aFile.Visible = True
                     aAddItem.Visible = True
                 End If
+                If lblOrderStatus.Text = "Payment Received" Then
+                    btnUpdateStatus.Visible = True
+                    aProductionOrder.Visible = True
+                    aHoldOrder.Visible = True
+                End If
                 If lblOrderStatus.Text = "New Order" Then
                     btnUpdateStatus.Visible = True
                     aCancelOrder.Visible = True
                     aHoldOrder.Visible = True
                     aProductionOrder.Visible = True
-                End If
-                If lblOrderStatus.Text = "Payment Received" Then
-                    btnUpdateStatus.Visible = True
-                    aProductionOrder.Visible = True
-                    aHoldOrder.Visible = True
+
+                    btnJob.Visible = True
+                    If convertedStatus = "Yes" Then
+                        aDataJob.Visible = True
+                        aReConvertJob.Visible = True
+                        aUpdateJob.Visible = True
+                        btnPreviewJob.Visible = True
+                        btnDownloadJob.Visible = True
+                    End If
+                    If convertedStatus = "No" Then
+                        aConvertJob.Visible = True
+                    End If
                 End If
                 If lblOrderStatus.Text = "In Production" Then
                     btnUpdateStatus.Visible = True
                     aHoldOrder.Visible = True
                     aShippedOrder.Visible = True
                     aCancelOrder.Visible = True
+
+                    btnJob.Visible = True
+                    If convertedStatus = "Yes" Then
+                        aDataJob.Visible = True
+                        aReConvertJob.Visible = True
+                        aUpdateJob.Visible = True
+                        btnPreviewJob.Visible = True
+                        btnDownloadJob.Visible = True
+                    End If
+                    If convertedStatus = "No" Then
+                        aConvertJob.Visible = True
+                    End If
                 End If
                 If lblOrderStatus.Text = "On Hold" Then
                     btnUpdateStatus.Visible = True
                     aProductionOrder.Visible = True
                     aCancelOrder.Visible = True
+
+                    btnJob.Visible = True
+                    If convertedStatus = "Yes" Then
+                        aDataJob.Visible = True
+                        aReConvertJob.Visible = True
+                        aUpdateJob.Visible = True
+                        btnPreviewJob.Visible = True
+                        btnDownloadJob.Visible = True
+                    End If
+                    If convertedStatus = "No" Then
+                        aConvertJob.Visible = True
+                    End If
                 End If
                 If lblOrderStatus.Text = "Shipped Out" Then
                     If isReworkOrder = False AndAlso lblOrderType.Text = "Regular" Then
@@ -3018,14 +3096,14 @@ Partial Class Order_Detail
 
         If quoteData Is Nothing Then
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderQuotes VALUES(@Id, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00)", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
-
+                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderQuotes VALUES(@Id, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00)", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
-            Response.Redirect("~/order/detail", False)
+            url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+            Response.Redirect(url, False)
         End If
 
         divQuoteCity.Visible = False

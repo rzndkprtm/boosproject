@@ -275,21 +275,18 @@
         function showTube() {
             $("#modalTube").modal("show");
         }
-
         function showControl() {
             $("#modalControl").modal("show");
         }
         function showColour() {
             $("#modalColour").modal("show");
         }
-
         ["modalTube", "modalControl", "modalColour"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
             });
         });
-
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

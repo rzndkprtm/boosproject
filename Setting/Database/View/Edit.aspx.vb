@@ -33,9 +33,9 @@ Partial Class Setting_Database_View_Edit
                 Dim thisQuery As String = "IF EXISTS ( SELECT * FROM sys.views WHERE name = '" & txtName.Text.Replace("'", "''") & "') BEGIN EXEC(' ALTER VIEW [" & txtName.Text.Replace("'", "''") & "] AS " & txtQuery.Text.Replace("'", "''") & " ') END ELSE BEGIN EXEC(' CREATE VIEW [" & txtName.Text.Replace("'", "''") & "] AS " & txtQuery.Text.Replace("'", "''") & " ') END"
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand(thisQuery, thisConn)
+                    Using thisCmd As New SqlCommand(thisQuery, thisConn)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 

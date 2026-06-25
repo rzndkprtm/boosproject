@@ -23,15 +23,13 @@ Partial Class Setting_Database_Function_Add
         Try
             If Not String.IsNullOrEmpty(txtQuery.Text) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand(txtQuery.Text, thisConn)
-
+                    Using thisCmd As New SqlCommand(txtQuery.Text, thisConn)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 
                 Response.Redirect("~/setting/database/function", False)
-                Exit Sub
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())

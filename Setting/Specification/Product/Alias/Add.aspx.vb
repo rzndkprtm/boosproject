@@ -37,13 +37,12 @@ Partial Class Setting_Specification_Product_Alias_Add
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM ProductAlias ORDER BY Id DESC")
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO ProductAlias VALUES (@Id, @FirstId, @SecondId)", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", thisId)
-                        myCmd.Parameters.AddWithValue("@FirstId", ddlFirstId.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@SecondId", ddlSecondId.SelectedValue)
-
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO ProductAlias VALUES (@Id, @FirstId, @SecondId)", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", thisId)
+                        thisCmd.Parameters.AddWithValue("@FirstId", ddlFirstId.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@SecondId", ddlSecondId.SelectedValue)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 

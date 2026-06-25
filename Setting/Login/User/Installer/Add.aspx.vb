@@ -43,12 +43,11 @@ Partial Class Setting_Login_User_Installer_Add
             End If
             If msgError.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO LoginInstallers VALUES (@Id, @CustomerId)", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", ddlLogin.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@CustomerId", customerId)
-
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO LoginInstallers VALUES (@Id, @CustomerId)", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", ddlLogin.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@CustomerId", customerId)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 

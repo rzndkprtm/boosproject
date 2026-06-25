@@ -83,19 +83,18 @@ Partial Class Setting_Specification_Fabric_Add
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Fabrics ORDER BY Id DESC")
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Fabrics VALUES (@Id, @DesignId, @TubeId, @CompanyId, @Name, @Type, @Group, @NoRailRoad, @Status)", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", thisId)
-                        myCmd.Parameters.AddWithValue("@DesignId", designType)
-                        myCmd.Parameters.AddWithValue("@TubeId", tubeType)
-                        myCmd.Parameters.AddWithValue("@CompanyId", companyDetail)
-                        myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@Group", ddlGroup.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@NoRailRoad", ddlNoRailRoad.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
-
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Fabrics VALUES (@Id, @DesignId, @TubeId, @CompanyId, @Name, @Type, @Group, @NoRailRoad, @Status)", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", thisId)
+                        thisCmd.Parameters.AddWithValue("@DesignId", designType)
+                        thisCmd.Parameters.AddWithValue("@TubeId", tubeType)
+                        thisCmd.Parameters.AddWithValue("@CompanyId", companyDetail)
+                        thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Group", ddlGroup.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@NoRailRoad", ddlNoRailRoad.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 
@@ -208,6 +207,4 @@ Partial Class Setting_Specification_Fabric_Add
             Return False
         End Try
     End Function
-
-
 End Class

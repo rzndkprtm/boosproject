@@ -57,17 +57,16 @@ Partial Class Setting_Customer_Contact_Edit
                 End If
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerContacts SET CustomerId=@CustomerId, Name=@Name, Email=@Email, Phone=@Phone, Tags=@Tags, Note=@Note WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                        myCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Email", txtEmail.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Phone", txtPhone.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Tags", thisTags)
-                        myCmd.Parameters.AddWithValue("@Note", txtNote.Text.Trim())
-
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE CustomerContacts SET CustomerId=@CustomerId, Name=@Name, Email=@Email, Phone=@Phone, Tags=@Tags, Note=@Note WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                        thisCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Email", txtEmail.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Phone", txtPhone.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Tags", thisTags)
+                        thisCmd.Parameters.AddWithValue("@Note", txtNote.Text.Trim())
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 
@@ -140,7 +139,6 @@ Partial Class Setting_Customer_Contact_Edit
                     role = "AND (Id = '" & Session("CustomerId") & "' OR EXISTS (SELECT 1 FROM STRING_SPLIT(Operator, ',') WHERE value = '" & Session("LoginId") & "'))"
                 End If
             End If
-
             Dim thisQuery As String = String.Format("SELECT * FROM Customers WHERE Active=1 {0} ORDER BY Name ASC", role)
 
             ddlCustomer.DataSource = settingClass.GetDataTable(thisQuery)

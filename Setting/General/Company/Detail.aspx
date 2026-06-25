@@ -212,7 +212,6 @@
                 });
             }
         });
-
         function showProcessDetail() {
             $("#modalProcessDetail").modal("show");
         }

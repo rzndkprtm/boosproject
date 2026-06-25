@@ -110,29 +110,27 @@ Partial Class Setting_Customer_Discount_Add
             Dim newDisc As Decimal = settingClass.GetTotalDiscount(thisDiscount, txtDiscount.Text)
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As New SqlCommand("UPDATE CustomerDiscounts SET Discount=@Discount, Description=@Description WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.Parameters.AddWithValue("@Discount", newDisc)
-                    myCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
-
+                Using thisCmd As New SqlCommand("UPDATE CustomerDiscounts SET Discount=@Discount, Description=@Description WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisCmd.Parameters.AddWithValue("@Discount", newDisc)
+                    thisCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
             settingClass.Logs({"CustomerDiscounts", thisId, Session("LoginId").ToString(), "Customer Discount Added"})
         Else
             Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerDiscounts ORDER BY Id DESC")
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As New SqlCommand("INSERT INTO CustomerDiscounts VALUES (@Id, @CustomerId, @Type, @DataId, @Discount, @Description)", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.Parameters.AddWithValue("@CustomerId", lblCustomerId.Text)
-                    myCmd.Parameters.AddWithValue("@Type", typeDisc)
-                    myCmd.Parameters.AddWithValue("@DataId", dataId)
-                    myCmd.Parameters.AddWithValue("@Discount", txtDiscount.Text)
-                    myCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
-
+                Using thisCmd As New SqlCommand("INSERT INTO CustomerDiscounts VALUES (@Id, @CustomerId, @Type, @DataId, @Discount, @Description)", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisCmd.Parameters.AddWithValue("@CustomerId", lblCustomerId.Text)
+                    thisCmd.Parameters.AddWithValue("@Type", typeDisc)
+                    thisCmd.Parameters.AddWithValue("@DataId", dataId)
+                    thisCmd.Parameters.AddWithValue("@Discount", txtDiscount.Text)
+                    thisCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 

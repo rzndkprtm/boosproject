@@ -25,10 +25,10 @@ Public Class ShutterOceanService
         Dim payload As New DataHeader()
         payload.Details = New List(Of DataDetail)()
 
-        Using conn As New SqlConnection(ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString)
-            Await conn.OpenAsync()
+        Using thisConn As New SqlConnection(ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString)
+            Await thisConn.OpenAsync()
 
-            Dim cmdHeader As New SqlCommand("SELECT OrderHeaders.OrderId, OrderHeaders.OrderNote, Customers.Name AS CustomerName FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId = Customers.Id WHERE OrderHeaders.Id = @Id", conn)
+            Dim cmdHeader As New SqlCommand("SELECT OrderHeaders.OrderId, OrderHeaders.OrderNote, Customers.Name AS CustomerName FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId = Customers.Id WHERE OrderHeaders.Id=@Id", thisConn)
 
             cmdHeader.Parameters.AddWithValue("@Id", headerId)
 
@@ -44,7 +44,7 @@ Public Class ShutterOceanService
                 End If
             End Using
 
-            Dim cmdDetail As New SqlCommand("SELECT OrderDetails.*, Blinds.Name AS BlindName, ProductColours.Name AS ColourName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId = Products.Id LEFT JOIN ProductColours ON Products.ColourType = ProductColours.Id LEFT JOIN Blinds ON Products.BlindId = Blinds.Id WHERE OrderDetails.HeaderId=@HeaderId AND OrderDetails.Active=1 AND Products.DesignId='15'", conn)
+            Dim cmdDetail As New SqlCommand("SELECT OrderDetails.*, Blinds.Name AS BlindName, ProductColours.Name AS ColourName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId = Products.Id LEFT JOIN ProductColours ON Products.ColourType = ProductColours.Id LEFT JOIN Blinds ON Products.BlindId = Blinds.Id WHERE OrderDetails.HeaderId=@HeaderId AND OrderDetails.Active=1 AND Products.DesignId='15'", thisConn)
 
             cmdDetail.Parameters.AddWithValue("@HeaderId", headerId)
 

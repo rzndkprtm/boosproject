@@ -18,6 +18,7 @@
         .fw-semibold { font-weight: 600; }
         .table > :not(caption) > * > * { vertical-align: middle; }
     </style>
+
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
@@ -1800,9 +1801,7 @@
                     $("#historyNoteBody").html(html);
                 },
                 error: () => {
-                    $("#historyNoteError")
-                        .removeClass("d-none")
-                        .text("FAILED TO LOAD HISTORY NOTE");
+                    $("#historyNoteError").removeClass("d-none").text("FAILED TO LOAD HISTORY NOTE");
                 }
             });
         }

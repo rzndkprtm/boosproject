@@ -59,38 +59,27 @@ Partial Class Setting_Specification_Fabric_Default
 
     Protected Sub ddlCompanyDetail_SelectedIndexChanged(sender As Object, e As EventArgs)
         gvList.PageIndex = 0
+
         MessageError(False, String.Empty)
         BindData(txtSearch.Text, ddlCompanyDetail.SelectedValue)
     End Sub
 
     Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
-        Try
-            If e.CommandName = "Page" Then
-                gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
-                BindData(txtSearch.Text, ddlCompanyDetail.SelectedValue)
-            End If
-        Catch ex As Exception
-        End Try
+        If e.CommandName = "Page" Then
+            gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
+            BindData(txtSearch.Text, ddlCompanyDetail.SelectedValue)
+        End If
     End Sub
 
     Protected Sub gvList_DataBound(sender As Object, e As EventArgs)
-        Try
-            BuildPager()
-        Catch ex As Exception
-        End Try
+        BuildPager()
     End Sub
 
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        gvList.PageIndex = e.NewPageIndex
+
         MessageError(False, String.Empty)
-        Try
-            gvList.PageIndex = e.NewPageIndex
-            BindData(txtSearch.Text, ddlCompanyDetail.SelectedValue)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
+        BindData(txtSearch.Text, ddlCompanyDetail.SelectedValue)
     End Sub
 
     Protected Sub btnChangeStatus_Click(sender As Object, e As EventArgs)
@@ -101,11 +90,11 @@ Partial Class Setting_Specification_Fabric_Default
             Dim oldStatus As String = txtOldStatus.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE Fabrics SET Status=@Status WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.Parameters.AddWithValue("@Status", newStatus)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Fabrics SET Status=@Status WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisCmd.Parameters.AddWithValue("@Status", newStatus)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -119,12 +108,11 @@ Partial Class Setting_Specification_Fabric_Default
                     Dim detailId As String = detailData.Rows(i)("Id").ToString()
 
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET Status=@Status WHERE Id=@Id", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", detailId)
-                            myCmd.Parameters.AddWithValue("@Status", newStatus)
-
+                        Using thisCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET Status=@Status WHERE Id=@Id", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", detailId)
+                            thisCmd.Parameters.AddWithValue("@Status", newStatus)
                             thisConn.Open()
-                            myCmd.ExecuteNonQuery()
+                            thisCmd.ExecuteNonQuery()
                         End Using
                     End Using
 
@@ -140,12 +128,11 @@ Partial Class Setting_Specification_Fabric_Default
                 Dim aliasId As String = aliasData(0).ToString()
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Fabrics SET Status=@Status WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", aliasId)
-                        myCmd.Parameters.AddWithValue("@Status", newStatus)
-
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Fabrics SET Status=@Status WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", aliasId)
+                        thisCmd.Parameters.AddWithValue("@Status", newStatus)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 
@@ -159,12 +146,11 @@ Partial Class Setting_Specification_Fabric_Default
                         Dim detailId As String = detailAliasData.Rows(i)("Id").ToString()
 
                         Using thisConn As New SqlConnection(myConn)
-                            Using myCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET Status=@Status WHERE Id=@Id", thisConn)
-                                myCmd.Parameters.AddWithValue("@Id", detailId)
-                                myCmd.Parameters.AddWithValue("@Status", newStatus)
-
+                            Using thisCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET Status=@Status WHERE Id=@Id", thisConn)
+                                thisCmd.Parameters.AddWithValue("@Id", detailId)
+                                thisCmd.Parameters.AddWithValue("@Status", newStatus)
                                 thisConn.Open()
-                                myCmd.ExecuteNonQuery()
+                                thisCmd.ExecuteNonQuery()
                             End Using
                         End Using
 
@@ -252,35 +238,39 @@ Partial Class Setting_Specification_Fabric_Default
     End Sub
 
     Protected Sub BuildPager()
-        If gvList.PageCount <= 1 Then
+        Try
+            If gvList.PageCount <= 1 Then
+                navPager.Visible = False
+                Return
+            End If
+
+            navPager.Visible = True
+
+            Dim currentPage As Integer = gvList.PageIndex
+            Dim totalPages As Integer = gvList.PageCount
+
+            Dim pages As New List(Of Object)
+
+            If currentPage > 0 Then
+                pages.Add(New With {.Text = "Previous", .PageIndex = currentPage - 1, .CssClass = ""})
+            End If
+
+            Dim startPage As Integer = Math.Max(0, currentPage - 2)
+            Dim endPage As Integer = Math.Min(totalPages - 1, currentPage + 2)
+
+            For i As Integer = startPage To endPage
+                pages.Add(New With {.Text = (i + 1).ToString(), .PageIndex = i, .CssClass = If(i = currentPage, "active", "")})
+            Next
+
+            If currentPage < totalPages - 1 Then
+                pages.Add(New With {.Text = "Next", .PageIndex = currentPage + 1, .CssClass = ""})
+            End If
+
+            rptPager.DataSource = pages
+            rptPager.DataBind()
+        Catch ex As Exception
             navPager.Visible = False
-            Return
-        End If
-
-        navPager.Visible = True
-
-        Dim currentPage As Integer = gvList.PageIndex
-        Dim totalPages As Integer = gvList.PageCount
-
-        Dim pages As New List(Of Object)
-
-        If currentPage > 0 Then
-            pages.Add(New With {.Text = "Previous", .PageIndex = currentPage - 1, .CssClass = ""})
-        End If
-
-        Dim startPage As Integer = Math.Max(0, currentPage - 2)
-        Dim endPage As Integer = Math.Min(totalPages - 1, currentPage + 2)
-
-        For i As Integer = startPage To endPage
-            pages.Add(New With {.Text = (i + 1).ToString(), .PageIndex = i, .CssClass = If(i = currentPage, "active", "")})
-        Next
-
-        If currentPage < totalPages - 1 Then
-            pages.Add(New With {.Text = "Next", .PageIndex = currentPage + 1, .CssClass = ""})
-        End If
-
-        rptPager.DataSource = pages
-        rptPager.DataBind()
+        End Try
     End Sub
 
     Protected Sub MessageError(visible As Boolean, message As String)

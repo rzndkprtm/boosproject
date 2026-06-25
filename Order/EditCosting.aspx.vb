@@ -64,11 +64,11 @@ Partial Class Order_EditCosting
                                 Dim newBuy As Decimal = 0
                                 Decimal.TryParse(txtNewBuyPrice.Text, NumberStyles.Any, CultureInfo.CurrentCulture, newBuy)
 
-                                Using cmd As New SqlCommand("UPDATE OrderCostings SET SellPrice=@SellPrice, BuyPrice=@BuyPrice WHERE Id=@Id", thisConn, tran)
-                                    cmd.Parameters.AddWithValue("@Id", costingId)
-                                    cmd.Parameters.Add("@SellPrice", SqlDbType.Decimal).Value = newSell
-                                    cmd.Parameters.Add("@BuyPrice", SqlDbType.Decimal).Value = newBuy
-                                    cmd.ExecuteNonQuery()
+                                Using thisCmd As New SqlCommand("UPDATE OrderCostings SET SellPrice=@SellPrice, BuyPrice=@BuyPrice WHERE Id=@Id", thisConn, tran)
+                                    thisCmd.Parameters.AddWithValue("@Id", costingId)
+                                    thisCmd.Parameters.Add("@SellPrice", SqlDbType.Decimal).Value = newSell
+                                    thisCmd.Parameters.Add("@BuyPrice", SqlDbType.Decimal).Value = newBuy
+                                    thisCmd.ExecuteNonQuery()
                                 End Using
                             End If
                         Next

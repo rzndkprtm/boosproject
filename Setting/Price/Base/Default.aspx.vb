@@ -1,4 +1,5 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data
+Imports System.Data.SqlClient
 Imports System.Globalization
 
 Partial Class Setting_Price_Base_Default
@@ -56,10 +57,6 @@ Partial Class Setting_Price_Base_Default
         BindData(ddlCategory.SelectedValue, ddlMethod.SelectedValue, ddlProductGroup.SelectedValue, ddlPriceGroup.SelectedValue)
     End Sub
 
-    Protected Sub btnEditable_Click(sender As Object, e As EventArgs)
-        Response.Redirect("~/setting/price/base/editable", False)
-    End Sub
-
     Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
         gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
         BindData(ddlCategory.SelectedValue, ddlMethod.SelectedValue, ddlProductGroup.SelectedValue, ddlPriceGroup.SelectedValue)
@@ -105,11 +102,30 @@ Partial Class Setting_Price_Base_Default
                 New SqlParameter("@ProductGroup", If(String.IsNullOrEmpty(productgroup), CType(DBNull.Value, Object), productgroup)),
                 New SqlParameter("@PriceGroup", If(String.IsNullOrEmpty(pricegroup), CType(DBNull.Value, Object), pricegroup))
             }
-            gvList.DataSource = settingClass.GetDataTableSP("sp_GetPriceBases", params)
+            gvList.DataSource = settingClass.GetDataTableSP("sp_PriceBaseList", params)
             gvList.DataBind()
 
             btnAdd.Visible = LoginAccess("Add")
             btnImport.Visible = LoginAccess("Import")
+
+            aMatrix.Visible = False
+
+            If pricegroup = "1" AndAlso Not String.IsNullOrWhiteSpace(category) AndAlso Not String.IsNullOrWhiteSpace(productgroup) AndAlso Not String.IsNullOrWhiteSpace(method) Then
+
+                aMatrix.Visible = True
+
+                Dim paramMatrixs As New List(Of SqlParameter) From {
+                    New SqlParameter("@Category", ddlCategory.SelectedValue),
+                    New SqlParameter("@Method", ddlMethod.SelectedValue),
+                    New SqlParameter("@ProductGroupId", Convert.ToInt32(ddlProductGroup.SelectedValue)),
+                    New SqlParameter("@PriceGroupId", Convert.ToInt32(ddlPriceGroup.SelectedValue))
+                }
+
+                Dim dt As DataTable = settingClass.GetDataTableSP("sp_PriceBaseMatrix", paramMatrixs)
+
+                gvListMatrix.DataSource = dt
+                gvListMatrix.DataBind()
+            End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then

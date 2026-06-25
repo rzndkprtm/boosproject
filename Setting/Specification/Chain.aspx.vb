@@ -48,16 +48,9 @@ Partial Class Setting_Specification_Chain
     End Sub
 
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        gvList.PageIndex = e.NewPageIndex
         MessageError(False, String.Empty)
-        Try
-            gvList.PageIndex = e.NewPageIndex
-            BindData(txtSearch.Text)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
+        BindData(txtSearch.Text)
     End Sub
 
     Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
@@ -166,18 +159,18 @@ Partial Class Setting_Specification_Chain
                         Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Chains ORDER BY Id DESC")
 
                         Using thisConn As New SqlConnection(myConn)
-                            Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Chains VALUES (@Id, @BoeId, @Name, @DesignId, '1', @CompanyDetailId, @ChainType, @ChainLength, @Description, @Status)", thisConn)
-                                myCmd.Parameters.AddWithValue("@Id", thisId)
-                                myCmd.Parameters.AddWithValue("@BoeId", If(String.IsNullOrEmpty(txtBoeId.Text), CType(DBNull.Value, Object), txtBoeId.Text))
-                                myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
-                                myCmd.Parameters.AddWithValue("@DesignId", designType)
-                                myCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetail)
-                                myCmd.Parameters.AddWithValue("@ChainType", ddlChainType.SelectedValue)
-                                myCmd.Parameters.AddWithValue("@ChainLength", ddlChainLength.SelectedValue)
-                                myCmd.Parameters.AddWithValue("@Description", descText)
-                                myCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
+                            Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Chains VALUES (@Id, @BoeId, @Name, @DesignId, '1', @CompanyDetailId, @ChainType, @ChainLength, @Description, @Status)", thisConn)
+                                thisCmd.Parameters.AddWithValue("@Id", thisId)
+                                thisCmd.Parameters.AddWithValue("@BoeId", If(String.IsNullOrEmpty(txtBoeId.Text), CType(DBNull.Value, Object), txtBoeId.Text))
+                                thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
+                                thisCmd.Parameters.AddWithValue("@DesignId", designType)
+                                thisCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetail)
+                                thisCmd.Parameters.AddWithValue("@ChainType", ddlChainType.SelectedValue)
+                                thisCmd.Parameters.AddWithValue("@ChainLength", ddlChainLength.SelectedValue)
+                                thisCmd.Parameters.AddWithValue("@Description", descText)
+                                thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
                                 thisConn.Open()
-                                myCmd.ExecuteNonQuery()
+                                thisCmd.ExecuteNonQuery()
                             End Using
                         End Using
 
@@ -190,17 +183,17 @@ Partial Class Setting_Specification_Chain
 
                     If lblAction.Text = "Edit" Then
                         Using thisConn As New SqlConnection(myConn)
-                            Using myCmd As SqlCommand = New SqlCommand("UPDATE Chains SET BoeId=@BoeId, Name=@Name, DesignId=@DesignId, ControlTypeId='1', CompanyDetailId=@CompanyDetailId, ChainType=@ChainType, ChainLength=@ChainLength, Description=@Description WHERE Id=@Id", thisConn)
-                                myCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                                myCmd.Parameters.AddWithValue("@BoeId", If(String.IsNullOrEmpty(txtBoeId.Text), CType(DBNull.Value, Object), txtBoeId.Text))
-                                myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
-                                myCmd.Parameters.AddWithValue("@DesignId", designType)
-                                myCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetail)
-                                myCmd.Parameters.AddWithValue("@ChainType", ddlChainType.SelectedValue)
-                                myCmd.Parameters.AddWithValue("@ChainLength", ddlChainLength.SelectedValue)
-                                myCmd.Parameters.AddWithValue("@Description", descText)
+                            Using thisCmd As SqlCommand = New SqlCommand("UPDATE Chains SET BoeId=@BoeId, Name=@Name, DesignId=@DesignId, ControlTypeId='1', CompanyDetailId=@CompanyDetailId, ChainType=@ChainType, ChainLength=@ChainLength, Description=@Description WHERE Id=@Id", thisConn)
+                                thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                                thisCmd.Parameters.AddWithValue("@BoeId", If(String.IsNullOrEmpty(txtBoeId.Text), CType(DBNull.Value, Object), txtBoeId.Text))
+                                thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
+                                thisCmd.Parameters.AddWithValue("@DesignId", designType)
+                                thisCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetail)
+                                thisCmd.Parameters.AddWithValue("@ChainType", ddlChainType.SelectedValue)
+                                thisCmd.Parameters.AddWithValue("@ChainLength", ddlChainLength.SelectedValue)
+                                thisCmd.Parameters.AddWithValue("@Description", descText)
                                 thisConn.Open()
-                                myCmd.ExecuteNonQuery()
+                                thisCmd.ExecuteNonQuery()
                             End Using
                         End Using
 
@@ -228,11 +221,11 @@ Partial Class Setting_Specification_Chain
             Dim oldStatus As String = txtOldStatus.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE Chains SET Status=@Status WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.Parameters.AddWithValue("@Status", newStatus)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Chains SET Status=@Status WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisCmd.Parameters.AddWithValue("@Status", newStatus)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 

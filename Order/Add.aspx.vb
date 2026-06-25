@@ -109,17 +109,17 @@ Partial Class Order_Add
                         orderId = companyAlias & randomCode
                         Try
                             Using thisConn As New SqlConnection(myConn)
-                                Using myCmd As New SqlCommand("INSERT INTO OrderHeaders (Id, OrderId, CustomerId, OrderNumber, OrderName, OrderNote, OrderType, Status, CreatedBy, CreatedDate, Payment, Amount, Download, Active) VALUES (@Id, @OrderId, @CustomerId, @OrderNumber, @OrderName, @OrderNote, @OrderType, 'Unsubmitted', @CreatedBy, GETDATE(), 0, 0, 'No', 1); INSERT INTO OrderQuotes VALUES (@Id, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
-                                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                                    myCmd.Parameters.AddWithValue("@OrderId", orderId)
-                                    myCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
-                                    myCmd.Parameters.AddWithValue("@OrderNumber", txtOrderNumber.Text.Trim())
-                                    myCmd.Parameters.AddWithValue("@OrderName", txtOrderName.Text.Trim())
-                                    myCmd.Parameters.AddWithValue("@OrderNote", txtOrderNote.Text.Trim())
-                                    myCmd.Parameters.AddWithValue("@OrderType", ddlOrderType.SelectedValue)
-                                    myCmd.Parameters.AddWithValue("@CreatedBy", ddlCreatedBy.SelectedValue)
+                                Using thisCmd As New SqlCommand("INSERT INTO OrderHeaders (Id, OrderId, CustomerId, OrderNumber, OrderName, OrderNote, OrderType, Status, CreatedBy, CreatedDate, Payment, Amount, Download, Active) VALUES (@Id, @OrderId, @CustomerId, @OrderNumber, @OrderName, @OrderNote, @OrderType, 'Unsubmitted', @CreatedBy, GETDATE(), 0, 0, 'No', 1); INSERT INTO OrderQuotes VALUES (@Id, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
+                                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                                    thisCmd.Parameters.AddWithValue("@OrderId", orderId)
+                                    thisCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
+                                    thisCmd.Parameters.AddWithValue("@OrderNumber", txtOrderNumber.Text.Trim())
+                                    thisCmd.Parameters.AddWithValue("@OrderName", txtOrderName.Text.Trim())
+                                    thisCmd.Parameters.AddWithValue("@OrderNote", txtOrderNote.Text.Trim())
+                                    thisCmd.Parameters.AddWithValue("@OrderType", ddlOrderType.SelectedValue)
+                                    thisCmd.Parameters.AddWithValue("@CreatedBy", ddlCreatedBy.SelectedValue)
                                     thisConn.Open()
-                                    myCmd.ExecuteNonQuery()
+                                    thisCmd.ExecuteNonQuery()
                                 End Using
                             End Using
                             success = True
