@@ -28,37 +28,25 @@ Partial Class Setting_Specification_Fabric_Colour
 
         MessageError(False, String.Empty)
         BindData(txtSearch.Text)
+
         Session("SearchFabricColour") = txtSearch.Text
     End Sub
 
     Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
-        Try
-            If e.CommandName = "Page" Then
-                gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
-                BindData(txtSearch.Text)
-            End If
-        Catch ex As Exception
-        End Try
+        If e.CommandName = "Page" Then
+            gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
+            BindData(txtSearch.Text)
+        End If
     End Sub
 
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        gvList.PageIndex = e.NewPageIndex
         MessageError(False, String.Empty)
-        Try
-            gvList.PageIndex = e.NewPageIndex
-            BindData(txtSearch.Text)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
+        BindData(txtSearch.Text)
     End Sub
 
     Protected Sub gvList_DataBound(sender As Object, e As EventArgs)
-        Try
-            BuildPager()
-        Catch ex As Exception
-        End Try
+        BuildPager()
     End Sub
 
     Protected Sub btnChangeStatus_Click(sender As Object, e As EventArgs)
@@ -69,11 +57,11 @@ Partial Class Setting_Specification_Fabric_Colour
             Dim oldStatus As String = ddlOldStatus.SelectedValue
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET Status=@Status WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.Parameters.AddWithValue("@Status", newStatus)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET Status=@Status WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisCmd.Parameters.AddWithValue("@Status", newStatus)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -86,11 +74,11 @@ Partial Class Setting_Specification_Fabric_Colour
                 Dim aliasId As String = aliasData(0).ToString()
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET Status=@Status WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", aliasId)
-                        myCmd.Parameters.AddWithValue("@Status", newStatus)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET Status=@Status WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", aliasId)
+                        thisCmd.Parameters.AddWithValue("@Status", newStatus)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 

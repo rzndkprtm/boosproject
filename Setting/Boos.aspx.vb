@@ -62,7 +62,6 @@ Partial Class Setting_Boos
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand("sp_UpdateDownloadBOE", thisConn)
                     thisCmd.CommandType = CommandType.StoredProcedure
-
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
@@ -74,17 +73,16 @@ Partial Class Setting_Boos
     Protected Sub UpdateShipment(id As String, status As String, shipNumber As String, shipDate As Date, conNumber As String, courier As String, invNumber As String)
         Try
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status=@Status, ShipmentNumber=@ShipmentNumber, ShipmentDate=@ShipmentDate, ContainerNumber=@ContainerNumber, Courier=@Courier, InvoiceNumber=@InvoiceNumber WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", id)
-                    myCmd.Parameters.AddWithValue("@ShipmentNumber", shipNumber)
-                    myCmd.Parameters.AddWithValue("@ShipmentDate", shipDate)
-                    myCmd.Parameters.AddWithValue("@ContainerNumber", conNumber)
-                    myCmd.Parameters.AddWithValue("@Courier", courier)
-                    myCmd.Parameters.AddWithValue("@Status", status)
-                    myCmd.Parameters.AddWithValue("@InvoiceNumber", invNumber)
-
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status=@Status, ShipmentNumber=@ShipmentNumber, ShipmentDate=@ShipmentDate, ContainerNumber=@ContainerNumber, Courier=@Courier, InvoiceNumber=@InvoiceNumber WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", id)
+                    thisCmd.Parameters.AddWithValue("@ShipmentNumber", shipNumber)
+                    thisCmd.Parameters.AddWithValue("@ShipmentDate", shipDate)
+                    thisCmd.Parameters.AddWithValue("@ContainerNumber", conNumber)
+                    thisCmd.Parameters.AddWithValue("@Courier", courier)
+                    thisCmd.Parameters.AddWithValue("@Status", status)
+                    thisCmd.Parameters.AddWithValue("@InvoiceNumber", invNumber)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
         Catch ex As Exception
@@ -114,17 +112,15 @@ Partial Class Setting_Boos
                     Dim companyId As String = companyData.Rows(i)("Id").ToString()
 
                     Dim salesData As Integer = salesClass.GetItemData_Integer("SELECT COUNT(*) FROM Sales WHERE SummaryDate=GETDATE() AND CompanyId='" & companyId & "'")
-
                     If salesData = 0 Then
                         Dim thisId As String = salesClass.CreateId("SELECT TOP 1 Id FROM Sales ORDER BY Id DESC")
 
                         Using thisConn As New SqlConnection(myConn)
-                            Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Sales(Id, CompanyId, SummaryDate, TotalCostPrice, TotalSellingPrice, TotalPaidAmount) VALUES(@Id, @CompanyId, GETDATE(), 0, 0, 0)", thisConn)
-                                myCmd.Parameters.AddWithValue("@Id", thisId)
-                                myCmd.Parameters.AddWithValue("@CompanyId", companyId)
-
+                            Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Sales(Id, CompanyId, SummaryDate, TotalCostPrice, TotalSellingPrice, TotalPaidAmount) VALUES(@Id, @CompanyId, GETDATE(), 0, 0, 0)", thisConn)
+                                thisCmd.Parameters.AddWithValue("@Id", thisId)
+                                thisCmd.Parameters.AddWithValue("@CompanyId", companyId)
                                 thisConn.Open()
-                                myCmd.ExecuteNonQuery()
+                                thisCmd.ExecuteNonQuery()
                             End Using
                         End Using
                     End If
@@ -145,10 +141,9 @@ Partial Class Setting_Boos
                     Using thisConn As New SqlConnection(myConn)
                         thisConn.Open()
 
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Unsubmitted', SubmittedDate=NULL, InvoiceNumber=NULL, Collector=NULL, InvoiceDate=NULL, DueDate=NULL, Payment=0, PaymentDate=NULL, Amount=0 WHERE Id=@Id", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", thisId)
-
-                            myCmd.ExecuteNonQuery()
+                        Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Unsubmitted', SubmittedDate=NULL, InvoiceNumber=NULL, Collector=NULL, InvoiceDate=NULL, DueDate=NULL, Payment=0, PaymentDate=NULL, Amount=0 WHERE Id=@Id", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", thisId)
+                            thisCmd.ExecuteNonQuery()
                         End Using
 
                         Dim serviceData As DataTable = orderClass.GetDataTable("SELECT OrderDetails.* FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.HeaderId='" & thisId & "' AND Products.DesignId='16'")
@@ -156,11 +151,10 @@ Partial Class Setting_Boos
                             For iDetail As Integer = 0 To serviceData.Rows.Count - 1
                                 Dim serviceId As String = serviceData.Rows(iDetail)("Id").ToString()
 
-                                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET Active=0 WHERE Id=@ItemId; DELETE FROM OrderCostings WHERE HeaderId=@HeaderId AND ItemId=@ItemId", thisConn)
-                                    myCmd.Parameters.AddWithValue("@ItemId", serviceId)
-                                    myCmd.Parameters.AddWithValue("@HeaderId", thisId)
-
-                                    myCmd.ExecuteNonQuery()
+                                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET Active=0 WHERE Id=@ItemId; DELETE FROM OrderCostings WHERE HeaderId=@HeaderId AND ItemId=@ItemId", thisConn)
+                                    thisCmd.Parameters.AddWithValue("@ItemId", serviceId)
+                                    thisCmd.Parameters.AddWithValue("@HeaderId", thisId)
+                                    thisCmd.ExecuteNonQuery()
                                 End Using
                             Next
                         End If
@@ -182,10 +176,9 @@ Partial Class Setting_Boos
     Protected Sub DeleteOrderActionContext()
         Try
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM OrderActionContext", thisConn)
-
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM OrderActionContext", thisConn)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
         Catch ex As Exception
@@ -195,10 +188,9 @@ Partial Class Setting_Boos
     Protected Sub DeleteNullSession()
         Try
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Sessions WHERE LoginId IS NULL", thisConn)
-
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM Sessions WHERE LoginId IS NULL", thisConn)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
         Catch ex As Exception

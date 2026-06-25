@@ -45,28 +45,23 @@ Partial Class Setting_General_Notification_Edit
                 MessageError(True, "ROLE IS REQUIRED !")
                 Exit Sub
             End If
-
             If txtStartDate.Text = "" Then
                 MessageError(True, "START DATE IS REQUIRED !")
                 Exit Sub
             End If
-
             If txtEndDate.Text = "" Then
                 MessageError(True, "END DATE IS REQUIRED !")
                 Exit Sub
             End If
-
             If txtTitle.Text = "" Then
                 MessageError(True, "TITLE IS REQUIRED !")
                 Exit Sub
             End If
-
             Dim htmlContent As String = fieldMessage.Value
             If htmlContent = "" Then
                 MessageError(True, "MESSAGE IS REQUIRED !")
                 Exit Sub
             End If
-
             If msgError.InnerText = "" Then
                 If Not ddlLoginRole.SelectedValue = "8" Then ddlCompany.SelectedValue = ""
 
@@ -94,7 +89,6 @@ Partial Class Setting_General_Notification_Edit
                         thisCmd.Parameters.AddWithValue("@StartDate", txtStartDate.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@EndDate", txtEndDate.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
-
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using

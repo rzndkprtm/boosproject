@@ -51,7 +51,6 @@ Partial Public Class SiteMaster
                 HandleRedirectLogin()
                 Exit Sub
             End If
-
         Catch ex As Exception
             HandleRedirectLogin()
         End Try
@@ -69,6 +68,7 @@ Partial Public Class SiteMaster
     Private Function IsHeartbeatRequest() As Boolean
         Return Request.Url.AbsolutePath.ToLower().Contains("updatesession")
     End Function
+
     Protected Sub linkLogout_Click(sender As Object, e As EventArgs)
         Dim sessionId As String = String.Empty
 
@@ -81,6 +81,7 @@ Partial Public Class SiteMaster
         Response.Redirect("~/account/login", False)
         Context.ApplicationInstance.CompleteRequest()
     End Sub
+
     Private Sub MyLoad()
         Try
             Dim loginId As String = Session("LoginId")
@@ -88,9 +89,7 @@ Partial Public Class SiteMaster
             Dim params As New List(Of SqlParameter) From {
                 New SqlParameter("@LoginId", loginId)
             }
-
             Dim myData As DataRow = settingClass.GetDataRowSP("sp_LoginProfile", params)
-
             If myData Is Nothing Then
                 HandleRedirectLogin()
                 Exit Sub
@@ -174,7 +173,6 @@ Partial Public Class SiteMaster
                     myCmd.ExecuteNonQuery()
                 End Using
             End Using
-
         Catch ex As Exception
             HandleRedirectLogin()
         End Try
@@ -307,7 +305,6 @@ Partial Public Class SiteMaster
                 liStocks.Visible = True
                 liQuotation.Visible = True
             End If
-
         Catch ex As Exception
             HandleRedirectLogin()
         End Try

@@ -56,12 +56,11 @@ Partial Class Setting_Specification_Product_Detail
             End If
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE Products SET Status=@Status WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                    myCmd.Parameters.AddWithValue("@Status", newStatus)
-
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Products SET Status=@Status WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                    thisCmd.Parameters.AddWithValue("@Status", newStatus)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -74,12 +73,11 @@ Partial Class Setting_Specification_Product_Detail
                 Dim aliasId As String = aliasData(0).ToString()
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Products SET Status=@Status WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", aliasId)
-                        myCmd.Parameters.AddWithValue("@Status", newStatus)
-
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Products SET Status=@Status WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", aliasId)
+                        thisCmd.Parameters.AddWithValue("@Status", newStatus)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 
@@ -168,16 +166,15 @@ Partial Class Setting_Specification_Product_Detail
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM ProductKits ORDER BY Id DESC")
 
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO ProductKits VALUES (@Id, @ProductId, @KitId, @VenId, @Name, @Status)", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", thisId)
-                            myCmd.Parameters.AddWithValue("@ProductId", lblId.Text)
-                            myCmd.Parameters.AddWithValue("@KitId", If(String.IsNullOrEmpty(txtKitId.Text), CType(DBNull.Value, Object), txtKitId.Text))
-                            myCmd.Parameters.AddWithValue("@VenId", If(txtVenId.Text = String.Empty, CType(DBNull.Value, Object), txtVenId.Text))
-                            myCmd.Parameters.AddWithValue("@Name", kitName)
-                            myCmd.Parameters.AddWithValue("@Status", ddlBlindStatus.SelectedValue)
-
+                        Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO ProductKits VALUES (@Id, @ProductId, @KitId, @VenId, @Name, @Status)", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", thisId)
+                            thisCmd.Parameters.AddWithValue("@ProductId", lblId.Text)
+                            thisCmd.Parameters.AddWithValue("@KitId", If(String.IsNullOrEmpty(txtKitId.Text), CType(DBNull.Value, Object), txtKitId.Text))
+                            thisCmd.Parameters.AddWithValue("@VenId", If(txtVenId.Text = String.Empty, CType(DBNull.Value, Object), txtVenId.Text))
+                            thisCmd.Parameters.AddWithValue("@Name", kitName)
+                            thisCmd.Parameters.AddWithValue("@Status", ddlBlindStatus.SelectedValue)
                             thisConn.Open()
-                            myCmd.ExecuteNonQuery()
+                            thisCmd.ExecuteNonQuery()
                         End Using
                     End Using
 
@@ -189,16 +186,15 @@ Partial Class Setting_Specification_Product_Detail
                 End If
                 If lblAction.Text = "Edit" Then
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE ProductKits SET KitId=@KitId, VenId=@VenId, Name=@Name, BlindStatus=@Status WHERE Id=@Id", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", lblIdKit.Text)
-                            myCmd.Parameters.AddWithValue("@ProductId", lblId.Text)
-                            myCmd.Parameters.AddWithValue("@KitId", If(String.IsNullOrEmpty(txtKitId.Text), CType(DBNull.Value, Object), txtKitId.Text))
-                            myCmd.Parameters.AddWithValue("@VenId", If(txtVenId.Text = String.Empty, CType(DBNull.Value, Object), txtVenId.Text))
-                            myCmd.Parameters.AddWithValue("@Name", kitName)
-                            myCmd.Parameters.AddWithValue("@Status", ddlBlindStatus.SelectedValue)
-
+                        Using thisCmd As SqlCommand = New SqlCommand("UPDATE ProductKits SET KitId=@KitId, VenId=@VenId, Name=@Name, BlindStatus=@Status WHERE Id=@Id", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", lblIdKit.Text)
+                            thisCmd.Parameters.AddWithValue("@ProductId", lblId.Text)
+                            thisCmd.Parameters.AddWithValue("@KitId", If(String.IsNullOrEmpty(txtKitId.Text), CType(DBNull.Value, Object), txtKitId.Text))
+                            thisCmd.Parameters.AddWithValue("@VenId", If(txtVenId.Text = String.Empty, CType(DBNull.Value, Object), txtVenId.Text))
+                            thisCmd.Parameters.AddWithValue("@Name", kitName)
+                            thisCmd.Parameters.AddWithValue("@Status", ddlBlindStatus.SelectedValue)
                             thisConn.Open()
-                            myCmd.ExecuteNonQuery()
+                            thisCmd.ExecuteNonQuery()
                         End Using
                     End Using
 
@@ -222,19 +218,11 @@ Partial Class Setting_Specification_Product_Detail
             Dim thisId As String = txtIdDeleteKit.Text
 
             Using thisConn As New SqlConnection(myConn)
-                thisConn.Open()
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM ProductKits WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM ProductKits WHERE Id=@Id; DELETE FROM Logs WHERE Type='ProductKits' AND DataId=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
                 End Using
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Logs WHERE Type='ProductKits' AND DataId=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                thisConn.Close()
             End Using
 
             url = String.Format("~/setting/specification/product/detail?productid={0}", lblId.Text)

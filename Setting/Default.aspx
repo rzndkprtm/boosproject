@@ -7,12 +7,8 @@
         .dashboard-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.12); }
         .dashboard-title { font-size: 20px; font-weight: 600; color: #222; margin-bottom: 8px; }
         .dashboard-desc { font-size: 13px; color: #777; line-height: 1.5; }
-        @media (max-width: 1200px) {
-            .dashboard-wrapper { grid-template-columns: repeat(2, 1fr); }
-        }
-        @media (max-width: 768px) {
-            .dashboard-wrapper { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 1200px) { .dashboard-wrapper { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 768px) { .dashboard-wrapper { grid-template-columns: 1fr; } }
     </style>
 
     <div class="page-heading">

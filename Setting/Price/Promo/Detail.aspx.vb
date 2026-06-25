@@ -6,7 +6,6 @@ Partial Class Setting_Price_Promo_Detail
     Inherits Page
 
     Dim settingClass As New SettingClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
     Dim dataLog As Object()
@@ -113,17 +112,16 @@ Partial Class Setting_Price_Promo_Detail
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Promos SET CompanyDetailId=@CompanyDetailId, Name=@Name, StartDate=@StartDate, EndDate=@EndDate, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                        myCmd.Parameters.AddWithValue("@CompanyDetailId", ddlCompany.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@StartDate", txtStartDate.Text)
-                        myCmd.Parameters.AddWithValue("@EndDate", txtEndDate.Text)
-                        myCmd.Parameters.AddWithValue("@Description", descText)
-                        myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
-
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Promos SET CompanyDetailId=@CompanyDetailId, Name=@Name, StartDate=@StartDate, EndDate=@EndDate, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                        thisCmd.Parameters.AddWithValue("@CompanyDetailId", ddlCompany.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@StartDate", txtStartDate.Text)
+                        thisCmd.Parameters.AddWithValue("@EndDate", txtEndDate.Text)
+                        thisCmd.Parameters.AddWithValue("@Description", descText)
+                        thisCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 
@@ -165,15 +163,14 @@ Partial Class Setting_Price_Promo_Detail
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM PromoDetails ORDER BY Id DESC")
 
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO PromoDetails VALUES (@Id, @PromoId, @Type, @DataId, @Discount)", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", thisId)
-                            myCmd.Parameters.AddWithValue("@PromoId", lblId.Text)
-                            myCmd.Parameters.AddWithValue("@Type", ddlPromoType.SelectedValue)
-                            myCmd.Parameters.AddWithValue("@DataId", dataId)
-                            myCmd.Parameters.AddWithValue("@Discount", txtDiscount.Text)
-
+                        Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO PromoDetails VALUES (@Id, @PromoId, @Type, @DataId, @Discount)", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", thisId)
+                            thisCmd.Parameters.AddWithValue("@PromoId", lblId.Text)
+                            thisCmd.Parameters.AddWithValue("@Type", ddlPromoType.SelectedValue)
+                            thisCmd.Parameters.AddWithValue("@DataId", dataId)
+                            thisCmd.Parameters.AddWithValue("@Discount", txtDiscount.Text)
                             thisConn.Open()
-                            myCmd.ExecuteNonQuery()
+                            thisCmd.ExecuteNonQuery()
                         End Using
                     End Using
 
@@ -186,14 +183,13 @@ Partial Class Setting_Price_Promo_Detail
 
                 If lblAction.Text = "Edit" Then
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE PromoDetails SET Type=@Type, DataId=@DataId, Discount=@Discount WHERE Id=@Id", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", lblIdDetail.Text)
-                            myCmd.Parameters.AddWithValue("@Type", ddlPromoType.SelectedValue)
-                            myCmd.Parameters.AddWithValue("@DataId", dataId)
-                            myCmd.Parameters.AddWithValue("@Discount", txtDiscount.Text)
-
+                        Using thisCmd As SqlCommand = New SqlCommand("UPDATE PromoDetails SET Type=@Type, DataId=@DataId, Discount=@Discount WHERE Id=@Id", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", lblIdDetail.Text)
+                            thisCmd.Parameters.AddWithValue("@Type", ddlPromoType.SelectedValue)
+                            thisCmd.Parameters.AddWithValue("@DataId", dataId)
+                            thisCmd.Parameters.AddWithValue("@Discount", txtDiscount.Text)
                             thisConn.Open()
-                            myCmd.ExecuteNonQuery()
+                            thisCmd.ExecuteNonQuery()
                         End Using
                     End Using
 
@@ -219,11 +215,10 @@ Partial Class Setting_Price_Promo_Detail
             Dim dataId As String = txtIdDeleteDetail.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM PromoDetails WHERE Id=@Id; DELETE FROM Logs WHERE Type='PromoDetails' AND DataId=@Id;", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", dataId)
-
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM PromoDetails WHERE Id=@Id; DELETE FROM Logs WHERE Type='PromoDetails' AND DataId=@Id;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", dataId)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 

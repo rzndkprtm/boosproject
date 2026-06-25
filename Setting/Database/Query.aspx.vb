@@ -34,11 +34,10 @@ Partial Class Setting_Database_Query
             If ddlAction.SelectedValue = "Create" Or ddlAction.SelectedValue = "Update" Or ddlAction.SelectedValue = "Delete" Then
                 Dim result As Integer = 0
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand(txtQuery.Text.Trim(), thisConn)
-                        myCmd.Connection = thisConn
-
+                    Using thisCmd As SqlCommand = New SqlCommand(txtQuery.Text.Trim(), thisConn)
+                        thisCmd.Connection = thisConn
                         thisConn.Open()
-                        result = myCmd.ExecuteNonQuery()
+                        result = thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
                 If result = 1 Then

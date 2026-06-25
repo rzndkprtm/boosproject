@@ -76,22 +76,21 @@ Partial Class Setting_Price_Surcharge_Add
                 Dim finalFormula As String = ddlFieldName.SelectedValue & " " & txtFormula.Text
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO PriceSurcharges VALUES (@Id, @DesignId, @BlindId, @BlindNumber, @PriceGroupId, @Name, @FieldName, @Formula, @BuyCharge, @SellCharge, @Description, @Active)", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", thisId)
-                        myCmd.Parameters.AddWithValue("@DesignId", ddlDesign.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@BlindId", ddlBlind.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@BlindNumber", ddlBlindNumber.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@PriceGroupId", ddlPriceGroup.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@FieldName", ddlFieldName.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@Formula", finalFormula)
-                        myCmd.Parameters.AddWithValue("@BuyCharge", txtBuyCharge.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@SellCharge", txtSellCharge.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Description", descText)
-                        myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
-
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO PriceSurcharges VALUES (@Id, @DesignId, @BlindId, @BlindNumber, @PriceGroupId, @Name, @FieldName, @Formula, @BuyCharge, @SellCharge, @Description, @Active)", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", thisId)
+                        thisCmd.Parameters.AddWithValue("@DesignId", ddlDesign.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@BlindId", ddlBlind.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@BlindNumber", ddlBlindNumber.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@PriceGroupId", ddlPriceGroup.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@FieldName", ddlFieldName.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Formula", finalFormula)
+                        thisCmd.Parameters.AddWithValue("@BuyCharge", txtBuyCharge.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@SellCharge", txtSellCharge.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Description", descText)
+                        thisCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 

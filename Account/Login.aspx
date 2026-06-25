@@ -65,14 +65,12 @@
             function togglePassword() {
                 var password = document.getElementById('<%= txtPassword.ClientID %>');
                 var checkBox = document.getElementById('chkShowPass');
-
                 if (checkBox.checked) {
                     password.type = "text";
                 } else {
                     password.type = "password";
                 }
             }
-
             window.history.replaceState(null, null, window.location.href);
         </script>
     </form>

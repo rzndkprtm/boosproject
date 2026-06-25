@@ -40,13 +40,9 @@ Partial Class Setting_Login_Online
     End Sub
 
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        gvList.PageIndex = e.NewPageIndex
         MessageError(False, String.Empty)
-        Try
-            gvList.PageIndex = e.NewPageIndex
-            BindData(txtSearch.Text, ddlMinute.SelectedValue)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-        End Try
+        BindData(txtSearch.Text, ddlMinute.SelectedValue)
     End Sub
 
     Protected Sub btnSendNotif_Click(sender As Object, e As EventArgs)

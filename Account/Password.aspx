@@ -1,4 +1,4 @@
-﻿    <%@ Page Language="VB" AutoEventWireup="false" CodeFile="Password.aspx.vb" Inherits="Account_Password" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Change Password" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Password.aspx.vb" Inherits="Account_Password" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Change Password" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-heading">

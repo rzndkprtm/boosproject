@@ -8,12 +8,12 @@ Partial Class Account_Password
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         If Not IsPostBack Then
-            BackColor()
+            MessageError(False, String.Empty)
         End If
     End Sub
 
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
-        BackColor()
+        MessageError(False, String.Empty)
         Try
             If txtPassword.Text = "" Then
                 MessageError(True, "PASSWORD IS REQUIRED !")
@@ -21,21 +21,18 @@ Partial Class Account_Password
                 txtPassword.Focus()
                 Exit Sub
             End If
-
             If txtConfirmPassword.Text = "" Then
                 MessageError(True, "CONFIRM PASSWORD IS REQUIRED !")
                 txtConfirmPassword.BackColor = Drawing.Color.Red
                 txtConfirmPassword.Focus()
                 Exit Sub
             End If
-
             If Not txtConfirmPassword.Text = txtPassword.Text Then
                 txtConfirmPassword.BackColor = Drawing.Color.Red
                 txtConfirmPassword.Focus()
                 MessageError(True, "PASSWORD DO NOT MATCH !")
                 Exit Sub
             End If
-
             If msgError.InnerText = "" Then
                 Dim loginId As String = Session("LoginId").ToString()
                 Dim newPassword As String = settingClass.Encrypt(txtPassword.Text)
@@ -63,13 +60,6 @@ Partial Class Account_Password
                 End If
             End If
         End Try
-    End Sub
-
-    Protected Sub BackColor()
-        MessageError(False, String.Empty)
-
-        txtPassword.BackColor = Drawing.Color.Empty
-        txtConfirmPassword.BackColor = Drawing.Color.Empty
     End Sub
 
     Protected Sub MessageError(visible As Boolean, message As String)

@@ -103,33 +103,21 @@ Partial Class Setting_Price_Surcharge_Default
     End Sub
 
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        gvList.PageIndex = e.NewPageIndex
+
         MessageError(False, String.Empty)
-        Try
-            gvList.PageIndex = e.NewPageIndex
-            BindData(ddlDesign.SelectedValue, ddlBlind.SelectedValue, ddlPriceGroup.SelectedValue, ddlActive.SelectedValue, txtSearch.Text)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
+        BindData(ddlDesign.SelectedValue, ddlBlind.SelectedValue, ddlPriceGroup.SelectedValue, ddlActive.SelectedValue, txtSearch.Text)
     End Sub
 
     Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
-        Try
-            If e.CommandName = "Page" Then
-                gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
-                BindData(ddlDesign.SelectedValue, ddlBlind.SelectedValue, ddlPriceGroup.SelectedValue, ddlActive.SelectedValue, txtSearch.Text)
-            End If
-        Catch ex As Exception
-        End Try
+        If e.CommandName = "Page" Then
+            gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
+            BindData(ddlDesign.SelectedValue, ddlBlind.SelectedValue, ddlPriceGroup.SelectedValue, ddlActive.SelectedValue, txtSearch.Text)
+        End If
     End Sub
 
     Protected Sub gvList_DataBound(sender As Object, e As EventArgs)
-        Try
-            BuildPager()
-        Catch ex As Exception
-        End Try
+        BuildPager()
     End Sub
 
     Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
@@ -138,19 +126,11 @@ Partial Class Setting_Price_Surcharge_Default
             Dim thisId As String = txtIdDelete.Text
 
             Using thisConn As New SqlConnection(myConn)
-                thisConn.Open()
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM PriceSurcharges WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM PriceSurcharges WHERE Id=@Id; DELETE FROM Logs WHERE Type='PriceSurcharges' AND DataId=@Id;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
                 End Using
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Logs WHERE Type='PriceSurcharges' AND DataId=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                thisConn.Close()
             End Using
 
             Session("DesignSurcharge") = ddlDesign.SelectedValue
@@ -175,12 +155,11 @@ Partial Class Setting_Price_Surcharge_Default
             Dim newId As String = settingClass.CreateId("SELECT TOP 1 Id FROM PriceSurcharges ORDER BY Id DESC")
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("INSERT INTO PriceSurcharges SELECT @NewId, DesignId, BlindId, BlindNumber, PriceGroupId, 'Copy - ' + Name, FieldName, Formula, BuyCharge, SellCharge, Description, Active FROM PriceSurcharges WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.Parameters.AddWithValue("@NewId", newId)
-
+                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO PriceSurcharges SELECT @NewId, DesignId, BlindId, BlindNumber, PriceGroupId, 'Copy - ' + Name, FieldName, Formula, BuyCharge, SellCharge, Description, Active FROM PriceSurcharges WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisCmd.Parameters.AddWithValue("@NewId", newId)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 

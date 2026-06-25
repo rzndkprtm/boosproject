@@ -50,11 +50,11 @@ Partial Class Setting_Job_Sheet_Detail_Default
                     Dim sortOrder As String = txtSortOrder.Text
 
                     Using thisConn As New SqlConnection(myConn)
-                        Using cmd As New SqlCommand("UPDATE JobSheetDetails SET SortOrder=@SortOrder WHERE Id=@Id", thisConn)
-                            cmd.Parameters.AddWithValue("@Id", thisId)
-                            cmd.Parameters.AddWithValue("@SortOrder", sortOrder)
+                        Using thisCmd As New SqlCommand("UPDATE JobSheetDetails SET SortOrder=@SortOrder WHERE Id=@Id", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", thisId)
+                            thisCmd.Parameters.AddWithValue("@SortOrder", sortOrder)
                             thisConn.Open()
-                            cmd.ExecuteNonQuery()
+                            thisCmd.ExecuteNonQuery()
                         End Using
                     End Using
                 End If
@@ -82,7 +82,6 @@ Partial Class Setting_Job_Sheet_Detail_Default
     Protected Sub BindData(sheetId As String)
         Try
             Dim thisData As DataRow = settingClass.GetDataRow("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM JobSheets WHERE Id='" & sheetId & "'")
-
             If thisData Is Nothing Then
                 Response.Redirect("~/setting/job/sheet", False)
                 Exit Sub
@@ -103,7 +102,6 @@ Partial Class Setting_Job_Sheet_Detail_Default
     Protected Sub BindDataDetail(sheetId As String)
         Try
             Dim thisString As String = "SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM JobSheetDetails WHERE JobSheetId='" & sheetId & "' ORDER BY SortOrder ASC"
-
             gvListDetail.DataSource = settingClass.GetDataTable(thisString)
             gvListDetail.DataBind()
 

@@ -8,12 +8,8 @@
         .dashboard-number { font-size: 38px; font-weight: 700; color: #222; line-height: 1; margin-bottom: 14px; }
         .dashboard-title { font-size: 20px; font-weight: 600; color: #222; margin-bottom: 6px; }
         .dashboard-desc { font-size: 13px; color: #777; line-height: 1.5; }
-        @media (max-width: 1200px) {
-            .dashboard-wrapper { grid-template-columns: repeat(2, 1fr); }
-        }
-        @media (max-width: 768px) {
-            .dashboard-wrapper { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 1200px) { .dashboard-wrapper { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 768px) { .dashboard-wrapper { grid-template-columns: 1fr; } }
     </style>
 
     <div class="page-heading">

@@ -88,7 +88,7 @@ Partial Class Setting_Customer_Add
             End If
 
             If msgError.InnerText = "" Then
-                Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Customers ORDER BY Id DESC")
+
                 Dim operatorReps As String = String.Empty
                 If Not String.IsNullOrEmpty(lbSales.SelectedValue) Then
                     operatorReps = String.Join(",", lbSales.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
@@ -102,49 +102,34 @@ Partial Class Setting_Customer_Add
                 If ddlLevel.SelectedValue = "" Then ddlLevel.SelectedValue = "Member"
                 If ddlLevel.SelectedValue = "Sponsor" OrElse ddlLevel.SelectedValue = "Member" Then sponsorId = String.Empty
 
+                Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Customers ORDER BY Id DESC")
+                Dim logoCustomer As String = "yourlogo.png"
+                Dim dataProductAccess As String = settingClass.GetProductAccess(ddlCompany.SelectedValue)
+
                 Using thisConn As New SqlConnection(myConn)
-                    thisConn.Open()
-
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Customers VALUES (@Id, @DebtorCode, @Level, @Sponsor, @Name, @Company, @CompanyDetail, @Area, @Operator, @PriceGroup, @ShutterPriceGroup, @DoorPriceGroupId, @OnStop, @CashSale, @Newsletter, @MinSurcharge, @Active)", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", thisId)
-                        myCmd.Parameters.AddWithValue("@DebtorCode", txtDebtorCode.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Level", ddlLevel.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@Sponsor", If(String.IsNullOrEmpty(sponsorId), CType(DBNull.Value, Object), sponsorId))
-                        myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Company", If(String.IsNullOrEmpty(ddlCompany.SelectedValue), CType(DBNull.Value, Object), ddlCompany.SelectedValue))
-                        myCmd.Parameters.AddWithValue("@CompanyDetail", If(String.IsNullOrEmpty(ddlCompanyDetail.SelectedValue), CType(DBNull.Value, Object), ddlCompanyDetail.SelectedValue))
-                        myCmd.Parameters.AddWithValue("@Area", ddlArea.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@Operator", operatorReps)
-                        myCmd.Parameters.AddWithValue("@PriceGroup", ddlPriceGroup.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@ShutterPriceGroup", ddlPriceGroupShutter.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@DoorPriceGroupId", ddlPriceGroupDoor.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@OnStop", ddlOnStop.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@CashSale", ddlCashSale.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@Newsletter", ddlNewsletter.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@MinSurcharge", ddlMinSurcharge.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
-
-                        myCmd.ExecuteNonQuery()
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Customers VALUES (@Id, @DebtorCode, @Level, @Sponsor, @Name, @Company, @CompanyDetail, @Area, @Operator, @PriceGroup, @ShutterPriceGroup, @DoorPriceGroupId, @OnStop, @CashSale, @Newsletter, @MinSurcharge, @Active); INSERT INTO CustomerQuotes(Id, Logo) VALUES (@Id, @Logo); INSERT INTO CustomerProductAccess VALUES (@Id, @DesignId)", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", thisId)
+                        thisCmd.Parameters.AddWithValue("@DebtorCode", txtDebtorCode.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Level", ddlLevel.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Sponsor", If(String.IsNullOrEmpty(sponsorId), CType(DBNull.Value, Object), sponsorId))
+                        thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Company", If(String.IsNullOrEmpty(ddlCompany.SelectedValue), CType(DBNull.Value, Object), ddlCompany.SelectedValue))
+                        thisCmd.Parameters.AddWithValue("@CompanyDetail", If(String.IsNullOrEmpty(ddlCompanyDetail.SelectedValue), CType(DBNull.Value, Object), ddlCompanyDetail.SelectedValue))
+                        thisCmd.Parameters.AddWithValue("@Area", ddlArea.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Operator", operatorReps)
+                        thisCmd.Parameters.AddWithValue("@PriceGroup", ddlPriceGroup.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@ShutterPriceGroup", ddlPriceGroupShutter.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@DoorPriceGroupId", ddlPriceGroupDoor.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@OnStop", ddlOnStop.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@CashSale", ddlCashSale.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Newsletter", ddlNewsletter.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@MinSurcharge", ddlMinSurcharge.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Logo", logoCustomer)
+                        thisCmd.Parameters.AddWithValue("@DesignId", dataProductAccess)
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
                     End Using
-
-                    Dim logoCustomer As String = "yourlogo.png"
-
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerQuotes(Id, Logo) VALUES (@Id, @Logo)", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", thisId)
-                        myCmd.Parameters.AddWithValue("@Logo", logoCustomer)
-
-                        myCmd.ExecuteNonQuery()
-                    End Using
-
-                    Dim dataProductAccess As String = settingClass.GetProductAccess(ddlCompany.SelectedValue)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerProductAccess VALUES (@Id, @DesignId)", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", thisId)
-                        myCmd.Parameters.AddWithValue("@DesignId", dataProductAccess)
-
-                        myCmd.ExecuteNonQuery()
-                    End Using
-
-                    thisConn.Close()
                 End Using
 
                 Dim dataLog As Object() = {"Customers", thisId, Session("LoginId").ToString(), "Customer Created"}
@@ -155,13 +140,6 @@ Partial Class Setting_Customer_Add
 
                 dataLog = {"CustomerProductAccess", thisId, Session("LoginId").ToString(), "Customer Product Access Created"}
                 settingClass.Logs(dataLog)
-
-                If Session("RoleName") = "Sales" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" Then
-                    If ddlCompany.SelectedValue = "2" Then
-                        Dim mailingClass As New MailingClass
-                        mailingClass.NewCustomer(thisId, Session("LoginId"))
-                    End If
-                End If
 
                 Dim url As String = String.Format("~/setting/customer/detail?customerid={0}", thisId)
                 Response.Redirect(url, False)

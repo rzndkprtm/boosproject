@@ -52,58 +52,54 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <div class="row mb-3">
-                                        <div class="col-12">
-                                            <div class="table-responsive">
-                                                <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Visible="false" OnPageIndexChanging="gvList_PageIndexChanging" OnDataBound="gvList_DataBound">
-                                                    <Columns>
-                                                        <asp:TemplateField ItemStyle-HorizontalAlign="Center">
-                                                            <ItemTemplate>
-                                                                <%# Container.DataItemIndex + 1 %>
-                                                            </ItemTemplate>
-                                                        </asp:TemplateField>
-                                                        <asp:BoundField DataField="Id" HeaderText="ID" />
-                                                        <asp:BoundField DataField="CustomerName" HeaderText="Customer" />
-                                                        <asp:BoundField DataField="Email" HeaderText="Email" />
-                                                        <asp:BoundField DataField="Phone" HeaderText="Phone" />
-                                                        <asp:TemplateField HeaderText="Address">
-                                                            <ItemTemplate>
-                                                                <%# BindAddress(Eval("Id").ToString()) %>
-                                                            </ItemTemplate>
-                                                        </asp:TemplateField>
-                                                        <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
-                                                            <ItemTemplate>
-                                                                <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
-                                                                <ul class="dropdown-menu">
-                                                                    <li>
-                                                                        <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalTerms" onclick='<%# String.Format("return showTerms(`{0}`);", Eval("Terms").ToString()) %>'>Show Terms & Conditions</a>
-                                                                    </li>
-                                                                    <li>
-                                                                        <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalLogo" onclick='<%# String.Format("return showLogo(`{0}`);", Eval("Logo").ToString()) %>'>Show Logo</a>
-                                                                    </li>
-                                                                    <li>
-                                                                        <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('CustomerQuotes', '<%# Eval("Id") %>')">Log</a>
-                                                                    </li>
-                                                                </ul>
-                                                            </ItemTemplate>
-                                                        </asp:TemplateField>
-                                                    </Columns>
-                                                </asp:GridView>
-                                            </div>
-                                            <div class="d-flex justify-content-end mt-3">
-                                                <nav id="navPager" runat="server" visible="false">
-                                                    <ul class="pagination pagination mb-0">
-                                                        <asp:Repeater ID="rptPager" runat="server" OnItemCommand="rptPager_ItemCommand">
-                                                            <ItemTemplate>
-                                                                <li class='page-item <%# Eval("CssClass") %>'>
-                                                                    <asp:LinkButton runat="server" ID="lnkPage" CssClass="page-link" Text='<%# Eval("Text") %>' CommandName="Page" CommandArgument='<%# Eval("PageIndex") %>' />
-                                                                </li>
-                                                            </ItemTemplate>
-                                                        </asp:Repeater>
-                                                    </ul>
-                                                </nav>
-                                            </div>
-                                        </div>
+                                    <div class="table-responsive">
+                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Visible="false" OnPageIndexChanging="gvList_PageIndexChanging" OnDataBound="gvList_DataBound">
+                                            <Columns>
+                                                <asp:TemplateField ItemStyle-HorizontalAlign="Center">
+                                                    <ItemTemplate>
+                                                        <%# Container.DataItemIndex + 1 %>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:BoundField DataField="Id" HeaderText="ID" />
+                                                <asp:BoundField DataField="CustomerName" HeaderText="Customer" />
+                                                <asp:BoundField DataField="Email" HeaderText="Email" />
+                                                <asp:BoundField DataField="Phone" HeaderText="Phone" />
+                                                <asp:TemplateField HeaderText="Address">
+                                                    <ItemTemplate>
+                                                        <%# BindAddress(Eval("Id").ToString()) %>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
+                                                    <ItemTemplate>
+                                                        <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
+                                                        <ul class="dropdown-menu">
+                                                            <li>
+                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalTerms" onclick='<%# String.Format("return showTerms(`{0}`);", Eval("Terms").ToString()) %>'>Show Terms & Conditions</a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalLogo" onclick='<%# String.Format("return showLogo(`{0}`);", Eval("Logo").ToString()) %>'>Show Logo</a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('CustomerQuotes', '<%# Eval("Id") %>')">Log</a>
+                                                            </li>
+                                                        </ul>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                            </Columns>
+                                        </asp:GridView>
+                                    </div>
+                                    <div class="d-flex justify-content-end mt-3">
+                                        <nav id="navPager" runat="server" visible="false">
+                                            <ul class="pagination pagination mb-0">
+                                                <asp:Repeater ID="rptPager" runat="server" OnItemCommand="rptPager_ItemCommand">
+                                                    <ItemTemplate>
+                                                        <li class='page-item <%# Eval("CssClass") %>'>
+                                                            <asp:LinkButton runat="server" ID="lnkPage" CssClass="page-link" Text='<%# Eval("Text") %>' CommandName="Page" CommandArgument='<%# Eval("PageIndex") %>' />
+                                                        </li>
+                                                    </ItemTemplate>
+                                                </asp:Repeater>
+                                            </ul>
+                                        </nav>
                                     </div>
                                 </div>
                             </div>
@@ -192,7 +188,6 @@
                 document.body.focus();
             });
         });
-
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

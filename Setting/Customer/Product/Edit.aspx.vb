@@ -42,15 +42,12 @@ Partial Class Setting_Customer_Product_Edit
 
             If msgError.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
-                    thisConn.Open()
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerProductAccess SET DesignId=@DesignId WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                        myCmd.Parameters.AddWithValue("@DesignId", designId)
-
-                        myCmd.ExecuteNonQuery()
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE CustomerProductAccess SET DesignId=@DesignId WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                        thisCmd.Parameters.AddWithValue("@DesignId", designId)
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
                     End Using
-
-                    thisConn.Close()
                 End Using
 
                 Dim dataLog As Object() = {"CustomerProductAccess", lblId.Text, Session("LoginId").ToString(), "Customer Product Access Updated"}

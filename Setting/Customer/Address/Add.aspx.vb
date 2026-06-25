@@ -80,19 +80,18 @@ Partial Class Setting_Customer_Address_Add
                 If checkData = 0 Then primaryData = 1
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerAddress VALUES (@Id, @CustomerId, @Description, @Address, @Suburb, @State, @PostCode, @Note, @Primary)", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", thisId)
-                        myCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
-                        myCmd.Parameters.AddWithValue("@Address", txtAddress.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Suburb", txtSuburb.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@State", txtState.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@PostCode", txtPostCode.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Note", txtNote.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Primary", primaryData)
-
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerAddress VALUES (@Id, @CustomerId, @Description, @Address, @Suburb, @State, @PostCode, @Note, @Primary)", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", thisId)
+                        thisCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
+                        thisCmd.Parameters.AddWithValue("@Address", txtAddress.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Suburb", txtSuburb.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@State", txtState.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@PostCode", txtPostCode.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Note", txtNote.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Primary", primaryData)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 

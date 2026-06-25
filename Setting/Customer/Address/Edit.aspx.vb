@@ -72,18 +72,17 @@ Partial Class Setting_Customer_Address_Edit
             End If
             If msgError.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerAddress SET CustomerId=@CustomerId, Description=@Description, Address=@Address, Suburb=@Suburb, State=@State, PostCode=@PostCode, Note=@Note WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                        myCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
-                        myCmd.Parameters.AddWithValue("@Address", txtAddress.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Suburb", txtSuburb.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@State", txtState.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@PostCode", txtPostCode.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Note", txtNote.Text.Trim())
-
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE CustomerAddress SET CustomerId=@CustomerId, Description=@Description, Address=@Address, Suburb=@Suburb, State=@State, PostCode=@PostCode, Note=@Note WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                        thisCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
+                        thisCmd.Parameters.AddWithValue("@Address", txtAddress.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Suburb", txtSuburb.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@State", txtState.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@PostCode", txtPostCode.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Note", txtNote.Text.Trim())
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 

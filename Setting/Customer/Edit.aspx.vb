@@ -113,27 +113,26 @@ Partial Class Setting_Customer_Edit
                 If ddlLevel.SelectedValue = "Sponsor" OrElse ddlLevel.SelectedValue = "Member" Then sponsorId = String.Empty
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Customers SET DebtorCode=@DebtorCode, Name=@Name, Level=@Level, SponsorId=@Sponsor, CompanyId=@Company, CompanyDetailId=@CompanyDetail, Area=@Area, Operator=@Operator, PriceGroupId=@PriceGroup, ShutterPriceGroupId=@ShutterPriceGroup, DoorPriceGroupId=@DoorPriceGroupId, OnStop=@OnStop, CashSale=@CashSale, Newsletter=@Newsletter, MinSurcharge=@MinSurcharge, Active=@Active WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                        myCmd.Parameters.AddWithValue("@DebtorCode", txtDebtorCode.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Level", ddlLevel.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@Sponsor", If(String.IsNullOrEmpty(sponsorId), CType(DBNull.Value, Object), sponsorId))
-                        myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Company", If(String.IsNullOrEmpty(ddlCompany.SelectedValue), CType(DBNull.Value, Object), ddlCompany.SelectedValue))
-                        myCmd.Parameters.AddWithValue("@CompanyDetail", If(String.IsNullOrEmpty(ddlCompanyDetail.SelectedValue), CType(DBNull.Value, Object), ddlCompanyDetail.SelectedValue))
-                        myCmd.Parameters.AddWithValue("@Area", ddlArea.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@Operator", operatorReps)
-                        myCmd.Parameters.AddWithValue("@PriceGroup", ddlPriceGroup.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@ShutterPriceGroup", ddlPriceGroupShutter.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@DoorPriceGroupId", ddlPriceGroupDoor.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@OnStop", ddlOnStop.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@CashSale", ddlCashSale.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@Newsletter", ddlNewsletter.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@MinSurcharge", ddlMinSurcharge.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
-
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Customers SET DebtorCode=@DebtorCode, Name=@Name, Level=@Level, SponsorId=@Sponsor, CompanyId=@Company, CompanyDetailId=@CompanyDetail, Area=@Area, Operator=@Operator, PriceGroupId=@PriceGroup, ShutterPriceGroupId=@ShutterPriceGroup, DoorPriceGroupId=@DoorPriceGroupId, OnStop=@OnStop, CashSale=@CashSale, Newsletter=@Newsletter, MinSurcharge=@MinSurcharge, Active=@Active WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                        thisCmd.Parameters.AddWithValue("@DebtorCode", txtDebtorCode.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Level", ddlLevel.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Sponsor", If(String.IsNullOrEmpty(sponsorId), CType(DBNull.Value, Object), sponsorId))
+                        thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Company", If(String.IsNullOrEmpty(ddlCompany.SelectedValue), CType(DBNull.Value, Object), ddlCompany.SelectedValue))
+                        thisCmd.Parameters.AddWithValue("@CompanyDetail", If(String.IsNullOrEmpty(ddlCompanyDetail.SelectedValue), CType(DBNull.Value, Object), ddlCompanyDetail.SelectedValue))
+                        thisCmd.Parameters.AddWithValue("@Area", ddlArea.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Operator", operatorReps)
+                        thisCmd.Parameters.AddWithValue("@PriceGroup", ddlPriceGroup.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@ShutterPriceGroup", ddlPriceGroupShutter.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@DoorPriceGroupId", ddlPriceGroupDoor.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@OnStop", ddlOnStop.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@CashSale", ddlCashSale.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Newsletter", ddlNewsletter.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@MinSurcharge", ddlMinSurcharge.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 
@@ -165,7 +164,6 @@ Partial Class Setting_Customer_Edit
     Protected Sub BindData(customerId As String)
         Try
             Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Customers WHERE Id='" & customerId & "'")
-
             If myData Is Nothing Then
                 Response.Redirect("~/setting/customer/list", False)
                 Exit Sub

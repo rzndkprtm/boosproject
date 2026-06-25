@@ -82,13 +82,14 @@ Partial Class Setting_Specification_Product_Edit
             If msgErrorProcessTube.InnerText = "" Then
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM ProductTubes ORDER BY Id DESC")
                 Dim descText As String = txtTubeDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
+
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO ProductTubes VALUES (@Id, @Name, @Description)", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", thisId)
-                        myCmd.Parameters.AddWithValue("@Name", txtTubeName.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Description", descText)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO ProductTubes VALUES (@Id, @Name, @Description)", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", thisId)
+                        thisCmd.Parameters.AddWithValue("@Name", txtTubeName.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Description", descText)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 
@@ -112,13 +113,14 @@ Partial Class Setting_Specification_Product_Edit
             If msgErrorProcessControl.InnerText = "" Then
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM ProductControls ORDER BY Id DESC")
                 Dim descText As String = txtControlDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
+
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO ProductControls VALUES (@Id, @Name, @Description, NULL)", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", thisId)
-                        myCmd.Parameters.AddWithValue("@Name", txtControlName.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Description", descText)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO ProductControls VALUES (@Id, @Name, @Description, NULL)", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", thisId)
+                        thisCmd.Parameters.AddWithValue("@Name", txtControlName.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Description", descText)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 
@@ -142,13 +144,14 @@ Partial Class Setting_Specification_Product_Edit
             If msgErrorProcessColour.InnerText = "" Then
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM ProductColours ORDER BY Id DESC")
                 Dim descText As String = txtColourDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
+
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO ProductColours VALUES (@Id, @Name, @Description)", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", thisId)
-                        myCmd.Parameters.AddWithValue("@Name", txtColourName.Text.Trim())
-                        myCmd.Parameters.AddWithValue("@Description", descText)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO ProductColours VALUES (@Id, @Name, @Description)", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", thisId)
+                        thisCmd.Parameters.AddWithValue("@Name", txtColourName.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Description", descText)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 
@@ -211,22 +214,23 @@ Partial Class Setting_Specification_Product_Edit
                 Dim companyDetailId As String = company.Remove(company.Length - 1).ToString()
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
                 If String.IsNullOrEmpty(txtInvoiceName.Text) Then txtInvoiceName.Text = txtName.Text
+
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Products SET DesignId=@DesignId, BlindId=@BlindId, CompanyDetailId=@CompanyDetailId, JobSheetId=@JobSheetId, Name=@Name, InvoiceName=@InvoiceName, TubeType=@TubeType, ControlType=@ControlType, ColourType=@ColourType, Description=@Description, Status=@Status WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                        myCmd.Parameters.AddWithValue("@DesignId", ddlDesign.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@BlindId", ddlBlind.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetailId)
-                        myCmd.Parameters.AddWithValue("@JobSheetId", If(String.IsNullOrEmpty(ddlJobSheet.SelectedValue), CType(DBNull.Value, Object), ddlJobSheet.SelectedValue))
-                        myCmd.Parameters.AddWithValue("@Name", txtName.Text)
-                        myCmd.Parameters.AddWithValue("@InvoiceName", txtInvoiceName.Text)
-                        myCmd.Parameters.AddWithValue("@TubeType", ddlTube.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@ControlType", ddlControl.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@ColourType", ddlColour.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@Description", descText)
-                        myCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Products SET DesignId=@DesignId, BlindId=@BlindId, CompanyDetailId=@CompanyDetailId, JobSheetId=@JobSheetId, Name=@Name, InvoiceName=@InvoiceName, TubeType=@TubeType, ControlType=@ControlType, ColourType=@ColourType, Description=@Description, Status=@Status WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                        thisCmd.Parameters.AddWithValue("@DesignId", ddlDesign.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@BlindId", ddlBlind.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetailId)
+                        thisCmd.Parameters.AddWithValue("@JobSheetId", If(String.IsNullOrEmpty(ddlJobSheet.SelectedValue), CType(DBNull.Value, Object), ddlJobSheet.SelectedValue))
+                        thisCmd.Parameters.AddWithValue("@Name", txtName.Text)
+                        thisCmd.Parameters.AddWithValue("@InvoiceName", txtInvoiceName.Text)
+                        thisCmd.Parameters.AddWithValue("@TubeType", ddlTube.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@ControlType", ddlControl.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@ColourType", ddlColour.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Description", descText)
+                        thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 

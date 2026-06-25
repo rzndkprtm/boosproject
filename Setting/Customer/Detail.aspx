@@ -6,6 +6,7 @@
         .fw-semibold { font-weight: 600; }
         h6.text-uppercase { letter-spacing: .5px; border-bottom: 1px solid #dee2e6; padding-bottom: .5rem; }
     </style>
+
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
@@ -1066,7 +1067,6 @@
                 { id: '<%= gvListProduct.ClientID %>', link: "aDetailProduct" },
                 { id: '<%= gvListPromo.ClientID %>', link: "aDetailPromo" },
             ];
-
             gridConfigs.forEach(cfg => {
                 const gv = document.getElementById(cfg.id);
                 if (!gv) return;
@@ -1270,9 +1270,6 @@
         function dataDeletePromo(promoid) {
             document.getElementById("<%=txtDeletePromoId.ClientID %>").value = promoid;
         }
-
-        // END CUSTOMER PROMO
-
         [
             "modalDelete", "modalRecalculate", "modalLog", "modalWelcome", "modalSendLogin", "modalWaiting",
             "modalDeleteContact", "modalPrimaryContact",
@@ -1288,7 +1285,6 @@
                 document.body.focus();
             });
         });
-
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

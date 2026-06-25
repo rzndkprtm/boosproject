@@ -16,8 +16,9 @@ Partial Class Setting_Specification_Fabric_Jakarta
         End If
 
         If Not IsPostBack Then
-            MessageError(False, String.Empty)
             txtSearch.Text = Session("SearchFabricJakarta")
+
+            MessageError(False, String.Empty)
             BindData(txtSearch.Text)
         End If
     End Sub
@@ -47,16 +48,10 @@ Partial Class Setting_Specification_Fabric_Jakarta
     End Sub
 
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        gvList.PageIndex = e.NewPageIndex
+
         MessageError(False, String.Empty)
-        Try
-            gvList.PageIndex = e.NewPageIndex
-            BindData(txtSearch.Text)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
+        BindData(txtSearch.Text)
     End Sub
 
     Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
@@ -107,14 +102,14 @@ Partial Class Setting_Specification_Fabric_Jakarta
             If msgErrorProcess.InnerText = "" Then
                 If lblAction.Text = "Add" Then
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO FabricGroupLocals VALUES (@Id, @Panel, @Roller, @Roman, @Curtain)", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", ddlFabric.SelectedValue)
-                            myCmd.Parameters.AddWithValue("@Panel", txtPanel.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Roller", txtRoller.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Roman", txtRoman.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Curtain", txtCurtain.Text.Trim())
+                        Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO FabricGroupLocals VALUES (@Id, @Panel, @Roller, @Roman, @Curtain)", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", ddlFabric.SelectedValue)
+                            thisCmd.Parameters.AddWithValue("@Panel", txtPanel.Text.Trim())
+                            thisCmd.Parameters.AddWithValue("@Roller", txtRoller.Text.Trim())
+                            thisCmd.Parameters.AddWithValue("@Roman", txtRoman.Text.Trim())
+                            thisCmd.Parameters.AddWithValue("@Curtain", txtCurtain.Text.Trim())
                             thisConn.Open()
-                            myCmd.ExecuteNonQuery()
+                            thisCmd.ExecuteNonQuery()
                         End Using
                     End Using
 
@@ -127,14 +122,14 @@ Partial Class Setting_Specification_Fabric_Jakarta
 
                 If lblAction.Text = "Edit" Then
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE FabricGroupLocals SET Panel=@Panel, Roller=@Roller, Roman=@Roman, Curtain=@Curtain WHERE Id=@Id", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", ddlFabric.SelectedValue)
-                            myCmd.Parameters.AddWithValue("@Panel", txtPanel.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Roller", txtRoller.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Roman", txtRoman.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Curtain", txtCurtain.Text.Trim())
+                        Using thisCmd As SqlCommand = New SqlCommand("UPDATE FabricGroupLocals SET Panel=@Panel, Roller=@Roller, Roman=@Roman, Curtain=@Curtain WHERE Id=@Id", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", ddlFabric.SelectedValue)
+                            thisCmd.Parameters.AddWithValue("@Panel", txtPanel.Text.Trim())
+                            thisCmd.Parameters.AddWithValue("@Roller", txtRoller.Text.Trim())
+                            thisCmd.Parameters.AddWithValue("@Roman", txtRoman.Text.Trim())
+                            thisCmd.Parameters.AddWithValue("@Curtain", txtCurtain.Text.Trim())
                             thisConn.Open()
-                            myCmd.ExecuteNonQuery()
+                            thisCmd.ExecuteNonQuery()
                         End Using
                     End Using
 
@@ -157,10 +152,10 @@ Partial Class Setting_Specification_Fabric_Jakarta
             Dim dataId As String = txtIdDelete.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM FabricGroupLocals WHERE Id=@Id UPDATE Logins SET Active=0 WHERE CustomerId=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", dataId)
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM FabricGroupLocals WHERE Id=@Id UPDATE Logins SET Active=0 WHERE CustomerId=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", dataId)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 

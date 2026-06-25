@@ -90,7 +90,6 @@ Partial Class Setting_General_Notification_Add
                         thisCmd.Parameters.AddWithValue("@StartDate", txtStartDate.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@EndDate", txtEndDate.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
-
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using

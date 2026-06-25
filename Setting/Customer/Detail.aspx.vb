@@ -83,10 +83,10 @@ Partial Class Setting_Customer_Detail
         MessageError(False, String.Empty)
         Try
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE Customers SET Active=0 WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Customers SET Active=0 WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -115,10 +115,10 @@ Partial Class Setting_Customer_Detail
             mailingClass.CustomerWelcome(lblId.Text, Session("LoginId").ToString())
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerWelcomes VALUES (NEWID(), @CustomerId)", thisConn)
-                    myCmd.Parameters.AddWithValue("@CustomerId", lblId.Text)
+                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerWelcomes VALUES (NEWID(), @CustomerId)", thisConn)
+                    thisCmd.Parameters.AddWithValue("@CustomerId", lblId.Text)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -408,10 +408,10 @@ Partial Class Setting_Customer_Detail
             Dim fullDesc As String = settingClass.GetItemData("SELECT CONCAT('Description: ', ISNULL(Description, ''), ', ', 'Address: ', ISNULL(Address, ''), ', ', 'Suburb: ', ISNULL(Suburb, ''), ', ', 'State: ', ISNULL(State, ''), ', ', 'PostCode: ', ISNULL(PostCode, '')) AS FullDescription FROM CustomerAddress WHERE Id='" & addressId & "'")
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerAddress WHERE Id=@Id; DELETE FROM Logs WHERE Type='CustomerAddress' AND DataId=@Id;", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", addressId)
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerAddress WHERE Id=@Id; DELETE FROM Logs WHERE Type='CustomerAddress' AND DataId=@Id;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", addressId)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -436,11 +436,11 @@ Partial Class Setting_Customer_Detail
             Dim addressId As String = txtPrimaryAddressId.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerAddress SET [Primary]=0 WHERE CustomerId=@CustomerId; UPDATE CustomerAddress SET [Primary]=1 WHERE Id=@AddressId;", thisConn)
-                    myCmd.Parameters.AddWithValue("@CustomerId", lblId.Text)
-                    myCmd.Parameters.AddWithValue("@AddressId", addressId)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE CustomerAddress SET [Primary]=0 WHERE CustomerId=@CustomerId; UPDATE CustomerAddress SET [Primary]=1 WHERE Id=@AddressId;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@CustomerId", lblId.Text)
+                    thisCmd.Parameters.AddWithValue("@AddressId", addressId)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -515,10 +515,10 @@ Partial Class Setting_Customer_Detail
             Dim fullBusiness As String = settingClass.GetItemData("SELECT CONCAT('ABN Number: ', ISNULL(ABNNumber, ''), ', ', 'Registered Name: ', ISNULL(RegisteredName, '')) AS FullDescription FROM CustomerBusiness WHERE Id='" & businessId & "'")
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerBusiness WHERE Id=@Id; DELETE FROM Logs WHERE Type='CustomerBusiness' AND DataId=@Id;", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", businessId)
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerBusiness WHERE Id=@Id; DELETE FROM Logs WHERE Type='CustomerBusiness' AND DataId=@Id;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", businessId)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -543,11 +543,11 @@ Partial Class Setting_Customer_Detail
             Dim businessId As String = txtPrimaryBusinessId.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerBusiness SET [Primary]=0 WHERE CustomerId=@CustomerId", thisConn)
-                    myCmd.Parameters.AddWithValue("@CustomerId", lblId.Text)
-                    myCmd.Parameters.AddWithValue("@BusinessId", businessId)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE CustomerBusiness SET [Primary]=0 WHERE CustomerId=@CustomerId", thisConn)
+                    thisCmd.Parameters.AddWithValue("@CustomerId", lblId.Text)
+                    thisCmd.Parameters.AddWithValue("@BusinessId", businessId)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -607,11 +607,11 @@ Partial Class Setting_Customer_Detail
             If txtActiveLoginStatus.Text = "1" Then : active = 0 : End If
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Active=@Active, FailedCount=0 WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", loginId)
-                    myCmd.Parameters.AddWithValue("@Active", active)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Active=@Active, FailedCount=0 WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", loginId)
+                    thisCmd.Parameters.AddWithValue("@Active", active)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -689,12 +689,11 @@ Partial Class Setting_Customer_Detail
                 Dim newPassword As String = settingClass.Encrypt(txtChangePassword.Text)
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Password=@Password WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", thisId)
-                        myCmd.Parameters.AddWithValue("@Password", newPassword)
-
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Password=@Password WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", thisId)
+                        thisCmd.Parameters.AddWithValue("@Password", newPassword)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 
@@ -720,12 +719,11 @@ Partial Class Setting_Customer_Detail
             Dim newPassword As String = settingClass.Encrypt(txtResetPasswordLoginNew.Text)
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Password=@Password, FailedCount=0, ResetLogin=1, Active=1 WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.Parameters.AddWithValue("@Password", newPassword)
-
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Password=@Password, FailedCount=0, ResetLogin=1, Active=1 WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisCmd.Parameters.AddWithValue("@Password", newPassword)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -796,19 +794,11 @@ Partial Class Setting_Customer_Detail
             Dim thisId As String = txtDeleteDiscountId.Text
 
             Using thisConn As New SqlConnection(myConn)
-                thisConn.Open()
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerDiscounts WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerDiscounts WHERE Id=@Id; DELETE FROM Logs WHERE Type='CustomerDiscounts' AND DataId=@Id;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
                 End Using
-
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Logs WHERE Type='CustomerDiscounts' AND DataId=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.ExecuteNonQuery()
-                End Using
-
-                thisConn.Close()
             End Using
 
             url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
@@ -832,15 +822,15 @@ Partial Class Setting_Customer_Detail
                 For i As Integer = 0 To discountData.Rows.Count - 1
                     Dim id As String = discountData.Rows(i)("Id").ToString()
 
-                    Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Logs WHERE Type='CustomerDiscounts' AND DataId=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", id)
-                        myCmd.ExecuteNonQuery()
+                    Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM Logs WHERE Type='CustomerDiscounts' AND DataId=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", id)
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 Next
 
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerDiscounts WHERE CustomerId=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                    myCmd.ExecuteNonQuery()
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerDiscounts WHERE CustomerId=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                    thisCmd.ExecuteNonQuery()
                 End Using
 
                 thisConn.Close()
@@ -903,11 +893,10 @@ Partial Class Setting_Customer_Detail
             Dim thisId As String = txtDeletePromoId.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerPromos WHERE Id=@Id; DELETE FROM Logs WHERE Type='CustomerPromos' AND DataId=@Id;", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerPromos WHERE Id=@Id; DELETE FROM Logs WHERE Type='CustomerPromos' AND DataId=@Id;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -932,15 +921,15 @@ Partial Class Setting_Customer_Detail
                 For i As Integer = 0 To discountData.Rows.Count - 1
                     Dim id As String = discountData.Rows(i)("Id").ToString()
 
-                    Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Logs WHERE Type='CustomerPromos' AND DataId=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", id)
-                        myCmd.ExecuteNonQuery()
+                    Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM Logs WHERE Type='CustomerPromos' AND DataId=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", id)
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 Next
 
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerPromos WHERE CustomerId=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                    myCmd.ExecuteNonQuery()
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerPromos WHERE CustomerId=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                    thisCmd.ExecuteNonQuery()
                 End Using
 
                 thisConn.Close()
@@ -993,12 +982,11 @@ Partial Class Setting_Customer_Detail
         Try
             Using thisConn As New SqlConnection(myConn)
                 Dim desingId As String = settingClass.GetProductAccess(lblCompanyId.Text)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerProductAccess SET DesignId=@DesignId WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                    myCmd.Parameters.AddWithValue("@DesignId", desingId)
-
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE CustomerProductAccess SET DesignId=@DesignId WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                    thisCmd.Parameters.AddWithValue("@DesignId", desingId)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -1039,7 +1027,6 @@ Partial Class Setting_Customer_Detail
                     hasil += designName & ", "
                 Next
             End If
-
             result = hasil.Remove(hasil.Length - 2).ToString()
         Catch ex As Exception
             result = "Error"

@@ -107,7 +107,7 @@
                                             </Columns>
                                         </asp:GridView>
                                     </div>
-                                    <div class="d-flex justify-content-right mt-2">
+                                    <div class="d-flex justify-content-end mt-2">
                                         <nav id="navPager" runat="server" visible="false">
                                             <ul class="pagination pagination mb-0">
                                                 <asp:Repeater ID="rptPager" runat="server" OnItemCommand="rptPager_ItemCommand">
@@ -356,7 +356,6 @@
                 document.body.focus();
             });
         });
-
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

@@ -62,33 +62,20 @@ Partial Class Setting_Customer_List
     End Sub
 
     Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
-        Try
-            If e.CommandName = "Page" Then
-                gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
-                BindData(txtSearch.Text, ddlCompany.SelectedValue, ddlActive.SelectedValue)
-            End If
-        Catch ex As Exception
-        End Try
+        If e.CommandName = "Page" Then
+            gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
+            BindData(txtSearch.Text, ddlCompany.SelectedValue, ddlActive.SelectedValue)
+        End If
     End Sub
 
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        gvList.PageIndex = e.NewPageIndex
         MessageError(False, String.Empty)
-        Try
-            gvList.PageIndex = e.NewPageIndex
-            BindData(txtSearch.Text, ddlCompany.SelectedValue, ddlActive.SelectedValue)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
+        BindData(txtSearch.Text, ddlCompany.SelectedValue, ddlActive.SelectedValue)
     End Sub
 
     Protected Sub gvList_DataBound(sender As Object, e As EventArgs)
-        Try
-            BuildPager()
-        Catch ex As Exception
-        End Try
+        BuildPager()
     End Sub
 
     Protected Sub btnCashSale_Click(sender As Object, e As EventArgs)
@@ -239,11 +226,11 @@ Partial Class Setting_Customer_List
         End Try
     End Sub
 
-    Private Sub BuildPager()
+    Protected Sub BuildPager()
         Try
             If gvList.PageCount <= 1 Then
                 navPager.Visible = False
-                Exit Sub
+                Return
             End If
 
             navPager.Visible = True
@@ -271,6 +258,7 @@ Partial Class Setting_Customer_List
             rptPager.DataSource = pages
             rptPager.DataBind()
         Catch ex As Exception
+            navPager.Visible = False
         End Try
     End Sub
 

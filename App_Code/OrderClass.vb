@@ -11,11 +11,10 @@ Public Class OrderClass
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand(thisString, thisConn)
                     Using thisAdapter As New SqlDataAdapter(thisCmd)
-                        Dim dt As New DataTable()
-                        thisAdapter.Fill(dt)
-
-                        If dt.Rows.Count > 0 Then
-                            Return dt.Rows(0)
+                        Dim thisTable As New DataTable()
+                        thisAdapter.Fill(thisTable)
+                        If thisTable.Rows.Count > 0 Then
+                            Return thisTable.Rows(0)
                         Else
                             Return Nothing
                         End If
@@ -33,13 +32,11 @@ Public Class OrderClass
                 Using thisCmd As New SqlCommand(spName, thisConn)
                     thisCmd.CommandType = CommandType.StoredProcedure
                     thisCmd.Parameters.AddRange(params.ToArray())
-
-                    Using da As New SqlDataAdapter(thisCmd)
-                        Dim dt As New DataTable()
-                        da.Fill(dt)
-
-                        If dt.Rows.Count > 0 Then
-                            Return dt.Rows(0)
+                    Using thisAdapter As New SqlDataAdapter(thisCmd)
+                        Dim thisTable As New DataTable()
+                        thisAdapter.Fill(thisTable)
+                        If thisTable.Rows.Count > 0 Then
+                            Return thisTable.Rows(0)
                         End If
                     End Using
                 End Using
@@ -53,10 +50,10 @@ Public Class OrderClass
         Try
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand(thisString, thisConn)
-                    Using da As New SqlDataAdapter(thisCmd)
-                        Dim dt As New DataTable()
-                        da.Fill(dt)
-                        Return dt
+                    Using thisAdapter As New SqlDataAdapter(thisCmd)
+                        Dim thisTable As New DataTable()
+                        thisAdapter.Fill(thisTable)
+                        Return thisTable
                     End Using
                 End Using
             End Using
@@ -66,25 +63,23 @@ Public Class OrderClass
     End Function
 
     Public Function GetDataTableSP(spName As String, params As List(Of SqlParameter)) As DataTable
-        Dim dt As New DataTable()
+        Dim thisTable As New DataTable()
         Try
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand(spName, thisConn)
                     thisCmd.CommandType = CommandType.StoredProcedure
-
                     If params IsNot Nothing AndAlso params.Count > 0 Then
                         thisCmd.Parameters.AddRange(params.ToArray())
                     End If
-
-                    Using da As New SqlDataAdapter(thisCmd)
-                        da.Fill(dt)
+                    Using thisAdapter As New SqlDataAdapter(thisCmd)
+                        thisAdapter.Fill(thisTable)
                     End Using
                 End Using
             End Using
         Catch ex As Exception
-            dt = New DataTable()
+            thisTable = New DataTable()
         End Try
-        Return dt
+        Return thisTable
     End Function
 
     Public Sub ExecuteSP(spName As String, params As List(Of SqlParameter))
@@ -92,11 +87,9 @@ Public Class OrderClass
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand(spName, thisConn)
                     thisCmd.CommandType = CommandType.StoredProcedure
-
                     If params IsNot Nothing AndAlso params.Count > 0 Then
                         thisCmd.Parameters.AddRange(params.ToArray())
                     End If
-
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
@@ -130,8 +123,8 @@ Public Class OrderClass
         Try
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
-                Using myCmd As New SqlCommand(thisString, thisConn)
-                    Using rdResult = myCmd.ExecuteReader
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using rdResult = thisCmd.ExecuteReader
                         While rdResult.Read
                             result = rdResult.Item(0)
                         End While
@@ -150,8 +143,8 @@ Public Class OrderClass
         Try
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
-                Using myCmd As New SqlCommand(thisString, thisConn)
-                    Using rdResult = myCmd.ExecuteReader
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using rdResult = thisCmd.ExecuteReader
                         While rdResult.Read
                             result = rdResult.Item(0)
                         End While
@@ -170,8 +163,8 @@ Public Class OrderClass
         Try
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
-                Using myCmd As New SqlCommand(thisString, thisConn)
-                    Using rdResult = myCmd.ExecuteReader
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using rdResult = thisCmd.ExecuteReader
                         While rdResult.Read
                             result = rdResult.Item(0)
                         End While
@@ -199,11 +192,10 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(id) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT QueryString FROM OrderActionContext WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", id)
-
+                    Using thisCmd As New SqlCommand("SELECT QueryString FROM OrderActionContext WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", id)
                         thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj.ToString()
                         End If
@@ -221,11 +213,10 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(customerId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT Email FROM CustomerContacts WHERE CustomerId=@CustomerId AND [Primary]=1", thisConn)
-                        myCmd.Parameters.AddWithValue("@CustomerId", customerId)
-
+                    Using thisCmd As New SqlCommand("SELECT Email FROM CustomerContacts WHERE CustomerId=@CustomerId AND [Primary]=1", thisConn)
+                        thisCmd.Parameters.AddWithValue("@CustomerId", customerId)
                         thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj.ToString()
                         End If
@@ -243,11 +234,10 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(loginId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT LoginRoles.Name FROM Logins INNER JOIN LoginRoles ON Logins.RoleId=LoginRoles.Id WHERE Logins.Id=@LoginId", thisConn)
-                        myCmd.Parameters.AddWithValue("@LoginId", loginId)
-
+                    Using thisCmd As New SqlCommand("SELECT LoginRoles.Name FROM Logins INNER JOIN LoginRoles ON Logins.RoleId=LoginRoles.Id WHERE Logins.Id=@LoginId", thisConn)
+                        thisCmd.Parameters.AddWithValue("@LoginId", loginId)
                         thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj.ToString()
                         End If
@@ -265,11 +255,10 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(loginId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT CASE WHEN Pricing=1 THEN 'Yes' ELSE '' END AS PriceAccess FROM Logins WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", loginId)
-
+                    Using thisCmd As New SqlCommand("SELECT CASE WHEN Pricing=1 THEN 'Yes' ELSE '' END AS PriceAccess FROM Logins WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", loginId)
                         thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj.ToString()
                         End If
@@ -287,11 +276,10 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(headerId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT CustomerId FROM OrderHeaders WHERE Id=@OrderId", thisConn)
-                        myCmd.Parameters.AddWithValue("@OrderId", headerId)
-
+                    Using thisCmd As New SqlCommand("SELECT CustomerId FROM OrderHeaders WHERE Id=@OrderId", thisConn)
+                        thisCmd.Parameters.AddWithValue("@OrderId", headerId)
                         thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj.ToString()
                         End If
@@ -309,11 +297,10 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(orderId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT Customers.CompanyId FROM OrderHeaders INNER JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id=@OrderId", thisConn)
-                        myCmd.Parameters.AddWithValue("@OrderId", orderId)
-
+                    Using thisCmd As New SqlCommand("SELECT Customers.CompanyId FROM OrderHeaders INNER JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id=@OrderId", thisConn)
+                        thisCmd.Parameters.AddWithValue("@OrderId", orderId)
                         thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj.ToString()
                         End If
@@ -331,11 +318,10 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(orderId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT Customers.CompanyDetailId FROM OrderHeaders INNER JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id=@OrderId", thisConn)
-                        myCmd.Parameters.AddWithValue("@OrderId", orderId)
-
+                    Using thisCmd As New SqlCommand("SELECT Customers.CompanyDetailId FROM OrderHeaders INNER JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id=@OrderId", thisConn)
+                        thisCmd.Parameters.AddWithValue("@OrderId", orderId)
                         thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj.ToString()
                         End If
@@ -353,11 +339,10 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(customerId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT Companys.Alias FROM Customers LEFT JOIN Companys ON Customers.CompanyId=Companys.Id WHERE Customers.Id=@CustomerId", thisConn)
-                        myCmd.Parameters.AddWithValue("@CustomerId", customerId)
-
+                    Using thisCmd As New SqlCommand("SELECT Companys.Alias FROM Customers LEFT JOIN Companys ON Customers.CompanyId=Companys.Id WHERE Customers.Id=@CustomerId", thisConn)
+                        thisCmd.Parameters.AddWithValue("@CustomerId", customerId)
                         thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj.ToString()
                         End If
@@ -375,11 +360,10 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(companyDetailId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT Name FROM CompanyDetails WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", companyDetailId)
-
+                    Using thisCmd As New SqlCommand("SELECT Name FROM CompanyDetails WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", companyDetailId)
                         thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj.ToString()
                         End If
@@ -397,11 +381,10 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(customerId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT CompanyDetailId FROM Customers WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", customerId)
-
+                    Using thisCmd As New SqlCommand("SELECT CompanyDetailId FROM Customers WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", customerId)
                         thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj.ToString()
                         End If
@@ -419,11 +402,10 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(customerId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT CompanyDetails.Name FROM Customers LEFT JOIN CompanyDetails ON Customers.CompanyDetailId=CompanyDetails.Id WHERE Customers.Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", customerId)
-
+                    Using thisCmd As New SqlCommand("SELECT CompanyDetails.Name FROM Customers LEFT JOIN CompanyDetails ON Customers.CompanyDetailId=CompanyDetails.Id WHERE Customers.Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", customerId)
                         thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj.ToString()
                         End If
@@ -441,11 +423,10 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(orderId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT Customers.PriceGroupId FROM OrderHeaders INNER JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id=@OrderId", thisConn)
-                        myCmd.Parameters.AddWithValue("@OrderId", orderId)
-
+                    Using thisCmd As New SqlCommand("SELECT Customers.PriceGroupId FROM OrderHeaders INNER JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id=@OrderId", thisConn)
+                        thisCmd.Parameters.AddWithValue("@OrderId", orderId)
                         thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj.ToString()
                         End If
@@ -463,13 +444,12 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(groupName) OrElse String.IsNullOrEmpty(designId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT Id FROM PriceProductGroups CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS thisArray WHERE Name=@Name AND DesignId=@DesignId AND thisArray.VALUE=@CompanyDetailId AND Active=1", thisConn)
-                        myCmd.Parameters.AddWithValue("@Name", groupName)
-                        myCmd.Parameters.AddWithValue("@DesignId", designId)
-                        myCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetailId)
-
+                    Using thisCmd As New SqlCommand("SELECT Id FROM PriceProductGroups CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS thisArray WHERE Name=@Name AND DesignId=@DesignId AND thisArray.VALUE=@CompanyDetailId AND Active=1", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Name", groupName)
+                        thisCmd.Parameters.AddWithValue("@DesignId", designId)
+                        thisCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetailId)
                         thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj.ToString()
                         End If
@@ -487,11 +467,10 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(groupId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT Name FROM PriceProductGroups WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", groupId)
-
+                    Using thisCmd As New SqlCommand("SELECT Name FROM PriceProductGroups WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", groupId)
                         thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj.ToString()
                         End If
@@ -509,11 +488,10 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(productId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT DesignId FROM Products WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", productId)
-
+                    Using thisCmd As New SqlCommand("SELECT DesignId FROM Products WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", productId)
                         thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj.ToString()
                         End If
@@ -531,11 +509,10 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(productId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT BlindId FROM Products WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", productId)
-
+                    Using thisCmd As New SqlCommand("SELECT BlindId FROM Products WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", productId)
                         thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj.ToString()
                         End If
@@ -553,11 +530,10 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(productId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT TubeType FROM Products WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", productId)
-
+                    Using thisCmd As New SqlCommand("SELECT TubeType FROM Products WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", productId)
                         thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj.ToString()
                         End If
@@ -575,11 +551,10 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(productId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT ControlType FROM Products WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", productId)
-
+                    Using thisCmd As New SqlCommand("SELECT ControlType FROM Products WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", productId)
                         thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj.ToString()
                         End If
@@ -597,11 +572,10 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(designId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT Name FROM Designs WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", designId)
-
+                    Using thisCmd As New SqlCommand("SELECT Name FROM Designs WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", designId)
                         thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj.ToString()
                         End If
@@ -619,11 +593,10 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(designId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT Page FROM Designs WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", designId)
-
+                    Using thisCmd As New SqlCommand("SELECT Page FROM Designs WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", designId)
                         thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj.ToString()
                         End If
@@ -641,11 +614,10 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(blindId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT Name FROM Blinds WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", blindId)
-
+                    Using thisCmd As New SqlCommand("SELECT Name FROM Blinds WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", blindId)
                         thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj.ToString()
                         End If
@@ -663,11 +635,10 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(productId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT Name FROM Products WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", productId)
-
+                    Using thisCmd As New SqlCommand("SELECT Name FROM Products WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", productId)
                         thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj.ToString()
                         End If
@@ -1154,11 +1125,10 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(tubeId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT Name FROM ProductTubes WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", tubeId)
-
+                    Using thisCmd As New SqlCommand("SELECT Name FROM ProductTubes WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", tubeId)
                         thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj.ToString()
                         End If
@@ -1176,11 +1146,10 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(controlId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT Name FROM ProductControls WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", controlId)
-
+                    Using thisCmd As New SqlCommand("SELECT Name FROM ProductControls WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", controlId)
                         thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj.ToString()
                         End If
@@ -1198,11 +1167,10 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(controlId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT Type FROM ProductControls WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", controlId)
-
+                    Using thisCmd As New SqlCommand("SELECT Type FROM ProductControls WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", controlId)
                         thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj.ToString()
                         End If
@@ -1220,11 +1188,10 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(colourId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT Name FROM ProductColours WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", colourId)
-
+                    Using thisCmd As New SqlCommand("SELECT Name FROM ProductColours WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", colourId)
                         thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj.ToString()
                         End If
@@ -1242,11 +1209,10 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(fabricId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT Name FROM Fabrics WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", fabricId)
-
+                    Using thisCmd As New SqlCommand("SELECT Name FROM Fabrics WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", fabricId)
                         thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj.ToString()
                         End If
@@ -1264,11 +1230,10 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(fabricColourId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT Name FROM FabricColours WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", fabricColourId)
-
+                    Using thisCmd As New SqlCommand("SELECT Name FROM FabricColours WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", fabricColourId)
                         thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj.ToString()
                         End If
@@ -1286,11 +1251,10 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(fabricId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT [Group] FROM Fabrics WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", fabricId)
-
+                    Using thisCmd As New SqlCommand("SELECT [Group] FROM Fabrics WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", fabricId)
                         thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj.ToString()
                         End If
@@ -1311,11 +1275,10 @@ Public Class OrderClass
 
                 If Not String.IsNullOrEmpty(thisQuery) Then
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As New SqlCommand(thisQuery, thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", fabricId)
-
+                        Using thisCmd As New SqlCommand(thisQuery, thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", fabricId)
                             thisConn.Open()
-                            Dim obj = myCmd.ExecuteScalar()
+                            Dim obj = thisCmd.ExecuteScalar()
                             If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                                 result = obj.ToString()
                             End If
@@ -1334,11 +1297,10 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(fabricColourId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT Factory FROM FabricColours WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", fabricColourId)
-
+                    Using thisCmd As New SqlCommand("SELECT Factory FROM FabricColours WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", fabricColourId)
                         thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj.ToString()
                         End If
@@ -1356,11 +1318,10 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(chainId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT Name FROM Chains WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", chainId)
-
+                    Using thisCmd As New SqlCommand("SELECT Name FROM Chains WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", chainId)
                         thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj.ToString()
                         End If
@@ -1378,11 +1339,10 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(chainId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT ChainType FROM Chains WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", chainId)
-
+                    Using thisCmd As New SqlCommand("SELECT ChainType FROM Chains WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", chainId)
                         thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj.ToString()
                         End If
@@ -1400,11 +1360,10 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(chainId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT ChainLength FROM Chains WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", chainId)
-
+                    Using thisCmd As New SqlCommand("SELECT ChainLength FROM Chains WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", chainId)
                         thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj.ToString()
                         End If
@@ -1422,11 +1381,10 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(bottomId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT Name FROM Bottoms WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", bottomId)
-
+                    Using thisCmd As New SqlCommand("SELECT Name FROM Bottoms WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", bottomId)
                         thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj.ToString()
                         End If
@@ -1458,10 +1416,9 @@ Public Class OrderClass
         Dim result As String = String.Empty
         Try
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As New SqlCommand("SELECT TOP 1 Id FROM OrderHeaders ORDER BY Id DESC", thisConn)
+                Using thisCmd As New SqlCommand("SELECT TOP 1 Id FROM OrderHeaders ORDER BY Id DESC", thisConn)
                     thisConn.Open()
-
-                    Dim lastId As Object = myCmd.ExecuteScalar()
+                    Dim lastId As Object = thisCmd.ExecuteScalar()
                     If lastId IsNot Nothing AndAlso Not IsDBNull(lastId) Then
                         result = (CInt(lastId) + 1).ToString()
                     Else
@@ -1479,10 +1436,9 @@ Public Class OrderClass
         Dim result As String = String.Empty
         Try
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As New SqlCommand("SELECT TOP 1 Id FROM OrderDetails ORDER BY Id DESC", thisConn)
+                Using thisCmd As New SqlCommand("SELECT TOP 1 Id FROM OrderDetails ORDER BY Id DESC", thisConn)
                     thisConn.Open()
-
-                    Dim lastId As Object = myCmd.ExecuteScalar()
+                    Dim lastId As Object = thisCmd.ExecuteScalar()
                     If lastId IsNot Nothing AndAlso Not IsDBNull(lastId) Then
                         result = (CInt(lastId) + 1).ToString()
                     Else
@@ -1500,10 +1456,9 @@ Public Class OrderClass
         Dim result As String = String.Empty
         Try
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As New SqlCommand("SELECT TOP 1 Id FROM OrderReworks ORDER BY Id DESC", thisConn)
+                Using thisCmd As New SqlCommand("SELECT TOP 1 Id FROM OrderReworks ORDER BY Id DESC", thisConn)
                     thisConn.Open()
-
-                    Dim lastId As Object = myCmd.ExecuteScalar()
+                    Dim lastId As Object = thisCmd.ExecuteScalar()
                     If lastId IsNot Nothing AndAlso Not IsDBNull(lastId) Then
                         result = (CInt(lastId) + 1).ToString()
                     Else
@@ -1521,10 +1476,9 @@ Public Class OrderClass
         Dim result As String = String.Empty
         Try
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As New SqlCommand("SELECT TOP 1 Id FROM OrderReworkDetails ORDER BY Id DESC", thisConn)
+                Using thisCmd As New SqlCommand("SELECT TOP 1 Id FROM OrderReworkDetails ORDER BY Id DESC", thisConn)
                     thisConn.Open()
-
-                    Dim lastId As Object = myCmd.ExecuteScalar()
+                    Dim lastId As Object = thisCmd.ExecuteScalar()
                     If lastId IsNot Nothing AndAlso Not IsDBNull(lastId) Then
                         result = (CInt(lastId) + 1).ToString()
                     Else
@@ -1542,10 +1496,9 @@ Public Class OrderClass
         Dim result As String = String.Empty
         Try
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As New SqlCommand("SELECT TOP 1 Id FROM OrderJobs ORDER BY Id DESC", thisConn)
+                Using thisCmd As New SqlCommand("SELECT TOP 1 Id FROM OrderJobs ORDER BY Id DESC", thisConn)
                     thisConn.Open()
-
-                    Dim lastId As Object = myCmd.ExecuteScalar()
+                    Dim lastId As Object = thisCmd.ExecuteScalar()
                     If lastId IsNot Nothing AndAlso Not IsDBNull(lastId) Then
                         result = (CInt(lastId) + 1).ToString()
                     Else
@@ -1563,12 +1516,11 @@ Public Class OrderClass
         Dim result As String = String.Empty
         Try
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As New SqlCommand("SELECT OrderNumber FROM OrderHeaders WHERE CustomerId=@CustomerId AND OrderNumber=@OrderNumber AND Active=1", thisConn)
-                    myCmd.Parameters.AddWithValue("@CustomerId", customerId)
-                    myCmd.Parameters.AddWithValue("@OrderNumber", orderNumber)
-
+                Using thisCmd As New SqlCommand("SELECT OrderNumber FROM OrderHeaders WHERE CustomerId=@CustomerId AND OrderNumber=@OrderNumber AND Active=1", thisConn)
+                    thisCmd.Parameters.AddWithValue("@CustomerId", customerId)
+                    thisCmd.Parameters.AddWithValue("@OrderNumber", orderNumber)
                     thisConn.Open()
-                    Dim obj = myCmd.ExecuteScalar()
+                    Dim obj = thisCmd.ExecuteScalar()
                     If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                         result = obj.ToString()
                     End If
@@ -1585,11 +1537,10 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(customerId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT CashSale FROM Customers WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", customerId)
+                    Using thisCmd As New SqlCommand("SELECT CashSale FROM Customers WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", customerId)
                         thisConn.Open()
-
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj
                         End If
@@ -1607,11 +1558,10 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(customerId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT OnStop FROM Customers WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", customerId)
-
+                    Using thisCmd As New SqlCommand("SELECT OnStop FROM Customers WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", customerId)
                         thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj
                         End If
@@ -1629,11 +1579,10 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(customerId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT MinSurcharge FROM Customers WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", customerId)
+                    Using thisCmd As New SqlCommand("SELECT MinSurcharge FROM Customers WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", customerId)
                         thisConn.Open()
-
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj
                         End If
@@ -1650,11 +1599,10 @@ Public Class OrderClass
         Dim result As String = 0
         Try
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As New SqlCommand("SELECT SUM (CASE WHEN Designs.Type='Blinds' THEN OrderDetails.TotalItems WHEN Designs.Type='Shutters' THEN 1 ELSE 0 END) AS totalOrder FROM OrderHeaders INNER JOIN OrderDetails ON OrderHeaders.Id=OrderDetails.HeaderId INNER JOIN Products ON OrderDetails.ProductId=Products.Id INNER JOIN Designs ON Products.DesignId=Designs.Id WHERE OrderHeaders.Id=@Id AND OrderHeaders.Active=1 AND OrderDetails.Active=1 AND Designs.Type IN ('Blinds', 'Shutters', 'Doors', 'Samples');", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", headerId)
-
+                Using thisCmd As New SqlCommand("SELECT SUM (CASE WHEN Designs.Type='Blinds' THEN OrderDetails.TotalItems WHEN Designs.Type='Shutters' THEN 1 ELSE 0 END) AS totalOrder FROM OrderHeaders INNER JOIN OrderDetails ON OrderHeaders.Id=OrderDetails.HeaderId INNER JOIN Products ON OrderDetails.ProductId=Products.Id INNER JOIN Designs ON Products.DesignId=Designs.Id WHERE OrderHeaders.Id=@Id AND OrderHeaders.Active=1 AND OrderDetails.Active=1 AND Designs.Type IN ('Blinds', 'Shutters', 'Doors', 'Samples');", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", headerId)
                     thisConn.Open()
-                    Dim obj = myCmd.ExecuteScalar()
+                    Dim obj = thisCmd.ExecuteScalar()
                     If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                         result = obj.ToString()
                     End If
@@ -1671,10 +1619,10 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(logId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("SELECT '<b>' + Logins.FullName + '</b> on ' + FORMAT(Logs.ActionDate, 'dd MMMM yyyy HH:mm') + '. Action : ' + Logs.Description AS FinalLog FROM Logs LEFT JOIN Logins ON Logs.ActionBy = Logins.Id WHERE Logs.Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", logId)
+                    Using thisCmd As New SqlCommand("SELECT '<b>' + Logins.FullName + '</b> on ' + FORMAT(Logs.ActionDate, 'dd MMMM yyyy HH:mm') + '. Action : ' + Logs.Description AS FinalLog FROM Logs LEFT JOIN Logins ON Logs.ActionBy = Logins.Id WHERE Logs.Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", logId)
                         thisConn.Open()
-                        Dim obj = myCmd.ExecuteScalar()
+                        Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
                             result = obj.ToString()
                         End If
@@ -1788,12 +1736,11 @@ Public Class OrderClass
                 Dim factory As String = String.Join(", ", factoryList)
 
                 Using thisConn As SqlConnection = New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET OrderFactory=@OrderFactory WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", headerId)
-                        myCmd.Parameters.AddWithValue("@OrderFactory", factory)
-
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET OrderFactory=@OrderFactory WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", headerId)
+                        thisCmd.Parameters.AddWithValue("@OrderFactory", factory)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
             Catch ex As Exception
@@ -1824,11 +1771,10 @@ Public Class OrderClass
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand(thisString, thisConn)
                     Using thisAdapter As New SqlDataAdapter(thisCmd)
-                        Dim dt As New DataTable()
-                        thisAdapter.Fill(dt)
-
-                        If dt.Rows.Count > 0 Then
-                            Return dt.Rows(0)
+                        Dim thisTable As New DataTable()
+                        thisAdapter.Fill(thisTable)
+                        If thisTable.Rows.Count > 0 Then
+                            Return thisTable.Rows(0)
                         Else
                             Return Nothing
                         End If
@@ -1843,12 +1789,11 @@ Public Class OrderClass
     Public Sub ResetPriceDetail(headerId As String, itemId As String)
         Try
             Using thisConn As SqlConnection = New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM OrderCostings WHERE HeaderId=@HeaderId AND ItemId=@ItemId", thisConn)
-                    myCmd.Parameters.AddWithValue("@HeaderId", headerId)
-                    myCmd.Parameters.AddWithValue("@ItemId", itemId)
-
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM OrderCostings WHERE HeaderId=@HeaderId AND ItemId=@ItemId", thisConn)
+                    thisCmd.Parameters.AddWithValue("@HeaderId", headerId)
+                    thisCmd.Parameters.AddWithValue("@ItemId", itemId)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
         Catch ex As Exception
@@ -1858,14 +1803,13 @@ Public Class OrderClass
     Public Sub UpdateServiceItem(headerId As String, itemId As String, buyPrice As Decimal, sellPrice As Decimal)
         Try
             Using thisConn As SqlConnection = New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderCostings SET BuyPrice=@BuyPrice, SellPrice=@SellPrice WHERE HeaderId=@HeaderId AND ItemId=@ItemId AND Type='Base'", thisConn)
-                    myCmd.Parameters.AddWithValue("@HeaderId", headerId)
-                    myCmd.Parameters.AddWithValue("@ItemId", itemId)
-                    myCmd.Parameters.AddWithValue("@BuyPrice", buyPrice)
-                    myCmd.Parameters.AddWithValue("@SellPrice", sellPrice)
-
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderCostings SET BuyPrice=@BuyPrice, SellPrice=@SellPrice WHERE HeaderId=@HeaderId AND ItemId=@ItemId AND Type='Base'", thisConn)
+                    thisCmd.Parameters.AddWithValue("@HeaderId", headerId)
+                    thisCmd.Parameters.AddWithValue("@ItemId", itemId)
+                    thisCmd.Parameters.AddWithValue("@BuyPrice", buyPrice)
+                    thisCmd.Parameters.AddWithValue("@SellPrice", sellPrice)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
         Catch ex As Exception
@@ -1875,10 +1819,10 @@ Public Class OrderClass
     Public Sub FinalCostItem(headerId As String, itemId As String)
         Try
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM OrderCostings WHERE ItemId=@ItemId AND Type='Final'", thisConn)
-                    myCmd.Parameters.AddWithValue("@ItemId", itemId)
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM OrderCostings WHERE ItemId=@ItemId AND Type='Final'", thisConn)
+                    thisCmd.Parameters.AddWithValue("@ItemId", itemId)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -3204,17 +3148,16 @@ Public Class OrderClass
                 Dim sellPrice As Decimal = Convert.ToDecimal(data(6))
 
                 Using thisConn As SqlConnection = New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderCostings VALUES(NEWID(), @HeaderId, @ItemId, @Number, @Type, @Description, @BuyPrice, @SellPrice)", thisConn)
-                        myCmd.Parameters.AddWithValue("@HeaderId", headerId)
-                        myCmd.Parameters.AddWithValue("@ItemId", itemId)
-                        myCmd.Parameters.AddWithValue("@Number", number)
-                        myCmd.Parameters.AddWithValue("@Type", type)
-                        myCmd.Parameters.AddWithValue("@Description", desc)
-                        myCmd.Parameters.AddWithValue("@BuyPrice", buyPrice)
-                        myCmd.Parameters.AddWithValue("@SellPrice", sellPrice)
-
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderCostings VALUES(NEWID(), @HeaderId, @ItemId, @Number, @Type, @Description, @BuyPrice, @SellPrice)", thisConn)
+                        thisCmd.Parameters.AddWithValue("@HeaderId", headerId)
+                        thisCmd.Parameters.AddWithValue("@ItemId", itemId)
+                        thisCmd.Parameters.AddWithValue("@Number", number)
+                        thisCmd.Parameters.AddWithValue("@Type", type)
+                        thisCmd.Parameters.AddWithValue("@Description", desc)
+                        thisCmd.Parameters.AddWithValue("@BuyPrice", buyPrice)
+                        thisCmd.Parameters.AddWithValue("@SellPrice", sellPrice)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
             End If
@@ -3234,17 +3177,16 @@ Public Class OrderClass
                 Dim sellPrice As Decimal = Convert.ToDecimal(data(6))
 
                 Using thisConn As SqlConnection = New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("DELETE FROM OrderCostings WHERE HeaderId=@HeaderId AND ItemId=@ItemId AND Type=@Type; INSERT INTO OrderCostings VALUES(NEWID(), @HeaderId, @ItemId, @Number, @Type, @Description, @BuyPrice, @SellPrice)", thisConn)
-                        myCmd.Parameters.AddWithValue("@HeaderId", headerId)
-                        myCmd.Parameters.AddWithValue("@ItemId", itemId)
-                        myCmd.Parameters.AddWithValue("@Number", number)
-                        myCmd.Parameters.AddWithValue("@Type", type)
-                        myCmd.Parameters.AddWithValue("@Description", desc)
-                        myCmd.Parameters.AddWithValue("@BuyPrice", buyPrice)
-                        myCmd.Parameters.AddWithValue("@SellPrice", sellPrice)
-
+                    Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM OrderCostings WHERE HeaderId=@HeaderId AND ItemId=@ItemId AND Type=@Type; INSERT INTO OrderCostings VALUES(NEWID(), @HeaderId, @ItemId, @Number, @Type, @Description, @BuyPrice, @SellPrice)", thisConn)
+                        thisCmd.Parameters.AddWithValue("@HeaderId", headerId)
+                        thisCmd.Parameters.AddWithValue("@ItemId", itemId)
+                        thisCmd.Parameters.AddWithValue("@Number", number)
+                        thisCmd.Parameters.AddWithValue("@Type", type)
+                        thisCmd.Parameters.AddWithValue("@Description", desc)
+                        thisCmd.Parameters.AddWithValue("@BuyPrice", buyPrice)
+                        thisCmd.Parameters.AddWithValue("@SellPrice", sellPrice)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
             End If
@@ -3256,16 +3198,14 @@ Public Class OrderClass
         Try
             If data.Length = 4 Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("sp_LogInsert", thisConn)
-                        myCmd.CommandType = CommandType.StoredProcedure
-
-                        myCmd.Parameters.AddWithValue("@Type", Convert.ToString(data(0)))
-                        myCmd.Parameters.AddWithValue("@DataId", Convert.ToString(data(1)))
-                        myCmd.Parameters.AddWithValue("@ActionBy", Convert.ToString(data(2)))
-                        myCmd.Parameters.AddWithValue("@Description", Convert.ToString(data(3)))
-
+                    Using thisCmd As New SqlCommand("sp_LogInsert", thisConn)
+                        thisCmd.CommandType = CommandType.StoredProcedure
+                        thisCmd.Parameters.AddWithValue("@Type", Convert.ToString(data(0)))
+                        thisCmd.Parameters.AddWithValue("@DataId", Convert.ToString(data(1)))
+                        thisCmd.Parameters.AddWithValue("@ActionBy", Convert.ToString(data(2)))
+                        thisCmd.Parameters.AddWithValue("@Description", Convert.ToString(data(3)))
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
             End If
@@ -3292,11 +3232,10 @@ Public Class OrderClass
             If Not String.IsNullOrEmpty(orderId) Then
                 Using thisConn As New SqlConnection(myConn)
                     Dim query As String = "SELECT COUNT(*) FROM OrderReworks WHERE HeaderId=@HeaderId AND (Status='Unsubmitted' OR Status='Pending Approval' OR Status='Approved') AND Active=1"
-                    Using myCmd As New SqlCommand(query, thisConn)
-                        myCmd.Parameters.AddWithValue("@HeaderId", orderId)
+                    Using thisCmd As New SqlCommand(query, thisConn)
+                        thisCmd.Parameters.AddWithValue("@HeaderId", orderId)
                         thisConn.Open()
-
-                        Dim count As Integer = Convert.ToInt32(myCmd.ExecuteScalar())
+                        Dim count As Integer = Convert.ToInt32(thisCmd.ExecuteScalar())
                         result = (count > 0)
                     End Using
                 End Using

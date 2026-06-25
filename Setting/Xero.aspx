@@ -206,7 +206,6 @@
                 });
             }
         });
-
         function showProcess() {
             $("#modalProcess").modal("show");
         }

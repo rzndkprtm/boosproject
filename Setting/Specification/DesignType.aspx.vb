@@ -49,16 +49,9 @@ Partial Class Setting_Specification_Design
     End Sub
 
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        gvList.PageIndex = e.NewPageIndex
         MessageError(False, String.Empty)
-        Try
-            gvList.PageIndex = e.NewPageIndex
-            BindData(txtSearch.Text)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
+        BindData(txtSearch.Text)
     End Sub
 
     Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
@@ -154,19 +147,18 @@ Partial Class Setting_Specification_Design
                 If lblAction.Text = "Add" Then
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Designs ORDER BY Id DESC")
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Designs VALUES (@Id, @Name, @Alias, @CompanyId, @Type, @Page, @AppliesTo, @Description, @Active)", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", thisId)
-                            myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Alias", txtAlias.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@CompanyId", company)
-                            myCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
-                            myCmd.Parameters.AddWithValue("@Page", txtPage.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@AppliesTo", applyTo)
-                            myCmd.Parameters.AddWithValue("@Description", descText)
-                            myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
-
+                        Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Designs VALUES (@Id, @Name, @Alias, @CompanyId, @Type, @Page, @AppliesTo, @Description, @Active)", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", thisId)
+                            thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
+                            thisCmd.Parameters.AddWithValue("@Alias", txtAlias.Text.Trim())
+                            thisCmd.Parameters.AddWithValue("@CompanyId", company)
+                            thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
+                            thisCmd.Parameters.AddWithValue("@Page", txtPage.Text.Trim())
+                            thisCmd.Parameters.AddWithValue("@AppliesTo", applyTo)
+                            thisCmd.Parameters.AddWithValue("@Description", descText)
+                            thisCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
                             thisConn.Open()
-                            myCmd.ExecuteNonQuery()
+                            thisCmd.ExecuteNonQuery()
                         End Using
                     End Using
 
@@ -179,19 +171,18 @@ Partial Class Setting_Specification_Design
 
                 If lblAction.Text = "Edit" Then
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("UPDATE Designs SET Name=@Name, Alias=@Alias, CompanyId=@CompanyId, Type=@Type, Page=@Page, AppliesTo=@AppliesTo, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                            myCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@Alias", txtAlias.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@CompanyId", company)
-                            myCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
-                            myCmd.Parameters.AddWithValue("@Page", txtPage.Text.Trim())
-                            myCmd.Parameters.AddWithValue("@AppliesTo", applyTo)
-                            myCmd.Parameters.AddWithValue("@Description", descText)
-                            myCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
-
+                        Using thisCmd As SqlCommand = New SqlCommand("UPDATE Designs SET Name=@Name, Alias=@Alias, CompanyId=@CompanyId, Type=@Type, Page=@Page, AppliesTo=@AppliesTo, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                            thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
+                            thisCmd.Parameters.AddWithValue("@Alias", txtAlias.Text.Trim())
+                            thisCmd.Parameters.AddWithValue("@CompanyId", company)
+                            thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
+                            thisCmd.Parameters.AddWithValue("@Page", txtPage.Text.Trim())
+                            thisCmd.Parameters.AddWithValue("@AppliesTo", applyTo)
+                            thisCmd.Parameters.AddWithValue("@Description", descText)
+                            thisCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
                             thisConn.Open()
-                            myCmd.ExecuteNonQuery()
+                            thisCmd.ExecuteNonQuery()
                         End Using
                     End Using
 

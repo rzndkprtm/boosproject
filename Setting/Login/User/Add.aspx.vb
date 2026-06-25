@@ -102,7 +102,6 @@ Partial Class Setting_Login_User_Add
                         thisCmd.Parameters.AddWithValue("@FullName", txtFullName.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Email", txtEmail.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Pricing", ddlPricing.SelectedValue)
-
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using

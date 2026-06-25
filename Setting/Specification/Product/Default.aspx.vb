@@ -212,33 +212,21 @@ Partial Class Setting_Specification_Product_Default
     End Sub
 
     Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
-        Try
-            If e.CommandName = "Page" Then
-                gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
-                BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlTubeSort.SelectedValue, ddlControlSort.SelectedValue, ddlColourSort.SelectedValue, ddlStatusSort.SelectedValue, txtSearch.Text)
-            End If
-        Catch ex As Exception
-        End Try
+        If e.CommandName = "Page" Then
+            gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
+            BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlTubeSort.SelectedValue, ddlControlSort.SelectedValue, ddlColourSort.SelectedValue, ddlStatusSort.SelectedValue, txtSearch.Text)
+        End If
     End Sub
 
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        gvList.PageIndex = e.NewPageIndex
+
         MessageError(False, String.Empty)
-        Try
-            gvList.PageIndex = e.NewPageIndex
-            BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlTubeSort.SelectedValue, ddlControlSort.SelectedValue, ddlColourSort.SelectedValue, ddlStatusSort.SelectedValue, txtSearch.Text)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
+        BindData(ddlDesignSort.SelectedValue, ddlBlindSort.SelectedValue, ddlCompanyDetailSort.SelectedValue, ddlTubeSort.SelectedValue, ddlControlSort.SelectedValue, ddlColourSort.SelectedValue, ddlStatusSort.SelectedValue, txtSearch.Text)
     End Sub
 
     Protected Sub gvList_DataBound(sender As Object, e As EventArgs)
-        Try
-            BuildPager()
-        Catch ex As Exception
-        End Try
+        BuildPager()
     End Sub
 
     Protected Sub btnChangeStatus_Click(sender As Object, e As EventArgs)
@@ -249,12 +237,11 @@ Partial Class Setting_Specification_Product_Default
             Dim oldStatus As String = txtOldStatus.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE Products SET Status=@Status WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.Parameters.AddWithValue("@Status", newStatus)
-
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Products SET Status=@Status WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisCmd.Parameters.AddWithValue("@Status", newStatus)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -267,12 +254,11 @@ Partial Class Setting_Specification_Product_Default
                 Dim aliasId As String = aliasData(0).ToString()
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE Products SET Status=@Status WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", aliasId)
-                        myCmd.Parameters.AddWithValue("@Status", newStatus)
-
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Products SET Status=@Status WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", aliasId)
+                        thisCmd.Parameters.AddWithValue("@Status", newStatus)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 
@@ -306,11 +292,11 @@ Partial Class Setting_Specification_Product_Default
             Dim newId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Products ORDER BY Id DESC")
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("INSERT INTO Products SELECT @NewId, DesignId, BlindId, CompanyDetailId, Name + ' - Copy', InvoiceName, TubeType, ControlType, ColourType, Description, NULL FROM Products WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@NewId", newId)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
+                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Products SELECT @NewId, DesignId, BlindId, CompanyDetailId, Name + ' - Copy', InvoiceName, TubeType, ControlType, ColourType, Description, NULL FROM Products WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@NewId", newId)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -343,11 +329,10 @@ Partial Class Setting_Specification_Product_Default
             Dim newId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Products ORDER BY Id DESC")
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM Products WHERE Id=@Id; DELETE FROM Logs WHERE Type='Products' AND DataId=@Id;", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM Products WHERE Id=@Id; DELETE FROM Logs WHERE Type='Products' AND DataId=@Id;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -357,11 +342,10 @@ Partial Class Setting_Specification_Product_Default
                     Dim kitId As String = dataKit.Rows(i)("Id").ToString()
 
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("DELETE FROM ProductKits WHERE Id=@Id; DELETE FROM Logs WHERE Type='ProductKits' AND DataId=@Id;", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", kitId)
-
+                        Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM ProductKits WHERE Id=@Id; DELETE FROM Logs WHERE Type='ProductKits' AND DataId=@Id;", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", kitId)
                             thisConn.Open()
-                            myCmd.ExecuteNonQuery()
+                            thisCmd.ExecuteNonQuery()
                         End Using
                     End Using
                 Next

@@ -13,8 +13,8 @@
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a runat="server" href="~/">Home</a></li>
                             <li class="breadcrumb-item"><a runat="server" href="~/setting">Setting</a></li>
-                            <li class="breadcrumb-item"><a runat="server" href="~/setting/login">Login</a></li>
-                            <li class="breadcrumb-item"><a runat="server" href="~/setting/login/user">Login User</a></li>
+                            <li class="breadcrumb-item"><a runat="server" href="~/setting/price">Price</a></li>
+                            <li class="breadcrumb-item"><a runat="server" href="~/setting/price/base">Base</a></li>
                             <li class="breadcrumb-item active" aria-current="page"><%: Page.Title %></li>
                         </ol>
                     </nav>

@@ -339,38 +339,27 @@
                 updateSessionValue("list-kit");
             });
         });
-
         document.addEventListener('DOMContentLoaded', function () {
             const gv = document.getElementById('<%= gvList.ClientID %>');
             if (!gv) return;
-
             for (let i = 1; i < gv.rows.length; i++) {
                 const row = gv.rows[i];
                 row.style.cursor = 'pointer';
-
                 row.addEventListener('click', function (e) {
-                    if (
-                        e.target.closest("a") ||
-                        e.target.closest("button") ||
-                        e.target.closest("[data-bs-toggle]")
-                    ) {
+                    if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]")) {
                         return;
                     }
-
                     const btn = this.querySelector("a[id*='linkDetail']");
                     if (btn) btn.click();
                 });
             }
         });
-
         function showProcessKit() {
             $("#modalProcessKit").modal("show");
         }
-
         function showDeleteKit(id) {
             document.getElementById("<%=txtIdDeleteKit.ClientID %>").value = id;
         }
-
         function updateSessionValue(session) {
             $.ajax({
                 type: "POST",
@@ -380,7 +369,6 @@
                 dataType: "json"
             });
         }
-
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
             $("#tblLogs tbody").html("");
@@ -414,14 +402,12 @@
                 }
             });
         }
-
         ["modalChangeStatus", "modalChangeJobSheet", "modalProcessKit", "modalDeleteKit", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
             });
         });
-
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

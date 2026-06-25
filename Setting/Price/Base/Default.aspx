@@ -1,6 +1,15 @@
 ﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Default.aspx.vb" Inherits="Setting_Price_Base_Default" MaintainScrollPositionOnPostback="true" MasterPageFile="~/Site.Master" Debug="true" Title="Price Base" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
+    <style>
+        .grid-container { width: 100%; height: calc(100vh - 150px); overflow: auto; border: 1px solid #ddd; }
+        .grid-container table { width: 100%; border-collapse: collapse; }
+        .grid-container th { position: sticky; top: 0; background: #f5f5f5; z-index: 3; }
+        .grid-container td:first-child, .grid-container th:first-child { position: sticky; left: 0; background: #fff; z-index: 2; }
+        .grid-container th:first-child { z-index: 4; }
+        .grid-container td, .grid-container th { white-space: nowrap; padding: 6px 10px; }
+    </style>
+
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
@@ -90,7 +99,14 @@
                         <div class="card">
                             <div class="card-content">
                                 <div class="card-header">
-                                    <h4 class="card-title">Result</h4>
+                                    <div class="row">
+                                        <div class="col-12 col-sm-12 col-lg-6">
+                                            <h4 class="card-title">Result</h4>
+                                        </div>
+                                        <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
+                                            <a href="javascript:void(0);" runat="server" id="aMatrix" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalMatrix">Show Matrix</a>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
@@ -153,7 +169,24 @@
             </asp:UpdatePanel>
         </section>
     </div>
-
+    
+    <div class="modal modal-blur fade" id="modalMatrix" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-full modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-danger">
+                    <h5 class="modal-title white">Matrix Price</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="grid-container table-responsive">
+                        <asp:GridView ID="gvListMatrix" runat="server" AutoGenerateColumns="true" CssClass="table table-bordered table-hover mb-0" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center"></asp:GridView>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal modal-blur fade" id="modalDelete" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -287,7 +320,7 @@
                 }
             });
         }
-        ["modalDelete", "modalLog"].forEach(function (id) {
+        ["modalMatrix", "modalDelete", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
