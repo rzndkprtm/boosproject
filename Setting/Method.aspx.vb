@@ -12,9 +12,7 @@ Partial Class Setting_Method
         Dim result As New List(Of LogDto)
 
         For Each r As DataRow In dt.Rows
-            result.Add(New LogDto With {
-            .TextLog = settingClass.GetTextLog(r("Id").ToString())
-        })
+            result.Add(New LogDto With {.TextLog = settingClass.GetTextLog(r("Id").ToString())})
         Next
 
         Return result
@@ -32,9 +30,7 @@ Partial Class Setting_Method
             Dim userName As String = r("UserName").ToString()
             Dim showDate As String = Convert.ToDateTime(r("ShowDate")).ToString("dd MMM yyyy")
 
-            result.Add(New ReadDto With {
-                .TextRead = "<b>" & userName & "</b> (" & fullName & ") on " & showDate
-            })
+            result.Add(New ReadDto With {.TextRead = "<b>" & userName & "</b> (" & fullName & ") on " & showDate})
         Next
 
         Return result

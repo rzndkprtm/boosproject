@@ -43,8 +43,6 @@
                     <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
                         <ContentTemplate>
                             <div class="card-content">
-
-                            </div>
                                 <div class="card-header">
                                     <div class="row">
                                         <div class="col-lg-3 col-md-12 col-sm-12 mb-2">
@@ -63,7 +61,7 @@
                                             <asp:Panel runat="server" DefaultButton="btnSearch" Width="50%">
                                                 <div class="input-group">
                                                     <span class="input-group-text">Search</span>
-                                                    <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" placeholoder=""></asp:TextBox>
+                                                    <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" autocomplete="off"></asp:TextBox>
                                                     <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />
                                                 </div>
                                             </asp:Panel>
@@ -125,14 +123,14 @@
                                         </nav>
                                     </div>
                                 </div>
-                                <div class="card-footer">
-                                    <div class="row" runat="server" id="divActive">
-                                        <div class="col-lg-2 col-md-12 col-sm-12">
-                                            <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlActive_SelectedIndexChanged">
-                                                <asp:ListItem Value="1" Text="Active"></asp:ListItem>
-                                                <asp:ListItem Value="0" Text="Non Active"></asp:ListItem>
-                                            </asp:DropDownList>
-                                        </div>
+                            </div>
+                            <div class="card-footer">
+                                <div class="row" runat="server" id="divActive">
+                                    <div class="col-lg-2 col-md-12 col-sm-12">
+                                        <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlActive_SelectedIndexChanged">
+                                            <asp:ListItem Value="1" Text="Active"></asp:ListItem>
+                                            <asp:ListItem Value="0" Text="Non Active"></asp:ListItem>
+                                        </asp:DropDownList>
                                     </div>
                                 </div>
                             </div>
@@ -169,14 +167,9 @@
                 </div>
                 <div class="modal-body text-left py-4">
                     <ol>
-                        <li>
-                            Please open the <a runat="server" href="~/order">Order page</a> and locate your order (<i>The order status must already be Shipped Out or Completed</i>).
-                        </li>
-                        <li>Click on the order. On the detail page, find the <b>Rework Order</b> button and click it.
-                        </li>
-                        <li>
-                            Select the item you would like to rework, then follow the next steps by filling in the category, description, and uploading the required file.
-                        </li>
+                        <li>Please open the <a runat="server" href="~/order">Order page</a> and locate your order (<i>The order status must already be Shipped Out or Completed</i>).</li>
+                        <li>Click on the order. On the detail page, find the <b>Rework Order</b> button and click it.</li>
+                        <li>Select the item you would like to rework, then follow the next steps by filling in the category, description, and uploading the required file.</li>
                     </ol>
                 </div>
                 <div class="modal-footer">

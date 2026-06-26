@@ -537,48 +537,36 @@
         <script src="/Assets/js/pages/horizontal-layout.js"></script>
 
         <script type="text/javascript">
-
             function showLoading() {
                 $("#loadingOverlay").show();
             }
-
             function hideLoading() {
                 $("#loadingOverlay").hide();
             }
-
             function activateCurrentTab() {
                 var tabId = $("#<%= selected_tab.ClientID %>").val();
-        if (!tabId) tabId = "list-roller";
-        $('#dvTab a[href="#' + tabId + '"]').tab('show');
-    }
-
-    function pageInit() {
-        $(document).off("click.stocktab").on("click.stocktab", "#dvTab a", function () {
-            var tabId = $(this).attr("href").replace("#", "");
-            $("#<%= selected_tab.ClientID %>").val(tabId);
-        });
-
+                if (!tabId) tabId = "list-roller";
+                $('#dvTab a[href="#' + tabId + '"]').tab('show');
+            }
+            function pageInit() {
+                $(document).off("click.stocktab").on("click.stocktab", "#dvTab a", function () {
+                    var tabId = $(this).attr("href").replace("#", "");
+                    $("#<%= selected_tab.ClientID %>").val(tabId);
+                });
                 activateCurrentTab();
             }
-
             $(document).ready(function () {
-
                 pageInit();
-
                 var prm = Sys.WebForms.PageRequestManager.getInstance();
-
                 prm.add_beginRequest(function () {
                     showLoading();
                 });
-
                 prm.add_endRequest(function () {
                     hideLoading();
                     pageInit();
                 });
             });
-
             window.history.replaceState(null, null, window.location.href);
-
         </script>
     </form>
 </body>

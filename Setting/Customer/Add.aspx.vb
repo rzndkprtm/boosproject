@@ -88,7 +88,6 @@ Partial Class Setting_Customer_Add
             End If
 
             If msgError.InnerText = "" Then
-
                 Dim operatorReps As String = String.Empty
                 If Not String.IsNullOrEmpty(lbSales.SelectedValue) Then
                     operatorReps = String.Join(",", lbSales.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))

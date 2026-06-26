@@ -64,11 +64,10 @@ Partial Class Order_Rework_Detail
 
             If msgError.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderReworks SET Status='Pending Approval', SubmittedDate=GETDATE() WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", lblReworkId.Text)
-
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderReworks SET Status='Pending Approval', SubmittedDate=GETDATE() WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblReworkId.Text)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 
@@ -96,11 +95,10 @@ Partial Class Order_Rework_Detail
         MessageError(False, String.Empty)
         Try
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderReworks SET Active='0' WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblReworkId.Text)
-
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderReworks SET Active='0' WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", lblReworkId.Text)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -134,12 +132,11 @@ Partial Class Order_Rework_Detail
             If cashSale = True Then status = "Waiting Proforma"
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderReworks SET Status='Approved', HeaderIdNew=@HeaderIdNew WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblReworkId.Text)
-                    myCmd.Parameters.AddWithValue("@HeaderIdNew", newHeaderId)
-
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderReworks SET Status='Approved', HeaderIdNew=@HeaderIdNew WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", lblReworkId.Text)
+                    thisCmd.Parameters.AddWithValue("@HeaderIdNew", newHeaderId)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -160,15 +157,15 @@ Partial Class Order_Rework_Detail
                 orderId = companyAlias & randomCode
                 Try
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderHeaders SELECT @NewID, @OrderId, CustomerId, NULL, CONVERT(VARCHAR(200), OrderNumber) + ' - ' + 'RW', CONVERT(VARCHAR(200), OrderName) + ' - ' + 'RW', NULL, 'Rework', OrderFactory, @Status, NULL, CreatedBy, GETDATE(), NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, @InvoiceNumber, NULL, 0, NULL, 0, 'No', NULL, 1 FROM OrderHeaders WHERE Id=@OldId;", thisConn)
-                            myCmd.Parameters.AddWithValue("@OldId", lblHeaderId.Text)
-                            myCmd.Parameters.AddWithValue("@NewID", newHeaderId)
-                            myCmd.Parameters.AddWithValue("@OrderId", orderId)
-                            myCmd.Parameters.AddWithValue("@Status", status)
-                            myCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
-                            myCmd.Parameters.AddWithValue("@InvoiceNumber", orderId)
+                        Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderHeaders SELECT @NewID, @OrderId, CustomerId, NULL, CONVERT(VARCHAR(200), OrderNumber) + ' - ' + 'RW', CONVERT(VARCHAR(200), OrderName) + ' - ' + 'RW', NULL, 'Rework', OrderFactory, @Status, NULL, CreatedBy, GETDATE(), NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, @InvoiceNumber, NULL, 0, NULL, 0, 'No', NULL, 1 FROM OrderHeaders WHERE Id=@OldId;", thisConn)
+                            thisCmd.Parameters.AddWithValue("@OldId", lblHeaderId.Text)
+                            thisCmd.Parameters.AddWithValue("@NewID", newHeaderId)
+                            thisCmd.Parameters.AddWithValue("@OrderId", orderId)
+                            thisCmd.Parameters.AddWithValue("@Status", status)
+                            thisCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
+                            thisCmd.Parameters.AddWithValue("@InvoiceNumber", orderId)
                             thisConn.Open()
-                            myCmd.ExecuteNonQuery()
+                            thisCmd.ExecuteNonQuery()
                         End Using
                     End Using
 
@@ -183,10 +180,10 @@ Partial Class Order_Rework_Detail
             Loop
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderQuotes VALUES(@NewID, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00)", thisConn)
-                    myCmd.Parameters.AddWithValue("@NewID", newHeaderId)
+                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderQuotes VALUES(@NewID, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00)", thisConn)
+                    thisCmd.Parameters.AddWithValue("@NewID", newHeaderId)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -199,15 +196,13 @@ Partial Class Order_Rework_Detail
                 Dim newIdDetail As String = orderClass.GetNewOrderItemId()
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("sp_CopyOrderDetails", thisConn)
-                        myCmd.CommandType = CommandType.StoredProcedure
-
-                        myCmd.Parameters.AddWithValue("@ItemIdOld", itemId)
-                        myCmd.Parameters.AddWithValue("@NewId", newIdDetail)
-                        myCmd.Parameters.AddWithValue("@HeaderId", newHeaderId)
-
+                    Using thisCmd As New SqlCommand("sp_CopyOrderDetails", thisConn)
+                        thisCmd.CommandType = CommandType.StoredProcedure
+                        thisCmd.Parameters.AddWithValue("@ItemIdOld", itemId)
+                        thisCmd.Parameters.AddWithValue("@NewId", newIdDetail)
+                        thisCmd.Parameters.AddWithValue("@HeaderId", newHeaderId)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 
@@ -225,14 +220,13 @@ Partial Class Order_Rework_Detail
                 Dim productGroupId As String = orderClass.GetItemData("SELECT Id FROM PriceProductGroups WHERE Name='Fuel Surcharge' AND Active=1")
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, 1, 0, 0, 1, 0, 1)", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", thisId)
-                        myCmd.Parameters.AddWithValue("@HeaderId", newHeaderId)
-                        myCmd.Parameters.AddWithValue("@ProductId", If(String.IsNullOrEmpty(productId), CType(DBNull.Value, Object), productId))
-                        myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(productGroupId), CType(DBNull.Value, Object), productGroupId))
-
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, 1, 0, 0, 1, 0, 1)", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", thisId)
+                        thisCmd.Parameters.AddWithValue("@HeaderId", newHeaderId)
+                        thisCmd.Parameters.AddWithValue("@ProductId", If(String.IsNullOrEmpty(productId), CType(DBNull.Value, Object), productId))
+                        thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(productGroupId), CType(DBNull.Value, Object), productGroupId))
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 
@@ -250,14 +244,13 @@ Partial Class Order_Rework_Detail
                     productGroupId = orderClass.GetItemData("SELECT Id FROM PriceProductGroups WHERE Name='Minimum Order Surcharge' AND Active=1")
 
                     Using thisConn As New SqlConnection(myConn)
-                        Using myCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, 1, 0, 0, 1, 0, 1)", thisConn)
-                            myCmd.Parameters.AddWithValue("@Id", thisId)
-                            myCmd.Parameters.AddWithValue("@HeaderId", newHeaderId)
-                            myCmd.Parameters.AddWithValue("@ProductId", If(String.IsNullOrEmpty(productId), CType(DBNull.Value, Object), productId))
-                            myCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(productGroupId), CType(DBNull.Value, Object), productGroupId))
-
+                        Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, 1, 0, 0, 1, 0, 1)", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", thisId)
+                            thisCmd.Parameters.AddWithValue("@HeaderId", newHeaderId)
+                            thisCmd.Parameters.AddWithValue("@ProductId", If(String.IsNullOrEmpty(productId), CType(DBNull.Value, Object), productId))
+                            thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(productGroupId), CType(DBNull.Value, Object), productGroupId))
                             thisConn.Open()
-                            myCmd.ExecuteNonQuery()
+                            thisCmd.ExecuteNonQuery()
                         End Using
                     End Using
 
@@ -296,11 +289,10 @@ Partial Class Order_Rework_Detail
         MessageError(False, String.Empty)
         Try
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderReworks SET Status='Rejected' WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblReworkId.Text)
-
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderReworks SET Status='Rejected' WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", lblReworkId.Text)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -360,16 +352,15 @@ Partial Class Order_Rework_Detail
                 Dim reworkDetailId As String = orderClass.GetNewOrderReworkDetailId()
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As New SqlCommand("INSERT INTO OrderReworkDetails(Id, ReworkId, ItemId, Category, InstallDate, Description, Active) VALUES (@Id, @ReworkId, @ItemId, @Category, @InstallDate, @Description, 1)", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", reworkDetailId)
-                        myCmd.Parameters.AddWithValue("@ReworkId", lblReworkId.Text)
-                        myCmd.Parameters.AddWithValue("@ItemId", item.Item1)
-                        myCmd.Parameters.AddWithValue("@Category", item.Item2)
-                        myCmd.Parameters.AddWithValue("@InstallDate", Convert.ToDateTime(item.Item3))
-                        myCmd.Parameters.AddWithValue("@Description", item.Item4)
-
+                    Using thisCmd As New SqlCommand("INSERT INTO OrderReworkDetails(Id, ReworkId, ItemId, Category, InstallDate, Description, Active) VALUES (@Id, @ReworkId, @ItemId, @Category, @InstallDate, @Description, 1)", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", reworkDetailId)
+                        thisCmd.Parameters.AddWithValue("@ReworkId", lblReworkId.Text)
+                        thisCmd.Parameters.AddWithValue("@ItemId", item.Item1)
+                        thisCmd.Parameters.AddWithValue("@Category", item.Item2)
+                        thisCmd.Parameters.AddWithValue("@InstallDate", Convert.ToDateTime(item.Item3))
+                        thisCmd.Parameters.AddWithValue("@Description", item.Item4)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 
@@ -394,14 +385,13 @@ Partial Class Order_Rework_Detail
             Dim thisId As String = txtDetailId.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderReworkDetails SET Category=@Category, InstallDate=@InstallDate, Description=@Description WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.Parameters.AddWithValue("@Category", ddlCategory.SelectedValue)
-                    myCmd.Parameters.AddWithValue("@InstallDate", If(String.IsNullOrEmpty(txtInstallDate.Text), CType(DBNull.Value, Object), txtInstallDate.Text))
-                    myCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
-
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderReworkDetails SET Category=@Category, InstallDate=@InstallDate, Description=@Description WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisCmd.Parameters.AddWithValue("@Category", ddlCategory.SelectedValue)
+                    thisCmd.Parameters.AddWithValue("@InstallDate", If(String.IsNullOrEmpty(txtInstallDate.Text), CType(DBNull.Value, Object), txtInstallDate.Text))
+                    thisCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -424,11 +414,10 @@ Partial Class Order_Rework_Detail
             Dim thisId As String = txtIdDeleteItem.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderReworkDetails SET Active=0 WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderReworkDetails SET Active=0 WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -543,7 +532,6 @@ Partial Class Order_Rework_Detail
             If e.CommandName = "DeleteFile" Then
                 Dim filePath As String = e.CommandArgument.ToString()
                 Dim fullPath As String = Server.MapPath(filePath)
-
                 Try
                     If File.Exists(fullPath) Then
                         File.Delete(fullPath)

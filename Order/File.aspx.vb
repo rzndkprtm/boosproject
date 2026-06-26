@@ -68,10 +68,7 @@ Partial Class Order_File
                     Dim folderName As String = New DirectoryInfo(dir).Name
                     Dim files = Directory.GetFiles(dir)
 
-                    If (String.IsNullOrEmpty(search) OrElse
-                    folderName.ToLower().Contains(search.ToLower())) _
-                    AndAlso files.Length > 0 Then
-
+                    If (String.IsNullOrEmpty(search) OrElse folderName.ToLower().Contains(search.ToLower())) AndAlso files.Length > 0 Then
                         Dim row = dt.NewRow()
                         row("FolderName") = folderName
                         row("FileCount") = files.Length

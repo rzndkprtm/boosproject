@@ -11,6 +11,7 @@
         @media (max-width: 1200px) { .dashboard-wrapper { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 768px) { .dashboard-wrapper { grid-template-columns: 1fr; } }
     </style>
+
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
