@@ -5,7 +5,6 @@ Partial Class Report_Generate
     Inherits Page
 
     Dim reportClass As New ReportClass
-
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
 

@@ -100,7 +100,7 @@
                                 </div>
                                 <div class="col-6 d-flex justify-content-end">
                                     <asp:Button runat="server" ID="btnAddDetail" CssClass="btn btn-primary me-1" Text="Add New" OnClick="btnAddDetail_Click" />
-                                    <a class="btn btn-dark" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalSortOrder"'>Change Sort Order</a>
+                                    <a class="btn btn-dark" href="javascript:void(0);" runat="server" id="aSortOrder" data-bs-toggle="modal" data-bs-target="#modalSortOrder">Change Sort Order</a>
                                 </div>
                             </div>
                         </div>
@@ -124,10 +124,10 @@
                                                     <li>
                                                         <a class="dropdown-item" runat="server" id="aFormulaDetail" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalFormula" onclick='<%# String.Format("return dataFormula(`{0}`, `{1}`, `{2}`, `{3}`, `{4}`, `{5}`, `{6}`, `{7}`);", Eval("Formula1").ToString(), Eval("Formula2"), Eval("Formula3").ToString(), Eval("Formula4"), Eval("Formula5").ToString(), Eval("Formula6").ToString(), Eval("Formula7").ToString(), Eval("Formula8").ToString()) %>'>All Formula</a>
                                                     </li>
-                                                    <li>
-                                                        <a class="dropdown-item" runat="server" id="aEditDetail" href='<%# Page.ResolveUrl("~/setting/job/sheet/detail/edit?detailid=" & Eval("Id")) %>'>Edit</a>
+                                                    <li runat="server" visible='<%# LoginAccess("Edit Detail") %>'>
+                                                        <a class="dropdown-item" href='<%# Page.ResolveUrl("~/setting/job/sheet/detail/edit?detailid=" & Eval("Id")) %>'>Edit</a>
                                                     </li>
-                                                    <li>
+                                                    <li runat="server" visible='<%# LoginAccess("Delete Detail") %>'>
                                                         <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteDetail" onclick='<%# String.Format("return dataDeleteDetail(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                     </li>
                                                     <li>
