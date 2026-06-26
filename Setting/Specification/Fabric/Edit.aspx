@@ -26,7 +26,7 @@
             <div class="col-12 col-sm-12 col-lg-7">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Edit Form</h4>
+                        <h4 class="card-title">Fabric Type Form</h4>
                     </div>
                     <div class="card-content">
                         <div class="card-body">
@@ -55,7 +55,6 @@
                                             <asp:ListBox runat="server" ID="lbCompany" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
                                         </div>
                                     </div>
-
                                     <asp:UpdatePanel runat="server" ID="upDesignTube" UpdateMode="Conditional">
                                         <ContentTemplate>
                                             <div class="row">
@@ -127,16 +126,17 @@
         });
         function initChoices() {
             document.querySelectorAll("select.choices").forEach(function (el) {
+
                 if (el.choices) {
-                    try {
-                        el.choices.destroy();
-                    } catch (e) { }
+                    el.choices.destroy();
                     el.choices = null;
                 }
-                el.choices = new Choices(el, {
+
+                new Choices(el, {
                     searchEnabled: true,
                     itemSelectText: '',
-                    shouldSort: false
+                    shouldSort: false,
+                    removeItemButton: el.classList.contains("multiple-remove")
                 });
             });
         }

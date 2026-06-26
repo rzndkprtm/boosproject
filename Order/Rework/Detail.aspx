@@ -3,95 +3,21 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <style>
-
-        .accordion-button::after{
-            display:none!important;
-        }
-
-        .card{
-            border:none;
-            border-radius:12px;
-            box-shadow:0 3px 12px rgba(0,0,0,.08);
-        }
-
-        .card-header{
-            background:#fff;
-            border-bottom:1px solid #ececec;
-        }
-
-        .info-row{
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            padding:10px 0;
-            border-bottom:1px solid #f1f1f1;
-        }
-
-        .info-row:last-child{
-            border-bottom:none;
-        }
-
-        .info-label{
-            color:#6c757d;
-            font-weight:600;
-        }
-
-        .info-value{
-            font-weight:700;
-            text-align:right;
-        }
-
-        .description-box{
-            background:#fafafa;
-            border-left:4px solid #435ebe;
-            border-radius:8px;
-            padding:12px;
-            white-space:pre-line;
-        }
-
-        .action-bar{
-            position:sticky;
-            top:0;
-            z-index:100;
-            background:#fff;
-            padding:15px;
-            border-radius:10px;
-            box-shadow:0 2px 10px rgba(0,0,0,.08);
-            margin-bottom:20px;
-        }
-
-        .accordion-item{
-            border:none;
-            border-radius:10px;
-            overflow:hidden;
-            margin-bottom:18px;
-            box-shadow:0 2px 8px rgba(0,0,0,.08);
-        }
-
-        .accordion-button{
-            background:#f8f9fa;
-            font-weight:700;
-            padding:18px;
-        }
-
-        .table td{
-            vertical-align:middle;
-        }
-
-        .badge-status{
-            font-size:.9rem;
-            padding:.5rem .8rem;
-        }
-
-        .table thead{
-            background:#435ebe;
-            color:white;
-        }
-
-        .table-hover tbody tr:hover{
-            background:#f7f9ff;
-        }
-
+        .accordion-button::after{ display:none!important; }
+        .card{ border:none; border-radius:12px; box-shadow:0 3px 12px rgba(0,0,0,.08); }
+        .card-header{ background:#fff; border-bottom:1px solid #ececec; }
+        .info-row{ display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #f1f1f1; }
+        .info-row:last-child{ border-bottom:none; }
+        .info-label{ color:#6c757d; font-weight:600; }
+        .info-value{ font-weight:700; text-align:right; }
+        .description-box{ background:#fafafa; border-left:4px solid #435ebe; border-radius:8px; padding:12px; white-space:pre-line; }
+        .action-bar{ position:sticky; top:0; z-index:100; background:#fff; padding:15px; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,.08); margin-bottom:20px; }
+        .accordion-item{ border:none; border-radius:10px; overflow:hidden; margin-bottom:18px; box-shadow:0 2px 8px rgba(0,0,0,.08); }
+        .accordion-button{ background:#f8f9fa; font-weight:700; padding:18px; }
+        .table td{ vertical-align:middle; }
+        .badge-status{ font-size:.9rem; padding:.5rem .8rem; }
+        .table thead{  background:#435ebe; color:white; }
+        .table-hover tbody tr:hover{ background:#f7f9ff; }
     </style>
 
     <div class="page-heading">
@@ -532,7 +458,6 @@
                 document.body.focus();
             });
         });
-
         function toggleSelectAll(source) {
             var gv = document.getElementById("<%= gvListAddItem.ClientID %>");
             var checkBoxes = gv.querySelectorAll("input[type='checkbox'][id*='chkSelect']");
@@ -540,33 +465,27 @@
                 cb.checked = source.checked;
             });
         }
-
         function showAddItem() {
             $("#modalAddItem").modal("show");
         }
-
         function showUpdateItem(id, category, install, description) {
             document.getElementById("<%=txtDetailId.ClientID %>").value = id;
             document.getElementById("<%=ddlCategory.ClientID %>").value = category;
             document.getElementById("<%=txtInstallDate.ClientID %>").value = install;
             document.getElementById("<%=txtDescription.ClientID %>").value = description;
         }
-
         function showUpload(id) {
             document.getElementById("<%=txtUploadId.ClientID %>").value = id;
         }
-
         function showDeleteItem(id) {
             document.getElementById("<%=txtIdDeleteItem.ClientID %>").value = id;
         }
-
         function showWaiting() {
             $("#modalWaiting").modal("show");
             setTimeout(function () {
                 $("#modalWaiting").modal("hide");
             }, 2000);
         }
-
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

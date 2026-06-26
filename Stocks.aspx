@@ -11,6 +11,7 @@
         .grid-container tr:last-child td { position: sticky; bottom: 0; background: #f5f5f5; z-index: 3; }
         .grid-container tr:last-child td:first-child { left: 0; z-index: 6; background: #f5f5f5; }
     </style>
+
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
@@ -467,47 +468,35 @@
     <asp:HiddenField ID="selected_tab" runat="server" />
 
     <script type="text/javascript">
-
         function showLoading() {
             $("#loadingOverlay").show();
         }
-
         function hideLoading() {
             $("#loadingOverlay").hide();
         }
-
         function activateCurrentTab() {
             var tabId = $("#<%= selected_tab.ClientID %>").val();
-        if (!tabId) tabId = "list-roller";
-        $('#dvTab a[href="#' + tabId + '"]').tab('show');
-    }
-
-    function pageInit() {
-        $(document).off("click.stocktab").on("click.stocktab", "#dvTab a", function () {
-            var tabId = $(this).attr("href").replace("#", "");
-            $("#<%= selected_tab.ClientID %>").val(tabId);
-        });
-
+            if (!tabId) tabId = "list-roller";
+            $('#dvTab a[href="#' + tabId + '"]').tab('show');
+        }
+        function pageInit() {
+            $(document).off("click.stocktab").on("click.stocktab", "#dvTab a", function () {
+                var tabId = $(this).attr("href").replace("#", "");
+                $("#<%= selected_tab.ClientID %>").val(tabId);
+            });
             activateCurrentTab();
         }
-
         $(document).ready(function () {
-
             pageInit();
-
             var prm = Sys.WebForms.PageRequestManager.getInstance();
-
             prm.add_beginRequest(function () {
                 showLoading();
             });
-
             prm.add_endRequest(function () {
                 hideLoading();
                 pageInit();
             });
         });
-
         window.history.replaceState(null, null, window.location.href);
-
     </script>
 </asp:Content>

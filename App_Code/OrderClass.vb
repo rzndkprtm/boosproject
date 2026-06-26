@@ -1081,7 +1081,7 @@ Public Class OrderClass
             End If
 
             If designName = "Vertical" Then
-                fabricColourName = fabricColourName.Replace("127mm", "").Replace("89mm", "").Trim()
+                fabricColourName = fabricColourName.Replace("127mm ", "").Replace("89mm ", "").Trim()
                 result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
                 If blindName = "Track Only" Then
                     result = String.Format("{0} ({1}mm) {2}", itemDescription, width, linearMetreText)

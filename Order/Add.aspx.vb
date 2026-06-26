@@ -274,6 +274,40 @@ Partial Class Order_Add
                 For row As Integer = startRow To lastRow
                     Dim designType As String = If(sheetDetail.Cells(row, 1).Text IsNot Nothing, sheetDetail.Cells(row, 1).Text, "")
 
+                    If designType = "Pelmet" Then
+                        Dim itemNumber As String = row - 3
+                        Dim designId As String = orderClass.GetItemData("SELECT Id FROM Designs WHERE Name='" & designType & "'")
+
+                        Dim blindType As String = If(sheetDetail.Cells(row, 2).Text IsNot Nothing, sheetDetail.Cells(row, 2).Text, "")
+                        Dim tubeType As String = (sheetDetail.Cells(row, 3).Text & "").Trim()
+                        Dim qty As Integer = If(String.IsNullOrWhiteSpace(sheetDetail.Cells(row, 4).Text), 0, CInt(sheetDetail.Cells(row, 4).Text))
+                        Dim room As String = (sheetDetail.Cells(row, 5).Text & "").Trim()
+                        Dim mounting As String = (sheetDetail.Cells(row, 6).Text & "").Trim()
+                        Dim fabricType As String = (sheetDetail.Cells(row, 7).Text & "").Trim()
+                        Dim fabricColour As String = (sheetDetail.Cells(row, 8).Text & "").Trim()
+                        Dim battenColour As String = (sheetDetail.Cells(row, 9).Text & "").Trim()
+                        Dim layoutCode As String = (sheetDetail.Cells(row, 10).Text & "").Trim()
+                        Dim widthText As String = (sheetDetail.Cells(row, 11).Text & "").Trim()
+                        Dim width As Integer = 0
+
+                        Dim widthTextB As String = (sheetDetail.Cells(row, 12).Text & "").Trim()
+                        Dim widthB As Integer = 0
+
+                        Dim widthTextC As String = (sheetDetail.Cells(row, 13).Text & "").Trim()
+                        Dim widthC As Integer = 0
+
+                        Dim returnPosition As String = (sheetDetail.Cells(row, 14).Text & "").Trim()
+
+                        Dim retLeftText As String = (sheetDetail.Cells(row, 15).Text & "").Trim()
+                        Dim retLeft As Integer = 0
+
+                        Dim retRightText As String = (sheetDetail.Cells(row, 16).Text & "").Trim()
+                        Dim retRight As Integer = 0
+
+                        Dim supply As String = (sheetDetail.Cells(row, 17).Text & "").Trim()
+                        Dim notes As String = (sheetDetail.Cells(row, 18).Text & "").Trim()
+                    End If
+
                     If designType = "Vertical" Then
                         Dim itemNumber As String = row - 3
 
