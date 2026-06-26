@@ -2836,7 +2836,10 @@ Partial Class Order_Method
             If Not Integer.TryParse(data.widthc, widthc) OrElse widthc <= 0 Then Return "PLEASE CHECK YOUR THIRD WIDTH ORDER !"
             If width + widthb + widthc > 9999 Then Return "MAXIMUM TOTAL WIDTH IS 9999MM !"
         End If
-        If String.IsNullOrEmpty(data.returnposition) Then Return "RETURN POSITION IS REQUIRED !"
+
+        If data.mounting = "Face Fit" Then
+            If String.IsNullOrEmpty(data.returnposition) Then Return "RETURN POSITION IS REQUIRED !"
+        End If
 
         If data.returnposition = "Left" OrElse data.returnposition = "Both Sides" Then
             If String.IsNullOrEmpty(data.returnlengthvalue) Then Return "RETURN LENGTH (LEFT) IS REQUIRED !"

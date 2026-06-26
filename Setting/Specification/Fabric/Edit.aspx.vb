@@ -222,13 +222,10 @@ Partial Class Setting_Specification_Fabric_Edit
     End Sub
 
     Protected Sub BindTube(designIds As List(Of String))
-        lbTube.Items.Clear()
         Try
             Dim conditions As New List(Of String)
             For Each designId As String In designIds
-
                 Dim designName As String = settingClass.GetItemData("SELECT Name FROM Designs WHERE Id='" & designId.Replace("'", "''") & "'")
-
                 If InStr(designName, "Roman", CompareMethod.Text) > 0 Then
                     conditions.Add("Alias LIKE '%(Roman)%'")
                 End If
@@ -237,18 +234,41 @@ Partial Class Setting_Specification_Fabric_Edit
                 End If
             Next
 
-            If conditions.Count = 0 Then Exit Sub
+            If conditions.Count = 0 Then
+                lbTube.Items.Clear()
+                Exit Sub
+            End If
 
             Dim query As String = "SELECT DISTINCT * FROM ProductTubes CROSS APPLY STRING_SPLIT(AppliesTo, ',') AS applyArray WHERE applyArray.VALUE='Fabrics' AND (" & String.Join(" OR ", conditions.Distinct()) & ") ORDER BY Name ASC"
 
-            lbTube.DataSource = settingClass.GetDataTable(query)
-            lbTube.DataTextField = "Alias"
-            lbTube.DataValueField = "Id"
-            lbTube.DataBind()
+            Dim dt As DataTable = settingClass.GetDataTable(query)
+            For Each dr As DataRow In dt.Rows
+                If lbTube.Items.FindByValue(dr("Id").ToString()) Is Nothing Then
+                    lbTube.Items.Add(New ListItem(
+                    dr("Alias").ToString(),
+                    dr("Id").ToString()))
+                End If
+            Next
 
-            If lbTube.Items.Count > 0 Then
+            For i As Integer = lbTube.Items.Count - 1 To 0 Step -1
+                Dim item As ListItem = lbTube.Items(i)
+                If item.Value = "" Then Continue For
+                Dim exists As Boolean = False
+                For Each dr As DataRow In dt.Rows
+                    If dr("Id").ToString() = item.Value Then
+                        exists = True
+                        Exit For
+                    End If
+                Next
+                If Not exists Then
+                    lbTube.Items.RemoveAt(i)
+                End If
+            Next
+
+            If lbTube.Items.FindByValue("") Is Nothing Then
                 lbTube.Items.Insert(0, New ListItem("", ""))
             End If
+
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
