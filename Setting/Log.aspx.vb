@@ -100,7 +100,43 @@ Partial Class Setting_Log
             If Not String.IsNullOrEmpty(type) AndAlso Not String.IsNullOrEmpty(dataId) Then
                 Dim thisQuery As String = String.Format("SELECT Name FROM {0} WHERE Id={1}", type, dataId)
                 If type = "CustomerAddress" Then
+                    thisQuery = "SELECT Designs.Name + ' | ' + Blinds.Name FROM Blinds LEFT JOIN Designs ON Blinds.DesignId=Designs.Id WHERE Blinds.Id='" & dataId & "'"
+                End If
+                If type = "Chains" Then
+                    thisQuery = "SELECT Name FROM Chains WHERE Id='" & dataId & "'"
+                End If
+                If type = "Companys" Then
+                    thisQuery = "SELECT Name FROM Companys WHERE Id='" & dataId & "'"
+                End If
+                If type = "CustomerAddress" Then
                     thisQuery = "SELECT Customers.Name + ' | ' + CustomerAddress.Description FROM CustomerAddress LEFT JOIN Customers ON CustomerAddress.CustomerId=Customers.Id WHERE CustomerAddress.Id='" & dataId & "'"
+                End If
+                If type = "CustomerBusiness" Then
+                    thisQuery = "SELECT Customers.Name + ' | ' + CustomerBusiness.ABNNumber FROM CustomerBusiness LEFT JOIN Customers ON CustomerBusiness.CustomerId=Customers.Id WHERE CustomerBusiness.Id='" & dataId & "'"
+                End If
+                If type = "CustomerContacts" Then
+                    thisQuery = "SELECT Customers.Name + ' | ' + CustomerContacts.Name FROM CustomerContacts LEFT JOIN Customers ON CustomerContacts.CustomerId=Customers.Id WHERE CustomerContacts.Id='" & dataId & "'"
+                End If
+                If type = "CustomerDiscounts" Then
+                    thisQuery = String.Empty
+                    'thisQuery = "SELECT Customers.Name + ' | ' + CustomerDiscounts.Type FROM CustomerAddress LEFT JOIN Customers ON CustomerAddress.CustomerId=Customers.Id WHERE CustomerAddress.Id='" & dataId & "'"
+                End If
+                If type = "CustomerProductAccess" Then
+                    thisQuery = "SELECT Customers.Name FROM CustomerProductAccess LEFT JOIN Customers ON CustomerProductAccess.Id=Customers.Id WHERE CustomerProductAccess.Id='" & dataId & "'"
+                End If
+                If type = "CustomerPromos" Then
+                    thisQuery = String.Empty
+                    'thisQuery = "SELECT Customers.Name FROM CustomerProductAccess LEFT JOIN Customers ON CustomerProductAccess.Id=Customers.Id WHERE CustomerProductAccess.Id='" & dataId & "'"
+                End If
+                If type = "CustomerQuotes" Then
+                    thisQuery = String.Empty
+                    'thisQuery = "SELECT Customers.Name FROM CustomerProductAccess LEFT JOIN Customers ON CustomerProductAccess.Id=Customers.Id WHERE CustomerProductAccess.Id='" & dataId & "'"
+                End If
+                If type = "Customers" Then
+                    thisQuery = "SELECT Name FROM Customers WHERE Id='" & dataId & "'"
+                End If
+                If type = "Designs" Then
+                    thisQuery = "SELECT Name FROM Designs WHERE Id='" & dataId & "'"
                 End If
                 If type = "Logins" Then
                     thisQuery = String.Format("SELECT UserName FROM {0} WHERE Id={1}", type, dataId)
@@ -110,6 +146,10 @@ Partial Class Setting_Log
                 End If
                 If type = "OrderDetails" Then
                     thisQuery = String.Format("SELECT Id FROM {0} WHERE Id={1}", type, dataId)
+                End If
+
+                If String.IsNullOrEmpty(thisQuery) Then
+                    Return String.Empty
                 End If
 
                 Dim dataName As String = settingClass.GetItemData(thisQuery)
