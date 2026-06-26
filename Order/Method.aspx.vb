@@ -2387,6 +2387,10 @@ Partial Class Order_Method
         If String.IsNullOrEmpty(data.brackettype) Then Return "BRACKET TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.isblindin) Then Return "IS BLIND IN IS REQUIRED !"
 
+        If data.mounting = "Face Fit" Then
+            If String.IsNullOrEmpty(data.returnposition) Then Return "RETURN POSITION IS REQUIRED !"
+        End If
+
         If Not String.IsNullOrEmpty(data.returnposition) AndAlso String.IsNullOrEmpty(data.returnlength) Then Return "RETURN LENGTH IS REQUIRED !"
 
         If data.returnlength = "Custom" Then

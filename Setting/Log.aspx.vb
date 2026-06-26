@@ -95,10 +95,13 @@ Partial Class Setting_Log
         End Try
     End Sub
 
-    Protected Function GetDataName(type As String, dataId As String, desc As String) As String
+    Protected Function GetDataName(type As String, dataId As String) As String
         Try
             If Not String.IsNullOrEmpty(type) AndAlso Not String.IsNullOrEmpty(dataId) Then
                 Dim thisQuery As String = String.Format("SELECT Name FROM {0} WHERE Id={1}", type, dataId)
+                If type = "CustomerAddress" Then
+                    thisQuery = "SELECT Customers.Name + ' | ' + CustomerAddress.Description FROM CustomerAddress LEFT JOIN Customers ON CustomerAddress.CustomerId=Customers.Id WHERE CustomerAddress.Id='" & dataId & "'"
+                End If
                 If type = "Logins" Then
                     thisQuery = String.Format("SELECT UserName FROM {0} WHERE Id={1}", type, dataId)
                 End If
@@ -110,11 +113,8 @@ Partial Class Setting_Log
                 End If
 
                 Dim dataName As String = settingClass.GetItemData(thisQuery)
-
-                Dim thisDes As String = String.Format("{0} -> {1}", dataName, desc)
-                Return thisDes
+                Return dataName
             End If
-
             Return String.Empty
         Catch ex As Exception
             Return "Error"

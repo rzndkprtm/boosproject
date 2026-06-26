@@ -60,13 +60,14 @@
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:BoundField DataField="Type" HeaderText="Type" />
-                                                <asp:BoundField DataField="ActionName" HeaderText="Action By" />
+                                                <asp:BoundField DataField="ActionName" HeaderText="Action By" />                                                
                                                 <asp:BoundField DataField="ActionDate" HeaderText="Action Date" DataFormatString="{0:dd MMM yyyy HH:mm:ss}" />
-                                                <asp:TemplateField HeaderText="Description">
+                                                <asp:TemplateField HeaderText="Data">
                                                     <ItemTemplate>
-                                                        <%# GetDataName(Eval("Type"), Eval("DataId"), Eval("Description")) %>
+                                                        <%# GetDataName(Eval("Type"), Eval("DataId")) %>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
+                                                <asp:BoundField DataField="Description" HeaderText="Description" />
                                             </Columns>
                                         </asp:GridView>
                                     </div>

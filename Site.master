@@ -164,13 +164,13 @@
                                                         <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/login/user" class="subsubmenu-link">User</a>
                                                         </li>
-                                                        <li class="subsubmenu-item">
+                                                        <li class="subsubmenu-item" runat="server" id="liLoginRole">
                                                             <a runat="server" href="~/setting/login/role" class="subsubmenu-link">Role</a>
                                                         </li>
-                                                        <li class="subsubmenu-item">
+                                                        <li class="subsubmenu-item" runat="server" id="liLoginLevel">
                                                             <a runat="server" href="~/setting/login/level" class="subsubmenu-link">Level</a>
                                                         </li>
-                                                        <li class="subsubmenu-item">
+                                                        <li class="subsubmenu-item" runat="server" id="liLoginAccess">
                                                             <a runat="server" href="~/setting/login/access" class="subsubmenu-link">Access</a>
                                                         </li>
                                                         <li class="subsubmenu-item">
