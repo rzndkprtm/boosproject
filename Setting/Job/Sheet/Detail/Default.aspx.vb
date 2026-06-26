@@ -91,6 +91,8 @@ Partial Class Setting_Job_Sheet_Detail_Default
             lblAlias.Text = thisData("Alias").ToString()
             lblDescription.Text = thisData("Description").ToString()
             lblActive.Text = thisData("DataActive").ToString()
+
+            btnEdit.Visible = LoginAccess("Edit")
         Catch ex As Exception
             MessageError(True, ex.ToString)
             If Not Session("RoleName") = "Developer" Then
@@ -107,6 +109,9 @@ Partial Class Setting_Job_Sheet_Detail_Default
 
             gvListSortOrder.DataSource = settingClass.GetDataTable(thisString)
             gvListSortOrder.DataBind()
+
+            btnAddDetail.Visible = LoginAccess("Add Detail")
+            aSortOrder.Visible = LoginAccess("Sort Detail")
         Catch ex As Exception
             MessageError(True, ex.ToString)
             If Not Session("RoleName") = "Developer" Then

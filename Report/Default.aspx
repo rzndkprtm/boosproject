@@ -11,6 +11,7 @@
         .grid-container tr:last-child td { position: sticky; bottom: 0; background: #f5f5f5; z-index: 3; }
         .grid-container tr:last-child td:first-child { left: 0; z-index: 6; background: #f5f5f5; }
     </style>
+
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
