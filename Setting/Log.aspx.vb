@@ -99,11 +99,20 @@ Partial Class Setting_Log
         Try
             If Not String.IsNullOrEmpty(type) AndAlso Not String.IsNullOrEmpty(dataId) Then
                 Dim thisQuery As String = String.Format("SELECT Name FROM {0} WHERE Id={1}", type, dataId)
-                If type = "CustomerAddress" Then
+                If type = "Blinds" Then
                     thisQuery = "SELECT Designs.Name + ' | ' + Blinds.Name FROM Blinds LEFT JOIN Designs ON Blinds.DesignId=Designs.Id WHERE Blinds.Id='" & dataId & "'"
+                End If
+                If type = "BottomColours" Then
+                    thisQuery = "SELECT Name FROM BottomColours WHERE Id='" & dataId & "'"
+                End If
+                If type = "Bottoms" Then
+                    thisQuery = "SELECT Name FROM Bottoms WHERE Id='" & dataId & "'"
                 End If
                 If type = "Chains" Then
                     thisQuery = "SELECT Name FROM Chains WHERE Id='" & dataId & "'"
+                End If
+                If type = "CompanyDetails" Then
+                    thisQuery = "SELECT Companys.Name + ' | ' + CompanyDetails.Name FROM CompanyDetails LEFT JOIN Companys ON CompanyDetails.CompanyId=Companys.Id WHERE CompanyDetails.Id='" & dataId & "'"
                 End If
                 If type = "Companys" Then
                     thisQuery = "SELECT Name FROM Companys WHERE Id='" & dataId & "'"
@@ -138,6 +147,13 @@ Partial Class Setting_Log
                 If type = "Designs" Then
                     thisQuery = "SELECT Name FROM Designs WHERE Id='" & dataId & "'"
                 End If
+                If type = "FabricAlias" Then
+                    thisQuery = String.Empty
+                End If
+
+
+
+
                 If type = "Logins" Then
                     thisQuery = String.Format("SELECT UserName FROM {0} WHERE Id={1}", type, dataId)
                 End If
