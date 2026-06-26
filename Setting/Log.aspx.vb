@@ -150,6 +150,12 @@ Partial Class Setting_Log
                 If type = "FabricAlias" Then
                     thisQuery = String.Empty
                 End If
+                If type = "FabricColours" Then
+                    thisQuery = String.Empty
+                End If
+                If type = "FabricGroupLocals" Then
+                    thisQuery = String.Empty
+                End If
 
 
 
