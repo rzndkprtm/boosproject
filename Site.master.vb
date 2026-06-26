@@ -29,7 +29,8 @@ Partial Public Class SiteMaster
             Context.ApplicationInstance.CompleteRequest()
         End Try
     End Sub
-    Private Sub CheckSessions()
+
+    Protected Sub CheckSessions()
         Try
             If Session("IsLoggedIn") Is Nothing OrElse Session("IsLoggedIn") = False Then
                 HandleRedirectLogin()
@@ -56,16 +57,17 @@ Partial Public Class SiteMaster
         End Try
     End Sub
 
-    Private Sub HandleRedirectLogin()
+    Protected Sub HandleRedirectLogin()
         Session.Clear()
         Response.Redirect("~/account/login", False)
         Context.ApplicationInstance.CompleteRequest()
     End Sub
-    Private Function IsAjaxRequest() As Boolean
+
+    Protected Function IsAjaxRequest() As Boolean
         Return Request.Headers("X-Requested-With") = "XMLHttpRequest"
     End Function
 
-    Private Function IsHeartbeatRequest() As Boolean
+    Protected Function IsHeartbeatRequest() As Boolean
         Return Request.Url.AbsolutePath.ToLower().Contains("updatesession")
     End Function
 
@@ -82,7 +84,7 @@ Partial Public Class SiteMaster
         Context.ApplicationInstance.CompleteRequest()
     End Sub
 
-    Private Sub MyLoad()
+    Protected Sub MyLoad()
         Try
             Dim loginId As String = Session("LoginId")
 
@@ -178,7 +180,7 @@ Partial Public Class SiteMaster
         End Try
     End Sub
 
-    Private Sub BindListNavigation()
+    Protected Sub BindListNavigation()
         Try
             liOldOrder.Visible = False
             liGuide.Visible = False
@@ -192,7 +194,12 @@ Partial Public Class SiteMaster
             liSetting.Visible = False
             liDashboard.Visible = False
             liGeneral.Visible = False
+
             liLogin.Visible = False
+            liLoginRole.Visible = False
+            liLoginLevel.Visible = False
+            liLoginAccess.Visible = False
+
             liCustomer.Visible = False
             liSpecification.Visible = False
             liTubeType.Visible = False
@@ -216,7 +223,12 @@ Partial Public Class SiteMaster
                 liSetting.Visible = True
                 liDashboard.Visible = True
                 liGeneral.Visible = True
+
                 liLogin.Visible = True
+                liLoginRole.Visible = True
+                liLoginLevel.Visible = True
+                liLoginAccess.Visible = True
+
                 liCustomer.Visible = True
                 liSpecification.Visible = True
                 liTubeType.Visible = True : liControlType.Visible = True : liColourType.Visible = True
