@@ -59,8 +59,7 @@
                                                         <%# Container.DataItemIndex + 1 %>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-                                                <asp:BoundField DataField="Type" HeaderText="Type" />
-                                                <asp:BoundField DataField="ActionName" HeaderText="Action By" />                                                
+                                                <asp:BoundField DataField="ActionName" HeaderText="Action By" />
                                                 <asp:BoundField DataField="ActionDate" HeaderText="Action Date" DataFormatString="{0:dd MMM yyyy HH:mm:ss}" />
                                                 <asp:TemplateField HeaderText="Data">
                                                     <ItemTemplate>
