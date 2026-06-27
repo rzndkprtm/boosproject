@@ -44,6 +44,25 @@ Partial Class Setting_Log
         BindData(txtSearch.Text)
     End Sub
 
+    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim thisId As String = txtDeleteId.Text
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM Logs WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Response.Redirect("~/setting/log", False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+        End Try
+    End Sub
+
     Protected Sub BindData(searchText As String)
         Try
             Dim params As New List(Of SqlParameter) From {
@@ -51,6 +70,8 @@ Partial Class Setting_Log
             }
             gvList.DataSource = settingClass.GetDataTableSP("sp_LogList", params)
             gvList.DataBind()
+
+            gvList.Columns(5).Visible = LoginAccess("Delete") ' ID
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
