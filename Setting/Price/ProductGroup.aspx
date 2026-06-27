@@ -228,7 +228,7 @@
                 }
             });
         }
-        ["modalProcess", "modalDelete", "modalLog"].forEach(function (id) {
+        ["modalProcess", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
