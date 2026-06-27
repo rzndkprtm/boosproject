@@ -49,8 +49,6 @@ Partial Class Setting_Price_Surcharge_Default
         Session("PriceGroupSurcharge") = ddlPriceGroup.SelectedValue
         Session("ActiveSurcharge") = ddlActive.SelectedValue
         Session("SearchSurcharge") = txtSearch.Text
-
-        MessageError(True, ddlDesign.SelectedValue)
     End Sub
 
     Protected Sub ddlDesign_SelectedIndexChanged(sender As Object, e As EventArgs)
@@ -60,7 +58,11 @@ Partial Class Setting_Price_Surcharge_Default
         BindBlind(ddlDesign.SelectedValue)
         BindData(ddlDesign.SelectedValue, ddlBlind.SelectedValue, ddlPriceGroup.SelectedValue, ddlActive.SelectedValue, txtSearch.Text)
 
-        MessageError(True, ddlDesign.SelectedValue)
+        Session("DesignSurcharge") = ddlDesign.SelectedValue
+        Session("BlindSurcharge") = ddlBlind.SelectedValue
+        Session("PriceGroupSurcharge") = ddlPriceGroup.SelectedValue
+        Session("ActiveSurcharge") = ddlActive.SelectedValue
+        Session("SearchSurcharge") = txtSearch.Text
     End Sub
 
     Protected Sub ddlBlind_SelectedIndexChanged(sender As Object, e As EventArgs)
