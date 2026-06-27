@@ -8611,7 +8611,18 @@ Partial Class Order_Method
         End If
 
         Dim groupName As String = String.Empty
-        If designName = "Skyline Shutter Express" Then groupName = designName
+        If designName = "Skyline Shutter Express" Then
+            groupName = designName
+
+            If data.companyid = "3" Then
+                If blindName = "Hinged" Then
+                    groupName = "Hinged Shutter"
+                End If
+                If blindName = "Hinged Bi-fold" OrElse blindName = "Track Bi-fold" Then
+                    groupName = "Bi-fold Shutter"
+                End If
+            End If
+        End If
 
         If designName = "Skyline Shutter Ocean" Then
             groupName = designName
