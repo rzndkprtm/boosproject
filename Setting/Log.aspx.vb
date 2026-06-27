@@ -156,7 +156,12 @@ Partial Class Setting_Log
                 If type = "FabricGroupLocals" Then
                     thisQuery = String.Empty
                 End If
-
+                If type = "Fabrics" Then
+                    thisQuery = "SELECT Name FROM Fabrics WHERE Id='" & dataId & "'"
+                End If
+                If type = "InstallerAccess" Then
+                    thisQuery = "SELECT Name FROM Fabrics WHERE Id='" & dataId & "'"
+                End If
 
 
 

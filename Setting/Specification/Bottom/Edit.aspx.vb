@@ -83,7 +83,7 @@ Partial Class Setting_Specification_Bottom_Edit
                     End Using
                 End Using
 
-                Dim dataLog As Object() = {"Bottoms", lblId.Text, Session("LoginId").ToString(), "Bottom Type Created"}
+                Dim dataLog As Object() = {"Bottoms", lblId.Text, Session("LoginId").ToString(), "Bottom Type Updated"}
                 settingClass.Logs(dataLog)
 
                 url = "~/setting/specification/bottom"

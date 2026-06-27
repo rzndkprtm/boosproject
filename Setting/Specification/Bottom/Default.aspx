@@ -67,7 +67,7 @@
                                                 </asp:TemplateField>
                                                 <asp:BoundField DataField="Id" HeaderText="ID" />
                                                 <asp:BoundField DataField="Name" HeaderText="Name" />
-                                                <asp:TemplateField HeaderText="Design">
+                                                <asp:TemplateField HeaderText="Design Type">
                                                     <ItemTemplate>
                                                         <%# BindDesign(Eval("Id").ToString()) %>
                                                     </ItemTemplate>
