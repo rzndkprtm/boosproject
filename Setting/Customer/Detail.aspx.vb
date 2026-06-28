@@ -315,10 +315,10 @@ Partial Class Setting_Customer_Detail
             Dim fullContact As String = settingClass.GetItemData("SELECT CONCAT('Contact Name: ', ISNULL(Name, ''), ', ', 'Email: ', ISNULL(Email, ''), ', ', 'Tags: ', ISNULL(Tags, '')) AS ThisContact FROM CustomerContacts WHERE Id='" & contactId & "'")
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerContacts WHERE Id=@Id; DELETE FROM Logs WHERE Type='CustomerContacts' AND DataId=@Id;", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", contactId)
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerContacts WHERE Id=@Id; DELETE FROM Logs WHERE Type='CustomerContacts' AND DataId=@Id;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", contactId)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -343,11 +343,11 @@ Partial Class Setting_Customer_Detail
             Dim contactId As String = txtPrimaryContactId.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerContacts SET [Primary]=0 WHERE CustomerId=@CustomerId; UPDATE CustomerContacts SET Tags='Confirming,Invoicing,Quoting,Newsletter', [Primary]=1 WHERE Id=@ContactId", thisConn)
-                    myCmd.Parameters.AddWithValue("@CustomerId", lblId.Text)
-                    myCmd.Parameters.AddWithValue("@ContactId", contactId)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE CustomerContacts SET [Primary]=0 WHERE CustomerId=@CustomerId; UPDATE CustomerContacts SET Tags='Confirming,Invoicing,Quoting,Newsletter', [Primary]=1 WHERE Id=@ContactId", thisConn)
+                    thisCmd.Parameters.AddWithValue("@CustomerId", lblId.Text)
+                    thisCmd.Parameters.AddWithValue("@ContactId", contactId)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -388,10 +388,6 @@ Partial Class Setting_Customer_Detail
         If primary = False Then Return True
         Return False
     End Function
-
-    ' END CUSTOMER CONTACT
-
-    ' START CUSTOMER ADDRESS
 
     Protected Sub btnAddAddress_Click(sender As Object, e As EventArgs)
         Session("selectedTabCustomer") = "list-address"
@@ -496,10 +492,6 @@ Partial Class Setting_Customer_Detail
         divErrorAddress.Visible = visible : msgErrorAddress.InnerText = message
     End Sub
 
-    ' END CUSTOMER ADDRESS
-
-    ' START CUSTOMER BUSINESS
-
     Protected Sub btnAddBusiness_Click(sender As Object, e As EventArgs)
         Session("selectedTabCustomer") = "list-business"
         url = String.Format("~/setting/customer/business/add?custid={0}&returnpage=detail", lblId.Text)
@@ -586,10 +578,6 @@ Partial Class Setting_Customer_Detail
         If primary = False Then Return True
         Return False
     End Function
-
-    ' START CUSTOMER BUSINESS
-
-    ' START CUSTOMER LOGIN
 
     Protected Sub btnAddLogin_Click(sender As Object, e As EventArgs)
         Session("selectedTabCustomer") = "list-login"
@@ -771,10 +759,6 @@ Partial Class Setting_Customer_Detail
         divErrorSendPersonalLogin.Visible = visible : msgErrorSendPersonalLogin.InnerText = message
     End Sub
 
-    ' END CUSTOMER LOGIN
-
-    ' CUSTOMER DISCOUNT
-
     Protected Sub btnAddDiscountA_Click(sender As Object, e As EventArgs)
         Session("selectedTabCustomer") = "list-discount"
         url = String.Format("~/setting/customer/discount/add?custid={0}&type=product&returnpage=detail", lblId.Text)
@@ -876,10 +860,6 @@ Partial Class Setting_Customer_Detail
         divErrorDiscount.Visible = visible : msgErrorDiscount.InnerText = message
     End Sub
 
-    ' END CUSTOMER DISCOUNT
-
-    ' START CUSTOMER PROMO
-
     Protected Sub btnAddPromo_Click(sender As Object, e As EventArgs)
         Session("selectedTabCustomer") = "list-promo"
         url = String.Format("~/setting/customer/promo/add?custid={0}&returnpage=detail", lblId.Text)
@@ -891,6 +871,12 @@ Partial Class Setting_Customer_Detail
         Session("selectedTabCustomer") = "list-promo"
         Try
             Dim thisId As String = txtDeletePromoId.Text
+            Dim promoid As String = txtDeleteDetailPromoId.Text
+            Dim promoName As String = settingClass.GetItemData("SELECT Name FROM Promos WHERE Id='" & promoid & "'")
+
+            Dim stringLog As String = String.Format("Customer Promo Deleted | {0}", promoName)
+            dataLog = {"Customers", lblId.Text, Session("LoginId").ToString(), stringLog}
+            settingClass.Logs(dataLog)
 
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerPromos WHERE Id=@Id; DELETE FROM Logs WHERE Type='CustomerPromos' AND DataId=@Id;", thisConn)
@@ -898,41 +884,6 @@ Partial Class Setting_Customer_Detail
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
-            End Using
-
-            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
-            Response.Redirect(url, False)
-        Catch ex As Exception
-            MessageError_Promo(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Promo(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
-    Protected Sub btnResetPromo_Click(sender As Object, e As EventArgs)
-        MessageError_Promo(False, String.Empty)
-        Session("selectedTabCustomer") = "list-promo"
-        Try
-            Using thisConn As New SqlConnection(myConn)
-                thisConn.Open()
-
-                Dim discountData As DataTable = settingClass.GetDataTable("SELECT * FROM CustomerPromos WHERE CustomerId='" & lblId.Text & "'")
-                For i As Integer = 0 To discountData.Rows.Count - 1
-                    Dim id As String = discountData.Rows(i)("Id").ToString()
-
-                    Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM Logs WHERE Type='CustomerPromos' AND DataId=@Id", thisConn)
-                        thisCmd.Parameters.AddWithValue("@Id", id)
-                        thisCmd.ExecuteNonQuery()
-                    End Using
-                Next
-
-                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerPromos WHERE CustomerId=@Id", thisConn)
-                    thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                    thisCmd.ExecuteNonQuery()
-                End Using
-
-                thisConn.Close()
             End Using
 
             url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
