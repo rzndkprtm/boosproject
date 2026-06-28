@@ -614,6 +614,11 @@
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
                                                         <asp:BoundField DataField="Terms" HeaderText="Terms" />
+                                                        <asp:TemplateField>
+                                                            <ItemTemplate>
+                                                                <a href="javascript:void(0);" class="btn btn-sm btn-primary" onclick="showLog('CustomerQuotes', '<%# Eval("Id") %>')">Log</a>
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
                                                     </Columns>
                                                 </asp:GridView>
                                             </div>

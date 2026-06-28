@@ -9,6 +9,7 @@ Partial Class Quotation
     Dim settingClass As New SettingClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
+    Dim dataLog As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
@@ -101,6 +102,9 @@ Partial Class Quotation
                 End Using
             End Using
 
+            dataLog = {"CustomerQuotes", lblCustomerId.Text, Session("LoginId").ToString(), "Logo Quote Updated"}
+            settingClass.Logs(dataLog)
+
             url = String.Format("~/quotation?accountid={0}", lblCustomerId.Text)
             Response.Redirect(url, False)
         Catch ex As Exception
@@ -129,6 +133,9 @@ Partial Class Quotation
                     End Using
                 End Using
 
+                dataLog = {"CustomerQuotes", lblCustomerId.Text, Session("LoginId").ToString(), "Address Quote Updated"}
+                settingClass.Logs(dataLog)
+
                 url = String.Format("~/quotation?accountid={0}", lblCustomerId.Text)
                 Response.Redirect(url, False)
             End If
@@ -155,6 +162,9 @@ Partial Class Quotation
                         thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
+
+                dataLog = {"CustomerQuotes", lblCustomerId.Text, Session("LoginId").ToString(), "Contact Quote Updated"}
+                settingClass.Logs(dataLog)
 
                 url = String.Format("~/quotation?accountid={0}", lblCustomerId.Text)
                 Response.Redirect(url, False)
@@ -183,6 +193,9 @@ Partial Class Quotation
                         thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
+
+                dataLog = {"CustomerQuotes", lblCustomerId.Text, Session("LoginId").ToString(), "Terms & Conditions Quote Updated"}
+                settingClass.Logs(dataLog)
 
                 url = String.Format("~/quotation?accountid={0}", lblCustomerId.Text)
                 Response.Redirect(url, False)
