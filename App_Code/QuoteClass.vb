@@ -47,9 +47,9 @@ Public Class QuoteClass
     End Function
 
     Public Function GetDataTableSP(spName As String, params As List(Of SqlParameter)) As DataTable
-        Dim dt As New DataTable()
+        Dim thisTable As New DataTable()
         Try
-            If String.IsNullOrWhiteSpace(spName) Then Return dt
+            If String.IsNullOrWhiteSpace(spName) Then Return thisTable
 
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand(spName, thisConn)
@@ -58,14 +58,14 @@ Public Class QuoteClass
                         thisCmd.Parameters.AddRange(params.ToArray())
                     End If
                     Using thisAdapter As New SqlDataAdapter(thisCmd)
-                        thisAdapter.Fill(dt)
+                        thisAdapter.Fill(thisTable)
                     End Using
                 End Using
             End Using
         Catch ex As Exception
-            dt = New DataTable()
+            thisTable = New DataTable()
         End Try
-        Return dt
+        Return thisTable
     End Function
 
     Protected Function GetItemData(thisString As String) As String
@@ -333,6 +333,18 @@ Public Class QuoteClass
                 invoiceFrom &= vbCrLf
                 invoiceFrom &= "Australia"
             End If
+            If companyId = "3" Then
+                invoiceFrom = "PT Bumi Indah Global"
+                invoiceFrom &= vbCrLf
+                invoiceFrom &= "Attention: Saiful"
+                invoiceFrom &= vbCrLf
+                invoiceFrom &= vbCrLf
+                invoiceFrom &= ""
+                invoiceFrom &= vbCrLf
+                invoiceFrom &= ""
+                invoiceFrom &= vbCrLf
+                invoiceFrom &= "Indonesia"
+            End If
 
             Dim reference As String = String.Format("{0} - {1}", orderNumber, orderName)
 
@@ -488,11 +500,12 @@ Public Class QuoteClass
 
                 If designName = "Cellular Shades" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)
-                    itemDescription = String.Format("{0} {1} {2}", invoiceName, size, squareMetreText)
+                    itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, fabricColourName, size, squareMetreText)
                     If blindName = "Day & Night" Then
                         Dim secondFabricColour As String = GetItemData("SELECT FabricColourIdB FROM OrderDetails WHERE Id='" & itemId & "'")
                         Dim fabricColourNameB As String = GetFabricColourName(secondFabricColour)
 
+                        itemDescription = String.Format("{0} {1} {2}", invoiceName, size, squareMetreText)
                         itemDescription &= vbCrLf
                         itemDescription &= fabricColourName
                         itemDescription &= vbCrLf
@@ -1870,20 +1883,18 @@ Public Class QuoteEvents
         If companyId = "2" Then
             imagePath = HttpContext.Current.Server.MapPath("~/assets/images/logo/jpmdirect.jpg")
         End If
-
         If companyId = "3" Then
-            imagePath = HttpContext.Current.Server.MapPath("~/assets/images/logo/accent.png")
+            imagePath = HttpContext.Current.Server.MapPath("~/assets/images/logo/big.JPG")
         End If
-
-        If companyId = "5" Then
+        If companyId = "4" Then
             imagePath = HttpContext.Current.Server.MapPath("~/assets/images/logo/big.JPG")
         End If
 
         Dim img As Image = Image.GetInstance(imagePath)
         img.ScaleToFit(150, 60)
-        'If Me.companyId = "3" Then
-        '    img.ScaleToFit(180, 100)
-        'End If
+        If Me.companyId = "3" Then
+            img.ScaleToFit(210, 200)
+        End If
 
         Dim imgCell As New PdfPCell(img)
         imgCell.Border = 0
