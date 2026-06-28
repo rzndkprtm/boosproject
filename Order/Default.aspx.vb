@@ -176,6 +176,22 @@ Partial Class Order_Default
                     End Using
                 End Using
 
+                Dim serviceData As DataTable = orderClass.GetDataTable("SELECT OrderDetails.* FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.HeaderId='" & thisId & "' AND Products.DesignId='16'")
+                If serviceData.Rows.Count > 0 Then
+                    For i As Integer = 0 To serviceData.Rows.Count - 1
+                        Dim serviceId As String = serviceData.Rows(i).Item("Id").ToString()
+                        Using thisConn As New SqlConnection(myConn)
+                            Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET Active=0 WHERE Id=@ItemId; DELETE FROM OrderCostings WHERE HeaderId=@HeaderId AND ItemId=@ItemId", thisConn)
+                                thisCmd.Parameters.AddWithValue("@ItemId", serviceId)
+                                thisCmd.Parameters.AddWithValue("@HeaderId", thisId)
+                                thisCmd.ExecuteNonQuery()
+                            End Using
+                        End Using
+                    Next
+                End If
+
+                orderClass.CalculatePriceByOrder(thisId)
+
                 Dim salesClass As New SalesClass
                 salesClass.RefreshData(companyId)
 
