@@ -179,7 +179,7 @@ Partial Class Setting_Specification_Fabric_Alias
     Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim thisId As String = txtIdDelete.Text
+            Dim thisId As String = txtDeleteId.Text
 
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM FabricAlias WHERE Id=@Id; DELETE FROM Logs WHERE Type='FabricAlias' AND DataId=@Id;", thisConn)

@@ -157,8 +157,7 @@ Partial Class Setting_Log
                     thisQuery = "SELECT Customers.Name FROM CustomerPromos LEFT JOIN Customers ON CustomerPromos.CustomerId=Customers.Id WHERE CustomerPromos.Id='" & dataId & "'"
                 End If
                 If type = "CustomerQuotes" Then
-                    thisQuery = String.Empty
-                    'thisQuery = "SELECT Customers.Name FROM CustomerProductAccess LEFT JOIN Customers ON CustomerProductAccess.Id=Customers.Id WHERE CustomerProductAccess.Id='" & dataId & "'"
+                    thisQuery = "SELECT Customers.Name FROM CustomerQuotes LEFT JOIN Customers ON CustomerQuotes.Id=Customers.Id WHERE CustomerQuotes.Id='" & dataId & "'"
                 End If
                 If type = "Customers" Then
                     thisQuery = "SELECT Name FROM Customers WHERE Id='" & dataId & "'"
@@ -167,7 +166,7 @@ Partial Class Setting_Log
                     thisQuery = "SELECT Name FROM Designs WHERE Id='" & dataId & "'"
                 End If
                 If type = "FabricAlias" Then
-                    thisQuery = String.Empty
+                    thisQuery = "SELECT '[' + FA.Type + '] ' + COALESCE(FF.Name, FC1.Name) + ' = ' + COALESCE(SF.Name, FC2.Name) FROM FabricAlias FA LEFT JOIN Fabrics FF ON FA.FirstId=FF.Id AND FA.Type='Fabrics' LEFT JOIN Fabrics SF ON FA.SecondId=SF.Id AND FA.Type='Fabrics' LEFT JOIN FabricColours FC1 ON FA.FirstId=FC1.Id AND FA.Type='FabricColours' LEFT JOIN FabricColours FC2 ON FA.SecondId = FC2.Id AND FA.Type = 'FabricColours' WHERE FA.Id='1' ORDER BY FA.Id ASC"
                 End If
                 If type = "FabricColours" Then
                     thisQuery = String.Empty
