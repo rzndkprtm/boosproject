@@ -1383,6 +1383,7 @@ Partial Class Order_Method
         If blindName = "Day & Night" Then
             If String.IsNullOrEmpty(data.fabrictypeb) Then Return "BOTTOM FABRIC TYPE IS REQUIRED !"
             If String.IsNullOrEmpty(data.fabriccolourb) Then Return "BOTTOM FABRIC COLOUR IS REQUIRED !"
+            If data.fabriccolour = data.fabriccolourb Then Return "PLEASE CHECK YOUR FABRIC COLOUR !"
             If Not factory = factoryB Then
                 If factory = "Regular" Then
                     Return "THE TOP FABRIC SELECTED IS <b>REGULAR</b>.<br />PLEASE CHOOSE <b>REGULAR</b> AS WELL FOR THE BOTTOM FABRIC. !"
@@ -10664,7 +10665,7 @@ Partial Class Order_Method
 
         Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .action = action}
 
-        Dim fabricReq As New JSONList With {.type = "FabricType", .designtype = designId, .companydetailid = companyDetailId, .tubetype = tubeId, .action = action}
+        Dim fabricReq As New JSONList With {.type = "FabricTypeByDesign", .designtype = designId, .companydetailid = companyDetailId, .action = action}
 
         Dim fabricColourReq As New JSONList With {.type = "FabricColour", .fabrictype = fabricId, .companydetailid = companyDetailId, .action = action}
 
