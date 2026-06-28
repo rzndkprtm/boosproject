@@ -169,23 +169,39 @@ Partial Class Setting_Log
                     thisQuery = "SELECT '[' + FA.Type + '] ' + COALESCE(FF.Name, FC1.Name) + ' = ' + COALESCE(SF.Name, FC2.Name) FROM FabricAlias FA LEFT JOIN Fabrics FF ON FA.FirstId=FF.Id AND FA.Type='Fabrics' LEFT JOIN Fabrics SF ON FA.SecondId=SF.Id AND FA.Type='Fabrics' LEFT JOIN FabricColours FC1 ON FA.FirstId=FC1.Id AND FA.Type='FabricColours' LEFT JOIN FabricColours FC2 ON FA.SecondId = FC2.Id AND FA.Type = 'FabricColours' WHERE FA.Id='1' ORDER BY FA.Id ASC"
                 End If
                 If type = "FabricColours" Then
-                    thisQuery = String.Empty
+                    thisQuery = "SELECT Name FROM FabricColours WHERE Id='" & dataId & "'"
                 End If
                 If type = "FabricGroupLocals" Then
-                    thisQuery = String.Empty
+                    thisQuery = "SELECT Name FROM Fabrics WHERE Id='" & dataId & "'"
                 End If
                 If type = "Fabrics" Then
                     thisQuery = "SELECT Name FROM Fabrics WHERE Id='" & dataId & "'"
                 End If
-                If type = "InstallerAccess" Then
-                    thisQuery = "SELECT Name FROM Fabrics WHERE Id='" & dataId & "'"
+                If type = "LoginInstallers" Then
+                    thisQuery = "SELECT UserName FROM Logins WHERE Id='" & dataId & "'"
                 End If
-
-
-
+                If type = "LoginLevels" Then
+                    thisQuery = "SELECT Name FROM LoginLevels WHERE Id='" & dataId & "'"
+                End If
+                If type = "LoginRoles" Then
+                    thisQuery = "SELECT Name FROM LoginRoles WHERE Id='" & dataId & "'"
+                End If
                 If type = "Logins" Then
-                    thisQuery = String.Format("SELECT UserName FROM {0} WHERE Id={1}", type, dataId)
+                    thisQuery = "SELECT UserName FROM Logins WHERE Id='" & dataId & "'"
                 End If
+                If type = "Mailings" Then
+                    thisQuery = "SELECT Name FROM Mailings WHERE Id='" & dataId & "'"
+                End If
+                If type = "Mountings" Then
+                    thisQuery = "SELECT Name FROM Mountings WHERE Id='" & dataId & "'"
+                End If
+                If type = "Newsletters" Then
+                    thisQuery = "SELECT Name FROM Newsletters WHERE Id='" & dataId & "'"
+                End If
+
+
+
+
                 If type = "OrderHeaders" Then
                     thisQuery = String.Format("SELECT OrderId FROM {0} WHERE Id={1}", type, dataId)
                 End If
