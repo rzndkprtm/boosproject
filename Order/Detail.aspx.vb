@@ -3392,12 +3392,11 @@ Partial Class Order_Detail
         Try
             Dim thisId As String = String.Empty
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As New SqlCommand("sp_InsertOrderActionContext", thisConn)
-                    myCmd.CommandType = CommandType.StoredProcedure
-                    myCmd.Parameters.Add("@Query", SqlDbType.NVarChar).Value = queryString
-
+                Using thisCmd As New SqlCommand("sp_InsertOrderActionContext", thisConn)
+                    thisCmd.CommandType = CommandType.StoredProcedure
+                    thisCmd.Parameters.Add("@Query", SqlDbType.NVarChar).Value = queryString
                     thisConn.Open()
-                    Return myCmd.ExecuteScalar().ToString()
+                    Return thisCmd.ExecuteScalar().ToString()
                 End Using
             End Using
         Catch ex As Exception

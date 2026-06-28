@@ -198,6 +198,9 @@ Partial Class Setting_Log
                 If type = "Newsletters" Then
                     thisQuery = "SELECT Name FROM Newsletters WHERE Id='" & dataId & "'"
                 End If
+                If type = "Notifications" Then
+                    thisQuery = "SELECT Title FROM Notifications WHERE Id='" & dataId & "'"
+                End If
 
 
 

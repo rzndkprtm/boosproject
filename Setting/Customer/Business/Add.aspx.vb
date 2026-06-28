@@ -51,15 +51,14 @@ Partial Class Setting_Customer_Business_Add
                 If checkData = 0 Then primaryData = 1
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using myCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerBusiness VALUES (@Id, @CustomerId, @ABNNumber, @RegisteredName, @Primary)", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", thisId)
-                        myCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
-                        myCmd.Parameters.AddWithValue("@ABNNumber", txtNumber.Text)
-                        myCmd.Parameters.AddWithValue("@RegisteredName", txtName.Text)
-                        myCmd.Parameters.AddWithValue("@Primary", primaryData)
-
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerBusiness VALUES (@Id, @CustomerId, @ABNNumber, @RegisteredName, @Primary)", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", thisId)
+                        thisCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@ABNNumber", txtNumber.Text)
+                        thisCmd.Parameters.AddWithValue("@RegisteredName", txtName.Text)
+                        thisCmd.Parameters.AddWithValue("@Primary", primaryData)
                         thisConn.Open()
-                        myCmd.ExecuteNonQuery()
+                        thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 

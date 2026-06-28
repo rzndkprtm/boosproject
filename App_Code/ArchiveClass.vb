@@ -74,8 +74,8 @@ Public Class ArchiveClass
         Dim result As String = String.Empty
         Using thisConn As New SqlConnection(myConn)
             thisConn.Open()
-            Using myCmd As New SqlCommand(thisString, thisConn)
-                Using rdResult = myCmd.ExecuteReader
+            Using thisCmd As New SqlCommand(thisString, thisConn)
+                Using rdResult = thisCmd.ExecuteReader
                     While rdResult.Read
                         result = rdResult.Item(0).ToString()
                     End While
@@ -91,8 +91,8 @@ Public Class ArchiveClass
         Try
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
-                Using myCmd As New SqlCommand(thisString, thisConn)
-                    Using rdResult = myCmd.ExecuteReader
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using rdResult = thisCmd.ExecuteReader
                         While rdResult.Read
                             result = rdResult.Item(0)
                         End While
@@ -111,8 +111,8 @@ Public Class ArchiveClass
         Try
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
-                Using myCmd As New SqlCommand(thisString, thisConn)
-                    Using rdResult = myCmd.ExecuteReader
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using rdResult = thisCmd.ExecuteReader
                         While rdResult.Read
                             result = rdResult.Item(0)
                         End While
@@ -131,8 +131,8 @@ Public Class ArchiveClass
         Try
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
-                Using myCmd As New SqlCommand(thisString, thisConn)
-                    Using rdResult = myCmd.ExecuteReader
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using rdResult = thisCmd.ExecuteReader
                         While rdResult.Read
                             result = rdResult.Item(0)
                         End While
