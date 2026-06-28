@@ -149,11 +149,14 @@ Partial Class Setting_Specification_Fabric_Jakarta
     Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim dataId As String = txtIdDelete.Text
+            Dim thisId As String = txtIdDelete.Text
+
+            dataLog = {"Fabrics", thisId, Session("LoginId").ToString(), "Fabric Group (JKT) Deleted"}
+            settingClass.Logs(dataLog)
 
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM FabricGroupLocals WHERE Id=@Id UPDATE Logins SET Active=0 WHERE CustomerId=@Id", thisConn)
-                    thisCmd.Parameters.AddWithValue("@Id", dataId)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using

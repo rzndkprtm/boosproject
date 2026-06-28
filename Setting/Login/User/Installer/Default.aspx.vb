@@ -52,6 +52,9 @@ Partial Class Setting_Login_User_Installer_Default
         Try
             Dim thisId As String = txtDeleteId.Text
 
+            Dim dataLog As Object() = {"Logins", thisId, Session("LoginId").ToString(), "Login Installer Deleted"}
+            settingClass.Logs(dataLog)
+
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM LoginInstallers WHERE Id=@Id; DELETE FROM Logs WHERE Type='LoginInstallers' AND DataId=@Id;", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", thisId)
