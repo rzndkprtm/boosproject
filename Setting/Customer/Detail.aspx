@@ -515,7 +515,7 @@
                                                                         <a href="javascript:void(0);" id="aDetailPromo" class="dropdown-item" onclick="showDetailPromo('<%# Eval("Id") %>');">Detail</a>
                                                                     </li>
                                                                     <li>
-                                                                        <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeletePromo" onclick='<%# String.Format("return dataDeletePromo(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                                        <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeletePromo" onclick='<%# String.Format("return dataDeletePromo(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("PromoId").ToString()) %>'>Delete</a>
                                                                     </li>
                                                                     <li>
                                                                         <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('CustomerPromos', '<%# Eval("Id") %>')">Log</a>
@@ -531,7 +531,6 @@
                                     <div class="row mt-3">
                                         <div class="col-12">
                                             <asp:Button runat="server" ID="btnAddPromo" CssClass="btn btn-primary" Text="Add Promo" OnClick="btnAddPromo_Click" />
-                                            <a href="javascript:void(0);" runat="server" id="aResetPromo" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalResetPromo">Reset Promo</a>
                                         </div>
                                     </div>
                                 </div>
@@ -994,22 +993,6 @@
             </div>
         </div>
     </div>
-    <div class="modal modal-blur fade" id="modalResetPromo" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-danger">
-                    <h5 class="modal-title white">Reset Promo</h5>
-                </div>
-                <div class="modal-body text-center py-4">
-                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
-                </div>
-                <div class="modal-footer">
-                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnResetPromo" CssClass="btn btn-danger" Text="Confirm" OnClick="btnResetPromo_Click" />
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="modal modal-blur fade" id="modalDeletePromo" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -1018,6 +1001,7 @@
                 </div>
                 <div class="modal-body text-center py-4">
                     <asp:TextBox runat="server" ID="txtDeletePromoId" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtDeleteDetailPromoId" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
@@ -1057,32 +1041,6 @@
     </div>
     
     <script type="text/javascript">
-        document.addEventListener('DOMContentLoaded', function () {
-            const gridConfigs = [
-                { id: '<%= gvListContact.ClientID %>', link: "aDetailContact" },
-                { id: '<%= gvListAddress.ClientID %>', link: "aDetailAddress" },
-                { id: '<%= gvListBusiness.ClientID %>', link: "aDetailBusiness" },
-                { id: '<%= gvListLogin.ClientID %>', link: "aDetailLogin" },
-                { id: '<%= gvListDiscount.ClientID %>', link: "aDetailDiscount" },
-                { id: '<%= gvListProduct.ClientID %>', link: "aDetailProduct" },
-                { id: '<%= gvListPromo.ClientID %>', link: "aDetailPromo" },
-            ];
-            gridConfigs.forEach(cfg => {
-                const gv = document.getElementById(cfg.id);
-                if (!gv) return;
-                for (let i = 1; i < gv.rows.length; i++) {
-                    const row = gv.rows[i];
-                    row.style.cursor = 'pointer';
-                    row.addEventListener('click', function (e) {
-                        if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]")) {
-                            return;
-                        }
-                        const btn = this.querySelector(`a[id*='${cfg.link}']`);
-                        if (btn) btn.click();
-                    });
-                }
-            });
-        });
         $(document).ready(function () {
             var selectedTab = $("#<%=selected_tab.ClientID%>");
             var tabId = selectedTab.val() != "" ? selectedTab.val() : "list-general";
@@ -1116,6 +1074,32 @@
             });
             $("#listQuote").on("click", function () {
                 updateSessionValue("list-quote");
+            });
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+            const gridConfigs = [
+                { id: '<%= gvListContact.ClientID %>', link: "aDetailContact" },
+                { id: '<%= gvListAddress.ClientID %>', link: "aDetailAddress" },
+                { id: '<%= gvListBusiness.ClientID %>', link: "aDetailBusiness" },
+                { id: '<%= gvListLogin.ClientID %>', link: "aDetailLogin" },
+                { id: '<%= gvListDiscount.ClientID %>', link: "aDetailDiscount" },
+                { id: '<%= gvListProduct.ClientID %>', link: "aDetailProduct" },
+                { id: '<%= gvListPromo.ClientID %>', link: "aDetailPromo" },
+            ];
+            gridConfigs.forEach(cfg => {
+                const gv = document.getElementById(cfg.id);
+                if (!gv) return;
+                for (let i = 1; i < gv.rows.length; i++) {
+                    const row = gv.rows[i];
+                    row.style.cursor = 'pointer';
+                    row.addEventListener('click', function (e) {
+                        if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]")) {
+                            return;
+                        }
+                        const btn = this.querySelector(`a[id*='${cfg.link}']`);
+                        if (btn) btn.click();
+                    });
+                }
             });
         });
         function updateSessionValue(session) {
@@ -1267,8 +1251,9 @@
                 }
             });
         }
-        function dataDeletePromo(promoid) {
+        function dataDeletePromo(promoid, detailid) {
             document.getElementById("<%=txtDeletePromoId.ClientID %>").value = promoid;
+            document.getElementById("<%=txtDeleteDetailPromoId.ClientID %>").value = detailid;
         }
         [
             "modalDelete", "modalRecalculate", "modalLog", "modalWelcome", "modalSendLogin", "modalWaiting",
@@ -1277,7 +1262,7 @@
             "modalDeleteBusiness", "modalPrimaryBusiness",
             "modalActiveLogin", "modalSendPersonalLogin", "modalChangePasswordLogin", "modalResetPasswordLogin",
             "modalResetDiscount", "modalDeleteDiscount",
-            "modalDetailPromo", "modalResetPromo", "modalDeletePromo",
+            "modalDetailPromo", "modalDeletePromo",
             "modalResetProduct"
         ].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {

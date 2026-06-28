@@ -148,15 +148,13 @@ Partial Class Setting_Log
                     thisQuery = "SELECT Customers.Name + ' | ' + CustomerContacts.Name FROM CustomerContacts LEFT JOIN Customers ON CustomerContacts.CustomerId=Customers.Id WHERE CustomerContacts.Id='" & dataId & "'"
                 End If
                 If type = "CustomerDiscounts" Then
-                    thisQuery = String.Empty
-                    'thisQuery = "SELECT Customers.Name + ' | ' + CustomerDiscounts.Type FROM CustomerAddress LEFT JOIN Customers ON CustomerAddress.CustomerId=Customers.Id WHERE CustomerAddress.Id='" & dataId & "'"
+                    thisQuery = "SELECT Customers.Name + ' | ' + CustomerDiscounts.Type FROM CustomerDiscounts LEFT JOIN Customers ON CustomerDiscounts.CustomerId=Customers.Id WHERE CustomerDiscounts.Id='" & dataId & "'"
                 End If
                 If type = "CustomerProductAccess" Then
                     thisQuery = "SELECT Customers.Name FROM CustomerProductAccess LEFT JOIN Customers ON CustomerProductAccess.Id=Customers.Id WHERE CustomerProductAccess.Id='" & dataId & "'"
                 End If
                 If type = "CustomerPromos" Then
-                    thisQuery = String.Empty
-                    'thisQuery = "SELECT Customers.Name FROM CustomerProductAccess LEFT JOIN Customers ON CustomerProductAccess.Id=Customers.Id WHERE CustomerProductAccess.Id='" & dataId & "'"
+                    thisQuery = "SELECT Customers.Name FROM CustomerPromos LEFT JOIN Customers ON CustomerPromos.CustomerId=Customers.Id WHERE CustomerPromos.Id='" & dataId & "'"
                 End If
                 If type = "CustomerQuotes" Then
                     thisQuery = String.Empty
