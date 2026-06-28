@@ -129,9 +129,9 @@ Partial Class Setting_Database_Table_Add
             sql &= vbCrLf & ")"
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand(sql, thisConn)
+                Using thisCmd As SqlCommand = New SqlCommand(sql, thisConn)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
         Catch ex As Exception

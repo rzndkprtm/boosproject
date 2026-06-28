@@ -217,10 +217,10 @@ Partial Class Order_Printing
             DeleteFile(lblPrinting.Text)
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET Printing=NULL WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblItemId.Text)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET Printing=NULL WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", lblItemId.Text)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -243,10 +243,10 @@ Partial Class Order_Printing
             DeleteFile(lblPrintingB.Text)
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET PrintingB=NULL WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblItemId.Text)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET PrintingB=NULL WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", lblItemId.Text)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -269,10 +269,10 @@ Partial Class Order_Printing
             DeleteFile(lblPrintingC.Text)
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET PrintingC=NULL WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblItemId.Text)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET PrintingC=NULL WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", lblItemId.Text)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -295,10 +295,10 @@ Partial Class Order_Printing
             DeleteFile(lblPrintingD.Text)
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET PrintingD=NULL WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", lblItemId.Text)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET PrintingD=NULL WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", lblItemId.Text)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 

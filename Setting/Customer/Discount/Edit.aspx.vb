@@ -54,17 +54,13 @@ Partial Class Setting_Customer_Discount_Edit
             End If
             If msgError.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
-                    thisConn.Open()
-
-                    Using myCmd As SqlCommand = New SqlCommand("UPDATE CustomerDiscounts SET Discount=@Discount, Description=@Description WHERE Id=@Id", thisConn)
-                        myCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                        myCmd.Parameters.AddWithValue("@Discount", txtDiscount.Text)
-                        myCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
-
-                        myCmd.ExecuteNonQuery()
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE CustomerDiscounts SET Discount=@Discount, Description=@Description WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                        thisCmd.Parameters.AddWithValue("@Discount", txtDiscount.Text)
+                        thisCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
                     End Using
-
-                    thisConn.Close()
                 End Using
 
                 Dim dataLog As Object() = {"CustomerDiscounts", lblId.Text, Session("LoginId").ToString(), "Customer Discount Updated"}

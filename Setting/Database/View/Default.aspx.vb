@@ -54,17 +54,7 @@ Partial Class Setting_Database_View_Default
     Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            'Dim spName As String = txtFunctionDelete.Text
-            'Using thisConn As New SqlConnection(myConn)
-            '    Using myCmd As SqlCommand = New SqlCommand("DROP PROCEDURE " & spName & "", thisConn)
-            '        thisConn.Open()
-            '        myCmd.ExecuteNonQuery()
-            '    End Using
-            'End Using
 
-            'Session("SearchFunction") = txtSearch.Text
-            'Response.Redirect("~/setting/database/function", False)
-            'Exit Sub
         Catch ex As Exception
             MessageError(True, ex.ToString())
         End Try

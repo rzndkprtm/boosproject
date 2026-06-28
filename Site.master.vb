@@ -168,11 +168,11 @@ Partial Public Class SiteMaster
             End If
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As New SqlCommand("sp_UpdateCustomerLastLogin", thisConn)
-                    myCmd.CommandType = CommandType.StoredProcedure
-                    myCmd.Parameters.Add("@Id", SqlDbType.Int).Value = loginId
+                Using thisCmd As New SqlCommand("sp_UpdateCustomerLastLogin", thisConn)
+                    thisCmd.CommandType = CommandType.StoredProcedure
+                    thisCmd.Parameters.Add("@Id", SqlDbType.Int).Value = loginId
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
         Catch ex As Exception

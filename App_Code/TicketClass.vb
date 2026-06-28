@@ -91,8 +91,8 @@ Public Class TicketClass
         Try
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
-                Using myCmd As New SqlCommand(thisString, thisConn)
-                    Using rdResult = myCmd.ExecuteReader
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using rdResult = thisCmd.ExecuteReader
                         While rdResult.Read
                             result = rdResult.Item(0).ToString()
                         End While
@@ -112,8 +112,8 @@ Public Class TicketClass
             Dim id As Integer = 0
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
-                Using myCmd As New SqlCommand(thisString, thisConn)
-                    Using rdResult As SqlDataReader = myCmd.ExecuteReader()
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using rdResult As SqlDataReader = thisCmd.ExecuteReader()
                         If rdResult.Read() Then
                             Integer.TryParse(rdResult(0).ToString(), id)
                         End If

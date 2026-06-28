@@ -86,11 +86,11 @@ Partial Class Setting_Customer_List
             Dim oldData As String = txtCashSaleOld.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE Customers SET CashSale=@CashSale WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.Parameters.AddWithValue("@CashSale", newData)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Customers SET CashSale=@CashSale WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisCmd.Parameters.AddWithValue("@CashSale", newData)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -116,11 +116,11 @@ Partial Class Setting_Customer_List
             Dim oldData As String = txtOnStopOld.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE Customers SET OnStop=@OnStop WHERE Id=@Id", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", thisId)
-                    myCmd.Parameters.AddWithValue("@OnStop", newData)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Customers SET OnStop=@OnStop WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisCmd.Parameters.AddWithValue("@OnStop", newData)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
@@ -144,10 +144,10 @@ Partial Class Setting_Customer_List
             Dim dataId As String = txtDeleteId.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using myCmd As SqlCommand = New SqlCommand("UPDATE Customers SET Active=0 WHERE Id=@Id UPDATE Logins SET Active=0 WHERE CustomerId=@Id;", thisConn)
-                    myCmd.Parameters.AddWithValue("@Id", dataId)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Customers SET Active=0 WHERE Id=@Id UPDATE Logins SET Active=0 WHERE CustomerId=@Id;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", dataId)
                     thisConn.Open()
-                    myCmd.ExecuteNonQuery()
+                    thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
