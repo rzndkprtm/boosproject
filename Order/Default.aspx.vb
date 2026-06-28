@@ -184,6 +184,7 @@ Partial Class Order_Default
                             Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET Active=0 WHERE Id=@ItemId; DELETE FROM OrderCostings WHERE HeaderId=@HeaderId AND ItemId=@ItemId", thisConn)
                                 thisCmd.Parameters.AddWithValue("@ItemId", serviceId)
                                 thisCmd.Parameters.AddWithValue("@HeaderId", thisId)
+                                thisConn.Open()
                                 thisCmd.ExecuteNonQuery()
                             End Using
                         End Using
