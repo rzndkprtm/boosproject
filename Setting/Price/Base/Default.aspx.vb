@@ -111,19 +111,15 @@ Partial Class Setting_Price_Base_Default
             aMatrix.Visible = False
 
             If pricegroup = "1" AndAlso Not String.IsNullOrWhiteSpace(category) AndAlso Not String.IsNullOrWhiteSpace(productgroup) AndAlso Not String.IsNullOrWhiteSpace(method) Then
-
                 aMatrix.Visible = True
 
                 Dim paramMatrixs As New List(Of SqlParameter) From {
                     New SqlParameter("@Category", ddlCategory.SelectedValue),
                     New SqlParameter("@Method", ddlMethod.SelectedValue),
-                    New SqlParameter("@ProductGroupId", Convert.ToInt32(ddlProductGroup.SelectedValue)),
-                    New SqlParameter("@PriceGroupId", Convert.ToInt32(ddlPriceGroup.SelectedValue))
+                    New SqlParameter("@ProductGroupId", ddlProductGroup.SelectedValue),
+                    New SqlParameter("@PriceGroupId", ddlPriceGroup.SelectedValue)
                 }
-
-                Dim dt As DataTable = settingClass.GetDataTableSP("sp_PriceBaseMatrix", paramMatrixs)
-
-                gvListMatrix.DataSource = dt
+                gvListMatrix.DataSource = settingClass.GetDataTableSP("sp_PriceBaseMatrix", paramMatrixs)
                 gvListMatrix.DataBind()
             End If
         Catch ex As Exception
