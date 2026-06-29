@@ -92,7 +92,6 @@ Partial Class Order_EditCosting
 
                         dataLog = {"OrderDetails", lblItemId.Text, Session("LoginId"), "Update Price"}
                         orderClass.Logs(dataLog)
-
                         tran.Commit()
                     Catch
                         tran.Rollback()
@@ -197,7 +196,6 @@ Partial Class Order_EditCosting
                 New SqlParameter("@ItemId", lblItemId.Text),
                 New SqlParameter("@CompanyId", lblCompanyId.Text)
             }
-
             gvList.DataSource = orderClass.GetDataTableSP("sp_GetOrderCostingByItem", params)
             gvList.DataBind()
             gvList.Columns(1).Visible = False

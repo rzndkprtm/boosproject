@@ -35,24 +35,28 @@ Partial Class Setting_Price_Base_Default
 
     Protected Sub ddlCategory_SelectedIndexChanged(sender As Object, e As EventArgs)
         gvList.PageIndex = 0
+
         MessageError(False, String.Empty)
         BindData(ddlCategory.SelectedValue, ddlMethod.SelectedValue, ddlProductGroup.SelectedValue, ddlPriceGroup.SelectedValue)
     End Sub
 
     Protected Sub ddlProductGroup_SelectedIndexChanged(sender As Object, e As EventArgs)
         gvList.PageIndex = 0
+
         MessageError(False, String.Empty)
         BindData(ddlCategory.SelectedValue, ddlMethod.SelectedValue, ddlProductGroup.SelectedValue, ddlPriceGroup.SelectedValue)
     End Sub
 
     Protected Sub ddlMethod_SelectedIndexChanged(sender As Object, e As EventArgs)
         gvList.PageIndex = 0
+
         MessageError(False, String.Empty)
         BindData(ddlCategory.SelectedValue, ddlMethod.SelectedValue, ddlProductGroup.SelectedValue, ddlPriceGroup.SelectedValue)
     End Sub
 
     Protected Sub ddlPriceGroup_SelectedIndexChanged(sender As Object, e As EventArgs)
         gvList.PageIndex = 0
+
         MessageError(False, String.Empty)
         BindData(ddlCategory.SelectedValue, ddlMethod.SelectedValue, ddlProductGroup.SelectedValue, ddlPriceGroup.SelectedValue)
     End Sub
