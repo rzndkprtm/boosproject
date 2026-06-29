@@ -4,7 +4,7 @@ Imports System.Data.SqlClient
 Partial Class Setting_Job_Sheet_Detail_Default
     Inherits Page
 
-    Dim settingClass As New SettingClass
+    Dim jobClass As New JobClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
     Dim dataLog As Object() = Nothing
@@ -81,7 +81,7 @@ Partial Class Setting_Job_Sheet_Detail_Default
 
     Protected Sub BindData(sheetId As String)
         Try
-            Dim thisData As DataRow = settingClass.GetDataRow("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM JobSheets WHERE Id='" & sheetId & "'")
+            Dim thisData As DataRow = jobClass.GetDataRow("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM JobSheets WHERE Id='" & sheetId & "'")
             If thisData Is Nothing Then
                 Response.Redirect("~/setting/job/sheet", False)
                 Exit Sub
@@ -104,10 +104,10 @@ Partial Class Setting_Job_Sheet_Detail_Default
     Protected Sub BindDataDetail(sheetId As String)
         Try
             Dim thisString As String = "SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM JobSheetDetails WHERE JobSheetId='" & sheetId & "' ORDER BY SortOrder ASC"
-            gvListDetail.DataSource = settingClass.GetDataTable(thisString)
+            gvListDetail.DataSource = jobClass.GetDataTable(thisString)
             gvListDetail.DataBind()
 
-            gvListSortOrder.DataSource = settingClass.GetDataTable(thisString)
+            gvListSortOrder.DataSource = jobClass.GetDataTable(thisString)
             gvListSortOrder.DataBind()
 
             btnAddDetail.Visible = LoginAccess("Add Detail")

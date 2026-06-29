@@ -33,6 +33,7 @@ Partial Class Order_Detail
             btnPreview.OnClientClick = "window.open('view?action=jobsheet&boosid=" & lblHeaderId.Text & "','_blank'); return false;"
             btnSuratJalan.OnClientClick = "window.open('view?action=suratjalan&boosid=" & lblHeaderId.Text & "','_blank'); return false;"
             btnPreviewInvoice.OnClientClick = "window.open('view?action=invoice&boosid=" & lblHeaderId.Text & "','_blank'); return false;"
+            btnPreviewJob.OnClientClick = "window.open('view?action=joborder&boosid=" & lblHeaderId.Text & "','_blank'); return false;"
 
             Dim quoteString As String = "window.open('view?action=quote&boosid=" & lblHeaderId.Text & "','_blank'); return false;"
             If lblOrderType.Text = "Builder" Then
@@ -1360,13 +1361,13 @@ Partial Class Order_Detail
         End Try
     End Sub
 
-    Protected Sub btnConvertJob_Click(sender As Object, e As EventArgs)
-        MessageError_ConvertJob(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showConvertJob(); };"
+    Protected Sub btnConvertOrder_Click(sender As Object, e As EventArgs)
+        MessageError_ConvertOrder(False, String.Empty)
+        Dim thisScript As String = "window.onload = function() { showConvertOrder(); };"
         Try
-            If txtJobNumber.Text = "" Then
-                MessageError_ConvertJob(True, "JOB NUMBER IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showConvertJob", thisScript, True)
+            If txtConvertNumber.Text = "" Then
+                MessageError_ConvertOrder(True, "JOB NUMBER IS REQUIRED !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showConvertOrder", thisScript, True)
                 Exit Sub
             End If
 
@@ -1374,9 +1375,9 @@ Partial Class Order_Detail
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderJobs VALUES (@OrderJobId, @JobNumber, @WorkOrder, @JobNote, @HeaderId, @CreatedBy, GETDATE()); UPDATE OrderHeaders SET OrderJobId=@OrderJobId WHERE Id=@HeaderId", thisConn)
                     thisCmd.Parameters.AddWithValue("@OrderJobId", orderJobId)
-                    thisCmd.Parameters.AddWithValue("@JobNumber", txtJobNumber.Text)
-                    thisCmd.Parameters.AddWithValue("@WorkOrder", txtWorkOrder.Text)
-                    thisCmd.Parameters.AddWithValue("@JobNote", txtJobNote.Text)
+                    thisCmd.Parameters.AddWithValue("@JobNumber", txtConvertNumber.Text)
+                    thisCmd.Parameters.AddWithValue("@WorkOrder", txtConvertWorkNumber.Text)
+                    thisCmd.Parameters.AddWithValue("@JobNote", txtConvertNote.Text)
                     thisCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
                     thisCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
                     thisConn.Open()
@@ -1384,7 +1385,7 @@ Partial Class Order_Detail
                 End Using
             End Using
 
-            Dim detailData As DataTable = orderClass.GetDataTable("SELECT OrderDetails.Id, OrderDetails.TotalItems, Products.JobSheetId FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.HeaderId='" & lblHeaderId.Text & "'")
+            Dim detailData As DataTable = orderClass.GetDataTable("SELECT OrderDetails.Id, OrderDetails.TotalItems, Products.JobSheetId FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.HeaderId='" & lblHeaderId.Text & "' AND OrderDetails.Active=1")
             If detailData.Rows.Count > 0 Then
                 For i As Integer = 0 To detailData.Rows.Count - 1
                     Dim itemId As String = detailData.Rows(i).Item("Id").ToString()
@@ -1414,11 +1415,11 @@ Partial Class Order_Detail
             url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
             Response.Redirect(url, False)
         Catch ex As Exception
-            MessageError_ConvertJob(True, ex.ToString())
+            MessageError_ConvertOrder(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
-                MessageError_ConvertJob(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                MessageError_ConvertOrder(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showConvertJob", thisScript, True)
+            ClientScript.RegisterStartupScript(Me.GetType(), "showConvertOrder", thisScript, True)
         End Try
     End Sub
 
@@ -1427,11 +1428,9 @@ Partial Class Order_Detail
         Try
             Dim orderJobId As String = orderClass.CreateOrderJobId()
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderJobs VALUES (@OrderJobId, @JobNumber, @WorkOrder, @JobNote, @HeaderId, @CreatedBy, GETDATE()); UPDATE OrderHeaders SET OrderJobId=@OrderJobId WHERE Id=@HeaderId", thisConn)
+                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderJobs SELECT @OrderJobId, JobNumber, WorkOrder, JobNote, @HeaderId, @CreatedBy, GETDATE() FROM OrderJobs WHERE Id=@OldOrderJobId; UPDATE OrderHeaders SET OrderJobId=@OrderJobId WHERE Id=@HeaderId", thisConn)
                     thisCmd.Parameters.AddWithValue("@OrderJobId", orderJobId)
-                    thisCmd.Parameters.AddWithValue("@JobNumber", txtJobNumber.Text)
-                    thisCmd.Parameters.AddWithValue("@WorkOrder", txtWorkOrder.Text)
-                    thisCmd.Parameters.AddWithValue("@JobNote", txtJobNote.Text)
+                    thisCmd.Parameters.AddWithValue("@OldOrderJobId", lblOrderJobId.Text)
                     thisCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
                     thisCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
                     thisConn.Open()
@@ -1439,7 +1438,7 @@ Partial Class Order_Detail
                 End Using
             End Using
 
-            Dim detailData As DataTable = orderClass.GetDataTable("SELECT OrderDetails.Id, OrderDetails.TotalItems, Products.JobSheetId FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.HeaderId='" & lblHeaderId.Text & "'")
+            Dim detailData As DataTable = orderClass.GetDataTable("SELECT OrderDetails.Id, OrderDetails.TotalItems, Products.JobSheetId FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.HeaderId='" & lblHeaderId.Text & "' AND OrderDetails.Active=1")
             If detailData.Rows.Count > 0 Then
                 For i As Integer = 0 To detailData.Rows.Count - 1
                     Dim itemId As String = detailData.Rows(i).Item("Id").ToString()
@@ -1468,6 +1467,55 @@ Partial Class Order_Detail
 
             url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
             Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnUpdateJobData_Click(sender As Object, e As EventArgs)
+        MessageError_UpdateJobData(False, String.Empty)
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderJobs SET JobNumber=@JobNumber, WorkOrder=@WorkOrder, JobNote=@JobNote WHERE Id=@OrderJobId", thisConn)
+                    thisCmd.Parameters.AddWithValue("@OrderJobId", lblOrderJobId.Text)
+                    thisCmd.Parameters.AddWithValue("@JobNumber", txtJobNumber.Text)
+                    thisCmd.Parameters.AddWithValue("@WorkOrder", txtUpdateWorkNumber.Text)
+                    thisCmd.Parameters.AddWithValue("@JobNote", txtUpdateNote.Text)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), "Update Job Data"}
+            orderClass.Logs(dataLog)
+
+            url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError_UpdateJobData(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_UpdateJobData(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnDownloadJob_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim jobClass As New JobClass
+            Dim pdfBytes As Byte() = jobClass.BindContent(lblHeaderId.Text)
+
+            Dim fileName As String = String.Format("JOB ORDER {0} {1}.pdf", lblOrderId.Text, lblCustomerName.Text.ToUpper())
+
+            Response.Clear()
+            Response.ContentType = "application/pdf"
+            Response.AddHeader("Content-Disposition", "attachment; filename=" & fileName & "")
+            Response.BinaryWrite(pdfBytes)
+            Response.Flush()
+            Response.End()
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -1800,6 +1848,7 @@ Partial Class Order_Detail
             End If
 
             lblCustomerId.Text = headerData("CustomerId").ToString()
+            lblOrderJobId.Text = headerData("OrderJobId").ToString()
             lblCompanyId.Text = headerData("CompanyId").ToString()
             lblCompanyDetailId.Text = headerData("CompanyDetailId").ToString()
             lblPriceGroupId.Text = headerData("PriceGroupId").ToString()
@@ -1869,7 +1918,7 @@ Partial Class Order_Detail
             BindDataItem(lblOrderStatus.Text)
             BindDataCosting(gvListItem.Rows.Count)
 
-            'BIND INVOICE
+            ' BIND INVOICE
             lblInvoiceNumber.Text = "-"
             lblInvoiceDate.Text = "-"
             lblCollector.Text = "-"
@@ -1985,7 +2034,7 @@ Partial Class Order_Detail
 
             btnJob.Visible = False
             aDataJob.Visible = False
-            aConvertJob.Visible = False
+            aConvertOrder.Visible = False
             aReConvertJob.Visible = False
             aUpdateJob.Visible = False
             btnPreviewJob.Visible = False
@@ -2129,7 +2178,7 @@ Partial Class Order_Detail
                         btnDownloadJob.Visible = True
                     End If
                     If convertedStatus = "No" Then
-                        aConvertJob.Visible = True
+                        aConvertOrder.Visible = True
                     End If
 
                     aAddItem.Visible = True
@@ -2159,7 +2208,7 @@ Partial Class Order_Detail
                         btnDownloadJob.Visible = True
                     End If
                     If convertedStatus = "No" Then
-                        aConvertJob.Visible = True
+                        aConvertOrder.Visible = True
                     End If
 
                     aAddItem.Visible = True
@@ -2192,7 +2241,7 @@ Partial Class Order_Detail
                         btnDownloadJob.Visible = True
                     End If
                     If convertedStatus = "No" Then
-                        aConvertJob.Visible = True
+                        aConvertOrder.Visible = True
                     End If
 
                     aAddItem.Visible = True
@@ -2337,7 +2386,7 @@ Partial Class Order_Detail
                         btnDownloadJob.Visible = True
                     End If
                     If convertedStatus = "No" Then
-                        aConvertJob.Visible = True
+                        aConvertOrder.Visible = True
                     End If
 
                     If lblOrderPaid.Text = "" Then
@@ -2368,7 +2417,7 @@ Partial Class Order_Detail
                         btnDownloadJob.Visible = True
                     End If
                     If convertedStatus = "No" Then
-                        aConvertJob.Visible = True
+                        aConvertOrder.Visible = True
                     End If
 
                     If lblOrderPaid.Text = "" Then
@@ -2398,7 +2447,7 @@ Partial Class Order_Detail
                         btnDownloadJob.Visible = True
                     End If
                     If convertedStatus = "No" Then
-                        aConvertJob.Visible = True
+                        aConvertOrder.Visible = True
                     End If
 
                     If lblOrderPaid.Text = "" Then
@@ -2529,7 +2578,7 @@ Partial Class Order_Detail
                         btnDownloadJob.Visible = True
                     End If
                     If convertedStatus = "No" Then
-                        aConvertJob.Visible = True
+                        aConvertOrder.Visible = True
                     End If
 
                     If lblOrderPaid.Text = "" Then
@@ -2558,7 +2607,7 @@ Partial Class Order_Detail
                         btnDownloadJob.Visible = True
                     End If
                     If convertedStatus = "No" Then
-                        aConvertJob.Visible = True
+                        aConvertOrder.Visible = True
                     End If
 
                     If lblOrderPaid.Text = "" Then
@@ -2586,7 +2635,7 @@ Partial Class Order_Detail
                         btnDownloadJob.Visible = True
                     End If
                     If convertedStatus = "No" Then
-                        aConvertJob.Visible = True
+                        aConvertOrder.Visible = True
                     End If
 
                     If lblOrderPaid.Text = "" Then
@@ -2884,7 +2933,7 @@ Partial Class Order_Detail
                         btnDownloadJob.Visible = True
                     End If
                     If convertedStatus = "No" Then
-                        aConvertJob.Visible = True
+                        aConvertOrder.Visible = True
                     End If
                 End If
                 If lblOrderStatus.Text = "In Production" Then
@@ -2902,7 +2951,7 @@ Partial Class Order_Detail
                         btnDownloadJob.Visible = True
                     End If
                     If convertedStatus = "No" Then
-                        aConvertJob.Visible = True
+                        aConvertOrder.Visible = True
                     End If
                 End If
                 If lblOrderStatus.Text = "On Hold" Then
@@ -2919,7 +2968,7 @@ Partial Class Order_Detail
                         btnDownloadJob.Visible = True
                     End If
                     If convertedStatus = "No" Then
-                        aConvertJob.Visible = True
+                        aConvertOrder.Visible = True
                     End If
                 End If
                 If lblOrderStatus.Text = "Shipped Out" Then
@@ -3407,7 +3456,9 @@ Partial Class Order_Detail
     Protected Sub AllMessageError(visible As Boolean, message As String)
         MessageError(visible, message)
         MessageError_DuplicateOrder(visible, message)
-        MessageError_ConvertJob(visible, message)
+
+        MessageError_ConvertOrder(visible, message)
+        MessageError_UpdateJobData(visible, message)
 
         MessageError_BuilderDetail(visible, message)
         MessageError_FileOrder(visible, message)
@@ -3435,8 +3486,12 @@ Partial Class Order_Detail
         divErrorDuplicateOrder.Visible = visible : msgErrorDuplicateOrder.InnerHtml = message
     End Sub
 
-    Protected Sub MessageError_ConvertJob(visible As Boolean, message As String)
-        divErrorConvertJob.Visible = visible : msgErrorConvertJob.InnerHtml = message
+    Protected Sub MessageError_ConvertOrder(visible As Boolean, message As String)
+        divErrorConvertOrder.Visible = visible : msgErrorConvertOrder.InnerHtml = message
+    End Sub
+
+    Protected Sub MessageError_UpdateJobData(visible As Boolean, message As String)
+        divErrorUpdateJobData.Visible = visible : msgErrorUpdateJobData.InnerHtml = message
     End Sub
 
     Protected Sub MessageError_BuilderDetail(visible As Boolean, message As String)

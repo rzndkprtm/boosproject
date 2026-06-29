@@ -97,22 +97,22 @@
                 <button class="btn btn-primary dropdown-toggle me-1" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnJob">Job</button>
                 <ul class="dropdown-menu">
                     <li>
-                        <a href="javascript:void(0);" runat="server" id="aDataJob" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDataJob">Data Job</a>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);" runat="server" id="aConvertJob" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalConvertJob">Convert</a>
+                        <a href="javascript:void(0);" runat="server" id="aConvertOrder" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalConvertOrder">Convert</a>
                     </li>
                     <li>
                         <a href="javascript:void(0);" runat="server" id="aReConvertJob" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalReConvertOrder">Re-Convert</a>
                     </li>
                     <li>
-                        <a href="javascript:void(0);" runat="server" id="aUpdateJob" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalReConvertOrder">Update Job Data</a>
+                        <a href="javascript:void(0);" runat="server" id="aDataJob" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDataJob">Data Job</a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);" runat="server" id="aUpdateJob" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalUpdateJobData">Update Job Data</a>
                     </li>
                     <li>
                         <asp:Button runat="server" ID="btnPreviewJob" CssClass="dropdown-item" Text="Preview" />
                     </li>
                     <li>
-                        <asp:Button runat="server" ID="btnDownloadJob" CssClass="dropdown-item" Text="Download" />
+                        <asp:Button runat="server" ID="btnDownloadJob" CssClass="dropdown-item" Text="Download" OnClick="btnDownloadJob_Click" />
                     </li>
                 </ul>
                 <a href="javascript:void(0);" runat="server" id="aLog" class="btn btn-secondary me-1" onclick="showLogFromElement(this)">Log</a>
@@ -1408,6 +1408,63 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="modalConvertOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Convert Order</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Job Number</label>
+                            <asp:TextBox runat="server" ID="txtConvertNumber" CssClass="form-control" placeholder="Job Number ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">WO Number</label>
+                            <asp:TextBox runat="server" ID="txtConvertWorkNumber" CssClass="form-control" placeholder="WO Number ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Note</label>
+                            <asp:TextBox runat="server" ID="txtConvertNote" CssClass="form-control" placeholder="Note ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row" runat="server" id="divErrorConvertOrder">
+                        <div class="col-12">
+                            <div class="alert alert-danger">
+                                <span runat="server" id="msgErrorConvertOrder"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnConvertOrder" CssClass="btn btn-primary" Text="Confirm" OnClick="btnConvertOrder_Click" OnClientClick="return showWaiting();" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade text-center" id="modalReConvertOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <h5 class="modal-title white">Re-Convert Order</h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnReConvertOrder" CssClass="btn btn-info" Text="Confirm" OnClick="btnReConvertOrder_Click" OnClientClick="return showWaiting();" />
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade" id="modalDataJob" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -1444,11 +1501,11 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="modalConvertJob" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal fade" id="modalUpdateJobData" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Convert Order</h5>
+                    <h5 class="modal-title">Update Job Data</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -1461,42 +1518,26 @@
                     <div class="row">
                         <div class="col-12 form-group">
                             <label class="form-label">WO Number</label>
-                            <asp:TextBox runat="server" ID="txtWorkOrder" CssClass="form-control" placeholder="WO Number ..." autocomplete="off"></asp:TextBox>
+                            <asp:TextBox runat="server" ID="txtUpdateWorkNumber" CssClass="form-control" placeholder="WO Number ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-12 form-group">
                             <label class="form-label">Note</label>
-                            <asp:TextBox runat="server" ID="txtJobNote" CssClass="form-control" placeholder="Note ..." autocomplete="off"></asp:TextBox>
+                            <asp:TextBox runat="server" ID="txtUpdateNote" CssClass="form-control" placeholder="Note ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-                    <div class="row" runat="server" id="divErrorConvertJob">
+                    <div class="row" runat="server" id="divErrorUpdateJobData">
                         <div class="col-12">
                             <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorConvertJob"></span>
+                                <span runat="server" id="msgErrorUpdateJobData"></span>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnConvertJob" CssClass="btn btn-primary" Text="Confirm" OnClick="btnConvertJob_Click" OnClientClick="return showWaiting();" />
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade text-center" id="modalReConvertOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-info">
-                    <h5 class="modal-title white">Re-Convert Order</h5>
-                </div>
-                <div class="modal-body text-center py-4">
-                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
-                </div>
-                <div class="modal-footer">
-                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnReConvertOrder" CssClass="btn btn-info" Text="Confirm" OnClick="btnReConvertOrder_Click" OnClientClick="return showWaiting();" />
+                    <asp:Button runat="server" ID="btnUpdateJobData" CssClass="btn btn-primary" Text="Submit" OnClick="btnUpdateJobData_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>
@@ -1620,6 +1661,7 @@
     
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblHeaderId"></asp:Label>
+        <asp:Label runat="server" ID="lblOrderJobId"></asp:Label>
         <asp:Label runat="server" ID="lblCustomerId"></asp:Label>
         <asp:Label runat="server" ID="lblCompanyId"></asp:Label>
         <asp:Label runat="server" ID="lblCompanyDetailId"></asp:Label>
@@ -1653,7 +1695,7 @@
             "modalReworkOrder",
             "modalSendInvoice", "modalReceivePayment", "modalDownloadInvoice", "modalDownloadInvoiceCSV", "modalInvoiceNumber", "modalInvoiceData",
             "modalDetailQuote", "modalDownloadQuote", "modalSendQuote",
-            "modalDataJob", "modalConvertJob", "modalReConvertOrder",
+            "modalConvertOrder", "modalReConvertOrder", "modalDataJob", "modalUpdateJobData",
             "modalAddItem", "modalAddService", "modalDeleteItem", "modalCosting", 
             
         ].forEach(id => {
@@ -1838,8 +1880,11 @@
         function showCostingBuy() {
             $("#modalCostingBuy").modal("show");
         }
-        function showConvertJob() {
-            $("#modalConvertJob").modal("show");
+        function showConvertOrder() {
+            $("#modalConvertOrder").modal("show");
+        }
+        function showUpdateJobData() {
+            $("#modalUpdateJobData").modal("show");
         }
         function showDateOrder() {
             $("#modalDateOrder").modal("show");

@@ -1,7 +1,7 @@
 ﻿Partial Class Setting_Job_Default
     Inherits Page
 
-    Dim settingClass As New SettingClass
+    Dim jobClass As New JobClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -16,7 +16,7 @@
         Try
             If Not String.IsNullOrEmpty(params) Then
                 Dim thisQuery As String = String.Format("SELECT COUNT(*) FROM {0}", params)
-                Dim sumData As Integer = settingClass.GetItemData_Integer(thisQuery)
+                Dim sumData As Integer = jobClass.GetItemData_Integer(thisQuery)
                 Return sumData & " Data"
             End If
             Return String.Empty

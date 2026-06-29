@@ -4,7 +4,7 @@ Imports System.Data.SqlClient
 Partial Class Setting_Job_Sheet_Edit
     Inherits Page
 
-    Dim settingClass As New SettingClass
+    Dim jobClass As New JobClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
 
@@ -51,7 +51,7 @@ Partial Class Setting_Job_Sheet_Edit
                 End Using
 
                 Dim dataLog As Object() = {"JobSheets", lblId.Text, Session("LoginId").ToString(), "Job Sheets Updated"}
-                settingClass.Logs(dataLog)
+                jobClass.Logs(dataLog)
 
                 url = "~/setting/job/sheet"
                 If lblReturnPage.Text = "detail" Then
@@ -77,7 +77,7 @@ Partial Class Setting_Job_Sheet_Edit
 
     Protected Sub BindData(sheetId As String)
         Try
-            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM JobSheets WHERE Id='" & sheetId & "'")
+            Dim thisData As DataRow = jobClass.GetDataRow("SELECT * FROM JobSheets WHERE Id='" & sheetId & "'")
             If thisData Is Nothing Then
                 Response.Redirect("~/setting/job/sheet", False)
                 Exit Sub

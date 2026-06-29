@@ -11,6 +11,7 @@ Partial Class Order_View
             If String.IsNullOrEmpty(headerId) OrElse String.IsNullOrEmpty(action) Then Exit Sub
 
             If action = "jobsheet" Then JobSheet(headerId)
+            If action = "joborder" Then JobOrder(headerId)
             If action = "invoice" Then Invoice(headerId)
             If action = "quote" Then Quote(headerId)
             If action = "quotebuilder" Then QuoteBuilder(headerId)
@@ -135,6 +136,25 @@ Partial Class Order_View
                 orderName = orderData("OrderName")
             End If
             Dim fileName As String = String.Format("QUOTE-{0}-{1}.pdf", orderNumber, orderName)
+
+            Response.Clear()
+            Response.ContentType = "application/pdf"
+            Response.AddHeader("Content-Disposition", "inline; filename=" & fileName & "")
+            Response.BinaryWrite(pdfBytes)
+            Response.Flush()
+            Response.End()
+        Catch ex As Exception
+        End Try
+    End Sub
+
+    Protected Sub JobOrder(headerId As String)
+        Try
+            Dim jobClass As New JobClass
+            Dim pdfBytes As Byte() = jobClass.BindContent(headerId)
+
+            Dim orderId As String = jobClass.GetItemData("SELECT OrderId FROM OrderHeaders WHERE Id='" & headerId & "'")
+            Dim customerName As String = jobClass.GetItemData("SELECT Customers.Name FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id='" & headerId & "'")
+            Dim fileName As String = String.Format("JOB ORDER {0} {1}.pdf", orderId, customerName.ToUpper())
 
             Response.Clear()
             Response.ContentType = "application/pdf"

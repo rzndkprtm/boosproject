@@ -4,7 +4,7 @@ Imports System.Data.SqlClient
 Partial Class Setting_Job_Sheet_Detail_Edit
     Inherits Page
 
-    Dim settingClass As New SettingClass
+    Dim jobClass As New JobClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
 
@@ -102,7 +102,7 @@ Partial Class Setting_Job_Sheet_Detail_Edit
                 End Using
 
                 Dim dataLog As Object() = {"JobSheetDetails", lblId.Text, Session("LoginId").ToString(), "Job Sheet Detail Updated"}
-                settingClass.Logs(dataLog)
+                jobClass.Logs(dataLog)
 
                 url = String.Format("~/setting/job/sheet/detail/?sheetid={0}", ddlJobSheet.SelectedValue)
                 Response.Redirect(url, False)
@@ -122,7 +122,7 @@ Partial Class Setting_Job_Sheet_Detail_Edit
 
     Protected Sub BindData(detailId As String)
         Try
-            Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM JobSheetDetails WHERE Id='" & detailId & "'")
+            Dim myData As DataRow = jobClass.GetDataRow("SELECT * FROM JobSheetDetails WHERE Id='" & detailId & "'")
             If myData Is Nothing Then
                 Response.Redirect("~/setting/job/sheet", False)
                 Exit Sub
@@ -225,7 +225,7 @@ Partial Class Setting_Job_Sheet_Detail_Edit
     Protected Sub BindJobSheet()
         ddlJobSheet.Items.Clear()
         Try
-            ddlJobSheet.DataSource = settingClass.GetDataTable("SELECT * FROM JobSheets ORDER BY Name ASC")
+            ddlJobSheet.DataSource = jobClass.GetDataTable("SELECT * FROM JobSheets ORDER BY Name ASC")
             ddlJobSheet.DataTextField = "Name"
             ddlJobSheet.DataValueField = "Id"
             ddlJobSheet.DataBind()
@@ -244,32 +244,32 @@ Partial Class Setting_Job_Sheet_Detail_Edit
         Try
             Dim thisString As String = "SELECT COLUMN_NAME AS FieldName FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME=N'viewJob'"
 
-            ddlFormula.DataSource = settingClass.GetDataTable(thisString)
+            ddlFormula.DataSource = jobClass.GetDataTable(thisString)
             ddlFormula.DataTextField = "FieldName"
             ddlFormula.DataValueField = "FieldName"
             ddlFormula.DataBind()
 
-            ddlFormula2.DataSource = settingClass.GetDataTable(thisString)
+            ddlFormula2.DataSource = jobClass.GetDataTable(thisString)
             ddlFormula2.DataTextField = "FieldName"
             ddlFormula2.DataValueField = "FieldName"
             ddlFormula2.DataBind()
 
-            ddlFormula3.DataSource = settingClass.GetDataTable(thisString)
+            ddlFormula3.DataSource = jobClass.GetDataTable(thisString)
             ddlFormula3.DataTextField = "FieldName"
             ddlFormula3.DataValueField = "FieldName"
             ddlFormula3.DataBind()
 
-            ddlFormula4.DataSource = settingClass.GetDataTable(thisString)
+            ddlFormula4.DataSource = jobClass.GetDataTable(thisString)
             ddlFormula4.DataTextField = "FieldName"
             ddlFormula4.DataValueField = "FieldName"
             ddlFormula4.DataBind()
 
-            ddlFormula5.DataSource = settingClass.GetDataTable(thisString)
+            ddlFormula5.DataSource = jobClass.GetDataTable(thisString)
             ddlFormula5.DataTextField = "FieldName"
             ddlFormula5.DataValueField = "FieldName"
             ddlFormula5.DataBind()
 
-            ddlFormula6.DataSource = settingClass.GetDataTable(thisString)
+            ddlFormula6.DataSource = jobClass.GetDataTable(thisString)
             ddlFormula6.DataTextField = "FieldName"
             ddlFormula6.DataValueField = "FieldName"
             ddlFormula6.DataBind()

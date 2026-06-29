@@ -4,7 +4,7 @@ Imports System.Data.SqlClient
 Partial Class Setting_Job_Sheet_Default
     Inherits Page
 
-    Dim settingClass As New SettingClass
+    Dim jobClass As New JobClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
     Dim dataLog As Object() = Nothing
@@ -54,7 +54,7 @@ Partial Class Setting_Job_Sheet_Default
             Dim params As New List(Of SqlParameter) From {
                 New SqlParameter("@SearchText", If(String.IsNullOrEmpty(searchText), CType(DBNull.Value, Object), searchText))
             }
-            Dim thisData As DataTable = settingClass.GetDataTableSP("sp_JobSheetList", params)
+            Dim thisData As DataTable = jobClass.GetDataTableSP("sp_JobSheetList", params)
             gvList.DataSource = thisData
             gvList.DataBind()
 
