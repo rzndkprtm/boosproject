@@ -213,7 +213,7 @@ Partial Class Setting_Price_Base_Default
 
     Protected Function BindCost(cost As Decimal, priceGroupId As String) As String
         Try
-            If cost > 0 Then
+            If cost >= 0 Then
                 If priceGroupId = "2" OrElse priceGroupId = "3" OrElse priceGroupId = "4" OrElse priceGroupId = "5" OrElse priceGroupId = "10" OrElse priceGroupId = "17" OrElse priceGroupId = "19" Then
                     Return cost.ToString("N2", idIDR)
                 End If
