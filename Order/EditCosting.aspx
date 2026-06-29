@@ -81,14 +81,9 @@
                             <div>
                                 <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Add Costings</button>
                                 <ul class="dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalAdd">Add Surcharge</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalNote">Add Note</a>
-                                    </li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalAdd">Add Surcharge</a></li>
+                                    <li><a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalNote">Add Note</a></li>
                                 </ul>
-                                
                             </div>
                             <div>
                                 <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" OnClick="btnSubmit_Click" />

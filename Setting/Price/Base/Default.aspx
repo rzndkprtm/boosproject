@@ -110,6 +110,8 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
+                                        <asp:GridView ID="gvListMatrix" runat="server" AutoGenerateColumns="true" CssClass="table table-bordered table-hover mb-0" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center"></asp:GridView>
+
                                         <asp:GridView ID="gvList" runat="server" AutoGenerateColumns="false" CssClass="table table-bordered table-hover mb-0" PageSize="50" AllowPaging="True" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Visible="false" OnPageIndexChanging="gvList_PageIndexChanging" OnDataBound="gvList_DataBound">
                                             <Columns>
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center">
@@ -178,7 +180,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="grid-container table-responsive">
-                        <asp:GridView ID="gvListMatrix" runat="server" AutoGenerateColumns="true" CssClass="table table-bordered table-hover mb-0" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center"></asp:GridView>
+                        
                     </div>
                 </div>
                 <div class="modal-footer">
