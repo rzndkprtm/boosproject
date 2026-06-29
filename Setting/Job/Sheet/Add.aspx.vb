@@ -3,7 +3,7 @@
 Partial Class Setting_Job_Sheet_Add
     Inherits Page
 
-    Dim settingClass As New SettingClass
+    Dim jobClass As New JobClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
 
@@ -23,7 +23,7 @@ Partial Class Setting_Job_Sheet_Add
         MessageError(False, String.Empty)
         Try
             If msgError.InnerText = "" Then
-                Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM JobSheets ORDER BY Id DESC")
+                Dim thisId As String = jobClass.GetNewJobSheetId()
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 
                 Using thisConn As New SqlConnection(myConn)
@@ -39,7 +39,7 @@ Partial Class Setting_Job_Sheet_Add
                 End Using
 
                 Dim dataLog As Object() = {"JobSheets", thisId, Session("LoginId").ToString(), "Job Sheets Created"}
-                settingClass.Logs(dataLog)
+                jobClass.Logs(dataLog)
 
                 url = String.Format("~/setting/job/sheet/detail/?sheetid={0}", thisId)
                 Response.Redirect(url, False)
