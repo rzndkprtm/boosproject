@@ -114,10 +114,10 @@ Partial Class Setting_Price_Base_Default
                 aMatrix.Visible = True
 
                 Dim paramMatrixs As New List(Of SqlParameter) From {
-                    New SqlParameter("@Category", ddlCategory.SelectedValue),
-                    New SqlParameter("@Method", ddlMethod.SelectedValue),
-                    New SqlParameter("@ProductGroupId", ddlProductGroup.SelectedValue),
-                    New SqlParameter("@PriceGroupId", ddlPriceGroup.SelectedValue)
+                    New SqlParameter("@Category", category),
+                    New SqlParameter("@Method", method),
+                    New SqlParameter("@ProductGroupId", productgroup),
+                    New SqlParameter("@PriceGroupId", pricegroup)
                 }
                 gvListMatrix.DataSource = settingClass.GetDataTableSP("sp_PriceBaseMatrix", paramMatrixs)
                 gvListMatrix.DataBind()
