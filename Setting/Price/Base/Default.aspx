@@ -167,13 +167,13 @@
                     </div>
 
                     <div class="modal modal-blur fade" id="modalMatrix" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-                        <div class="modal-dialog modal-full modal-dialog-centered" role="document">
+                        <div class="modal-dialog modal-full modal-dialog-centered modal-dialog-scrollable" role="document">
                             <div class="modal-content">
                                 <div class="modal-header bg-danger">
                                     <h5 class="modal-title white">Matrix Price</h5>
                                 </div>
                                 <div class="modal-body">
-                                    <div class="table-responsive">
+                                    <div class="grid-container table-responsive">
                                         <asp:GridView ID="gvListMatrix" runat="server" AutoGenerateColumns="true" CssClass="table table-bordered table-hover mb-0" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center"></asp:GridView>
                                     </div>
                                 </div>
