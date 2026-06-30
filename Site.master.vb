@@ -111,7 +111,9 @@ Partial Public Class SiteMaster
             Session("LevelName") = myData("LevelName").ToString()
             Session("CompanyName") = myData("CompanyName").ToString()
 
+            Dim loginEmail As String = myData("Email").ToString()
             Dim loginActive As Boolean = myData("Active")
+            Dim roleName As String = myData("RoleName").ToString()
             Dim roleActive As Boolean = myData("RoleActive")
             Dim levelActive As Boolean = myData("LevelActive")
             Dim resetLogin As Boolean = myData("ResetLogin")
@@ -157,8 +159,14 @@ Partial Public Class SiteMaster
                 Exit Sub
             End If
 
-            imgLogo.ImageUrl = "~/Assets/images/logo/general.jpg?v=1.0.0"
+            If roleName = "Customer" Then
+                If String.IsNullOrEmpty(loginEmail) AndAlso Not Request.AppRelativeCurrentExecutionFilePath.ToLower() = "~/account/default.aspx" Then
+                    Response.Redirect("~/account/?uid=" & Session("LoginId").ToString(), False)
+                    Exit Sub
+                End If
+            End If
 
+            imgLogo.ImageUrl = "~/Assets/images/logo/general.jpg?v=1.0.0"
             If Session("CompanyId") = "2" Then
                 imgLogo.ImageUrl = "~/Assets/images/logo/jpmdirect.jpg?v=1.0.0"
             ElseIf Session("CompanyId") = "3" Then
