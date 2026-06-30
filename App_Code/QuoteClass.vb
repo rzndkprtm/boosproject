@@ -279,9 +279,6 @@ Public Class QuoteClass
 
     Public Function BindContent(headerId As String) As Byte()
         Using ms As New MemoryStream()
-            Dim doc As New Document(PageSize.A4, 36, 36, 110, 180)
-            Dim writer As PdfWriter = PdfWriter.GetInstance(doc, ms)
-
             Dim headerData As DataRow = GetDataRow("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, Customers.CompanyDetailId AS CompanyDetailId FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id='" & headerId & "'")
 
             Dim orderId As String = headerData("OrderId").ToString()
@@ -364,6 +361,9 @@ Public Class QuoteClass
                 gstText = gst.ToString("N2", idIDR)
                 finalTotalText = finaltotal.ToString("N2", idIDR)
             End If
+
+            Dim doc As New Document(PageSize.A4, 36, 36, 110, 180)
+            Dim writer As PdfWriter = PdfWriter.GetInstance(doc, ms)
 
             writer.PageEvent = New QuoteEvents(companyId, finalTotalText)
             doc.Open()
@@ -584,18 +584,15 @@ Public Class QuoteClass
                 If designType = "Blinds" OrElse designType = "Shutters" Then
                     Dim pricingData As DataTable = GetDataTable("SELECT * FROM OrderCostings WHERE HeaderId='" & headerId & "' AND ItemId='" & itemId & "' AND Number='" & itemNumber & "' AND Type='Surcharge'")
                     If pricingData.Rows.Count > 0 Then
+                        Dim pricingList As New List(Of String)
+
                         For iPricing As Integer = 0 To pricingData.Rows.Count - 1
                             Dim pricingDesc As String = pricingData.Rows(iPricing)("Description").ToString()
-                            If itemNumber = "1" Then pricingDesc = pricingDesc.Replace("#1 ", "")
-                            If itemNumber = "2" Then pricingDesc = pricingDesc.Replace("#2 ", "")
-                            If itemNumber = "3" Then pricingDesc = pricingDesc.Replace("#3 ", "")
-                            If itemNumber = "4" Then pricingDesc = pricingDesc.Replace("#4 ", "")
-                            If itemNumber = "5" Then pricingDesc = pricingDesc.Replace("#5 ", "")
-                            If itemNumber = "6" Then pricingDesc = pricingDesc.Replace("#6 ", "")
-
-                            itemDescription &= vbCrLf
-                            itemDescription &= pricingDesc
+                            pricingDesc = pricingDesc.Replace("#" & itemNumber & " ", "")
+                            pricingList.Add(pricingDesc)
                         Next
+                        itemDescription &= vbCrLf
+                        itemDescription &= String.Join(", ", pricingList)
                     End If
                 End If
 

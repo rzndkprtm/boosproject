@@ -554,18 +554,15 @@ Public Class InvoiceClass
                 If designType = "Blinds" OrElse designType = "Shutters" Then
                     Dim pricingData As DataTable = GetDataTable("SELECT * FROM OrderCostings WHERE HeaderId='" & headerId & "' AND ItemId='" & itemId & "' AND Number='" & itemNumber & "' AND Type='Surcharge'")
                     If pricingData.Rows.Count > 0 Then
+                        Dim surchargeList As New List(Of String)
+
                         For iPricing As Integer = 0 To pricingData.Rows.Count - 1
                             Dim pricingDesc As String = pricingData.Rows(iPricing)("Description").ToString()
-                            If itemNumber = "1" Then pricingDesc = pricingDesc.Replace("#1 ", "")
-                            If itemNumber = "2" Then pricingDesc = pricingDesc.Replace("#2 ", "")
-                            If itemNumber = "3" Then pricingDesc = pricingDesc.Replace("#3 ", "")
-                            If itemNumber = "4" Then pricingDesc = pricingDesc.Replace("#4 ", "")
-                            If itemNumber = "5" Then pricingDesc = pricingDesc.Replace("#5 ", "")
-                            If itemNumber = "6" Then pricingDesc = pricingDesc.Replace("#6 ", "")
-
-                            itemDescription &= vbCrLf
-                            itemDescription &= pricingDesc
+                            pricingDesc = pricingDesc.Replace("#" & itemNumber & " ", "")
+                            surchargeList.Add(pricingDesc)
                         Next
+                        itemDescription &= vbCrLf
+                        itemDescription &= String.Join(", ", surchargeList)
                     End If
                 End If
 

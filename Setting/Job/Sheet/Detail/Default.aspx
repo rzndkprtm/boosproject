@@ -113,10 +113,10 @@
                                                 <%# Container.DataItemIndex + 1 %>
                                             </ItemTemplate>
                                         </asp:TemplateField>
-                                        <asp:BoundField DataField="Name" HeaderText="Name" />
+                                        <asp:BoundField DataField="Name" HeaderText="Name" ItemStyle-Width="230px" />
                                         <asp:BoundField DataField="Formula1" HeaderText="Formula 1" />
-                                        <asp:BoundField DataField="SortOrder" HeaderText="Sort Order" />
-                                        <asp:BoundField DataField="DataActive" HeaderText="Active" />
+                                        <asp:BoundField DataField="SortOrder" HeaderText="Sort Order" ItemStyle-Width="100px" />
+                                        <asp:BoundField DataField="DataActive" HeaderText="Active" ItemStyle-Width="100px" />
                                         <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="130px">
                                             <ItemTemplate>
                                                 <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>

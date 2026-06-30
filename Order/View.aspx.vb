@@ -44,8 +44,15 @@ Partial Class Order_View
             Dim invoiceClass As New InvoiceClass
             Dim pdfBytes As Byte() = invoiceClass.BindContent(headerId)
 
-            Dim invoiceNumber As String = invoiceClass.GetItemData("SELECT InvoiceNumber FROM OrderHeaders WHERE Id='" & headerId & "'")
-            Dim fileName As String = String.Format("INVOICE {0}.pdf", invoiceNumber)
+            Dim invoiceNumber As String = String.Empty
+            Dim customerName As String = String.Empty
+
+            Dim orderData As DataRow = invoiceClass.GetDataRow("SELECT OrderHeaders.InvoiceNumber AS InvoiceNumber, Customers.Name AS CustomerName FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id='" & headerId & "'")
+            If Not orderData Is Nothing Then
+                invoiceNumber = orderData("InvoiceNumber").ToString().ToUpper()
+                customerName = orderData("CustomerName").ToString().ToUpper()
+            End If
+            Dim fileName As String = String.Format("INVOICE {0} {1}.pdf", invoiceNumber, customerName)
 
             Response.Clear()
             Response.ContentType = "application/pdf"
@@ -62,14 +69,15 @@ Partial Class Order_View
             Dim quoteClass As New QuoteClass
             Dim pdfBytes As Byte() = quoteClass.BindContent(headerId)
 
-            Dim orderData As DataRow = quoteClass.GetDataRow("SELECT * FROM OrderHeaders WHERE Id='" & headerId & "'")
-            Dim orderNumber As String = String.Empty
-            Dim orderName As String = String.Empty
+            Dim orderId As String = String.Empty
+            Dim customerName As String = String.Empty
+
+            Dim orderData As DataRow = quoteClass.GetDataRow("SELECT OrderHeaders.OrderId AS OrderId, Customers.Name AS CustomerName FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id='" & headerId & "'")
             If Not orderData Is Nothing Then
-                orderNumber = orderData("OrderNumber")
-                orderName = orderData("OrderName")
+                orderId = orderData("OrderId").ToString().ToUpper()
+                customerName = orderData("CustomerName").ToString().ToUpper()
             End If
-            Dim fileName As String = String.Format("QUOTE-{0}-{1}.pdf", orderNumber, orderName)
+            Dim fileName As String = String.Format("QUOTE {0} {1}.pdf", orderId, customerName)
 
             Response.Clear()
             Response.ContentType = "application/pdf"
