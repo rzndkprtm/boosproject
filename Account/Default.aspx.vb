@@ -118,10 +118,10 @@ Partial Class Account_Default
                 divCompany.Visible = True
             End If
 
-            'If String.IsNullOrEmpty(txtUserEmail.Text) Then
-            '    Dim thisScript As String = "window.onload = function() { showInfo(); };"
-            '    ClientScript.RegisterStartupScript(Me.GetType(), "showEmail", thisScript, True)
-            'End If
+            If String.IsNullOrEmpty(txtUserEmail.Text) Then
+                Dim thisScript As String = "window.onload = function() { showInfo(); };"
+                ClientScript.RegisterStartupScript(Me.GetType(), "showEmail", thisScript, True)
+            End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
