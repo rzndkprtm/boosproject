@@ -988,7 +988,7 @@ Partial Class Order_Detail
                 pdfBytes = quoteClass.BindContentCustomer(lblHeaderId.Text)
             End If
 
-            Dim fileName As String = String.Format("QUOTE-{0}-{1}", lblOrderNumber.Text, lblOrderName.Text)
+            Dim fileName As String = String.Format("QUOTE {0} {1}", lblOrderId.Text, lblCustomerName.Text)
 
             Response.Clear()
             Response.ContentType = "application/pdf"
@@ -1207,7 +1207,7 @@ Partial Class Order_Detail
             Dim invoiceClass As New InvoiceClass
             Dim pdfBytes As Byte() = invoiceClass.BindContent(lblHeaderId.Text)
 
-            Dim fileName As String = String.Format("INVOICE {0}.pdf", lblInvoiceNumber.Text.ToUpper())
+            Dim fileName As String = String.Format("INVOICE {0} {1}.pdf", lblInvoiceNumber.Text.ToUpper(), lblCustomerName.Text.ToUpper())
 
             Response.Clear()
             Response.ContentType = "application/pdf"
@@ -2086,6 +2086,18 @@ Partial Class Order_Detail
 
                     btnQuoteAction.Visible = True
                     aSendQuote.Visible = True
+
+                    btnJob.Visible = True
+                    If convertedStatus = "Yes" Then
+                        aDataJob.Visible = True
+                        aReConvertJob.Visible = True
+                        aUpdateJob.Visible = True
+                        btnPreviewJob.Visible = True
+                        btnDownloadJob.Visible = True
+                    End If
+                    If convertedStatus = "No" Then
+                        aConvertOrder.Visible = True
+                    End If
 
                     aAddItem.Visible = True
                     aAddService.Visible = True
