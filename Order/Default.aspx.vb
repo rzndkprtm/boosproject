@@ -911,7 +911,7 @@ Partial Class Order_Default
         Dim createdRole As String = Convert.ToString(data(3))
 
         If active = True Then
-            If Session("RoleName") = "Developer" AndAlso (Not status = "Shipped Out" AndAlso Not status = "Completed" AndAlso Not status = "Canceled") Then Return True
+            If Session("RoleName") = "Developer" AndAlso (Not status = "Shipped Out" AndAlso Not status = "Completed") Then Return True
             If Session("RoleName") = "IT" AndAlso status = "Unsubmitted" Then Return True
             If Session("RoleName") = "Factory Office" AndAlso status = "Unsubmitted" Then Return True
             If Session("RoleName") = "Sales" AndAlso status = "Unsubmitted" AndAlso createdBy = Session("LoginId").ToString() Then Return True
