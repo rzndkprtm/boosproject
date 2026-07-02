@@ -2257,8 +2257,10 @@ Partial Class Order_Method
             For i As Integer = 1 To qty
                 Dim itemId As String = orderClass.GetNewOrderItemId()
 
-                Using thisConn As SqlConnection = New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricColourId, ChainId, PriceProductGroupId, Qty, Room, Mounting, Width, [Drop], StackPosition, ControlPosition, ControlLength, ControlLengthValue, WandColour, WandLengthValue, LinearMetre, SquareMetre, TotalItems, Notes, MarkUp, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricColourId, @ChainId, @PriceProductGroupId, @Qty, @Room, @Mounting, @Width, @Drop, @StackPosition, @ControlPosition, @ControlLength, @ControlLengthValue, @WandColour, @WandLengthValue, @LinearMetre, @SquareMetre, 1, @Notes, @MarkUp, 1)", thisConn)
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("sp_OrderDetails_Insert_DS", thisConn)
+                        thisCmd.CommandType = CommandType.StoredProcedure
+
                         thisCmd.Parameters.AddWithValue("@Id", itemId)
                         thisCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                         thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
@@ -2266,7 +2268,7 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@FabricColourId", data.fabriccolour)
                         thisCmd.Parameters.AddWithValue("@ChainId", If(String.IsNullOrEmpty(data.chaincolour), CType(DBNull.Value, Object), data.chaincolour))
                         thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
-                        thisCmd.Parameters.AddWithValue("@Qty", "1")
+                        thisCmd.Parameters.AddWithValue("@Qty", 1)
                         thisCmd.Parameters.AddWithValue("@Room", data.room)
                         thisCmd.Parameters.AddWithValue("@Mounting", data.mounting)
                         thisCmd.Parameters.AddWithValue("@Width", width)
@@ -2302,16 +2304,17 @@ Partial Class Order_Method
         If data.itemaction = "edit" OrElse data.itemaction = "view" Then
             Dim itemId As String = data.itemid
 
-            Using thisConn As SqlConnection = New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET ProductId=@ProductId, FabricId=@FabricId, FabricColourId=@FabricColourId, ChainId=@ChainId, PriceProductGroupId=@PriceProductGroupId, Qty=@Qty, Room=@Room, Mounting=@Mounting, Width=@Width, [Drop]=@Drop, StackPosition=@StackPosition, ControlPosition=@ControlPosition, ControlLength=@ControlLength, ControlLengthValue=@ControlLengthValue, WandColour=@WandColour, WandLengthValue=@WandLengthValue, LinearMetre=@LinearMetre, SquareMetre=@SquareMetre, TotalItems=1, Notes=@Notes, MarkUp=@MarkUp, Active=1 WHERE Id=@Id", thisConn)
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand("sp_OrderDetails_Update_DS", thisConn)
+                    thisCmd.CommandType = CommandType.StoredProcedure
+
                     thisCmd.Parameters.AddWithValue("@Id", itemId)
-                    thisCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                     thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                     thisCmd.Parameters.AddWithValue("@FabricId", data.fabrictype)
                     thisCmd.Parameters.AddWithValue("@FabricColourId", data.fabriccolour)
                     thisCmd.Parameters.AddWithValue("@ChainId", If(String.IsNullOrEmpty(data.chaincolour), CType(DBNull.Value, Object), data.chaincolour))
                     thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
-                    thisCmd.Parameters.AddWithValue("@Qty", "1")
+                    thisCmd.Parameters.AddWithValue("@Qty", 1)
                     thisCmd.Parameters.AddWithValue("@Room", data.room)
                     thisCmd.Parameters.AddWithValue("@Mounting", data.mounting)
                     thisCmd.Parameters.AddWithValue("@Width", width)
