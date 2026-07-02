@@ -202,13 +202,10 @@ Partial Class Setting_Specification_Fabric_Alias
     Protected Sub BindData(searchText As String)
         Session("SearchFabricAlias") = String.Empty
         Try
-            Dim stringSearch As String = String.Empty
-            If Not searchText = "" Then
-                stringSearch = "WHERE FF.Name LIKE '%" & searchText & "%' OR FC1.Name LIKE '%" & searchText & "%' OR SF.Name LIKE '%" & searchText & "%' OR FC2.Name LIKE '%" & searchText & "%'"
-            End If
-
-            Dim thisString As String = String.Format("SELECT FA.*, COALESCE(FF.Name, FC1.Name) AS FirstName, COALESCE(SF.Name, FC2.Name) AS SecondName FROM FabricAlias FA LEFT JOIN Fabrics FF ON FA.FirstId=FF.Id AND FA.Type='Fabrics' LEFT JOIN Fabrics SF ON FA.SecondId=SF.Id AND FA.Type='Fabrics' LEFT JOIN FabricColours FC1 ON FA.FirstId=FC1.Id AND FA.Type='FabricColours' LEFT JOIN FabricColours FC2 ON FA.SecondId = FC2.Id AND FA.Type = 'FabricColours' {0} ORDER BY FA.Id ASC", stringSearch)
-            gvList.DataSource = settingClass.GetDataTable(thisString)
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@SearchText", searchText.Trim())
+            }
+            gvList.DataSource = settingClass.GetDataTableSP("sp_FabricAlias_List", params)
             gvList.DataBind()
             gvList.Columns(1).Visible = LoginAccess("Visible ID")
 

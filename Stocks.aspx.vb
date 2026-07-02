@@ -68,7 +68,7 @@ Partial Class Stocks
                 New SqlParameter("@CompanyId", companyDetail),
                 New SqlParameter("@Search", searchText)
             }
-            gvListRoller.DataSource = stockClass.GetDataTableSP("sp_GetStockFabric", paramsItem)
+            gvListRoller.DataSource = stockClass.GetDataTableSP("sp_Stock_Fabric", paramsItem)
             gvListRoller.DataBind()
         Catch ex As Exception
             MessageError_Roller(True, ex.ToString())
@@ -145,7 +145,7 @@ Partial Class Stocks
                 New SqlParameter("@CompanyId", companyDetail),
                 New SqlParameter("@Search", String.Empty)
             }
-            gvListProfile.DataSource = stockClass.GetDataTableSP("sp_GetStockFabric", paramsItem)
+            gvListProfile.DataSource = stockClass.GetDataTableSP("sp_Stock_Fabric", paramsItem)
             gvListProfile.DataBind()
         Catch ex As Exception
             MessageError_Profile(True, ex.ToString())
@@ -218,7 +218,7 @@ Partial Class Stocks
                 New SqlParameter("@CompanyId", companyDetail),
                 New SqlParameter("@Search", searchText)
             }
-            gvListCurtain.DataSource = stockClass.GetDataTableSP("sp_GetStockFabric", paramsItem)
+            gvListCurtain.DataSource = stockClass.GetDataTableSP("sp_Stock_Fabric", paramsItem)
             gvListCurtain.DataBind()
         Catch ex As Exception
             MessageError_Curtain(True, ex.ToString())
@@ -294,7 +294,7 @@ Partial Class Stocks
                 New SqlParameter("@CompanyId", companyDetail),
                 New SqlParameter("@Search", searchText)
             }
-            gvListVertical.DataSource = stockClass.GetDataTableSP("sp_GetStockFabricVertical", paramsItem)
+            gvListVertical.DataSource = stockClass.GetDataTableSP("sp_Stock_Fabric_Vertical", paramsItem)
             gvListVertical.DataBind()
         Catch ex As Exception
             MessageError_Vertical(True, ex.ToString())
@@ -357,7 +357,7 @@ Partial Class Stocks
                 New SqlParameter("@DesignId", "10"),
                 New SqlParameter("@CompanyDetailId", companyDetail)
             }
-            gvListVenetian.DataSource = stockClass.GetDataTableSP("sp_GetStockBlindColour", paramsItem)
+            gvListVenetian.DataSource = stockClass.GetDataTableSP("sp_Stock_Venetian", paramsItem)
             gvListVenetian.DataBind()
         Catch ex As Exception
             MessageError_Venetian(True, ex.ToString())
@@ -431,7 +431,7 @@ Partial Class Stocks
                 New SqlParameter("@DesignId", "1"),
                 New SqlParameter("@CompanyDetailId", companyDetail)
             }
-            gvListAluminium.DataSource = stockClass.GetDataTableSP("sp_GetStockBlindColour", paramsItem)
+            gvListAluminium.DataSource = stockClass.GetDataTableSP("sp_Stock_Venetian", paramsItem)
             gvListAluminium.DataBind()
         Catch ex As Exception
             MessageError_Aluminium(True, ex.ToString())
@@ -505,7 +505,7 @@ Partial Class Stocks
                 New SqlParameter("@DesignId", "2"),
                 New SqlParameter("@CompanyId", companyDetail)
             }
-            gvListCellular.DataSource = stockClass.GetDataTableSP("sp_GetStockFabric", paramsItem)
+            gvListCellular.DataSource = stockClass.GetDataTableSP("sp_Stock_Fabric", paramsItem)
             gvListCellular.DataBind()
         Catch ex As Exception
             MessageError_Cellular(True, ex.ToString())
@@ -593,7 +593,7 @@ Partial Class Stocks
                 New SqlParameter("@SearchText", searchText),
                 New SqlParameter("@CompanyDetailId", companyDetail)
             }
-            gvListFabricChart.DataSource = stockClass.GetDataTableSP("sp_GetStockFabricAvailability", paramsItem)
+            gvListFabricChart.DataSource = stockClass.GetDataTableSP("sp_Stock_Fabric_Chart", paramsItem)
             gvListFabricChart.DataBind()
         Catch ex As Exception
             MessageError_FabricChart(True, ex.ToString())

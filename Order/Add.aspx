@@ -31,64 +31,44 @@
                         <div class="card-body">
                             <div class="form form-vertical">
                                 <div class="form-body">
-                                    <div class="row mb-2" runat="server" id="divCustomer">
-                                        <div class="col-12 form-group">
-                                            <label class="form-label">Customer Account</label>
-                                            <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCustomer_SelectedIndexChanged"></asp:DropDownList>
-                                        </div>
-                                    </div>
-                                    <div class="row mb-2" runat="server" id="divCreatedBy">
-                                        <div class="col-12 form-group">
-                                            <label class="form-label">Created By</label>
-                                            <asp:DropDownList runat="server" ID="ddlCreatedBy" CssClass="choices form-select"></asp:DropDownList>
-                                        </div>
-                                    </div>
-                                    <div class="row mb-2" runat="server" id="divMethod">
-                                        <div class="col-12 col-sm-12 col-lg-5 form-group">
-                                            <label class="form-label">Method</label>
-                                            <asp:DropDownList runat="server" ID="ddlMethod" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlMethod_SelectedIndexChanged">
-                                                <asp:ListItem Value="Manual" Text="Manual Entry"></asp:ListItem>
-                                                <asp:ListItem Value="Upload" Text="Upload Excel"></asp:ListItem>
-                                            </asp:DropDownList>
-                                        </div>
-                                    </div>
-                                    <div runat="server" id="divManual">
-                                        <div class="row mb-2">
-                                            <div class="col-12 form-group">
-                                                <label class="form-label">Order Number</label>
-                                                <asp:TextBox runat="server" ID="txtOrderNumber" CssClass="form-control" placeholder="Order Number ..." autocomplete="off"></asp:TextBox>
+                                    <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
+                                        <ContentTemplate>
+                                            <div class="row mb-2" runat="server" id="divCustomer">
+                                                <div class="col-12 form-group">
+                                                    <label class="form-label">Customer Account</label>
+                                                    <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCustomer_SelectedIndexChanged"></asp:DropDownList>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="row mb-2">
-                                            <div class="col-12 form-group">
-                                                <label class="form-label">Order Name</label>
-                                                <asp:TextBox runat="server" ID="txtOrderName" CssClass="form-control" placeholder="Order Name ..." autocomplete="off"></asp:TextBox>
+
+                                            <div class="row mb-2">
+                                                <div class="col-12 form-group">
+                                                    <label class="form-label">Order Number</label>
+                                                    <asp:TextBox runat="server" ID="txtOrderNumber" CssClass="form-control" placeholder="Order Number ..." autocomplete="off"></asp:TextBox>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-12 form-group">
-                                                <label class="form-label">Order Note</label>
-                                                <asp:TextBox runat="server" TextMode="MultiLine" ID="txtOrderNote" Height="130px" CssClass="form-control" placeholder="Order Note ...." autocomplete="off" style="resize: none"></asp:TextBox>
+                                            <div class="row mb-2">
+                                                <div class="col-12 form-group">
+                                                    <label class="form-label">Order Name</label>
+                                                    <asp:TextBox runat="server" ID="txtOrderName" CssClass="form-control" placeholder="Order Name ..." autocomplete="off"></asp:TextBox>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div runat="server" id="divUpload">
-                                        <div class="row">
-                                            <div class="col-12 form-group">
-                                                <label class="form-label">Upload Your File</label>
-                                                <asp:FileUpload runat="server" ID="fuFile" CssClass="form-control" />
+                                            <div class="row">
+                                                <div class="col-12 form-group">
+                                                    <label class="form-label">Order Note</label>
+                                                    <asp:TextBox runat="server" TextMode="MultiLine" ID="txtOrderNote" Height="130px" CssClass="form-control" placeholder="Order Note ...." autocomplete="off" style="resize: none"></asp:TextBox>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="row" runat="server" id="divOrderType">
-                                        <div class="col-12 col-sm-12 col-lg-5 form-group">
-                                            <label class="form-label">Order Type</label>
-                                            <asp:DropDownList runat="server" ID="ddlOrderType" CssClass="form-select">
-                                                <asp:ListItem Value="Regular" Text="Regular"></asp:ListItem>
-                                                <asp:ListItem Value="Builder" Text="Builder"></asp:ListItem>
-                                            </asp:DropDownList>
-                                        </div>
-                                    </div>
+                                            <div class="row" runat="server" id="divOrderType">
+                                                <div class="col-12 col-sm-12 col-lg-5 form-group">
+                                                    <label class="form-label">Order Type</label>
+                                                    <asp:DropDownList runat="server" ID="ddlOrderType" CssClass="form-select">
+                                                        <asp:ListItem Value="Regular" Text="Regular"></asp:ListItem>
+                                                        <asp:ListItem Value="Builder" Text="Builder"></asp:ListItem>
+                                                    </asp:DropDownList>
+                                                </div>
+                                            </div>
+                                        </ContentTemplate>
+                                    </asp:UpdatePanel>
                                     <div class="row mt-3" runat="server" id="divError">
                                         <div class="col-12">
                                             <div class="alert alert-danger">
@@ -119,23 +99,51 @@
         </section>
     </div>
 
-    <div class="modal modal-blur fade" id="modalInfo" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-info">
-                    <h5 class="modal-title white">Information</h5>
-                </div>
-                <div class="modal-body">
-                    <span id="spanInfo"></span>
-                </div>
-                <div class="modal-footer">
-                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+    <div id="loadingOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,.5); z-index:99999;">
+        <div class="position-absolute top-50 start-50 translate-middle">
+            <div class="card shadow">
+                <div class="card-body text-center">
+                    <div class="spinner-border"></div>
+                    <div class="mt-2">Loading...</div>
                 </div>
             </div>
         </div>
     </div>
 
     <script type="text/javascript">
+        window.addEventListener("pageshow", function () {
+            var loading = document.getElementById("loadingOverlay");
+            if (loading) loading.style.display = "none";
+        });
+        function initUpdatePanelLoading() {
+            if (typeof Sys === "undefined") return;
+            var prm = Sys.WebForms.PageRequestManager.getInstance();
+            prm.add_beginRequest(function () {
+                var loading = document.getElementById("loadingOverlay");
+                if (loading) loading.style.display = "block";
+            });
+            prm.add_endRequest(function () {
+                var loading = document.getElementById("loadingOverlay");
+                if (loading) loading.style.display = "none";
+                initChoices();
+            });
+        }
+        function initChoices() {
+            document.querySelectorAll("select.choices").forEach(function (el) {
+                if (el.choices) {
+                    el.choices.destroy();
+                }
+                el.choices = new Choices(el, {
+                    searchEnabled: true,
+                    itemSelectText: '',
+                    shouldSort: false
+                });
+            });
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+            initUpdatePanelLoading();
+            initChoices();
+        });
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

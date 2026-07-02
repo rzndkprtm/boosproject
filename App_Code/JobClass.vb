@@ -248,10 +248,10 @@ Public Class JobClass
 
     Public Function BindContent(headerId As String) As Byte()
         Using ms As New MemoryStream()
-
-            Dim headerData As DataRow = GetDataRow("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Companys.Name AS CompanyName, OrderJobs.JobNumber, OrderJobs.WorkOrder, OrderJobs.JobNote, OrderJobs.CreatedDate AS ConvertDate, Logins.FullName AS ConvertBy FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId = Customers.Id LEFT JOIN Companys ON Customers.CompanyId = Companys.Id LEFT JOIN OrderJobs ON OrderHeaders.OrderJobId = OrderJobs.Id LEFT JOIN Logins ON OrderJobs.CreatedBy = Logins.Id WHERE OrderHeaders.Id='" & headerId & "'")
+            Dim headerData As DataRow = GetDataRow("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.Area AS State Companys.Name AS CompanyName, OrderJobs.JobNumber, OrderJobs.WorkOrder, OrderJobs.JobNote, OrderJobs.CreatedDate AS ConvertDate, Logins.FullName AS ConvertBy FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId = Customers.Id LEFT JOIN Companys ON Customers.CompanyId = Companys.Id LEFT JOIN OrderJobs ON OrderHeaders.OrderJobId = OrderJobs.Id LEFT JOIN Logins ON OrderJobs.CreatedBy = Logins.Id WHERE OrderHeaders.Id='" & headerId & "'")
 
             Dim customerName As String = headerData("CustomerName").ToString()
+            Dim customerState As String = headerData("State").ToString()
             Dim companyName As String = headerData("CompanyName").ToString()
             Dim orderId As String = headerData("OrderId").ToString()
             Dim orderJobId As String = headerData("OrderJobId").ToString()
@@ -277,7 +277,8 @@ Public Class JobClass
                 .pageWorkOrder = workOrder,
                 .pageJobNote = jobNote,
                 .pageConvertBy = convertBy,
-                .pageConvertDate = convertDate
+                .pageConvertDate = convertDate,
+                .pageState = customerState
             }
             writer.PageEvent = pageEvent
 
@@ -406,6 +407,7 @@ Public Class JobEvents
     Public Property PageOrderName As String
     Public Property PageTotalDoc As Integer
     Public Property pageCompany As String
+    Public Property pageState As String
 
     Public Property pageJobNumber As String
     Public Property pageWorkOrder As String
@@ -413,6 +415,11 @@ Public Class JobEvents
     Public Property pageConvertBy As String
     Public Property pageConvertDate As String
     Public Property pageDesignType As String
+
+    Public Property WatermarkText As String = "MASIH TEST"
+    Public Property WatermarkFontSize As Single = 70
+    Public Property WatermarkOpacity As Single = 0.25F
+    Public Property WatermarkRotation As Single = 45
 
 
     Private baseFont As BaseFont = BaseFont.CreateFont(BaseFont.TIMES_ROMAN, BaseFont.CP1252, BaseFont.NOT_EMBEDDED)
@@ -429,6 +436,20 @@ Public Class JobEvents
             template = cb.CreateTemplate(50, 50)
         End If
 
+        If WatermarkText <> "" Then
+            Dim under As PdfContentByte = writer.DirectContentUnder
+            under.SaveState()
+            Dim gs As New PdfGState()
+            gs.FillOpacity = WatermarkOpacity
+            under.SetGState(gs)
+            under.BeginText()
+            under.SetFontAndSize(Me.baseFont, WatermarkFontSize)
+            under.SetColorFill(New BaseColor(180, 180, 180))
+            under.ShowTextAligned(Element.ALIGN_CENTER, WatermarkText, document.PageSize.Width / 2, document.PageSize.Height / 2, WatermarkRotation)
+            under.EndText()
+            under.RestoreState()
+        End If
+
         Dim headerTable As New PdfPTable(3)
         headerTable.TotalWidth = document.PageSize.Width - 40
         headerTable.LockedWidth = True
@@ -438,8 +459,8 @@ Public Class JobEvents
         firstCellTable.TotalWidth = headerTable.TotalWidth * 0.5F
         firstCellTable.SetWidths(New Single() {0.25F, 0.05F, 0.7F})
 
-        Dim firstLabels As String() = {"Company", "Customer", "Order #", "Order Number", "Order Name"}
-        Dim firstValues As String() = {pageCompany, PageCustomerName, PageOrderId, PageOrderNumber, PageOrderName}
+        Dim firstLabels As String() = {"Company", "State", "Customer", "Order #", "Order Number", "Order Name"}
+        Dim firstValues As String() = {pageCompany, pageState, PageCustomerName, PageOrderId, PageOrderNumber, PageOrderName}
         For i As Integer = 0 To firstLabels.Length - 1
             firstCellTable.AddCell(New PdfPCell(New Phrase(firstLabels(i), New Font(Font.FontFamily.TIMES_ROMAN, 7, Font.BOLD))) With {.Border = 0, .HorizontalAlignment = Element.ALIGN_LEFT})
             firstCellTable.AddCell(New PdfPCell(New Phrase(":", New Font(Font.FontFamily.TIMES_ROMAN, 7, Font.BOLD))) With {.Border = 0, .HorizontalAlignment = Element.ALIGN_CENTER})
@@ -495,31 +516,36 @@ Public Class JobEvents
         Dim noteY As Single = document.PageSize.Height - 90
         noteTable.WriteSelectedRows(0, -1, 20, noteY, cb)
 
-        Dim footerTable As New PdfPTable(2)
-        footerTable.TotalWidth = document.PageSize.Width - 72
+        'FOOTER
+        Dim footerTable As New PdfPTable(5)
+        footerTable.TotalWidth = document.PageSize.Width - 40
         footerTable.LockedWidth = True
-        footerTable.SetWidths(New Single() {0.5F, 0.5F})
+        footerTable.SetWidths(New Single() {1, 1, 1, 1, 1})
 
-        Dim leftFooterCell As New PdfPCell(New Phrase("Print Date: " & Now.ToString("dd MMM yyyy HH:mm"), New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD))) With {.Border = 0, .HorizontalAlignment = Element.ALIGN_LEFT}
-        footerTable.AddCell(leftFooterCell)
+        Dim titleFont As New Font(Font.FontFamily.TIMES_ROMAN, 7, Font.BOLD)
+        Dim textFont As New Font(Font.FontFamily.TIMES_ROMAN, 7)
 
-        Dim pageText As String = "Page " & writer.PageNumber.ToString() & " of "
-        Dim pageFont As New Font(Font.FontFamily.TIMES_ROMAN, 8)
-        Dim rightFooterCell As New PdfPCell(New Phrase(pageText, pageFont)) With {
-            .Border = 0,
-            .HorizontalAlignment = Element.ALIGN_RIGHT
-        }
-        footerTable.AddCell(rightFooterCell)
+        Dim titles() As String = {"Issued By", "Warehouse", "Assembling & Packing", "Shipping", "Quality Control"}
 
-        Dim footerY As Single = document.PageSize.GetBottom(30)
-        footerTable.WriteSelectedRows(0, -1, 36, footerY, cb)
+        For Each t As String In titles
+            Dim phrase As New Phrase()
 
-        Dim baseFont As BaseFont = BaseFont.CreateFont(BaseFont.TIMES_ROMAN, BaseFont.CP1252, BaseFont.NOT_EMBEDDED)
-        Dim textWidth As Single = baseFont.GetWidthPoint(pageText, 8)
-        Dim xPos As Single = document.PageSize.Width - textWidth - 1
-        Dim yPos As Single = footerY - 10.0F
+            phrase.Add(New Chunk(t & vbCrLf & vbCrLf & vbCrLf, titleFont))
+            phrase.Add(New Chunk("_______________" & vbCrLf, textFont))
 
-        cb.AddTemplate(template, xPos, yPos)
+            Dim cell As New PdfPCell(phrase)
+
+            With cell
+                .Border = Rectangle.NO_BORDER
+                .HorizontalAlignment = Element.ALIGN_CENTER
+                .VerticalAlignment = Element.ALIGN_BOTTOM
+                .MinimumHeight = 45
+                .Padding = 0
+            End With
+
+            footerTable.AddCell(cell)
+        Next
+        footerTable.WriteSelectedRows(0, -1, 20, document.PageSize.GetBottom(55), cb)
     End Sub
 
     Public Overrides Sub OnCloseDocument(writer As PdfWriter, document As Document)

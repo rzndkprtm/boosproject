@@ -97,7 +97,6 @@ Partial Class Setting_Customer_Add
                 End If
 
                 Dim sponsorId As String = ddlSponsor.SelectedValue
-
                 If ddlLevel.SelectedValue = "" Then ddlLevel.SelectedValue = "Member"
                 If ddlLevel.SelectedValue = "Sponsor" OrElse ddlLevel.SelectedValue = "Member" Then sponsorId = String.Empty
 

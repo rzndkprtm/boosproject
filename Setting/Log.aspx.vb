@@ -68,7 +68,7 @@ Partial Class Setting_Log
             Dim params As New List(Of SqlParameter) From {
                 New SqlParameter("@SearchText", If(String.IsNullOrEmpty(searchText), CType(DBNull.Value, Object), searchText.Trim()))
             }
-            gvList.DataSource = settingClass.GetDataTableSP("sp_LogList", params)
+            gvList.DataSource = settingClass.GetDataTableSP("sp_Logs_List", params)
             gvList.DataBind()
 
             gvList.Columns(5).Visible = LoginAccess("Delete") ' ID

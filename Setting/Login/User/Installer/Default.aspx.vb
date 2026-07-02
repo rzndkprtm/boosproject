@@ -77,7 +77,7 @@ Partial Class Setting_Login_User_Installer_Default
             Dim params As New List(Of SqlParameter) From {
                 New SqlParameter("@SearchText", If(String.IsNullOrEmpty(searchText), "", searchText.Trim()))
             }
-            gvList.DataSource = settingClass.GetDataTableSP("sp_LoginInstallerList", params)
+            gvList.DataSource = settingClass.GetDataTableSP("sp_LoginInstallers_List", params)
             gvList.DataBind()
         Catch ex As Exception
             MessageError(True, ex.ToString())

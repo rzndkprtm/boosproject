@@ -6,6 +6,8 @@ Partial Class Account_Default
 
     Dim settingClass As New SettingClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim url As String = String.Empty
+    Dim dataLog As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         If String.IsNullOrEmpty(Request.QueryString("uid")) Then
@@ -25,7 +27,6 @@ Partial Class Account_Default
             MessageError(False, String.Empty)
             MessageError_Name(False, String.Empty)
             MessageError_Email(False, String.Empty)
-
             BindData(lblLoginId.Text)
         End If
     End Sub
@@ -44,7 +45,10 @@ Partial Class Account_Default
                     End Using
                 End Using
 
-                Dim url As String = String.Format("~/account?uid={0}", lblLoginId.Text)
+                dataLog = {"Logins", lblLoginId.Text, Session("LoginId"), "Change Full Name"}
+                settingClass.Logs(dataLog)
+
+                url = String.Format("~/account?uid={0}", lblLoginId.Text)
                 Response.Redirect(url, False)
             End If
         Catch ex As Exception
@@ -85,7 +89,10 @@ Partial Class Account_Default
                     End Using
                 End Using
 
-                Dim url As String = String.Format("~/account?uid={0}", lblLoginId.Text)
+                dataLog = {"Logins", lblLoginId.Text, Session("LoginId"), "Change Email"}
+                settingClass.Logs(dataLog)
+
+                url = String.Format("~/account?uid={0}", lblLoginId.Text)
                 Response.Redirect(url, False)
             End If
         Catch ex As Exception

@@ -91,7 +91,7 @@
 
         If action = "download" Then
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As New SqlCommand("sp_ProcessOrderToProduction", thisConn)
+                Using thisCmd As New SqlCommand("sp_OrderHeaders_Update_Production", thisConn)
                     thisCmd.CommandType = CommandType.StoredProcedure
                     thisCmd.Parameters.Add("@ActionBy", SqlDbType.Int).Value = 2
                     thisConn.Open()
@@ -698,6 +698,9 @@
 
                 End If
 
+                Dim sloping As String = "0"
+                If thisData("Sloping").ToString() = "Yes" Then sloping = "1"
+
                 writer.WriteStartElement("OrderDetails")
                 writer.WriteAttributeString("OrddID", thisData("Id").ToString())
                 writer.WriteAttributeString("FKOrdID", thisData("HeaderId").ToString())
@@ -721,6 +724,7 @@
                 writer.WriteAttributeString("Vertical_WandCordColour", colourName)
                 writer.WriteAttributeString("ControlPosition", thisData("ControlPosition").ToString())
                 writer.WriteAttributeString("Extbracket", thisData("BracketExtension").ToString())
+                writer.WriteAttributeString("RomanValanceOption", sloping)
 
                 writer.WriteAttributeString("TotalItems", thisData("TotalItems").ToString())
                 writer.WriteAttributeString("MarkUp", thisData("MarkUp").ToString())

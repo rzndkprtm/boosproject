@@ -44,6 +44,14 @@ Partial Class Order_Default
         Response.Redirect("~/order/add", False)
     End Sub
 
+    Protected Sub btnInsert_Click(sender As Object, e As EventArgs)
+        Response.Redirect("~/order/add", False)
+    End Sub
+
+    Protected Sub btnUpload_Click(sender As Object, e As EventArgs)
+        Response.Redirect("~/order/upload", False)
+    End Sub
+
     Protected Sub btnRework_Click(sender As Object, e As EventArgs)
         Response.Redirect("~/order/rework", False)
     End Sub
@@ -455,7 +463,7 @@ Partial Class Order_Default
                         Dim newIdDetail As String = orderClass.GetNewOrderItemId()
 
                         Using thisConn As New SqlConnection(myConn)
-                            Using thisCmd As New SqlCommand("sp_CopyOrderDetails", thisConn)
+                            Using thisCmd As New SqlCommand("sp_OrderDetails_Copy", thisConn)
                                 thisCmd.CommandType = CommandType.StoredProcedure
                                 thisCmd.Parameters.AddWithValue("@ItemIdOld", itemId)
                                 thisCmd.Parameters.AddWithValue("@NewId", newIdDetail)
@@ -767,8 +775,7 @@ Partial Class Order_Default
                 New SqlParameter("@RoleId", Session("RoleId").ToString()),
                 New SqlParameter("@OrderType", orderType)
             }
-
-            Dim thisData As DataTable = orderClass.GetDataTableSP("sp_OrderList", params)
+            Dim thisData As DataTable = orderClass.GetDataTableSP("sp_OrderHeaders_List", params)
 
             gvList.DataSource = thisData
             gvList.DataBind()
@@ -782,7 +789,21 @@ Partial Class Order_Default
             gvList.Columns(10).Visible = LoginAccess("Visible Factory")
             gvList.Columns(12).Visible = LoginAccess("Visible BOE")
 
-            btnAdd.Visible = LoginAccess("Add")
+            btnAdd.Visible = False
+            btnAddOrder.Visible = False
+            If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" Then
+                btnAddOrder.Visible = True
+            End If
+            If Session("RoleName") = "Data Entry" OrElse Session("RoleName") = "Sales" Then
+                btnAdd.Visible = True
+            End If
+            If Session("RoleName") = "Customer" Then
+                btnAdd.Visible = True
+                If Session("CustomerId") = "127" Then
+                    btnAdd.Visible = False
+                    btnAddOrder.Visible = True
+                End If
+            End If
             btnRework.Visible = LoginAccess("Rework")
             btnFile.Visible = LoginAccess("File")
 

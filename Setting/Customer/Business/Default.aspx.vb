@@ -118,7 +118,7 @@ Partial Class Setting_Customer_Business_Default
                 New SqlParameter("@LoginId", Session("LoginId"))
             }
 
-            gvList.DataSource = settingClass.GetDataTableSP("sp_CustomerBusiness", params)
+            gvList.DataSource = settingClass.GetDataTableSP("sp_CustomerBusiness_List", params)
             gvList.DataBind()
             gvList.Columns(1).Visible = LoginAccess("Visible ID") ' ID
         Catch ex As Exception

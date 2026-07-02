@@ -84,7 +84,7 @@ Partial Class Report_Default
                     New SqlParameter("@EndDate", txtEndDate.Text),
                     New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(ddlCompany.SelectedValue), CType(DBNull.Value, Object), ddlCompany.SelectedValue))
                 }
-                gvCustomer.DataSource = reportClass.GetDataTableSP("sp_ReportPerCustomer", customers)
+                gvCustomer.DataSource = reportClass.GetDataTableSP("sp_ReportOrder_Customer", customers)
                 gvCustomer.DataBind()
 
                 Dim products As New List(Of SqlParameter) From {
@@ -93,7 +93,7 @@ Partial Class Report_Default
                     New SqlParameter("@EndDate", txtEndDate.Text),
                     New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(ddlCompany.SelectedValue), CType(DBNull.Value, Object), ddlCompany.SelectedValue))
                 }
-                gvProduct.DataSource = reportClass.GetDataTableSP("sp_ReportPerDesign", products)
+                gvProduct.DataSource = reportClass.GetDataTableSP("sp_ReportOrder_DesignType", products)
                 gvProduct.DataBind()
 
                 Dim fabrics As New List(Of SqlParameter) From {
@@ -102,7 +102,7 @@ Partial Class Report_Default
                     New SqlParameter("@EndDate", txtEndDate.Text),
                     New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(ddlCompany.SelectedValue), CType(DBNull.Value, Object), ddlCompany.SelectedValue))
                 }
-                gvFabric.DataSource = reportClass.GetDataTableSP("sp_ReportPerFabric", fabrics)
+                gvFabric.DataSource = reportClass.GetDataTableSP("sp_ReportOrder_FabricType", fabrics)
                 gvFabric.DataBind()
 
                 Dim fabricColours As New List(Of SqlParameter) From {
@@ -111,7 +111,7 @@ Partial Class Report_Default
                     New SqlParameter("@EndDate", txtEndDate.Text),
                     New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(ddlCompany.SelectedValue), CType(DBNull.Value, Object), ddlCompany.SelectedValue))
                 }
-                gvFabricColour.DataSource = reportClass.GetDataTableSP("sp_ReportPerFabricColour", fabricColours)
+                gvFabricColour.DataSource = reportClass.GetDataTableSP("sp_ReportOrder_FabricColour", fabricColours)
                 gvFabricColour.DataBind()
 
                 Dim chains As New List(Of SqlParameter) From {
@@ -120,7 +120,7 @@ Partial Class Report_Default
                     New SqlParameter("@EndDate", txtEndDate.Text),
                     New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(ddlCompany.SelectedValue), CType(DBNull.Value, Object), ddlCompany.SelectedValue))
                 }
-                gvChain.DataSource = reportClass.GetDataTableSP("sp_ReportPerChain", chains)
+                gvChain.DataSource = reportClass.GetDataTableSP("sp_ReportOrder_Chain", chains)
                 gvChain.DataBind()
 
                 Dim motors As New List(Of SqlParameter) From {
@@ -129,7 +129,7 @@ Partial Class Report_Default
                     New SqlParameter("@EndDate", txtEndDate.Text),
                     New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(ddlCompany.SelectedValue), CType(DBNull.Value, Object), ddlCompany.SelectedValue))
                 }
-                gvMotor.DataSource = reportClass.GetDataTableSP("sp_ReportPerMotor", motors)
+                gvMotor.DataSource = reportClass.GetDataTableSP("sp_ReportOrder_Motor", motors)
                 gvMotor.DataBind()
 
                 Dim bottomColours As New List(Of SqlParameter) From {
@@ -138,7 +138,7 @@ Partial Class Report_Default
                     New SqlParameter("@EndDate", txtEndDate.Text),
                     New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(ddlCompany.SelectedValue), CType(DBNull.Value, Object), ddlCompany.SelectedValue))
                 }
-                gvBottom.DataSource = reportClass.GetDataTableSP("sp_ReportPerBottomColour", bottomColours)
+                gvBottom.DataSource = reportClass.GetDataTableSP("sp_ReportOrder_BottomColour", bottomColours)
                 gvBottom.DataBind()
 
                 Dim tubes As New List(Of SqlParameter) From {
@@ -147,7 +147,7 @@ Partial Class Report_Default
                     New SqlParameter("@EndDate", txtEndDate.Text),
                     New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(ddlCompany.SelectedValue), CType(DBNull.Value, Object), ddlCompany.SelectedValue))
                 }
-                gvTube.DataSource = reportClass.GetDataTableSP("sp_ReportPerTube", tubes)
+                gvTube.DataSource = reportClass.GetDataTableSP("sp_ReportOrder_TubeType", tubes)
                 gvTube.DataBind()
             End If
         Catch ex As Exception

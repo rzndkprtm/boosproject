@@ -91,7 +91,7 @@ Partial Public Class SiteMaster
             Dim params As New List(Of SqlParameter) From {
                 New SqlParameter("@LoginId", loginId)
             }
-            Dim myData As DataRow = settingClass.GetDataRowSP("sp_LoginProfile", params)
+            Dim myData As DataRow = settingClass.GetDataRowSP("sp_Logins_Profile", params)
             If myData Is Nothing Then
                 HandleRedirectLogin()
                 Exit Sub
@@ -176,7 +176,7 @@ Partial Public Class SiteMaster
             End If
 
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As New SqlCommand("sp_UpdateCustomerLastLogin", thisConn)
+                Using thisCmd As New SqlCommand("sp_Logins_Update_LastLogin", thisConn)
                     thisCmd.CommandType = CommandType.StoredProcedure
                     thisCmd.Parameters.Add("@Id", SqlDbType.Int).Value = loginId
                     thisConn.Open()

@@ -10,7 +10,7 @@ Public Class AccessClass
            String.IsNullOrEmpty(page) OrElse String.IsNullOrEmpty(action) Then Return False
         Try
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As New SqlCommand("sp_GetLoginAccess", thisConn)
+                Using thisCmd As New SqlCommand("sp_LoginAccess_Get", thisConn)
                     thisCmd.CommandType = CommandType.StoredProcedure
                     thisCmd.Parameters.AddWithValue("@RoleId", roleId)
                     thisCmd.Parameters.AddWithValue("@LevelId", levelId)

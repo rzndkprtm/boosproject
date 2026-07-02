@@ -444,7 +444,7 @@ Public Class QuoteClass
             Dim params As New List(Of SqlParameter) From {
                 New SqlParameter("@HeaderId", headerId)
             }
-            Dim detailData As DataTable = GetDataTableSP("sp_GetOrderDetailData_Quote", params)
+            Dim detailData As DataTable = GetDataTableSP("sp_OrderDetails_List_Quote", params)
 
             For i As Integer = 0 To detailData.Rows.Count - 1
                 Dim itemId As String = detailData.Rows(i)("Id").ToString()

@@ -174,7 +174,7 @@ Partial Class Setting_Customer_List
                 New SqlParameter("@LevelName", Session("LevelName"))
             }
 
-            Dim thisData As DataTable = settingClass.GetDataTableSP("sp_CustomerList", params)
+            Dim thisData As DataTable = settingClass.GetDataTableSP("sp_Customers_List", params)
 
             gvList.DataSource = thisData
             gvList.DataBind()

@@ -102,7 +102,7 @@ Partial Class Order_Rework_Default
                 New SqlParameter("@Active", active)
             }
 
-            Dim thisData As DataTable = orderClass.GetDataTableSP("sp_GetOrderListReworks", params)
+            Dim thisData As DataTable = orderClass.GetDataTableSP("sp_OrderReworks_List", params)
             gvList.DataSource = thisData
             gvList.DataBind()
             gvList.Columns(1).Visible = LoginAccess("Visible ID")

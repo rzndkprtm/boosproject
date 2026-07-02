@@ -34,6 +34,11 @@
         <section class="row mb-3">
             <div class="col-12 d-flex justify-content-end flex-wrap gap-2">
                 <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Create Order" OnClick="btnAdd_Click" />
+                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnAddOrder">Create Order</button>
+                <ul class="dropdown-menu">
+                    <asp:Button runat="server" ID="btnInsert" CssClass="dropdown-item" Text="Insert Order" OnClick="btnInsert_Click" />
+                    <asp:Button runat="server" ID="btnUpload" CssClass="dropdown-item" Text="Upload Order" OnClick="btnUpload_Click" />
+                </ul>
                 <asp:Button runat="server" ID="btnRework" CssClass="btn btn-danger" Text="Rework Order" OnClick="btnRework_Click" />
                 <asp:Button runat="server" ID="btnFile" CssClass="btn btn-secondary" Text="File" OnClick="btnFile_Click" />
             </div>

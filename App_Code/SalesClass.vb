@@ -182,7 +182,7 @@ Public Class SalesClass
         Try
             If Not String.IsNullOrEmpty(companyId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As New SqlCommand("sp_RefreshSalesData", thisConn)
+                    Using thisCmd As New SqlCommand("sp_Sales_Refresh", thisConn)
                         thisCmd.CommandType = CommandType.StoredProcedure
                         thisCmd.Parameters.AddWithValue("@CompanyId", companyId)
                         thisConn.Open()

@@ -93,7 +93,7 @@ Partial Class Setting_Customer_Discount_Default
                 New SqlParameter("@LoginId", Session("LoginId"))
             }
 
-            gvList.DataSource = settingClass.GetDataTableSP("sp_CustomerDiscounts", params)
+            gvList.DataSource = settingClass.GetDataTableSP("sp_CustomerDiscounts_List", params)
             gvList.DataBind()
         Catch ex As Exception
             MessageError(True, ex.ToString())

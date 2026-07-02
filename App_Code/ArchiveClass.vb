@@ -12,7 +12,6 @@ Public Class ArchiveClass
                     Using thisAdapter As New SqlDataAdapter(thisCmd)
                         Dim dt As New DataTable()
                         thisAdapter.Fill(dt)
-
                         If dt.Rows.Count > 0 Then
                             Return dt.Rows(0)
                         Else

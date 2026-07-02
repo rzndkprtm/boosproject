@@ -104,7 +104,7 @@ Partial Class Setting_Login_User_Edit
                 New SqlParameter("@SessionLevelName", Session("LevelName").ToString())
             }
 
-            Dim myData As DataRow = settingClass.GetDataRowSP("sp_LoginEdit", params)
+            Dim myData As DataRow = settingClass.GetDataRowSP("sp_Logins_ViewById", params)
             If myData Is Nothing Then
                 Response.Redirect("~/setting/login/user", False)
                 Exit Sub

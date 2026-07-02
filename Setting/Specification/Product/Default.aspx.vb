@@ -381,10 +381,7 @@ Partial Class Setting_Specification_Product_Default
                 New SqlParameter("@ControlType", If(String.IsNullOrEmpty(controlText), CType(DBNull.Value, Object), controlText)),
                 New SqlParameter("@ColourType", If(String.IsNullOrEmpty(colourText), CType(DBNull.Value, Object), colourText))
             }
-
-            Dim thisData As DataTable = settingClass.GetDataTableSP("sp_ProductList", params)
-
-            gvList.DataSource = thisData
+            gvList.DataSource = settingClass.GetDataTableSP("sp_Products_List", params)
             gvList.DataBind()
             gvList.Columns(1).Visible = LoginAccess("Visible ID")
 
