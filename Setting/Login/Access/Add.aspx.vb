@@ -8,11 +8,11 @@ Partial Class Setting_Login_Access_Add
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        Dim pageAccess As Boolean = LoginAccess("Load")
-        If pageAccess = False Then
-            Response.Redirect("~/setting/login/access", False)
-            Exit Sub
-        End If
+        'Dim pageAccess As Boolean = LoginAccess("Load")
+        'If pageAccess = False Then
+        '    Response.Redirect("~/setting/login/access", False)
+        '    Exit Sub
+        'End If
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
