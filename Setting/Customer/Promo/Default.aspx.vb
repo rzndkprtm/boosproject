@@ -186,7 +186,7 @@ Partial Class Setting_Customer_Promo_Default
                 New SqlParameter("@LoginId", Session("LoginId"))
             }
 
-            gvList.DataSource = settingClass.GetDataTableSP("sp_CustomerPromos", params)
+            gvList.DataSource = settingClass.GetDataTableSP("sp_CustomerPromos_List", params)
             gvList.DataBind()
             gvList.Columns(1).Visible = LoginAccess("Visible ID") ' ID
 

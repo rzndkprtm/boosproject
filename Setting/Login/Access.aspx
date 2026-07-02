@@ -114,7 +114,7 @@
                     <div class="row mb-2">
                         <div class="col-12 form-group">
                             <label class="form-label">Page</label>
-                            <asp:TextBox runat="server" ID="txtPage" CssClass="form-control" placeholder="Page ..." autocomplete="off"></asp:TextBox>
+                            <asp:DropDownList runat="server" ID="ddlPage" CssClass="choices form-select"></asp:DropDownList>
                         </div>
                     </div>
                     <div class="row mb-2">

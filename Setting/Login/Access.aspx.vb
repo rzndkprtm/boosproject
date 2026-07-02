@@ -1,5 +1,6 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
+Imports System.IO
 
 Partial Class Setting_Login_Access
     Inherits Page
@@ -31,6 +32,7 @@ Partial Class Setting_Login_Access
 
             BindRole()
             BindLevel()
+            BindPage()
 
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         Catch ex As Exception
@@ -68,10 +70,11 @@ Partial Class Setting_Login_Access
 
                     BindRole()
                     BindLevel()
+                    BindPage()
 
                     ddlRoleId.SelectedValue = myData("RoleId").ToString()
                     ddlLevelId.SelectedValue = myData("LevelId").ToString()
-                    txtPage.Text = myData("Page").ToString()
+                    ddlPage.SelectedValue = myData("Page").ToString()
                     txtAction.Text = myData("Action").ToString()
                     txtDescription.Text = myData("Description").ToString()
                     ddlActive.SelectedValue = Convert.ToInt32(myData("Active"))
@@ -99,7 +102,7 @@ Partial Class Setting_Login_Access
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
             End If
-            If txtPage.Text = "" Then
+            If ddlPage.SelectedValue = "" Then
                 MessageError_Process(True, "PAGE IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
@@ -117,7 +120,7 @@ Partial Class Setting_Login_Access
                         Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO LoginAccess VALUES (NEWID(), @RoleId, @LevelId, @Page, @Action, @Description, @Active)", thisConn)
                             thisCmd.Parameters.AddWithValue("@RoleId", ddlRoleId.SelectedValue)
                             thisCmd.Parameters.AddWithValue("@LevelId", ddlLevelId.SelectedValue)
-                            thisCmd.Parameters.AddWithValue("@Page", txtPage.Text.Trim())
+                            thisCmd.Parameters.AddWithValue("@Page", ddlPage.SelectedValue)
                             thisCmd.Parameters.AddWithValue("@Action", txtAction.Text.Trim())
                             thisCmd.Parameters.AddWithValue("@Description", descText)
                             thisCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
@@ -136,7 +139,7 @@ Partial Class Setting_Login_Access
                             thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
                             thisCmd.Parameters.AddWithValue("@RoleId", ddlRoleId.SelectedValue)
                             thisCmd.Parameters.AddWithValue("@LevelId", ddlLevelId.SelectedValue)
-                            thisCmd.Parameters.AddWithValue("@Page", txtPage.Text.Trim())
+                            thisCmd.Parameters.AddWithValue("@Page", ddlPage.SelectedValue)
                             thisCmd.Parameters.AddWithValue("@Action", txtAction.Text.Trim())
                             thisCmd.Parameters.AddWithValue("@Description", descText)
                             thisCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
@@ -222,6 +225,54 @@ Partial Class Setting_Login_Access
             End If
         Catch ex As Exception
             MessageError_Process(True, ex.ToString())
+        End Try
+    End Sub
+
+    Protected Sub BindPage()
+        Try
+            ddlPage.Items.Clear()
+
+            Dim rootPath As String = Server.MapPath("~/")
+
+            Dim ignoreFolders As New List(Of String) From {"\bin\", "\obj\", "\App_Data\", "\App_Code\", "\Scripts\", "\Content\", "\Images\", "\fonts\", "\packages\", "\Properties\"}
+
+            Dim regex As New Regex("Title\s*=\s*""([^""]*)""", RegexOptions.IgnoreCase)
+
+            Dim pageList As New List(Of ListItem)
+
+            For Each file As String In Directory.EnumerateFiles(rootPath, "*.aspx", SearchOption.AllDirectories)
+                Try
+                    Dim skip As Boolean = False
+
+                    For Each folder As String In ignoreFolders
+                        If file.IndexOf(folder, StringComparison.OrdinalIgnoreCase) >= 0 Then
+                            skip = True
+                            Exit For
+                        End If
+                    Next
+
+                    If skip Then Continue For
+
+                    Dim content As String = IO.File.ReadAllText(file)
+                    Dim match As Match = regex.Match(content)
+
+                    Dim title As String
+
+                    If match.Success Then
+                        title = match.Groups(1).Value.Trim()
+                    Else
+                        title = Path.GetFileNameWithoutExtension(file)
+                    End If
+
+                    pageList.Add(New ListItem(title))
+                Catch
+                    Continue For
+                End Try
+            Next
+            pageList = pageList.OrderBy(Function(x) x.Text).ToList()
+            ddlPage.Items.AddRange(pageList.ToArray())
+        Catch ex As Exception
+            MessageError(True, ex.Message)
         End Try
     End Sub
 

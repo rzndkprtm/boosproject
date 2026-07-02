@@ -343,7 +343,7 @@ Partial Class Order_Detail
                         Dim newIdDetail As String = orderClass.GetNewOrderItemId()
 
                         Using thisConn As New SqlConnection(myConn)
-                            Using thisCmd As New SqlCommand("sp_CopyOrderDetails", thisConn)
+                            Using thisCmd As New SqlCommand("sp_OrderDetails_Copy", thisConn)
                                 thisCmd.CommandType = CommandType.StoredProcedure
                                 thisCmd.Parameters.AddWithValue("@ItemIdOld", itemId)
                                 thisCmd.Parameters.AddWithValue("@NewId", newIdDetail)
@@ -1206,6 +1206,9 @@ Partial Class Order_Detail
         Try
             Dim invoiceClass As New InvoiceClass
             Dim pdfBytes As Byte() = invoiceClass.BindContent(lblHeaderId.Text)
+            If lblCompanyId.Text = "3" Then
+                pdfBytes = invoiceClass.BindContent_Local(lblHeaderId.Text)
+            End If
 
             Dim fileName As String = String.Format("INVOICE {0} {1}.pdf", lblInvoiceNumber.Text.ToUpper(), lblCustomerName.Text.ToUpper())
 
@@ -1229,9 +1232,17 @@ Partial Class Order_Detail
     Protected Sub btnDownloadInvoiceCSV_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
+            If lblCompanyId.Text = "3" Then
+                MessageError(True, "SORRY, THIS FEATURE IS NOT AVAILABLE FOR THIS ORDER. !")
+                Exit Sub
+            End If
+
             Dim invoiceClass As New InvoiceClass
             Dim data As String = invoiceClass.BindXero(lblHeaderId.Text)
             Dim fileName As String = String.Format("{0}.csv", lblInvoiceNumber.Text)
+
+            dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), "Download Invoice (CSV)"}
+            orderClass.Logs(dataLog)
 
             Response.Clear()
             Response.Buffer = True
@@ -1239,7 +1250,7 @@ Partial Class Order_Detail
             Response.ContentType = "text/csv"
             Response.ContentEncoding = Encoding.UTF8
 
-            Response.AddHeader("content-disposition", "attachment;filename=" & fileName)
+            Response.AddHeader("content-disposition", "attachment;filename= " & fileName)
 
             Dim bom As Byte() = Encoding.UTF8.GetPreamble()
             Response.OutputStream.Write(bom, 0, bom.Length)
@@ -1250,7 +1261,6 @@ Partial Class Order_Detail
 
             Response.Flush()
             Response.End()
-
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -1379,7 +1389,7 @@ Partial Class Order_Detail
 
             Dim orderJobId As String = orderClass.CreateOrderJobId()
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderJobs VALUES (@OrderJobId, @JobNumber, @WorkOrder, @JobNote, @HeaderId, @CreatedBy, GETDATE()); UPDATE OrderHeaders SET OrderJobId=@OrderJobId WHERE Id=@HeaderId", thisConn)
+                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderJobs VALUES (@OrderJobId, @JobNumber, @WorkOrder, @JobNote, @HeaderId, @CreatedBy, GETDATE(), 1); UPDATE OrderHeaders SET OrderJobId=@OrderJobId WHERE Id=@HeaderId", thisConn)
                     thisCmd.Parameters.AddWithValue("@OrderJobId", orderJobId)
                     thisCmd.Parameters.AddWithValue("@JobNumber", txtConvertNumber.Text)
                     thisCmd.Parameters.AddWithValue("@WorkOrder", txtConvertWorkNumber.Text)
@@ -1403,14 +1413,20 @@ Partial Class Order_Detail
                     For j As Integer = 1 To totalItems
                         Dim formulaColumn As String = "Formula1"
                         If j = 2 Then formulaColumn = "Formula2"
+                        If j = 3 Then formulaColumn = "Formula3"
+                        If j = 4 Then formulaColumn = "Formula4"
+                        If j = 5 Then formulaColumn = "Formula5"
+                        If j = 6 Then formulaColumn = "Formula6"
+                        If j = 7 Then formulaColumn = "Formula7"
+                        If j = 8 Then formulaColumn = "Formula8"
                         Dim params As New List(Of SqlParameter) From {
                             New SqlParameter("@OrderJobId", orderJobId),
                             New SqlParameter("@ItemId", itemId),
-                            New SqlParameter("@ItemNumber", j),
+                            New SqlParameter("@ItemNumber", orderClass.CreateItemNumberJob(orderJobId, jobSheetId)),
                             New SqlParameter("@JobSheetId", jobSheetId),
                             New SqlParameter("@FormulaColumn", formulaColumn)
                         }
-                        orderClass.ExecuteSP("sp_InsertOrderJobDetails", params)
+                        orderClass.ExecuteSP("sp_OrderJobDetails_Insert", params)
                     Next
                 Next
             End If
@@ -1434,7 +1450,7 @@ Partial Class Order_Detail
         Try
             Dim orderJobId As String = orderClass.CreateOrderJobId()
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderJobs SELECT @OrderJobId, JobNumber, WorkOrder, JobNote, @HeaderId, @CreatedBy, GETDATE() FROM OrderJobs WHERE Id=@OldOrderJobId; UPDATE OrderHeaders SET OrderJobId=@OrderJobId WHERE Id=@HeaderId", thisConn)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderJobs SET Active=0 WHERE HeaderId=@HeaderId; INSERT INTO OrderJobs SELECT @OrderJobId, JobNumber, WorkOrder, JobNote, @HeaderId, @CreatedBy, GETDATE(), 1 FROM OrderJobs WHERE Id=@OldOrderJobId; UPDATE OrderHeaders SET OrderJobId=@OrderJobId WHERE Id=@HeaderId", thisConn)
                     thisCmd.Parameters.AddWithValue("@OrderJobId", orderJobId)
                     thisCmd.Parameters.AddWithValue("@OldOrderJobId", lblOrderJobId.Text)
                     thisCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
@@ -1456,14 +1472,20 @@ Partial Class Order_Detail
                     For j As Integer = 1 To totalItems
                         Dim formulaColumn As String = "Formula1"
                         If j = 2 Then formulaColumn = "Formula2"
+                        If j = 3 Then formulaColumn = "Formula3"
+                        If j = 4 Then formulaColumn = "Formula4"
+                        If j = 5 Then formulaColumn = "Formula5"
+                        If j = 6 Then formulaColumn = "Formula6"
+                        If j = 7 Then formulaColumn = "Formula7"
+                        If j = 8 Then formulaColumn = "Formula8"
                         Dim params As New List(Of SqlParameter) From {
                             New SqlParameter("@OrderJobId", orderJobId),
                             New SqlParameter("@ItemId", itemId),
-                            New SqlParameter("@ItemNumber", j),
+                            New SqlParameter("@ItemNumber", orderClass.CreateItemNumberJob(orderJobId, jobSheetId)),
                             New SqlParameter("@JobSheetId", jobSheetId),
                             New SqlParameter("@FormulaColumn", formulaColumn)
                         }
-                        orderClass.ExecuteSP("sp_InsertOrderJobDetails", params)
+                        orderClass.ExecuteSP("sp_OrderJobDetails_Insert", params)
                     Next
                 Next
             End If
@@ -1846,8 +1868,7 @@ Partial Class Order_Detail
                 New SqlParameter("@CustomerId", If(Session("CustomerId"), DBNull.Value)),
                 New SqlParameter("@CustomerLevel", If(Session("CustomerLevel"), DBNull.Value))
             }
-
-            Dim headerData As DataRow = orderClass.GetDataRowSP("sp_GetOrderHeaderById", params)
+            Dim headerData As DataRow = orderClass.GetDataRowSP("sp_OrderHeaders_ViewById", params)
             If headerData Is Nothing Then
                 Response.Redirect("~/order", False)
                 Exit Sub
@@ -2002,7 +2023,7 @@ Partial Class Order_Detail
             spanJobNote.InnerText = headerData("JobNote").ToString()
             spanJobCreatedBy.InnerText = headerData("JobBy").ToString()
             If Not String.IsNullOrEmpty(headerData("JobDate").ToString()) Then
-                spanJobCreatedDate.InnerText = Convert.ToDateTime(headerData("JobDate")).ToString("dd MMM yyyy")
+                spanJobCreatedDate.InnerText = Convert.ToDateTime(headerData("JobDate")).ToString("dd MMM yyyy HH:mm")
             End If
 
             BindCollector()
@@ -3129,7 +3150,7 @@ Partial Class Order_Detail
                 New SqlParameter("@HeaderId", Convert.ToInt32(lblHeaderId.Text))
             }
 
-            gvListItem.DataSource = orderClass.GetDataTableSP("sp_GetOrderItemsByHeader", param)
+            gvListItem.DataSource = orderClass.GetDataTableSP("sp_OrderDetails_List_ByHeaderId", param)
             gvListItem.DataBind()
 
             gvListItem.Columns(1).Visible = LoginAccess("Visible ID")
@@ -3459,7 +3480,7 @@ Partial Class Order_Detail
         Try
             Dim thisId As String = String.Empty
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As New SqlCommand("sp_InsertOrderActionContext", thisConn)
+                Using thisCmd As New SqlCommand("sp_OrderActionContext_Insert", thisConn)
                     thisCmd.CommandType = CommandType.StoredProcedure
                     thisCmd.Parameters.Add("@Query", SqlDbType.NVarChar).Value = queryString
                     thisConn.Open()

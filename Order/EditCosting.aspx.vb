@@ -196,7 +196,7 @@ Partial Class Order_EditCosting
                 New SqlParameter("@ItemId", lblItemId.Text),
                 New SqlParameter("@CompanyId", lblCompanyId.Text)
             }
-            gvList.DataSource = orderClass.GetDataTableSP("sp_GetOrderCostingByItem", params)
+            gvList.DataSource = orderClass.GetDataTableSP("sp_OrderCostings_ListItemId", params)
             gvList.DataBind()
             gvList.Columns(1).Visible = False
         Catch ex As Exception

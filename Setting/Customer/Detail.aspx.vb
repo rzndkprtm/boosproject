@@ -217,8 +217,7 @@ Partial Class Setting_Customer_Detail
                 New SqlParameter("@LoginId", Session("LoginId")),
                 New SqlParameter("@LevelName", Session("LevelName"))
             }
-            Dim thisData As DataRow = settingClass.GetDataRowSP("sp_CustomerDetail", params)
-
+            Dim thisData As DataRow = settingClass.GetDataRowSP("sp_Customers_Get", params)
             If thisData Is Nothing Then
                 Response.Redirect("~/setting/customer", False)
                 Exit Sub

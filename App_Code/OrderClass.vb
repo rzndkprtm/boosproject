@@ -658,7 +658,7 @@ Public Class OrderClass
                 New SqlParameter("@ItemId", Convert.ToInt32(itemId))
             }
 
-            Dim thisData As DataRow = GetDataRowSP("sp_GetOrderDetailById", param)
+            Dim thisData As DataRow = GetDataRowSP("sp_OrderDetails_Description", param)
             If thisData Is Nothing Then
                 Return "PLEASE CONTACT YOUR CUSTOMER SERVICE !"
             End If
@@ -1508,6 +1508,26 @@ Public Class OrderClass
             End Using
         Catch ex As Exception
             result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function CreateItemNumberJob(orderJobId As String, jobSheetId As String) As Integer
+        Dim result As Integer = 0
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand("SELECT TOP 1 ItemNumber FROM OrderJobDetails WHERE OrderJobId='" & orderJobId & "' AND JobSheetId='" & jobSheetId & "' ORDER BY ItemNumber DESC", thisConn)
+                    thisConn.Open()
+                    Dim lastId As Object = thisCmd.ExecuteScalar()
+                    If lastId IsNot Nothing AndAlso Not IsDBNull(lastId) Then
+                        result = CInt(lastId) + 1
+                    Else
+                        result = "1"
+                    End If
+                End Using
+            End Using
+        Catch ex As Exception
+            result = 0
         End Try
         Return result
     End Function
@@ -3198,7 +3218,7 @@ Public Class OrderClass
         Try
             If data.Length = 4 Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As New SqlCommand("sp_LogInsert", thisConn)
+                    Using thisCmd As New SqlCommand("sp_Logs_Insert", thisConn)
                         thisCmd.CommandType = CommandType.StoredProcedure
                         thisCmd.Parameters.AddWithValue("@Type", Convert.ToString(data(0)))
                         thisCmd.Parameters.AddWithValue("@DataId", Convert.ToString(data(1)))

@@ -196,7 +196,7 @@ Partial Class Order_Rework_Detail
                 Dim newIdDetail As String = orderClass.GetNewOrderItemId()
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As New SqlCommand("sp_CopyOrderDetails", thisConn)
+                    Using thisCmd As New SqlCommand("sp_OrderDetails_Copy", thisConn)
                         thisCmd.CommandType = CommandType.StoredProcedure
                         thisCmd.Parameters.AddWithValue("@ItemIdOld", itemId)
                         thisCmd.Parameters.AddWithValue("@NewId", newIdDetail)

@@ -72,7 +72,7 @@ Partial Class Order_Method
                 New SqlParameter("@CompanyDetail", companydetailid),
                 New SqlParameter("@Action", action)
             }
-            Dim dt As DataTable = orderClass.GetDataTableSP("sp_GetBlindTypeForOrderDetail", param)
+            Dim dt As DataTable = orderClass.GetDataTableSP("sp_Blinds_List", param)
 
             For Each row As DataRow In dt.Rows
                 result.Add(New With {.Value = row("Id").ToString(), .Text = row("Name").ToString()})
@@ -86,7 +86,7 @@ Partial Class Order_Method
                 New SqlParameter("@CompanyDetail", companydetailid),
                 New SqlParameter("@Action", action)
             }
-            Dim dt As DataTable = orderClass.GetDataTableSP("sp_GetBlindTypeForOrderDetail", param)
+            Dim dt As DataTable = orderClass.GetDataTableSP("sp_Blinds_List", param)
 
             For Each row As DataRow In dt.Rows
                 result.Add(New With {.Value = row("Id").ToString(), .Text = row("Name").ToString()})
@@ -100,7 +100,7 @@ Partial Class Order_Method
                 New SqlParameter("@CompanyDetail", companydetailid),
                 New SqlParameter("@Action", action)
             }
-            Dim dt As DataTable = orderClass.GetDataTableSP("sp_GetBlindTypeForOrderDetail", param)
+            Dim dt As DataTable = orderClass.GetDataTableSP("sp_Blinds_List", param)
 
             For Each row As DataRow In dt.Rows
                 result.Add(New With {.Value = row("Id").ToString(), .Text = row("Name").ToString()})
@@ -114,7 +114,7 @@ Partial Class Order_Method
                 New SqlParameter("@CompanyDetail", companydetailid),
                 New SqlParameter("@Action", action)
             }
-            Dim dt As DataTable = orderClass.GetDataTableSP("sp_GetBlindTypeForOrderDetail", param)
+            Dim dt As DataTable = orderClass.GetDataTableSP("sp_Blinds_List", param)
 
             For Each row As DataRow In dt.Rows
                 result.Add(New With {.Value = row("Id").ToString(), .Text = row("Name").ToString()})
@@ -1210,8 +1210,10 @@ Partial Class Order_Method
             For i As Integer = 1 To qty
                 Dim itemId As String = orderClass.GetNewOrderItemId()
 
-                Using thisConn As SqlConnection = New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails (Id, HeaderId, ProductId, PriceProductGroupId, PriceProductGroupIdB, SubType, Qty, Room, Mounting, ControlPosition, ControlPositionB, TilterPosition, TilterPositionB, Width, WidthB, [Drop], DropB, Supply, ControlLength, ControlLengthValue, ControlLengthB, ControlLengthValueB, WandLength, WandLengthValue, WandLengthB, WandLengthValueB, Notes, LinearMetre, LinearMetreB, SquareMetre, SquareMetreB, TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, @PriceProductGroupIdB, @SubType, 1, @Room, @Mounting, @ControlPosition, @ControlPositionB, @TilterPosition, @TilterPositionB, @Width, @WidthB, @Drop, @DropB, @Supply, @ControlLength, @ControlLengthValue, @ControlLengthB, @ControlLengthValueB, @WandLength, @WandLengthValue, @WandLengthB, @WandLengthValueB, @Notes, @LinearMetre, @LinearMetreB, @SquareMetre, @SquareMetreB, @TotalItems, @MarkUp, 1)", thisConn)
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("sp_OrderDetails_Insert_Aluminium", thisConn)
+                        thisCmd.CommandType = CommandType.StoredProcedure
+
                         thisCmd.Parameters.AddWithValue("@Id", itemId)
                         thisCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                         thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
@@ -1230,7 +1232,7 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@WandLengthValue", wandlength)
                         thisCmd.Parameters.AddWithValue("@ControlPositionB", controlpositionb)
                         thisCmd.Parameters.AddWithValue("@TilterPositionB", tilterpositionb)
-                        thisCmd.Parameters.AddWithValue("@Widthb", widthb)
+                        thisCmd.Parameters.AddWithValue("@WidthB", widthb)
                         thisCmd.Parameters.AddWithValue("@DropB", dropb)
                         thisCmd.Parameters.AddWithValue("@ControlLengthB", data.controllengthb)
                         thisCmd.Parameters.AddWithValue("@ControlLengthValueB", controllengthb)
@@ -1266,9 +1268,10 @@ Partial Class Order_Method
             Dim itemId As String = data.itemid
 
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As New SqlCommand("UPDATE OrderDetails SET ProductId=@ProductId, PriceProductGroupId=@PriceProductGroupId, PriceProductGroupIdB=@PriceProductGroupIdB, SubType=@Subtype, Qty=1, Room=@Room, Mounting=@Mounting, ControlPosition=@ControlPosition, ControlPositionB=@ControlPositionB, TilterPosition=@TilterPosition, TilterPositionB=@TilterPositionB, Width=@Width, WidthB=@WidthB, [Drop]=@Drop, DropB=@DropB, Supply=@Supply, ControlLength=@ControlLength, ControlLengthB=@ControlLengthB, ControlLengthValue=@ControlLengthValue, ControlLengthValueB=@ControlLengthValueB, WandLength=@WandLength, WandLengthB=@WandLengthB, WandLengthValue=@WandLengthValue, WandLengthValueB=@WandLengthValueB, Notes=@Notes, LinearMetre=@LinearMetre, LinearMetreB=@LinearMetreB, SquareMetre=@SquareMetre, SquareMetreB=@SquareMetreB, MarkUp=@MarkUp, TotalItems=@TotalItems, Active=1 WHERE Id=@Id", thisConn)
+                Using thisCmd As New SqlCommand("sp_OrderDetails_Update_Aluminium", thisConn)
+                    thisCmd.CommandType = CommandType.StoredProcedure
+
                     thisCmd.Parameters.AddWithValue("@Id", itemId)
-                    thisCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                     thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                     thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
                     thisCmd.Parameters.AddWithValue("@PriceProductGroupIdB", If(String.IsNullOrEmpty(priceProductGroupB), CType(DBNull.Value, Object), priceProductGroupB))
@@ -1285,7 +1288,7 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@WandLengthValue", wandlength)
                     thisCmd.Parameters.AddWithValue("@ControlPositionB", controlpositionb)
                     thisCmd.Parameters.AddWithValue("@TilterPositionB", tilterpositionb)
-                    thisCmd.Parameters.AddWithValue("@Widthb", widthb)
+                    thisCmd.Parameters.AddWithValue("@WidthB", widthb)
                     thisCmd.Parameters.AddWithValue("@DropB", dropb)
                     thisCmd.Parameters.AddWithValue("@ControlLengthB", data.controllengthb)
                     thisCmd.Parameters.AddWithValue("@ControlLengthValueB", controllengthb)
@@ -1522,14 +1525,16 @@ Partial Class Order_Method
             For i As Integer = 1 To qty
                 Dim itemId As String = orderClass.GetNewOrderItemId()
 
-                Using thisConn As SqlConnection = New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricIdB, FabricColourId, FabricColourIdB, ChainId, PriceProductGroupId, PriceProductGroupIdB, Qty, Room, Mounting, Width, WidthB, [Drop], DropB, ControlPosition, ControlLength, ControlLengthValue, Supply, LinearMetre, LinearMetreB, SquareMetre, SquareMetreB, TotalItems, Notes, MarkUp, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricIdB, @FabricColourId, @FabricColourIdB, @ChainId, @PriceProductGroupId, @PriceProductGroupIdB, @Qty, @Room, @Mounting, @Width, @WidthB, @Drop, @DropB, @ControlPosition, @ControlLength, @ControlLengthValue, @Supply, @LinearMetre, @LinearMetreB, @SquareMetre, @SquareMetreB, @TotalItems, @Notes, @MarkUp, 1)", thisConn)
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("sp_OrderDetails_Insert_CS", thisConn)
+                        thisCmd.CommandType = CommandType.StoredProcedure
+
                         thisCmd.Parameters.AddWithValue("@Id", itemId)
                         thisCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                         thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                         thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
                         thisCmd.Parameters.AddWithValue("@PriceProductGroupIdB", If(String.IsNullOrEmpty(priceProductGroupB), CType(DBNull.Value, Object), priceProductGroupB))
-                        thisCmd.Parameters.AddWithValue("@Qty", "1")
+                        thisCmd.Parameters.AddWithValue("@Qty", 1)
                         thisCmd.Parameters.AddWithValue("@Room", data.room)
                         thisCmd.Parameters.AddWithValue("@FabricId", data.fabrictype)
                         thisCmd.Parameters.AddWithValue("@FabricColourId", data.fabriccolour)
@@ -1572,14 +1577,16 @@ Partial Class Order_Method
 
         If data.itemaction = "edit" OrElse data.itemaction = "view" Then
             Dim itemId As String = data.itemid
-            Using thisConn As SqlConnection = New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET ProductId=@ProductId, FabricId=@FabricId, FabricIdB=@FabricIdB, FabricColourId=@FabricColourId, FabricColourIdB=@FabricColourIdB, ChainId=@ChainId,  PriceProductGroupId=@PriceProductGroupId, PriceProductGroupIdB=@PriceProductGroupIdB, Qty=@Qty, Room=@Room, Mounting=@Mounting, Width=@Width, WidthB=@WidthB, [Drop]=@Drop, DropB=@DropB, ControlPosition=@ControlPosition, ControlLength=@ControlLength, ControlLengthValue=@ControlLengthValue, Supply=@Supply, LinearMetre=@LinearMetre, LinearMetreB=@LinearMetreB, SquareMetre=@SquareMetre, SquareMetreB=@SquareMetreB, TotalItems=@TotalItems, Notes=@Notes, MarkUp=@MarkUp, Active=1 WHERE Id=@Id", thisConn)
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand("sp_OrderDetails_Update_CS", thisConn)
+                    thisCmd.CommandType = CommandType.StoredProcedure
+
                     thisCmd.Parameters.AddWithValue("@Id", itemId)
-                    thisCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                     thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                     thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
                     thisCmd.Parameters.AddWithValue("@PriceProductGroupIdB", If(String.IsNullOrEmpty(priceProductGroupB), CType(DBNull.Value, Object), priceProductGroupB))
-                    thisCmd.Parameters.AddWithValue("@Qty", "1")
+                    thisCmd.Parameters.AddWithValue("@Qty", 1)
                     thisCmd.Parameters.AddWithValue("@Room", data.room)
                     thisCmd.Parameters.AddWithValue("@FabricId", data.fabrictype)
                     thisCmd.Parameters.AddWithValue("@FabricColourId", data.fabriccolour)
@@ -2410,6 +2417,9 @@ Partial Class Order_Method
             If Not Integer.TryParse(data.markup, markup) OrElse markup < 0 Then Return "PLEASE CHECK YOUR MARK UP ORDER !"
         End If
 
+        If tubeName = "Valance 140mm" Then drop = 140
+        If tubeName = "Valance 100mm" Then drop = 100
+
         If String.IsNullOrEmpty(data.fabricinsert) Then
             data.fabrictype = String.Empty : data.fabriccolour = String.Empty
         End If
@@ -2435,7 +2445,7 @@ Partial Class Order_Method
                 Dim itemId As String = orderClass.GetNewOrderItemId()
 
                 Using thisConn As SqlConnection = New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricColourId,PriceProductGroupId, FabricInsert, Qty, Room, Mounting, Width, [Drop], BracketType, IsBlindIn, ReturnPosition, ReturnLength, ReturnLengthValue, LinearMetre, TotalItems, Notes, MarkUp, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricColourId, @PriceProductGroupId, @FabricInsert, @Qty, @Room, @Mounting, @Width, 0, @BracketType, @IsBlindIn, @ReturnPosition, @ReturnLength, @ReturnLengthValue, @LinearMetre, 1, @Notes, @MarkUp, 1)", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricColourId,PriceProductGroupId, FabricInsert, Qty, Room, Mounting, Width, [Drop], BracketType, IsBlindIn, ReturnPosition, ReturnLength, ReturnLengthValue, LinearMetre, TotalItems, Notes, MarkUp, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricColourId, @PriceProductGroupId, @FabricInsert, @Qty, @Room, @Mounting, @Width, @Drop, @BracketType, @IsBlindIn, @ReturnPosition, @ReturnLength, @ReturnLengthValue, @LinearMetre, 1, @Notes, @MarkUp, 1)", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", itemId)
                         thisCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                         thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
@@ -2447,6 +2457,7 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@Mounting", data.mounting)
                         thisCmd.Parameters.AddWithValue("@FabricInsert", data.fabricinsert)
                         thisCmd.Parameters.AddWithValue("@Width", width)
+                        thisCmd.Parameters.AddWithValue("@Drop", drop)
                         thisCmd.Parameters.AddWithValue("@BracketType", data.brackettype)
                         thisCmd.Parameters.AddWithValue("@IsBlindIn", data.isblindin)
                         thisCmd.Parameters.AddWithValue("@ReturnPosition", data.returnposition)
@@ -2477,7 +2488,7 @@ Partial Class Order_Method
             Dim itemId As String = data.itemid
 
             Using thisConn As SqlConnection = New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET ProductId=@ProductId, FabricId=@FabricId, FabricColourId=@FabricColourId, PriceProductGroupId=@PriceProductGroupId, FabricInsert=@FabricInsert, Qty=@Qty, Room=@Room, Mounting=@Mounting, Width=@Width, [Drop]=0, BracketType=@BracketType, IsBlindIn=@IsBlindIn, ReturnPosition=@ReturnPosition, ReturnLength=@ReturnLength, ReturnLengthValue=@ReturnLengthValue, LinearMetre=@LinearMetre, TotalItems=1, Notes=@Notes, MarkUp=@MarkUp, Active=1 WHERE Id=@Id", thisConn)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET ProductId=@ProductId, FabricId=@FabricId, FabricColourId=@FabricColourId, PriceProductGroupId=@PriceProductGroupId, FabricInsert=@FabricInsert, Qty=@Qty, Room=@Room, Mounting=@Mounting, Width=@Width, [Drop]=@Drop, BracketType=@BracketType, IsBlindIn=@IsBlindIn, ReturnPosition=@ReturnPosition, ReturnLength=@ReturnLength, ReturnLengthValue=@ReturnLengthValue, LinearMetre=@LinearMetre, TotalItems=1, Notes=@Notes, MarkUp=@MarkUp, Active=1 WHERE Id=@Id", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", itemId)
                     thisCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                     thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
@@ -2489,6 +2500,7 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@Mounting", data.mounting)
                     thisCmd.Parameters.AddWithValue("@FabricInsert", data.fabricinsert)
                     thisCmd.Parameters.AddWithValue("@Width", width)
+                    thisCmd.Parameters.AddWithValue("@Drop", drop)
                     thisCmd.Parameters.AddWithValue("@BracketType", data.brackettype)
                     thisCmd.Parameters.AddWithValue("@IsBlindIn", data.isblindin)
                     thisCmd.Parameters.AddWithValue("@ReturnPosition", data.returnposition)
@@ -2785,9 +2797,13 @@ Partial Class Order_Method
         Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
         Dim qty As Integer
+
         Dim width As Integer
         Dim widthb As Integer
         Dim widthc As Integer
+        Dim drop As Integer = 0
+        Dim dropb As Integer = 0
+        Dim dropc As Integer = 0
         Dim rlvalue As Integer
         Dim rlvalueb As Integer
         Dim markup As Integer
@@ -2869,17 +2885,23 @@ Partial Class Order_Method
 
         linearMetre = width / 1000
 
+        If tubeName = "Pelmet 140mm" Then drop = 140
+        If tubeName = "Pelmet 200mm" Then drop = 200
+
         If data.layoutcode = "A" Then
             widthb = 0 : widthc = 0
         End If
 
         If data.layoutcode = "B" OrElse data.layoutcode = "C" Then
+            dropb = drop
             widthc = 0
             linearMetreB = widthb / 1000
             totalItems = 2
         End If
 
         If data.layoutcode = "D" Then
+            dropb = drop
+            dropc = drop
             linearMetreB = widthb / 1000
             linearMetreC = widthc / 1000
             totalItems = 3
@@ -2911,7 +2933,7 @@ Partial Class Order_Method
                 Dim itemId As String = orderClass.GetNewOrderItemId()
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricColourId, PriceProductGroupId, PriceProductGroupIdB, PriceProductGroupIdC, Qty, Room, Mounting, Width, WidthB, WidthC, [Drop], DropB, DropC, LayoutCode, Batten, ReturnPosition, ReturnLengthValue, ReturnLengthValueB, Supply, LinearMetre, LinearMetreB, LinearMetreC, TotalItems, Notes, MarkUp, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricColourId, @PriceProductGroupId, @PriceProductGroupIdB, @PriceProductGroupIdC, @Qty, @Room, @Mounting, @Width, @WidthB, @WidthC, 0, 0, 0, @LayoutCode, @Batten, @ReturnPosition, @ReturnLengthValue, @ReturnLengthValueB, @Supply, @LinearMetre, @LinearMetreB, @LinearMetreC, @TotalItems, @Notes, @MarkUp, 1)", thisConn)
+                    Using thisCmd As New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricColourId, PriceProductGroupId, PriceProductGroupIdB, PriceProductGroupIdC, Qty, Room, Mounting, Width, WidthB, WidthC, [Drop], DropB, DropC, LayoutCode, Batten, ReturnPosition, ReturnLengthValue, ReturnLengthValueB, Supply, LinearMetre, LinearMetreB, LinearMetreC, TotalItems, Notes, MarkUp, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricColourId, @PriceProductGroupId, @PriceProductGroupIdB, @PriceProductGroupIdC, @Qty, @Room, @Mounting, @Width, @WidthB, @WidthC, @Drop, @DropB, @DropC, @LayoutCode, @Batten, @ReturnPosition, @ReturnLengthValue, @ReturnLengthValueB, @Supply, @LinearMetre, @LinearMetreB, @LinearMetreC, @TotalItems, @Notes, @MarkUp, 1)", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", itemId)
                         thisCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                         thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
@@ -2926,6 +2948,9 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@Width", width)
                         thisCmd.Parameters.AddWithValue("@WidthB", widthb)
                         thisCmd.Parameters.AddWithValue("@WidthC", widthc)
+                        thisCmd.Parameters.AddWithValue("@Drop", drop)
+                        thisCmd.Parameters.AddWithValue("@DropB", dropb)
+                        thisCmd.Parameters.AddWithValue("@DropC", dropc)
                         thisCmd.Parameters.AddWithValue("@LayoutCode", data.layoutcode)
                         thisCmd.Parameters.AddWithValue("@ReturnPosition", data.returnposition)
                         thisCmd.Parameters.AddWithValue("@ReturnLengthValue", rlvalue)
@@ -2960,7 +2985,7 @@ Partial Class Order_Method
             Dim itemId As String = data.itemid
 
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As New SqlCommand("UPDATE OrderDetails SET ProductId=@ProductId, FabricId=@FabricId, FabricColourId=@FabricColourId, PriceProductGroupId=@PriceProductGroupId, PriceProductGroupIdB=@PriceProductGroupIdB, PriceProductGroupIdC=@PriceProductGroupIdC, Qty=@Qty, Room=@Room, Mounting=@Mounting, Width=@Width, WidthB=@WidthB, WidthC=@WidthC, [Drop]=0, DropB=0, DropC=0, LayoutCode=@LayoutCode, Batten=@Batten, ReturnPosition=@ReturnPosition, ReturnLengthValue=@ReturnLengthValue, ReturnLengthValueB=@ReturnLengthValueB, Supply=@Supply, LinearMetre=@LinearMetre, LinearMetreB=@LinearMetreB, LinearMetreC=@LinearMetreC, TotalItems=@TotalItems, Notes=@Notes, MarkUp=@MarkUp, Active=1 WHERE Id=@Id", thisConn)
+                Using thisCmd As New SqlCommand("UPDATE OrderDetails SET ProductId=@ProductId, FabricId=@FabricId, FabricColourId=@FabricColourId, PriceProductGroupId=@PriceProductGroupId, PriceProductGroupIdB=@PriceProductGroupIdB, PriceProductGroupIdC=@PriceProductGroupIdC, Qty=@Qty, Room=@Room, Mounting=@Mounting, Width=@Width, WidthB=@WidthB, WidthC=@WidthC, [Drop]=@Drop, DropB=@DropB, DropC=@DropC, LayoutCode=@LayoutCode, Batten=@Batten, ReturnPosition=@ReturnPosition, ReturnLengthValue=@ReturnLengthValue, ReturnLengthValueB=@ReturnLengthValueB, Supply=@Supply, LinearMetre=@LinearMetre, LinearMetreB=@LinearMetreB, LinearMetreC=@LinearMetreC, TotalItems=@TotalItems, Notes=@Notes, MarkUp=@MarkUp, Active=1 WHERE Id=@Id", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", itemId)
                     thisCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                     thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
@@ -2975,6 +3000,9 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@Width", width)
                     thisCmd.Parameters.AddWithValue("@WidthB", widthb)
                     thisCmd.Parameters.AddWithValue("@WidthC", widthc)
+                    thisCmd.Parameters.AddWithValue("@Drop", drop)
+                    thisCmd.Parameters.AddWithValue("@DropB", dropb)
+                    thisCmd.Parameters.AddWithValue("@DropC", dropc)
                     thisCmd.Parameters.AddWithValue("@LayoutCode", data.layoutcode)
                     thisCmd.Parameters.AddWithValue("@ReturnPosition", data.returnposition)
                     thisCmd.Parameters.AddWithValue("@ReturnLengthValue", rlvalue)

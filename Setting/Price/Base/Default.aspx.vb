@@ -106,7 +106,7 @@ Partial Class Setting_Price_Base_Default
                 New SqlParameter("@ProductGroup", If(String.IsNullOrEmpty(productgroup), CType(DBNull.Value, Object), productgroup)),
                 New SqlParameter("@PriceGroup", If(String.IsNullOrEmpty(pricegroup), CType(DBNull.Value, Object), pricegroup))
             }
-            gvList.DataSource = settingClass.GetDataTableSP("sp_PriceBaseList", params)
+            gvList.DataSource = settingClass.GetDataTableSP("sp_PriceBases_List", params)
             gvList.DataBind()
 
             btnAdd.Visible = LoginAccess("Add")
@@ -123,7 +123,7 @@ Partial Class Setting_Price_Base_Default
                     New SqlParameter("@ProductGroupId", productgroup),
                     New SqlParameter("@PriceGroupId", pricegroup)
                 }
-                gvListMatrix.DataSource = settingClass.GetDataTableSP("sp_PriceBaseMatrix", paramMatrixs)
+                gvListMatrix.DataSource = settingClass.GetDataTableSP("sp_PriceBases_Pivot", paramMatrixs)
                 gvListMatrix.DataBind()
             End If
         Catch ex As Exception

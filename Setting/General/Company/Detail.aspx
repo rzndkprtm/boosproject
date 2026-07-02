@@ -1,6 +1,8 @@
 ﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Detail.aspx.vb" Inherits="Setting_General_Company_Detail" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Company Detail" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
+    
+
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
@@ -23,13 +25,13 @@
         </div>
     </div>
     <div class="page-content">
-         <section class="row" runat="server" id="divError">
-             <div class="col-12">
-                 <div class="alert alert-danger">
-                     <span runat="server" id="msgError"></span>
-                 </div>
-             </div>
-         </section>
+        <section class="row" runat="server" id="divError">
+            <div class="col-12">
+                <div class="alert alert-danger">
+                    <span runat="server" id="msgError"></span>
+                </div>
+            </div>
+        </section>
         <section class="row">
             <div class="col-12 col-sm-12 col-lg-4">
                 <div class="card">

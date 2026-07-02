@@ -189,7 +189,7 @@ Public Class PreviewClass
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
-                Dim aluminiumData As DataTable = GetDataTableSP("sp_GetAluminiumBlindData", params)
+                Dim aluminiumData As DataTable = GetDataTableSP("sp_OrderDetails_Get_Aluminium", params)
 
                 If aluminiumData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Aluminium"
@@ -279,7 +279,7 @@ Public Class PreviewClass
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
-                Dim cellularData As DataTable = GetDataTableSP("sp_GetCellularShadesData", params)
+                Dim cellularData As DataTable = GetDataTableSP("sp_OrderDetails_Get_CS", params)
 
                 If cellularData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Cellular"
@@ -366,7 +366,7 @@ Public Class PreviewClass
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
-                Dim curtainData As DataTable = GetDataTableSP("sp_GetCurtainData", params)
+                Dim curtainData As DataTable = GetDataTableSP("sp_OrderDetails_Get_Curtain", params)
 
                 If curtainData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Curtain"
@@ -453,7 +453,7 @@ Public Class PreviewClass
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
-                Dim designData As DataTable = GetDataTableSP("sp_GetDesignShadesData", params)
+                Dim designData As DataTable = GetDataTableSP("sp_OrderDetails_Get_DS", params)
 
                 If designData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Design"
@@ -542,7 +542,7 @@ Public Class PreviewClass
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
-                Dim lineaData As DataTable = GetDataTableSP("sp_GetLineaValanceData", params)
+                Dim lineaData As DataTable = GetDataTableSP("sp_OrderDetails_Get_Linea", params)
 
                 If lineaData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Linea"
@@ -622,7 +622,7 @@ Public Class PreviewClass
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
-                Dim panelData As DataTable = GetDataTableSP("sp_GetPanelGlideData", params)
+                Dim panelData As DataTable = GetDataTableSP("sp_OrderDetails_Get_PG", params)
 
                 If panelData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Panel"
@@ -713,7 +713,7 @@ Public Class PreviewClass
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
-                Dim pelmetData As DataTable = GetDataTableSP("sp_GetPelmetData", params)
+                Dim pelmetData As DataTable = GetDataTableSP("sp_OrderDetails_Get_Pelmet", params)
 
                 If pelmetData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Pelmet"
@@ -790,7 +790,7 @@ Public Class PreviewClass
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
-                Dim privacyData As DataTable = GetDataTableSP("sp_GetPrivacyVenetianData", params)
+                Dim privacyData As DataTable = GetDataTableSP("sp_OrderDetails_Get_Privacy", params)
 
                 If privacyData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Privacy"
@@ -868,7 +868,7 @@ Public Class PreviewClass
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
-                Dim rollerData As DataTable = GetDataTableSP("sp_GetRollerBlindData", params)
+                Dim rollerData As DataTable = GetDataTableSP("sp_OrderDetails_Get_Roller", params)
 
                 If rollerData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Roller"
@@ -1040,7 +1040,7 @@ Public Class PreviewClass
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
-                Dim horizonData As DataTable = GetDataTableSP("sp_GetRollerHorizonData", params)
+                Dim horizonData As DataTable = GetDataTableSP("sp_OrderDetails_Get_Horizon", params)
 
                 If horizonData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Roller"
@@ -1144,7 +1144,7 @@ Public Class PreviewClass
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
-                Dim romanData As DataTable = GetDataTableSP("sp_GetRomanBlindData", params)
+                Dim romanData As DataTable = GetDataTableSP("sp_OrderDetails_Get_Roman", params)
 
                 If romanData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Roman"
@@ -1246,7 +1246,7 @@ Public Class PreviewClass
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
-                Dim thisData As DataTable = GetDataTableSP("sp_GetSoftRomanData", params)
+                Dim thisData As DataTable = GetDataTableSP("sp_OrderDetails_Get_SoftRoman", params)
 
                 If thisData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Soft"
@@ -1347,7 +1347,7 @@ Public Class PreviewClass
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
-                Dim venetianData As DataTable = GetDataTableSP("sp_GetVenetianBlindData", params)
+                Dim venetianData As DataTable = GetDataTableSP("sp_OrderDetails_Get_Venetian", params)
 
                 If venetianData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Venetian"
@@ -1451,7 +1451,7 @@ Public Class PreviewClass
                     New SqlParameter("@HeaderId", headerId)
                 }
 
-                Dim verticalData As DataTable = GetDataTableSP("sp_GetVerticalBlindData", params)
+                Dim verticalData As DataTable = GetDataTableSP("sp_OrderDetails_Get_Vertical", params)
 
                 If verticalData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Vertical"
@@ -1547,7 +1547,7 @@ Public Class PreviewClass
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
-                Dim saphoraData As DataTable = GetDataTableSP("sp_GetSaphoraDrapeData", params)
+                Dim saphoraData As DataTable = GetDataTableSP("sp_OrderDetails_Get_Saphora", params)
 
                 If saphoraData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Saphora"
@@ -1638,7 +1638,7 @@ Public Class PreviewClass
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
-                Dim shutterData As DataTable = GetDataTableSP("sp_GetShutterExpressData", params)
+                Dim shutterData As DataTable = GetDataTableSP("sp_OrderDetails_Get_ShutterExpress", params)
 
                 If shutterData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "EXPRESS"
@@ -1824,7 +1824,7 @@ Public Class PreviewClass
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
-                Dim shutterData As DataTable = GetDataTableSP("sp_GetShutterOceanData", params)
+                Dim shutterData As DataTable = GetDataTableSP("sp_OrderDetails_Get_ShutterOcean", params)
 
                 If shutterData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "OCEAN"
@@ -2195,7 +2195,7 @@ Public Class PreviewClass
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
-                Dim windowData As DataTable = GetDataTableSP("sp_GetWindowData", params)
+                Dim windowData As DataTable = GetDataTableSP("sp_OrderDetails_Get_Window", params)
 
                 If windowData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Aluminium"
@@ -2288,7 +2288,7 @@ Public Class PreviewClass
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
-                Dim doorData As DataTable = GetDataTableSP("sp_GetDoorData", params)
+                Dim doorData As DataTable = GetDataTableSP("sp_OrderDetails_Get_Door", params)
 
                 If doorData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Aluminium"
@@ -2404,7 +2404,7 @@ Public Class PreviewClass
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
-                Dim sampleData As DataTable = GetDataTableSP("sp_GetSampleData", params)
+                Dim sampleData As DataTable = GetDataTableSP("sp_OrderDetails_Get_Sample", params)
 
                 If sampleData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Sample"
@@ -2470,7 +2470,7 @@ Public Class PreviewClass
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
-                Dim outdoorData As DataTable = GetDataTableSP("sp_GetOutdoorData", params)
+                Dim outdoorData As DataTable = GetDataTableSP("sp_OrderDetails_Get_Outdoor", params)
 
                 If outdoorData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Outdoor"

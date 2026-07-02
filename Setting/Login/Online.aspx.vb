@@ -90,7 +90,7 @@ Partial Class Setting_Login_Online
                 New SqlParameter("@SearchText", searchText),
                 New SqlParameter("@Minutes", minuteText)
             }
-            gvList.DataSource = settingClass.GetDataTableSP("sp_LoginOnline", paramsItem)
+            gvList.DataSource = settingClass.GetDataTableSP("sp_Logins_Online", paramsItem)
             gvList.DataBind()
 
             divMinute.Visible = LoginAccess("Sort Minute")

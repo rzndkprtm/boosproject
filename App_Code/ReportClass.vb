@@ -188,7 +188,7 @@ Public Class ReportClass
                 table.AddCell(CellData("SUBMITTED", isBold:=True))
                 table.AddCell(CellData("PRODUCTION", isBold:=True))
 
-                Dim thisData As DataTable = GetDataTableSP("sp_GetOrderHeadersForExport", params)
+                Dim thisData As DataTable = GetDataTableSP("sp_ReportOrder_OrderHeaders", params)
                 If thisData.Rows.Count > 0 Then
                     For i As Integer = 0 To thisData.Rows.Count - 1
                         Dim orderId As String = thisData.Rows(i)("OrderId").ToString()
@@ -235,7 +235,7 @@ Public Class ReportClass
                 New SqlParameter("@EndDate", endDate)
             }
 
-            Dim dt As DataTable = GetDataTableSP("sp_GetOrderHeadersForExport", params)
+            Dim dt As DataTable = GetDataTableSP("sp_ReportOrder_OrderHeaders", params)
 
             Using package As New ExcelPackage()
                 Dim ws = package.Workbook.Worksheets.Add("JOB ORDER")
@@ -287,7 +287,7 @@ Public Class ReportClass
                 New SqlParameter("@EndDate", endDate)
             }
 
-            Dim dt As DataTable = GetDataTableSP("sp_GetOrderHeadersForExport", params)
+            Dim dt As DataTable = GetDataTableSP("sp_ReportOrder_OrderHeaders", params)
 
             Dim sb As New StringBuilder()
 
@@ -352,7 +352,7 @@ Public Class ReportClass
                 table.AddCell(CellData("Shutter Pricing", isBold:=True))
                 table.AddCell(CellData("Door Pricing", isBold:=True))
 
-                Dim thisData As DataTable = GetDataTableSP("sp_CustomerList", params)
+                Dim thisData As DataTable = GetDataTableSP("sp_Customers_List", params)
                 If thisData.Rows.Count > 0 Then
                     For i As Integer = 0 To thisData.Rows.Count - 1
                         table.AddCell(CellData(thisData.Rows(i)("DebtorCode").ToString()))
@@ -386,7 +386,7 @@ Public Class ReportClass
                 New SqlParameter("@RoleName", roleName)
             }
 
-            Dim dt As DataTable = GetDataTableSP("sp_CustomerList", params)
+            Dim dt As DataTable = GetDataTableSP("sp_Customers_List", params)
 
             Using package As New ExcelPackage()
                 Dim ws = package.Workbook.Worksheets.Add("CUSTOMER LIST")
@@ -434,7 +434,7 @@ Public Class ReportClass
                 New SqlParameter("@RoleName", roleName)
             }
 
-            Dim dt As DataTable = GetDataTableSP("sp_CustomerList", params)
+            Dim dt As DataTable = GetDataTableSP("sp_Customers_List", params)
 
             Dim sb As New StringBuilder()
 

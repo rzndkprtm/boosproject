@@ -232,7 +232,7 @@ Partial Class Setting_Login_User_Default
                 New SqlParameter("@LevelName", Session("LevelName").ToString()),
                 New SqlParameter("@LoginId", Session("LoginId").ToString())
             }
-            gvList.DataSource = settingClass.GetDataTableSP("sp_LoginList", params)
+            gvList.DataSource = settingClass.GetDataTableSP("sp_Logins_List", params)
             gvList.DataBind()
             gvList.Columns(1).Visible = LoginAccess("Visible ID") ' ID
         Catch ex As Exception

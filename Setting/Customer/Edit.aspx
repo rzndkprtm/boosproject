@@ -52,7 +52,7 @@
                                             <label class="form-label">Level</label>
                                             <asp:DropDownList runat="server" ID="ddlLevel" CssClass="choices form-select">
                                                 <asp:ListItem Value="" Text=""></asp:ListItem>
-                                                <asp:ListItem Value="Main" Text="Main"></asp:ListItem>
+                                                <%--<asp:ListItem Value="Main" Text="Main"></asp:ListItem>--%>
                                                 <asp:ListItem Value="Sponsor" Text="Sponsor"></asp:ListItem>
                                                 <asp:ListItem Value="Member" Text="Member"></asp:ListItem>
                                                 <asp:ListItem Value="Referral" Text="Referral"></asp:ListItem>

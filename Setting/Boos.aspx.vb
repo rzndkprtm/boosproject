@@ -60,7 +60,7 @@ Partial Class Setting_Boos
     Protected Sub UpdateDownloadBOE()
         Try
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As New SqlCommand("sp_UpdateDownloadBOE", thisConn)
+                Using thisCmd As New SqlCommand("sp_OrderHeaders_Update_BOE", thisConn)
                     thisCmd.CommandType = CommandType.StoredProcedure
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()

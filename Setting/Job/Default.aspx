@@ -40,7 +40,7 @@
                     <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/job/order" class="dashboard-card">
-                    <div class="dashboard-number"><%= GetSumData("JobOrders") %></div>
+                    <div class="dashboard-number"><%= GetSumData("OrderJobs") %></div>
                     <div class="dashboard-title">Job Order</div>
                     <div class="dashboard-desc">Description</div>
                 </a>

@@ -233,9 +233,6 @@ Public Class InvoiceClass
 
     Public Function BindContent(headerId As String) As Byte()
         Using ms As New MemoryStream()
-            Dim doc As New Document(PageSize.A4, 36, 36, 110, 180)
-            Dim writer As PdfWriter = PdfWriter.GetInstance(doc, ms)
-
             Dim headerData As DataRow = GetDataRow("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, Customers.CompanyDetailId AS CompanyDetailId FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id='" & headerId & "'")
 
             Dim orderId As String = headerData("OrderId").ToString()
@@ -243,7 +240,6 @@ Public Class InvoiceClass
             Dim customerName As String = headerData("CustomerName").ToString()
             Dim orderNumber As String = headerData("OrderNumber").ToString()
             Dim orderName As String = headerData("OrderName").ToString()
-            Dim companyId As String = headerData("CompanyId").ToString()
             Dim invoiceNumber As String = headerData("InvoiceNumber").ToString()
 
             Dim issueDate As String = String.Empty
@@ -268,10 +264,7 @@ Public Class InvoiceClass
                 Dim suburb As String = customerAddress("Suburb").ToString()
                 Dim state As String = customerAddress("State").ToString()
                 Dim postCode As String = customerAddress("PostCode").ToString()
-                Dim country As String = String.Empty
-
-                If companyId = "2" Then country = "Australia"
-                If companyId = "3" Then country = "Indonesia"
+                Dim country As String = "Australia"
 
                 fullAddress = address
                 fullAddress &= vbCrLf
@@ -287,54 +280,31 @@ Public Class InvoiceClass
             invoiceTo &= vbCrLf
             invoiceTo &= fullAddress
 
-            Dim invoiceFrom As String = String.Empty
-
-            If companyId = "2" Then
-                invoiceFrom = "JPM Direct Pty Ltd"
-                invoiceFrom &= vbCrLf
-                invoiceFrom &= "Attention: Matt McCamey"
-                invoiceFrom &= vbCrLf
-                invoiceFrom &= vbCrLf
-                invoiceFrom &= "Ground Floor, 97-99 Bathrust St,"
-                invoiceFrom &= vbCrLf
-                invoiceFrom &= "Sydney NSW 2000"
-                invoiceFrom &= vbCrLf
-                invoiceFrom &= "Australia"
-            End If
-
-            If companyId = "3" Then
-                invoiceFrom = "PT Bumi Indah Global"
-                invoiceFrom &= vbCrLf
-                invoiceFrom &= "Attention: Yudi Tjan"
-                invoiceFrom &= vbCrLf
-                invoiceFrom &= vbCrLf
-                invoiceFrom &= "xxxxxx"
-                invoiceFrom &= vbCrLf
-                invoiceFrom &= "xxxxx"
-                invoiceFrom &= vbCrLf
-                invoiceFrom &= "Indonesia"
-            End If
+            Dim invoiceFrom As String = "JPM Direct Pty Ltd"
+            invoiceFrom &= vbCrLf
+            invoiceFrom &= "Attention: Matt McCamey"
+            invoiceFrom &= vbCrLf
+            invoiceFrom &= vbCrLf
+            invoiceFrom &= "Ground Floor, 97-99 Bathrust St,"
+            invoiceFrom &= vbCrLf
+            invoiceFrom &= "Sydney NSW 2000"
+            invoiceFrom &= vbCrLf
+            invoiceFrom &= "Australia"
 
             Dim reference As String = String.Format("{0} - {1}", orderNumber, orderName)
 
             Dim sumPrice As Decimal = GetItemData_Decimal("SELECT SUM(SellPrice) AS SumPrice FROM OrderCostings WHERE HeaderId='" & headerId & "' AND Type='Final'")
             Dim gst As Decimal = sumPrice * 10 / 100
-            If companyId = "3" Then
-                gst = sumPrice * 11 / 100
-            End If
             Dim finaltotal As Decimal = sumPrice + gst
 
             Dim sumPriceText As String = sumPrice.ToString("N2", enUS)
             Dim gstText As String = gst.ToString("N2", enUS)
             Dim finalTotalText As String = finaltotal.ToString("N2", enUS)
 
-            If companyId = "3" Then
-                sumPriceText = sumPrice.ToString("N2", idIDR)
-                gstText = gst.ToString("N2", idIDR)
-                finalTotalText = finaltotal.ToString("N2", idIDR)
-            End If
+            Dim doc As New Document(PageSize.A4, 36, 36, 110, 180)
+            Dim writer As PdfWriter = PdfWriter.GetInstance(doc, ms)
 
-            writer.PageEvent = New InvoiceEvents(companyId, finalTotalText)
+            writer.PageEvent = New InvoiceEvents(finalTotalText)
             doc.Open()
 
             Dim companyTable As New PdfPTable(2)
@@ -384,11 +354,9 @@ Public Class InvoiceClass
             rightTable.AddCell(CreateCell(""))
             rightTable.AddCell(CreateCell(invoiceFrom, False, Element.ALIGN_TOP))
 
-            If companyId = "2" Then
-                rightTable.AddCell(CreateCell("ABN", True))
-                rightTable.AddCell(CreateCell(""))
-                rightTable.AddCell(CreateCell("17 143 599 973"))
-            End If
+            rightTable.AddCell(CreateCell("ABN", True))
+            rightTable.AddCell(CreateCell(""))
+            rightTable.AddCell(CreateCell("17 143 599 973"))
 
             Dim rightCell As New PdfPCell(rightTable)
             rightCell.Border = Rectangle.NO_BORDER
@@ -417,8 +385,7 @@ Public Class InvoiceClass
             Dim params As New List(Of SqlParameter) From {
                 New SqlParameter("@HeaderId", headerId)
             }
-
-            Dim detailData As DataTable = GetDataTableSP("sp_GetOrderDetailData_Invoice", params)
+            Dim detailData As DataTable = GetDataTableSP("sp_OrderDetails_List_Invoice", params)
             For i As Integer = 0 To detailData.Rows.Count - 1
                 Dim itemId As String = detailData.Rows(i)("Id").ToString()
                 Dim itemNumber As Integer = detailData.Rows(i)("Item").ToString()
@@ -460,7 +427,23 @@ Public Class InvoiceClass
                     End If
                 End If
 
-                If designName = "Aluminium Blind" OrElse designName = "Privacy Venetian" OrElse designName = "Venetian Blind" OrElse designName = "Skyline Shutter Express" OrElse designName = "Skyline Shutter Ocean" Then
+                If designName = "Aluminium Blind" Then
+                    itemDescription = String.Format("{0} {1} {2}", invoiceName, size, squareMetreText)
+                End If
+
+                If designName = "Privacy Venetian" Then
+                    itemDescription = String.Format("{0} {1} {2}", invoiceName, size, squareMetreText)
+                End If
+
+                If designName = "Venetian Blind" Then
+                    itemDescription = String.Format("{0} {1} {2}", invoiceName, size, squareMetreText)
+                End If
+
+                If designName = "Skyline Shutter Express" Then
+                    itemDescription = String.Format("{0} {1} {2}", invoiceName, size, squareMetreText)
+                End If
+
+                If designName = "Skyline Shutter Ocean" Then
                     itemDescription = String.Format("{0} {1} {2}", invoiceName, size, squareMetreText)
                 End If
 
@@ -569,9 +552,6 @@ Public Class InvoiceClass
                 Dim finalCost As Decimal = GetItemData_Decimal("SELECT SUM(SellPrice) FROM OrderCostings WHERE HeaderId='" & headerId & "' AND ItemId='" & itemId & "' AND Number='" & itemNumber & "'")
 
                 Dim finalCostText As String = finalCost.ToString("N2", enUS)
-                If companyId = "3" Then
-                    finalCostText = finalCost.ToString("N2", idIDR)
-                End If
 
                 table.AddCell(CreateCellDetail(itemDescription))
                 table.AddCell(CreateCellDetail(detailData.Rows(i)("Qty").ToString(), False, Element.ALIGN_CENTER))
@@ -585,15 +565,340 @@ Public Class InvoiceClass
             Dim textGST As String = "Total GST 10%"
             Dim textTotal As String = String.Format("AUD {0}", finalTotalText)
 
-            If companyId = "3" Then
-                textGST = "Total GST 11%"
-                textTotal = String.Format("RP {0}", finalTotalText)
-            End If
-
             table.AddCell(CreateCellTotal(textGST))
             table.AddCell(CreateCellTotal(String.Empty))
             table.AddCell(CreateCellTotal(gstText))
 
+            table.AddCell(CreateCellTotal("TOTAL", isBold:=True))
+            table.AddCell(CreateCellTotal(String.Empty))
+            table.AddCell(CreateCellTotal(textTotal, isBold:=True))
+
+            doc.Add(table)
+            doc.Close()
+
+            Return ms.ToArray()
+        End Using
+    End Function
+
+    Public Function BindContent_Local(headerId As String) As Byte()
+        Using ms As New MemoryStream()
+            Dim headerData As DataRow = GetDataRow("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, Customers.CompanyDetailId AS CompanyDetailId FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id='" & headerId & "'")
+
+            Dim orderId As String = headerData("OrderId").ToString()
+            Dim customerId As String = headerData("CustomerId").ToString()
+            Dim customerName As String = headerData("CustomerName").ToString()
+            Dim orderNumber As String = headerData("OrderNumber").ToString()
+            Dim orderName As String = headerData("OrderName").ToString()
+            Dim invoiceNumber As String = headerData("InvoiceNumber").ToString()
+
+            Dim invoiceDate As String = String.Empty
+
+            If Not String.IsNullOrEmpty(headerData("InvoiceDate").ToString()) Then
+                If Not IsDBNull(headerData("InvoiceDate")) Then
+                    Dim invDate As Date = Convert.ToDateTime(headerData("InvoiceDate"))
+                    invoiceDate = invDate.ToString("dd MMM yyyy")
+                End If
+            End If
+
+            Dim fullAddress As String = String.Empty
+            Dim customerAddress As DataRow = GetDataRow("SELECT * FROM CustomerAddress WHERE CustomerId='" & customerId & "' AND [Primary]=1")
+            If customerAddress IsNot Nothing Then
+                Dim address As String = customerAddress("Address").ToString()
+                Dim suburb As String = customerAddress("Suburb").ToString()
+                Dim state As String = customerAddress("State").ToString()
+                Dim postCode As String = customerAddress("PostCode").ToString()
+                Dim country As String = "Indonesia"
+
+                fullAddress = address
+                fullAddress &= vbCrLf
+                fullAddress &= String.Format("{0}, {1}, {2}", suburb, state, postCode)
+                fullAddress &= vbCrLf
+                fullAddress &= country
+            End If
+
+            Dim customerAbn As String = GetItemData("SELECT ABNNumber FROM CustomerBusiness WHERE CustomerId='" & customerId & "' AND [Primary]=1")
+
+            Dim sumPrice As Decimal = GetItemData_Decimal("SELECT SUM(SellPrice) AS SumPrice FROM OrderCostings WHERE HeaderId='" & headerId & "' AND Type='Final'")
+            Dim gst As Decimal = sumPrice * 11 / 100
+            Dim finaltotal As Decimal = sumPrice + gst
+
+            Dim sumPriceText As String = sumPrice.ToString("N2", idIDR)
+            Dim gstText As String = gst.ToString("N2", idIDR)
+            Dim finalTotalText As String = finaltotal.ToString("N2", idIDR)
+
+            Dim doc As New Document(PageSize.A4, 36, 36, 100, 180)
+            Dim writer As PdfWriter = PdfWriter.GetInstance(doc, ms)
+
+            writer.PageEvent = New InvoiceLocalEvents()
+            doc.Open()
+
+            Dim companyTable As New PdfPTable(2)
+            companyTable.WidthPercentage = 100
+            companyTable.SetWidths(New Single() {0.6F, 0.4F})
+            companyTable.DefaultCell.Border = Rectangle.NO_BORDER
+
+            Dim leftTable As New PdfPTable(3)
+            leftTable.WidthPercentage = 100
+            leftTable.SetWidths({0.27F, 0.03F, 0.7F})
+            leftTable.DefaultCell.Border = Rectangle.NO_BORDER
+
+            leftTable.AddCell(CreateCell("Kepada", True, Element.ALIGN_TOP))
+            leftTable.AddCell(CreateCell(":", False, Element.ALIGN_TOP))
+            leftTable.AddCell(CreateCell(customerName, False, Element.ALIGN_TOP))
+
+            leftTable.AddCell(CreateCell("Nama", True, Element.ALIGN_TOP))
+            leftTable.AddCell(CreateCell(":", False, Element.ALIGN_TOP))
+            leftTable.AddCell(CreateCell(customerName, False, Element.ALIGN_TOP))
+
+            leftTable.AddCell(CreateCell("Alamat", True, Element.ALIGN_TOP))
+            leftTable.AddCell(CreateCell(":", False, Element.ALIGN_TOP))
+            leftTable.AddCell(CreateCell(fullAddress, False, Element.ALIGN_TOP))
+
+            leftTable.AddCell(CreateCell("NPWP", True))
+            leftTable.AddCell(CreateCell(":", False, Element.ALIGN_TOP))
+            leftTable.AddCell(CreateCell(customerAbn, False, Element.ALIGN_TOP))
+
+            leftTable.AddCell(CreateCell("Commodity", True))
+            leftTable.AddCell(CreateCell(":", False, Element.ALIGN_TOP))
+            leftTable.AddCell(CreateCell("", False, Element.ALIGN_TOP))
+
+            Dim leftCell As New PdfPCell(leftTable)
+            leftCell.Border = Rectangle.NO_BORDER
+            companyTable.AddCell(leftCell)
+
+            Dim rightTable As New PdfPTable(3)
+            rightTable.WidthPercentage = 100
+            leftTable.SetWidths({0.27F, 0.03F, 0.7F})
+            rightTable.DefaultCell.Border = Rectangle.NO_BORDER
+
+            rightTable.AddCell(CreateCell("No Faktur", True, Element.ALIGN_TOP))
+            rightTable.AddCell(CreateCell(":", False, Element.ALIGN_TOP))
+            rightTable.AddCell(CreateCell(invoiceNumber, False, Element.ALIGN_TOP))
+
+            rightTable.AddCell(CreateCell("Tgl Faktur", True, Element.ALIGN_TOP))
+            rightTable.AddCell(CreateCell(":", False, Element.ALIGN_TOP))
+            rightTable.AddCell(CreateCell(invoiceDate, False, Element.ALIGN_TOP))
+
+            rightTable.AddCell(CreateCell("Tgl Pengiriman", True, Element.ALIGN_TOP))
+            rightTable.AddCell(CreateCell(":", False, Element.ALIGN_TOP))
+            rightTable.AddCell(CreateCell(String.Empty, False, Element.ALIGN_TOP))
+
+            Dim rightCell As New PdfPCell(rightTable)
+            rightCell.Border = Rectangle.NO_BORDER
+            companyTable.AddCell(rightCell)
+
+            doc.Add(companyTable)
+
+            Dim emptyLine As New Paragraph(" ", New Font(Font.FontFamily.TIMES_ROMAN, 10))
+            emptyLine.SpacingBefore = 1
+            doc.Add(emptyLine)
+
+            Dim line As New draw.LineSeparator(0.5F, 100.0F, BaseColor.BLACK, Element.ALIGN_CENTER, -2)
+            doc.Add(New Chunk(line))
+
+            emptyLine.SpacingAfter = 3
+            doc.Add(emptyLine)
+
+            Dim table As New PdfPTable(5)
+            table.WidthPercentage = 100
+            table.SetWidths(New Single() {0.05F, 0.15F, 0.55F, 0.05F, 0.2F})
+
+            table.AddCell(CreateCellDetail("No", True))
+            table.AddCell(CreateCellDetail("Kode Barang", True))
+            table.AddCell(CreateCellDetail("Nama Barang", True))
+            table.AddCell(CreateCellDetail("Qty", True, Element.ALIGN_CENTER))
+            table.AddCell(CreateCellDetail("Harga (Rp)", True, Element.ALIGN_RIGHT))
+
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@HeaderId", headerId)
+            }
+            Dim detailData As DataTable = GetDataTableSP("sp_OrderDetails_List_Invoice", params)
+            For i As Integer = 0 To detailData.Rows.Count - 1
+                Dim itemId As String = detailData.Rows(i)("Id").ToString()
+                Dim itemNumber As Integer = detailData.Rows(i)("Item").ToString()
+
+                Dim designName As String = detailData.Rows(i)("DesignName").ToString()
+                Dim designType As String = detailData.Rows(i)("DesignType").ToString()
+                Dim blindName As String = detailData.Rows(i)("BlindName").ToString()
+                Dim fabricColourId As String = detailData.Rows(i)("FabricColour").ToString()
+                Dim width As String = detailData.Rows(i)("Width").ToString()
+                Dim drop As String = detailData.Rows(i)("Height").ToString()
+                Dim size As String = String.Format("({0}x{1})", width, drop)
+
+                Dim trackType As String = detailData.Rows(i)("TrackType").ToString()
+                Dim trackColour As String = detailData.Rows(i)("TrackColour").ToString()
+
+                Dim itemNote As String = detailData.Rows(i)("Notes").ToString()
+
+                Dim linearMetre As Decimal = 0D
+                Dim squareMetre As Decimal = 0D
+
+                If Not IsDBNull(detailData.Rows(i)("LM")) Then
+                    linearMetre = Math.Round(Convert.ToDecimal(detailData.Rows(i)("LM")), 2)
+                End If
+                If Not IsDBNull(detailData.Rows(i)("SQM")) Then
+                    squareMetre = Math.Round(Convert.ToDecimal(detailData.Rows(i)("SQM")), 2)
+                End If
+
+                Dim linearMetreText As String = String.Format("{0}lm", linearMetre.ToString("0.##", enUS))
+                Dim squareMetreText As String = String.Format("{0}sqm", squareMetre.ToString("0.##", enUS))
+
+                Dim invoiceName As String = detailData.Rows(i)("InvoiceName").ToString()
+                Dim itemDescription As String = invoiceName
+
+                If designName = "Service" Then
+                    itemDescription = String.Format("{0}", invoiceName)
+                    If Not String.IsNullOrEmpty(itemNote) Then
+                        itemDescription &= vbCrLf
+                        itemDescription &= itemNote
+                    End If
+                End If
+
+                If designName = "Aluminium Blind" Then
+                    itemDescription = String.Format("{0} {1} {2}", invoiceName, size, squareMetreText)
+                End If
+
+                If designName = "Privacy Venetian" Then
+                    itemDescription = String.Format("{0} {1} {2}", invoiceName, size, squareMetreText)
+                End If
+
+                If designName = "Venetian Blind" Then
+                    itemDescription = String.Format("{0} {1} {2}", invoiceName, size, squareMetreText)
+                End If
+
+                If designName = "Skyline Shutter Express" Then
+                    itemDescription = String.Format("{0} {1} {2}", invoiceName, size, squareMetreText)
+                End If
+
+                If designName = "Cellular Shades" Then
+                    Dim fabricColourName As String = GetFabricColourName(fabricColourId)
+                    itemDescription = String.Format("{0} {1} {2}", invoiceName, size, squareMetreText)
+                    If blindName = "Day & Night" Then
+                        Dim secondFabricColour As String = GetItemData("SELECT FabricColourIdB FROM OrderDetails WHERE Id='" & itemId & "'")
+                        Dim fabricColourNameB As String = GetFabricColourName(secondFabricColour)
+
+                        itemDescription &= vbCrLf
+                        itemDescription &= fabricColourName
+                        itemDescription &= vbCrLf
+                        itemDescription &= fabricColourNameB
+                    End If
+                End If
+
+                If designName = "Design Shades" Then
+                    Dim fabricColourName As String = GetFabricColourName(fabricColourId)
+                    itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, fabricColourName, size, squareMetreText)
+                End If
+
+                If designName = "Roman Blind" Then
+                    Dim fabricColourName As String = GetFabricColourName(fabricColourId)
+                    itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, fabricColourName, size, squareMetreText)
+                End If
+
+                If designName = "Soft Roman" Then
+                    Dim fabricColourName As String = GetFabricColourName(fabricColourId)
+                    itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, fabricColourName, size, squareMetreText)
+                End If
+
+                If designName = "Roller Blind" Then
+                    Dim fabricColourName As String = GetFabricColourName(fabricColourId)
+                    itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, fabricColourName, size, squareMetreText)
+                End If
+
+                If designName = "Curtain" Then
+                    Dim fabricColourName As String = GetFabricColourName(fabricColourId)
+                    itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, fabricColourName, size, squareMetreText)
+                    itemDescription &= vbCrLf
+                    itemDescription &= String.Format("{0} {1} ({2}) {3}", trackType, trackColour, width, linearMetreText)
+
+                    If blindName = "Curtain Only" Then
+                        itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, fabricColourName, size, squareMetreText)
+                    End If
+
+                    If blindName = "Track Only" Then
+                        itemDescription = String.Format("{0} {1} ({2}) {3}", invoiceName, width, linearMetreText)
+                    End If
+                End If
+
+                If designName = "Linea Valance" Then
+                    itemDescription = String.Format("{0} ({1}mm) {2}", invoiceName, width, linearMetreText)
+                End If
+
+                If designName = "Panel Glide" Then
+                    Dim fabricColourName As String = GetFabricColourName(fabricColourId)
+                    itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, fabricColourName, size, squareMetreText)
+                    If blindName = "Track Only" Then
+                        itemDescription = String.Format("{0} ({1}) {2}", invoiceName, width, linearMetreText)
+                    End If
+                End If
+
+                If designName = "Pelmet" Then
+                    Dim fabricColourName As String = GetFabricColourName(fabricColourId)
+                    itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, fabricColourName, size, linearMetreText)
+                End If
+
+                If designName = "Vertical" Then
+                    Dim fabricColourName As String = GetFabricColourName(fabricColourId)
+                    fabricColourName = fabricColourName.Replace("127mm ", "").Replace("89mm ", "").Trim()
+
+                    itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, fabricColourName, size, squareMetreText)
+                    If blindName = "Track Only" Then
+                        itemDescription = String.Format("{0} ({1}) {2}", invoiceName, width, linearMetreText)
+                    End If
+                End If
+
+                If designName = "Saphora Drape" Then
+                    Dim fabricColourName As String = GetFabricColourName(fabricColourId)
+                    itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, fabricColourName, size, squareMetreText)
+                End If
+
+                Dim checkNote As String = GetItemData("SELECT Description FROM OrderCostings WHERE HeaderId='" & headerId & "' AND ItemId='" & itemId & "' AND Type='Note'")
+                If Not String.IsNullOrEmpty(checkNote) Then
+                    itemDescription &= vbCrLf
+                    itemDescription &= String.Format("* <i>{0}</i>", checkNote)
+                End If
+
+                If designType = "Blinds" OrElse designType = "Shutters" Then
+                    Dim pricingData As DataTable = GetDataTable("SELECT * FROM OrderCostings WHERE HeaderId='" & headerId & "' AND ItemId='" & itemId & "' AND Number='" & itemNumber & "' AND Type='Surcharge'")
+                    If pricingData.Rows.Count > 0 Then
+                        Dim surchargeList As New List(Of String)
+
+                        For iPricing As Integer = 0 To pricingData.Rows.Count - 1
+                            Dim pricingDesc As String = pricingData.Rows(iPricing)("Description").ToString()
+                            pricingDesc = pricingDesc.Replace("#" & itemNumber & " ", "")
+                            surchargeList.Add(pricingDesc)
+                        Next
+                        itemDescription &= vbCrLf
+                        itemDescription &= String.Join(", ", surchargeList)
+                    End If
+                End If
+
+                Dim finalCost As Decimal = GetItemData_Decimal("SELECT SUM(SellPrice) FROM OrderCostings WHERE HeaderId='" & headerId & "' AND ItemId='" & itemId & "' AND Number='" & itemNumber & "'")
+
+                Dim finalCostText As String = finalCost.ToString("N2", idIDR)
+
+                table.AddCell(CreateCellDetail(i + 1))
+                table.AddCell(CreateCellDetail("Kode Barang"))
+                table.AddCell(CreateCellDetail(itemDescription))
+                table.AddCell(CreateCellDetail(detailData.Rows(i)("Qty").ToString(), False, Element.ALIGN_CENTER))
+                table.AddCell(CreateCellDetail(finalCostText, True, Element.ALIGN_RIGHT))
+            Next
+
+            table.AddCell(CreateCellTotal(String.Empty))
+            table.AddCell(CreateCellTotal(String.Empty))
+            table.AddCell(CreateCellTotal("Sub Total"))
+            table.AddCell(CreateCellTotal(String.Empty))
+            table.AddCell(CreateCellTotal(sumPriceText))
+
+            Dim textGST As String = "Total GST 11%"
+            Dim textTotal As String = String.Format("RP {0}", finalTotalText)
+            table.AddCell(CreateCellTotal(String.Empty))
+            table.AddCell(CreateCellTotal(String.Empty))
+            table.AddCell(CreateCellTotal(textGST))
+            table.AddCell(CreateCellTotal(String.Empty))
+            table.AddCell(CreateCellTotal(gstText))
+
+            table.AddCell(CreateCellTotal(String.Empty))
+            table.AddCell(CreateCellTotal(String.Empty))
             table.AddCell(CreateCellTotal("TOTAL", isBold:=True))
             table.AddCell(CreateCellTotal(String.Empty))
             table.AddCell(CreateCellTotal(textTotal, isBold:=True))
@@ -652,7 +957,7 @@ Public Class InvoiceClass
                 New SqlParameter("@HeaderId", headerId)
             }
 
-            Dim detailData As DataTable = GetDataTableSP("sp_GetOrderDetailData_Invoice", params)
+            Dim detailData As DataTable = GetDataTableSP("sp_OrderDetails_List_Invoice", params)
             For i As Integer = 0 To detailData.Rows.Count - 1
                 Dim itemId As String = detailData.Rows(i)("Id").ToString()
                 Dim itemNumber As Integer = Convert.ToInt32(detailData.Rows(i)("Item"))
@@ -840,11 +1145,9 @@ End Class
 Public Class InvoiceEvents
     Inherits PdfPageEventHelper
 
-    Private companyId As String
     Private totalPrice As String
 
-    Public Sub New(companyId As String, totalPrice As String)
-        Me.companyId = companyId
+    Public Sub New(totalPrice As String)
         Me.totalPrice = totalPrice
     End Sub
 
@@ -856,14 +1159,7 @@ Public Class InvoiceEvents
         headerTable.LockedWidth = True
         headerTable.SetWidths(New Single() {0.6F, 0.4F})
 
-        Dim imagePath As String = HttpContext.Current.Server.MapPath("~/assets/images/logo/general.jpg")
-        If companyId = "2" Then
-            imagePath = HttpContext.Current.Server.MapPath("~/assets/images/logo/jpmdirect.jpg")
-        End If
-        If companyId = "3" Then
-            imagePath = HttpContext.Current.Server.MapPath("~/assets/images/logo/big.jpg")
-        End If
-
+        Dim imagePath As String = HttpContext.Current.Server.MapPath("~/assets/images/logo/jpmdirect.jpg")
         Dim img As Image = Image.GetInstance(imagePath)
         img.ScaleToFit(150, 60)
 
@@ -873,9 +1169,7 @@ Public Class InvoiceEvents
         imgCell.VerticalAlignment = Element.ALIGN_TOP
         headerTable.AddCell(imgCell)
 
-        Dim mataUang As String = String.Empty
-        If companyId = "2" OrElse companyId = "4" Then mataUang = "AUD"
-        If companyId = "3" OrElse companyId = "5" Then mataUang = "RP"
+        Dim mataUang As String = "AUD"
 
         Dim finalPrice As String = String.Format("{0} {1}", Me.totalPrice, mataUang)
 
@@ -934,15 +1228,112 @@ Public Class InvoiceEvents
         termsTable.TotalWidth = document.PageSize.Width - 72
         termsTable.LockedWidth = True
 
-        Dim termsText As String = String.Empty
-
-        If companyId = "2" Then
-            termsText = "Account Name : JPM Direct Pty Ltd" & vbCrLf &
+        Dim termsText As String = "Account Name : JPM Direct Pty Ltd" & vbCrLf &
                                   "BSB : 084 209" & vbCrLf &
                                   "Acct :  721 649 678" & vbCrLf &
                                   "Bank : National Australia Bank Limited (NAB)" & vbCrLf & vbCrLf &
                                   "https://pay.b2bpay.com.au/JPMDi"
-        End If
+
+        Dim termsPhrase As New Phrase()
+        termsPhrase.Add(New Chunk("Terms & Conditions:" & vbCrLf, New Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD)))
+        termsPhrase.Add(New Chunk(vbCrLf, New Font(Font.FontFamily.TIMES_ROMAN, 10)))
+        termsPhrase.Add(New Chunk(termsText & vbCrLf & vbCrLf, New Font(Font.FontFamily.TIMES_ROMAN, 10)))
+
+        Dim termsCell As New PdfPCell(termsPhrase)
+        termsCell.Border = 0
+        termsCell.HorizontalAlignment = Element.ALIGN_LEFT
+        termsCell.VerticalAlignment = Element.ALIGN_TOP
+        termsCell.PaddingTop = 5
+        termsCell.PaddingBottom = 5
+        termsTable.AddCell(termsCell)
+
+        termsTable.WriteSelectedRows(0, -1, 36, document.PageSize.GetBottom(100), cb)
+    End Sub
+End Class
+
+Public Class InvoiceLocalEvents
+    Inherits PdfPageEventHelper
+
+    Public Overrides Sub OnEndPage(writer As PdfWriter, document As Document)
+        Dim cb As PdfContentByte = writer.DirectContent
+
+        Dim headerTable As New PdfPTable(2)
+        headerTable.TotalWidth = document.PageSize.Width - 72
+        headerTable.LockedWidth = True
+        headerTable.SetWidths(New Single() {0.8F, 0.2F})
+
+        Dim imagePath As String = HttpContext.Current.Server.MapPath("~/assets/images/logo/big.jpg")
+
+        Dim img As Image = Image.GetInstance(imagePath)
+        Dim availableWidth As Single = (document.PageSize.Width - 72) * 0.7F
+        Dim availableHeight As Single = 45
+
+        img.ScaleToFit(availableWidth, availableHeight)
+
+        Dim imgCell As New PdfPCell(img)
+        imgCell.Border = Rectangle.NO_BORDER
+        imgCell.PaddingLeft = 5
+        imgCell.PaddingRight = 5
+        imgCell.HorizontalAlignment = Element.ALIGN_LEFT
+        imgCell.VerticalAlignment = Element.ALIGN_MIDDLE
+
+        headerTable.AddCell(imgCell)
+
+        Dim invoiceCell As New PdfPCell(New Phrase("INVOICE", New Font(Font.FontFamily.TIMES_ROMAN, 20, Font.BOLD)))
+
+        invoiceCell.Border = Rectangle.NO_BORDER
+        invoiceCell.HorizontalAlignment = Element.ALIGN_RIGHT
+        invoiceCell.VerticalAlignment = Element.ALIGN_BOTTOM
+        invoiceCell.PaddingBottom = 2
+
+        headerTable.AddCell(invoiceCell)
+
+        Dim headerTopY As Single = document.PageSize.Height - 20
+        headerTable.WriteSelectedRows(0, -1, 36, headerTopY, cb)
+
+        Dim headerHeight As Single = headerTable.TotalHeight
+
+        Dim lineTable As New PdfPTable(1)
+        lineTable.TotalWidth = document.PageSize.Width - 72
+        lineTable.LockedWidth = True
+
+        Dim line As New draw.LineSeparator(0.5F, 100.0F, BaseColor.BLACK, Element.ALIGN_CENTER, -1)
+        Dim lineChunk As New Chunk(line)
+        Dim linePhrase As New Phrase(lineChunk)
+
+        Dim lineCell As New PdfPCell(linePhrase)
+        lineCell.Border = 0
+        lineCell.PaddingTop = 2
+        lineCell.PaddingBottom = 2
+        lineTable.AddCell(lineCell)
+
+        Dim headerBottomY As Single = headerTopY - headerHeight - 5
+        lineTable.WriteSelectedRows(0, -1, 36, headerBottomY, cb)
+
+        Dim lineBeforeTermsTable As New PdfPTable(1)
+        lineBeforeTermsTable.TotalWidth = document.PageSize.Width - 72
+        lineBeforeTermsTable.LockedWidth = True
+
+        Dim hr As New draw.LineSeparator(1.0F, 100.0F, BaseColor.BLACK, Element.ALIGN_CENTER, -1)
+        Dim hrChunk As New Chunk(hr)
+        Dim hrPhrase As New Phrase(hrChunk)
+
+        Dim hrCell As New PdfPCell(hrPhrase)
+        hrCell.Border = 0
+        hrCell.PaddingTop = 5
+        hrCell.PaddingBottom = 5
+        lineBeforeTermsTable.AddCell(hrCell)
+
+        lineBeforeTermsTable.WriteSelectedRows(0, -1, 36, document.PageSize.GetBottom(120), cb)
+
+        Dim termsTable As New PdfPTable(1)
+        termsTable.TotalWidth = document.PageSize.Width - 72
+        termsTable.LockedWidth = True
+
+        Dim termsText As String = "Pembayaran" & vbCrLf &
+                                  "A/N : PT Bumi Indah Global" & vbCrLf &
+                                  "Nomor Rekening : 2968 0000 8330" & vbCrLf &
+                                  "Bank : OCBC NISP cabang Tangerang City"
 
         Dim termsPhrase As New Phrase()
         termsPhrase.Add(New Chunk("Terms & Conditions:" & vbCrLf, New Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD)))

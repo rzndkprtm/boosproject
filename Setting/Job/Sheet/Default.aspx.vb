@@ -54,7 +54,7 @@ Partial Class Setting_Job_Sheet_Default
             Dim params As New List(Of SqlParameter) From {
                 New SqlParameter("@SearchText", If(String.IsNullOrEmpty(searchText), CType(DBNull.Value, Object), searchText))
             }
-            Dim thisData As DataTable = jobClass.GetDataTableSP("sp_JobSheetList", params)
+            Dim thisData As DataTable = jobClass.GetDataTableSP("sp_JobSheets_List", params)
             gvList.DataSource = thisData
             gvList.DataBind()
 
