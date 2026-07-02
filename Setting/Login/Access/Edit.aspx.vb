@@ -20,8 +20,7 @@ Partial Class Setting_Login_Access_Edit
             Exit Sub
         End If
 
-        lblId.Text = Request.QueryString("loginid").ToString()
-
+        lblId.Text = Request.QueryString("accessid").ToString()
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             BindData(lblId.Text)
