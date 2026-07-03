@@ -152,25 +152,16 @@ Partial Class Order_Default
             Dim companyId As String = orderClass.GetCompanyIdByOrder(thisId)
 
             If thisStatus = "Delete Order" Then
-                dataLog = {"OrderHeaders", thisId, Session("LoginId").ToString(), "Order Deleted"}
-                orderClass.Logs(dataLog)
-
-                Dim detailData As DataTable = orderClass.GetDataTable("SELECT * FROM OrderDetails WHERE HeaderId='" & thisId & "' AND Active=1 ORDER BY Id ASC")
-                If detailData.Rows.Count > 0 Then
-                    For i As Integer = 0 To detailData.Rows.Count - 1
-                        Dim itemId As String = detailData.Rows(i)("Id").ToString()
-                        dataLog = {"OrderDetails", thisId, Session("LoginId").ToString(), "Order Item Deleted | Order Header Deleted"}
-                        orderClass.Logs(dataLog)
-                    Next
-                End If
-
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Active=0, Download='No' WHERE Id=@Id; UPDATE OrderDetails SET Active=0 WHERE HeaderId=@Id;", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Active=0, Download='No' WHERE Id=@Id;", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", thisId)
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
+
+                dataLog = {"OrderHeaders", thisId, Session("LoginId").ToString(), "Order Deleted"}
+                orderClass.Logs(dataLog)
 
                 Response.Redirect("~/order", False)
             End If
@@ -422,7 +413,9 @@ Partial Class Order_Default
                     orderId = companyAlias & randomCode
                     Try
                         Using thisConn As New SqlConnection(myConn)
-                            Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderHeaders SELECT @NewID, @OrderId, CustomerId, NULL, @OrderNumber, @OrderName, @OrderNote, OrderType, OrderFactory, 'Unsubmitted', NULL, @CreatedBy, GETDATE(), NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, 0, 'No', NULL, 1 FROM OrderHeaders WHERE Id=@OldId; INSERT INTO OrderQuotes VALUES(@NewID, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
+                            Using thisCmd As New SqlCommand("sp_OrderHeaders_Copy", thisConn)
+                                thisCmd.CommandType = CommandType.StoredProcedure
+
                                 thisCmd.Parameters.AddWithValue("@OldId", thisId)
                                 thisCmd.Parameters.AddWithValue("@NewID", newIdHeader)
                                 thisCmd.Parameters.AddWithValue("@OrderId", orderId)
@@ -430,10 +423,12 @@ Partial Class Order_Default
                                 thisCmd.Parameters.AddWithValue("@OrderName", txtOrderNameNew.Text.Trim())
                                 thisCmd.Parameters.AddWithValue("@OrderNote", txtOrderNoteNew.Text)
                                 thisCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
+
                                 thisConn.Open()
                                 thisCmd.ExecuteNonQuery()
                             End Using
                         End Using
+
                         success = True
                     Catch exSql As SqlException
                         If exSql.Number = 2601 OrElse exSql.Number = 2627 Then
@@ -443,6 +438,14 @@ Partial Class Order_Default
                         End If
                     End Try
                 Loop
+
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("INSERT INTO OrderQuotes VALUES(@Id, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00)", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", newIdHeader)
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+                End Using
 
                 If orderType = "Builder" Then
                     Using thisConn As New SqlConnection(myConn)
@@ -782,7 +785,7 @@ Partial Class Order_Default
 
             gvList.Columns(1).Visible = LoginAccess("Visible ID")
             gvList.Columns(3).Visible = LoginAccess("Visible Customer Name")
-            If Session("CustomerLevel") = "Sponsor" AndAlso Session("LevelName") = "Leader" Then
+            If Session("CustomerLevel") = "Primary" AndAlso Session("LevelName") = "Leader" Then
                 gvList.Columns(3).Visible = True
             End If
             gvList.Columns(7).Visible = LoginAccess("Visible Created Date")

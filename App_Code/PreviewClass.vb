@@ -563,9 +563,9 @@ Public Class PreviewClass
                         items(0, i) = "Item : " & number
                         items(1, i) = lineaData.Rows(i)("Room").ToString()
                         items(2, i) = lineaData.Rows(i)("Mounting").ToString()
-                        items(3, i) = lineaData.Rows(i)("Width").ToString()
-                        items(4, i) = lineaData.Rows(i)("TubeName").ToString()
-                        items(5, i) = lineaData.Rows(i)("ColourName").ToString()
+                        items(3, i) = lineaData.Rows(i)("TubeName").ToString()
+                        items(4, i) = lineaData.Rows(i)("ColourName").ToString()
+                        items(5, i) = lineaData.Rows(i)("Width").ToString()
                         items(6, i) = lineaData.Rows(i)("FabricInsert").ToString()
                         items(7, i) = lineaData.Rows(i)("FabricName").ToString()
                         items(8, i) = lineaData.Rows(i)("FabricColour").ToString()

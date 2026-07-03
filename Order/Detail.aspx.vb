@@ -216,27 +216,17 @@ Partial Class Order_Detail
         Try
             Dim thisId As String = lblHeaderId.Text
 
-            dataLog = {"OrderHeaders", thisId, Session("LoginId").ToString(), "Order Deleted"}
-            orderClass.Logs(dataLog)
-
-            Dim detailData As DataTable = orderClass.GetDataTable("SELECT * FROM OrderDetails WHERE HeaderId='" & thisId & "' AND Active=1 ORDER BY Id ASC")
-            If detailData.Rows.Count > 0 Then
-                For i As Integer = 0 To detailData.Rows.Count - 1
-                    Dim detailId As String = detailData.Rows(i)("Id").ToString()
-
-                    dataLog = {"OrderDetails", detailId, Session("LoginId").ToString(), "Order Item Deleted | Order Header Deleted"}
-                    orderClass.Logs(dataLog)
-                Next
-            End If
-
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Active=0, Download='No' WHERE Id=@Id; UPDATE OrderDetails SET Active=0 WHERE HeaderId=@Id;", thisConn)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Active=0, Download='No' WHERE Id=@Id", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", thisId)
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
                 thisConn.Close()
             End Using
+
+            dataLog = {"OrderHeaders", thisId, Session("LoginId").ToString(), "Order Deleted"}
+            orderClass.Logs(dataLog)
 
             url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
             Response.Redirect(url, False)
@@ -300,9 +290,9 @@ Partial Class Order_Detail
                     orderId = companyAlias & randomCode
                     Try
                         Using thisConn As New SqlConnection(myConn)
-                            thisConn.Open()
+                            Using thisCmd As New SqlCommand("sp_OrderHeaders_Copy", thisConn)
+                                thisCmd.CommandType = CommandType.StoredProcedure
 
-                            Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderHeaders SELECT @NewID, @OrderId, CustomerId, NULL, @OrderNumber, @OrderName, @OrderNote, OrderType, OrderFactory, 'Unsubmitted', NULL, @CreatedBy, GETDATE(), NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, 0, 'No', NULL, 1 FROM OrderHeaders WHERE Id=@OldId; INSERT INTO OrderQuotes VALUES(@NewID, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
                                 thisCmd.Parameters.AddWithValue("@OldId", lblHeaderId.Text)
                                 thisCmd.Parameters.AddWithValue("@NewID", newIdHeader)
                                 thisCmd.Parameters.AddWithValue("@OrderId", orderId)
@@ -310,17 +300,10 @@ Partial Class Order_Detail
                                 thisCmd.Parameters.AddWithValue("@OrderName", txtOrderNameNew.Text.Trim())
                                 thisCmd.Parameters.AddWithValue("@OrderNote", txtOrderNoteNew.Text)
                                 thisCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
+
+                                thisConn.Open()
                                 thisCmd.ExecuteNonQuery()
                             End Using
-
-                            If lblOrderType.Text = "Builder" Then
-                                Using thisCmd As New SqlCommand("INSERT INTO OrderBuilders(Id) VALUES (@Id)", thisConn)
-                                    thisCmd.Parameters.AddWithValue("@Id", newIdHeader)
-                                    thisCmd.ExecuteNonQuery()
-                                End Using
-                            End If
-
-                            thisConn.Close()
                         End Using
 
                         success = True
@@ -332,6 +315,24 @@ Partial Class Order_Detail
                         End If
                     End Try
                 Loop
+
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("INSERT INTO OrderQuotes VALUES(@Id, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", newIdHeader)
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                If lblOrderType.Text = "Builder" Then
+                    Using thisConn As New SqlConnection(myConn)
+                        Using thisCmd As New SqlCommand("INSERT INTO OrderBuilders(Id) VALUES (@Id)", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", newIdHeader)
+                            thisConn.Open()
+                            thisCmd.ExecuteNonQuery()
+                        End Using
+                    End Using
+                End If
 
                 dataLog = {"OrderHeaders", newIdHeader, Session("LoginId").ToString(), "Order Created | Copy"}
                 orderClass.Logs(dataLog)
@@ -375,7 +376,7 @@ Partial Class Order_Detail
             If Not Session("RoleName") = "Developer" Then
                 MessageError_DuplicateOrder(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
                 If Session("RoleName") = "Customer" Then
-                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
+                    MessageError_DuplicateOrder(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showDuplicateOrder", thisScript, True)
@@ -400,17 +401,14 @@ Partial Class Order_Detail
                     MessageError(True, "ESTIMATOR IS REQUIRED !")
                     Exit Sub
                 End If
-
                 If String.IsNullOrEmpty(supervisor) Then
                     MessageError(True, "SUPERVISOR IS REQUIRED !")
                     Exit Sub
                 End If
-
                 If String.IsNullOrEmpty(address) Then
                     MessageError(True, "ADDRESS IS REQUIRED !")
                     Exit Sub
                 End If
-
                 Using thisConn As New SqlConnection(myConn)
                     Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET QuotedDate=GETDATE(), Status='Quoted' WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
@@ -1941,7 +1939,7 @@ Partial Class Order_Detail
 
             BindDesignType()
             BindService()
-            BindDataQuote()
+            BindDataQuote(headerId)
             BindDataItem(lblOrderStatus.Text)
             BindDataCosting(gvListItem.Rows.Count)
 
@@ -3179,49 +3177,54 @@ Partial Class Order_Detail
         End Try
     End Sub
 
-    Protected Sub BindDataQuote()
-        Dim quoteData As DataRow = orderClass.GetDataRow("SELECT * FROM OrderQuotes WHERE Id='" & lblHeaderId.Text & "'")
+    Protected Sub BindDataQuote(headerId As String)
+        Try
+            Dim quoteData As DataRow = orderClass.GetDataRow("SELECT * FROM OrderQuotes WHERE Id='" & headerId & "'")
 
-        If quoteData Is Nothing Then
-            Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderQuotes VALUES(@Id, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00)", thisConn)
-                    thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
-                    thisConn.Open()
-                    thisCmd.ExecuteNonQuery()
+            If quoteData Is Nothing Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("INSERT INTO OrderQuotes VALUES(@Id, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", headerId)
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
                 End Using
-            End Using
-            url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
-            Response.Redirect(url, False)
-        End If
 
-        divQuoteCity.Visible = False
+                url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+                Response.Redirect(url, False)
+            End If
 
-        spanDiscount.InnerText = "$"
-        spanMeasure.InnerText = "$"
-        spanInstall.InnerText = "$"
-        spanFreight.InnerText = "$"
+            divQuoteCity.Visible = False
 
-        If lblCompanyId.Text = "3" Then
-            divQuoteCity.Visible = True
+            spanDiscount.InnerText = "$"
+            spanMeasure.InnerText = "$"
+            spanInstall.InnerText = "$"
+            spanFreight.InnerText = "$"
 
-            spanDiscount.InnerText = "Rp"
-            spanMeasure.InnerText = "Rp"
-            spanInstall.InnerText = "Rp"
-            spanFreight.InnerText = "Rp"
-        End If
+            If lblCompanyId.Text = "3" Then
+                divQuoteCity.Visible = True
 
-        txtQuoteEmail.Text = quoteData("Email").ToString()
-        txtQuotePhone.Text = quoteData("Phone").ToString()
-        txtQuoteAddress.Text = quoteData("Address").ToString()
-        txtQuoteSuburb.Text = quoteData("Suburb").ToString()
-        txtQuoteCity.Text = quoteData("City").ToString()
-        txtQuoteState.Text = quoteData("State").ToString()
-        txtQuotePostCode.Text = quoteData("PostCode").ToString()
+                spanDiscount.InnerText = "Rp"
+                spanMeasure.InnerText = "Rp"
+                spanInstall.InnerText = "Rp"
+                spanFreight.InnerText = "Rp"
+            End If
 
-        txtQuoteDiscount.Text = quoteData("Discount").ToString().Replace(",", ".")
-        txtQuoteCheckMeasure.Text = quoteData("CheckMeasure").ToString().Replace(",", ".")
-        txtQuoteInstallation.Text = quoteData("Installation").ToString().Replace(",", ".")
-        txtQuoteFreight.Text = quoteData("Freight").ToString().Replace(",", ".")
+            txtQuoteEmail.Text = quoteData("Email").ToString()
+            txtQuotePhone.Text = quoteData("Phone").ToString()
+            txtQuoteAddress.Text = quoteData("Address").ToString()
+            txtQuoteSuburb.Text = quoteData("Suburb").ToString()
+            txtQuoteCity.Text = quoteData("City").ToString()
+            txtQuoteState.Text = quoteData("State").ToString()
+            txtQuotePostCode.Text = quoteData("PostCode").ToString()
+
+            txtQuoteDiscount.Text = quoteData("Discount").ToString().Replace(",", ".")
+            txtQuoteCheckMeasure.Text = quoteData("CheckMeasure").ToString().Replace(",", ".")
+            txtQuoteInstallation.Text = quoteData("Installation").ToString().Replace(",", ".")
+            txtQuoteFreight.Text = quoteData("Freight").ToString().Replace(",", ".")
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+        End Try
     End Sub
 
     Protected Sub BindDataCosting(itemCount As Integer)

@@ -236,10 +236,10 @@ Partial Class Setting_Customer_Detail
             Dim doorPriceGroupId As String = thisData("DoorPriceGroupId").ToString()
             Dim doorPriceGroupName As String = settingClass.GetItemData("SELECT Name FROM PriceGroups WHERE Id='" & doorPriceGroupId & "'")
 
-            Dim sponsorId As String = thisData("SponsorId").ToString()
-            Dim sponsorName As String = String.Empty
-            If Not String.IsNullOrEmpty(sponsorId) Then
-                sponsorName = settingClass.GetItemData("SELECT Name FROM Customers WHERE Id='" & sponsorId & "'")
+            Dim primaryId As String = thisData("PrimaryId").ToString()
+            Dim primaryName As String = String.Empty
+            If Not String.IsNullOrEmpty(primaryId) Then
+                primaryName = settingClass.GetItemData("SELECT Name FROM Customers WHERE Id='" & primaryId & "'")
             End If
 
             lblDebtorCode.Text = thisData("DebtorCode").ToString()
@@ -251,7 +251,7 @@ Partial Class Setting_Customer_Detail
             lblArea.Text = thisData("Area").ToString()
             lblOperator.Text = thisData("OperatorName").ToString()
             lblLevel.Text = thisData("Level").ToString()
-            lblSponsor.Text = sponsorName
+            lblPrimary.Text = primaryName
             lblPriceGroup.Text = priceGroupName
             lblPriceGroupShutter.Text = shutterPriceGroupName
             lblPriceGroupDoor.Text = doorPriceGroupName
