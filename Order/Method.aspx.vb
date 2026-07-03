@@ -9654,7 +9654,6 @@ Partial Class Order_Method
                     thisCmd.CommandType = CommandType.StoredProcedure
 
                     thisCmd.Parameters.AddWithValue("@Id", itemId)
-                    thisCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                     thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                     thisCmd.Parameters.AddWithValue("@FabricId", data.fabrictype)
                     thisCmd.Parameters.AddWithValue("@FabricColourId", data.fabriccolour)
