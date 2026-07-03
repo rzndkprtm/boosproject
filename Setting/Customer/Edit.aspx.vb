@@ -54,15 +54,14 @@ Partial Class Setting_Customer_Edit
                 Exit Sub
             End If
 
-            If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" Then
-                If ddlLevel.SelectedValue = "" Then
-                    MessageError(True, "CUSTOMER LEVEL IS REQUIRED !")
-                    Exit Sub
-                End If
-                If ddlLevel.SelectedValue = "Referral" AndAlso ddlSponsor.SelectedValue = "" Then
-                    MessageError(True, "CUSTOMER SPONSOR IS REQUIRED !")
-                    Exit Sub
-                End If
+            If ddlLevel.SelectedValue = "" Then
+                MessageError(True, "CUSTOMER LEVEL IS REQUIRED !")
+                Exit Sub
+            End If
+
+            If ddlLevel.SelectedValue = "Referral" AndAlso ddlPrimary.SelectedValue = "" Then
+                MessageError(True, "PRIMARY CUSTOMER IS REQUIRED !")
+                Exit Sub
             End If
 
             If ddlCompany.SelectedValue = "" Then
@@ -107,17 +106,15 @@ Partial Class Setting_Customer_Edit
                     ddlArea.SelectedValue = "" : operatorReps = String.Empty
                 End If
 
-                Dim sponsorId As String = ddlSponsor.SelectedValue
-
-                If ddlLevel.SelectedValue = "" Then ddlLevel.SelectedValue = "Member"
-                If ddlLevel.SelectedValue = "Sponsor" OrElse ddlLevel.SelectedValue = "Member" Then sponsorId = String.Empty
+                Dim primaryId As String = ddlPrimary.SelectedValue
+                If ddlLevel.SelectedValue = "Primary" OrElse ddlLevel.SelectedValue = "Standard" Then primaryId = String.Empty
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Customers SET DebtorCode=@DebtorCode, Name=@Name, Level=@Level, SponsorId=@Sponsor, CompanyId=@Company, CompanyDetailId=@CompanyDetail, Area=@Area, Operator=@Operator, PriceGroupId=@PriceGroup, ShutterPriceGroupId=@ShutterPriceGroup, DoorPriceGroupId=@DoorPriceGroupId, OnStop=@OnStop, CashSale=@CashSale, Newsletter=@Newsletter, MinSurcharge=@MinSurcharge, Active=@Active WHERE Id=@Id", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Customers SET DebtorCode=@DebtorCode, Name=@Name, Level=@Level, PrimaryId=@PrimaryId, CompanyId=@Company, CompanyDetailId=@CompanyDetail, Area=@Area, Operator=@Operator, PriceGroupId=@PriceGroup, ShutterPriceGroupId=@ShutterPriceGroup, DoorPriceGroupId=@DoorPriceGroupId, OnStop=@OnStop, CashSale=@CashSale, Newsletter=@Newsletter, MinSurcharge=@MinSurcharge, Active=@Active WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         thisCmd.Parameters.AddWithValue("@DebtorCode", txtDebtorCode.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Level", ddlLevel.SelectedValue)
-                        thisCmd.Parameters.AddWithValue("@Sponsor", If(String.IsNullOrEmpty(sponsorId), CType(DBNull.Value, Object), sponsorId))
+                        thisCmd.Parameters.AddWithValue("@PrimaryId", If(String.IsNullOrEmpty(primaryId), CType(DBNull.Value, Object), primaryId))
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Company", If(String.IsNullOrEmpty(ddlCompany.SelectedValue), CType(DBNull.Value, Object), ddlCompany.SelectedValue))
                         thisCmd.Parameters.AddWithValue("@CompanyDetail", If(String.IsNullOrEmpty(ddlCompanyDetail.SelectedValue), CType(DBNull.Value, Object), ddlCompanyDetail.SelectedValue))
@@ -171,7 +168,7 @@ Partial Class Setting_Customer_Edit
 
             Dim companyId As String = myData("CompanyId").ToString()
 
-            BindSponsor()
+            BindPrimary()
             BindCompany()
             BindCompanyDetail(companyId)
             BindOperator(companyId)
@@ -182,7 +179,7 @@ Partial Class Setting_Customer_Edit
             txtDebtorCode.Text = myData("DebtorCode").ToString()
             txtName.Text = myData("Name").ToString()
             ddlLevel.SelectedValue = myData("Level").ToString()
-            ddlSponsor.SelectedValue = myData("SponsorId").ToString()
+            ddlPrimary.SelectedValue = myData("PrimaryId").ToString()
             ddlCompany.SelectedValue = myData("CompanyId").ToString()
             ddlCompanyDetail.SelectedValue = myData("CompanyDetailId").ToString()
             ddlArea.SelectedValue = myData("Area").ToString()
@@ -215,19 +212,19 @@ Partial Class Setting_Customer_Edit
         End Try
     End Sub
 
-    Protected Sub BindSponsor()
-        ddlSponsor.Items.Clear()
+    Protected Sub BindPrimary()
+        ddlPrimary.Items.Clear()
         Try
-            ddlSponsor.DataSource = settingClass.GetDataTable("SELECT * FROM Customers WHERE [Level]='Sponsor' ORDER BY Id ASC")
-            ddlSponsor.DataTextField = "Name"
-            ddlSponsor.DataValueField = "Id"
-            ddlSponsor.DataBind()
+            ddlPrimary.DataSource = settingClass.GetDataTable("SELECT * FROM Customers WHERE [Level]='Primary' ORDER BY Id ASC")
+            ddlPrimary.DataTextField = "Name"
+            ddlPrimary.DataValueField = "Id"
+            ddlPrimary.DataBind()
 
-            If ddlSponsor.Items.Count > 0 Then
-                ddlSponsor.Items.Insert(0, New ListItem("", ""))
+            If ddlPrimary.Items.Count > 0 Then
+                ddlPrimary.Items.Insert(0, New ListItem("", ""))
             End If
         Catch ex As Exception
-            ddlSponsor.Items.Clear()
+            ddlPrimary.Items.Clear()
             If Not Session("RoleName") = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If

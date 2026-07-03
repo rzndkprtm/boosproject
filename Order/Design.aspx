@@ -179,7 +179,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Control Position</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                     <select id="controlposition" class="form-select">
                                                         <option value=""></option>
                                                         <option value="Left">Left</option>

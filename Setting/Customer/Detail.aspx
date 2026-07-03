@@ -105,9 +105,9 @@
                                                     </div>
                                                 </div>
                                                 <div class="row mb-4">
-                                                    <div class="col-4 text-muted">Sponsor</div>
+                                                    <div class="col-4 text-muted">Primary Account</div>
                                                     <div class="col-8 fw-semibold">
-                                                        <asp:Label runat="server" ID="lblSponsor"></asp:Label>
+                                                        <asp:Label runat="server" ID="lblPrimary"></asp:Label>
                                                     </div>
                                                 </div>
                                             </div>

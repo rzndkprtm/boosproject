@@ -15,7 +15,7 @@ Partial Class Setting_Customer_Add
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-            BindSponsor()
+            BindPrimary()
             BindCompany()
             BindCompanyDetail(ddlCompany.SelectedValue)
             BindOperator(ddlCompany.SelectedValue)
@@ -44,15 +44,13 @@ Partial Class Setting_Customer_Add
                 Exit Sub
             End If
 
-            If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" Then
-                If ddlLevel.SelectedValue = "" Then
-                    MessageError(True, "CUSTOMER LEVEL IS REQUIRED !")
-                    Exit Sub
-                End If
-                If ddlLevel.SelectedValue = "Referral" AndAlso ddlSponsor.SelectedValue = "" Then
-                    MessageError(True, "CUSTOMER SPONSOR IS REQUIRED !")
-                    Exit Sub
-                End If
+            If ddlLevel.SelectedValue = "" Then
+                MessageError(True, "CUSTOMER LEVEL IS REQUIRED !")
+                Exit Sub
+            End If
+            If ddlLevel.SelectedValue = "Referral" AndAlso ddlPrimary.SelectedValue = "" Then
+                MessageError(True, "PRIMARY CUSTOMER IS REQUIRED !")
+                Exit Sub
             End If
 
             If ddlCompany.SelectedValue = "" Then
@@ -96,20 +94,19 @@ Partial Class Setting_Customer_Add
                     ddlArea.SelectedValue = "" : operatorReps = String.Empty
                 End If
 
-                Dim sponsorId As String = ddlSponsor.SelectedValue
-                If ddlLevel.SelectedValue = "" Then ddlLevel.SelectedValue = "Member"
-                If ddlLevel.SelectedValue = "Sponsor" OrElse ddlLevel.SelectedValue = "Member" Then sponsorId = String.Empty
+                Dim primaryId As String = ddlPrimary.SelectedValue
+                If ddlLevel.SelectedValue = "Primary" OrElse ddlLevel.SelectedValue = "Standard" Then primaryId = String.Empty
 
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Customers ORDER BY Id DESC")
                 Dim logoCustomer As String = "yourlogo.png"
                 Dim dataProductAccess As String = settingClass.GetProductAccess(ddlCompany.SelectedValue)
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Customers VALUES (@Id, @DebtorCode, @Level, @Sponsor, @Name, @Company, @CompanyDetail, @Area, @Operator, @PriceGroup, @ShutterPriceGroup, @DoorPriceGroupId, @OnStop, @CashSale, @Newsletter, @MinSurcharge, @Active); INSERT INTO CustomerQuotes(Id, Logo) VALUES (@Id, @Logo); INSERT INTO CustomerProductAccess VALUES (@Id, @DesignId)", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Customers VALUES (@Id, @DebtorCode, @Level, @PrimaryId, @Name, @Company, @CompanyDetail, @Area, @Operator, @PriceGroup, @ShutterPriceGroup, @DoorPriceGroup, @OnStop, @CashSale, @Newsletter, @MinSurcharge, @Active); INSERT INTO CustomerQuotes(Id, Logo) VALUES (@Id, @Logo); INSERT INTO CustomerProductAccess VALUES (@Id, @DesignId)", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", thisId)
                         thisCmd.Parameters.AddWithValue("@DebtorCode", txtDebtorCode.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Level", ddlLevel.SelectedValue)
-                        thisCmd.Parameters.AddWithValue("@Sponsor", If(String.IsNullOrEmpty(sponsorId), CType(DBNull.Value, Object), sponsorId))
+                        thisCmd.Parameters.AddWithValue("@PrimaryId", If(String.IsNullOrEmpty(primaryId), CType(DBNull.Value, Object), primaryId))
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Company", If(String.IsNullOrEmpty(ddlCompany.SelectedValue), CType(DBNull.Value, Object), ddlCompany.SelectedValue))
                         thisCmd.Parameters.AddWithValue("@CompanyDetail", If(String.IsNullOrEmpty(ddlCompanyDetail.SelectedValue), CType(DBNull.Value, Object), ddlCompanyDetail.SelectedValue))
@@ -117,7 +114,7 @@ Partial Class Setting_Customer_Add
                         thisCmd.Parameters.AddWithValue("@Operator", operatorReps)
                         thisCmd.Parameters.AddWithValue("@PriceGroup", ddlPriceGroup.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@ShutterPriceGroup", ddlPriceGroupShutter.SelectedValue)
-                        thisCmd.Parameters.AddWithValue("@DoorPriceGroupId", ddlPriceGroupDoor.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@DoorPriceGroup", ddlPriceGroupDoor.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@OnStop", ddlOnStop.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@CashSale", ddlCashSale.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Newsletter", ddlNewsletter.SelectedValue)
@@ -154,19 +151,19 @@ Partial Class Setting_Customer_Add
         Response.Redirect("~/setting/customer/list", False)
     End Sub
 
-    Protected Sub BindSponsor()
-        ddlSponsor.Items.Clear()
+    Protected Sub BindPrimary()
+        ddlPrimary.Items.Clear()
         Try
-            ddlSponsor.DataSource = settingClass.GetDataTable("SELECT * FROM Customers WHERE [Level]='Sponsor' ORDER BY Id ASC")
-            ddlSponsor.DataTextField = "Name"
-            ddlSponsor.DataValueField = "Id"
-            ddlSponsor.DataBind()
+            ddlPrimary.DataSource = settingClass.GetDataTable("SELECT * FROM Customers WHERE [Level]='Primary' ORDER BY Id ASC")
+            ddlPrimary.DataTextField = "Name"
+            ddlPrimary.DataValueField = "Id"
+            ddlPrimary.DataBind()
 
-            If ddlSponsor.Items.Count > 0 Then
-                ddlSponsor.Items.Insert(0, New ListItem("", ""))
+            If ddlPrimary.Items.Count > 0 Then
+                ddlPrimary.Items.Insert(0, New ListItem("", ""))
             End If
         Catch ex As Exception
-            ddlSponsor.Items.Clear()
+            ddlPrimary.Items.Clear()
             If Not Session("RoleName") = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
@@ -320,7 +317,7 @@ Partial Class Setting_Customer_Add
 
     Protected Sub BindComponentForm()
         divDebtorCode.Visible = LoginAccess("Visible Debtor Code")
-        divLevelSponsor.Visible = LoginAccess("Visible Level Sponsor")
+        divLevelCustomer.Visible = LoginAccess("Visible Level Sponsor")
         divCompany.Visible = LoginAccess("Visible Company")
         divAreaOperator.Visible = LoginAccess("Visible Area Operator")
     End Sub
