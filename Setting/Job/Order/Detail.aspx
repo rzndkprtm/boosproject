@@ -105,21 +105,19 @@
                 <div class="card">
                     <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
                         <ContentTemplate>
-                            <div class="card-content">
-                                <div class="card-header">
-                                    <div class="row mb-2">
-                                        <div class="col-12 col-sm-12 col-lg-7 mb-2">
-                                            <h4 class="card-title">Job Order</h4>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-5">
-                                            <asp:DropDownList runat="server" ID="ddlJobSheet" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlJobSheet_SelectedIndexChanged"></asp:DropDownList>
-                                        </div>
+                            <div class="card-header">
+                                <div class="row mb-2">
+                                    <div class="col-12 col-sm-12 col-lg-7 mb-2">
+                                        <h4 class="card-title">Job Order</h4>
                                     </div>
-                                    
+                                    <div class="col-12 col-sm-12 col-lg-5">
+                                        <asp:DropDownList runat="server" ID="ddlJobSheet" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlJobSheet_SelectedIndexChanged"></asp:DropDownList>
+                                    </div>
                                 </div>
-                                <div class="card-body">
-                                    <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center"></asp:GridView>
-                                </div>
+    
+                            </div>
+                            <div class="card-body">
+                                <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center"></asp:GridView>
                             </div>
                         </ContentTemplate>
                     </asp:UpdatePanel>
