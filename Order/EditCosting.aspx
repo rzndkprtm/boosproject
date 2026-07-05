@@ -32,63 +32,57 @@
         <section class="row">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-content">
-                        <div class="card-header">
-                            <h4 class="card-title" runat="server" id="hTitle"></h4>
+                    <div class="card-header">
+                        <h4 class="card-title" runat="server" id="hTitle"></h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" ShowHeaderWhenEmpty="true" DataKeyNames="Id">
+                                <Columns>
+                                    <asp:TemplateField ItemStyle-HorizontalAlign="Center">
+                                        <ItemTemplate>
+                                            <%# Container.DataItemIndex + 1 %>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:BoundField DataField="Id" HeaderText="ID" />
+                                    <asp:BoundField DataField="Type" HeaderText="Type" />
+                                    <asp:TemplateField HeaderText="Description">
+                                        <ItemTemplate>
+                                            <%# BindDescription(Eval("DesignName").ToString(), Eval("Description").ToString(), Eval("OrderNote").ToString()) %>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="New Price (Buy)" ItemStyle-Width="180px">
+                                        <ItemTemplate>
+                                            <asp:TextBox runat="server" ID="txtNewBuyPrice" CssClass="form-control" Visible='<%# Eval("Type").ToString() <> "Note" %>' Text='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:0.##}", Eval("BuyPrice")) %>'></asp:TextBox>
+                                            <asp:Label runat="server" Text="-" Visible='<%# Eval("Type").ToString() = "Note" %>'></asp:Label>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="New Price (Sell)" ItemStyle-Width="180px">
+                                        <ItemTemplate>
+                                            <asp:TextBox runat="server" ID="txtNewSellPrice" CssClass="form-control" Visible='<%# Eval("Type").ToString() <> "Note" %>' Text='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:0.##}", Eval("SellPrice")) %>'></asp:TextBox>
+                                            <asp:Label runat="server" Text="-" Visible='<%# Eval("Type").ToString() = "Note" %>'></asp:Label>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField ItemStyle-Width="100px">
+                                        <ItemTemplate>
+                                            <a class="btn btn-danger" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                </Columns>
+                            </asp:GridView>
                         </div>
-                        <div class="card-body">
-                            <div class="row mb-3">
-                                <div class="col-12">
-                                    <div class="table-responsive">
-                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" ShowHeaderWhenEmpty="true" DataKeyNames="Id">
-                                            <Columns>
-                                                <asp:TemplateField ItemStyle-HorizontalAlign="Center">
-                                                    <ItemTemplate>
-                                                        <%# Container.DataItemIndex + 1 %>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:BoundField DataField="Id" HeaderText="ID" />
-                                                <asp:BoundField DataField="Type" HeaderText="Type" />
-                                                <asp:TemplateField HeaderText="Description">
-                                                    <ItemTemplate>
-                                                        <%# BindDescription(Eval("DesignName").ToString(), Eval("Description").ToString(), Eval("OrderNote").ToString()) %>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="New Price (Buy)" ItemStyle-Width="180px">
-                                                    <ItemTemplate>
-                                                        <asp:TextBox runat="server" ID="txtNewBuyPrice" CssClass="form-control" Visible='<%# Eval("Type").ToString() <> "Note" %>' Text='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:0.##}", Eval("BuyPrice")) %>'></asp:TextBox>
-                                                        <asp:Label runat="server" Text="-" Visible='<%# Eval("Type").ToString() = "Note" %>'></asp:Label>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="New Price (Sell)" ItemStyle-Width="180px">
-                                                    <ItemTemplate>
-                                                        <asp:TextBox runat="server" ID="txtNewSellPrice" CssClass="form-control" Visible='<%# Eval("Type").ToString() <> "Note" %>' Text='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:0.##}", Eval("SellPrice")) %>'></asp:TextBox>
-                                                        <asp:Label runat="server" Text="-" Visible='<%# Eval("Type").ToString() = "Note" %>'></asp:Label>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:TemplateField ItemStyle-Width="100px">
-                                                    <ItemTemplate>
-                                                        <a class="btn btn-danger" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                            </Columns>
-                                        </asp:GridView>
-                                    </div>
-                                </div>
-                            </div>
+                    </div>
+                    <div class="card-footer d-flex justify-content-between align-items-center">
+                        <div>
+                            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Add Costings</button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalAdd">Add Surcharge</a></li>
+                                <li><a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalNote">Add Note</a></li>
+                            </ul>
                         </div>
-                        <div class="card-footer d-flex justify-content-between align-items-center">
-                            <div>
-                                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Add Costings</button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalAdd">Add Surcharge</a></li>
-                                    <li><a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalNote">Add Note</a></li>
-                                </ul>
-                            </div>
-                            <div>
-                                <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" OnClick="btnSubmit_Click" />
-                                <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Close / Finish" OnClick="btnCancel_Click" />
-                            </div>
+                        <div>
+                            <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" OnClick="btnSubmit_Click" />
+                            <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Close / Finish" OnClick="btnCancel_Click" />
                         </div>
                     </div>
                 </div>
