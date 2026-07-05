@@ -1,4 +1,5 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data
+Imports System.Data.SqlClient
 
 Partial Class Setting_Job_Sheet_Detail_Add
     Inherits Page
@@ -149,60 +150,43 @@ Partial Class Setting_Job_Sheet_Detail_Add
     End Sub
 
     Protected Sub BindViewJob()
-        ddlFormula.Items.Clear() : ddlFormula2.Items.Clear() : ddlFormula3.Items.Clear() : ddlFormula4.Items.Clear() : ddlFormula5.Items.Clear() : ddlFormula6.Items.Clear()
+        ddlFormula.Items.Clear()
+        ddlFormula2.Items.Clear()
+        ddlFormula3.Items.Clear()
+        ddlFormula4.Items.Clear()
+        ddlFormula5.Items.Clear()
+        ddlFormula6.Items.Clear()
+
         Try
-            Dim thisString As String = "SELECT COLUMN_NAME AS FieldName FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME=N'viewJob'"
+            Dim thisString As String = "SELECT c.name AS FieldName FROM sys.columns c INNER JOIN sys.objects o ON c.object_id = o.object_id WHERE o.name = 'viewJob' ORDER BY c.column_id"
+            Dim dt As DataTable = jobClass.GetDataTable(thisString)
 
-            ddlFormula.DataSource = jobClass.GetDataTable(thisString)
-            ddlFormula.DataTextField = "FieldName"
-            ddlFormula.DataValueField = "FieldName"
-            ddlFormula.DataBind()
+            Dim ddlList() As DropDownList = {
+                ddlFormula,
+                ddlFormula2,
+                ddlFormula3,
+                ddlFormula4,
+                ddlFormula5,
+                ddlFormula6
+            }
 
-            ddlFormula2.DataSource = jobClass.GetDataTable(thisString)
-            ddlFormula2.DataTextField = "FieldName"
-            ddlFormula2.DataValueField = "FieldName"
-            ddlFormula2.DataBind()
+            For Each ddl As DropDownList In ddlList
+                ddl.DataSource = dt
+                ddl.DataTextField = "FieldName"
+                ddl.DataValueField = "FieldName"
+                ddl.DataBind()
+                ddl.Items.Insert(0, New ListItem("", ""))
+            Next
 
-            ddlFormula3.DataSource = jobClass.GetDataTable(thisString)
-            ddlFormula3.DataTextField = "FieldName"
-            ddlFormula3.DataValueField = "FieldName"
-            ddlFormula3.DataBind()
-
-            ddlFormula4.DataSource = jobClass.GetDataTable(thisString)
-            ddlFormula4.DataTextField = "FieldName"
-            ddlFormula4.DataValueField = "FieldName"
-            ddlFormula4.DataBind()
-
-            ddlFormula5.DataSource = jobClass.GetDataTable(thisString)
-            ddlFormula5.DataTextField = "FieldName"
-            ddlFormula5.DataValueField = "FieldName"
-            ddlFormula5.DataBind()
-
-            ddlFormula6.DataSource = jobClass.GetDataTable(thisString)
-            ddlFormula6.DataTextField = "FieldName"
-            ddlFormula6.DataValueField = "FieldName"
-            ddlFormula6.DataBind()
-
-            If ddlFormula.Items.Count > 0 Then
-                ddlFormula.Items.Insert(0, New ListItem("", ""))
-            End If
-            If ddlFormula2.Items.Count > 0 Then
-                ddlFormula2.Items.Insert(0, New ListItem("", ""))
-            End If
-            If ddlFormula3.Items.Count > 0 Then
-                ddlFormula3.Items.Insert(0, New ListItem("", ""))
-            End If
-            If ddlFormula4.Items.Count > 0 Then
-                ddlFormula4.Items.Insert(0, New ListItem("", ""))
-            End If
-            If ddlFormula5.Items.Count > 0 Then
-                ddlFormula5.Items.Insert(0, New ListItem("", ""))
-            End If
-            If ddlFormula6.Items.Count > 0 Then
-                ddlFormula6.Items.Insert(0, New ListItem("", ""))
-            End If
         Catch ex As Exception
-            ddlFormula.Items.Clear() : ddlFormula2.Items.Clear() : ddlFormula3.Items.Clear() : ddlFormula4.Items.Clear() : ddlFormula5.Items.Clear() : ddlFormula6.Items.Clear()
+
+            ddlFormula.Items.Clear()
+            ddlFormula2.Items.Clear()
+            ddlFormula3.Items.Clear()
+            ddlFormula4.Items.Clear()
+            ddlFormula5.Items.Clear()
+            ddlFormula6.Items.Clear()
+
             If Session("RoleName") = "Developer" Then
                 MessageError(True, ex.ToString())
             End If
