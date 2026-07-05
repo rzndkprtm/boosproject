@@ -1451,11 +1451,14 @@ Partial Class Order_Detail
         Try
             Dim orderJobId As String = orderClass.CreateOrderJobId()
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderJobs SET Active=0 WHERE HeaderId=@HeaderId; INSERT INTO OrderJobs SELECT @OrderJobId, JobNumber, WorkOrder, JobNote, @HeaderId, @CreatedBy, GETDATE(), 1 FROM OrderJobs WHERE Id=@OldOrderJobId; UPDATE OrderHeaders SET OrderJobId=@OrderJobId WHERE Id=@HeaderId", thisConn)
+                Using thisCmd As New SqlCommand("sp_OrderJobs_Copy", thisConn)
+                    thisCmd.CommandType = CommandType.StoredProcedure
+
                     thisCmd.Parameters.AddWithValue("@OrderJobId", orderJobId)
                     thisCmd.Parameters.AddWithValue("@OldOrderJobId", lblOrderJobId.Text)
                     thisCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
                     thisCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
+
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
