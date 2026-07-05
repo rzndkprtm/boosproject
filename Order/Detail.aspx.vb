@@ -1373,6 +1373,12 @@ Partial Class Order_Detail
         MessageError_ConvertOrder(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showConvertOrder(); };"
         Try
+            If gvListItem.Rows.Count = 0 Then
+                MessageError_ConvertOrder(True, "PLEASE ADD MINIMAL 1 ITEM ORDER !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showConvertOrder", thisScript, True)
+                Exit Sub
+            End If
+
             If Not Session("RoleName") = "Developer" Then
                 MessageError_ConvertOrder(True, "SORRY, UNDER CONSTRUCTION !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showConvertOrder", thisScript, True)
@@ -2140,6 +2146,18 @@ Partial Class Order_Detail
                     btnQuoteAction.Visible = True
                     aSendQuote.Visible = True
 
+                    btnJob.Visible = True
+                    If convertedStatus = "Yes" Then
+                        aDataJob.Visible = True
+                        aReConvertJob.Visible = True
+                        aUpdateJob.Visible = True
+                        btnPreviewJob.Visible = True
+                        btnDownloadJob.Visible = True
+                    End If
+                    If convertedStatus = "No" Then
+                        aConvertOrder.Visible = True
+                    End If
+
                     aAddItem.Visible = True
                     aAddService.Visible = True
                 End If
@@ -2156,6 +2174,18 @@ Partial Class Order_Detail
                     aSendInvoice.Visible = True
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceNumber.Visible = True
+
+                    btnJob.Visible = True
+                    If convertedStatus = "Yes" Then
+                        aDataJob.Visible = True
+                        aReConvertJob.Visible = True
+                        aUpdateJob.Visible = True
+                        btnPreviewJob.Visible = True
+                        btnDownloadJob.Visible = True
+                    End If
+                    If convertedStatus = "No" Then
+                        aConvertOrder.Visible = True
+                    End If
 
                     aAddItem.Visible = True
                     aAddService.Visible = True
@@ -2174,6 +2204,18 @@ Partial Class Order_Detail
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceNumber.Visible = True
 
+                    btnJob.Visible = True
+                    If convertedStatus = "Yes" Then
+                        aDataJob.Visible = True
+                        aReConvertJob.Visible = True
+                        aUpdateJob.Visible = True
+                        btnPreviewJob.Visible = True
+                        btnDownloadJob.Visible = True
+                    End If
+                    If convertedStatus = "No" Then
+                        aConvertOrder.Visible = True
+                    End If
+
                     aAddItem.Visible = True
                     aAddService.Visible = True
                 End If
@@ -2189,6 +2231,18 @@ Partial Class Order_Detail
                     btnInvoice.Visible = True
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceData.Visible = True
+
+                    btnJob.Visible = True
+                    If convertedStatus = "Yes" Then
+                        aDataJob.Visible = True
+                        aReConvertJob.Visible = True
+                        aUpdateJob.Visible = True
+                        btnPreviewJob.Visible = True
+                        btnDownloadJob.Visible = True
+                    End If
+                    If convertedStatus = "No" Then
+                        aConvertOrder.Visible = True
+                    End If
 
                     aAddItem.Visible = True
                     aAddService.Visible = True
@@ -2306,6 +2360,16 @@ Partial Class Order_Detail
                     aProductionOrder.Visible = True
                     aCompleteOrder.Visible = True
 
+                    btnJob.Visible = True
+                    If convertedStatus = "Yes" Then
+                        aDataJob.Visible = True
+                        btnPreviewJob.Visible = True
+                        btnDownloadJob.Visible = True
+                    End If
+                    If convertedStatus = "No" Then
+                        aConvertOrder.Visible = True
+                    End If
+
                     If isReworkOrder = False Then
                         aReworkOrder.Visible = True
                     End If
@@ -2315,6 +2379,16 @@ Partial Class Order_Detail
                     If lblOrderPaid.Text = "" Then aSendInvoice.Visible = True
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceData.Visible = True
+
+                    btnJob.Visible = True
+                    If convertedStatus = "Yes" Then
+                        aDataJob.Visible = True
+                        btnPreviewJob.Visible = True
+                        btnDownloadJob.Visible = True
+                    End If
+                    If convertedStatus = "No" Then
+                        aConvertOrder.Visible = True
+                    End If
 
                     If isReworkOrder = False Then aReworkOrder.Visible = True
                 End If
@@ -2403,6 +2477,18 @@ Partial Class Order_Detail
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceData.Visible = True
 
+                    btnJob.Visible = True
+                    If convertedStatus = "Yes" Then
+                        aDataJob.Visible = True
+                        aReConvertJob.Visible = True
+                        aUpdateJob.Visible = True
+                        btnPreviewJob.Visible = True
+                        btnDownloadJob.Visible = True
+                    End If
+                    If convertedStatus = "No" Then
+                        aConvertOrder.Visible = True
+                    End If
+
                     aAddItem.Visible = True
                     aAddService.Visible = True
                 End If
@@ -2508,6 +2594,16 @@ Partial Class Order_Detail
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceData.Visible = True
 
+                    btnJob.Visible = True
+                    If convertedStatus = "Yes" Then
+                        aDataJob.Visible = True
+                        btnPreviewJob.Visible = True
+                        btnDownloadJob.Visible = True
+                    End If
+                    If convertedStatus = "No" Then
+                        aConvertOrder.Visible = True
+                    End If
+
                     If lblOrderPaid.Text = "" Then
                         aRePrice.Visible = True
                         aSendInvoice.Visible = True
@@ -2518,6 +2614,16 @@ Partial Class Order_Detail
                     End If
                 End If
                 If lblOrderStatus.Text = "Completed" Then
+                    btnJob.Visible = True
+                    If convertedStatus = "Yes" Then
+                        aDataJob.Visible = True
+                        btnPreviewJob.Visible = True
+                        btnDownloadJob.Visible = True
+                    End If
+                    If convertedStatus = "No" Then
+                        aConvertOrder.Visible = True
+                    End If
+
                     If isReworkOrder = False Then
                         aReworkOrder.Visible = True
                     End If
@@ -2699,9 +2805,29 @@ Partial Class Order_Detail
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceData.Visible = True
 
+                    btnJob.Visible = True
+                    If convertedStatus = "Yes" Then
+                        aDataJob.Visible = True
+                        btnPreviewJob.Visible = True
+                        btnDownloadJob.Visible = True
+                    End If
+                    If convertedStatus = "No" Then
+                        aConvertOrder.Visible = True
+                    End If
+
                     If isReworkOrder = False AndAlso lblOrderType.Text = "Regular" Then aReworkOrder.Visible = True
                 End If
                 If lblOrderStatus.Text = "Completed" Then
+                    btnJob.Visible = True
+                    If convertedStatus = "Yes" Then
+                        aDataJob.Visible = True
+                        btnPreviewJob.Visible = True
+                        btnDownloadJob.Visible = True
+                    End If
+                    If convertedStatus = "No" Then
+                        aConvertOrder.Visible = True
+                    End If
+
                     If isReworkOrder = False Then aReworkOrder.Visible = True
                 End If
 
@@ -2960,6 +3086,18 @@ Partial Class Order_Detail
                     btnUpdateStatus.Visible = True
                     aProductionOrder.Visible = True
                     aHoldOrder.Visible = True
+
+                    btnJob.Visible = True
+                    If convertedStatus = "Yes" Then
+                        aDataJob.Visible = True
+                        aReConvertJob.Visible = True
+                        aUpdateJob.Visible = True
+                        btnPreviewJob.Visible = True
+                        btnDownloadJob.Visible = True
+                    End If
+                    If convertedStatus = "No" Then
+                        aConvertOrder.Visible = True
+                    End If
                 End If
                 If lblOrderStatus.Text = "New Order" Then
                     btnUpdateStatus.Visible = True
@@ -3015,8 +3153,30 @@ Partial Class Order_Detail
                     End If
                 End If
                 If lblOrderStatus.Text = "Shipped Out" Then
+                    btnJob.Visible = True
+                    If convertedStatus = "Yes" Then
+                        aDataJob.Visible = True
+                        btnPreviewJob.Visible = True
+                        btnDownloadJob.Visible = True
+                    End If
+                    If convertedStatus = "No" Then
+                        aConvertOrder.Visible = True
+                    End If
+
                     If isReworkOrder = False AndAlso lblOrderType.Text = "Regular" Then
                         aReworkOrder.Visible = True
+                    End If
+                End If
+
+                If lblOrderStatus.Text = "Completed" Then
+                    btnJob.Visible = True
+                    If convertedStatus = "Yes" Then
+                        aDataJob.Visible = True
+                        btnPreviewJob.Visible = True
+                        btnDownloadJob.Visible = True
+                    End If
+                    If convertedStatus = "No" Then
+                        aConvertOrder.Visible = True
                     End If
                 End If
 

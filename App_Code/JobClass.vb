@@ -248,7 +248,7 @@ Public Class JobClass
 
     Public Function BindContent(headerId As String) As Byte()
         Using ms As New MemoryStream()
-            Dim headerData As DataRow = GetDataRow("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.Area AS State Companys.Name AS CompanyName, OrderJobs.JobNumber, OrderJobs.WorkOrder, OrderJobs.JobNote, OrderJobs.CreatedDate AS ConvertDate, Logins.FullName AS ConvertBy FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId = Customers.Id LEFT JOIN Companys ON Customers.CompanyId = Companys.Id LEFT JOIN OrderJobs ON OrderHeaders.OrderJobId = OrderJobs.Id LEFT JOIN Logins ON OrderJobs.CreatedBy = Logins.Id WHERE OrderHeaders.Id='" & headerId & "'")
+            Dim headerData As DataRow = GetDataRow("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.Area AS State, Companys.Name AS CompanyName, OrderJobs.JobNumber, OrderJobs.WorkOrder, OrderJobs.JobNote, OrderJobs.CreatedDate AS ConvertDate, Logins.FullName AS ConvertBy FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId = Customers.Id LEFT JOIN Companys ON Customers.CompanyId = Companys.Id LEFT JOIN OrderJobs ON OrderHeaders.OrderJobId = OrderJobs.Id LEFT JOIN Logins ON OrderJobs.CreatedBy = Logins.Id WHERE OrderHeaders.Id='" & headerId & "'")
 
             Dim customerName As String = headerData("CustomerName").ToString()
             Dim customerState As String = headerData("State").ToString()
@@ -408,19 +408,16 @@ Public Class JobEvents
     Public Property PageTotalDoc As Integer
     Public Property pageCompany As String
     Public Property pageState As String
-
     Public Property pageJobNumber As String
     Public Property pageWorkOrder As String
     Public Property pageJobNote As String
     Public Property pageConvertBy As String
     Public Property pageConvertDate As String
     Public Property pageDesignType As String
-
     Public Property WatermarkText As String = "MASIH TEST"
     Public Property WatermarkFontSize As Single = 70
     Public Property WatermarkOpacity As Single = 0.25F
     Public Property WatermarkRotation As Single = 45
-
 
     Private baseFont As BaseFont = BaseFont.CreateFont(BaseFont.TIMES_ROMAN, BaseFont.CP1252, BaseFont.NOT_EMBEDDED)
     Private template As PdfTemplate
