@@ -36,11 +36,11 @@
                                     <div class="row mb-2">
                                         <div class="col-12 col-sm-12 col-lg-6 form-group">
                                             <label class="form-label">Role</label>
-                                            <asp:DropDownList runat="server" ID="ddlRoleId" CssClass="form-select"></asp:DropDownList>
+                                            <asp:DropDownList runat="server" ID="ddlRoleId" CssClass="choices form-select"></asp:DropDownList>
                                         </div>
                                         <div class="col-12 col-sm-12 col-lg-6 form-group">
                                             <label class="form-label">Level</label>
-                                            <asp:DropDownList runat="server" ID="ddlLevelId" CssClass="form-select"></asp:DropDownList>
+                                            <asp:DropDownList runat="server" ID="ddlLevelId" CssClass="choices form-select"></asp:DropDownList>
                                         </div>
                                     </div>
                                     <div class="row mb-2">
