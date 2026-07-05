@@ -52,41 +52,39 @@
                             <div class="card-header">
                                 <h4 class="card-title">Filter Form</h4>
                             </div>
-                            <div class="card-content">
-                                <div class="card-body">
-                                    <div class="form form-vertical">
-                                        <div class="form-body">
-                                            <div class="row mb-2">
-                                                <div class="col-12 col-sm-12 col-lg-4">
-                                                    <label class="form-label">Category</label>
-                                                    <asp:DropDownList runat="server" ID="ddlCategory" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCategory_SelectedIndexChanged">
+                            <div class="card-body">
+                                <div class="form form-vertical">
+                                    <div class="form-body">
+                                        <div class="row mb-2">
+                                            <div class="col-12 col-sm-12 col-lg-4">
+                                                <label class="form-label">Category</label>
+                                                <asp:DropDownList runat="server" ID="ddlCategory" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCategory_SelectedIndexChanged">
+                                                    <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                    <asp:ListItem Value="Sell" Text="Sell Price"></asp:ListItem>
+                                                    <asp:ListItem Value="Buy" Text="Buy Price"></asp:ListItem>
+                                                </asp:DropDownList>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-lg-8">
+                                                <label class="form-label">Product Group</label>
+                                                <asp:DropDownList runat="server" ID="ddlProductGroup" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlProductGroup_SelectedIndexChanged"></asp:DropDownList>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-12 col-sm-12 col-lg-4">
+                                                <div class="form-group">
+                                                    <label class="form-label">Method</label>
+                                                    <asp:DropDownList runat="server" ID="ddlMethod" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlMethod_SelectedIndexChanged">
                                                         <asp:ListItem Value="" Text=""></asp:ListItem>
-                                                        <asp:ListItem Value="Sell" Text="Sell Price"></asp:ListItem>
-                                                        <asp:ListItem Value="Buy" Text="Buy Price"></asp:ListItem>
+                                                        <asp:ListItem Value="Cost" Text="Cost"></asp:ListItem>
+                                                        <asp:ListItem Value="Square Metre" Text="Square Metre"></asp:ListItem>
+                                                        <asp:ListItem Value="Linear Metre" Text="Linear Metre"></asp:ListItem>
                                                     </asp:DropDownList>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-8">
-                                                    <label class="form-label">Product Group</label>
-                                                    <asp:DropDownList runat="server" ID="ddlProductGroup" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlProductGroup_SelectedIndexChanged"></asp:DropDownList>
-                                                </div>
                                             </div>
-                                            <div class="row mb-2">
-                                                <div class="col-12 col-sm-12 col-lg-4">
-                                                    <div class="form-group">
-                                                        <label class="form-label">Method</label>
-                                                        <asp:DropDownList runat="server" ID="ddlMethod" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlMethod_SelectedIndexChanged">
-                                                            <asp:ListItem Value="" Text=""></asp:ListItem>
-                                                            <asp:ListItem Value="Cost" Text="Cost"></asp:ListItem>
-                                                            <asp:ListItem Value="Square Metre" Text="Square Metre"></asp:ListItem>
-                                                            <asp:ListItem Value="Linear Metre" Text="Linear Metre"></asp:ListItem>
-                                                        </asp:DropDownList>
-                                                    </div>
-                                                </div>
-                                                <div class="col-12 col-sm-12 col-lg-8">
-                                                    <div class="form-group">
-                                                        <label class="form-label">Price Group</label>
-                                                        <asp:DropDownList runat="server" ID="ddlPriceGroup" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlPriceGroup_SelectedIndexChanged"></asp:DropDownList>
-                                                    </div>
+                                            <div class="col-12 col-sm-12 col-lg-8">
+                                                <div class="form-group">
+                                                    <label class="form-label">Price Group</label>
+                                                    <asp:DropDownList runat="server" ID="ddlPriceGroup" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlPriceGroup_SelectedIndexChanged"></asp:DropDownList>
                                                 </div>
                                             </div>
                                         </div>

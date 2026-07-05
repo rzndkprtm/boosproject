@@ -61,7 +61,7 @@
                                         <Columns>
                                             <asp:TemplateField ItemStyle-HorizontalAlign="Center">
                                                 <ItemTemplate>
-                                                    <%# (gvList.PageIndex * gvList.PageSize) + Container.DataItemIndex + 1 %>
+                                                    <%# Container.DataItemIndex + 1 %>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
                                             <asp:BoundField DataField="Id" HeaderText="ID" />
