@@ -39,87 +39,85 @@
                 <div class="card">
                     <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
                         <ContentTemplate>
-                            <div class="card-content">
-                                <div class="card-header">
-                                    <div class="row">
-                                        <div class="col-12 col-sm-12 col-lg-4 mb-2">
-                                            <div class="input-group" runat="server" id="divCompany">
-                                                <span class="input-group-text">Company :</span>
-                                                <asp:DropDownList runat="server" ID="ddlCompany" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCompany_SelectedIndexChanged">
-                                                </asp:DropDownList>
+                            <div class="card-header">
+                                <div class="row">
+                                    <div class="col-12 col-sm-12 col-lg-4 mb-2">
+                                        <div class="input-group" runat="server" id="divCompany">
+                                            <span class="input-group-text">Company :</span>
+                                            <asp:DropDownList runat="server" ID="ddlCompany" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCompany_SelectedIndexChanged">
+                                            </asp:DropDownList>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-sm-12 col-lg-8 d-flex justify-content-end">
+                                        <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
+                                            <div class="input-group">
+                                                <span class="input-group-text">Search :</span>
+                                                <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" autocomplete="off"></asp:TextBox>
+                                                <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />
                                             </div>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-8 d-flex justify-content-end">
-                                            <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
-                                                <div class="input-group">
-                                                    <span class="input-group-text">Search :</span>
-                                                    <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" autocomplete="off"></asp:TextBox>
-                                                    <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />
-                                                </div>
-                                            </asp:Panel>
-                                        </div>
+                                        </asp:Panel>
                                     </div>
                                 </div>
-                                <div class="card-body">                                    
-                                    <div class="table-responsive">
-                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" PagerSettings-Visible="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" OnPageIndexChanging="gvList_PageIndexChanging" OnDataBound="gvList_DataBound">
-                                            <Columns>
-                                                <asp:TemplateField ItemStyle-HorizontalAlign="Center">
-                                                    <ItemTemplate>
-                                                        <%# Container.DataItemIndex + 1 %>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:BoundField DataField="Id" HeaderText="ID" />
-                                                <asp:BoundField DataField="DebtorCode" HeaderText="Debtor Code" />
-                                                <asp:BoundField DataField="Name" HeaderText="Name" />
-                                                <asp:BoundField DataField="CompanyAlias" HeaderText="Company" />
-                                                <asp:BoundField DataField="CompanyDetailName" HeaderText="Sub Company" />
-                                                <asp:BoundField DataField="Area" HeaderText="Area" />
-                                                <asp:BoundField DataField="OperatorName" HeaderText="Sales" />
-                                                <asp:BoundField DataField="CustomerCashSale" HeaderText="Cash Sale" />
-                                                <asp:BoundField DataField="CustomerOnStop" HeaderText="On Stop" />
-                                                <asp:BoundField DataField="DataActive" HeaderText="Active" />
-                                                <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
-                                                    <ItemTemplate>
-                                                        <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
-                                                        <ul class="dropdown-menu">
-                                                            <li runat="server" visible='<%# LoginAccess("Detail") %>'>
-                                                                <a class="dropdown-item" id="aDetail" href='<%# Page.ResolveUrl("~/setting/customer/detail?customerid=" & Eval("Id")) %>'>Detail</a>
-                                                            </li>
-                                                            <li runat="server" visible='<%# LoginAccess("Edit") %>'>
-                                                                <a class="dropdown-item" href='<%# Page.ResolveUrl("~/setting/customer/edit?customerid=" & Eval("Id")) %>'>Edit</a>
-                                                            </li>
-                                                            <li runat="server" visible='<%# LoginAccess("Change Cash Sale") %>'>
-                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalCashSale" onclick='<%# String.Format("return dataCashSale(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("Name").ToString(), Convert.ToInt32(Eval("CashSale"))) %>'>Change Cash Sale</a>
-                                                            </li>
-                                                            <li runat="server" visible='<%# LoginAccess("Change On Stop") %>'>
-                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalOnStop" onclick='<%# String.Format("return dataOnStop(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("Name").ToString(), Convert.ToInt32(Eval("OnStop"))) %>'>Change On Stop</a>
-                                                            </li>
-                                                            <li runat="server" visible='<%# LoginAccess("Delete") %>'>
-                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return dataDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('Customers', '<%# Eval("Id") %>')">Log</a>
-                                                            </li>
-                                                        </ul>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                            </Columns>
-                                        </asp:GridView>
-                                    </div>
-                                    <div class="d-flex justify-content-end mt-2">
-                                        <nav id="navPager" runat="server" visible="false">
-                                            <ul class="pagination pagination mb-0">
-                                                <asp:Repeater ID="rptPager" runat="server" OnItemCommand="rptPager_ItemCommand">
-                                                    <ItemTemplate>
-                                                        <li class='page-item <%# Eval("CssClass") %>'>
-                                                            <asp:LinkButton runat="server" CssClass="page-link" Text='<%# Eval("Text") %>' CommandName="Page" CommandArgument='<%# Eval("PageIndex") %>' />
+                            </div>
+                            <div class="card-body">                                    
+                                <div class="table-responsive">
+                                    <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" PagerSettings-Visible="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" OnPageIndexChanging="gvList_PageIndexChanging" OnDataBound="gvList_DataBound">
+                                        <Columns>
+                                            <asp:TemplateField ItemStyle-HorizontalAlign="Center">
+                                                <ItemTemplate>
+                                                    <%# Container.DataItemIndex + 1 %>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:BoundField DataField="Id" HeaderText="ID" />
+                                            <asp:BoundField DataField="DebtorCode" HeaderText="Debtor Code" />
+                                            <asp:BoundField DataField="Name" HeaderText="Name" />
+                                            <asp:BoundField DataField="CompanyAlias" HeaderText="Company" />
+                                            <asp:BoundField DataField="CompanyDetailName" HeaderText="Sub Company" />
+                                            <asp:BoundField DataField="Area" HeaderText="Area" />
+                                            <asp:BoundField DataField="OperatorName" HeaderText="Sales" />
+                                            <asp:BoundField DataField="CustomerCashSale" HeaderText="Cash Sale" />
+                                            <asp:BoundField DataField="CustomerOnStop" HeaderText="On Stop" />
+                                            <asp:BoundField DataField="DataActive" HeaderText="Active" />
+                                            <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
+                                                <ItemTemplate>
+                                                    <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
+                                                    <ul class="dropdown-menu">
+                                                        <li runat="server" visible='<%# LoginAccess("Detail") %>'>
+                                                            <a class="dropdown-item" id="aDetail" href='<%# Page.ResolveUrl("~/setting/customer/detail?customerid=" & Eval("Id")) %>'>Detail</a>
                                                         </li>
-                                                    </ItemTemplate>
-                                                </asp:Repeater>
-                                            </ul>
-                                        </nav>
-                                    </div>
+                                                        <li runat="server" visible='<%# LoginAccess("Edit") %>'>
+                                                            <a class="dropdown-item" href='<%# Page.ResolveUrl("~/setting/customer/edit?customerid=" & Eval("Id")) %>'>Edit</a>
+                                                        </li>
+                                                        <li runat="server" visible='<%# LoginAccess("Change Cash Sale") %>'>
+                                                            <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalCashSale" onclick='<%# String.Format("return dataCashSale(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("Name").ToString(), Convert.ToInt32(Eval("CashSale"))) %>'>Change Cash Sale</a>
+                                                        </li>
+                                                        <li runat="server" visible='<%# LoginAccess("Change On Stop") %>'>
+                                                            <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalOnStop" onclick='<%# String.Format("return dataOnStop(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("Name").ToString(), Convert.ToInt32(Eval("OnStop"))) %>'>Change On Stop</a>
+                                                        </li>
+                                                        <li runat="server" visible='<%# LoginAccess("Delete") %>'>
+                                                            <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return dataDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('Customers', '<%# Eval("Id") %>')">Log</a>
+                                                        </li>
+                                                    </ul>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                        </Columns>
+                                    </asp:GridView>
+                                </div>
+                                <div class="d-flex justify-content-end mt-2">
+                                    <nav id="navPager" runat="server" visible="false">
+                                        <ul class="pagination pagination mb-0">
+                                            <asp:Repeater ID="rptPager" runat="server" OnItemCommand="rptPager_ItemCommand">
+                                                <ItemTemplate>
+                                                    <li class='page-item <%# Eval("CssClass") %>'>
+                                                        <asp:LinkButton runat="server" CssClass="page-link" Text='<%# Eval("Text") %>' CommandName="Page" CommandArgument='<%# Eval("PageIndex") %>' />
+                                                    </li>
+                                                </ItemTemplate>
+                                            </asp:Repeater>
+                                        </ul>
+                                    </nav>
                                 </div>
                             </div>
                             <div class="card-footer">

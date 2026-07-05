@@ -23,7 +23,7 @@ Partial Class Setting_Customer_Add
             BindPriceGroup_Shutter(ddlCompany.SelectedValue)
             BindPriceGroup_Door(ddlCompany.SelectedValue)
 
-            BindComponentForm()
+            BindComponentForm(ddlLevel.SelectedValue)
         End If
     End Sub
 
@@ -36,6 +36,11 @@ Partial Class Setting_Customer_Add
         BindPriceGroup_Door(ddlCompany.SelectedValue)
     End Sub
 
+    Protected Sub ddlLevel_SelectedIndexChanged(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        BindComponentForm(ddlLevel.SelectedValue)
+    End Sub
+
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
@@ -44,8 +49,20 @@ Partial Class Setting_Customer_Add
                 Exit Sub
             End If
 
+            If ddlCompany.SelectedValue = "" Then
+                MessageError(True, "COMPANY IS REQUIRED !")
+                Exit Sub
+            End If
+            If ddlCompanyDetail.SelectedValue = "" Then
+                MessageError(True, "SUB COMPANY IS REQUIRED !")
+                Exit Sub
+            End If
             If ddlLevel.SelectedValue = "" Then
                 MessageError(True, "CUSTOMER LEVEL IS REQUIRED !")
+                Exit Sub
+            End If
+            If ddlLevel.SelectedValue = "Master" AndAlso Not Session("RoleName") = "Developer" Then
+                MessageError(True, "!")
                 Exit Sub
             End If
             If ddlLevel.SelectedValue = "Referral" AndAlso ddlPrimary.SelectedValue = "" Then
@@ -53,35 +70,16 @@ Partial Class Setting_Customer_Add
                 Exit Sub
             End If
 
-            If ddlCompany.SelectedValue = "" Then
-                MessageError(True, "COMPANY IS REQUIRED !")
-                Exit Sub
-            End If
-
-            If ddlCompanyDetail.SelectedValue = "" Then
-                MessageError(True, "SUB COMPANY IS REQUIRED !")
-                Exit Sub
-            End If
-
-            If ddlCompany.SelectedValue = "2" Then
-                If ddlArea.SelectedValue = "" Then
-                    MessageError(True, "AREA IS REQUIRED !")
-                    Exit Sub
-                End If
-            End If
-
             If ddlPriceGroup.SelectedValue = "" Then
                 MessageError(True, "PRICE GROUP IS REQUIRED !")
                 Exit Sub
             End If
-
             If ddlPriceGroupShutter.SelectedValue = "" Then
                 MessageError(True, "SHUTTER PRICE GROUP IS REQUIRED !")
                 Exit Sub
             End If
-
             If ddlPriceGroupDoor.SelectedValue = "" Then
-                MessageError(True, "DOOR PRICE GROUP IS REQUIRED !")
+                MessageError(True, "DOOR & WINDOW PRICE GROUP IS REQUIRED !")
                 Exit Sub
             End If
 
@@ -119,7 +117,7 @@ Partial Class Setting_Customer_Add
                         thisCmd.Parameters.AddWithValue("@CashSale", ddlCashSale.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Newsletter", ddlNewsletter.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@MinSurcharge", ddlMinSurcharge.SelectedValue)
-                        thisCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Active", 1)
                         thisCmd.Parameters.AddWithValue("@Logo", logoCustomer)
                         thisCmd.Parameters.AddWithValue("@DesignId", dataProductAccess)
                         thisConn.Open()
@@ -149,25 +147,6 @@ Partial Class Setting_Customer_Add
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
         Response.Redirect("~/setting/customer/list", False)
-    End Sub
-
-    Protected Sub BindPrimary()
-        ddlPrimary.Items.Clear()
-        Try
-            ddlPrimary.DataSource = settingClass.GetDataTable("SELECT * FROM Customers WHERE [Level]='Primary' ORDER BY Id ASC")
-            ddlPrimary.DataTextField = "Name"
-            ddlPrimary.DataValueField = "Id"
-            ddlPrimary.DataBind()
-
-            If ddlPrimary.Items.Count > 0 Then
-                ddlPrimary.Items.Insert(0, New ListItem("", ""))
-            End If
-        Catch ex As Exception
-            ddlPrimary.Items.Clear()
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
     End Sub
 
     Protected Sub BindCompany()
@@ -238,14 +217,31 @@ Partial Class Setting_Customer_Add
                     lbSales.Items.Insert(0, New ListItem("", ""))
                 End If
 
-                lbSales.Enabled = True
                 If Session("RoleName") = "Sales" AndAlso Session("LevelName") = "Member" Then
                     lbSales.SelectedValue = Session("LoginId").ToString()
-                    lbSales.Enabled = False
                 End If
             End If
         Catch ex As Exception
             lbSales.Items.Clear()
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindPrimary()
+        ddlPrimary.Items.Clear()
+        Try
+            ddlPrimary.DataSource = settingClass.GetDataTable("SELECT * FROM Customers WHERE [Level]='Primary' ORDER BY Id ASC")
+            ddlPrimary.DataTextField = "Name"
+            ddlPrimary.DataValueField = "Id"
+            ddlPrimary.DataBind()
+
+            If ddlPrimary.Items.Count > 0 Then
+                ddlPrimary.Items.Insert(0, New ListItem("", ""))
+            End If
+        Catch ex As Exception
+            ddlPrimary.Items.Clear()
             If Not Session("RoleName") = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
@@ -315,11 +311,21 @@ Partial Class Setting_Customer_Add
         End Try
     End Sub
 
-    Protected Sub BindComponentForm()
-        divDebtorCode.Visible = LoginAccess("Visible Debtor Code")
-        divLevelCustomer.Visible = LoginAccess("Visible Level Sponsor")
-        divCompany.Visible = LoginAccess("Visible Company")
-        divAreaOperator.Visible = LoginAccess("Visible Area Operator")
+    Protected Sub BindComponentForm(levelCust As String)
+        Try
+            divDebtorCode.Visible = False
+            divLinked.Visible = False
+
+            If Session("RoleName") = "Developer" Then divDebtorCode.Visible = True
+            If Session("RoleName") = "IT" Then divDebtorCode.Visible = True
+            If Session("RoleName") = "Factory Office" Then divDebtorCode.Visible = True
+            If Session("RoleName") = "Account" Then divDebtorCode.Visible = True
+
+            If levelCust = "Linked" Then
+                divLinked.Visible = True
+            End If
+        Catch ex As Exception
+        End Try
     End Sub
 
     Protected Sub MessageError(visible As Boolean, message As String)
