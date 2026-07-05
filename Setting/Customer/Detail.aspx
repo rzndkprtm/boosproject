@@ -96,19 +96,16 @@
                                                     <asp:Label runat="server" ID="lblOperator"></asp:Label>
                                                 </div>
                                             </div>
-                                            <h6 class="text-uppercase fw-bold text-primary mb-3" runat="server" id="divLevelSponsor">Account Information</h6>
-                                            <div runat="server" id="divLevelSponsorContent">
-                                                <div class="row mb-2">
-                                                    <div class="col-4 text-muted">Level</div>
-                                                    <div class="col-8 fw-semibold">
-                                                        <asp:Label runat="server" ID="lblLevel"></asp:Label>
-                                                    </div>
+                                            <div class="row mb-2">
+                                                <div class="col-4 text-muted">Level</div>
+                                                <div class="col-8 fw-semibold">
+                                                    <asp:Label runat="server" ID="lblLevel"></asp:Label>
                                                 </div>
-                                                <div class="row mb-4">
-                                                    <div class="col-4 text-muted">Primary Account</div>
-                                                    <div class="col-8 fw-semibold">
-                                                        <asp:Label runat="server" ID="lblPrimary"></asp:Label>
-                                                    </div>
+                                            </div>
+                                            <div class="row mb-4">
+                                                <div class="col-4 text-muted">Primary Account</div>
+                                                <div class="col-8 fw-semibold">
+                                                    <asp:Label runat="server" ID="lblPrimary"></asp:Label>
                                                 </div>
                                             </div>
                                             <h6 class="text-uppercase fw-bold text-primary mb-3">Pricing Information</h6>
