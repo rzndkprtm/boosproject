@@ -133,7 +133,7 @@ Partial Class Setting_Job_Sheet_Detail_Add
     Protected Sub BindJobSheet()
         ddlJobSheet.Items.Clear()
         Try
-            ddlJobSheet.DataSource = jobClass.GetDataTable("SELECT * FROM JobSheets ORDER BY Name ASC")
+            ddlJobSheet.DataSource = jobClass.GetDataTable("SELECT Id, Name FROM JobSheets ORDER BY Name ASC")
             ddlJobSheet.DataTextField = "Name"
             ddlJobSheet.DataValueField = "Id"
             ddlJobSheet.DataBind()
