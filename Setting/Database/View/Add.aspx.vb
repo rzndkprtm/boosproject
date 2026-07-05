@@ -21,12 +21,22 @@ Partial Class Setting_Database_View_Add
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            If Not String.IsNullOrEmpty(txtQuery.Text) Then
-                Dim thisQuery As String = "IF EXISTS ( SELECT * FROM sys.views WHERE name = '" & txtName.Text.Replace("'", "''") & "') BEGIN EXEC(' ALTER VIEW [" & txtName.Text.Replace("'", "''") & "] AS " & txtQuery.Text.Replace("'", "''") & " ') END ELSE BEGIN EXEC(' CREATE VIEW [" & txtName.Text.Replace("'", "''") & "] AS " & txtQuery.Text.Replace("'", "''") & " ') END"
+            If Not String.IsNullOrWhiteSpace(txtQuery.Text) Then
+                Dim viewName As String = txtName.Text.Trim().Replace("]", "]]")
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As New SqlCommand(thisQuery, thisConn)
-                        thisConn.Open()
+                    thisConn.Open()
+
+                    Using thisCheck As New SqlCommand("SELECT COUNT(*) FROM sys.views WHERE name = @Name", thisConn)
+                        thisCheck.Parameters.AddWithValue("@Name", viewName)
+                        If CInt(thisCheck.ExecuteScalar()) > 0 Then
+                            MessageError(True, "SUDAH ADA !")
+                            Exit Sub
+                        End If
+                    End Using
+
+                    Dim sql As String = "CREATE VIEW [dbo].[" & viewName & "] AS " & vbCrLf & txtQuery.Text
+                    Using thisCmd As New SqlCommand(sql, thisConn)
                         thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
