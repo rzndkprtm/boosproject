@@ -49,6 +49,7 @@
         ::-webkit-scrollbar{ width:8px; }
         ::-webkit-scrollbar-thumb{ background:#d1d5db; border-radius:10px; }
     </style>
+
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
