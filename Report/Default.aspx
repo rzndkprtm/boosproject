@@ -49,37 +49,35 @@
                     <div class="card-header">
                         <h4 class="card-title">Report Filters</h4>
                     </div>
-                    <div class="card-content">
-                        <div class="card-body">
-                            <div class="form form-vertical">
-                                <div class="row">
-                                    <div class="col-12 form-group">
-                                        <label class="form-label">Company</label>
-                                        <asp:DropDownList runat="server" ID="ddlCompany" CssClass="form-select"></asp:DropDownList>
-                                    </div>
+                    <div class="card-body">
+                        <div class="form form-vertical">
+                            <div class="row">
+                                <div class="col-12 form-group">
+                                    <label class="form-label">Company</label>
+                                    <asp:DropDownList runat="server" ID="ddlCompany" CssClass="form-select"></asp:DropDownList>
                                 </div>
-                                <div class="row">
-                                    <div class="col-12 form-group">
-                                        <label class="form-label">Status</label>
-                                        <asp:DropDownList runat="server" ID="ddlStatus" CssClass="form-select">
-                                            <asp:ListItem Value="" Text=""></asp:ListItem>
-                                            <asp:ListItem Value="Unsubmitted" Text="Unsubmitted"></asp:ListItem>
-                                            <asp:ListItem Value="Submitted" Text="Submitted"></asp:ListItem>
-                                            <asp:ListItem Value="In Production" Text="In Production"></asp:ListItem>
-                                        </asp:DropDownList>
-                                    </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 form-group">
+                                    <label class="form-label">Status</label>
+                                    <asp:DropDownList runat="server" ID="ddlStatus" CssClass="form-select">
+                                        <asp:ListItem Value="" Text=""></asp:ListItem>
+                                        <asp:ListItem Value="Unsubmitted" Text="Unsubmitted"></asp:ListItem>
+                                        <asp:ListItem Value="Submitted" Text="Submitted"></asp:ListItem>
+                                        <asp:ListItem Value="In Production" Text="In Production"></asp:ListItem>
+                                    </asp:DropDownList>
                                 </div>
-                                <div class="row">
-                                    <div class="col-12 form-group">
-                                        <label class="form-label">Start Date</label>
-                                        <asp:TextBox runat="server" ID="txtStartDate" CssClass="form-control" TextMode="Date"></asp:TextBox>
-                                    </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 form-group">
+                                    <label class="form-label">Start Date</label>
+                                    <asp:TextBox runat="server" ID="txtStartDate" CssClass="form-control" TextMode="Date"></asp:TextBox>
                                 </div>
-                                <div class="row">
-                                    <div class="col-12 form-group">
-                                        <label class="form-label">End Date</label>
-                                        <asp:TextBox runat="server" ID="txtEndDate" CssClass="form-control" TextMode="Date"></asp:TextBox>
-                                    </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 form-group">
+                                    <label class="form-label">End Date</label>
+                                    <asp:TextBox runat="server" ID="txtEndDate" CssClass="form-control" TextMode="Date"></asp:TextBox>
                                 </div>
                             </div>
                         </div>

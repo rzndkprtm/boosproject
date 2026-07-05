@@ -45,59 +45,57 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="card-content">
-                                <div class="card-body">
-                                    <div class="table-responsive">
-                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="31" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Visible="false" OnPageIndexChanging="gvList_PageIndexChanging" OnDataBound="gvList_DataBound">
-                                            <Columns>
-                                                <asp:TemplateField ItemStyle-HorizontalAlign="Center">
-                                                    <ItemTemplate>
-                                                        <%# Container.DataItemIndex + 1 %>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:BoundField DataField="Id" HeaderText="ID" />
-                                                <asp:BoundField DataField="SummaryDate" HeaderText="Order Date" DataFormatString="{0:dd MMM yyyy}" />
-                                                <asp:TemplateField HeaderText="Total Cost Price">
-                                                    <ItemTemplate>
-                                                        <%# BindPrice(Eval("TotalCostPrice")) %>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="Total Selling Price">
-                                                    <ItemTemplate>
-                                                        <%# BindPrice(Eval("TotalSellingPrice")) %>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="Total Profit">
-                                                    <ItemTemplate>
-                                                        <%# BindPrice(Eval("TotalProfit")) %>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="Total Paid Amount">
-                                                    <ItemTemplate>
-                                                        <%# BindPrice(Eval("TotalPaidAmount")) %>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="Total Unpaid Amount">
-                                                    <ItemTemplate>
-                                                        <%# BindPrice(Eval("TotalUnpaidAmount")) %>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                            </Columns>
-                                        </asp:GridView>
-                                    </div>
-                                    <div class="d-flex justify-content-end mt-3">
-                                        <nav id="navPager" runat="server" visible="false">
-                                            <ul class="pagination pagination mb-0">
-                                                <asp:Repeater ID="rptPager" runat="server" OnItemCommand="rptPager_ItemCommand">
-                                                    <ItemTemplate>
-                                                        <li class='page-item <%# Eval("CssClass") %>'>
-                                                            <asp:LinkButton runat="server" ID="lnkPage" CssClass="page-link" Text='<%# Eval("Text") %>' CommandName="Page" CommandArgument='<%# Eval("PageIndex") %>' />
-                                                        </li>
-                                                    </ItemTemplate>
-                                                </asp:Repeater>
-                                            </ul>
-                                        </nav>
-                                    </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="31" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Visible="false" OnPageIndexChanging="gvList_PageIndexChanging" OnDataBound="gvList_DataBound">
+                                        <Columns>
+                                            <asp:TemplateField ItemStyle-HorizontalAlign="Center">
+                                                <ItemTemplate>
+                                                    <%# Container.DataItemIndex + 1 %>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:BoundField DataField="Id" HeaderText="ID" />
+                                            <asp:BoundField DataField="SummaryDate" HeaderText="Order Date" DataFormatString="{0:dd MMM yyyy}" />
+                                            <asp:TemplateField HeaderText="Total Cost Price">
+                                                <ItemTemplate>
+                                                    <%# BindPrice(Eval("TotalCostPrice")) %>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Total Selling Price">
+                                                <ItemTemplate>
+                                                    <%# BindPrice(Eval("TotalSellingPrice")) %>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Total Profit">
+                                                <ItemTemplate>
+                                                    <%# BindPrice(Eval("TotalProfit")) %>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Total Paid Amount">
+                                                <ItemTemplate>
+                                                    <%# BindPrice(Eval("TotalPaidAmount")) %>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Total Unpaid Amount">
+                                                <ItemTemplate>
+                                                    <%# BindPrice(Eval("TotalUnpaidAmount")) %>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                        </Columns>
+                                    </asp:GridView>
+                                </div>
+                                <div class="d-flex justify-content-end mt-3">
+                                    <nav id="navPager" runat="server" visible="false">
+                                        <ul class="pagination pagination mb-0">
+                                            <asp:Repeater ID="rptPager" runat="server" OnItemCommand="rptPager_ItemCommand">
+                                                <ItemTemplate>
+                                                    <li class='page-item <%# Eval("CssClass") %>'>
+                                                        <asp:LinkButton runat="server" ID="lnkPage" CssClass="page-link" Text='<%# Eval("Text") %>' CommandName="Page" CommandArgument='<%# Eval("PageIndex") %>' />
+                                                    </li>
+                                                </ItemTemplate>
+                                            </asp:Repeater>
+                                        </ul>
+                                    </nav>
                                 </div>
                             </div>
                         </ContentTemplate>
