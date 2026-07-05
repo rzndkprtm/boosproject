@@ -42,7 +42,7 @@
                                     <div class="row mb-2">
                                         <div class="col-12 form-group">
                                             <label class="form-label">Query</label>
-                                            <asp:TextBox runat="server" ID="txtQuery" TextMode="MultiLine" CssClass="form-control" Height="500px" placeholder="" autocomplete="off" style="resize:none;"></asp:TextBox>
+                                            <asp:TextBox runat="server" ID="txtQuery" TextMode="MultiLine" CssClass="form-control" Height="500px" autocomplete="off" style="resize:none;"></asp:TextBox>
                                         </div>
                                     </div>
                                     <div class="row mt-3" runat="server" id="divError">
