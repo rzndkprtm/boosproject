@@ -265,7 +265,7 @@ Partial Class Setting_Customer_Detail
             aWelcome.Visible = False
             Dim welcomeStatus As Integer = settingClass.GetItemData_Integer("SELECT COUNT(*) FROM CustomerWelcomes WHERE CustomerId='" & lblId.Text & "'")
             If welcomeStatus = 0 Then aWelcome.Visible = True
-            divLevelSponsor.Visible = LoginAccess("Visible Level Sponsor")
+            'divLevelSponsor.Visible = LoginAccess("Visible Level Sponsor")
         Catch ex As Exception
             MessageError(True, ex.ToString)
             If Not Session("RoleName") = "Developer" Then
