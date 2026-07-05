@@ -40,67 +40,65 @@
                 <div class="card">
                     <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
                         <ContentTemplate>
-                            <div class="card-content">
-                                <div class="card-header">
-                                    <div class="row">
-                                        <div class="col-12 col-sm-12 col-lg-6">
-                                            <h4 class="card-title">List Product Alias</h4>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
-                                            <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
-                                                <div class="input-group">
-                                                    <span class="input-group-text">Search : </span>
-                                                    <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" autocomplete="off"></asp:TextBox>
-                                                    <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />
-                                                </div>
-                                            </asp:Panel>
-                                        </div>
+                            <div class="card-header">
+                                <div class="row">
+                                    <div class="col-12 col-sm-12 col-lg-6">
+                                        <h4 class="card-title">List Product Alias</h4>
+                                    </div>
+                                    <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
+                                        <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
+                                            <div class="input-group">
+                                                <span class="input-group-text">Search : </span>
+                                                <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" autocomplete="off"></asp:TextBox>
+                                                <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />
+                                            </div>
+                                        </asp:Panel>
                                     </div>
                                 </div>
-                                <div class="card-body">
-                                    <div class="table-responsive">
-                                        <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="True" EmptyDataText="DATA NOT FOUND :)" PageSize="50" ShowHeaderWhenEmpty="true" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Visible="false" OnPageIndexChanging="gvList_PageIndexChanging" OnDataBound="gvList_DataBound">
-                                            <Columns>
-                                                <asp:TemplateField ItemStyle-HorizontalAlign="Center">
-                                                    <ItemTemplate>
-                                                        <%# Container.DataItemIndex + 1 %>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:BoundField DataField="Id" HeaderText="ID" />
-                                                <asp:BoundField DataField="FirstName" HeaderText="Product Name" />
-                                                <asp:BoundField DataField="SecondName" HeaderText="Product Name" />
-                                                <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="200px">
-                                                    <ItemTemplate>
-                                                        <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
-                                                        <ul class="dropdown-menu">
-                                                            <li runat="server" visible='<%# LoginAccess("Detail") %>'>
-                                                                <a class="dropdown-item" id="aEdit" href='<%# Page.ResolveUrl("~/setting/specification/product/alias/edit?aliasid=" & Eval("Id")) %>'>Edit</a>
-                                                            </li>
-                                                            <li runat="server" visible='<%# LoginAccess("Delete") %>'>
-                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('ProductAlias', '<%# Eval("Id") %>')">Log</a>
-                                                            </li>
-                                                        </ul>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                            </Columns>
-                                        </asp:GridView>
-                                    </div>
-                                    <div class="d-flex justify-content-end mt-3">
-                                        <nav id="navPager" runat="server" visible="false">
-                                            <ul class="pagination pagination mb-0">
-                                                <asp:Repeater ID="rptPager" runat="server" OnItemCommand="rptPager_ItemCommand">
-                                                    <ItemTemplate>
-                                                        <li class='page-item <%# Eval("CssClass") %>'>
-                                                            <asp:LinkButton runat="server" ID="lnkPage" CssClass="page-link" Text='<%# Eval("Text") %>' CommandName="Page" CommandArgument='<%# Eval("PageIndex") %>' />
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="True" EmptyDataText="DATA NOT FOUND :)" PageSize="50" ShowHeaderWhenEmpty="true" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Visible="false" OnPageIndexChanging="gvList_PageIndexChanging" OnDataBound="gvList_DataBound">
+                                        <Columns>
+                                            <asp:TemplateField ItemStyle-HorizontalAlign="Center">
+                                                <ItemTemplate>
+                                                    <%# Container.DataItemIndex + 1 %>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:BoundField DataField="Id" HeaderText="ID" />
+                                            <asp:BoundField DataField="FirstName" HeaderText="Product Name" />
+                                            <asp:BoundField DataField="SecondName" HeaderText="Product Name" />
+                                            <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="200px">
+                                                <ItemTemplate>
+                                                    <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
+                                                    <ul class="dropdown-menu">
+                                                        <li runat="server" visible='<%# LoginAccess("Detail") %>'>
+                                                            <a class="dropdown-item" id="aEdit" href='<%# Page.ResolveUrl("~/setting/specification/product/alias/edit?aliasid=" & Eval("Id")) %>'>Edit</a>
                                                         </li>
-                                                    </ItemTemplate>
-                                                </asp:Repeater>
-                                            </ul>
-                                        </nav>
-                                    </div>
+                                                        <li runat="server" visible='<%# LoginAccess("Delete") %>'>
+                                                            <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('ProductAlias', '<%# Eval("Id") %>')">Log</a>
+                                                        </li>
+                                                    </ul>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                        </Columns>
+                                    </asp:GridView>
+                                </div>
+                                <div class="d-flex justify-content-end mt-3">
+                                    <nav id="navPager" runat="server" visible="false">
+                                        <ul class="pagination pagination mb-0">
+                                            <asp:Repeater ID="rptPager" runat="server" OnItemCommand="rptPager_ItemCommand">
+                                                <ItemTemplate>
+                                                    <li class='page-item <%# Eval("CssClass") %>'>
+                                                        <asp:LinkButton runat="server" ID="lnkPage" CssClass="page-link" Text='<%# Eval("Text") %>' CommandName="Page" CommandArgument='<%# Eval("PageIndex") %>' />
+                                                    </li>
+                                                </ItemTemplate>
+                                            </asp:Repeater>
+                                        </ul>
+                                    </nav>
                                 </div>
                             </div>
                         </ContentTemplate>
