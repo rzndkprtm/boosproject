@@ -35,29 +35,27 @@
                     <div class="card-header">
                         <h4 class="card-title">Order Data</h4>
                     </div>
-                    <div class="card-content">
-                        <div class="card-body">
-                            <div class="form form-vertical">
-                                <div class="row mb-2">
-                                    <div class="col-12">
-                                        <label>Order #</label>
-                                        <br />
-                                        <asp:Label runat="server" ID="lblOrderId" CssClass="form-control font-bold"></asp:Label>
-                                    </div>
+                    <div class="card-body">
+                        <div class="form form-vertical">
+                            <div class="row mb-2">
+                                <div class="col-12">
+                                    <label>Order #</label>
+                                    <br />
+                                    <asp:Label runat="server" ID="lblOrderId" CssClass="form-control font-bold"></asp:Label>
                                 </div>
-                                <div class="row mb-2">
-                                    <div class="col-12">
-                                        <label>Order Number</label>
-                                        <br />
-                                        <asp:Label runat="server" ID="lblOrderNumber" CssClass="form-control font-bold"></asp:Label>
-                                    </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-12">
+                                    <label>Order Number</label>
+                                    <br />
+                                    <asp:Label runat="server" ID="lblOrderNumber" CssClass="form-control font-bold"></asp:Label>
                                 </div>
-                                <div class="row mb-2">
-                                    <div class="col-12">
-                                        <label>Order Name</label>
-                                        <br />
-                                        <asp:Label runat="server" ID="lblOrderName" CssClass="form-control font-bold"></asp:Label>
-                                    </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-12">
+                                    <label>Order Name</label>
+                                    <br />
+                                    <asp:Label runat="server" ID="lblOrderName" CssClass="form-control font-bold"></asp:Label>
                                 </div>
                             </div>
                         </div>
