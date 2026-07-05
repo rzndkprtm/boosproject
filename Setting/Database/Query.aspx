@@ -28,37 +28,35 @@
                     <div class="card-header">
                         <h4 class="card-title">Query</h4>
                     </div>
-                    <div class="card-content">
-                        <div class="card-body">
-                            <div class="form form-horizontal">
-                                <div class="form-body">
-                                    <div class="row mb-3">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Action Query</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                            <asp:DropDownList runat="server" ID="ddlAction" CssClass="form-select">
-                                                <asp:ListItem Value="" Text=""></asp:ListItem>
-                                                <asp:ListItem Value="Create" Text="Create"></asp:ListItem>
-                                                <asp:ListItem Value="Read" Text="Read"></asp:ListItem>
-                                                <asp:ListItem Value="Update" Text="Update"></asp:ListItem>
-                                                <asp:ListItem Value="Delete" Text="Delete"></asp:ListItem>
-                                            </asp:DropDownList>
-                                        </div>
+                    <div class="card-body">
+                        <div class="form form-horizontal">
+                            <div class="form-body">
+                                <div class="row mb-3">
+                                    <div class="col-12 col-sm-12 col-lg-3">
+                                        <label>Action Query</label>
                                     </div>
-                                    <div class="row mb-3">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Your Query</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-9 form-group">
-                                            <asp:TextBox runat="server" ID="txtQuery" TextMode="MultiLine" Height="150px" CssClass="form-control" placeholder="Your Query ....." autocomplete="off" style="resize:none;"></asp:TextBox>
-                                        </div>
+                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                        <asp:DropDownList runat="server" ID="ddlAction" CssClass="form-select">
+                                            <asp:ListItem Value="" Text=""></asp:ListItem>
+                                            <asp:ListItem Value="Create" Text="Create"></asp:ListItem>
+                                            <asp:ListItem Value="Read" Text="Read"></asp:ListItem>
+                                            <asp:ListItem Value="Update" Text="Update"></asp:ListItem>
+                                            <asp:ListItem Value="Delete" Text="Delete"></asp:ListItem>
+                                        </asp:DropDownList>
                                     </div>
-                                    <div class="row" runat="server" id="divError">
-                                        <div class="col-12">
-                                            <div class="alert alert-danger">
-                                                <span runat="server" id="msgError"></span>
-                                            </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-12 col-sm-12 col-lg-3">
+                                        <label>Your Query</label>
+                                    </div>
+                                    <div class="col-12 col-sm-12 col-lg-9 form-group">
+                                        <asp:TextBox runat="server" ID="txtQuery" TextMode="MultiLine" Height="150px" CssClass="form-control" placeholder="Your Query ....." autocomplete="off" style="resize:none;"></asp:TextBox>
+                                    </div>
+                                </div>
+                                <div class="row" runat="server" id="divError">
+                                    <div class="col-12">
+                                        <div class="alert alert-danger">
+                                            <span runat="server" id="msgError"></span>
                                         </div>
                                     </div>
                                 </div>
