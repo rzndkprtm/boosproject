@@ -527,7 +527,7 @@ Public Class JobEvents
         For Each t As String In titles
             Dim phrase As New Phrase()
 
-            phrase.Add(New Chunk(t & vbCrLf & vbCrLf & vbCrLf, titleFont))
+            phrase.Add(New Chunk(t & vbCrLf & vbCrLf & vbCrLf & vbCrLf, titleFont))
             phrase.Add(New Chunk("_______________" & vbCrLf, textFont))
 
             Dim cell As New PdfPCell(phrase)
