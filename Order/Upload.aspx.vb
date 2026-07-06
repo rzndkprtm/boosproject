@@ -970,8 +970,7 @@ Partial Class Order_Upload
                                     Exit For
                                 End If
 
-                                Dim tubeName As String = blindType
-                                If blindType = "Standard" Then tubeName = "Standard (CS)"
+                                Dim tubeName As String = blindType & " (CS)"
 
                                 Dim tubeId As String = orderClass.GetItemData("SELECT Id FROM ProductTubes WHERE Alias='" & tubeName & "'")
 
