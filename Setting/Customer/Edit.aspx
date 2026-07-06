@@ -24,7 +24,7 @@
     </div>
     <div class="page-content">
         <section class="row">
-            <div class="col-lg-8 col-md-12 col-sm-12">
+            <div class="col-lg-8 col-md-12 col-sm-12 mb-2">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title">Customer Form</h4>
@@ -184,6 +184,18 @@
                     <div class="card-footer text-center">
                         <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" OnClick="btnSubmit_Click" />
                         <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Cancel" OnClick="btnCancel_Click" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-12 col-lg-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title text-center">Information</h4>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body">
+
+                        </div>
                     </div>
                 </div>
             </div>

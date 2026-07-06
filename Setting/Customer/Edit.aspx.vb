@@ -1,4 +1,5 @@
-﻿Imports System.Data
+﻿Imports System.ComponentModel.Design
+Imports System.Data
 Imports System.Data.SqlClient
 
 Partial Class Setting_Customer_Edit
@@ -41,6 +42,7 @@ Partial Class Setting_Customer_Edit
         MessageError(False, String.Empty)
         BindCompanyDetail(ddlCompany.SelectedValue)
         BindOperator(ddlCompany.SelectedValue)
+        BindPrimary(ddlCompany.SelectedValue)
         BindPriceGroup(ddlCompany.SelectedValue)
         BindPriceGroup_Shutter(ddlCompany.SelectedValue)
         BindPriceGroup_Door(ddlCompany.SelectedValue)
@@ -58,8 +60,6 @@ Partial Class Setting_Customer_Edit
                 MessageError(True, "CUSTOMER NAME IS REQUIRED !")
                 Exit Sub
             End If
-
-
 
             If ddlCompany.SelectedValue = "" Then
                 MessageError(True, "COMPANY IS REQUIRED !")
@@ -158,7 +158,7 @@ Partial Class Setting_Customer_Edit
 
             Dim companyId As String = myData("CompanyId").ToString()
 
-            BindPrimary()
+            BindPrimary(companyId)
             BindCompany()
             BindCompanyDetail(companyId)
             BindOperator(companyId)
@@ -277,10 +277,10 @@ Partial Class Setting_Customer_Edit
         End Try
     End Sub
 
-    Protected Sub BindPrimary()
+    Protected Sub BindPrimary(companyId As String)
         ddlPrimary.Items.Clear()
         Try
-            ddlPrimary.DataSource = settingClass.GetDataTable("SELECT * FROM Customers WHERE [Level]='Primary' ORDER BY Id ASC")
+            ddlPrimary.DataSource = settingClass.GetDataTable("SELECT * FROM Customers WHERE [Level]='Primary' AND CompanyId='" & companyId & "' ORDER BY Id ASC")
             ddlPrimary.DataTextField = "Name"
             ddlPrimary.DataValueField = "Id"
             ddlPrimary.DataBind()

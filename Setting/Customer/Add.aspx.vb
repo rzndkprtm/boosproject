@@ -15,10 +15,11 @@ Partial Class Setting_Customer_Add
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-            BindPrimary()
+
             BindCompany()
             BindCompanyDetail(ddlCompany.SelectedValue)
             BindOperator(ddlCompany.SelectedValue)
+            BindPrimary(ddlCompany.SelectedValue)
             BindPriceGroup(ddlCompany.SelectedValue)
             BindPriceGroup_Shutter(ddlCompany.SelectedValue)
             BindPriceGroup_Door(ddlCompany.SelectedValue)
@@ -31,6 +32,7 @@ Partial Class Setting_Customer_Add
         MessageError(False, String.Empty)
         BindCompanyDetail(ddlCompany.SelectedValue)
         BindOperator(ddlCompany.SelectedValue)
+        BindPrimary(ddlCompany.SelectedValue)
         BindPriceGroup(ddlCompany.SelectedValue)
         BindPriceGroup_Shutter(ddlCompany.SelectedValue)
         BindPriceGroup_Door(ddlCompany.SelectedValue)
@@ -229,10 +231,10 @@ Partial Class Setting_Customer_Add
         End Try
     End Sub
 
-    Protected Sub BindPrimary()
+    Protected Sub BindPrimary(companyId As String)
         ddlPrimary.Items.Clear()
         Try
-            ddlPrimary.DataSource = settingClass.GetDataTable("SELECT * FROM Customers WHERE [Level]='Primary' ORDER BY Id ASC")
+            ddlPrimary.DataSource = settingClass.GetDataTable("SELECT * FROM Customers WHERE [Level]='Primary' AND CompanyId='" & companyId & "' ORDER BY Id ASC")
             ddlPrimary.DataTextField = "Name"
             ddlPrimary.DataValueField = "Id"
             ddlPrimary.DataBind()
