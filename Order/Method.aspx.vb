@@ -1348,7 +1348,6 @@ Partial Class Order_Method
 
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
-        If Not String.IsNullOrEmpty(data.tubetype) Then tubeName = orderClass.GetTubeName(data.tubetype)
         If Not String.IsNullOrEmpty(data.controltype) Then controlName = orderClass.GetControlName(data.controltype)
 
         Dim factory As String = orderClass.GetFabricFactory(data.fabriccolour)
@@ -9819,7 +9818,7 @@ Partial Class Order_Method
         End If
         If data.subtype = "Single" AndAlso String.IsNullOrEmpty(data.tilterposition) Then Return "TILTER POSITION IS REQUIRED !"
 
-        If width > 300 AndAlso width <= 400 AndAlso data.controlposition = data.tilterposition Then
+        If width > 310 AndAlso width <= 410 AndAlso data.controlposition = data.tilterposition Then
             Return "PLEASE USE OPPOSITE CONTROL AND TILTER POSITIONS !"
         End If
 
@@ -10791,8 +10790,6 @@ Partial Class Order_Method
 
         Dim blindReq As New JSONList With {.type = "BlindTypeCS", .designtype = designId, .companydetailid = companyDetailId, .action = action}
 
-        Dim tubeReq As New JSONList With {.type = "TubeType", .blindtype = blindId, .companydetailid = companyDetailId, .action = action}
-
         Dim controlReq As New JSONList With {.type = "ControlType", .blindtype = blindId, .tubetype = tubeId, .companydetailid = companyDetailId, .action = action}
 
         Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .action = action}
@@ -10810,7 +10807,6 @@ Partial Class Order_Method
         Dim result = New With {
                 .ItemData = itemDetail,
                 .BlindTypes = ListData(blindReq),
-                .TubeTypes = ListData(tubeReq),
                 .ControlTypes = ListData(controlReq),
                 .ColourTypes = ListData(colourReq),
                 .Mountings = ListData(mountingReq),

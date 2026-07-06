@@ -18,19 +18,17 @@ $("#cancel").on("click", () => window.location.href = `/order/detail?orderid=${h
 $("#vieworder").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
 
 $("#blindtype").on("change", function () {
-    bindTubeType($(this).val());
     bindMounting($(this).val());
-
+    bindControlType($(this).val());
     document.getElementById("controllength").value = "";
 });
 
 $("#controltype").on("change", function () {
     const blindtype = document.getElementById("blindtype").value;
-    const tubetype = document.getElementById("tubetype").value;
 
-    bindColourType(blindtype, tubetype, $(this).val());
-    bindFabricType(designId, tubetype);
-    bindFabricTypeB(designId, tubetype);
+    bindColourType(blindtype, $(this).val());
+    bindFabricType(designId);
+    bindFabricTypeB(designId);
     bindControlColour(designId, $(this).val());
 
     document.getElementById("controllength").value = "";
@@ -297,7 +295,7 @@ function bindBlindType(designType) {
             const selectedValue = blindtype.value || "";
             Promise.all([
                 bindMounting(selectedValue),
-                bindTubeType(selectedValue)
+                bindControlType(selectedValue)
             ]).then(resolve).catch(reject);
             return;
         }
@@ -335,13 +333,13 @@ function bindBlindType(designType) {
                     const selectedValue = blindtype.value || "";
                     Promise.all([
                         bindMounting(selectedValue),
-                        bindTubeType(selectedValue)
+                        bindControlType(selectedValue)
                     ]).then(resolve).catch(reject);
                 } else {
                     const selectedValue = blindtype.value || "";
                     Promise.all([
                         bindMounting(selectedValue),
-                        bindTubeType(selectedValue)
+                        bindControlType(selectedValue)
                     ]).then(resolve).catch(reject);
                 }
             },
@@ -352,88 +350,21 @@ function bindBlindType(designType) {
     });
 }
 
-function bindTubeType(blindType) {
-    return new Promise((resolve, reject) => {
-        const tubetype = document.getElementById("tubetype");
-        tubetype.innerHTML = "";
-
-        if (!blindType) {
-            const selectedValue = tubetype.value || "";
-            Promise.all([
-                bindControlType(blindType, selectedValue),
-                bindFabricType(designId, selectedValue),
-                bindFabricTypeB(designId, selectedValue)
-            ]).then(resolve).catch(reject);
-            return;
-        }
-
-        let listData = { type: "TubeType", companydetailid: companyDetailId, blindtype: blindType, action: itemAction };
-
-        $.ajax({
-            type: "POST",
-            url: "Method.aspx/ListData",
-            data: JSON.stringify({ data: listData }),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (response) {
-                if (Array.isArray(response.d)) {
-                    tubetype.innerHTML = "";
-
-                    if (response.d.length > 1) {
-                        const defaultOption = document.createElement("option");
-                        defaultOption.text = "";
-                        defaultOption.value = "";
-                        tubetype.add(defaultOption);
-                    }
-
-                    response.d.forEach(function (item) {
-                        const option = document.createElement("option");
-                        option.value = item.Value;
-                        option.text = item.Text;
-                        tubetype.add(option);
-                    });
-
-                    if (response.d.length === 1) {
-                        tubetype.selectedIndex = 0;
-                    }
-
-                    const selectedValue = tubetype.value || "";
-                    Promise.all([
-                        bindControlType(blindType, selectedValue),
-                        bindFabricType(designId, selectedValue),
-                        bindFabricTypeB(designId, selectedValue)
-                    ]).then(resolve).catch(reject);
-                } else {
-                    const selectedValue = tubetype.value || "";
-                    Promise.all([
-                        bindControlType(blindType, selectedValue),
-                        bindFabricType(designId, selectedValue),
-                        bindFabricTypeB(designId, selectedValue)
-                    ]).then(resolve).catch(reject);
-                }
-            },
-            error: function (error) {
-                reject(error);
-            }
-        });
-    });
-}
-
-function bindControlType(blindType, tubeType) {
+function bindControlType(blindType) {
     return new Promise((resolve, reject) => {
         const controltype = document.getElementById("controltype");
         controltype.innerHTML = "";
 
-        if (!blindType && !tubeType) {
+        if (!blindType) {
             const selectedValue = controltype.value || "";
             Promise.all([
-                bindColourType(blindType, tubeType, selectedValue),
+                bindColourType(blindType, selectedValue),
                 bindControlColour(designId, selectedValue)
             ]).then(resolve).catch(reject);
             return;
         }
 
-        let listData = { type: "ControlType", companydetailid: companyDetailId, blindtype: blindType, tubetype: tubeType, action: itemAction };
+        let listData = { type: "ControlType", companydetailid: companyDetailId, blindtype: blindType, tubetype: '9', action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -465,13 +396,13 @@ function bindControlType(blindType, tubeType) {
 
                     const selectedValue = controltype.value || "";
                     Promise.all([
-                        bindColourType(blindType, tubeType, selectedValue),
+                        bindColourType(blindType, selectedValue),
                         bindControlColour(designId, selectedValue)
                     ]).then(resolve).catch(reject);
                 } else {
                     const selectedValue = controltype.value || "";
                     Promise.all([
-                        bindColourType(blindType, tubeType, selectedValue),
+                        bindColourType(blindType, selectedValue),
                         bindControlColour(designId, selectedValue)
                     ]).then(resolve).catch(reject);
                 }
@@ -483,12 +414,12 @@ function bindControlType(blindType, tubeType) {
     });
 }
 
-function bindColourType(blindType, tubeType, controlType) {
+function bindColourType(blindType, controlType) {
     return new Promise((resolve, reject) => {
         const colourtype = document.getElementById("colourtype");
         colourtype.innerHTML = "";
 
-        if (!blindType || !tubeType || !controlType) {
+        if (!blindType || !controlType) {
             const selectedValue = colourtype.value || "";
             Promise.all([
                 bindComponentForm(blindType, controlType, selectedValue)
@@ -496,7 +427,7 @@ function bindColourType(blindType, tubeType, controlType) {
             return;
         }
 
-        const listData = { type: "ColourType", companydetailid: companyDetailId, blindtype: blindType, tubetype: tubeType, controltype: controlType, action: itemAction };
+        const listData = { type: "ColourType", companydetailid: companyDetailId, blindtype: blindType, tubetype: '9', controltype: controlType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -637,12 +568,12 @@ function bindControlColour(designType, controlType) {
     });
 }
 
-function bindFabricType(designType, tubeType) {
+function bindFabricType(designType) {
     return new Promise((resolve, reject) => {
         const fabrictype = document.getElementById("fabrictype");
         fabrictype.innerHTML = "";
 
-        if (!designType || !tubeType) {
+        if (!designType) {
             const selectedValue = fabrictype.value || "";
             Promise.resolve(
                 bindFabricColour(selectedValue)
@@ -698,12 +629,12 @@ function bindFabricType(designType, tubeType) {
     });
 }
 
-function bindFabricTypeB(designType, tubeType) {
+function bindFabricTypeB(designType) {
     return new Promise((resolve, reject) => {
         const fabrictypeb = document.getElementById("fabrictypeb");
         fabrictypeb.innerHTML = "";
 
-        if (!designType || !tubeType) {
+        if (!designType) {
             const selectedValue = fabrictypeb.value || "";
             Promise.resolve(
                 bindFabricColourB(selectedValue)
@@ -962,7 +893,7 @@ function controlForm(status, isEditItem, isCopyItem) {
 
     document.getElementById("submit").style.display = status ? "none" : "";
 
-    const inputs = ["blindtype", "tubetype", "controltype", "colourtype", "qty", "room", "mounting", "remote", "controlposition", "controllength", "controllengthvalue", "width", "drop", "fabrictype", "fabriccolour", "fabrictypeb", "fabriccolourb", "supply", "notes", "markup"];
+    const inputs = ["blindtype", "controltype", "colourtype", "qty", "room", "mounting", "remote", "controlposition", "controllength", "controllengthvalue", "width", "drop", "fabrictype", "fabriccolour", "fabrictypeb", "fabriccolourb", "supply", "notes", "markup"];
 
     inputs.forEach(id => {
         const inputElement = document.getElementById(id);
@@ -993,7 +924,6 @@ function fillSelect(selector, list, selected = null) {
 function setFormValues(itemData) {
     const mapping = {
         blindtype: "BlindType",
-        tubetype: "TubeType",
         controltype: "ControlType",
         colourtype: "ProductId",
         qty: "Qty",
@@ -1035,7 +965,7 @@ function setFormValues(itemData) {
 function process() {
     toggleButtonState(true, "Processing...");
 
-    const fields = ["blindtype", "tubetype", "controltype", "colourtype", "qty", "room", "mounting", "remote", "controlposition", "controllength", "controllengthvalue", "width", "drop", "fabrictype", "fabriccolour", "fabrictypeb", "fabriccolourb", "supply", "notes", "markup"];
+    const fields = ["blindtype", "controltype", "colourtype", "qty", "room", "mounting", "remote", "controlposition", "controllength", "controllengthvalue", "width", "drop", "fabrictype", "fabriccolour", "fabrictypeb", "fabriccolourb", "supply", "notes", "markup"];
 
     const formData = {
         headerid: headerId,
@@ -1140,7 +1070,6 @@ async function bindItemOrder(itemId, companyDetailId, action) {
         const data = response.d;
 
         fillSelect("#blindtype", data.BlindTypes);
-        fillSelect("#tubetype", data.TubeTypes);
         fillSelect("#controltype", data.ControlTypes);
         fillSelect("#colourtype", data.ColourTypes);
         fillSelect("#mounting", data.Mountings);

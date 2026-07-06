@@ -81,14 +81,6 @@
                                                 <select id="blindtype" class="form-select"></select>
                                             </div>
                                         </div>
-                                        <div class="row" style="display:none;">
-                                            <div class="col-12 col-sm-12 col-lg-3 mb-1">
-                                                <label>Tube Type</label>
-                                            </div>
-                                            <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                <select id="tubetype" class="form-select"></select>
-                                            </div>
-                                        </div>
                                         <div class="row">
                                             <div class="col-12 col-sm-12 col-lg-3 mb-1">
                                                 <label>Control Type</label>
@@ -430,5 +422,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/Gabuts/Cellular.js?v=2.0.1"></script>
+    <script src="/Scripts/Gabuts/Cellular.js?v=2.0.2"></script>
 </asp:Content>
