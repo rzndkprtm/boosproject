@@ -555,7 +555,7 @@ function bindControlPosition(subType, width) {
         const widthRules = [
             {
                 subType: "Single",
-                min: 200, max: 250,
+                min: 200, max: 310,
                 options: [
                     { value: "", text: "" }, { value: "N/A", text: "N/A" }
                 ]
@@ -602,7 +602,7 @@ function bindTilterPosition(subType, width) {
         const widthRules = [
             {
                 subType: "Single",
-                min: 200, max: 250,
+                min: 200, max: 310,
                 options: [
                     { value: "", text: "" }, { value: "Centre", text: "Centre" }
                 ]

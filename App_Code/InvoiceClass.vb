@@ -668,7 +668,7 @@ Public Class InvoiceClass
 
             Dim rightTable As New PdfPTable(3)
             rightTable.WidthPercentage = 100
-            leftTable.SetWidths({0.27F, 0.03F, 0.7F})
+            rightTable.SetWidths({0.4F, 0.03F, 0.57F})
             rightTable.DefaultCell.Border = Rectangle.NO_BORDER
 
             rightTable.AddCell(CreateCell("No Faktur", True, Element.ALIGN_TOP))
