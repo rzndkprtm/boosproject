@@ -326,7 +326,7 @@ Public Class JobClass
                         itemHeader.HorizontalAlignment = Element.ALIGN_RIGHT
                         itemHeader.VerticalAlignment = Element.ALIGN_MIDDLE
                         itemHeader.BackgroundColor = New BaseColor(200, 200, 200)
-                        itemHeader.MinimumHeight = 14
+                        itemHeader.MinimumHeight = 12
                         table.AddCell(itemHeader)
 
                         Dim displayed As Integer = 0
@@ -337,7 +337,7 @@ Public Class JobClass
                             itemCell.HorizontalAlignment = Element.ALIGN_CENTER
                             itemCell.VerticalAlignment = Element.ALIGN_MIDDLE
                             itemCell.BackgroundColor = New BaseColor(200, 200, 200)
-                            itemCell.MinimumHeight = 14
+                            itemCell.MinimumHeight = 12
 
                             table.AddCell(itemCell)
                         Next
@@ -347,7 +347,7 @@ Public Class JobClass
                             emptyCell.HorizontalAlignment = Element.ALIGN_CENTER
                             emptyCell.VerticalAlignment = Element.ALIGN_MIDDLE
                             emptyCell.BackgroundColor = New BaseColor(200, 200, 200)
-                            emptyCell.MinimumHeight = 14
+                            emptyCell.MinimumHeight = 12
                             table.AddCell(emptyCell)
                             displayed += 1
                         End While
@@ -357,7 +357,7 @@ Public Class JobClass
                             cellHeader.HorizontalAlignment = Element.ALIGN_RIGHT
                             cellHeader.VerticalAlignment = Element.ALIGN_MIDDLE
                             cellHeader.BackgroundColor = New BaseColor(200, 200, 200)
-                            cellHeader.MinimumHeight = 14
+                            cellHeader.MinimumHeight = 12
                             table.AddCell(cellHeader)
 
                             displayed = 0
@@ -371,7 +371,7 @@ Public Class JobClass
                                 Dim cellContent As New PdfPCell(New Phrase(value, fontContent))
                                 cellContent.HorizontalAlignment = Element.ALIGN_CENTER
                                 cellContent.VerticalAlignment = Element.ALIGN_MIDDLE
-                                cellContent.MinimumHeight = 14
+                                cellContent.MinimumHeight = 12
                                 table.AddCell(cellContent)
                             Next
 
@@ -379,7 +379,7 @@ Public Class JobClass
                                 Dim emptyCell As New PdfPCell(New Phrase("", fontContent))
                                 emptyCell.HorizontalAlignment = Element.ALIGN_CENTER
                                 emptyCell.VerticalAlignment = Element.ALIGN_MIDDLE
-                                emptyCell.MinimumHeight = 14
+                                emptyCell.MinimumHeight = 12
                                 table.AddCell(emptyCell)
                                 displayed += 1
                             End While
