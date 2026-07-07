@@ -78,13 +78,10 @@ Partial Class Setting_Specification_Product_Alias_Default
 
     Protected Sub BindData(searchText As String)
         Try
-            Dim stringSearch As String = String.Empty
-            If Not searchText = "" Then
-                stringSearch = "WHERE P1.Name LIKE '%" & searchText & "%' OR P2.Name LIKE '%" & searchText & "%'"
-            End If
-
-            Dim thisString As String = String.Format("SELECT ProductAlias.*, P1.Name AS FirstName, P2.Name AS SecondName FROM ProductAlias LEFT JOIN Products P1 ON ProductAlias.FirstId = P1.Id LEFT JOIN Products P2 ON ProductAlias.SecondId = P2.Id {0} ORDER BY ProductAlias.Id ASC", stringSearch)
-            gvList.DataSource = settingClass.GetDataTable(thisString)
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@SearchText", searchText)
+            }
+            gvList.DataSource = settingClass.GetDataTableSP("sp_ProductAlias_List", params)
             gvList.DataBind()
 
             btnAdd.Visible = LoginAccess("Add")

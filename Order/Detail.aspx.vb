@@ -1426,6 +1426,7 @@ Partial Class Order_Detail
                         If j = 6 Then formulaColumn = "Formula6"
                         If j = 7 Then formulaColumn = "Formula7"
                         If j = 8 Then formulaColumn = "Formula8"
+
                         Dim params As New List(Of SqlParameter) From {
                             New SqlParameter("@OrderJobId", orderJobId),
                             New SqlParameter("@ItemId", itemId),
@@ -1488,6 +1489,7 @@ Partial Class Order_Detail
                         If j = 6 Then formulaColumn = "Formula6"
                         If j = 7 Then formulaColumn = "Formula7"
                         If j = 8 Then formulaColumn = "Formula8"
+
                         Dim params As New List(Of SqlParameter) From {
                             New SqlParameter("@OrderJobId", orderJobId),
                             New SqlParameter("@ItemId", itemId),
