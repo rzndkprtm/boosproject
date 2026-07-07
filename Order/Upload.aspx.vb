@@ -1593,12 +1593,12 @@ Partial Class Order_Upload
                                     Exit For
                                 End If
 
-                                If tubeName = "Plantation" OrElse tubeName = "Sewless" Then
-                                    If String.IsNullOrEmpty(battenb) Then
-                                        MessageError(True, "BACK BATTEN COLOUR IS REQUIRED !")
-                                        Exit For
-                                    End If
-                                End If
+                                'If tubeName = "Plantation" OrElse tubeName = "Sewless" Then
+                                '    If String.IsNullOrEmpty(battenb) Then
+                                '        MessageError(True, "BACK BATTEN COLOUR IS REQUIRED !")
+                                '        Exit For
+                                '    End If
+                                'End If
 
                                 If String.IsNullOrEmpty(fabricType) Then
                                     MessageError(True, "FABRIC TYPE IS REQUIRED !")
