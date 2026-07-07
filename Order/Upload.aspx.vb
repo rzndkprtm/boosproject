@@ -1620,6 +1620,8 @@ Partial Class Order_Upload
                                 End If
 
                                 Dim fabricColourId As String = orderClass.GetItemData("SELECT Id FROM FabricColours WHERE FabricId='" & fabricId & "' AND Colour='" & fabricColour & "' AND (Status='In Stock' OR Status='Limited Stock')")
+                                MessageError(True, "SELECT Id FROM FabricColours WHERE FabricId='" & fabricId & "' AND Colour='" & fabricColour & "' AND (Status='In Stock' OR Status='Limited Stock')")
+                                Exit For
                                 If String.IsNullOrEmpty(fabricColourId) Then
                                     MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID ! [FABRIC COLOUR]")
                                     Exit For
