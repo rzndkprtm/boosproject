@@ -971,9 +971,8 @@ Partial Class Order_Upload
                                     Exit For
                                 End If
 
-                                Dim tubeName As String = blindType & " (CS)"
-
-                                Dim tubeId As String = orderClass.GetItemData("SELECT Id FROM ProductTubes WHERE Alias='" & tubeName & "'")
+                                Dim tubeName As String = "N/A"
+                                Dim tubeId As String = orderClass.GetItemData("SELECT Id FROM ProductTubes WHERE Name='" & tubeName & "'")
 
                                 Dim controlId As String = orderClass.GetItemData("SELECT Id FROM ProductControls WHERE Name='" & controlType & "'")
                                 If String.IsNullOrEmpty(controlId) Then
