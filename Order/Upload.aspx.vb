@@ -1572,7 +1572,7 @@ Partial Class Order_Upload
                                 If panelStyle = "Timber" Then tubeName = "Plantation (PG)"
 
 
-                                Dim tubeId As String = orderClass.GetItemData("SELECT Id FROM ProductTubes WHERE Name='" & tubeName & "'")
+                                Dim tubeId As String = orderClass.GetItemData("SELECT Id FROM ProductTubes WHERE Alias='" & tubeName & "'")
                                 If String.IsNullOrEmpty(tubeId) Then
                                     MessageError(True, "PLEASE CHECK YOUR PANEL STYLE !")
                                     Exit For
