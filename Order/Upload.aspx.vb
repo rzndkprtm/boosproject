@@ -499,6 +499,7 @@ Partial Class Order_Upload
                                         Exit For
                                     End If
 
+                                    If bottomJoining = "Chain" Then bottomJoining = "With Chain"
                                     Dim validBottomJoining As String() = {"Chainless", "Sewn", "Sewn In", "With Chain"}
                                     If Not validBottomJoining.Contains(bottomJoining) Then
                                         Dim thisAlert As String = String.Format("PLEASE CHECK THE BOTTOM JOINING FOR ITEM {0}", itemNumber)
