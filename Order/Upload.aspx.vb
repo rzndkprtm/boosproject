@@ -1567,7 +1567,10 @@ Partial Class Order_Upload
                                 End If
 
                                 Dim tubeName As String = panelStyle
-                                If panelStyle = "Classic" Then tubeName = "Plain"
+                                If panelStyle = "Classic" Then tubeName = "Plain (PG)"
+                                If panelStyle = "Aluminium" Then tubeName = "Sewless (PG)"
+                                If panelStyle = "Timber" Then tubeName = "Plantation (PG)"
+
 
                                 Dim tubeId As String = orderClass.GetItemData("SELECT Id FROM ProductTubes WHERE Name='" & tubeName & "'")
                                 If String.IsNullOrEmpty(tubeId) Then
@@ -1588,7 +1591,7 @@ Partial Class Order_Upload
                                     Exit For
                                 End If
 
-                                If tubeName = "Plantation" AndAlso String.IsNullOrEmpty(batten) Then
+                                If tubeName = "Plantation (PG)" AndAlso String.IsNullOrEmpty(batten) Then
                                     MessageError(True, "FRONT BATTEN COLOUR IS REQUIRED !")
                                     Exit For
                                 End If
@@ -1667,10 +1670,9 @@ Partial Class Order_Upload
                                 Dim linearMetre As Decimal = width / 1000
                                 Dim squareMetre As Decimal = width * drop / 1000000
 
-                                If tubeName = "Plain" Then
+                                If tubeName = "Plain  (PG)" OrElse tubeName = "Sewless  (PG)" Then
                                     batten = String.Empty : battenb = String.Empty
                                 End If
-                                If tubeName = "Sewless" Then batten = String.Empty
 
                                 Dim groupFabric As String = orderClass.GetFabricGroup(fabricId)
                                 Dim groupName As String = String.Format("Panel Glide - {0} - {1} - {2}", blindType, tubeName, groupFabric)
