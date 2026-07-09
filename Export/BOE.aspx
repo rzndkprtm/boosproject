@@ -327,6 +327,9 @@
                 writer.WriteAttributeString("Additional1", thisData("Supply").ToString())
                 writer.WriteAttributeString("ControlLength", thisData("ReturnLengthValue").ToString())
                 writer.WriteAttributeString("ControlLength2", thisData("ReturnLengthValueB").ToString())
+                writer.WriteAttributeString("Tracks", thisData("TrackType").ToString())
+                writer.WriteAttributeString("LayoutCode", thisData("TrackDraw").ToString())
+                writer.WriteAttributeString("WandLength", thisData("LouvreSize").ToString())
 
                 writer.WriteAttributeString("TotalItems", thisData("TotalItems").ToString())
                 writer.WriteAttributeString("MarkUp", thisData("MarkUp").ToString())
