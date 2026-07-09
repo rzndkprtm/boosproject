@@ -184,7 +184,7 @@
                                             </div>
                                             <div class="row" id="divdrop">
                                                 <div class="col-12 col-sm-12 col-lg-3">
-                                                    <label>Drop</label>
+                                                    <label id="droptitle">Drop</label>
                                                 </div>
                                                 <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                     <div class="input-group">
@@ -413,5 +413,5 @@
         </div>
     </div>
     
-    <script src="/Scripts/Gabuts/Vertical.js?v=2.0.0"></script>
+    <script src="/Scripts/Gabuts/Vertical.js?v=2.0.2"></script>
 </asp:Content>

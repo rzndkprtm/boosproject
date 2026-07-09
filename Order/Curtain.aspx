@@ -221,6 +221,17 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            <div class="row" id="divcutlength">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Fabric Cut Length</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                    <div class="input-group">
+                                                        <input type="number" id="cutlength" class="form-control" autocomplete="off" placeholder="Cut Length ...." />
+                                                        <span class="input-group-text">m</span>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <div class="row mt-3" id="divcontrolcolour">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Control Colour</label>
@@ -586,5 +597,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/Gabuts/Curtain.js?v=2.0.1"></script>
+    <script src="/Scripts/Gabuts/Curtain.js?v=2.0.2"></script>
 </asp:Content>

@@ -451,6 +451,7 @@ Partial Class Order_Default
                     Using thisConn As New SqlConnection(myConn)
                         Using thisCmd As New SqlCommand("INSERT INTO OrderBuilders(Id) VALUES (@Id)", thisConn)
                             thisCmd.Parameters.AddWithValue("@Id", newIdHeader)
+                            thisConn.Open()
                             thisCmd.ExecuteNonQuery()
                         End Using
                     End Using

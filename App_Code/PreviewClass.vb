@@ -150,6 +150,7 @@ Public Class PreviewClass
         Using ms As New MemoryStream()
             Dim headerData As DataRow = GetDataRow("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, Customers.CompanyDetailId AS CompanyDetailId, Logins.FullName AS CreatedName FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id LEFT JOIN Logins ON OrderHeaders.CreatedBy=Logins.Id WHERE OrderHeaders.Id='" & headerId & "'")
             Dim companyId As String = headerData("CompanyId").ToString()
+            Dim companyDetailId As String = headerData("CompanyDetailId").ToString()
 
             Dim customerName As String = headerData("CustomerName").ToString()
             Dim orderId As String = headerData("OrderId").ToString()
@@ -374,7 +375,7 @@ Public Class PreviewClass
                     Dim table As New PdfPTable(7)
                     table.WidthPercentage = 100
 
-                    Dim items(20, curtainData.Rows.Count - 1) As String
+                    Dim items(21, curtainData.Rows.Count - 1) As String
 
                     For i As Integer = 0 To curtainData.Rows.Count - 1
                         Dim controlLengthText As String = curtainData.Rows(i)("ControlLengthValue").ToString()
@@ -385,6 +386,13 @@ Public Class PreviewClass
                         Dim fabricType As String = GetItemData("SELECT Name FROM Fabrics WHERE Id='" & curtainData.Rows(i)("FabricType").ToString() & "'")
                         Dim fabricColour As String = GetItemData("SELECT Colour FROM FabricColours WHERE Id='" & curtainData.Rows(i)("FabricColour").ToString() & "'")
 
+                        Dim cutLength As Integer = 0
+                        If Not IsDBNull(curtainData.Rows(i)("LouvreSize")) Then
+                            cutLength = curtainData.Rows(i)("LouvreSize")
+                        End If
+                        Dim cutLengthText As String = cutLength
+                        If cutLength = 0 Then cutLengthText = String.Empty
+
                         items(0, i) = "Item : " & number
                         items(1, i) = curtainData.Rows(i)("Room").ToString()
                         items(2, i) = curtainData.Rows(i)("Mounting").ToString()
@@ -394,17 +402,18 @@ Public Class PreviewClass
                         items(6, i) = fabricColour
                         items(7, i) = curtainData.Rows(i)("Width").ToString()
                         items(8, i) = curtainData.Rows(i)("Height").ToString()
-                        items(9, i) = curtainData.Rows(i)("TrackType").ToString()
-                        items(10, i) = curtainData.Rows(i)("TrackColour").ToString()
-                        items(11, i) = curtainData.Rows(i)("TrackDraw").ToString()
-                        items(12, i) = curtainData.Rows(i)("StackPosition").ToString()
-                        items(13, i) = curtainData.Rows(i)("ControlColour").ToString()
-                        items(14, i) = controlLengthText
-                        items(15, i) = curtainData.Rows(i)("RetLengthLeft").ToString()
-                        items(16, i) = curtainData.Rows(i)("RetLengthRight").ToString()
-                        items(17, i) = curtainData.Rows(i)("BottomHem").ToString()
-                        items(18, i) = curtainData.Rows(i)("Supply").ToString()
-                        items(19, i) = curtainData.Rows(i)("Notes").ToString()
+                        items(9, i) = cutLengthText
+                        items(10, i) = curtainData.Rows(i)("TrackType").ToString()
+                        items(11, i) = curtainData.Rows(i)("TrackColour").ToString()
+                        items(12, i) = curtainData.Rows(i)("TrackDraw").ToString()
+                        items(13, i) = curtainData.Rows(i)("StackPosition").ToString()
+                        items(14, i) = curtainData.Rows(i)("ControlColour").ToString()
+                        items(15, i) = controlLengthText
+                        items(16, i) = curtainData.Rows(i)("RetLengthLeft").ToString()
+                        items(17, i) = curtainData.Rows(i)("RetLengthRight").ToString()
+                        items(18, i) = curtainData.Rows(i)("BottomHem").ToString()
+                        items(19, i) = curtainData.Rows(i)("Supply").ToString()
+                        items(20, i) = curtainData.Rows(i)("Notes").ToString()
                     Next
 
                     For i As Integer = 0 To items.GetLength(1) - 1 Step 6
@@ -413,7 +422,10 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Fitting", "Curtain Type", "Heading", "Fabric Type", "Fabric Colour", "Width (mm)", "Drop (mm)", "Track Type", "Track Colour", "Track Draw", "Stack Position", "Control Colour", "Control Length", "Return Length (L)", "Return Length (R)", "Bottom HEM", "Tie Back Req", "Special Information"}
+                        Dim headers As String() = {"", "Location", "Fitting", "Curtain Type", "Heading", "Fabric Type", "Fabric Colour", "Width (mm)", "Drop (mm)", "", "Track Type", "Track Colour", "Track Draw", "Stack Position", "Control Colour", "Control Length", "Return Length (L)", "Return Length (R)", "Bottom HEM", "Tie Back Req", "Special Information"}
+                        If companyDetailId = "5" Then
+                            headers = {"", "Location", "Fitting", "Curtain Type", "Heading", "Fabric Type", "Fabric Colour", "Width (mm)", "Drop (mm)", "Fabric Cut Length", "Track Type", "Track Colour", "Track Draw", "Stack Position", "Control Colour", "Control Length", "Return Length (L)", "Return Length (R)", "Bottom HEM", "Tie Back Req", "Special Information"}
+                        End If
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))

@@ -1639,6 +1639,7 @@ Partial Class Order_Method
         Dim widthb As Integer
         Dim drop As Integer
         Dim dropb As Integer
+        Dim cutlength As Integer
         Dim controllength As Integer
         Dim controllengthB As Integer
         Dim returnLengthValue As Integer
@@ -1763,6 +1764,13 @@ Partial Class Order_Method
                     If blindName = "Complete Set (Double)" Then Return "MAXIMUM FIRST DROP IS 4000MM !"
                     Return "MAXIMUM DROP IS 4000MM !"
                 End If
+            End If
+        End If
+
+        If data.companydetailid = "5" Then
+            If String.IsNullOrEmpty(data.cutlength) Then Return "FABRIC CUT LENGTH IS REQUIRED !"
+            If Not Integer.TryParse(data.cutlength, cutlength) OrElse cutlength <= 0 Then
+                Return "PLEASE CHECK YOUR FABRIC CUT LENGTH ORDER !"
             End If
         End If
 
@@ -2014,6 +2022,8 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@Drop", drop)
                         thisCmd.Parameters.AddWithValue("@DropB", dropb)
 
+                        thisCmd.Parameters.AddWithValue("@LouvreSize", cutlength)
+
                         thisCmd.Parameters.AddWithValue("@Heading", data.heading)
                         thisCmd.Parameters.AddWithValue("@HeadingB", data.headingb)
 
@@ -2097,6 +2107,8 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@WidthB", widthb)
                     thisCmd.Parameters.AddWithValue("@Drop", drop)
                     thisCmd.Parameters.AddWithValue("@DropB", dropb)
+
+                    thisCmd.Parameters.AddWithValue("@LouvreSize", cutlength)
 
                     thisCmd.Parameters.AddWithValue("@Heading", data.heading)
                     thisCmd.Parameters.AddWithValue("@HeadingB", data.headingb)
@@ -12043,6 +12055,7 @@ Public Class ProccessData
     Public Property printingg As String
     Public Property printingh As String
     Public Property adjusting As String
+    Public Property cutlength As String
 
     'SHUTTER PUNYA
     Public Property louvresize As String
