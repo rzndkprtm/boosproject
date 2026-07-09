@@ -232,6 +232,9 @@ Partial Class Setting_Specification_Fabric_Edit
                 If InStr(designName, "Panel Glide", CompareMethod.Text) > 0 Then
                     conditions.Add("Alias LIKE '%(PG)%'")
                 End If
+                If InStr(designName, "Vertical", CompareMethod.Text) > 0 Then
+                    conditions.Add("Alias LIKE '%(Vertical)%'")
+                End If
             Next
 
             If conditions.Count = 0 Then
