@@ -981,6 +981,7 @@ function visibleDetail(blindtype, tubetype, controltype, colourtype) {
             let divShow = [];
 
             $("#controllengthtitle").text("Control Length");
+            $("#droptitle").text("Drop");
 
             if (blindName === "Complete Set") {
                 divShow = ["divmounting", "divfabric", "divwidth", "divdrop", "divstackposition", "divcontrollength", "divcontrollengthoption", "divfabricinsert", "divbottomjoining", "divbracketextension", "divsloping"];
@@ -1012,6 +1013,7 @@ function visibleDetail(blindtype, tubetype, controltype, colourtype) {
                 });
 
             } else if (blindName === "Slat Only") {
+                $("#droptitle").html("Finished Drop<br/>(Fabric to Fabric)");
                 divShow = ["divqtyblade", "divdrop", "divfabric", "divbottomjoining"];
 
                 divShow.forEach(id => toggleDisplay(document.getElementById(id), true));
