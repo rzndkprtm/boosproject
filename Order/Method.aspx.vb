@@ -9272,14 +9272,9 @@ Partial Class Order_Method
         Dim groupName As String = String.Empty
         If designName = "Skyline Shutter Express" Then
             groupName = designName
-
+            'groupName = String.Format("Shutter - {0}", blindName)
             If data.companyid = "3" Then
-                If blindName = "Hinged" Then
-                    groupName = "Hinged Shutter"
-                End If
-                If blindName = "Hinged Bi-fold" OrElse blindName = "Track Bi-fold" Then
-                    groupName = "Bi-fold Shutter"
-                End If
+                groupName = String.Format("Shutter - {0}", blindName)
             End If
         End If
 
