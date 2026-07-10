@@ -221,7 +221,7 @@ Partial Class Order_Upload
                                 Dim tubeName As String = tubeType
                                 If tubeType = "Wide Blade (127mm)" Then tubeName = "127mm (Vertical)"
                                 If tubeType = "Narrow Blade (89mm)" Then tubeName = "89mm (Vertical)"
-                                Dim tubeId As String = orderClass.GetItemData("SELECT Id FROM ProductTubes WHERE Name='" & tubeName & "'")
+                                Dim tubeId As String = orderClass.GetItemData("SELECT Id FROM ProductTubes WHERE Alias='" & tubeName & "'")
                                 If String.IsNullOrEmpty(tubeId) Then
                                     Dim thisAlert As String = String.Format("PLEASE CHECK THE SLAT SIZE FOR ITEM {0} !", itemNumber)
                                     MessageError(True, thisAlert)
