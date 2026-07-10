@@ -9271,11 +9271,7 @@ Partial Class Order_Method
 
         Dim groupName As String = String.Empty
         If designName = "Skyline Shutter Express" Then
-            groupName = designName
-            'groupName = String.Format("Shutter - {0}", blindName)
-            If data.companyid = "3" Then
-                groupName = String.Format("Shutter - {0}", blindName)
-            End If
+            groupName = String.Format("Shutter - {0}", blindName)
         End If
 
         If designName = "Skyline Shutter Ocean" Then

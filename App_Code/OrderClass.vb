@@ -1957,6 +1957,11 @@ Public Class OrderClass
 
                 Dim totalItems As Integer = thisData("TotalItems")
 
+                Dim cutLength As Integer = 0
+                If Not IsDBNull(thisData("LouvreSize")) Then
+                    cutLength = thisData("LouvreSize")
+                End If
+
                 Dim linearMetre As Decimal = 0D
                 If Not IsDBNull(thisData("LinearMetre")) Then
                     linearMetre = Convert.ToDecimal(thisData("LinearMetre"))
@@ -2061,10 +2066,10 @@ Public Class OrderClass
                     End If
 
                     Dim dataPriceBuy As DataRow = GetGridPrice(buyArray)
-                    Dim gridBuy As Decimal = 0D
+                    Dim gridBuyPrice As Decimal = 0D
                     If dataPriceBuy IsNot Nothing Then
                         If Not IsDBNull(dataPriceBuy("Price")) Then
-                            gridBuy = Convert.ToDecimal(dataPriceBuy("Price"))
+                            gridBuyPrice = Convert.ToDecimal(dataPriceBuy("Price"))
                         End If
                     End If
 
@@ -2080,7 +2085,7 @@ Public Class OrderClass
                     Dim costSell As Decimal = gridSellPrice
                     Dim costSellAdditional As Decimal = gridSellAdditional
 
-                    Dim costBuy As Decimal = gridBuy
+                    Dim costBuy As Decimal = gridBuyPrice
                     Dim costBuyAdditional As Decimal = gridBuyAdditional
 
                     thisSell = costSell
@@ -2162,14 +2167,24 @@ Public Class OrderClass
                         If companyDetailId = "5" OrElse companyDetailId = "6" Then
                             If linearMetre < 1 Then thisSell = thisSell * 1
                             If linearMetre >= 1 Then thisSell = thisSell * linearMetre
+                            If designName = "Curtain" AndAlso (blindName = "Complete Set (Single)" OrElse blindName = "Curtain Only") Then
+                                thisSell = cutLength / 1000 * costSell
+                            End If
                         End If
                         thisBuy = thisBuy * linearMetre
                     End If
 
-                    If designName = "Skyline Shutter Express" OrElse designName = "Skyline Shutter Ocean" OrElse designName = "Evolve Shutter Express" OrElse designName = "Evolve Shutter Ocean" Then
-                        If companyDetailId = "2" OrElse companyDetailId = "3" OrElse companyDetailId = "4" Then
+                    If designName = "Skyline Shutter Express" Then
+                        If companyId = "2" Then
                             If squareMetre <= 0.75 Then thisSell = gridSellPrice * 0.75
+                            If squareMetre <= 0.5 Then thisBuy = gridBuyPrice * 0.5
                         End If
+                        If companyId = "3" Then
+                            If squareMetre <= 0.5 Then thisSell = gridSellPrice * 0.5
+                        End If
+                    End If
+                    If designName = "Skyline Shutter Ocean" Then
+                        If squareMetre <= 0.75 Then thisSell = gridSellPrice * 0.75
                     End If
 
                     Dim promoData As DataTable = GetDataTable("SELECT CustomerPromos.* FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Active=1 AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")

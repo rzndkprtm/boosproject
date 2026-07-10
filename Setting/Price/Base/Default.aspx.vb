@@ -53,6 +53,11 @@ Partial Class Setting_Price_Base_Default
 
         MessageError(False, String.Empty)
         BindData(ddlCategory.SelectedValue, ddlMethod.SelectedValue, ddlProductGroup.SelectedValue, ddlPriceGroup.SelectedValue)
+
+        Session("PriceBaseCategory") = ddlCategory.SelectedValue
+        Session("PriceBaseMethod") = ddlMethod.SelectedValue
+        Session("PriceBasePriceGroup") = ddlPriceGroup.SelectedValue
+        Session("PriceBaseProductGroup") = ddlProductGroup.SelectedValue
     End Sub
 
     Protected Sub ddlProductGroup_SelectedIndexChanged(sender As Object, e As EventArgs)
@@ -60,6 +65,11 @@ Partial Class Setting_Price_Base_Default
 
         MessageError(False, String.Empty)
         BindData(ddlCategory.SelectedValue, ddlMethod.SelectedValue, ddlProductGroup.SelectedValue, ddlPriceGroup.SelectedValue)
+
+        Session("PriceBaseCategory") = ddlCategory.SelectedValue
+        Session("PriceBaseMethod") = ddlMethod.SelectedValue
+        Session("PriceBasePriceGroup") = ddlPriceGroup.SelectedValue
+        Session("PriceBaseProductGroup") = ddlProductGroup.SelectedValue
     End Sub
 
     Protected Sub ddlMethod_SelectedIndexChanged(sender As Object, e As EventArgs)
@@ -67,6 +77,11 @@ Partial Class Setting_Price_Base_Default
 
         MessageError(False, String.Empty)
         BindData(ddlCategory.SelectedValue, ddlMethod.SelectedValue, ddlProductGroup.SelectedValue, ddlPriceGroup.SelectedValue)
+
+        Session("PriceBaseCategory") = ddlCategory.SelectedValue
+        Session("PriceBaseMethod") = ddlMethod.SelectedValue
+        Session("PriceBasePriceGroup") = ddlPriceGroup.SelectedValue
+        Session("PriceBaseProductGroup") = ddlProductGroup.SelectedValue
     End Sub
 
     Protected Sub ddlPriceGroup_SelectedIndexChanged(sender As Object, e As EventArgs)
@@ -74,6 +89,11 @@ Partial Class Setting_Price_Base_Default
 
         MessageError(False, String.Empty)
         BindData(ddlCategory.SelectedValue, ddlMethod.SelectedValue, ddlProductGroup.SelectedValue, ddlPriceGroup.SelectedValue)
+
+        Session("PriceBaseCategory") = ddlCategory.SelectedValue
+        Session("PriceBaseMethod") = ddlMethod.SelectedValue
+        Session("PriceBasePriceGroup") = ddlPriceGroup.SelectedValue
+        Session("PriceBaseProductGroup") = ddlProductGroup.SelectedValue
     End Sub
 
     Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
@@ -87,6 +107,7 @@ Partial Class Setting_Price_Base_Default
 
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
         MessageError(False, String.Empty)
+
         gvList.PageIndex = e.NewPageIndex
         BindData(ddlCategory.SelectedValue, ddlMethod.SelectedValue, ddlProductGroup.SelectedValue, ddlPriceGroup.SelectedValue)
     End Sub

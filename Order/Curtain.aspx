@@ -228,7 +228,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                     <div class="input-group">
                                                         <input type="number" id="cutlength" class="form-control" autocomplete="off" placeholder="Cut Length ...." />
-                                                        <span class="input-group-text">m</span>
+                                                        <span class="input-group-text">mm</span>
                                                     </div>
                                                 </div>
                                             </div>

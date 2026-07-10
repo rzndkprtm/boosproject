@@ -424,7 +424,7 @@ Public Class PreviewClass
 
                         Dim headers As String() = {"", "Location", "Fitting", "Curtain Type", "Heading", "Fabric Type", "Fabric Colour", "Width (mm)", "Drop (mm)", "", "Track Type", "Track Colour", "Track Draw", "Stack Position", "Control Colour", "Control Length", "Return Length (L)", "Return Length (R)", "Bottom HEM", "Tie Back Req", "Special Information"}
                         If companyDetailId = "5" Then
-                            headers = {"", "Location", "Fitting", "Curtain Type", "Heading", "Fabric Type", "Fabric Colour", "Width (mm)", "Drop (mm)", "Fabric Cut Length", "Track Type", "Track Colour", "Track Draw", "Stack Position", "Control Colour", "Control Length", "Return Length (L)", "Return Length (R)", "Bottom HEM", "Tie Back Req", "Special Information"}
+                            headers = {"", "Location", "Fitting", "Curtain Type", "Heading", "Fabric Type", "Fabric Colour", "Width (mm)", "Drop (mm)", "Fabric Cut Length (mm)", "Track Type", "Track Colour", "Track Draw", "Stack Position", "Control Colour", "Control Length", "Return Length (L)", "Return Length (R)", "Bottom HEM", "Tie Back Req", "Special Information"}
                         End If
 
                         For row As Integer = 0 To headers.Length - 1
