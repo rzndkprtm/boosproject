@@ -99,13 +99,10 @@ Partial Class Setting_Specification_Fabric_Colour
 
     Protected Sub BindData(searchText As String)
         Try
-            Dim searchString As String = String.Empty
-            If Not String.IsNullOrEmpty(searchText) Then
-                searchString = "WHERE Fabrics.Name LIKE '%" & searchText & "%' OR FabricColours.Colour LIKE '%" & searchText & "%'"
-            End If
-            Dim thisString As String = String.Format("SELECT FabricColours.*, Fabrics.Name AS FabricName FROM FabricColours LEFT JOIN Fabrics ON FabricColours.FabricId=Fabrics.Id {0} ORDER BY FabricColours.Name ASC", searchString)
-
-            gvList.DataSource = settingClass.GetDataTable(thisString)
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@SearchText", If(String.IsNullOrWhiteSpace(searchText), CType(DBNull.Value, Object), searchText))
+            }
+            gvList.DataSource = settingClass.GetDataTableSP("sp_FabricColours_List", params)
             gvList.DataBind()
         Catch ex As Exception
             MessageError(True, ex.ToString())
