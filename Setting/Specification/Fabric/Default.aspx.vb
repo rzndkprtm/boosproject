@@ -176,26 +176,11 @@ Partial Class Setting_Specification_Fabric_Default
     Protected Sub BindData(searchText As String, companyText As String)
         Session("SearchFabric") = String.Empty : Session("CompanyFabric") = String.Empty
         Try
-            Dim conditions As New List(Of String)
-            Dim thisArray As String = String.Empty
-
-            If Not String.IsNullOrEmpty(companyText) Then
-                thisArray = "CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS cdArray"
-                conditions.Add("cdArray.VALUE = '" & companyText & "'")
-            End If
-
-            If Not String.IsNullOrEmpty(searchText) Then
-                conditions.Add("(Id LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%' OR Status LIKE '%" & searchText & "%')")
-            End If
-
-            Dim whereClause As String = String.Empty
-            If conditions.Count > 0 Then
-                whereClause = "WHERE " & String.Join(" AND ", conditions)
-            End If
-
-            Dim thisString As String = String.Format("SELECT * FROM Fabrics {0} {1} ORDER BY Name ASC", thisArray, whereClause)
-
-            gvList.DataSource = settingClass.GetDataTable(thisString)
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@SearchText", If(String.IsNullOrWhiteSpace(searchText), CType(DBNull.Value, Object), searchText)),
+                New SqlParameter("@CompanyDetailId", If(String.IsNullOrWhiteSpace(companyText), CType(DBNull.Value, Object), companyText))
+            }
+            gvList.DataSource = settingClass.GetDataTableSP("sp_Fabrics_List", params)
             gvList.DataBind()
             gvList.Columns(1).Visible = LoginAccess("Visible ID")
             gvList.Columns(5).Visible = LoginAccess("Visible Company Detail")
