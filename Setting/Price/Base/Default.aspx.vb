@@ -1,5 +1,4 @@
-﻿Imports System.Data
-Imports System.Data.SqlClient
+﻿Imports System.Data.SqlClient
 Imports System.Globalization
 
 Partial Class Setting_Price_Base_Default
@@ -21,15 +20,31 @@ Partial Class Setting_Price_Base_Default
             MessageError(False, String.Empty)
             BindProductGroup()
             BindPriceGroup()
+
+            ddlCategory.SelectedValue = Session("PriceBaseCategory")
+            ddlMethod.SelectedValue = Session("PriceBaseMethod")
+            ddlPriceGroup.SelectedValue = Session("PriceBasePriceGroup")
+            ddlProductGroup.SelectedValue = Session("PriceBaseProductGroup")
+
             BindData(ddlCategory.SelectedValue, ddlMethod.SelectedValue, ddlProductGroup.SelectedValue, ddlPriceGroup.SelectedValue)
         End If
     End Sub
 
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
+        Session("PriceBaseCategory") = ddlCategory.SelectedValue
+        Session("PriceBaseMethod") = ddlMethod.SelectedValue
+        Session("PriceBasePriceGroup") = ddlPriceGroup.SelectedValue
+        Session("PriceBaseProductGroup") = ddlProductGroup.SelectedValue
+
         Response.Redirect("~/setting/price/base/add", False)
     End Sub
 
     Protected Sub btnImport_Click(sender As Object, e As EventArgs)
+        Session("PriceBaseCategory") = ddlCategory.SelectedValue
+        Session("PriceBaseMethod") = ddlMethod.SelectedValue
+        Session("PriceBasePriceGroup") = ddlPriceGroup.SelectedValue
+        Session("PriceBaseProductGroup") = ddlProductGroup.SelectedValue
+
         Response.Redirect("~/setting/price/base/import", False)
     End Sub
 
@@ -88,6 +103,11 @@ Partial Class Setting_Price_Base_Default
                     thisCmd.ExecuteNonQuery()
                 End Using
             End Using
+
+            Session("PriceBaseCategory") = ddlCategory.SelectedValue
+            Session("PriceBaseMethod") = ddlMethod.SelectedValue
+            Session("PriceBasePriceGroup") = ddlPriceGroup.SelectedValue
+            Session("PriceBaseProductGroup") = ddlProductGroup.SelectedValue
 
             Response.Redirect("~/setting/price/base", False)
         Catch ex As Exception
