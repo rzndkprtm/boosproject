@@ -22,6 +22,7 @@ Partial Class Setting_Price_Product_Default
     End Sub
 
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
+        Session("SearchProductGroup") = txtSearch.Text
         Response.Redirect("~/setting/price/product/add", False)
     End Sub
 
