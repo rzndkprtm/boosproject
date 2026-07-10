@@ -42,17 +42,23 @@ Partial Class Order_View
     Protected Sub Invoice(headerId As String)
         Try
             Dim invoiceClass As New InvoiceClass
-            Dim pdfBytes As Byte() = invoiceClass.BindContent(headerId)
 
             Dim invoiceNumber As String = String.Empty
             Dim customerName As String = String.Empty
+            Dim companyId As String = String.Empty
 
-            Dim orderData As DataRow = invoiceClass.GetDataRow("SELECT OrderHeaders.InvoiceNumber AS InvoiceNumber, Customers.Name AS CustomerName FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id='" & headerId & "'")
+            Dim orderData As DataRow = invoiceClass.GetDataRow("SELECT Customers.CompanyId AS CompanyId, OrderHeaders.InvoiceNumber AS InvoiceNumber, Customers.Name AS CustomerName FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id='" & headerId & "'")
             If Not orderData Is Nothing Then
                 invoiceNumber = orderData("InvoiceNumber").ToString().ToUpper()
                 customerName = orderData("CustomerName").ToString().ToUpper()
+                companyId = orderData("CompanyId").ToString()
             End If
             Dim fileName As String = String.Format("INVOICE {0} {1}.pdf", invoiceNumber, customerName)
+
+            Dim pdfBytes As Byte() = invoiceClass.BindContent(headerId)
+            If companyId = "3" Then
+                pdfBytes = invoiceClass.BindContent_Local(headerId)
+            End If
 
             Response.Clear()
             Response.ContentType = "application/pdf"

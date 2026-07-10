@@ -76,6 +76,7 @@
                         <div>
                             <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Add Costings</button>
                             <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalDiscount">Add Discount</a></li>
                                 <li><a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalAdd">Add Surcharge</a></li>
                                 <li><a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalNote">Add Note</a></li>
                             </ul>
@@ -90,6 +91,37 @@
         </section>
     </div>
 
+    <div class="modal fade text-left" id="modalDiscount" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Add Discount</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Discount</label>
+                            <div class="input-group">
+                                <asp:TextBox runat="server" ID="txtDiscount" CssClass="form-control" TextMode="Number" placeholder="Discount ..." autocomplete="off"></asp:TextBox>
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Additional Note</label>
+                            <asp:TextBox runat="server" ID="txtDiscountNote" CssClass="form-control" placeholder="Note ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnDiscount" CssClass="btn btn-secondary" Text="Submit" OnClick="btnDiscount_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade text-left" id="modalAdd" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -188,7 +220,7 @@
     </div>
 
     <script type="text/javascript">
-        ["modalAdd", "modalDelete", "modalNote"].forEach(function (id) {
+        ["modalDiscount", "modalAdd", "modalDelete", "modalNote"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

@@ -231,6 +231,39 @@ Public Class InvoiceClass
         End Try
     End Function
 
+    Private Function CreateCellTotal_Local(text As String, Optional isBold As Boolean = False) As PdfPCell
+        Try
+            If text Is Nothing Then text = String.Empty
+
+            Dim style As Integer = If(isBold, Font.BOLD, Font.NORMAL)
+            Dim thisFont As New Font(Font.FontFamily.TIMES_ROMAN, 10, style)
+
+            Dim lines As Integer = Regex.Split(text, "\r\n|\r|\n").Length
+            Dim lineHeight As Single = 22
+            Dim calculatedHeight As Single = lines * lineHeight
+
+            Dim cell As New PdfPCell(New Phrase(text, thisFont))
+            cell.Border = Rectangle.NO_BORDER
+            cell.BorderWidthBottom = 0.15F
+            cell.HorizontalAlignment = Element.ALIGN_RIGHT
+            cell.VerticalAlignment = Element.ALIGN_MIDDLE
+            cell.MinimumHeight = calculatedHeight
+            cell.PaddingBottom = 8
+
+            Return cell
+        Catch ex As Exception
+            Dim fallbackFont As New Font(Font.FontFamily.TIMES_ROMAN, 12, Font.NORMAL)
+            Dim fallbackCell As New PdfPCell(New Phrase("", fallbackFont))
+            fallbackCell.Border = Rectangle.NO_BORDER
+            fallbackCell.HorizontalAlignment = Element.ALIGN_RIGHT
+            fallbackCell.VerticalAlignment = Element.ALIGN_MIDDLE
+            fallbackCell.MinimumHeight = 22
+            fallbackCell.PaddingBottom = 8
+
+            Return fallbackCell
+        End Try
+    End Function
+
     Public Function BindContent(headerId As String) As Byte()
         Using ms As New MemoryStream()
             Dim headerData As DataRow = GetDataRow("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, Customers.CompanyDetailId AS CompanyDetailId FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id='" & headerId & "'")
@@ -883,27 +916,106 @@ Public Class InvoiceClass
                 table.AddCell(CreateCellDetail(finalCostText, True, Element.ALIGN_RIGHT))
             Next
 
-            table.AddCell(CreateCellTotal(String.Empty))
-            table.AddCell(CreateCellTotal(String.Empty))
-            table.AddCell(CreateCellTotal("Sub Total"))
-            table.AddCell(CreateCellTotal(String.Empty))
-            table.AddCell(CreateCellTotal(sumPriceText))
 
-            Dim textGST As String = "Total GST 11%"
-            Dim textTotal As String = String.Format("RP {0}", finalTotalText)
-            table.AddCell(CreateCellTotal(String.Empty))
-            table.AddCell(CreateCellTotal(String.Empty))
-            table.AddCell(CreateCellTotal(textGST))
-            table.AddCell(CreateCellTotal(String.Empty))
-            table.AddCell(CreateCellTotal(gstText))
-
-            table.AddCell(CreateCellTotal(String.Empty))
-            table.AddCell(CreateCellTotal(String.Empty))
-            table.AddCell(CreateCellTotal("TOTAL", isBold:=True))
-            table.AddCell(CreateCellTotal(String.Empty))
-            table.AddCell(CreateCellTotal(textTotal, isBold:=True))
 
             doc.Add(table)
+
+            Dim space As New Paragraph(" ")
+            space.SpacingBefore = 8
+            doc.Add(space)
+
+            '==========================================================
+            ' Footer : Pembayaran (Kiri) + Total (Kanan)
+            '==========================================================
+            Dim footerTable As New PdfPTable(2)
+            footerTable.WidthPercentage = 100
+            footerTable.SetWidths(New Single() {0.6F, 0.4F})
+
+            '=========================
+            ' LEFT : Pembayaran
+            '=========================
+            Dim paymentCell As New PdfPCell()
+            paymentCell.Border = Rectangle.NO_BORDER
+            paymentCell.VerticalAlignment = Element.ALIGN_TOP
+
+            Dim normalFont As New Font(Font.FontFamily.TIMES_ROMAN, 10)
+            Dim boldFont As New Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD)
+
+            Dim payment As New Paragraph("", normalFont)
+            payment.Leading = 14
+
+            payment.Add(New Chunk("Pembayaran", boldFont))
+            payment.Add(vbLf)
+            payment.Add("A/N : PT Bumi Indah Global")
+            payment.Add(vbLf)
+            payment.Add("Nomor Rekening : 2968 0000 8330")
+            payment.Add(vbLf)
+            payment.Add("Bank : OCBC NISP Cabang Tangerang City")
+
+            paymentCell.AddElement(payment)
+
+            '=========================
+            ' RIGHT : Ringkasan Total
+            '=========================
+            Dim totalTable As New PdfPTable(2)
+            totalTable.WidthPercentage = 100
+            totalTable.SetWidths(New Single() {0.65F, 0.35F})
+
+            totalTable.AddCell(CreateCellTotal_Local("Total Qty (Set)"))
+            totalTable.AddCell(CreateCellTotal_Local(detailData.Rows.Count.ToString()))
+
+            totalTable.AddCell(CreateCellTotal_Local("Sub Total"))
+            totalTable.AddCell(CreateCellTotal_Local("Rp " & sumPriceText))
+
+            totalTable.AddCell(CreateCellTotal_Local("Dasar Pengenaan Pajak"))
+            totalTable.AddCell(CreateCellTotal_Local("Rp " & sumPriceText))
+
+            totalTable.AddCell(CreateCellTotal_Local("Total GST 12%"))
+            totalTable.AddCell(CreateCellTotal_Local("Rp " & gstText))
+
+            totalTable.AddCell(CreateCellTotal_Local("TOTAL", True))
+            totalTable.AddCell(CreateCellTotal_Local("Rp " & finalTotalText, True))
+
+            Dim totalCell As New PdfPCell(totalTable)
+            totalCell.Border = Rectangle.NO_BORDER
+            totalCell.Padding = 0
+
+            footerTable.AddCell(paymentCell)
+            footerTable.AddCell(totalCell)
+
+            doc.Add(footerTable)
+
+            Dim signSpace As New Paragraph(" ")
+            signSpace.SpacingBefore = 20
+            doc.Add(signSpace)
+
+            Dim signTable As New PdfPTable(2)
+            signTable.WidthPercentage = 100
+            signTable.SetWidths(New Single() {0.6F, 0.4F})
+
+            Dim blankCell As New PdfPCell()
+            blankCell.Border = Rectangle.NO_BORDER
+
+            Dim signCell As New PdfPCell()
+            signCell.Border = Rectangle.NO_BORDER
+            signCell.HorizontalAlignment = Element.ALIGN_RIGHT
+
+            Dim sign As New Paragraph()
+            sign.Alignment = Element.ALIGN_RIGHT
+            sign.Add(New Chunk("Serang, " & Date.Today.ToString("dd MMMM yyyy", idIDR), New Font(Font.FontFamily.TIMES_ROMAN, 11, Font.BOLD)))
+            sign.Add(Chunk.NEWLINE)
+            sign.Add(Chunk.NEWLINE)
+            sign.Add(Chunk.NEWLINE)
+            sign.Add(Chunk.NEWLINE)
+            sign.Add(New Chunk("Saifullah Toyyib", New Font(Font.FontFamily.TIMES_ROMAN, 11, Font.BOLD)))
+
+            signCell.AddElement(sign)
+
+            signTable.AddCell(blankCell)
+            signTable.AddCell(signCell)
+
+            doc.Add(signTable)
+
             doc.Close()
 
             Return ms.ToArray()
@@ -1309,46 +1421,6 @@ Public Class InvoiceLocalEvents
 
         Dim headerBottomY As Single = headerTopY - headerHeight - 5
         lineTable.WriteSelectedRows(0, -1, 36, headerBottomY, cb)
-
-        Dim lineBeforeTermsTable As New PdfPTable(1)
-        lineBeforeTermsTable.TotalWidth = document.PageSize.Width - 72
-        lineBeforeTermsTable.LockedWidth = True
-
-        Dim hr As New draw.LineSeparator(1.0F, 100.0F, BaseColor.BLACK, Element.ALIGN_CENTER, -1)
-        Dim hrChunk As New Chunk(hr)
-        Dim hrPhrase As New Phrase(hrChunk)
-
-        Dim hrCell As New PdfPCell(hrPhrase)
-        hrCell.Border = 0
-        hrCell.PaddingTop = 5
-        hrCell.PaddingBottom = 5
-        lineBeforeTermsTable.AddCell(hrCell)
-
-        lineBeforeTermsTable.WriteSelectedRows(0, -1, 36, document.PageSize.GetBottom(120), cb)
-
-        Dim termsTable As New PdfPTable(1)
-        termsTable.TotalWidth = document.PageSize.Width - 72
-        termsTable.LockedWidth = True
-
-        Dim termsText As String = "Pembayaran" & vbCrLf &
-                                  "A/N : PT Bumi Indah Global" & vbCrLf &
-                                  "Nomor Rekening : 2968 0000 8330" & vbCrLf &
-                                  "Bank : OCBC NISP cabang Tangerang City"
-
-        Dim termsPhrase As New Phrase()
-        termsPhrase.Add(New Chunk("Terms & Conditions:" & vbCrLf, New Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD)))
-        termsPhrase.Add(New Chunk(vbCrLf, New Font(Font.FontFamily.TIMES_ROMAN, 10)))
-        termsPhrase.Add(New Chunk(termsText & vbCrLf & vbCrLf, New Font(Font.FontFamily.TIMES_ROMAN, 10)))
-
-        Dim termsCell As New PdfPCell(termsPhrase)
-        termsCell.Border = 0
-        termsCell.HorizontalAlignment = Element.ALIGN_LEFT
-        termsCell.VerticalAlignment = Element.ALIGN_TOP
-        termsCell.PaddingTop = 5
-        termsCell.PaddingBottom = 5
-        termsTable.AddCell(termsCell)
-
-        termsTable.WriteSelectedRows(0, -1, 36, document.PageSize.GetBottom(100), cb)
     End Sub
 End Class
 

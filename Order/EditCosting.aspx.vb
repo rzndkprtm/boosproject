@@ -161,10 +161,52 @@ Partial Class Order_EditCosting
         End Try
     End Sub
 
+    Protected Sub btnDiscount_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim dt As DataTable = orderClass.GetDataTable("SELECT Id, SellPrice FROM OrderCostings WHERE ItemId='" & lblItemId.Text & "' AND Type='Base'")
+            If dt Is Nothing OrElse dt.Rows.Count = 0 Then Exit Sub
+            Dim discount As Decimal = 0D
+            Decimal.TryParse(txtDiscount.Text, discount)
+
+            Using thisConn As New SqlConnection(myConn)
+                thisConn.Open()
+                Using thisCmd As New SqlCommand("UPDATE OrderCostings SET SellPrice=@SellPrice WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.Add("@SellPrice", SqlDbType.Decimal)
+                    thisCmd.Parameters.Add("@Id", SqlDbType.VarChar)
+                    For Each row As DataRow In dt.Rows
+                        Dim totalBasePrice As Decimal = If(IsDBNull(row("SellPrice")), 0D, Convert.ToDecimal(row("SellPrice")))
+                        Dim finalPrice As Decimal = totalBasePrice - (totalBasePrice * discount / 100D)
+                        thisCmd.Parameters("@SellPrice").Value = finalPrice
+                        thisCmd.Parameters("@Id").Value = row("Id").ToString()
+
+                        thisCmd.ExecuteNonQuery()
+                    Next
+                End Using
+            End Using
+
+            If Not String.IsNullOrEmpty(txtDiscountNote.Text) Then
+                Dim costingArray As Object() = {lblHeaderId.Text, lblItemId.Text, 0, "Note", txtDiscountNote.Text.Trim(), 0, 0}
+                orderClass.OrderCostings(costingArray)
+            End If
+
+            orderClass.FinalCostItem(lblHeaderId.Text, lblItemId.Text)
+
+            Response.Redirect(String.Format("~/order/editcosting?boos={0}", lblId.Text), False)
+
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+
+            If Session("RoleName") <> "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
     Protected Sub btnNote_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim costingArray As Object() = {lblHeaderId.Text, lblItemId.Text, 0, "Note", txtNote.Text, 0, 0}
+            Dim costingArray As Object() = {lblHeaderId.Text, lblItemId.Text, 0, "Note", txtNote.Text.Trim(), 0, 0}
             orderClass.OrderCostings(costingArray)
             orderClass.FinalCostItem(lblHeaderId.Text, lblItemId.Text)
 
