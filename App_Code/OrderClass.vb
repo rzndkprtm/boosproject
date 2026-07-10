@@ -208,6 +208,27 @@ Public Class OrderClass
         Return result
     End Function
 
+    Public Function GetOrderType(headerId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(headerId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT OrderType FROM OrderHeaders WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", headerId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
     Public Function GetCustomerPrimaryEmail(customerId As String) As String
         Dim result As String = String.Empty
         Try
@@ -657,7 +678,6 @@ Public Class OrderClass
             Dim param As New List(Of SqlParameter) From {
                 New SqlParameter("@ItemId", Convert.ToInt32(itemId))
             }
-
             Dim thisData As DataRow = GetDataRowSP("sp_OrderDetails_Description", param)
             If thisData Is Nothing Then
                 Return "PLEASE CONTACT YOUR CUSTOMER SERVICE !"
@@ -1880,6 +1900,8 @@ Public Class OrderClass
                 Dim companyId As String = GetCompanyIdByOrder(headerId)
                 Dim companyDetailId As String = GetCompanyDetailIdByOrder(headerId)
 
+                Dim orderType As String = GetOrderType(headerId)
+
                 Dim priceGroup As String = GetPriceGroupByOrder(headerId)
                 Dim shutterPriceGroup As String = GetItemData("SELECT ShutterPriceGroupId FROM Customers WHERE Id='" & customerId & "'")
                 Dim doorPriceGroup As String = GetItemData("SELECT DoorPriceGroupId FROM Customers WHERE Id='" & customerId & "'")
@@ -2089,7 +2111,6 @@ Public Class OrderClass
                     Dim costBuyAdditional As Decimal = gridBuyAdditional
 
                     thisSell = costSell
-
                     thisSellAdditional = costSellAdditional
 
                     thisBuy = costBuy
@@ -2149,6 +2170,10 @@ Public Class OrderClass
                         Next
                     End If
 
+                    If designName = "Curtain" AndAlso orderType = "Builder" Then
+                        thisSell = thisSell + 50
+                    End If
+
                     If gridSellMethod = "Square Metre" Then
                         If companyDetailId = "2" OrElse companyDetailId = "3" OrElse companyDetailId = "4" OrElse companyDetailId = "8" Then
                             thisSell = thisSell * squareMetre
@@ -2183,6 +2208,7 @@ Public Class OrderClass
                             If squareMetre <= 0.5 Then thisSell = gridSellPrice * 0.5
                         End If
                     End If
+
                     If designName = "Skyline Shutter Ocean" Then
                         If squareMetre <= 0.75 Then thisSell = gridSellPrice * 0.75
                     End If
@@ -2283,8 +2309,10 @@ Public Class OrderClass
                     Dim costingArray As Object() = {headerId, itemId, itemNumber, "Base", costingDescription, thisBuy, thisSell}
                     OrderCostings(costingArray)
 
-                    If designName = "Curtain" AndAlso (blindName = "Complete Set (Single)" OrElse blindName = "Complete Set (Double)") Then
-                        costingDescription = priceAdditionalName
+                    If designName = "Curtain" Then
+                        If blindName = "Complete Set (Single)" Then
+                            costingDescription = priceAdditionalName
+                        End If
                         If blindName = "Complete Set (Double)" Then
                             costingDescription = String.Format("#1 {0}", priceAdditionalName)
                         End If
@@ -2293,7 +2321,7 @@ Public Class OrderClass
                     End If
 
                     costingArray = {headerId, itemId, itemNumber, priceGroup}
-                    If designName = "Skyline Shutter Express" OrElse designName = "Skyline Shutter Ocean" OrElse designName = "Evolve Shutter Express" OrElse designName = "Evolve Shutter Ocean" Then
+                    If designName = "Skyline Shutter Express" OrElse designName = "Skyline Shutter Ocean" Then
                         costingArray = {headerId, itemId, itemNumber, shutterPriceGroup}
                     End If
                     If designName = "Window" OrElse designName = "Door" Then
@@ -2376,6 +2404,10 @@ Public Class OrderClass
                                 End If
                             End If
                         Next
+                    End If
+
+                    If designName = "Curtain" AndAlso orderType = "Builder" Then
+                        thisSell = thisSell + 50
                     End If
 
                     If gridSellMethod = "Square Metre" Then
