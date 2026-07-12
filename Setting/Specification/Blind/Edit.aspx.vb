@@ -56,11 +56,10 @@ Partial Class Setting_Specification_Blind_Edit
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Blinds SET DesignId=@DesignId, CompanyDetailId=@CompanyDetailId, ItemCode=@ItemCode, Name=@Name, Alias=@Alias, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Blinds SET DesignId=@DesignId, CompanyDetailId=@CompanyDetailId, Name=@Name, Alias=@Alias, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         thisCmd.Parameters.AddWithValue("@DesignId", ddlDesign.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetail)
-                        thisCmd.Parameters.AddWithValue("@ItemCode", txtItemCode.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Alias", aliasName)
                         thisCmd.Parameters.AddWithValue("@Description", descText)
@@ -97,7 +96,6 @@ Partial Class Setting_Specification_Blind_Edit
 
             ddlDesign.SelectedValue = thisData("DesignId").ToString()
             txtName.Text = thisData("Name").ToString()
-            txtItemCode.Text = thisData("ItemCode").ToString()
             txtAlias.Text = thisData("Alias").ToString()
             txtDescription.Text = thisData("Description").ToString()
             ddlActive.SelectedValue = Convert.ToInt32(thisData("Active"))

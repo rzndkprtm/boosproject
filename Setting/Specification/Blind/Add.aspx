@@ -57,12 +57,6 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-12 form-group">
-                                            <label class="form-label">Item Code</label>
-                                            <asp:TextBox runat="server" ID="txtItemCode" CssClass="form-control" placeholder="Item Code ..." autocomplete="off"></asp:TextBox>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-12 form-group">
                                             <label class="form-label">Description</label>
                                             <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
                                         </div>

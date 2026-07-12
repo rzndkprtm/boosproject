@@ -52,11 +52,10 @@ Partial Class Setting_Specification_Blind_Add
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Blinds ORDER BY Id DESC")
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Blinds VALUES (@Id, @DesignId, @CompanyDetailId, @ItemCode, @Name, @Alias, @Description, @Active)", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Blinds VALUES (@Id, @DesignId, @CompanyDetailId, @Name, @Alias, @Description, @Active)", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", thisId)
                         thisCmd.Parameters.AddWithValue("@DesignId", ddlDesign.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetail)
-                        thisCmd.Parameters.AddWithValue("@ItemCode", txtItemCode.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Alias", aliasName)
                         thisCmd.Parameters.AddWithValue("@Description", descText)
