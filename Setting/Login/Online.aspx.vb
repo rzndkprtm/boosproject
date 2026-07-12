@@ -21,12 +21,6 @@ Partial Class Setting_Login_Online
         End If
     End Sub
 
-    Protected Sub tmrRefresh_Tick(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        MessageError_SendNotif(False, String.Empty)
-        BindData(txtSearch.Text, ddlMinute.SelectedValue)
-    End Sub
-
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         MessageError_SendNotif(False, String.Empty)
@@ -43,6 +37,17 @@ Partial Class Setting_Login_Online
         gvList.PageIndex = e.NewPageIndex
         MessageError(False, String.Empty)
         BindData(txtSearch.Text, ddlMinute.SelectedValue)
+    End Sub
+
+    Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
+        If e.CommandName = "Page" Then
+            gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
+            BindData(txtSearch.Text, ddlMinute.SelectedValue)
+        End If
+    End Sub
+
+    Protected Sub gvList_DataBound(sender As Object, e As EventArgs)
+        BuildPager()
     End Sub
 
     Protected Sub btnSendNotif_Click(sender As Object, e As EventArgs)
@@ -84,6 +89,25 @@ Partial Class Setting_Login_Online
         End Try
     End Sub
 
+    Protected Sub btnDeleteSession_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim loginId As String = txtDeleteId.Text
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM Sessions WHERE LoginId=@LoginId", thisConn)
+                    thisCmd.Parameters.AddWithValue("@LoginId", loginId)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Response.Redirect("~/setting/login/online", False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+        End Try
+    End Sub
+
     Protected Sub BindData(searchText As String, minuteText As String)
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
@@ -96,6 +120,42 @@ Partial Class Setting_Login_Online
             divMinute.Visible = LoginAccess("Sort Minute")
         Catch ex As Exception
             MessageError(True, ex.ToString())
+        End Try
+    End Sub
+
+    Protected Sub BuildPager()
+        Try
+            If gvList.PageCount <= 1 Then
+                navPager.Visible = False
+                Return
+            End If
+
+            navPager.Visible = True
+
+            Dim currentPage As Integer = gvList.PageIndex
+            Dim totalPages As Integer = gvList.PageCount
+
+            Dim pages As New List(Of Object)
+
+            If currentPage > 0 Then
+                pages.Add(New With {.Text = "Previous", .PageIndex = currentPage - 1, .CssClass = ""})
+            End If
+
+            Dim startPage As Integer = Math.Max(0, currentPage - 2)
+            Dim endPage As Integer = Math.Min(totalPages - 1, currentPage + 2)
+
+            For i As Integer = startPage To endPage
+                pages.Add(New With {.Text = (i + 1).ToString(), .PageIndex = i, .CssClass = If(i = currentPage, "active", "")})
+            Next
+
+            If currentPage < totalPages - 1 Then
+                pages.Add(New With {.Text = "Next", .PageIndex = currentPage + 1, .CssClass = ""})
+            End If
+
+            rptPager.DataSource = pages
+            rptPager.DataBind()
+        Catch ex As Exception
+            navPager.Visible = False
         End Try
     End Sub
 
