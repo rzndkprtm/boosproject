@@ -36,7 +36,7 @@
                                     <div class="row">
                                         <div class="col-12 col-sm-12 col-lg-7 form-group">
                                             <label class="form-label">Name</label>
-                                            <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Registered Name ..." autocomplete="off"></asp:TextBox>
+                                            <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
                                         </div>
                                         <div class="col-12 col-sm-12 col-lg-5 form-group">
                                             <label class="form-label">Name</label>

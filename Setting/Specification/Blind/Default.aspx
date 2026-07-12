@@ -79,7 +79,7 @@
                                                     <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                     <ul class="dropdown-menu">
                                                         <li runat="server" visible='<%# LoginAccess("Detail") %>'>
-                                                            <a class="dropdown-item" id="aDetail" href='<%# Page.ResolveUrl("~/setting/specification/blind/edit?businessid=" & Eval("Id")) %>'>Detail / Edit</a>
+                                                            <a class="dropdown-item" id="aDetail" href='<%# Page.ResolveUrl("~/setting/specification/blind/edit?blindid=" & Eval("Id")) %>'>Detail / Edit</a>
                                                         </li>
                                                         <li>
                                                             <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('Blinds', '<%# Eval("Id") %>')">Log</a>
