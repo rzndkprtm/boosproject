@@ -39,7 +39,7 @@
                     <div class="dashboard-title">Design Type</div>
                     <div class="dashboard-desc">Description</div>
                 </a>
-                <a href="/setting/specification/blindtype" class="dashboard-card">
+                <a href="/setting/specification/blind" class="dashboard-card">
                     <div class="dashboard-number"><%= GetSumData("Blinds") %></div>
                     <div class="dashboard-title">Blind Type</div>
                     <div class="dashboard-desc">Description</div>

@@ -220,7 +220,7 @@
                                                             <a runat="server" href="~/setting/specification/designtype" class="subsubmenu-link">Design Type</a>
                                                         </li>
                                                         <li class="subsubmenu-item">
-                                                            <a runat="server" href="~/setting/specification/blindtype" class="subsubmenu-link">Blind Type</a>
+                                                            <a runat="server" href="~/setting/specification/blind" class="subsubmenu-link">Blind Type</a>
                                                         </li>
                                                         <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/specification/product" class="subsubmenu-link">Product</a>
