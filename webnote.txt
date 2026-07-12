@@ -24,3 +24,4 @@ Reveal Fit = Inside
 
 
 Cont Grey 1200
+INSERT INTO Blindss SELECT Id, DesignId, CompanyDetailId, NULL, Name, Alias, Description, Active FROM Blinds
