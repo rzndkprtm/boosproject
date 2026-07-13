@@ -91,6 +91,8 @@
                     <li runat="server" id="liDividerInvoice"><hr class="dropdown-divider"></li>
                     <li><a href="javascript:void(0);" runat="server" id="aUpdateInvoiceNumber" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalInvoiceNumber">Update Invoice Number</a></li>
                     <li><a href="javascript:void(0);" runat="server" id="aUpdateInvoiceData" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalInvoiceData">Update Invoice Data</a></li>
+                    <li runat="server" id="liDividerPL"><hr class="dropdown-divider"></li>
+                    <li runat="server" id="liDownloadPL"><a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDownloadPL">Download PL (PDF)</a></li>
                 </ul>
                 <a href="javascript:void(0);" runat="server" id="aBuilderData" class="btn btn-primary me-1" data-bs-toggle="modal" data-bs-target="#modalBuilderDetail">Builder Data</a>
                 <a href="javascript:void(0);" runat="server" id="aFile" class="btn btn-dark me-1" data-bs-toggle="modal" data-bs-target="#modalFileOrder">Files</a>
@@ -1276,6 +1278,22 @@
             </div>
         </div>
     </div>
+    <div class="modal fade text-center" id="modalDownloadPL" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <h5 class="modal-title white">Download Packing List</h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnDownloadPL" CssClass="btn btn-primary" Text="Confirm" OnClick="btnDownloadPL_Click" OnClientClick="return showWaiting($(this).closest('.modal').attr('id'));" />
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade text-center" id="modalReceivePayment" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -1693,7 +1711,7 @@
             "modalLog", "modalWaiting", "modalBuilderDetail", "modalFileOrder", "modalCostingBuy", "modalDateOrder", "modalDuplicateOrder", "modalAddNote", "modalHistoryNote", "modalRePrice", "modalDownloadBOE",
             "modalDeleteOrder", "modalQuoteOrder", "modalSubmitOrder", "modalUnsubmitOrder", "modalCancelOrder", "modalProductionOrder", "modalHoldOrder", "modalShippedOrder", "modalCompleteOrder",
             "modalReworkOrder",
-            "modalSendInvoice", "modalReceivePayment", "modalDownloadInvoice", "modalDownloadInvoiceCSV", "modalInvoiceNumber", "modalInvoiceData",
+            "modalSendInvoice", "modalReceivePayment", "modalDownloadInvoice", "modalDownloadInvoiceCSV", "modalInvoiceNumber", "modalInvoiceData", "modalDownloadPL",
             "modalDetailQuote", "modalDownloadQuote", "modalSendQuote",
             "modalConvertOrder", "modalReConvertOrder", "modalDataJob", "modalUpdateJobData",
             "modalAddItem", "modalAddService", "modalDeleteItem", "modalCosting", 

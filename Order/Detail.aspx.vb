@@ -1339,6 +1339,34 @@ Partial Class Order_Detail
         End Try
     End Sub
 
+    Protected Sub btnDownloadPL_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim packingClass As New PackingListClass
+            Dim pdfBytes As Byte() = packingClass.BindContent_Local(lblHeaderId.Text)
+            'If lblCompanyId.Text = "3" Then
+            '    pdfBytes = packingClass.BindContent_Local(lblHeaderId.Text)
+            'End If
+
+            Dim fileName As String = String.Format("PACKING LIST {0} {1}.pdf", lblOrderId.Text.ToUpper(), lblCustomerName.Text.ToUpper())
+
+            Response.Clear()
+            Response.ContentType = "application/pdf"
+            Response.AddHeader("Content-Disposition", "attachment; filename=" & fileName & "")
+            Response.BinaryWrite(pdfBytes)
+            Response.Flush()
+            Response.End()
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                If Session("RoleName") = "Customer" Then
+                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
+                End If
+            End If
+        End Try
+    End Sub
+
     Protected Sub btnBuilderDetail_Click(sender As Object, e As EventArgs)
         MessageError_BuilderDetail(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showConvertJob(); };"
@@ -2070,6 +2098,8 @@ Partial Class Order_Detail
             liDividerInvoice.Visible = False
             aUpdateInvoiceNumber.Visible = False
             aUpdateInvoiceData.Visible = False
+            liDividerPL.Visible = False
+            liDownloadPL.Visible = False
 
             btnJob.Visible = False
             aDataJob.Visible = False
@@ -2297,6 +2327,8 @@ Partial Class Order_Detail
                     If lblOrderPaid.Text = "" Then aSendInvoice.Visible = True
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceData.Visible = True
+                    liDividerPL.Visible = True
+                    liDownloadPL.Visible = True
 
                     btnJob.Visible = True
                     If convertedStatus = "Yes" Then
@@ -2330,6 +2362,8 @@ Partial Class Order_Detail
                     If lblOrderPaid.Text = "" Then aSendInvoice.Visible = True
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceData.Visible = True
+                    liDividerPL.Visible = True
+                    liDownloadPL.Visible = True
 
                     btnJob.Visible = True
                     If convertedStatus = "Yes" Then
@@ -2357,6 +2391,8 @@ Partial Class Order_Detail
                     End If
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceData.Visible = True
+                    liDividerPL.Visible = True
+                    liDownloadPL.Visible = True
 
                     btnUpdateStatus.Visible = True
                     aProductionOrder.Visible = True
@@ -2538,6 +2574,8 @@ Partial Class Order_Detail
                     btnInvoice.Visible = True
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceData.Visible = True
+                    liDividerPL.Visible = True
+                    liDownloadPL.Visible = True
 
                     btnJob.Visible = True
                     If convertedStatus = "Yes" Then
@@ -2568,6 +2606,8 @@ Partial Class Order_Detail
                     btnInvoice.Visible = True
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceData.Visible = True
+                    liDividerPL.Visible = True
+                    liDownloadPL.Visible = True
 
                     btnJob.Visible = True
                     If convertedStatus = "Yes" Then
@@ -2595,6 +2635,8 @@ Partial Class Order_Detail
                     btnInvoice.Visible = True
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceData.Visible = True
+                    liDividerPL.Visible = True
+                    liDownloadPL.Visible = True
 
                     btnJob.Visible = True
                     If convertedStatus = "Yes" Then
@@ -2748,6 +2790,8 @@ Partial Class Order_Detail
                     btnInvoice.Visible = True
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceData.Visible = True
+                    liDividerPL.Visible = True
+                    liDownloadPL.Visible = True
 
                     btnJob.Visible = True
                     If convertedStatus = "Yes" Then
@@ -2776,6 +2820,8 @@ Partial Class Order_Detail
                     btnInvoice.Visible = True
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceData.Visible = True
+                    liDividerPL.Visible = True
+                    liDownloadPL.Visible = True
 
                     btnJob.Visible = True
                     If convertedStatus = "Yes" Then
@@ -2806,6 +2852,8 @@ Partial Class Order_Detail
                     End If
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceData.Visible = True
+                    liDividerPL.Visible = True
+                    liDownloadPL.Visible = True
 
                     btnJob.Visible = True
                     If convertedStatus = "Yes" Then

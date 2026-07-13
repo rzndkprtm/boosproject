@@ -302,6 +302,9 @@
                                                 <li runat="server" id="liXero" class="submenu-item">
                                                     <a runat="server" href="~/setting/xero" class="subsubmenu-link">Xero</a>
                                                 </li>
+                                                <li runat="server" id="liAKZero" class="submenu-item">
+                                                    <a runat="server" href="~/setting/akzero" class="subsubmenu-link">AK Zero</a>
+                                                </li>
                                                 <li runat="server" id="liLog" class="submenu-item">
                                                     <a runat="server" href="~/setting/log" class="subsubmenu-link">Log</a>
                                                 </li>
