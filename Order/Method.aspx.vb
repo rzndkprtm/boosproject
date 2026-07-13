@@ -1772,6 +1772,7 @@ Partial Class Order_Method
             If Not Integer.TryParse(data.cutlength, cutlength) OrElse cutlength <= 0 Then
                 Return "PLEASE CHECK YOUR FABRIC CUT LENGTH ORDER !"
             End If
+            If cutlength < width Then Return "THE FABRIC CUT LENGTH CANNOT BE LESS THAN WIDTH !"
         End If
 
         If data.trackdraw = "Flick Stick" Then

@@ -217,6 +217,7 @@ Partial Public Class SiteMaster
             liPrice.Visible = False
             liDatabase.Visible = False
             liXero.Visible = False
+            liAKZero.Visible = False
             liLog.Visible = False
 
             If Session("RoleName") = "Developer" Then
@@ -244,6 +245,7 @@ Partial Public Class SiteMaster
                 liPrice.Visible = True
                 liDatabase.Visible = True
                 liXero.Visible = True
+                liAKZero.Visible = True
                 liLog.Visible = True
             End If
             If Session("RoleName") = "IT" Then
