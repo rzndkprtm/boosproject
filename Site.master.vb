@@ -22,7 +22,6 @@ Partial Public Class SiteMaster
                 MyLoad()
                 BindListNavigation()
             End If
-
         Catch ex As Exception
             Session.Clear()
             Response.Redirect("~/account/login", False)
@@ -116,7 +115,7 @@ Partial Public Class SiteMaster
             Dim roleName As String = myData("RoleName").ToString()
             Dim roleActive As Boolean = myData("RoleActive")
             Dim levelActive As Boolean = myData("LevelActive")
-            Dim resetLogin As Boolean = myData("ResetLogin")
+            Dim resetLogin As Integer = Convert.ToInt32(myData("ResetLogin"))
 
             Dim companyActive As Integer = If(IsDBNull(myData("CompanyActive")), -1, Convert.ToInt32(myData("CompanyActive")))
             Dim customerActive As Integer = If(IsDBNull(myData("CustomerActive")), -1, Convert.ToInt32(myData("CustomerActive")))
@@ -153,10 +152,10 @@ Partial Public Class SiteMaster
                 Exit Sub
             End If
 
-            If resetLogin = True AndAlso Not path.Contains("/account/password") Then
+            If resetLogin = 1 AndAlso Not path.StartsWith("/account/password") Then
                 Response.Redirect("~/account/password", False)
                 Context.ApplicationInstance.CompleteRequest()
-                Exit Sub
+                Return
             End If
 
             If roleName = "Customer" Then
@@ -267,6 +266,7 @@ Partial Public Class SiteMaster
                 liPrice.Visible = True
                 liDatabase.Visible = True
                 liXero.Visible = True
+                liAKZero.Visible = True
                 liLog.Visible = True
             End If
             If Session("RoleName") = "Factory Office" Then
@@ -287,6 +287,7 @@ Partial Public Class SiteMaster
                 liPrice.Visible = True
                 liDatabase.Visible = True
                 liXero.Visible = True
+                liAKZero.Visible = True
                 liLog.Visible = True
             End If
             If Session("RoleName") = "Account" Then
