@@ -58,7 +58,7 @@
                 <div class="card profile-card">
                     <div class="card-header">
                         <div class="card-title">Personal Account</div>
-                        <div class="card-subtitle"> your personal account information</div>
+                        <div class="card-subtitle">Your personal account information</div>
                     </div>
                     <div class="card-body">
                         <div class="info-row">
