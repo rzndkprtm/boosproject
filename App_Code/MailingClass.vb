@@ -105,21 +105,35 @@ Public Class MailingClass
     End Function
 
     Public Function Decrypt(cipherText As String) As String
-        Dim EncryptionKey As String = "BUM11ND4H9L084L"
-        Dim cipherBytes As Byte() = Convert.FromBase64String(cipherText)
-        Using encryptor As Aes = Aes.Create()
-            Dim pdb As New Rfc2898DeriveBytes(EncryptionKey, New Byte() {&H49, &H76, &H61, &H6E, &H20, &H4D, &H65, &H64, &H76, &H65, &H64, &H65, &H76})
-            encryptor.Key = pdb.GetBytes(32)
-            encryptor.IV = pdb.GetBytes(16)
-            Using ms As New MemoryStream()
-                Using cs As New CryptoStream(ms, encryptor.CreateDecryptor(), CryptoStreamMode.Write)
-                    cs.Write(cipherBytes, 0, cipherBytes.Length)
-                    cs.Close()
+        Try
+            If String.IsNullOrWhiteSpace(cipherText) Then
+                Return String.Empty
+            End If
+
+            Dim EncryptionKey As String = "BUM11ND4H9L084L"
+            Dim cipherBytes As Byte() = Convert.FromBase64String(cipherText)
+
+            Using encryptor As Aes = Aes.Create()
+                Dim pdb As New Rfc2898DeriveBytes(
+                EncryptionKey,
+                New Byte() {&H49, &H76, &H61, &H6E, &H20, &H4D, &H65, &H64, &H76, &H65, &H64, &H65, &H76}
+                )
+
+                encryptor.Key = pdb.GetBytes(32)
+                encryptor.IV = pdb.GetBytes(16)
+
+                Using ms As New MemoryStream()
+                    Using cs As New CryptoStream(ms, encryptor.CreateDecryptor(), CryptoStreamMode.Write)
+                        cs.Write(cipherBytes, 0, cipherBytes.Length)
+                        cs.FlushFinalBlock()
+                    End Using
+
+                    Return Encoding.Unicode.GetString(ms.ToArray())
                 End Using
-                cipherText = Encoding.Unicode.GetString(ms.ToArray())
             End Using
-        End Using
-        Return cipherText
+        Catch ex As Exception
+            Return String.Empty
+        End Try
     End Function
 
     Public Sub ResetPassword(userId As String, newPassword As String)
@@ -230,7 +244,7 @@ Public Class MailingClass
         Try
             If String.IsNullOrEmpty(loginId) OrElse String.IsNullOrEmpty(loginEmail) OrElse String.IsNullOrEmpty(actionBy) Then Exit Sub
 
-            Dim dataLogin As DataRow = GetDataRow("SELECT Logins.Email, Logins.Password, Logins.CustomerId, Logins.UserName, Logins.FullName, Customers.CompanyId FROM Logins LEFT JOIN Customers ON Logins.CustomerId=Customers.Id WHERE Logins.Id='" & loginId & "'")
+            Dim dataLogin As DataRow = GetDataRow("SELECT Logins.Email, Logins.Password, Logins.CustomerId, Logins.UserName, Logins.FullName, Logins.CustomerId, Customers.CompanyId FROM Logins LEFT JOIN Customers ON Logins.CustomerId=Customers.Id WHERE Logins.Id='" & loginId & "'")
 
             Dim companyName As String = String.Empty
             If dataLogin("CompanyId") = "2" Then companyName = "JPM Direct Pty Ltd"
@@ -314,7 +328,35 @@ Public Class MailingClass
             myMail.From = New MailAddress(mailServer, mailAlias)
 
             myMail.To.Add(loginEmail)
-            myMail.CC.Add(actionEmail)
+
+            For Each thisMail In mailCc.Split(";"c)
+                If Not String.IsNullOrWhiteSpace(thisMail) Then
+                    myMail.CC.Add(thisMail.Trim())
+                End If
+            Next
+
+            Dim operatorEmail As String = GetItemData("SELECT ISNULL(STRING_AGG(Logins.Email, ';'), '') FROM Customers OUTER APPLY STRING_SPLIT(Customers.Operator, ',') operatorArray LEFT JOIN Logins ON Logins.Id=TRY_CAST(operatorArray.value AS INT) WHERE Customers.Id='" & dataLogin("CustomerId").ToString() & "';")
+            If Not String.IsNullOrWhiteSpace(operatorEmail) Then
+                For Each email As String In operatorEmail.Split(";"c)
+                    email = email.Trim()
+
+                    If Not String.IsNullOrWhiteSpace(email) Then
+                        If Not myMail.CC.Cast(Of MailAddress)().Any(Function(x) x.Address.Equals(email, StringComparison.OrdinalIgnoreCase)) Then
+
+                            myMail.CC.Add(email)
+                        End If
+                    End If
+                Next
+            End If
+
+            If Not String.IsNullOrWhiteSpace(actionEmail) Then
+                actionEmail = actionEmail.Trim()
+                If Not myMail.CC.Cast(Of MailAddress)().Any(Function(x) x.Address.Equals(actionEmail, StringComparison.OrdinalIgnoreCase)) Then
+
+                    myMail.CC.Add(actionEmail)
+                End If
+            End If
+
             If Not String.IsNullOrEmpty(mailBcc) Then
                 For Each thisMail In mailBcc.Split(";"c)
                     If Not String.IsNullOrEmpty(thisMail.Trim()) Then myMail.Bcc.Add(thisMail.Trim())
@@ -458,7 +500,35 @@ Public Class MailingClass
             myMail.From = New MailAddress(mailServer, mailAlias)
 
             myMail.To.Add(loginEmail)
-            myMail.CC.Add(actionEmail)
+
+            For Each thisMail In mailCc.Split(";"c)
+                If Not String.IsNullOrWhiteSpace(thisMail) Then
+                    myMail.CC.Add(thisMail.Trim())
+                End If
+            Next
+
+            Dim operatorEmail As String = GetItemData("SELECT ISNULL(STRING_AGG(Logins.Email, ';'), '') FROM Customers OUTER APPLY STRING_SPLIT(Customers.Operator, ',') operatorArray LEFT JOIN Logins ON Logins.Id=TRY_CAST(operatorArray.value AS INT) WHERE Customers.Id='" & customerId & "';")
+            If Not String.IsNullOrWhiteSpace(operatorEmail) Then
+                For Each email As String In operatorEmail.Split(";"c)
+                    email = email.Trim()
+
+                    If Not String.IsNullOrWhiteSpace(email) Then
+                        If Not myMail.CC.Cast(Of MailAddress)().Any(Function(x) x.Address.Equals(email, StringComparison.OrdinalIgnoreCase)) Then
+
+                            myMail.CC.Add(email)
+                        End If
+                    End If
+                Next
+            End If
+
+            If Not String.IsNullOrWhiteSpace(actionEmail) Then
+                actionEmail = actionEmail.Trim()
+                If Not myMail.CC.Cast(Of MailAddress)().Any(Function(x) x.Address.Equals(actionEmail, StringComparison.OrdinalIgnoreCase)) Then
+
+                    myMail.CC.Add(actionEmail)
+                End If
+            End If
+
             If Not String.IsNullOrEmpty(mailBcc) Then
                 For Each thisMail In mailBcc.Split(";"c)
                     If Not String.IsNullOrEmpty(thisMail.Trim()) Then myMail.Bcc.Add(thisMail.Trim())
