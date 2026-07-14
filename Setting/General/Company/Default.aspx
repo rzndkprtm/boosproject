@@ -73,6 +73,9 @@
                                                 <li runat="server" visible='<%# LoginAccess("Detail") %>'>
                                                     <a class="dropdown-item" id="aDetail" href='<%# Page.ResolveUrl("~/setting/general/company/detail?cid=" & Eval("Id")) %>'>Detail / Edit</a>
                                                 </li>
+                                                <li runat="server" visible='<%# LoginAccess("Delete") %>'>
+                                                    <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return dataDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                </li>
                                                 <li>
                                                     <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('Companys', '<%# Eval("Id") %>')">Log</a>
                                                 </li>
@@ -140,6 +143,23 @@
             </div>
         </div>
     </div>
+    <div class="modal fade text-center" id="modalDelete" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-danger">
+                    <h5 class="modal-title white">Delete Company</h5>
+                </div>
+                <div class="modal-body">
+                    <asp:TextBox runat="server" ID="txtDeleteId" style="display:none;"></asp:TextBox>
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnDelete" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDelete_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal modal-blur fade" id="modalLog" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -183,6 +203,9 @@
         function showProcess() {
             $("#modalProcess").modal("show");
         }
+        function dataDelete(id) {
+            document.getElementById("<%=txtDeleteId.ClientID %>").value = id;
+        }
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
             $("#tblLogs tbody").html("");
@@ -216,7 +239,7 @@
                 }
             });
         }
-        ["modalProcess", "modalLog"].forEach(function (id) {
+        ["modalProcess", "modalDelete", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

@@ -3247,6 +3247,8 @@ Partial Class Order_Detail
                 If lblOrderStatus.Text = "In Production" Then
                     btnUpdateStatus.Visible = True
                     aShippedOrder.Visible = True
+
+                    btnInvoice.Visible = True
                 End If
                 If lblOrderStatus.Text = "Shipped Out" Then
                     btnUpdateStatus.Visible = True
