@@ -16,11 +16,9 @@ Partial Class Account_Default
         End If
 
         lblLoginId.Text = Request.QueryString("uid").ToString()
-        If Not Session("RoleName") = "Developer" Then
-            If Not Session("LoginId") = lblLoginId.Text Then
-                Response.Redirect("~/", False)
-                Exit Sub
-            End If
+        If Not Session("LoginId") = lblLoginId.Text Then
+            Response.Redirect("~/", False)
+            Exit Sub
         End If
 
         If Not IsPostBack Then
