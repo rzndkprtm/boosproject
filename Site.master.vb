@@ -155,7 +155,7 @@ Partial Public Class SiteMaster
             If resetLogin = 1 AndAlso Not path.StartsWith("/account/password") Then
                 Response.Redirect("~/account/password", False)
                 Context.ApplicationInstance.CompleteRequest()
-                Return
+                Exit Sub
             End If
 
             If roleName = "Customer" Then
