@@ -2739,7 +2739,7 @@ function controlForm(status, isEditItem, isCopyItem) {
         }
 
         if (isEditItem) {
-            if (id === "qty" || id === "blindtype") {
+            if (id === "qty") {
                 el.disabled = true;
             } else {
                 el.disabled = false;
