@@ -85,7 +85,12 @@ Partial Public Class SiteMaster
 
     Protected Sub MyLoad()
         Try
-            Dim loginId As String = Session("LoginId")
+            Dim loginId As String = Convert.ToString(Session("LoginId"))
+
+            If String.IsNullOrEmpty(loginId) Then
+                HandleRedirectLogin()
+                Exit Sub
+            End If
 
             Dim params As New List(Of SqlParameter) From {
                 New SqlParameter("@LoginId", loginId)
@@ -111,77 +116,97 @@ Partial Public Class SiteMaster
             Session("CompanyName") = myData("CompanyName").ToString()
 
             Dim loginEmail As String = myData("Email").ToString()
-            Dim loginActive As Boolean = myData("Active")
+            Dim loginActive As Boolean = Convert.ToBoolean(myData("Active"))
+
             Dim roleName As String = myData("RoleName").ToString()
-            Dim roleActive As Boolean = myData("RoleActive")
-            Dim levelActive As Boolean = myData("LevelActive")
+            Dim roleActive As Boolean = Convert.ToBoolean(myData("RoleActive"))
+            Dim levelActive As Boolean = Convert.ToBoolean(myData("LevelActive"))
+
             Dim resetLogin As Integer = Convert.ToInt32(myData("ResetLogin"))
 
             Dim companyActive As Integer = If(IsDBNull(myData("CompanyActive")), -1, Convert.ToInt32(myData("CompanyActive")))
+
             Dim customerActive As Integer = If(IsDBNull(myData("CustomerActive")), -1, Convert.ToInt32(myData("CustomerActive")))
 
             Dim path As String = Request.Url.AbsolutePath.ToLower()
 
-            If loginActive = False AndAlso Not path.Contains("/boos/nonactive") Then
+            Dim isPasswordPage As Boolean = path.StartsWith("/account/password")
+            Dim isAccountPage As Boolean = path.StartsWith("/account/")
+            Dim isNonActivePage As Boolean = path.StartsWith("/boos/nonactive")
+            Dim isMaintenancePage As Boolean = path.StartsWith("/boos/maintenance")
+
+            If Not loginActive AndAlso Not isNonActivePage Then
                 Response.Redirect("~/boos/nonactive", False)
                 Context.ApplicationInstance.CompleteRequest()
                 Exit Sub
             End If
 
-            If roleActive = False AndAlso Not path.Contains("/boos/nonactive") Then
+            If Not roleActive AndAlso Not isNonActivePage Then
                 Response.Redirect("~/boos/nonactive", False)
                 Context.ApplicationInstance.CompleteRequest()
                 Exit Sub
             End If
 
-            If levelActive = False AndAlso Not path.Contains("/boos/nonactive") Then
+            If Not levelActive AndAlso Not isNonActivePage Then
                 Response.Redirect("~/boos/nonactive", False)
                 Context.ApplicationInstance.CompleteRequest()
                 Exit Sub
             End If
 
-            If customerActive = 0 AndAlso Not path.Contains("/boos/nonactive") Then
+            If customerActive = 0 AndAlso Not isNonActivePage Then
                 Response.Redirect("~/boos/nonactive", False)
                 Context.ApplicationInstance.CompleteRequest()
                 Exit Sub
             End If
 
-            If companyActive = 0 AndAlso Not path.Contains("/boos/maintenance") Then
+            If companyActive = 0 AndAlso Not isMaintenancePage Then
                 Response.Redirect("~/boos/maintenance", False)
                 Context.ApplicationInstance.CompleteRequest()
                 Exit Sub
             End If
 
-            If resetLogin = 1 AndAlso Not path.StartsWith("/account/password") Then
+            If resetLogin = 1 AndAlso Not isPasswordPage Then
                 Response.Redirect("~/account/password", False)
                 Context.ApplicationInstance.CompleteRequest()
                 Exit Sub
             End If
 
             If roleName = "Customer" Then
-                If String.IsNullOrEmpty(loginEmail) AndAlso Not Request.AppRelativeCurrentExecutionFilePath.ToLower() = "~/account/default.aspx" Then
-                    Response.Redirect("~/account/?uid=" & Session("LoginId").ToString(), False)
+                Dim currentPage As String = Request.AppRelativeCurrentExecutionFilePath.ToLower()
+
+                Dim allowPage As Boolean = currentPage = "~/account/default.aspx" OrElse currentPage.StartsWith("~/account/password")
+
+                If String.IsNullOrEmpty(loginEmail) AndAlso Not allowPage Then
+                    Response.Redirect("~/account/?uid=" & loginId, False)
+                    Context.ApplicationInstance.CompleteRequest()
                     Exit Sub
                 End If
             End If
 
             imgLogo.ImageUrl = "~/Assets/images/logo/general.jpg?v=1.0.0"
-            If Session("CompanyId") = "2" Then
-                imgLogo.ImageUrl = "~/Assets/images/logo/jpmdirect.jpg?v=1.0.0"
-            ElseIf Session("CompanyId") = "3" Then
-                imgLogo.ImageUrl = "~/Assets/images/logo/bigblinds.png?v=1.0.0"
-            ElseIf Session("CompanyId") = "4" Then
-                imgLogo.ImageUrl = "~/Assets/images/logo/sunlight.jpg?v=1.0.0"
-            End If
 
-            Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As New SqlCommand("sp_Logins_Update_LastLogin", thisConn)
-                    thisCmd.CommandType = CommandType.StoredProcedure
-                    thisCmd.Parameters.Add("@Id", SqlDbType.Int).Value = loginId
-                    thisConn.Open()
-                    thisCmd.ExecuteNonQuery()
+            Select Case Session("CompanyId").ToString()
+                Case "2"
+                    imgLogo.ImageUrl = "~/Assets/images/logo/jpmdirect.jpg?v=1.0.0"
+
+                Case "3"
+                    imgLogo.ImageUrl = "~/Assets/images/logo/bigblinds.png?v=1.0.0"
+
+                Case "4"
+                    imgLogo.ImageUrl = "~/Assets/images/logo/sunlight.jpg?v=1.0.0"
+            End Select
+
+            If Not isPasswordPage Then
+                Using thisConn As New SqlConnection(myConn)
+
+                    Using thisCmd As New SqlCommand("sp_Logins_Update_LastLogin", thisConn)
+                        thisCmd.CommandType = CommandType.StoredProcedure
+                        thisCmd.Parameters.Add("@Id", SqlDbType.Int).Value = loginId
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
                 End Using
-            End Using
+            End If
         Catch ex As Exception
             HandleRedirectLogin()
         End Try
