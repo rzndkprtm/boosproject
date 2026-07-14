@@ -254,7 +254,7 @@ Partial Class Setting_Customer_Add
         ddlPriceGroup.Items.Clear()
         Try
             If Not String.IsNullOrEmpty(companyId) Then
-                ddlPriceGroup.DataSource = settingClass.GetDataTable("SELECT * FROM PriceGroups WHERE Type='Blinds' AND CompanyId='" & companyId & "' ORDER BY Name ASC")
+                ddlPriceGroup.DataSource = settingClass.GetDataTable("SELECT * FROM PriceGroups WHERE Type='Blinds' AND CompanyId='" & companyId & "' AND Active=1 ORDER BY Name ASC")
                 ddlPriceGroup.DataTextField = "Name"
                 ddlPriceGroup.DataValueField = "Id"
                 ddlPriceGroup.DataBind()
@@ -275,7 +275,7 @@ Partial Class Setting_Customer_Add
         ddlPriceGroupShutter.Items.Clear()
         Try
             If Not String.IsNullOrEmpty(companyId) Then
-                ddlPriceGroupShutter.DataSource = settingClass.GetDataTable("SELECT * FROM PriceGroups WHERE Type='Shutters' AND CompanyId='" & companyId & "' ORDER BY Name ASC")
+                ddlPriceGroupShutter.DataSource = settingClass.GetDataTable("SELECT * FROM PriceGroups WHERE Type='Shutters' AND CompanyId='" & companyId & "' AND Active=1 ORDER BY Name ASC")
                 ddlPriceGroupShutter.DataTextField = "Name"
                 ddlPriceGroupShutter.DataValueField = "Id"
                 ddlPriceGroupShutter.DataBind()
@@ -296,7 +296,7 @@ Partial Class Setting_Customer_Add
         ddlPriceGroupDoor.Items.Clear()
         Try
             If Not String.IsNullOrEmpty(companyId) Then
-                ddlPriceGroupDoor.DataSource = settingClass.GetDataTable("SELECT * FROM PriceGroups WHERE Type='Doors' AND CompanyId='" & companyId & "' ORDER BY Name ASC")
+                ddlPriceGroupDoor.DataSource = settingClass.GetDataTable("SELECT * FROM PriceGroups WHERE Type='Doors' AND CompanyId='" & companyId & "' AND Active=1 ORDER BY Name ASC")
                 ddlPriceGroupDoor.DataTextField = "Name"
                 ddlPriceGroupDoor.DataValueField = "Id"
                 ddlPriceGroupDoor.DataBind()

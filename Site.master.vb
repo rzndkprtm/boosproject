@@ -36,7 +36,7 @@ Partial Public Class SiteMaster
                 Exit Sub
             End If
 
-            Dim sessionId As String = ""
+            Dim sessionId As String = String.Empty
 
             If Request.Cookies("deviceId") Is Nothing Then
                 HandleRedirectLogin()
@@ -188,17 +188,14 @@ Partial Public Class SiteMaster
             Select Case Session("CompanyId").ToString()
                 Case "2"
                     imgLogo.ImageUrl = "~/Assets/images/logo/jpmdirect.jpg?v=1.0.0"
-
                 Case "3"
                     imgLogo.ImageUrl = "~/Assets/images/logo/bigblinds.png?v=1.0.0"
-
                 Case "4"
                     imgLogo.ImageUrl = "~/Assets/images/logo/sunlight.jpg?v=1.0.0"
             End Select
 
             If Not isPasswordPage Then
                 Using thisConn As New SqlConnection(myConn)
-
                     Using thisCmd As New SqlCommand("sp_Logins_Update_LastLogin", thisConn)
                         thisCmd.CommandType = CommandType.StoredProcedure
                         thisCmd.Parameters.Add("@Id", SqlDbType.Int).Value = loginId
