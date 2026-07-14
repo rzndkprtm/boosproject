@@ -24,4 +24,32 @@ Reveal Fit = Inside
 
 Cont Grey 1200
 
+ALTER PROCEDURE [dbo].[sp_Logins_Online]
+(
+    @SearchText NVARCHAR(255) = NULL,
+    @Minutes INT = 5
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        Logins.*,
+        LoginRoles.Name AS RoleName,
+        DATEDIFF(MINUTE, Logins.LastLogin, GETDATE()) AS LastActiveMinute
+    FROM Logins
+    LEFT JOIN LoginRoles 
+        ON Logins.RoleId = LoginRoles.Id
+    WHERE 
+        Logins.Active = 1
+        AND Logins.LastLogin IS NOT NULL
+        AND Logins.LastLogin >= DATEADD(MINUTE, -@Minutes, GETDATE())
+        AND (
+            @SearchText IS NULL
+            OR @SearchText = ''
+            OR Logins.UserName LIKE '%' + @SearchText + '%'
+        )
+    ORDER BY Logins.UserName ASC
+END
+
 
