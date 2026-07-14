@@ -65,7 +65,7 @@
                                             <asp:BoundField DataField="RoleName" HeaderText="Role Access" />
                                             <asp:BoundField DataField="LastLogin" HeaderText="Last Login" DataFormatString="{0:dd MMM yyyy HH:mm:ss}" />
                                             <asp:BoundField DataField="LastActiveMinute" HeaderText="Active (Minute Ago)" />
-                                            <asp:BoundField DataField="TotalSession" HeaderText="Total Session)" />
+                                            <asp:BoundField DataField="TotalSession" HeaderText="Total Session" />
                                             <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
                                                 <ItemTemplate>
                                                     <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
