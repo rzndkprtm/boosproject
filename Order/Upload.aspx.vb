@@ -23,6 +23,11 @@ Partial Class Order_Upload
                 Response.Redirect("~/order/", False)
                 Exit Sub
             End If
+
+            If Not Session("CustomerId") = "127" Then
+                Response.Redirect("~/order/add", False)
+                Exit Sub
+            End If
         End If
 
         If Not IsPostBack Then
