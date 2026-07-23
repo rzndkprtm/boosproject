@@ -1,4 +1,7 @@
-﻿Partial Class Setting_Price_Promo_Default
+﻿Imports System.Data
+Imports System.Data.SqlClient
+
+Partial Class Setting_Price_Promo_Default
     Inherits Page
 
     Dim settingClass As New SettingClass
@@ -49,15 +52,65 @@
         BuildPager()
     End Sub
 
+    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim promoId As String = txtDeleteId.Text
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM Promos WHERE Id=@Id; DELETE FROM Logs WHERE Type='Promos' AND DataId=@Id;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", promoId)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Dim customerPromos As DataTable = settingClass.GetDataTable("SELECT Id FROM CustomerPromos WHERE PromoId='" & promoId & "'")
+            If customerPromos.Rows.Count > 0 Then
+                For i As Integer = 0 To customerPromos.Rows.Count - 1
+                    Dim thisId As String = customerPromos.Rows(i)("Id").ToString()
+
+                    Using thisConn As New SqlConnection(myConn)
+                        Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerPromos WHERE Id=@Id; DELETE FROM Logs WHERE Type='CustomerPromos' AND DataId=@Id;", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", thisId)
+                            thisConn.Open()
+                            thisCmd.ExecuteNonQuery()
+                        End Using
+                    End Using
+                Next
+            End If
+
+            Dim promoDetail As DataTable = settingClass.GetDataTable("SELECT Id FROM PromoDetails WHERE PromoId='" & promoId & "'")
+            If promoDetail.Rows.Count > 0 Then
+                For i As Integer = 0 To promoDetail.Rows.Count - 1
+                    Dim thisId As String = promoDetail.Rows(i)("Id").ToString()
+
+                    Using thisConn As New SqlConnection(myConn)
+                        Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM PromoDetails WHERE Id=@Id; DELETE FROM Logs WHERE Type='PromoDetails' AND DataId=@Id;", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", thisId)
+                            thisConn.Open()
+                            thisCmd.ExecuteNonQuery()
+                        End Using
+                    End Using
+                Next
+            End If
+
+            Session("SearchPromo") = txtSearch.Text
+            Response.Redirect("~/setting/price/promo", False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
     Protected Sub BindData(searchText As String)
         Try
-            Dim search As String = String.Empty
-            If Not searchText = "" Then
-                search = "WHERE Promos.Id LIKE '%" & searchText.Trim() & "%' OR Promos.Name LIKE '%" & searchText.Trim() & "%' OR Promos.Description LIKE '%" & searchText.Trim() & "%'"
-            End If
-            Dim thisString As String = String.Format("SELECT Promos.*, CASE WHEN Promos.Active=1 THEN 'Yes' WHEN Promos.Active=0 THEN 'No' ELSE 'Error' END AS DataActive, CompanyDetails.Name AS CompanyDetailName FROM Promos LEFT JOIN CompanyDetails ON Promos.CompanyDetailId=CompanyDetails.Id {0} ORDER BY Promos.Id ASC", search)
-
-            gvList.DataSource = settingClass.GetDataTable(thisString)
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@SearchText", If(String.IsNullOrWhiteSpace(searchText), CType(DBNull.Value, Object), searchText))
+            }
+            gvList.DataSource = settingClass.GetDataTableSP("sp_Promos_List", params)
             gvList.DataBind()
             gvList.Columns(1).Visible = LoginAccess("Visible ID")
 

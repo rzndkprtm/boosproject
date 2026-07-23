@@ -35,12 +35,6 @@
                                 <div class="form-body">
                                     <div class="row mb-2">
                                         <div class="col-12 form-group">
-                                            <label class="form-label">Name</label>
-                                            <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
-                                        </div>
-                                    </div>
-                                    <div class="row mb-2">
-                                        <div class="col-12 form-group">
                                             <label class="form-label">Design Type</label>
                                             <asp:DropDownList runat="server" ID="ddlDesign" CssClass="choices form-select"></asp:DropDownList>
                                         </div>
@@ -49,6 +43,12 @@
                                         <div class="col-12 form-group">
                                             <label class="form-label">Company</label>
                                             <asp:ListBox runat="server" ID="lbCompanyDetail" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-12 form-group">
+                                            <label class="form-label">Name</label>
+                                            <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
                                         </div>
                                     </div>
                                     <div class="row mb-2">

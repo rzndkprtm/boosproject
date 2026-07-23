@@ -34,9 +34,17 @@
                             <div class="form form-vertical">
                                 <div class="form-body">
                                     <div class="row mb-2">
-                                        <div class="col-12 form-group">
+                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
                                             <label class="form-label">Company</label>
                                             <asp:DropDownList runat="server" ID="ddlCompany" CssClass="choices form-select"></asp:DropDownList>
+                                        </div>
+                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                            <label class="form-label">Type</label>
+                                            <asp:DropDownList runat="server" ID="ddlType" CssClass="choices form-select">
+                                                <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                <asp:ListItem Value="Sell" Text="Promo Sell"></asp:ListItem>
+                                                <asp:ListItem Value="Buy" Text="Promo Buy"></asp:ListItem>
+                                            </asp:DropDownList>
                                         </div>
                                     </div>
                                     <div class="row mb-2">

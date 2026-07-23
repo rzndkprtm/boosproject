@@ -292,7 +292,7 @@ Partial Class Setting_Specification_Product_Default
             Dim newId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Products ORDER BY Id DESC")
 
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Products SELECT @NewId, DesignId, BlindId, CompanyDetailId, Name + ' - Copy', InvoiceName, TubeType, ControlType, ColourType, Description, NULL FROM Products WHERE Id=@Id", thisConn)
+                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Products SELECT @NewId, DesignId, BlindId, CompanyDetailId, JobSheetId, Name + ' - Copy', InvoiceName, TubeType, ControlType, ColourType, Description, NULL FROM Products WHERE Id=@Id", thisConn)
                     thisCmd.Parameters.AddWithValue("@NewId", newId)
                     thisCmd.Parameters.AddWithValue("@Id", thisId)
                     thisConn.Open()

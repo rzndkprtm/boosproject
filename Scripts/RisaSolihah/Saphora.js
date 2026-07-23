@@ -1,4 +1,4 @@
-﻿let designIdOri = "2";
+﻿let designIdOri = "19";
 let itemAction;
 let headerId;
 let orderId;
@@ -11,44 +11,53 @@ let loginId;
 let roleAccess;
 let priceAccess;
 
-initCellular();
+initSaphora();
 
 $("#submit").on("click", process);
 $("#cancel").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
 $("#vieworder").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
 
 $("#blindtype").on("change", function () {
+    bindTubeType($(this).val());
     bindMounting($(this).val());
-    bindControlType($(this).val());
+
+    document.getElementById("controllength").value = "";
+});
+
+$("#tubetype").on("change", function () {
+    const blindtype = document.getElementById("blindtype").value;
+    const tubetype = $(this).val();
+
+    bindControlType(blindtype, tubetype);
+
     document.getElementById("controllength").value = "";
 });
 
 $("#controltype").on("change", function () {
     const blindtype = document.getElementById("blindtype").value;
+    const tubetype = document.getElementById("tubetype").value;
+    const controltype = $(this).val();
 
-    bindColourType(blindtype, $(this).val());
-    bindFabricType(designId);
-    bindFabricTypeB(designId);
-    bindControlColour(designId, $(this).val());
+    bindColourType(blindtype, tubetype, controltype);
+    bindControlColour(designId, controltype);
 
     document.getElementById("controllength").value = "";
 });
 
 $("#colourtype").on("change", function () {
     const blindtype = document.getElementById("blindtype").value;
+    const tubetype = document.getElementById("tubetype").value;
     const controltype = document.getElementById("controltype").value;
+    const colourtype = $(this).val();
 
-    bindComponentForm(blindtype, controltype, $(this).val());
+    visibleDetail(blindtype, tubetype, controltype, colourtype);
 
-    document.getElementById("controllength").value = "";
+    const controllength = document.getElementById("controllength").value;
+    visibleCustom(controllength);
 });
 
 $("#fabrictype").on("change", function () {
     bindFabricColour($(this).val());
-});
-
-$("#fabrictypeb").on("change", function () {
-    bindFabricColourB($(this).val());
 });
 
 $("#controllength").on("change", function () {
@@ -70,21 +79,6 @@ function isError(msg) {
     document.getElementById("errorMsg").innerHTML = msg;
 }
 
-function getFormAction(itemAction) {
-    return new Promise((resolve) => {
-        const pageAction = document.getElementById("pageaction");
-        if (!pageAction) {
-            resolve();
-            return;
-        }
-
-        const actionMap = { create: "Add Item", edit: "Edit Item", view: "View Item", copy: "Copy Item" };
-
-        pageAction.innerText = actionMap[itemAction];
-        resolve();
-    });
-}
-
 function getOrderHeader(headerId) {
     return new Promise((resolve, reject) => {
         if (!headerId) return resolve();
@@ -97,6 +91,7 @@ function getOrderHeader(headerId) {
             dataType: "json",
             success: ({ d }) => {
                 orderId = d.OrderId || "-";
+                customerId = d.CustomerId || "-";
                 document.getElementById("orderid").innerText = d.OrderId || "-";
                 document.getElementById("ordernumber").innerText = d.OrderNumber || "-";
                 document.getElementById("ordername").innerText = d.OrderName || "-";
@@ -215,6 +210,21 @@ function getPriceAccess(loginId) {
     });
 }
 
+function getFormAction(itemAction) {
+    return new Promise((resolve) => {
+        const pageAction = document.getElementById("pageaction");
+        if (!pageAction) {
+            resolve();
+            return;
+        }
+
+        const actionMap = {create: "Add Item", edit: "Edit Item", view: "View Item", copy: "Copy Item"};
+
+        pageAction.innerText = actionMap[itemAction];
+        resolve();
+    });
+}
+
 function getDesignName(designType) {
     return new Promise((resolve, reject) => {
         const cardTitle = document.getElementById("cardtitle");
@@ -265,6 +275,27 @@ function getBlindName(blindType) {
     });
 }
 
+function getTubeName(tubeType) {
+    if (!tubeType) return;
+
+    const type = "TubeName";
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/StringData",
+            data: JSON.stringify({ type: type, dataId: tubeType }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                resolve(response.d);
+            },
+            error: function (error) {
+                reject(error);
+            }
+        });
+    });
+}
+
 function getControlName(controlType) {
     if (!controlType) return;
 
@@ -295,12 +326,12 @@ function bindBlindType(designType) {
             const selectedValue = blindtype.value || "";
             Promise.all([
                 bindMounting(selectedValue),
-                bindControlType(selectedValue)
+                bindTubeType(selectedValue)
             ]).then(resolve).catch(reject);
             return;
         }
 
-        const listData = { type: "BlindTypeCS", companydetailid: companyDetailId, designtype: designType, action: itemAction };
+        const listData = { type: "BlindType", companydetailid: companyDetailId, designtype: designType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -333,13 +364,13 @@ function bindBlindType(designType) {
                     const selectedValue = blindtype.value || "";
                     Promise.all([
                         bindMounting(selectedValue),
-                        bindControlType(selectedValue)
+                        bindTubeType(selectedValue)
                     ]).then(resolve).catch(reject);
                 } else {
                     const selectedValue = blindtype.value || "";
                     Promise.all([
                         bindMounting(selectedValue),
-                        bindControlType(selectedValue)
+                        bindTubeType(selectedValue)
                     ]).then(resolve).catch(reject);
                 }
             },
@@ -350,21 +381,82 @@ function bindBlindType(designType) {
     });
 }
 
-function bindControlType(blindType) {
+function bindTubeType(blindType) {
+    return new Promise((resolve, reject) => {
+        const tubetype = document.getElementById("tubetype");
+        tubetype.innerHTML = "";
+
+        if (!blindType) {
+            const selectedValue = tubetype.value || "";
+            Promise.all([
+                bindControlType(blindType, selectedValue)
+            ]).then(resolve).catch(reject);
+            return;
+        }
+
+        let listData = { type: "TubeType", companydetailid: companyDetailId, blindtype: blindType, action: itemAction };
+
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/ListData",
+            data: JSON.stringify({ data: listData }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (Array.isArray(response.d)) {
+                    tubetype.innerHTML = "";
+
+                    if (response.d.length > 1) {
+                        const defaultOption = document.createElement("option");
+                        defaultOption.text = "";
+                        defaultOption.value = "";
+                        tubetype.add(defaultOption);
+                    }
+
+                    response.d.forEach(function (item) {
+                        const option = document.createElement("option");
+                        option.value = item.Value;
+                        option.text = item.Text;
+                        tubetype.add(option);
+                    });
+
+                    if (response.d.length === 1) {
+                        tubetype.selectedIndex = 0;
+                    }
+
+                    const selectedValue = tubetype.value || "";
+                    Promise.all([
+                        bindControlType(blindType, selectedValue)
+                    ]).then(resolve).catch(reject);
+                } else {
+                    const selectedValue = tubetype.value || "";
+                    Promise.all([
+                        bindControlType(blindType, selectedValue)
+                    ]).then(resolve).catch(reject);
+                }
+            },
+            error: function (error) {
+                reject(error);
+            }
+        });
+    });
+}
+
+function bindControlType(blindType, tubeType) {
     return new Promise((resolve, reject) => {
         const controltype = document.getElementById("controltype");
         controltype.innerHTML = "";
 
-        if (!blindType) {
+        if (!blindType || !tubeType) {
             const selectedValue = controltype.value || "";
             Promise.all([
-                bindColourType(blindType, selectedValue),
+                bindColourType(blindType, tubeType, selectedValue),
                 bindControlColour(designId, selectedValue)
             ]).then(resolve).catch(reject);
             return;
         }
 
-        let listData = { type: "ControlType", companydetailid: companyDetailId, blindtype: blindType, tubetype: '9', action: itemAction };
+        let listData = { type: "ControlType", companydetailid: companyDetailId, blindtype: blindType, tubetype: tubeType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -396,13 +488,13 @@ function bindControlType(blindType) {
 
                     const selectedValue = controltype.value || "";
                     Promise.all([
-                        bindColourType(blindType, selectedValue),
+                        bindColourType(blindType, tubeType, selectedValue),
                         bindControlColour(designId, selectedValue)
                     ]).then(resolve).catch(reject);
                 } else {
                     const selectedValue = controltype.value || "";
                     Promise.all([
-                        bindColourType(blindType, selectedValue),
+                        bindColourType(blindType, tubeType, selectedValue),
                         bindControlColour(designId, selectedValue)
                     ]).then(resolve).catch(reject);
                 }
@@ -414,20 +506,20 @@ function bindControlType(blindType) {
     });
 }
 
-function bindColourType(blindType, controlType) {
+function bindColourType(blindType, tubeType, controlType) {
     return new Promise((resolve, reject) => {
         const colourtype = document.getElementById("colourtype");
         colourtype.innerHTML = "";
 
-        if (!blindType || !controlType) {
+        if (!blindType || !tubeType || !controlType) {
             const selectedValue = colourtype.value || "";
             Promise.all([
-                bindComponentForm(blindType, controlType, selectedValue)
+                visibleDetail(blindType, tubeType, controlType, selectedValue)
             ]).then(resolve).catch(reject);
             return;
         }
 
-        const listData = { type: "ColourType", companydetailid: companyDetailId, blindtype: blindType, tubetype: '9', controltype: controlType, action: itemAction };
+        const listData = { type: "ColourType", companydetailid: companyDetailId, blindtype: blindType, tubetype: tubeType, controltype: controlType, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -459,12 +551,12 @@ function bindColourType(blindType, controlType) {
 
                     const selectedValue = colourtype.value || "";
                     Promise.all([
-                        bindComponentForm(blindType, controlType, selectedValue)
+                        visibleDetail(blindType, tubeType, controlType, selectedValue)
                     ]).then(resolve).catch(reject);
                 } else {
                     const selectedValue = colourtype.value || "";
                     Promise.all([
-                        bindComponentForm(blindType, controlType, selectedValue)
+                        visibleDetail(blindType, tubeType, controlType, selectedValue)
                     ]).then(resolve).catch(reject);
                 }
             },
@@ -513,51 +605,6 @@ function bindMounting(blindType) {
                     if (response.d.length === 1) {
                         mounting.selectedIndex = 0;
                     }
-                }
-                resolve();
-            },
-            error: function (error) {
-                reject(error);
-            }
-        });
-    });
-}
-
-function bindControlColour(designType, controlType) {
-    return new Promise((resolve, reject) => {
-        const remote = document.getElementById("remote");
-        remote.innerHTML = "";
-
-        if (!designType || !controlType) {
-            resolve();
-            return;
-        }
-
-        const listData = { type: "ControlColour", designtype: designType, controltype: controlType, companydetailid: companyDetailId, action: itemAction };
-
-        $.ajax({
-            type: "POST",
-            url: "Method.aspx/ListData",
-            data: JSON.stringify({ data: listData }),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (response) {
-                if (Array.isArray(response.d)) {
-                    remote.innerHTML = "";
-
-                    if (response.d.length > 1) {
-                        var defaultOption = document.createElement("option");
-                        defaultOption.text = "";
-                        defaultOption.value = "";
-                        remote.add(defaultOption);
-                    }
-
-                    response.d.forEach(function (item) {
-                        var option = document.createElement("option");
-                        option.value = item.Value;
-                        option.text = item.Text;
-                        remote.add(option);
-                    });
                 }
                 resolve();
             },
@@ -629,67 +676,6 @@ function bindFabricType(designType) {
     });
 }
 
-function bindFabricTypeB(designType) {
-    return new Promise((resolve, reject) => {
-        const fabrictypeb = document.getElementById("fabrictypeb");
-        fabrictypeb.innerHTML = "";
-
-        if (!designType) {
-            const selectedValue = fabrictypeb.value || "";
-            Promise.resolve(
-                bindFabricColourB(selectedValue)
-            ).then(resolve).catch(reject);
-            return;
-        }
-
-        const listData = { type: "FabricTypeByDesign", designtype: designType, companydetailid: companyDetailId, action: itemAction };
-
-        $.ajax({
-            type: "POST",
-            url: "Method.aspx/ListData",
-            data: JSON.stringify({ data: listData }),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (response) {
-                if (Array.isArray(response.d)) {
-                    fabrictypeb.innerHTML = "";
-
-                    if (response.d.length > 1) {
-                        const defaultOption = document.createElement("option");
-                        defaultOption.text = "";
-                        defaultOption.value = "";
-                        fabrictypeb.add(defaultOption);
-                    }
-
-                    response.d.forEach(function (item) {
-                        const option = document.createElement("option");
-                        option.value = item.Value;
-                        option.text = item.Text;
-                        fabrictypeb.add(option);
-                    });
-
-                    if (response.d.length === 1) {
-                        fabrictypeb.selectedIndex = 0;
-                    }
-
-                    const selectedValue = fabrictypeb.value || "";
-                    Promise.resolve(
-                        bindFabricColourB(selectedValue)
-                    ).then(resolve).catch(reject);
-                } else {
-                    const selectedValue = fabrictypeb.value || "";
-                    Promise.resolve(
-                        bindFabricColourB(selectedValue)
-                    ).then(resolve).catch(reject);
-                }
-            },
-            error: function (error) {
-                reject(error);
-            }
-        });
-    });
-}
-
 function bindFabricColour(fabricType) {
     return new Promise((resolve, reject) => {
         const fabriccolour = document.getElementById("fabriccolour");
@@ -700,7 +686,7 @@ function bindFabricColour(fabricType) {
             return;
         }
 
-        const listData = { type: "FabricColour", fabrictype: fabricType, companyid: companyId, action: itemAction };
+        const listData = { type: "FabricColour", fabrictype: fabricType, companydetailid: companyDetailId, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -739,17 +725,17 @@ function bindFabricColour(fabricType) {
     });
 }
 
-function bindFabricColourB(fabricType) {
+function bindControlColour(designType, controlType) {
     return new Promise((resolve, reject) => {
-        const fabriccolourb = document.getElementById("fabriccolourb");
-        fabriccolourb.innerHTML = "";
+        const chaincolour = document.getElementById("chaincolour");
+        chaincolour.innerHTML = "";
 
-        if (!fabricType) {
+        if (!designType || !controlType) {
             resolve();
             return;
         }
 
-        const listData = { type: "FabricColour", fabrictype: fabricType, companyid: companyId, action: itemAction };
+        const listData = { type: "ControlColour", designtype: designType, controltype: controlType, companydetailid: companyDetailId, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -759,25 +745,20 @@ function bindFabricColourB(fabricType) {
             dataType: "json",
             success: function (response) {
                 if (Array.isArray(response.d)) {
-                    fabriccolourb.innerHTML = "";
-
+                    chaincolour.innerHTML = "";
                     if (response.d.length > 1) {
-                        const defaultOption = document.createElement("option");
+                        var defaultOption = document.createElement("option");
                         defaultOption.text = "";
                         defaultOption.value = "";
-                        fabriccolourb.add(defaultOption);
+                        chaincolour.add(defaultOption);
                     }
 
                     response.d.forEach(function (item) {
-                        const option = document.createElement("option");
+                        var option = document.createElement("option");
                         option.value = item.Value;
                         option.text = item.Text;
-                        fabriccolourb.add(option);
+                        chaincolour.add(option);
                     });
-
-                    if (response.d.length === 1) {
-                        fabriccolourb.selectedIndex = 0;
-                    }
                 }
                 resolve();
             },
@@ -785,83 +766,6 @@ function bindFabricColourB(fabricType) {
                 reject(error);
             }
         });
-    });
-}
-
-function bindComponentForm(blindType, controlType, colourType) {
-    return new Promise((resolve) => {
-        const detail = document.getElementById("divdetail");
-        const remote = document.getElementById("divremote");
-        const controlposition = document.getElementById("divcordposition");
-        const controlpositionb = document.getElementById("divcordpositionb");
-        const cordlength = document.getElementById("divcordlength");
-        const cordlengthvalue = document.getElementById("divcordlengthvalue");
-        const fabday = document.getElementById("divday");
-        const fabdays = document.getElementById("divdays");
-        const fabnight = document.getElementById("divnight");
-
-        function toggleDisplay(element, show) {
-            if (element) element.style.display = show ? "" : "none";
-        }
-
-        toggleDisplay(detail, false);
-        toggleDisplay(remote, false);
-        toggleDisplay(controlposition, false);
-        toggleDisplay(controlpositionb, false);
-        toggleDisplay(cordlength, false);
-        toggleDisplay(cordlengthvalue, false);
-        toggleDisplay(fabday, false);
-        toggleDisplay(fabdays, false);
-        toggleDisplay(fabnight, false);
-
-        if (!colourType) return resolve();
-
-        toggleDisplay(detail, true);
-
-        Promise.all([
-            getBlindName(blindType),
-            getControlName(controlType)
-        ]).then(([blindName, controlName]) => {
-            if (blindName === "Day & Night") {
-                toggleDisplay(fabday, true);
-                toggleDisplay(fabdays, true);
-                toggleDisplay(fabnight, true);
-            }
-
-            if (controlName === "Corded") {
-                toggleDisplay(controlposition, true);
-                toggleDisplay(cordlength, true);
-
-                if (blindName === "Day & Night" || blindName === "Top Down Bottom Up") {
-                    toggleDisplay(controlposition, false);
-                    toggleDisplay(controlpositionb, true);
-                }
-            } else if (controlName === "DC Motor") {
-                toggleDisplay(remote, true);
-                toggleDisplay(controlposition, true);                
-
-                if (blindName === "Day & Night" || blindName === "Top Down Bottom Up") {
-                    toggleDisplay(controlposition, false);
-                    toggleDisplay(controlpositionb, true);
-                }
-            }
-            resolve();
-        }).catch(err => {
-            resolve();
-        });
-    });
-}
-
-function visibleCustom(cordLength) {
-    return new Promise((resolve) => {
-        const thisDiv = document.getElementById("divcordlengthvalue");
-
-        if (!thisDiv) {
-            return resolve();
-        }
-
-        thisDiv.style.display = (cordLength === "Custom") ? "" : "none";
-        resolve();
     });
 }
 
@@ -893,7 +797,7 @@ function controlForm(status, isEditItem, isCopyItem) {
 
     document.getElementById("submit").style.display = status ? "none" : "";
 
-    const inputs = ["blindtype", "controltype", "colourtype", "qty", "room", "mounting", "remote", "controlposition", "controllength", "controllengthvalue", "width", "drop", "fabrictype", "fabriccolour", "fabrictypeb", "fabriccolourb", "supply", "notes", "markup"];
+    const inputs = ["blindtype", "tubetype", "controltype", "colourtype", "qty", "room", "mounting", "stackposition", "controlposition", "chaincolour", "wandcolour", "controllength", "controllengthvalue", "bracketextension", "width", "drop", "fabrictype", "fabriccolour", "notes", "markup"];
 
     inputs.forEach(id => {
         const inputElement = document.getElementById(id);
@@ -909,37 +813,26 @@ function controlForm(status, isEditItem, isCopyItem) {
     });
 }
 
-function fillSelect(selector, list, selected = null) {
-    const el = document.querySelector(selector);
-    el.innerHTML = "<option value=''></option>";
-    list.forEach(item => {
-        const opt = document.createElement("option");
-        opt.value = item.Value;
-        opt.textContent = item.Text;
-        if (selected != null && selected == item.Value) opt.selected = true;
-        el.appendChild(opt);
-    });
-}
-
 function setFormValues(itemData) {
     const mapping = {
         blindtype: "BlindType",
+        tubetype: "TubeType",
         controltype: "ControlType",
         colourtype: "ProductId",
         qty: "Qty",
         room: "Room",
-        remote: "ChainId",
         mounting: "Mounting",
         width: "Width",
         drop: "Drop",
         fabrictype: "FabricId",
         fabriccolour: "FabricColourId",
-        fabrictypeb: "FabricIdB",
-        fabriccolourb: "FabricColourIdB",
+        stackposition: "StackPosition",
         controlposition: "ControlPosition",
+        chaincolour: "ChainId",
+        wandcolour: "WandColour",
         controllength: "ControlLength",
         controllengthvalue: "ControlLengthValue",
-        supply: "Supply",
+        bracketextension: "BracketExtension",
         notes: "Notes",
         markup: "MarkUp"
     };
@@ -962,10 +855,22 @@ function setFormValues(itemData) {
     }
 }
 
+function fillSelect(selector, list, selected = null) {
+    const el = document.querySelector(selector);
+    el.innerHTML = "<option value=''></option>";
+    list.forEach(item => {
+        const opt = document.createElement("option");
+        opt.value = item.Value;
+        opt.textContent = item.Text;
+        if (selected != null && selected == item.Value) opt.selected = true;
+        el.appendChild(opt);
+    });
+}
+
 function process() {
     toggleButtonState(true, "Processing...");
 
-    const fields = ["blindtype", "controltype", "colourtype", "qty", "room", "mounting", "remote", "controlposition", "controllength", "controllengthvalue", "width", "drop", "fabrictype", "fabriccolour", "fabrictypeb", "fabriccolourb", "supply", "notes", "markup"];
+    const fields = ["blindtype", "tubetype", "controltype", "colourtype", "qty", "room", "mounting", "stackposition", "controlposition", "chaincolour", "wandcolour", "controllength", "controllengthvalue", "bracketextension", "width", "drop", "fabrictype", "fabriccolour", "notes", "markup"];
 
     const formData = {
         headerid: headerId,
@@ -975,6 +880,7 @@ function process() {
         designid: designId,
         loginid: loginId,
         rolename: roleAccess,
+        customerid: customerId,
         companyid: companyId,
         companydetailid: companyDetailId
     };
@@ -983,7 +889,7 @@ function process() {
 
     $.ajax({
         type: "POST",
-        url: "Method.aspx/CellularProcess",
+        url: "Method.aspx/SaphoraDrapeProcess",
         data: JSON.stringify({ data: formData }),
         contentType: "application/json; charset=utf-8",
         dataType: "json",
@@ -1005,10 +911,68 @@ function process() {
     });
 }
 
-async function initCellular() {
+function visibleDetail(blindtype, tubetype, controltype, colourtype) {
+    return new Promise((resolve) => {
+        const detail = document.getElementById("divdetail");
+        const markup = document.getElementById("divmarkup");
+
+        const divsToHide = ["divmounting", "divstackposition", "divcontrolposition", "divchaincolour", "divwandcolour", "divcontrollength", "divcontrollengthvalue", "divextbracket", "divmarkup"];
+
+        const toggleDisplay = (el, show) => {
+            if (el) el.style.display = show ? "" : "none";
+        };
+
+        toggleDisplay(detail, false);
+        divsToHide.forEach(id => toggleDisplay(document.getElementById(id), false));
+
+        if (!blindtype || !tubetype || !controltype || !colourtype) return resolve();
+
+        toggleDisplay(detail, true);
+
+        getBlindName(blindtype).then(blindName => {
+            let divShow = [];
+
+            if (blindName === "Complete Set") {
+                return getControlName(controltype).then(controlName => {
+                    if (controlName === "Chain") {
+                        divShow.push("divmounting", "divstackposition", "divcontrolposition", "divchaincolour", "divcontrollength", "divextbracket");
+                    } else if (controlName === "Wand") {
+                        divShow.push("divmounting", "divstackposition", "divwandcolour", "divcontrollength", "divextbracket");
+                    }
+                    divShow.forEach(id => toggleDisplay(document.getElementById(id), true));
+                });
+            }
+            return Promise.resolve();
+        }).then(() => {
+            if (typeof priceAccess !== "undefined" && priceAccess) {
+                toggleDisplay(markup, true);
+            }
+            resolve();
+        }).catch(error => {
+            resolve();
+        });
+    });
+}
+
+function visibleCustom(controlLength) {
+    return new Promise((resolve, reject) => {
+        let thisDiv = document.getElementById("divcontrollengthvalue");
+
+        if (thisDiv) {
+            thisDiv.style.display = "none";
+            if (controlLength === "Custom") {
+                thisDiv.style.display = "";
+            }
+            resolve();
+        } else {
+            reject(error);
+        }
+    });
+}
+
+async function initSaphora() {
     const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get("boos");
-
     if (!sessionId) return redirectOrder();
 
     const response = await fetch("Method.aspx/StringData", {
@@ -1047,9 +1011,10 @@ async function initCellular() {
     ]);
 
     if (itemAction === "create") {
-        bindBlindType(designId);
-        bindComponentForm("", "", "");
+        visibleDetail("", "", "", "");
         controlForm(false);
+        bindBlindType(designId);
+        bindFabricType(designId);
         loader(itemAction);
     } else if (["edit", "view", "copy"].includes(itemAction)) {
         await bindItemOrder(itemId, companyDetailId, itemAction);
@@ -1061,7 +1026,7 @@ async function bindItemOrder(itemId, companyDetailId, action) {
     try {
         const response = await $.ajax({
             type: "POST",
-            url: "Method.aspx/CellularDetail",
+            url: "Method.aspx/SaphoraDetail",
             data: JSON.stringify({ itemId, companyDetailId, action }),
             contentType: "application/json; charset=utf-8",
             dataType: "json"
@@ -1070,21 +1035,20 @@ async function bindItemOrder(itemId, companyDetailId, action) {
         const data = response.d;
 
         fillSelect("#blindtype", data.BlindTypes);
+        fillSelect("#tubetype", data.TubeTypes);
         fillSelect("#controltype", data.ControlTypes);
         fillSelect("#colourtype", data.ColourTypes);
         fillSelect("#mounting", data.Mountings);
         fillSelect("#fabrictype", data.Fabrics);
-        fillSelect("#fabrictypeb", data.Fabrics);
         fillSelect("#fabriccolour", data.FabricColours);
-        fillSelect("#fabriccolourb", data.FabricColoursB);
-        fillSelect("#remote", data.Chains);
+        fillSelect("#chaincolour", data.Chains);
+
+        setFormValues(data.ItemData);
 
         document.getElementById("divloader").style.display = "none";
         document.getElementById("divorder").style.display = "";
 
-        setFormValues(data.ItemData);
-
-        bindComponentForm(data.ItemData.BlindType, data.ItemData.ControlType, data.ItemData.ProductId);
+        visibleDetail(data.ItemData.BlindType, data.ItemData.TubeType, data.ItemData.ControlType, data.ItemData.ProductId);
         visibleCustom(data.ItemData.ControlLength);
     } catch (error) {
         document.getElementById("divloader").style.display = "none";
@@ -1094,16 +1058,16 @@ async function bindItemOrder(itemId, companyDetailId, action) {
 function showInfo(type) {
     let info;
 
-    if (type === "Cord Length") {
-        info = "<b>Cord Length Information</b>";
+    if (type === "Wand Length") {
+        info = "<b>Wand Length Information</b>";
         info += "<br /><br />";
         info += "- Standard";
         info += "<br />";
-        info += "Our standard pull cord length is 2/3 from your drop.";
+        info += "Our standard wand length is 2/3 of the drop, with a maximum of 2000mm.";
         info += "<br /><br />";
         info += "- Custom";
         info += "<br />";
-        info += "Minimum custom cord length is 450mm.";
+        info += "Made according to your requirements, with a maximum of 2000mm.";
     }
     document.getElementById("spanInfo").innerHTML = info;
 }

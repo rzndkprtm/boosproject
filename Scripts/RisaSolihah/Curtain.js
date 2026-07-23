@@ -604,7 +604,7 @@ function bindFabricColour(fabricType) {
             return;
         }
 
-        const listData = { type: "FabricColour", fabrictype: fabricType, action: itemAction };
+        const listData = { type: "FabricColour", fabrictype: fabricType, companydetailid: companyDetailId, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -653,7 +653,7 @@ function bindFabricColourB(fabricType) {
             return;
         }
 
-        const listData = { type: "FabricColour", fabrictype: fabricType, action: itemAction };
+        const listData = { type: "FabricColour", fabrictype: fabricType, companydetailid: companyDetailId, action: itemAction };
 
         $.ajax({
             type: "POST",

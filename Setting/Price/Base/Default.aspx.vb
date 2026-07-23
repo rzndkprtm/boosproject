@@ -1,4 +1,5 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data
+Imports System.Data.SqlClient
 Imports System.Globalization
 
 Partial Class Setting_Price_Base_Default
@@ -46,6 +47,21 @@ Partial Class Setting_Price_Base_Default
         Session("PriceBaseProductGroup") = ddlProductGroup.SelectedValue
 
         Response.Redirect("~/setting/price/base/import", False)
+    End Sub
+
+    Protected Sub btnConditional_Click(sender As Object, e As EventArgs)
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand("sp_PriceBases_UpdateConditional", thisConn)
+                    thisCmd.CommandType = CommandType.StoredProcedure
+                    thisCmd.Parameters.AddWithValue("@Conditional", "Excl. $7 Disc")
+
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+        Catch ex As Exception
+        End Try
     End Sub
 
     Protected Sub ddlCategory_SelectedIndexChanged(sender As Object, e As EventArgs)
@@ -152,6 +168,7 @@ Partial Class Setting_Price_Base_Default
 
             btnAdd.Visible = LoginAccess("Add")
             btnImport.Visible = LoginAccess("Import")
+            btnConditional.Visible = LoginAccess("Conditional")
 
             aMatrix.Visible = False
 

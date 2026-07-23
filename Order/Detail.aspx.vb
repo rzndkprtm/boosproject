@@ -1,6 +1,7 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 Imports System.Globalization
+Imports System.IdentityModel.Protocols.WSTrust
 Imports System.Threading.Tasks
 
 Partial Class Order_Detail
@@ -160,9 +161,6 @@ Partial Class Order_Detail
                     thisCmd.ExecuteNonQuery()
                 End Using
             End Using
-
-            Dim salesClass As New SalesClass
-            salesClass.RefreshData(lblCompanyId.Text)
 
             dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), "Date Order Updated"}
             orderClass.Logs(dataLog)
@@ -680,9 +678,6 @@ Partial Class Order_Detail
             dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), "Order In Production"}
             orderClass.Logs(dataLog)
 
-            Dim salesClass As New SalesClass
-            salesClass.RefreshData(lblCompanyId.Text)
-
             url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
             Response.Redirect(url, False)
         Catch ex As Exception
@@ -802,9 +797,6 @@ Partial Class Order_Detail
                         thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
-
-                Dim salesClass As New SalesClass
-                salesClass.RefreshData(lblCompanyId.Text)
 
                 Dim descLog As String = String.Format("Order Canceled | {0}", txtCancelDescription.Text.Trim())
 
@@ -1112,7 +1104,7 @@ Partial Class Order_Detail
 
             If msgErrorSendInvoice.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
-                    If lblOrderStatus.Text = "Waiting Proforma" Then
+                    If lblOrderStatus.Text = "Waiting Proforma" OrElse lblOrderStatus.Text = "Pending Payment" Then
                         Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Proforma Sent', Collector=@Collector, InvoiceDate=GETDATE(), DueDate=DATEADD(DAY, 14, GETDATE()) WHERE Id=@Id;", thisConn)
                             thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
                             thisCmd.Parameters.AddWithValue("@Collector", Session("LoginId").ToString())
@@ -1185,9 +1177,6 @@ Partial Class Order_Detail
 
             dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), "Confirm Payment Received"}
             orderClass.Logs(dataLog)
-
-            Dim salesClass As New SalesClass
-            salesClass.RefreshData(lblCompanyId.Text)
 
             url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
             Response.Redirect(url, False)
@@ -1324,9 +1313,6 @@ Partial Class Order_Detail
 
             dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), "Update Invoice Data"}
             orderClass.Logs(dataLog)
-
-            Dim salesClass As New SalesClass
-            salesClass.RefreshData(lblCompanyId.Text)
 
             url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
             Response.Redirect(url, False)
@@ -1877,11 +1863,6 @@ Partial Class Order_Detail
             dataLog = {"OrderDetails", thisId, Session("LoginId"), "Delete Order Item"}
             orderClass.Logs(dataLog)
 
-            If lblOrderStatus.Text = "In Production" OrElse lblOrderStatus.Text = "On Hold" Then
-                Dim salesClass As New SalesClass
-                salesClass.RefreshData(lblCompanyId.Text)
-            End If
-
             orderClass.UpdateOrderFactory(lblHeaderId.Text)
 
             url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
@@ -2251,6 +2232,35 @@ Partial Class Order_Detail
                     aAddItem.Visible = True
                     aAddService.Visible = True
                 End If
+                If lblOrderStatus.Text = "Pending Payment" Then
+                    btnEditOrder.Visible = True
+                    aDeleteOrder.Visible = True
+
+                    btnUpdateStatus.Visible = True
+                    aUnsubmitOrder.Visible = True
+                    aCancelOrder.Visible = True
+
+                    btnInvoice.Visible = True
+                    aSendInvoice.Visible = True
+                    aReceivePayment.Visible = True
+                    liDividerInvoice.Visible = True
+                    aUpdateInvoiceNumber.Visible = True
+
+                    btnJob.Visible = True
+                    If convertedStatus = "Yes" Then
+                        aDataJob.Visible = True
+                        aReConvertJob.Visible = True
+                        aUpdateJob.Visible = True
+                        btnPreviewJob.Visible = True
+                        btnDownloadJob.Visible = True
+                    End If
+                    If convertedStatus = "No" Then
+                        aConvertOrder.Visible = True
+                    End If
+
+                    aAddItem.Visible = True
+                    aAddService.Visible = True
+                End If
                 If lblOrderStatus.Text = "Payment Received" Then
                     btnEditOrder.Visible = True
                     aDeleteOrder.Visible = True
@@ -2530,6 +2540,20 @@ Partial Class Order_Detail
                     aAddItem.Visible = True
                     aAddService.Visible = True
                 End If
+                If lblOrderStatus.Text = "Pending Payment" Then
+                    btnEditOrder.Visible = True
+                    aRePrice.Visible = True
+
+                    btnUpdateStatus.Visible = True
+                    aUnsubmitOrder.Visible = True
+                    aCancelOrder.Visible = True
+
+                    btnInvoice.Visible = True
+                    aSendInvoice.Visible = True
+                    aReceivePayment.Visible = True
+                    liDividerInvoice.Visible = True
+                    aUpdateInvoiceNumber.Visible = True
+                End If
                 If lblOrderStatus.Text = "New Order" Then
                     btnEditOrder.Visible = True
                     aRePrice.Visible = True
@@ -2728,6 +2752,18 @@ Partial Class Order_Detail
                     aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "Proforma Sent" Then
+                    btnEditOrder.Visible = True
+                    aRePrice.Visible = True
+
+                    btnUpdateStatus.Visible = True
+                    aUnsubmitOrder.Visible = True
+                    aCancelOrder.Visible = True
+
+                    btnInvoice.Visible = True
+                    aSendInvoice.Visible = True
+                    aReceivePayment.Visible = True
+                End If
+                If lblOrderStatus.Text = "Pending Payment" Then
                     btnEditOrder.Visible = True
                     aRePrice.Visible = True
 
@@ -2943,6 +2979,16 @@ Partial Class Order_Detail
                 If lblOrderStatus.Text = "Payment Received" Then
                     btnInvoice.Visible = True
                 End If
+                If lblOrderStatus.Text = "Pending Payment" Then
+                    btnInvoice.Visible = True
+                    aSendInvoice.Visible = True
+                    aReceivePayment.Visible = True
+                    liDividerInvoice.Visible = True
+                    aUpdateInvoiceNumber.Visible = True
+
+                    btnUpdateStatus.Visible = True
+                    aCancelOrder.Visible = True
+                End If
                 If lblOrderStatus.Text = "New Order" Then
                     btnUpdateStatus.Visible = True
                     aUnsubmitOrder.Visible = True
@@ -3028,6 +3074,20 @@ Partial Class Order_Detail
                     aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "Proforma Sent" Then
+                    btnEditOrder.Visible = True
+                    aRePrice.Visible = True
+
+                    btnUpdateStatus.Visible = True
+                    aCancelOrder.Visible = True
+                    aUnsubmitOrder.Visible = True
+
+                    btnInvoice.Visible = True
+                    aSendInvoice.Visible = True
+                    aReceivePayment.Visible = True
+                    liDividerInvoice.Visible = True
+                    aUpdateInvoiceNumber.Visible = True
+                End If
+                If lblOrderStatus.Text = "Pending Payment" Then
                     btnEditOrder.Visible = True
                     aRePrice.Visible = True
 
@@ -3341,12 +3401,10 @@ Partial Class Order_Detail
     Protected Sub BindCollector()
         ddlCollector.Items.Clear()
         Try
-            Dim thisQuery As String = "SELECT * FROM Logins"
-            If Session("RoleName") = "Account" OrElse Session("RoleName") = "Sales" Then
-                thisQuery = "SELECT * FROM Logins WHERE RoleId='4' OR RoleId='5'"
-            End If
-
-            ddlCollector.DataSource = orderClass.GetDataTable(thisQuery)
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@RoleName", Session("RoleName").ToString())
+            }
+            ddlCollector.DataSource = orderClass.GetDataTableSP("sp_Collector_List", params)
             ddlCollector.DataTextField = "FullName"
             ddlCollector.DataValueField = "Id"
             ddlCollector.DataBind()

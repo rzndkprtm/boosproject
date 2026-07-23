@@ -352,7 +352,6 @@ Public Class PackingListClass
             For i As Integer = 0 To detailData.Rows.Count - 1
                 Dim itemId As String = detailData.Rows(i)("Id").ToString()
                 Dim itemNumber As Integer = detailData.Rows(i)("Item").ToString()
-
                 Dim designName As String = detailData.Rows(i)("DesignName").ToString()
                 Dim designType As String = detailData.Rows(i)("DesignType").ToString()
                 Dim blindName As String = detailData.Rows(i)("BlindName").ToString()
@@ -360,12 +359,9 @@ Public Class PackingListClass
                 Dim width As String = detailData.Rows(i)("Width").ToString()
                 Dim drop As String = detailData.Rows(i)("Height").ToString()
                 Dim size As String = String.Format("({0}x{1})", width, drop)
-
                 Dim trackType As String = detailData.Rows(i)("TrackType").ToString()
                 Dim trackColour As String = detailData.Rows(i)("TrackColour").ToString()
-
                 Dim itemNote As String = detailData.Rows(i)("Notes").ToString()
-
                 Dim invoiceName As String = detailData.Rows(i)("InvoiceName").ToString()
                 Dim itemDescription As String = invoiceName
 

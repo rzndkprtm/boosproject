@@ -39,7 +39,7 @@
                     <div class="dashboard-title">Price Group</div>
                     <div class="dashboard-desc">Description</div>
                 </a>
-                <a href="/setting/price/productgroup" class="dashboard-card">
+                <a href="/setting/price/product" class="dashboard-card">
                     <div class="dashboard-number"><%= GetSumData("PriceProductGroups") %></div>
                     <div class="dashboard-title">Price Product Group</div>
                     <div class="dashboard-desc">Description</div>

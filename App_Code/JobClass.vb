@@ -297,7 +297,7 @@ Public Class JobClass
                     pageEvent.pageDesignType = jobSheetName
                     pageEvent.PageTitle = jobSheetAlias
 
-                    Dim jobSheetDetail As DataTable = GetDataTable("SELECT OrderJobDetails.ItemNumber, JobSheetDetails.Name AS JobSheetDetailName, OrderJobDetails.JobValue FROM OrderJobDetails INNER JOIN JobSheets ON OrderJobDetails.JobSheetId = JobSheets.Id INNER JOIN JobSheetDetails ON OrderJobDetails.JobSheetDetailId = JobSheetDetails.Id WHERE OrderJobDetails.OrderJobId = '" & orderJobId & "' AND OrderJobDetails.JobSheetId = '" & jobSheetId & "' ORDER BY OrderJobDetails.ItemId ASC, OrderJobDetails.ItemNumber ASC, JobSheetDetails.SortOrder ASC")
+                    Dim jobSheetDetail As DataTable = GetDataTable("SELECT OrderJobDetails.ItemNumber, JobSheetDetails.Name AS JobSheetDetailName, OrderJobDetails.JobValue FROM OrderJobDetails INNER JOIN JobSheets ON OrderJobDetails.JobSheetId = JobSheets.Id INNER JOIN JobSheetDetails ON OrderJobDetails.JobSheetDetailId = JobSheetDetails.Id WHERE OrderJobDetails.OrderJobId='" & orderJobId & "' AND OrderJobDetails.JobSheetId='" & jobSheetId & "' ORDER BY OrderJobDetails.ItemId ASC, OrderJobDetails.ItemNumber ASC, JobSheetDetails.SortOrder ASC")
                     If jobSheetDetail.Rows.Count = 0 Then
                         Continue For
                     End If

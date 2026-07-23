@@ -17,6 +17,9 @@ Partial Class Setting_Boos
         If thisAction = "createsales" Then
             CreateSales()
         End If
+        If thisAction = "refreshsales" Then
+            RefreshSales()
+        End If
         If thisAction = "resetproformaorder" Then
             ResetProformaOrder()
         End If
@@ -57,6 +60,21 @@ Partial Class Setting_Boos
         End If
     End Sub
 
+    Protected Sub RefreshSales()
+        Try
+            Dim salesClass As New SalesClass
+
+            Dim dataCompany As DataTable = salesClass.GetDataTable("SELECT Id FROM Companys")
+            If dataCompany.Rows.Count > 0 Then
+                For i As Integer = 0 To dataCompany.Rows.Count - 1
+                    Dim companyId As String = dataCompany.Rows(i)("Id").ToString()
+                    salesClass.RefreshData(companyId)
+                Next
+            End If
+        Catch ex As Exception
+        End Try
+    End Sub
+
     Protected Sub UpdateDownloadBOE()
         Try
             Using thisConn As New SqlConnection(myConn)
@@ -92,7 +110,7 @@ Partial Class Setting_Boos
     Protected Sub UpdateFactory()
         Try
             Dim orderClass As New OrderClass
-            Dim orderData As DataTable = orderClass.GetDataTable("SELECT * FROM OrderHeaders WHERE Active=1 ORDER BY Id ASC")
+            Dim orderData As DataTable = orderClass.GetDataTable("SELECT Id FROM OrderHeaders WHERE Active=1 ORDER BY Id ASC")
             If orderData.Rows.Count > 0 Then
                 For i As Integer = 0 To orderData.Rows.Count - 1
                     Dim headerId As String = orderData.Rows(i)("Id").ToString()
@@ -106,7 +124,7 @@ Partial Class Setting_Boos
     Protected Sub CreateSales()
         Try
             Dim salesClass As New SalesClass
-            Dim companyData As DataTable = salesClass.GetDataTable("SELECT * FROM Companys WHERE Active=1 ORDER BY Id ASC")
+            Dim companyData As DataTable = salesClass.GetDataTable("SELECT Id FROM Companys WHERE Active=1 ORDER BY Id ASC")
             If companyData.Rows.Count > 0 Then
                 For i As Integer = 0 To companyData.Rows.Count - 1
                     Dim companyId As String = companyData.Rows(i)("Id").ToString()
@@ -133,36 +151,20 @@ Partial Class Setting_Boos
     Protected Sub ResetProformaOrder()
         Try
             Dim orderClass As New OrderClass
-            Dim thisData As DataTable = orderClass.GetDataTable("SELECT * FROM OrderHeaders WHERE Status='Proforma Sent' AND DueDate=CAST(GETDATE() AS DATE)")
+            Dim thisData As DataTable = orderClass.GetDataTable("SELECT Id FROM OrderHeaders WHERE Status='Proforma Sent' AND DueDate=CAST(GETDATE() AS DATE)")
             If thisData.Rows.Count > 0 Then
                 For i As Integer = 0 To thisData.Rows.Count - 1
                     Dim thisId As String = thisData.Rows(i)("Id").ToString()
 
                     Using thisConn As New SqlConnection(myConn)
-                        thisConn.Open()
-
-                        Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Unsubmitted', SubmittedDate=NULL, InvoiceNumber=NULL, Collector=NULL, InvoiceDate=NULL, DueDate=NULL, Payment=0, PaymentDate=NULL, Amount=0 WHERE Id=@Id", thisConn)
+                        Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Pending Payment' WHERE Id=@Id", thisConn)
                             thisCmd.Parameters.AddWithValue("@Id", thisId)
+                            thisConn.Open()
                             thisCmd.ExecuteNonQuery()
                         End Using
-
-                        Dim serviceData As DataTable = orderClass.GetDataTable("SELECT OrderDetails.* FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.HeaderId='" & thisId & "' AND Products.DesignId='16'")
-                        If serviceData.Rows.Count > 0 Then
-                            For iDetail As Integer = 0 To serviceData.Rows.Count - 1
-                                Dim serviceId As String = serviceData.Rows(iDetail)("Id").ToString()
-
-                                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET Active=0 WHERE Id=@ItemId; DELETE FROM OrderCostings WHERE HeaderId=@HeaderId AND ItemId=@ItemId", thisConn)
-                                    thisCmd.Parameters.AddWithValue("@ItemId", serviceId)
-                                    thisCmd.Parameters.AddWithValue("@HeaderId", thisId)
-                                    thisCmd.ExecuteNonQuery()
-                                End Using
-                            Next
-                        End If
-
-                        thisConn.Close()
                     End Using
 
-                    Dim dataLog As Object() = {"OrderHeaders", thisId, 2, "Unsubmitted Order"}
+                    Dim dataLog As Object() = {"OrderHeaders", thisId, 2, "Pending Payment Order"}
                     settingClass.Logs(dataLog)
 
                     Dim mailingClass As New MailingClass

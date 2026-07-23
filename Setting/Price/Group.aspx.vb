@@ -189,7 +189,7 @@ Partial Class Setting_Price_Group
                 whereClause = "WHERE " & String.Join(" AND ", conditions)
             End If
 
-            Dim thisString As String = String.Format("SELECT PriceGroups.*, Companys.Alias AS CompanyName, CASE WHEN PriceGroups.Active=1 THEN 'Yes' WHEN PriceGroups.Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM PriceGroups LEFT JOIN Companys ON PriceGroups.CompanyId=Companys.Id {0} ORDER BY PriceGroups.CompanyId, PriceGroups.Id ASC", whereClause)
+            Dim thisString As String = String.Format("SELECT PriceGroups.*, Companys.Alias AS CompanyName, CASE WHEN PriceGroups.Active=1 THEN 'Yes' WHEN PriceGroups.Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM PriceGroups LEFT JOIN Companys ON PriceGroups.CompanyId=Companys.Id {0} ORDER BY PriceGroups.CompanyId, PriceGroups.Name ASC", whereClause)
 
             gvList.DataSource = settingClass.GetDataTable(thisString)
             gvList.DataBind()

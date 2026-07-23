@@ -408,5 +408,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/Gabuts/SoftRoman.js?v=1.0.1"></script>
+    <script src="/Scripts/RisaSolihah/SoftRoman.js?v=1.0.0"></script>
 </asp:Content>

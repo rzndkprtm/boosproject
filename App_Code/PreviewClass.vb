@@ -393,6 +393,17 @@ Public Class PreviewClass
                         Dim cutLengthText As String = cutLength
                         If cutLength = 0 Then cutLengthText = String.Empty
 
+                        Dim rlLeft As String = String.Empty
+                        Dim rlRight As String = String.Empty
+
+                        If Convert.ToDecimal(If(IsDBNull(curtainData.Rows(i)("RetLengthLeft")), 0, curtainData.Rows(i)("RetLengthLeft"))) <> 0 Then
+                            rlLeft = curtainData.Rows(i)("RetLengthLeft").ToString()
+                        End If
+
+                        If Convert.ToDecimal(If(IsDBNull(curtainData.Rows(i)("RetLengthRight")), 0, curtainData.Rows(i)("RetLengthRight"))) <> 0 Then
+                            rlRight = curtainData.Rows(i)("RetLengthRight").ToString()
+                        End If
+
                         items(0, i) = "Item : " & number
                         items(1, i) = curtainData.Rows(i)("Room").ToString()
                         items(2, i) = curtainData.Rows(i)("Mounting").ToString()
@@ -409,8 +420,8 @@ Public Class PreviewClass
                         items(13, i) = curtainData.Rows(i)("StackPosition").ToString()
                         items(14, i) = curtainData.Rows(i)("ControlColour").ToString()
                         items(15, i) = controlLengthText
-                        items(16, i) = curtainData.Rows(i)("RetLengthLeft").ToString()
-                        items(17, i) = curtainData.Rows(i)("RetLengthRight").ToString()
+                        items(16, i) = rlLeft
+                        items(17, i) = rlRight
                         items(18, i) = curtainData.Rows(i)("BottomHem").ToString()
                         items(19, i) = curtainData.Rows(i)("Supply").ToString()
                         items(20, i) = curtainData.Rows(i)("Notes").ToString()
@@ -423,7 +434,7 @@ Public Class PreviewClass
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
                         Dim headers As String() = {"", "Location", "Fitting", "Curtain Type", "Heading", "Fabric Type", "Fabric Colour", "Width (mm)", "Drop (mm)", "", "Track Type", "Track Colour", "Track Draw", "Stack Position", "Control Colour", "Control Length", "Return Length (L)", "Return Length (R)", "Bottom HEM", "Tie Back Req", "Special Information"}
-                        If companyDetailId = "5" Then
+                        If companyDetailId = "5" OrElse companyDetailId = "6" Then
                             headers = {"", "Location", "Fitting", "Curtain Type", "Heading", "Fabric Type", "Fabric Colour", "Width (mm)", "Drop (mm)", "Fabric Cut Length (mm)", "Track Type", "Track Colour", "Track Draw", "Stack Position", "Control Colour", "Control Length", "Return Length (L)", "Return Length (R)", "Bottom HEM", "Tie Back Req", "Special Information"}
                         End If
 
@@ -570,7 +581,10 @@ Public Class PreviewClass
                         Dim returnLength As String = lineaData.Rows(i)("ReturnLength").ToString()
                         Dim returnLengthValue As String = lineaData.Rows(i)("ReturnLengthValue").ToString()
 
-                        Dim returnLengthText As String = String.Format("{0} : {1}mm", returnLength, returnLengthValue)
+                        Dim returnLengthText As String = String.Empty
+                        If returnLength = "Standard" OrElse returnLength = "Custom" Then
+                            returnLengthText = String.Format("{0} : {1}mm", returnLength, returnLengthValue)
+                        End If
 
                         items(0, i) = "Item : " & number
                         items(1, i) = lineaData.Rows(i)("Room").ToString()
@@ -894,10 +908,8 @@ Public Class PreviewClass
                         Dim number As Integer = i + 1
 
                         Dim itemBlind As String = rollerData.Rows(i)("Item").ToString()
-
                         Dim blindName As String = rollerData.Rows(i)("BlindName").ToString()
                         Dim blindAlias As String = rollerData.Rows(i)("BlindAlias").ToString()
-
                         Dim tubeType As String = rollerData.Rows(i)("TubeType").ToString()
 
                         Dim tubeName As String = GetItemData("SELECT Name FROM ProductTubes WHERE Id='" & rollerData.Rows(i)("TubeType").ToString() & "'")
@@ -1012,7 +1024,10 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Mounting", "Roller Type", "Tube Type", "Control Type", "Bracket Colour", "Fabric Type", "Fabric Colour", "Roll Direction", "Width (mm)", "Drop (mm)", "Control Position", "Remote Type", "Battery Charger", "Extension Cable", "Neo Box", "Dry Contact", "Chain Type", "Chain Stopper", "Chain Length", "Bottom Type", "Bottom Colour", "Bottom Option", "Bracket Extension", "Spring Assist", "Bracket Size", "Adjusting Spanner", "Top Track", "Fabric Printing", "Special Information"}
+                        Dim headers As String() = {"", "Location", "Mounting", "Roller Type", "Tube Type", "Control Type", "Bracket Colour", "Fabric Type", "Fabric Colour", "Roll Direction", "Width (mm)", "Drop (mm)", "Control Position", "Remote Type", "Battery Charger", "Extension Cable", "Neo Box", "", "Chain Type", "Chain Stopper", "Chain Length", "Bottom Type", "Bottom Colour", "Bottom Option", "Bracket Extension", "Spring Assist", "Bracket Size", "Adjusting Spanner", "", "Fabric Printing", "Special Information"}
+                        If companyDetailId = "5" OrElse companyDetailId = "6" Then
+                            headers = {"", "Location", "Mounting", "Roller Type", "Tube Type", "Control Type", "Bracket Colour", "Fabric Type", "Fabric Colour", "Roll Direction", "Width (mm)", "Drop (mm)", "Control Position", "Remote Type", "Battery Charger", "Extension Cable", "", "Dry Contact", "Chain Type", "Chain Stopper", "Chain Length", "Bottom Type", "Bottom Colour", "Bottom Option", "Bracket Extension", "", "", "", "Top Track", "Fabric Printing", "Special Information"}
+                        End If
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
@@ -1187,7 +1202,7 @@ Public Class PreviewClass
                         Dim controlLength As String = romanData.Rows(i)("ControlLength").ToString()
                         Dim controlLengthValue As String = romanData.Rows(i)("ControlLengthValue").ToString()
                         Dim controlLengthText As String = controlLength
-                        If controlLength = "Custom" Then
+                        If controlLength = "Standard" OrElse controlLength = "Custom" Then
                             controlLengthText = String.Format("{0} : {1}mm", controlLength, controlLengthValue)
                         End If
 
@@ -1289,7 +1304,7 @@ Public Class PreviewClass
                         Dim controlLength As String = thisData.Rows(i)("ControlLength").ToString()
                         Dim controlLengthValue As String = thisData.Rows(i)("ControlLengthValue").ToString()
                         Dim controlLengthText As String = controlLength
-                        If controlLength = "Custom" Then
+                        If controlLength = "Standard" OrElse controlLength = "Custom" Then
                             controlLengthText = String.Format("{0} : {1}mm", controlLength, controlLengthValue)
                         End If
 

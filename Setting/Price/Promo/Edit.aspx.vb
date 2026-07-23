@@ -1,6 +1,7 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data
+Imports System.Data.SqlClient
 
-Partial Class Setting_Price_Promo_Add
+Partial Class Setting_Price_Promo_Edit
     Inherits Page
 
     Dim settingClass As New SettingClass
@@ -13,9 +14,20 @@ Partial Class Setting_Price_Promo_Add
             Exit Sub
         End If
 
+        If String.IsNullOrEmpty(Request.QueryString("promoid")) Then
+            Response.Redirect("~/setting/price/promo", False)
+            Exit Sub
+        End If
+
+        If Not String.IsNullOrEmpty(Request.QueryString("returnpage")) Then
+            lblReturnPage.Text = Request.QueryString("returnpage").ToString()
+        End If
+
+        lblId.Text = Request.QueryString("promoid").ToString()
+
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-            BindCompany()
+            BindData(lblId.Text)
         End If
     End Sub
 
@@ -53,10 +65,9 @@ Partial Class Setting_Price_Promo_Add
             If msgError.InnerText = "" Then
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 
-                Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Promos ORDER BY Id DESC")
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Promos VALUES (@Id, @CompanyId, @Type, @Name, @StartDate, @EndDate, @Description, @Active)", thisConn)
-                        thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Promos SET CompanyId=@CompanyId, Type=@Type, Name=@Name, StartDate=@StartDate, EndDate=@EndDate, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         thisCmd.Parameters.AddWithValue("@CompanyId", ddlCompany.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
@@ -69,10 +80,13 @@ Partial Class Setting_Price_Promo_Add
                     End Using
                 End Using
 
-                Dim dataLog As Object() = {"Promos", thisId, Session("LoginId").ToString(), "Promo Created"}
+                Dim dataLog As Object() = {"Promos", lblId.Text, Session("LoginId").ToString(), "Promo Updated"}
                 settingClass.Logs(dataLog)
 
-                Dim url As String = String.Format("~/setting/price/promo/detail?promoid={0}", thisId)
+                Dim url As String = "~/setting/price/promo/"
+                If lblReturnPage.Text = "detail" Then
+                    url = String.Format("~/setting/price/promo/detail?promoid={0}", lblId.Text)
+                End If
                 Response.Redirect(url, False)
             End If
         Catch ex As Exception
@@ -84,7 +98,36 @@ Partial Class Setting_Price_Promo_Add
     End Sub
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
-        Response.Redirect("~/setting/price/promo", False)
+        Dim url As String = "~/setting/price/promo/"
+        If lblReturnPage.Text = "detail" Then
+            url = String.Format("~/setting/price/promo/detail?promoid={0}", lblId.Text)
+        End If
+        Response.Redirect(url, False)
+    End Sub
+
+    Protected Sub BindData(promoId As String)
+        Try
+            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM Promos WHERE Id='" & promoId & "'")
+            If thisData Is Nothing Then
+                Response.Redirect("~/setting/price/promo", False)
+                Exit Sub
+            End If
+
+            BindCompany()
+
+            ddlCompany.SelectedValue = thisData("CompanyId").ToString()
+            ddlType.SelectedValue = thisData("Type").ToString()
+            txtName.Text = thisData("Name").ToString()
+            txtStartDate.Text = Convert.ToDateTime(thisData("StartDate")).ToString("yyyy-MM-dd")
+            txtEndDate.Text = Convert.ToDateTime(thisData("EndDate")).ToString("yyyy-MM-dd")
+            txtDescription.Text = thisData("Description").ToString()
+            ddlActive.SelectedValue = Convert.ToInt32(thisData("Active"))
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
     End Sub
 
     Protected Sub BindCompany()

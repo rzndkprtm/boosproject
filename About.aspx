@@ -6,25 +6,7 @@
     </div>
     <div class="page-content">
         <section class="row">
-            <div class="col-12 col-lg-9">
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-            </div>
+            <div class="col-12 col-lg-9"></div>
         </section>
     </div>
 </asp:Content>

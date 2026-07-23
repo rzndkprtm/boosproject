@@ -38,7 +38,6 @@ Partial Class Setting_Customer_Promo_Default
             End If
 
             Dim discountText As String = "ERROR"
-
             Dim discount As Decimal
 
             If Decimal.TryParse(dr("Discount").ToString(), discount) Then

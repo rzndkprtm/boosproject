@@ -192,9 +192,6 @@ Partial Class Order_Default
 
                 orderClass.CalculatePriceByOrder(thisId)
 
-                Dim salesClass As New SalesClass
-                salesClass.RefreshData(companyId)
-
                 dataLog = {"OrderHeaders", thisId, Session("LoginId"), "Order Unsubmitted"}
                 orderClass.Logs(dataLog)
 
@@ -245,9 +242,6 @@ Partial Class Order_Default
                         thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
-
-                Dim salesClass As New SalesClass
-                salesClass.RefreshData(companyId)
 
                 dataLog = {"OrderHeaders", thisId, Session("LoginId"), "Order In Production"}
                 orderClass.Logs(dataLog)
@@ -586,9 +580,6 @@ Partial Class Order_Default
                 dataLog = {"OrderHeaders", thisId, Session("LoginId"), descLog}
                 orderClass.Logs(dataLog)
 
-                Dim salesClass As New SalesClass
-                salesClass.RefreshData(companyId)
-
                 Response.Redirect("~/order", False)
             End If
         Catch ex As Exception
@@ -623,6 +614,7 @@ Partial Class Order_Default
                 ddlStatus.Items.Add(New ListItem("Waiting Proforma", "Waiting Proforma"))
                 ddlStatus.Items.Add(New ListItem("Proforma Sent", "Proforma Sent"))
                 ddlStatus.Items.Add(New ListItem("Payment Received", "Payment Received"))
+                ddlStatus.Items.Add(New ListItem("Pending Payment", "Pending Payment"))
                 ddlStatus.Items.Add(New ListItem("In Production", "In Production"))
                 ddlStatus.Items.Add(New ListItem("On Hold", "On Hold"))
                 ddlStatus.Items.Add(New ListItem("Shipped Out", "Shipped Out"))
@@ -638,6 +630,7 @@ Partial Class Order_Default
                 ddlStatus.Items.Add(New ListItem("Waiting Proforma", "Waiting Proforma"))
                 ddlStatus.Items.Add(New ListItem("Proforma Sent", "Proforma Sent"))
                 ddlStatus.Items.Add(New ListItem("Payment Received", "Payment Received"))
+                ddlStatus.Items.Add(New ListItem("Pending Payment", "Pending Payment"))
                 ddlStatus.Items.Add(New ListItem("In Production", "In Production"))
                 ddlStatus.Items.Add(New ListItem("On Hold", "On Hold"))
                 ddlStatus.Items.Add(New ListItem("Shipped Out", "Shipped Out"))
@@ -653,6 +646,7 @@ Partial Class Order_Default
                 ddlStatus.Items.Add(New ListItem("Waiting Proforma", "Waiting Proforma"))
                 ddlStatus.Items.Add(New ListItem("Proforma Sent", "Proforma Sent"))
                 ddlStatus.Items.Add(New ListItem("Payment Received", "Payment Received"))
+                ddlStatus.Items.Add(New ListItem("Pending Payment", "Pending Payment"))
                 ddlStatus.Items.Add(New ListItem("In Production", "In Production"))
                 ddlStatus.Items.Add(New ListItem("On Hold", "On Hold"))
                 ddlStatus.Items.Add(New ListItem("Shipped Out", "Shipped Out"))
@@ -668,6 +662,7 @@ Partial Class Order_Default
                 ddlStatus.Items.Add(New ListItem("Waiting Proforma", "Waiting Proforma"))
                 ddlStatus.Items.Add(New ListItem("Proforma Sent", "Proforma Sent"))
                 ddlStatus.Items.Add(New ListItem("Payment Received", "Payment Received"))
+                ddlStatus.Items.Add(New ListItem("Pending Payment", "Pending Payment"))
                 ddlStatus.Items.Add(New ListItem("In Production", "In Production"))
                 ddlStatus.Items.Add(New ListItem("On Hold", "On Hold"))
                 ddlStatus.Items.Add(New ListItem("Shipped Out", "Shipped Out"))
@@ -683,6 +678,7 @@ Partial Class Order_Default
                 ddlStatus.Items.Add(New ListItem("Waiting Proforma", "Waiting Proforma"))
                 ddlStatus.Items.Add(New ListItem("Proforma Sent", "Proforma Sent"))
                 ddlStatus.Items.Add(New ListItem("Payment Received", "Payment Received"))
+                ddlStatus.Items.Add(New ListItem("Pending Payment", "Pending Payment"))
                 ddlStatus.Items.Add(New ListItem("In Production", "In Production"))
                 ddlStatus.Items.Add(New ListItem("On Hold", "On Hold"))
                 ddlStatus.Items.Add(New ListItem("Shipped Out", "Shipped Out"))
@@ -717,6 +713,7 @@ Partial Class Order_Default
                 ddlStatus.Items.Add(New ListItem("Waiting Proforma", "Waiting Proforma"))
                 ddlStatus.Items.Add(New ListItem("Proforma Sent", "Proforma Sent"))
                 ddlStatus.Items.Add(New ListItem("Payment Received", "Payment Received"))
+                ddlStatus.Items.Add(New ListItem("Pending Payment", "Pending Payment"))
                 ddlStatus.Items.Add(New ListItem("In Production", "In Production"))
                 ddlStatus.Items.Add(New ListItem("On Hold", "On Hold"))
                 ddlStatus.Items.Add(New ListItem("Shipped Out", "Shipped Out"))
@@ -779,9 +776,7 @@ Partial Class Order_Default
                 New SqlParameter("@RoleId", Session("RoleId").ToString()),
                 New SqlParameter("@OrderType", orderType)
             }
-            Dim thisData As DataTable = orderClass.GetDataTableSP("sp_OrderHeaders_List", params)
-
-            gvList.DataSource = thisData
+            gvList.DataSource = orderClass.GetDataTableSP("sp_OrderHeaders_List", params)
             gvList.DataBind()
 
             gvList.Columns(1).Visible = LoginAccess("Visible ID")
@@ -902,13 +897,42 @@ Partial Class Order_Default
     End Sub
 
     Protected Function BindCustomerText(customerName As String, sales As String) As String
-        If Session("RoleName") = "Developer" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Account" OrElse (Session("RoleName") = "Sales" AndAlso Session("LevelName") = "Leader") Then
-            If String.IsNullOrWhiteSpace(sales) Then
-                Return customerName
+        Try
+            If Session("RoleName") = "Developer" Then
+                If String.IsNullOrWhiteSpace(sales) Then
+                    Return customerName
+                End If
+                Return String.Format("{0}<br /><span style='font-size:13px; color:red;'>(Sales : {1})</span>", customerName, sales)
             End If
-            Return String.Format("{0}<br /><span style='font-size:13px; color:red;'>(Sales : {1})</span>", customerName, sales)
-        End If
-        Return customerName
+            If Session("RoleName") = "IT" Then
+                If String.IsNullOrWhiteSpace(sales) Then
+                    Return customerName
+                End If
+                Return String.Format("{0}<br /><span style='font-size:13px; color:red;'>(Sales : {1})</span>", customerName, sales)
+            End If
+            If Session("RoleName") = "Factory Office" Then
+                If String.IsNullOrWhiteSpace(sales) Then
+                    Return customerName
+                End If
+                Return String.Format("{0}<br /><span style='font-size:13px; color:red;'>(Sales : {1})</span>", customerName, sales)
+            End If
+            If Session("RoleName") = "Account" Then
+                If String.IsNullOrWhiteSpace(sales) Then
+                    Return customerName
+                End If
+                Return String.Format("{0}<br /><span style='font-size:13px; color:red;'>(Sales : {1})</span>", customerName, sales)
+            End If
+            If Session("RoleName") = "Sales" AndAlso Session("LevelName") = "Leader" Then
+                If String.IsNullOrWhiteSpace(sales) Then
+                    Return customerName
+                End If
+                Return String.Format("{0}<br /><span style='font-size:13px; color:red;'>(Sales : {1})</span>", customerName, sales)
+            End If
+
+            Return customerName
+        Catch ex As Exception
+            Return customerName
+        End Try
     End Function
 
     Protected Function VisibleEdit(data As Object) As Boolean
@@ -962,11 +986,11 @@ Partial Class Order_Default
 
     Protected Function VisibleUnsubmitOrder(status As String, active As Boolean) As Boolean
         If active = True Then
-            If Session("RoleName") = "Developer" AndAlso (status = "New Order" OrElse status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "In Production" OrElse status = "On Hold") Then Return True
-            If Session("RoleName") = "IT" AndAlso (status = "New Order" OrElse status = "Waiting Proforma" OrElse status = "Proforma Sent") Then Return True
-            If Session("RoleName") = "Factory Office" AndAlso (status = "New Order" OrElse status = "Waiting Proforma" OrElse status = "Proforma Sent") Then Return True
+            If Session("RoleName") = "Developer" AndAlso (status = "New Order" OrElse status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Pending Payment" OrElse status = "In Production" OrElse status = "On Hold") Then Return True
+            If Session("RoleName") = "IT" AndAlso (status = "New Order" OrElse status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Pending Payment") Then Return True
+            If Session("RoleName") = "Factory Office" AndAlso (status = "New Order" OrElse status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Pending Payment") Then Return True
             If Session("RoleName") = "Sales" AndAlso (status = "New Order" OrElse status = "Waiting Proforma") Then Return True
-            If Session("RoleName") = "Account" AndAlso (status = "New Order" OrElse status = "Waiting Proforma" OrElse status = "Proforma Sent") Then Return True
+            If Session("RoleName") = "Account" AndAlso (status = "New Order" OrElse status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Pending Payment") Then Return True
             If Session("RoleName") = "Data Entry" AndAlso status = "New Order" Then Return True
             Return False
         End If
@@ -987,11 +1011,11 @@ Partial Class Order_Default
 
     Protected Function VisibleReceivePayment(status As String, active As Boolean) As Boolean
         If active = True Then
-            If Session("RoleName") = "Developer" AndAlso status = "Proforma Sent" Then Return True
-            If Session("RoleName") = "IT" AndAlso status = "Proforma Sent" Then Return True
-            If Session("RoleName") = "Factory Office" AndAlso status = "Proforma Sent" Then Return True
-            If Session("RoleName") = "Sales" AndAlso status = "Proforma Sent" Then Return True
-            If Session("RoleName") = "Account" AndAlso status = "Proforma Sent" Then Return True
+            If Session("RoleName") = "Developer" AndAlso (status = "Proforma Sent" OrElse status = "Pending Payment") Then Return True
+            If Session("RoleName") = "IT" AndAlso (status = "Proforma Sent" OrElse status = "Pending Payment") Then Return True
+            If Session("RoleName") = "Factory Office" AndAlso (status = "Proforma Sent" OrElse status = "Pending Payment") Then Return True
+            If Session("RoleName") = "Sales" AndAlso (status = "Proforma Sent" OrElse status = "Pending Payment") Then Return True
+            If Session("RoleName") = "Account" AndAlso (status = "Proforma Sent" OrElse status = "Pending Payment") Then Return True
             Return False
         End If
         Return False
@@ -1025,12 +1049,12 @@ Partial Class Order_Default
 
     Protected Function VisibleCancelOrder(status As String, active As Boolean) As Boolean
         If active = True Then
-            If Session("RoleName") = "Developer" AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Payment Received" OrElse status = "New Order" OrElse status = "In Production" OrElse status = "On Hold") Then Return True
-            If Session("RoleName") = "IT" AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "New Order" OrElse status = "In Production" OrElse status = "On Hold") Then Return True
-            If Session("RoleName") = "Factory Office" AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "New Order" OrElse status = "In Production" OrElse status = "On Hold") Then Return True
+            If Session("RoleName") = "Developer" AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Pending Payment" OrElse status = "Payment Received" OrElse status = "New Order" OrElse status = "In Production" OrElse status = "On Hold") Then Return True
+            If Session("RoleName") = "IT" AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Pending Payment" OrElse status = "New Order" OrElse status = "In Production" OrElse status = "On Hold") Then Return True
+            If Session("RoleName") = "Factory Office" AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Pending Payment" OrElse status = "New Order" OrElse status = "In Production" OrElse status = "On Hold") Then Return True
             If Session("RoleName") = "Data Entry" AndAlso (status = "New Order" OrElse status = "In Production" OrElse status = "On Hold") Then Return True
             If Session("RoleName") = "Account" AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "New Order") Then Return True
-            If Session("RoleName") = "Sales" AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "New Order") Then Return True
+            If Session("RoleName") = "Sales" AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Pending Payment" OrElse status = "New Order") Then Return True
             Return False
         End If
         Return False

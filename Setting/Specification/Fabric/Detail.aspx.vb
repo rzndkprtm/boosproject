@@ -158,16 +158,30 @@ Partial Class Setting_Specification_Fabric_Detail
                     lblIdColour.Text = dataId
                     lblAction.Text = "Edit"
                     titleProcess.InnerText = "Edit Fabric Colour"
-
                     divStatusColour.Visible = False
 
                     Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM FabricColours WHERE Id='" & lblIdColour.Text & "'")
                     If myData Is Nothing Then Exit Sub
 
+                    BindCompanyDetail(lblCompanyDetail.Text)
+
                     txtBoeId.Text = myData("BoeId").ToString()
                     ddlFactoryColour.SelectedValue = myData("Factory").ToString()
                     txtNameColour.Text = myData("Colour").ToString()
                     txtWidthColour.Text = myData("Width").ToString()
+
+                    If Not String.IsNullOrWhiteSpace(myData("CompanyDetailId").ToString()) Then
+                        For Each i As String In myData("CompanyDetailId").ToString().Split(","c)
+                            Dim value As String = i.Trim()
+
+                            If value <> "" Then
+                                Dim item As ListItem = lbCompanyDetail.Items.FindByValue(value)
+                                If item IsNot Nothing Then
+                                    item.Selected = True
+                                End If
+                            End If
+                        Next
+                    End If
 
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcessColour", thisScript, True)
                 Catch ex As Exception
@@ -188,8 +202,9 @@ Partial Class Setting_Specification_Fabric_Detail
         Try
             lblAction.Text = "Add"
             titleProcess.InnerText = "Add Fabric Colour"
-
             divStatusColour.Visible = True
+
+            BindCompanyDetail(lblCompanyDetail.Text)
 
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcessColour", thisScript, True)
         Catch ex As Exception
@@ -212,15 +227,27 @@ Partial Class Setting_Specification_Fabric_Detail
             End If
 
             If msgErrorProcess.InnerText = "" Then
+                Dim companyDetailId As String = String.Empty
+                If Not lbCompanyDetail.SelectedValue = "" Then
+                    Dim company As String = String.Empty
+                    For Each item As ListItem In lbCompanyDetail.Items
+                        If item.Selected Then
+                            company += item.Value & ","
+                        End If
+                    Next
+                    companyDetailId = company.Remove(company.Length - 1).ToString()
+                End If
+
                 Dim fabricColourName As String = String.Format("{0} {1}", lblName.Text, txtNameColour.Text.Trim())
 
                 If lblAction.Text = "Add" Then
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM FabricColours ORDER BY Id DESC")
 
                     Using thisConn As New SqlConnection(myConn)
-                        Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO FabricColours VALUES (@Id, @FabricId, @BoeId, @Factory, @Name, @Colour, @Width, @Status)", thisConn)
+                        Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO FabricColours VALUES (@Id, @FabricId, @CompanyDetailId, @BoeId, @Factory, @Name, @Colour, @Width, @Status)", thisConn)
                             thisCmd.Parameters.AddWithValue("@Id", thisId)
                             thisCmd.Parameters.AddWithValue("@FabricId", lblId.Text)
+                            thisCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetailId)
                             thisCmd.Parameters.AddWithValue("@BoeId", If(String.IsNullOrEmpty(txtBoeId.Text), CType(DBNull.Value, Object), txtBoeId.Text))
                             thisCmd.Parameters.AddWithValue("@Factory", ddlFactoryColour.SelectedValue)
                             thisCmd.Parameters.AddWithValue("@Name", fabricColourName)
@@ -241,9 +268,10 @@ Partial Class Setting_Specification_Fabric_Detail
 
                 If lblAction.Text = "Edit" Then
                     Using thisConn As New SqlConnection(myConn)
-                        Using thisCmd As SqlCommand = New SqlCommand("UPDATE FabricColours Set BoeId=@BoeId, Factory=@Factory, Name=@Name, Colour=@Colour, Width=@Width WHERE Id=@Id", thisConn)
+                        Using thisCmd As SqlCommand = New SqlCommand("UPDATE FabricColours Set BoeId=@BoeId, CompanyDetailId=@CompanyDetailId, Factory=@Factory, Name=@Name, Colour=@Colour, Width=@Width WHERE Id=@Id", thisConn)
                             thisCmd.Parameters.AddWithValue("@Id", lblIdColour.Text)
                             thisCmd.Parameters.AddWithValue("@FabricId", lblId.Text)
+                            thisCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetailId)
                             thisCmd.Parameters.AddWithValue("@BoeId", If(String.IsNullOrEmpty(txtBoeId.Text), CType(DBNull.Value, Object), txtBoeId.Text))
                             thisCmd.Parameters.AddWithValue("@Factory", ddlFactoryColour.SelectedValue)
                             thisCmd.Parameters.AddWithValue("@Name", fabricColourName)
@@ -365,6 +393,7 @@ Partial Class Setting_Specification_Fabric_Detail
             End If
 
             lblCompanyDetailName.Text = String.Empty
+            lblCompanyDetail.Text = thisData("CompanyDetailId").ToString()
             If Not thisData("CompanyDetailId").ToString() = "" Then
                 Dim companyArray() As String = thisData("CompanyDetailId").ToString().Split(",")
 
@@ -390,21 +419,41 @@ Partial Class Setting_Specification_Fabric_Detail
 
     Protected Sub BindDataColour(fabricId As String, searchText As String)
         Try
-            Dim stringFabricId As String = "WHERE FabricId='" & fabricId & "'"
-            Dim stringSearch As String = String.Empty
-            If Not String.IsNullOrEmpty(searchText) Then
-                stringSearch = "AND (BoeId LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%' OR Colour LIKE '%" & searchText & "%' OR Status LIKE '%" & searchText & "%')"
-            End If
-            Dim thisString As String = String.Format("SELECT * FROM FabricColours {0} {1} ORDER BY Colour ASC", stringFabricId, stringSearch)
-
-            gvListColour.DataSource = settingClass.GetDataTable(thisString)
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@FabricId", fabricId),
+                New SqlParameter("@SearchText", If(String.IsNullOrWhiteSpace(searchText), CType(DBNull.Value, Object), searchText))
+            }
+            gvListColour.DataSource = settingClass.GetDataTableSP("sp_FabricColours_List", params)
             gvListColour.DataBind()
             gvListColour.Columns(1).Visible = LoginAccess("Visible ID Detail")
-            gvListColour.Columns(4).Visible = LoginAccess("Visible Name Detail")
+            gvListColour.Columns(5).Visible = LoginAccess("Visible Name Detail")
         Catch ex As Exception
             MessageError_Colour(True, ex.ToString)
             If Not Session("RoleName") = "Developer" Then
                 MessageError_Colour(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindCompanyDetail(companyDetailId As String)
+        lbCompanyDetail.Items.Clear()
+        Try
+            lbCompanyDetail.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM CompanyDetails WHERE Id IN (SELECT value FROM STRING_SPLIT('" & companyDetailId & "', ','))")
+            lbCompanyDetail.DataTextField = "Name"
+            lbCompanyDetail.DataValueField = "Id"
+            lbCompanyDetail.DataBind()
+
+            For Each item As ListItem In lbCompanyDetail.Items
+                item.Selected = True
+            Next
+
+            If lbCompanyDetail.Items.Count > 0 Then
+                lbCompanyDetail.Items.Insert(0, New ListItem("", ""))
+            End If
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
         End Try
     End Sub

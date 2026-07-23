@@ -24,6 +24,7 @@ Partial Class Setting_Customer_Detail
         Dim promoId As String = settingClass.GetItemData("SELECT PromoId FROM CustomerPromos WHERE Id='" & id & "'")
         Dim dt As DataTable = settingClass.GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
         Dim result As New List(Of Object)
+
         For Each dr As DataRow In dt.Rows
             Dim title As String = String.Empty
             If dr("Type").ToString() = "FrameColours" Then
@@ -31,7 +32,12 @@ Partial Class Setting_Customer_Detail
             Else
                 title = settingClass.GetItemData(String.Format("SELECT Name FROM {0} WHERE Id='{1}'", dr("Type").ToString(), dr("DataId").ToString()))
             End If
-            result.Add(New With {.Type = title, .Discount = Convert.ToDecimal(dr("Discount")).ToString("G29") & "%"})
+            result.Add(
+                    New With {
+                    .Type = title,
+                    .Discount = Convert.ToDecimal(dr("Discount")).ToString("G29") & "%"
+                    }
+                )
         Next
         Return result
     End Function

@@ -30,7 +30,7 @@
             </div>
         </section>
         <section class="row mb-3">
-            <div class="col-12 d-flex justify-content-end">
+            <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
                 <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Add New" OnClick="btnAdd_Click" />
             </div>
         </section>
@@ -46,31 +46,16 @@
                                 <div class="form form-vertical">
                                     <div class="form-body">
                                         <div class="row mb-2">
-                                            <div class="col-12 col-sm-12 col-lg-3">
+                                            <div class="col-12 col-sm-12 col-lg-6">
                                                 <div class="form-group">
                                                     <label class="form-label">Design Type</label>
-                                                    <asp:DropDownList runat="server" ID="ddlDesign" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlDesign_SelectedIndexChanged"></asp:DropDownList>
+                                                    <asp:DropDownList runat="server" ID="ddlDesignType" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlDesignType_SelectedIndexChanged"></asp:DropDownList>
                                                 </div>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-4">
-                                                <div class="form-group">
-                                                    <label class="form-label">Blind Type</label>
-                                                    <asp:DropDownList runat="server" ID="ddlBlind" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlBlind_SelectedIndexChanged"></asp:DropDownList>
-                                                </div>
-                                            </div>
-                                            <div class="col-12 col-sm-12 col-lg-3">
+                                            <div class="col-12 col-sm-12 col-lg-6">
                                                 <div class="form-group">
                                                     <label class="form-label">Price Group</label>
                                                     <asp:DropDownList runat="server" ID="ddlPriceGroup" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlPriceGroup_SelectedIndexChanged"></asp:DropDownList>
-                                                </div>
-                                            </div>
-                                            <div class="col-12 col-sm-12 col-lg-2">
-                                                <div class="form-group">
-                                                    <label class="form-label">Active</label>
-                                                    <asp:DropDownList runat="server" ID="ddlActive" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlActive_SelectedIndexChanged">
-                                                        <asp:ListItem Value="1" Text="Active"></asp:ListItem>
-                                                        <asp:ListItem Value="0" Text="Non Active"></asp:ListItem>
-                                                    </asp:DropDownList>
                                                 </div>
                                             </div>
                                         </div>
@@ -84,7 +69,7 @@
                             <div class="card-header">
                                 <div class="row">
                                     <div class="col-12 col-sm-12 col-lg-6 mb-2">
-                                         <h4 class="card-title">List Surcharge</h4>
+                                         <h4 class="card-title">List</h4>
                                     </div>
                                     <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
                                         <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
@@ -99,7 +84,7 @@
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" agerSettings-Visible="false" OnPageIndexChanging="gvList_PageIndexChanging" OnDataBound="gvList_DataBound">
+                                    <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Visible="false" OnPageIndexChanging="gvList_PageIndexChanging" OnDataBound="gvList_DataBound">
                                         <Columns>
                                             <asp:TemplateField ItemStyle-HorizontalAlign="Center">
                                                 <ItemTemplate>
@@ -107,19 +92,20 @@
                                                 </ItemTemplate>
                                             </asp:TemplateField>
                                             <asp:BoundField DataField="Id" HeaderText="ID" />
-                                            <asp:BoundField DataField="Product" HeaderText="Product" />
+                                            <asp:BoundField DataField="DesignName" HeaderText="Product" />
                                             <asp:BoundField DataField="PriceGroupName" HeaderText="Price Group" />
-                                            <asp:BoundField DataField="BlindNumber" HeaderText="Number" />
                                             <asp:BoundField DataField="Name" HeaderText="Name" />
-                                            <asp:BoundField DataField="Formula" HeaderText="Formula" />
-                                            <asp:BoundField DataField="BuyCharge" HeaderText="Buy Charge" />
-                                            <asp:BoundField DataField="SellCharge" HeaderText="Sell Charge" />
+                                            <asp:BoundField DataField="BuyChargeShort" HeaderText="Buy Charge" />
+                                            <asp:BoundField DataField="SellChargeShort" HeaderText="Sell Charge" />
                                             <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
                                                 <ItemTemplate>
                                                     <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                     <ul class="dropdown-menu">
-                                                        <li runat="server" visible='<%# LoginAccess("Detail") %>'>
-                                                            <a class="dropdown-item" runat="server" id="aDetail" href='<%# Page.ResolveUrl("~/setting/price/surcharge/detail?surchargeid=" & Eval("Id")) %>'>Detail / Edit</a>
+                                                        <li runat="server" visible='<%# LoginAccess("Edit") %>'>
+                                                            <a class="dropdown-item" runat="server" id="aDetail" href='<%# Page.ResolveUrl("~/setting/price/surcharge/edit?surchargeid=" & Eval("Id")) %>'>Edit</a>
+                                                        </li>
+                                                        <li runat="server" visible='<%# LoginAccess("Change Value") %>'>
+                                                            <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeValue" onclick='<%# String.Format("return dataChangeValue(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("BuyCharge").ToString(), Eval("SellCharge").ToString()) %>'>Change Value</a>
                                                         </li>
                                                         <li runat="server" visible='<%# LoginAccess("Copy") %>'>
                                                             <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalCopy" onclick='<%# String.Format("return dataCopy(`{0}`);", Eval("Id").ToString()) %>'>Copy</a>
@@ -156,20 +142,36 @@
             </asp:UpdatePanel>
         </section>
     </div>
-
-    <div class="modal fade text-center" id="modalDelete" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
+    
+    <div class="modal fade" id="modalChangeValue" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-danger">
-                    <h5 class="modal-title white">Delete Price Surcharge</h5>
+                <div class="modal-header">
+                    <h5 class="modal-title">Change Value</h5>
                 </div>
-                <div class="modal-body text-center py-4">
-                    <asp:TextBox runat="server" ID="txtIdDelete" style="display:none;"></asp:TextBox>
-                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                <div class="modal-body">
+                    <asp:TextBox runat="server" ID="txtChangeValueId" style="display:none;"></asp:TextBox>
+                    <div class="row mb-2" runat="server" id="divErrorChangeValue">
+                        <div class="col-12">
+                            <div class="alert alert-danger">
+                                <span runat="server" id="msgErrorChangeValue"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                            <label class="form-label">Buy Charge</label>
+                            <asp:TextBox runat="server" ID="txtBuy" CssClass="form-control" TextMode="MultiLine" Height="150px" placeholder="Buy Charge ..." autocomplete="off" style="resize:none;"></asp:TextBox>
+                        </div>
+                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                            <label class="form-label">Sell Charge</label>
+                            <asp:TextBox runat="server" ID="txtSell" CssClass="form-control" TextMode="MultiLine" Height="150px" placeholder="Sell Charge ..." autocomplete="off" style="resize:none;"></asp:TextBox>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnDelete" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDelete_Click" />
+                    <asp:Button runat="server" ID="btnChangeValue" CssClass="btn btn-info" Text="Submit" OnClick="btnChangeValue_Click" />
                 </div>
             </div>
         </div>
@@ -181,12 +183,29 @@
                     <h5 class="modal-title white">Copy Price Surcharge</h5>
                 </div>
                 <div class="modal-body text-center py-4">
-                    <asp:TextBox runat="server" ID="txtIdCopy" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtCopyId" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnCopy" CssClass="btn btn-info" Text="Confirm" OnClick="btnCopy_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade text-center" id="modalDelete" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-danger">
+                    <h5 class="modal-title white">Delete Price Surcharge</h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <asp:TextBox runat="server" ID="txtDeleteId" style="display:none;"></asp:TextBox>
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnDelete" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDelete_Click" />
                 </div>
             </div>
         </div>
@@ -271,11 +290,19 @@
             initChoices();
             bindGridRowClick();
         });
-        function dataDelete(id) {
-            document.getElementById("<%=txtIdDelete.ClientID %>").value = id;
+        function dataChangeValue(id, buy, sell) {
+            document.getElementById("<%=txtChangeValueId.ClientID %>").value = id;
+            document.getElementById("<%=txtBuy.ClientID %>").value = buy;
+            document.getElementById("<%=txtSell.ClientID %>").value = sell;
         }
         function dataCopy(id) {
-            document.getElementById("<%=txtIdCopy.ClientID %>").value = id;
+            document.getElementById("<%=txtCopyId.ClientID %>").value = id;
+        }
+        function dataDelete(id) {
+            document.getElementById("<%=txtDeleteId.ClientID %>").value = id;
+        }
+        function showChangeValue() {
+            $("#modalChangeValue").modal("show");
         }
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
@@ -310,7 +337,7 @@
                 }
             });
         }
-        ["modalDelete", "modalCopy", "modalLog"].forEach(function (id) {
+        ["modalChangeValue", "modalCopy", "modalDelete", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

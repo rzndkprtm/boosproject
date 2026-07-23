@@ -286,7 +286,7 @@
                     if (data.length === 0) {
                         html = `
                             <tr>
-                            <td colspan="4" class="text-center">
+                            <td colspan="3" class="text-center">
                             DATA NOT FOUND :)
                             </td>
                             </tr>`;

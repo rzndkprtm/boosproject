@@ -158,7 +158,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Louvre Position</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-2 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
                                                     <select id="louvreposition" class="form-select">
                                                         <option value=""></option>
                                                         <option value="Open">Open</option>
@@ -613,5 +613,5 @@
         </div>
     </div>
     
-    <script src="/Scripts/Gabuts/SkylineExpress.js?v=2.0.2"></script>
+    <script src="/Scripts/RisaSolihah/SkylineExpress.js?v=1.0.0"></script>
 </asp:Content>

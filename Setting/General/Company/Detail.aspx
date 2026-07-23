@@ -1,8 +1,6 @@
 ﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Detail.aspx.vb" Inherits="Setting_General_Company_Detail" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Company Detail" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
-    
-
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
@@ -38,39 +36,35 @@
                     <div class="card-header">
                         <h4 class="card-title">General Data</h4>
                     </div>
-                    <div class="card-content">
-                        <div class="card-body">
-                            <div class="row mb-2">
-                                <div class="col-12 form-group">
-                                    <label>Company Name</label>
-                                    <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off" Font-Bold="true"></asp:TextBox>
-                                </div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-12 form-group">
-                                    <label>Alias</label>
-                                    <asp:TextBox runat="server" ID="txtAlias" CssClass="form-control" placeholder="Alias ..." autocomplete="off" Font-Bold="true"></asp:TextBox>
-                                </div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-12 form-group">
-                                    <label>Description</label>
-                                    <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" Height="100px" CssClass="form-control" placeholder="Description ..." Font-Bold="true" autocomplete="off" style="resize:none;"></asp:TextBox>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12 form-group">
-                                    <label>Active</label>
-                                    <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select">
-                                        <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
-                                        <asp:ListItem Value="0" Text="No"></asp:ListItem>
-                                    </asp:DropDownList>
-                                </div>
+                    <div class="card-body">
+                        <div class="row mb-2">
+                            <div class="col-12 form-group">
+                                <label class="form-label">Company Name</label>
+                                <br />
+                                <asp:Label runat="server" CssClass="form-label" ID="lblName" Font-Bold="true"></asp:Label>
                             </div>
                         </div>
-                    </div>
-                    <div class="card-footer text-start" runat="server" id="divEdit">
-                        <asp:Button runat="server" ID="btnProcess" CssClass="btn btn-primary" Text="Submit" OnClick="btnProcess_Click" />
+                        <div class="row mb-2">
+                            <div class="col-12 form-group">
+                                <label class="form-label">Alias</label>
+                                <br />
+                                <asp:Label runat="server" CssClass="form-label" ID="lblAlias" Font-Bold="true"></asp:Label>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-12 form-group">
+                                <label class="form-label">Description</label>
+                                <br />
+                                <asp:Label runat="server" CssClass="form-label" ID="lblDescription" Font-Bold="true"></asp:Label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 form-group">
+                                <label class="form-label">Active</label>
+                                <br />
+                                <asp:Label runat="server" CssClass="form-label" ID="lblActive" Font-Bold="true"></asp:Label>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

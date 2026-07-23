@@ -61,6 +61,7 @@
                                                 </ItemTemplate>
                                             </asp:TemplateField>
                                             <asp:BoundField DataField="Id" HeaderText="ID" />
+                                            <asp:BoundField DataField="CompanyDetailName" HeaderText="Company Detail Name" />
                                             <asp:BoundField DataField="FabricName" HeaderText="Fabric Type" />
                                             <asp:BoundField DataField="Colour" HeaderText="Colour" />
                                             <asp:BoundField DataField="Status" HeaderText="Status" />

@@ -145,18 +145,6 @@ Public Class SalesClass
         Return result
     End Function
 
-    Public Function GetProductSales(thisCmd As SqlCommand) As DataSet
-        Using thisConn As New SqlConnection(myConn)
-            Using thisAdapter As New SqlDataAdapter()
-                thisCmd.Connection = thisConn
-                thisAdapter.SelectCommand = thisCmd
-                Dim thisDataSet As New DataSet()
-                thisAdapter.Fill(thisDataSet)
-                Return thisDataSet
-            End Using
-        End Using
-    End Function
-
     Public Function CreateId(thisString As String) As String
         Dim result As String = String.Empty
         Try

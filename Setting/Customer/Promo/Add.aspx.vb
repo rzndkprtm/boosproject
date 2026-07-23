@@ -132,13 +132,13 @@ Partial Class Setting_Customer_Promo_Add
         ddlPromo.Items.Clear()
         Try
             If Not String.IsNullOrEmpty(customerId) Then
-                Dim companyDetailId As String = settingClass.GetItemData("SELECT CompanyDetailId FROM Customers WHERE Id='" & customerId & "'")
-                ddlPromo.DataSource = settingClass.GetDataTable("SELECT * FROM Promos WHERE CompanyDetailId='" & companyDetailId & "' AND Active=1 ORDER BY Name ASC")
+                Dim companyId As String = settingClass.GetItemData("SELECT CompanyId FROM Customers WHERE Id='" & customerId & "'")
+                ddlPromo.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM Promos WHERE Active=1 AND CompanyId='" & companyId & "' AND Type='Sell'")
                 ddlPromo.DataTextField = "Name"
                 ddlPromo.DataValueField = "Id"
                 ddlPromo.DataBind()
 
-                If ddlPromo.Items.Count > 1 Then
+                If ddlPromo.Items.Count > 0 Then
                     ddlPromo.Items.Insert(0, New ListItem("", ""))
                 End If
             End If
